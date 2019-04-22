@@ -231,10 +231,18 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSuccessGetAccountList(AccountList accountList) {
-        dismissLoadingProgress();
-        this.viewModel.setAccountList(accountList);
-        adapter.setList(accountList.getAccountListPojo().getUserDetails());
-        message.setText(getPromptText());
+        if (getActivity() != null) {
+            dismissLoadingProgress();
+            this.viewModel.setAccountList(accountList);
+            getActivity().setResult(Activity.RESULT_OK);
+
+            if (accountList.getAccountListPojo().getUserDetails().size() == 1) {
+                getActivity().finish();
+            } else {
+                adapter.setList(accountList.getAccountListPojo().getUserDetails());
+                message.setText(getPromptText());
+            }
+        }
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.tokopedia.loginphone.checkloginphone.di;
 
-import com.tokopedia.loginphone.checkloginphone.view.fragment.CheckLoginPhoneNumberFragment;
 import com.tokopedia.loginphone.checkloginphone.view.fragment.NotConnectedTokocashFragment;
 import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
 import dagger.Component;
@@ -11,8 +10,6 @@ import dagger.Component;
 @CheckLoginPhoneScope
 @Component(modules = CheckLoginPhoneModule.class, dependencies = LoginRegisterPhoneComponent.class)
 public interface CheckLoginPhoneComponent {
-
-    void inject(CheckLoginPhoneNumberFragment fragment);
 
     void inject(NotConnectedTokocashFragment fragment);
 

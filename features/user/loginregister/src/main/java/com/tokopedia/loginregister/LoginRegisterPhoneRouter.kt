@@ -14,7 +14,4 @@ interface LoginRegisterPhoneRouter {
     }
 
     fun getNoTokocashAccountIntent(context: Context, phoneNumber: String): Intent
-
-    fun getCheckRegisterPhoneNumberIntent(context: Context): Intent
-
 }
