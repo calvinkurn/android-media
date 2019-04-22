@@ -173,7 +173,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     }
 
     private fun shouldRedirectToSeamless(url: String): Boolean {
-        return url.contains("tokopedia.com/play", true)
+        return !url.contains("tokopedia.com/play", true)
                 && !url.contains("js.tokopedia.com/seamless", true)
     }
 
