@@ -45,7 +45,7 @@ constructor(private val context: Context,
                        xSource: String,
                        pageName: String): RequestParams {
         val params = RequestParams.create()
-        params.putInt(USER_ID, 3346028)
+        params.putInt(USER_ID, 3346028.toInt())
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putString(X_SOURCE, if (TextUtils.isEmpty(xSource)) DEFAULT_VALUE_X_SOURCE else xSource)
         params.putString(X_DEVICE, if (TextUtils.isEmpty(pageName)) DEFAULT_VALUE_X_DEVICE else pageName)
