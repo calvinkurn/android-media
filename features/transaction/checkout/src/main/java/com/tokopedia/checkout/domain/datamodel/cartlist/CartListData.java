@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
+import com.tokopedia.transactiondata.entity.response.cartlist.GlobalCouponAttr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class CartListData implements Parcelable {
     private CartTickerErrorData cartTickerErrorData;
     private AutoApplyData autoApplyData;
     private AutoApplyStackData autoApplyStackData;
+    private GlobalCouponAttr globalCouponAttr;
     private String defaultPromoDialogTab;
     private boolean allSelected;
     private TopAdsModel adsModel;
@@ -97,6 +99,14 @@ public class CartListData implements Parcelable {
 
     public void setAutoApplyStackData(AutoApplyStackData autoApplyStackData) {
         this.autoApplyStackData = autoApplyStackData;
+    }
+
+    public GlobalCouponAttr getGlobalCouponAttr() {
+        return globalCouponAttr;
+    }
+
+    public void setGlobalCouponAttr(GlobalCouponAttr globalCouponAttr) {
+        this.globalCouponAttr = globalCouponAttr;
     }
 
     public List<ShopGroupData> getShopGroupDataList() {
