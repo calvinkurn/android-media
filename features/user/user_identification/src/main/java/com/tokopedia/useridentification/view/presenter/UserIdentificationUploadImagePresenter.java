@@ -83,7 +83,8 @@ public class UserIdentificationUploadImagePresenter extends
                     public Observable<ImageUploadModel> call(ImageUploadModel
                                                                      imageUploadModel) {
                         String filePath = imageUploadModel.getFilePath();
-                        imageUploadModel.setPicObjKyc(ImageHandler.encodeToBase64(filePath, Bitmap.CompressFormat.PNG));
+                        imageUploadModel.setPicObjKyc(ImageHandler.encodeToBase64(filePath,
+                                Bitmap.CompressFormat.PNG, 70));
                         imageUploadModel.setFileName(filePath.substring(filePath.lastIndexOf("/") + 1));
                         return Observable.just(imageUploadModel);
                     }
