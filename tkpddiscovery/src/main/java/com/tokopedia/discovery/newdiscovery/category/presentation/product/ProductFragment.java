@@ -706,7 +706,7 @@ public class ProductFragment extends BrowseSectionFragment
         } else {
             this.selectedFilter.put(filterKey, filterValue);
         }
-        loadDataProduct(0);
+        reloadData();
     }
 
     @Override
