@@ -204,11 +204,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onResume() {
         super.onResume()
+        registerBroadcastReceiver()
         hideLoadingLayout()
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         unregisterBroadcastReceiver()
     }
 
@@ -967,8 +968,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
         })
-
-        registerBroadcastReceiver()
     }
 
     private fun hasFeed(): Boolean {
