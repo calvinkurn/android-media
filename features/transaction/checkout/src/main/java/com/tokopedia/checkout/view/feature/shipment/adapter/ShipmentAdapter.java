@@ -32,15 +32,18 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentInsuranceT
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.merchantvoucher.common.widget.LogisticVoucherView;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.LogisticPromoViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
@@ -898,7 +901,14 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                 for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : voucherOrdersItemUiModelList) {
                     if (shipmentCartItemModel.getCartString().equalsIgnoreCase(voucherOrdersItemUiModel.getUniqueId())) {
-                        shipmentCartItemModel.setVoucherOrdersItemUiModel(voucherOrdersItemUiModel);
+                        if (voucherOrdersItemUiModel.getType().equalsIgnoreCase(TickerCheckoutUtilKt.getMERCHANT())) {
+                            shipmentCartItemModel.setVoucherOrdersItemUiModel(voucherOrdersItemUiModel);
+                        } else if (voucherOrdersItemUiModel.getType().equalsIgnoreCase(TickerCheckoutUtilKt.getLOGISTIC())) {
+                            VoucherLogisticItemUiModel model = new VoucherLogisticItemUiModel();
+                            model.setCode(voucherOrdersItemUiModel.getCode());
+                            model.setCouponDesc(voucherOrdersItemUiModel.getTitleDescription());
+                            shipmentCartItemModel.setVoucherLogisticItemUiModel(model);
+                        }
                         notifyItemChanged(i);
                     }
                 }
