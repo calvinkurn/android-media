@@ -143,6 +143,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var trackerListName: String? = ""
     private var isFromDeeplink: Boolean = false
     private var isAffiliate: Boolean = false
+    private var isSpecialPrize: Boolean = false
 
     lateinit var headerView: PartialHeaderView
     lateinit var productStatsView: PartialProductStatisticView
@@ -221,6 +222,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         private const val ARG_TRACKER_LIST_NAME = "ARG_TRACKER_LIST_NAME"
         private const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
         private const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
+        private const val ARG_IS_SPECIAL_PRIZE = "ARG_IS_SPECIAL_PRIZE"
 
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
@@ -230,19 +232,21 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         productKey: String? = null,
                         isFromDeeplink: Boolean = false,
                         isAffiliate: Boolean = false,
+                        isSpecialPrize: Boolean = false,
                         trackerAttribution: String? = null,
                         trackerListName: String? = null) =
-            ProductDetailFragment().also {
-                it.arguments = Bundle().apply {
-                    productId?.let { pid -> putString(ARG_PRODUCT_ID, pid) }
-                    productKey?.let { pkey -> putString(ARG_PRODUCT_KEY, pkey) }
-                    shopDomain?.let { domain -> putString(ARG_SHOP_DOMAIN, domain) }
-                    trackerAttribution?.let { attribution -> putString(ARG_TRACKER_ATTRIBUTION, attribution) }
-                    trackerListName?.let { listName -> putString(ARG_TRACKER_LIST_NAME, listName) }
-                    putBoolean(ARG_FROM_DEEPLINK, isFromDeeplink)
-                    putBoolean(ARG_FROM_AFFILIATE, isAffiliate)
+                ProductDetailFragment().also {
+                    it.arguments = Bundle().apply {
+                        productId?.let { pid -> putString(ARG_PRODUCT_ID, pid) }
+                        productKey?.let { pkey -> putString(ARG_PRODUCT_KEY, pkey) }
+                        shopDomain?.let { domain -> putString(ARG_SHOP_DOMAIN, domain) }
+                        trackerAttribution?.let { attribution -> putString(ARG_TRACKER_ATTRIBUTION, attribution) }
+                        trackerListName?.let { listName -> putString(ARG_TRACKER_LIST_NAME, listName) }
+                        putBoolean(ARG_FROM_DEEPLINK, isFromDeeplink)
+                        putBoolean(ARG_FROM_AFFILIATE, isAffiliate)
+                        putBoolean(ARG_IS_SPECIAL_PRIZE, isSpecialPrize)
+                    }
                 }
-            }
     }
 
     override fun getScreenName(): String? = null
@@ -267,6 +271,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             trackerListName = it.getString(ARG_TRACKER_LIST_NAME)
             isFromDeeplink = it.getBoolean(ARG_FROM_DEEPLINK, false)
             isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
+            isSpecialPrize = it.getBoolean(ARG_IS_SPECIAL_PRIZE, false)
         }
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -506,8 +511,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 productInfo?.variant?.isVariant ?: false)
             if (productInfoViewModel.isUserSessionActive()) {
                 val isExpressCheckout = (productInfoViewModel.productInfoP3resp.value)?.isExpressCheckoutType
-                    ?: false
-                if (isExpressCheckout) {
+                        ?: false
+                if (isExpressCheckout || isSpecialPrize) {
                     goToAtcExpress()
                 } else {
                     goToNormalCheckout()
@@ -614,6 +619,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         if (!::actionButtonView.isInitialized) {
             actionButtonView = PartialButtonActionView.build(base_btn_action, onViewClickListener)
+            actionButtonView.isSpecialPrize = isSpecialPrize
         }
 
         if (!::productShopView.isInitialized) {
@@ -1078,7 +1084,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     || shopInfo.allowManage),
                 data.preorder)
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
-            headerView.showOfficialStore(shopInfo.goldOS.isOfficial == 1)
+            headerView.showOfficialStore(shopInfo.goldOS)
             view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status
                 ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
@@ -1304,6 +1310,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
             }
         }
+        actionButtonView.renderData(!data.basic.isActive(),
+                (productInfoViewModel.isShopOwner(data.basic.shopID)
+                        || shopInfo?.allowManage == true),
+                data.preorder)
+        actionButtonView.visibility = !isAffiliate
         activity?.invalidateOptionsMenu()
     }
 

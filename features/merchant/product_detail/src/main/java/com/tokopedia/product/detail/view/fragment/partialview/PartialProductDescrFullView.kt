@@ -94,7 +94,8 @@ class PartialProductDescrFullView private constructor(private val view: View,
             }
 
             if (data.preorder.isActive){
-                txt_pre_order.text = context.getString(R.string.template_preorder_time, data.preorder.duration)
+                txt_pre_order.text = context.getString(R.string.template_preorder_time, data.preorder.duration,
+                        data.preorder.timeUnitValue)
                 label_pre_order.visibility = View.VISIBLE
                 txt_pre_order.visibility = View.VISIBLE
             } else {
