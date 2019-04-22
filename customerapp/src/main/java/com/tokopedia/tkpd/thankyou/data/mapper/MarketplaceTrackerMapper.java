@@ -14,8 +14,10 @@ import com.tokopedia.linker.model.LinkerCommerceData;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
+import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.BenefitByOrder;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
+import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderLevel;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentType;
@@ -46,6 +48,11 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     private PaymentData paymentData;
     private RequestParams requestParams;
     private static final String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
+    private static final String TYPE_GLOBAL_VOUCHER = "global";
+    private static final String TYPE_PAYMENT_VOUCHER = "payment";
+    private static final String TYPE_MERCHANT_VOUCHER = "merchant";
+    private static final String TYPE_LOGISTIC_VOUCHER = "logistic";
+    private static final String NOT_SET = "(not set)";
 
     public MarketplaceTrackerMapper(SessionHandler sessionHandler, List<String> shopTypes, RequestParams requestParams) {
         this.sessionHandler = sessionHandler;
@@ -62,7 +69,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             if (paymentData.getOrders() != null) {
                 int indexOrdersData = 0;
                 for (OrderData orderData : paymentData.getOrders()) {
-                    PurchaseTracking.marketplace(MainApplication.getAppContext(), getTrackignData(orderData, indexOrdersData, getCouponCode(paymentData), getTax(paymentData), paymentType));
+                    PurchaseTracking.marketplace(MainApplication.getAppContext(), getTrackignData(orderData, indexOrdersData, getListCouponCode(paymentData, orderData.getOrderId()), getTax(paymentData), paymentType));
                     LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
                             getTrackignBranchIOData(orderData)));
                     indexOrdersData++;
@@ -193,6 +200,45 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         }
 
         return "";
+    }
+
+    private String getListCouponCode(PaymentData paymentData, int orderId) {
+        // coupon = [Global Voucher], [Merchant Voucher], [Logistic Voucher], [Payment Voucher]
+        String allCoupons, globalVoucher = NOT_SET, merchantVoucher = NOT_SET, logisticVoucher = NOT_SET, paymentVoucher = NOT_SET;
+
+        if (paymentData != null && paymentData.getStackedPromos() != null && paymentData.getStackedPromos().getListBenefitByOrders() != null) {
+            for (BenefitByOrder benefitByOrder : paymentData.getStackedPromos().getListBenefitByOrders()) {
+                if (benefitByOrder != null && benefitByOrder.getOrderId() == orderId) {
+                    if (benefitByOrder.getListGlobalLevel() != null) {
+                        for (OrderLevel orderLevel : benefitByOrder.getListGlobalLevel()) {
+                            if (orderLevel.getType() != null) {
+                                if (orderLevel.getType().equalsIgnoreCase(TYPE_GLOBAL_VOUCHER)) {
+                                    globalVoucher = orderLevel.getPromoCode();
+                                } else if (orderLevel.getType().equalsIgnoreCase(TYPE_PAYMENT_VOUCHER)) {
+                                    paymentVoucher = orderLevel.getPromoCode();
+                                }
+                            }
+                        }
+                    }
+
+                    if (benefitByOrder.getListOrderLevel() != null) {
+                        for (OrderLevel orderLevel : benefitByOrder.getListOrderLevel()) {
+                            if (orderLevel.getType() != null) {
+                                if (orderLevel.getType().equalsIgnoreCase(TYPE_MERCHANT_VOUCHER)) {
+                                    merchantVoucher = orderLevel.getPromoCode();
+                                } else if (orderLevel.getType().equalsIgnoreCase(TYPE_LOGISTIC_VOUCHER)) {
+                                    logisticVoucher = orderLevel.getPromoCode();
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+        allCoupons = globalVoucher + " , " + merchantVoucher + " , " + logisticVoucher + " , " + paymentVoucher;
+        return allCoupons;
     }
 
     private String getLogisticType(OrderData orderData) {

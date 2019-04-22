@@ -37,6 +37,9 @@ public class PaymentData {
     @SerializedName("payment_type")
     @Expose
     private PaymentType paymentType;
+    @SerializedName("stacked_promos")
+    @Expose
+    private StackedPromos stackedPromos;
 
     public int getPaymentId() {
         return paymentId;
@@ -108,5 +111,9 @@ public class PaymentData {
 
     public void setPaymentType(PaymentType paymentType) {
         this.paymentType = paymentType;
+    }
+
+    public StackedPromos getStackedPromos() {
+        return stackedPromos;
     }
 }

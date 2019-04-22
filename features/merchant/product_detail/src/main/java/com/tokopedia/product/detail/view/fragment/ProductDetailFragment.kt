@@ -1075,7 +1075,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                             || shopInfo.allowManage),
                     data.preorder)
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
-            headerView.showOfficialStore(shopInfo.goldOS.isOfficial == 1)
+            headerView.showOfficialStore(shopInfo.goldOS)
             view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status
                     ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
