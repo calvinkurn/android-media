@@ -345,11 +345,13 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                 selectedEtalaseId = null;
                 etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
                 etalaseChipAdapter.notifyDataSetChanged();
-                this.keyword = keyword;
-                loadInitialData();
             }
         }
 
+        if (!this.keyword.equalsIgnoreCase(keyword)) {
+            this.keyword = keyword;
+            loadInitialData();
+        }
     }
 
     @Override
