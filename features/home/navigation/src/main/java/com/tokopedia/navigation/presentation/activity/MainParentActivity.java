@@ -225,7 +225,7 @@ public class MainParentActivity extends BaseActivity implements
         try {
            super.onRestoreInstanceState(savedInstanceState);
         } catch (Exception e) {
-           reloadPage()
+           reloadPage();
         }
     }
 
