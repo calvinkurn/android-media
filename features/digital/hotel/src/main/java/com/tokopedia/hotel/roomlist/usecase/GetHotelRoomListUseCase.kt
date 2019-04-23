@@ -1,7 +1,6 @@
 package com.tokopedia.hotel.roomlist.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -16,12 +15,13 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.withContext
+import javax.inject.Inject
 
 /**
  * @author by jessica on 23/04/19
  */
 
-class GetHotelRoomListUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase(graphqlRepository) {
+class GetHotelRoomListUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
     fun createRequestParam(hotelRoomListPageModel: HotelRoomListPageModel): RoomListParam {
         val roomListParam = RoomListParam()
@@ -43,18 +43,18 @@ class GetHotelRoomListUseCase(graphqlRepository: GraphqlRepository): MultiReques
         val requestParams = createRequestParam(hotelRoomListPageModel)
         val params = mapOf(PARAM_ROOM_LIST_PROPERTY to requestParams)
 
-        if (fromCloud) setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        else setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
+        if (fromCloud) useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        else useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
 
-        clearRequest()
+        useCase.clearRequest()
 
         try {
             val graphqlRequest = GraphqlRequest(rawQuery, HotelRoomData.Response::class.java, params)
-            addRequest(graphqlRequest)
+            useCase.addRequest(graphqlRequest)
 
             val hotelRoomData = async {
                 val response =  withContext(Dispatchers.IO) {
-                    executeOnBackground().getSuccessData<HotelRoomData.Response>().response
+                    useCase.executeOnBackground().getSuccessData<HotelRoomData.Response>().response
                 }
                 response
             }

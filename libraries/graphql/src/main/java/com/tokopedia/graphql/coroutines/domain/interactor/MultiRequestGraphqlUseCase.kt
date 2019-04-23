@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.usecase.coroutines.UseCase
 
-open class MultiRequestGraphqlUseCase(private val graphqlRepository: GraphqlRepository): UseCase<GraphqlResponse>() {
+class MultiRequestGraphqlUseCase(private val graphqlRepository: GraphqlRepository): UseCase<GraphqlResponse>() {
 
     private val requests = mutableListOf<GraphqlRequest>()
     private var cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()

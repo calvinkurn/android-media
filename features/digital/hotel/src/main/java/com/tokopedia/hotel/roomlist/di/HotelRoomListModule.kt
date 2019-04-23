@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.roomlist.di
 
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.hotel.roomlist.usecase.GetHotelRoomListUseCase
 import dagger.Module
@@ -13,6 +14,11 @@ class HotelRoomListModule {
 
     @HotelRoomListScope
     @Provides
-    fun provideGetRoomListUseCase(graphqlRepository: GraphqlRepository): GetHotelRoomListUseCase =
-            GetHotelRoomListUseCase(graphqlRepository)
+    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
+            MultiRequestGraphqlUseCase(graphqlRepository)
+
+    @HotelRoomListScope
+    @Provides
+    fun provideGetRoomListUseCase(useCase: MultiRequestGraphqlUseCase): GetHotelRoomListUseCase =
+            GetHotelRoomListUseCase(useCase)
 }
