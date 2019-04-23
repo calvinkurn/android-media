@@ -63,7 +63,7 @@ public class InboxGtmTracker {
                 "varian", "none/other",
                 "category", recommendationItem.getDepartmentId(),
                 "list", "/inbox - rekomendasi untuk anda "+recommendationItem.getRecommendationType(),
-                "position", position + 1));
+                "position", position));
     }
 
     public void eventInboxProductClick(Context context, RecommendationItem recommendationItem, int position) {
@@ -84,7 +84,7 @@ public class InboxGtmTracker {
                                             "brand", "none/other",
                                             "category", recommendationItem.getDepartmentId(),
                                             "varian", "none/other",
-                                            "position", position + 1))))
+                                            "position", position))))
             );
             tracker.sendEnhanceEcommerceEvent(map);
         }
