@@ -214,6 +214,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private View llLogPromo;
     private TextView tvLogPromoLabel;
     private TextView tvLogPromoMsg;
+    private TextView tvLogPromoErr;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -354,6 +355,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llLogPromo = itemView.findViewById(R.id.layout_logistic_promo_stacking);
         tvLogPromoLabel = itemView.findViewById(R.id.tv_logistic_promo_label);
         tvLogPromoMsg = itemView.findViewById(R.id.tv_logistic_promo_msg);
+        tvLogPromoErr = itemView.findViewById(R.id.tv_logistic_promo_err);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -822,6 +824,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         // Logistic Promo
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             llLogPromo.setVisibility(View.VISIBLE);
+            boolean isRed = shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState().equals("red");
+            tvLogPromoErr.setVisibility(isRed ? View.VISIBLE : View.GONE);
+            tvLogPromoLabel.setVisibility(isRed ? View.GONE : View.VISIBLE);
+            tvLogPromoMsg.setVisibility(isRed ? View.GONE : View.VISIBLE);
             if (!TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc())) {
                 tvLogPromoLabel.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
             } else tvLogPromoLabel.setVisibility(View.GONE);

@@ -180,9 +180,18 @@
                 android:id="@+id/tv_logistic_promo_msg"
                 style="@style/TextSmallNormalBlack54"
                 android:layout_width="match_parent"
-                android:lineSpacingExtra="@dimen/dp_4"
                 android:layout_height="wrap_content"
+                android:lineSpacingExtra="@dimen/dp_4"
                 tools:text="Tidak dapat ubah kurir karena promo telah diterapkan" />
+
+            <TextView
+                android:id="@+id/tv_logistic_promo_err"
+                style="@style/TextSmallNormal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kurir ini error ya pak buk"
+                android:textColor="@color/error_red_text" />
+
         </LinearLayout>
 
     </LinearLayout>
