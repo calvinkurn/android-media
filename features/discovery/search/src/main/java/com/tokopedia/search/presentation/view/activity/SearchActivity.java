@@ -20,8 +20,6 @@ import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
@@ -33,7 +31,6 @@ import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.search.SearchContract;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
-import com.tokopedia.discovery.newdiscovery.search.SearchPresenter;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
@@ -52,6 +49,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
 import com.tokopedia.search.di.component.DaggerSearchComponent;
 import com.tokopedia.search.di.component.SearchComponent;
+import com.tokopedia.search.presentation.presenter.SearchPresenter;
 import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;

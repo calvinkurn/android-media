@@ -2,35 +2,22 @@ package com.tokopedia.search.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.search.presentation.presenter.SearchPresenter;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
 
 @SearchScope
 @Module
-public class SearchModule {
-
-    @Provides
-    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
+public class SearchModule extends com.tokopedia.discovery.newdiscovery.di.module.SearchModule {
 
     @SearchScope
     @Provides
-    SearchPresenter provideSearchPresenter(@ApplicationContext Context context) {
-        return new SearchPresenter(context);
-    }
-
-    @SearchScope
-    @Provides
-    SearchTracking provideSearchTracking(@ApplicationContext Context context,
-                                         UserSessionInterface userSessionInterface) {
-        return new SearchTracking(context, userSessionInterface);
+    SearchPresenter provideSearchPresenter(@ApplicationContext Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
+        return new SearchPresenter(context, getProductUseCase, getImageSearchUseCase);
     }
 }
