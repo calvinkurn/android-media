@@ -21,7 +21,7 @@ class ImageViewPager: BaseCustomView {
     var indicatorItems: ArrayList<ImageView> = arrayListOf()
     var imageUrls: ArrayList<String> = arrayListOf()
 
-    lateinit var imageViewPagerListener: ImageViewPagerListener
+    var imageViewPagerListener: ImageViewPagerListener? = null
 
     var imageViewPagerAdapter: ImageViewPagerAdapter? = null
     get() = ImageViewPagerAdapter(imageUrls, imageViewPagerListener)

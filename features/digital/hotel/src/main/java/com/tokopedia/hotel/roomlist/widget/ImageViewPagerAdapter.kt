@@ -13,7 +13,7 @@ import com.tokopedia.hotel.R
  * @author by jessica on 16/04/19
  */
 
-class ImageViewPagerAdapter(val images: List<String>, val clickListener: ImageViewPager.ImageViewPagerListener): RecyclerView.Adapter<ImageViewPagerAdapter.ViewHolder>() {
+class ImageViewPagerAdapter(val images: List<String>, val clickListener: ImageViewPager.ImageViewPagerListener?): RecyclerView.Adapter<ImageViewPagerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
         = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_image_slider, parent, false))
@@ -22,7 +22,7 @@ class ImageViewPagerAdapter(val images: List<String>, val clickListener: ImageVi
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (images.get(position) != null && images.get(position).length > 0) {
-            holder.bannerImage.setOnClickListener{ clickListener.onImageClicked(position) }
+            if (clickListener != null) holder.bannerImage.setOnClickListener{ clickListener.onImageClicked(position) }
         }
         try {
             Glide.with(holder.itemView.context)

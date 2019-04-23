@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.widget_filter_chip_recycler_view.view.*
 class FilterChipRecyclerView: BaseCustomView {
 
     lateinit var listener: ChipAdapter.OnClickListener
+    lateinit var adapter: ChipAdapter
 
     constructor(context: Context) : super(context) { init() }
     constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet) { init() }
@@ -33,7 +34,12 @@ class FilterChipRecyclerView: BaseCustomView {
 
     fun setItem(strings: ArrayList<String>, selectedTextColor: Int = 0) {
         if (listener != null) {
-            chip_recycler_view.adapter = ChipAdapter(strings, listener, selectedTextColor)
+            adapter = ChipAdapter(strings, listener, selectedTextColor)
+            chip_recycler_view.adapter = adapter
         }
+    }
+
+    fun resetChipSelected() {
+        adapter.resetChipSelected()
     }
 }

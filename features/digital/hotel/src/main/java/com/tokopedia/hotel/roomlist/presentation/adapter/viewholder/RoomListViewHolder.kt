@@ -14,13 +14,12 @@ import kotlinx.android.synthetic.main.item_hotel_room_list.view.*
  * @author by jessica on 25/03/19
  */
 
-class RoomListViewHolder(val view: View, val imageViewPagerListener: ImageViewPager.ImageViewPagerListener): AbstractViewHolder<HotelRoom>(view) {
+class RoomListViewHolder(val view: View): AbstractViewHolder<HotelRoom>(view) {
 
    override fun bind(hotelRoom: HotelRoom) {
         with(itemView) {
             val roomListModel = mapToRoomListModel(hotelRoom)
 
-            room_image_view_pager.imageViewPagerListener = imageViewPagerListener
             room_image_view_pager.imageUrls = ArrayList(roomListModel.images)
             room_image_view_pager.buildView()
             room_image_view_pager.setImages(roomListModel.images)

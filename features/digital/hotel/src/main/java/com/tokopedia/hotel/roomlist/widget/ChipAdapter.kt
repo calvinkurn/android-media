@@ -20,6 +20,7 @@ class ChipAdapter(val list: List<String>, val listener: OnClickListener, val sel
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.chips.text = list.get(position)
+        holder.chips.isSelected = false
         holder.chips.setOnClickListener {
             holder.chips.isSelected = !holder.chips.isSelected
             if (selectedColor != 0) {
@@ -28,6 +29,10 @@ class ChipAdapter(val list: List<String>, val listener: OnClickListener, val sel
             }
             listener.onChipClickListener(holder.chips.text.toString())
         }
+    }
+
+    fun resetChipSelected() {
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {

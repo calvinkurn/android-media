@@ -58,4 +58,11 @@ class HotelRoomListViewModel @Inject constructor(
             roomListResult.value = Success(roomList.toMutableList())
         }
     }
+
+    fun clearFilter() {
+        filterPayInHotel = false
+        filterFreeCancelable = false
+        filterFreeBreakfast = false
+        roomListResult.value = Success(roomList.toMutableList())
+    }
 }

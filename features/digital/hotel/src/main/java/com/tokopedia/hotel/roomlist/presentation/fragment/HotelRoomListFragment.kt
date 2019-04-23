@@ -8,6 +8,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -32,9 +36,8 @@ import javax.inject.Inject
  * @author by jessica on 15/04/19
  */
 
-class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
-        ImageViewPager.ImageViewPagerListener, ChipAdapter.OnClickListener,
-        HotelRoomAndGuestBottomSheets.HotelGuestListener {
+class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(), ChipAdapter.OnClickListener,
+        HotelRoomAndGuestBottomSheets.HotelGuestListener, BaseEmptyViewHolder.Callback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -126,6 +129,7 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
     }
 
     fun getRoomList(fromCloud: Boolean = true) {
+        loadInitialData()
         roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list), hotelRoomListPageModel, fromCloud)
     }
 
@@ -160,10 +164,6 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
 
     }
 
-    override fun onImageClicked(position: Int) {
-
-    }
-
     override fun onChipClickListener(string: String) {
         when (string) {
             getString(FREE_BREAKFAST) -> { roomListViewModel.clickFilter(clickFreeBreakfast = true) }
@@ -188,6 +188,22 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
 
     fun renderDate() {
         date_text_view.text = "${hotelRoomListPageModel.checkInDateFmt} - ${hotelRoomListPageModel.checkOutDateFmt}"
+    }
+
+    override fun getEmptyDataViewModel(): Visitable<*> {
+        var emptyModel = EmptyModel()
+        emptyModel.title = "Kamar yang kamu cari nggak ketemu"
+        emptyModel.content = "Coba ubah Filter dan cari sekali lagi, yuk!"
+        emptyModel.buttonTitle = "Reset Filter"
+        return emptyModel
+    }
+
+    override fun onEmptyContentItemTextClicked() { }
+
+    override fun onEmptyButtonClicked() {
+        //DELETE FILTER
+        filter_recycler_view.resetChipSelected()
+        roomListViewModel.clearFilter()
     }
 
     companion object {
