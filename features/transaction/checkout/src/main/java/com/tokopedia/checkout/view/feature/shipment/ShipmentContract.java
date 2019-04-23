@@ -144,7 +144,7 @@ public interface ShipmentContract {
 
         void onSuccessCheckPromoFirstStep(ResponseGetPromoStackUiModel promoData);
 
-        void onSuccessClearPromoStachAfterClash();
+        void onSuccessClearPromoStackAfterClash();
 
         void clearTotalBenefitPromoStacking();
     }

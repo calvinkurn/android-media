@@ -33,7 +33,7 @@ class ClearShipmentCacheAutoApplyAfterClashSubscriber(val view: ShipmentContract
         presenter.setCouponStateChanged(true)
         val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
         if (responseData.successData.success) {
-            view?.onSuccessClearPromoStachAfterClash()
+            view?.onSuccessClearPromoStackAfterClash()
             presenter.applyPromoStackAfterClash(newPromoList, isFromMultipleAddress, isOneClickShipment, isTradeIn, cornerId, devieId, type)
         } else {
             view?.onFailedClearPromoStack(false)

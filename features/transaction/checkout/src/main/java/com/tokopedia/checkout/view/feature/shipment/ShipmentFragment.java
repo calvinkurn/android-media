@@ -829,14 +829,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 if (cartShipmentAddressFormData.getGlobalCouponAttrData().getDescription() != null) {
                     if (!cartShipmentAddressFormData.getGlobalCouponAttrData().getDescription().isEmpty()) {
                         builder.title(cartShipmentAddressFormData.getGlobalCouponAttrData().getDescription());
-                        saveGlobalCouponAttr(GLOBAL_COUPON_ATTR_DESC, cartShipmentAddressFormData.getGlobalCouponAttrData().getDescription());
+                        builder.titleDefault(cartShipmentAddressFormData.getGlobalCouponAttrData().getDescription());
                     }
                 }
 
                 if (cartShipmentAddressFormData.getGlobalCouponAttrData().getQuantityLabel() != null) {
                     if (!cartShipmentAddressFormData.getGlobalCouponAttrData().getQuantityLabel().isEmpty()) {
                         builder.counterLabel(cartShipmentAddressFormData.getGlobalCouponAttrData().getQuantityLabel());
-                        saveGlobalCouponAttr(GLOBAL_COUPON_ATTR_QTY, cartShipmentAddressFormData.getGlobalCouponAttrData().getQuantityLabel());
+                        builder.counterLabelDefault(cartShipmentAddressFormData.getGlobalCouponAttrData().getQuantityLabel());
                     }
                 }
             }
@@ -844,18 +844,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         shipmentAdapter.addPromoStackingVoucherData(builder.build());
         shipmentAdapter.notifyDataSetChanged();
-    }
-
-    private void saveGlobalCouponAttr(String key, String value) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(key, value);
-        editor.apply();
-    }
-
-    private String getGlobalCouponAttr(String key) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return prefs.getString(key, "");
     }
 
     public VoucherOrdersItemUiModel setVouchersItemUiModel(VoucherOrdersItemData voucherOrdersItemData) {
@@ -897,7 +885,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderErrorCheckPromoShipmentData(String message) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
-        shipmentAdapter.clearAllPromo(getGlobalCouponAttr(GLOBAL_COUPON_ATTR_DESC), getGlobalCouponAttr(GLOBAL_COUPON_ATTR_QTY));
+        shipmentAdapter.clearAllPromo();
         shipmentAdapter.resetCourierPromoState();
     }
 
@@ -2271,8 +2259,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             promoStackingData.setAmount(0);
             promoStackingData.setPromoCode("");
             promoStackingData.setDescription("");
-            promoStackingData.setTitle(getGlobalCouponAttr(GLOBAL_COUPON_ATTR_DESC));
-            promoStackingData.setCounterLabel(getGlobalCouponAttr(GLOBAL_COUPON_ATTR_QTY));
+            promoStackingData.setTitle(promoStackingData.getTitleDefault());
+            promoStackingData.setCounterLabel(promoStackingData.getCounterLabelDefault());
             shipmentAdapter.updateItemPromoStackVoucher(promoStackingData);
         } else {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(shopIndex);
@@ -2357,13 +2345,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onSuccessClearPromoStachAfterClash() {
+    public void onSuccessClearPromoStackAfterClash() {
         // Reset global promo
         PromoStackingData promoStackingData = shipmentAdapter.getPromoGlobalStackData();
         promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
         promoStackingData.setAmount(0);
         promoStackingData.setPromoCode("");
         promoStackingData.setDescription("");
+        promoStackingData.setTitle(promoStackingData.getTitleDefault());
+        promoStackingData.setCounterLabel(promoStackingData.getCounterLabelDefault());
 
         // Reset merchant promo
         List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
