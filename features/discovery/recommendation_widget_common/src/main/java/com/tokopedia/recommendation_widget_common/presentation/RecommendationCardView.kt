@@ -50,7 +50,9 @@ class RecommendationCardView : ProductCardView {
                 //Click for organic item
                 trackingListener.onClickOrganic(item)
             }
-            RouteManager.route(context!!, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
+            context?.run {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
+            }
         }
     }
 
