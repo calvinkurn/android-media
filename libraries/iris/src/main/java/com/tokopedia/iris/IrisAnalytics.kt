@@ -24,12 +24,20 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
     private val session: Session = IrisSession(context)
 
     override fun setService(config: Configuration) {
-        setWorkManager(config)
+        try {
+            setWorkManager(config)
+        } catch(ignored: Exception) {
+
+        }
     }
 
     override fun resetService(config: Configuration) {
-        WorkManager.getInstance().cancelAllWorkByTag(WORKER_SEND_DATA)
-        setWorkManager(config)
+        try {
+            WorkManager.getInstance().cancelAllWorkByTag(WORKER_SEND_DATA)
+            setWorkManager(config)
+        } catch (ignored: Exception) {
+
+        }
     }
 
     override fun saveEvent(map: Map<String, Any>) {

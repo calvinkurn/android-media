@@ -28,13 +28,18 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
 
                 val service = ApiService(context).makeRetrofitService()
 
-                val response = runBlocking {
-                    val requestBody = ApiService.parse(request)
-                    val response = service.sendMultiEvent(requestBody)
-                    response.await()
+                var response: Response<String>? = runBlocking {
+                    try {
+                        val requestBody = ApiService.parse(request)
+                        val response = service.sendMultiEvent(requestBody)
+                        response.await()
+                    } catch (e: Exception) {
+                        null
+                    }
                 }
 
-                if (response.isSuccessful
+                if (response != null
+                        && response.isSuccessful
                         && response.code() == 200) {
                     trackingRepository.delete(trackings)
                 }
