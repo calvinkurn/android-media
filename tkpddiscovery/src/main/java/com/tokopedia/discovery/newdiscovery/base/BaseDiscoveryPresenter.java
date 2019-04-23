@@ -1,7 +1,11 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 /**
@@ -17,6 +21,10 @@ public class BaseDiscoveryPresenter<T extends CustomerView, D extends BaseDiscov
 
     public BaseDiscoveryPresenter() {
 
+    }
+
+    public AppComponent getComponent(Context context) {
+        return ((MainApplication) context).getAppComponent();
     }
 
     @Override
