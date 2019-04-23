@@ -316,7 +316,7 @@ searchProduct(params: $params) {
         applinks
       }
     }
-    global_search_navigation(keyword:$query, device:"android", size:4){
+    global_search_navigation(keyword:$query, device:"android", size:5){
         data{
           title
           keyword
