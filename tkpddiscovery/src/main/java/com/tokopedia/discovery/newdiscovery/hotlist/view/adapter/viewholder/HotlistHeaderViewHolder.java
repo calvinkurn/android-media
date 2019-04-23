@@ -67,7 +67,6 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final String searchQuery;
     private final String hotlistAlias;
     HashMap<String, String> selectedFilterList = new HashMap<>();
-    List<QuickFilterItem> filterItems = new ArrayList<>();
 
     public HotlistHeaderViewHolder(View parent, HotlistListener mHotlistListener, String searchQuery,
                                    String hotlistAlias) {
@@ -144,15 +143,18 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
 
     protected void renderQuickFilter(List<QuickFilterItem> filterList) {
         if (filterList == null || filterList.isEmpty()) {
+            this.hastagList.setVisibility(View.VISIBLE);
             return;
-        }
-        for (QuickFilterItem quickFilterItem: filterList) {
-            String[] str = quickFilterItem.getType().split("=");
-            if (!quickFilterItem.isSelected() && selectedFilterList.containsKey(str[0])) {
-                selectedFilterList.remove(str[0]);
+        } else {
+            this.hastagList.setVisibility(View.GONE);
+            for (QuickFilterItem quickFilterItem : filterList) {
+                String[] str = quickFilterItem.getType().split("=");
+                if (!quickFilterItem.isSelected() && selectedFilterList.containsKey(str[0])) {
+                    selectedFilterList.remove(str[0]);
+                }
             }
+            customViewRounderCornerFilterView.renderFilter(filterList);
         }
-        customViewRounderCornerFilterView.renderFilter(filterList);
     }
 
     private void renderPromoView(final String hotlistTitle, HotlistPromo hotlistPromo) {

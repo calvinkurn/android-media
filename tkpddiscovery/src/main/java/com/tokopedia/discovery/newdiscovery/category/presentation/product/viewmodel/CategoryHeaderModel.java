@@ -37,7 +37,7 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
     private String headerImage;
     private String headerImageHexColor;
     private boolean doneTrackImpression = false;
-    private List<QuickFilterItem> optionList;
+    private List<QuickFilterItem> optionList = new ArrayList<>();
 
     public CategoryHeaderModel(){
 

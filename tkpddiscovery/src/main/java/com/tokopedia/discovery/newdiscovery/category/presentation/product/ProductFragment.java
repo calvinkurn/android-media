@@ -62,6 +62,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.item
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -109,6 +112,11 @@ public class ProductFragment extends BrowseSectionFragment
     private static final String EXTRA_PRODUCT_LIST = "EXTRA_PRODUCT_LIST";
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
     private static final String CATEGORY_ENHANCE_ANALYTIC = "CATEGORY_ENHANCE_ANALYTIC";
+    private static final String TOKO = "TOKO";
+    private static final String POWER_BADGE = "POWER BADGE";
+    private static final String OFFICIAL_STORE = "OFFICIAL STORE";
+    private static final String PENGIRIMAN = "Dukungan Pengiriman";
+    private static final String INSTANT_COURIER = "INSTANT COURIER";
 
     protected RecyclerView recyclerView;
     protected SwipeRefreshLayout refreshLayout;
@@ -905,38 +913,41 @@ public class ProductFragment extends BrowseSectionFragment
     @Override
     public void renderDynamicFilter(DynamicFilterModel pojo) {
         super.renderDynamicFilter(pojo);
-        List<Option> optionList = new ArrayList<>();
-        for (Filter filter: pojo.getData().getFilter()) {
-            if (filter.getTitle().equalsIgnoreCase("toko")) {
-                for (Option option: filter.getOptions()) {
-                    if (option.getName().equalsIgnoreCase("Power Badge")) {
-                        optionList.add(0, option);
-                    } else if (option.getName().equalsIgnoreCase("Official Store")) {
-                        optionList.add(0, option);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_CATEGORY_QUICK_FILTERS, false)) {
+            List<Option> optionList = new ArrayList<>();
+            for (Filter filter : pojo.getData().getFilter()) {
+                if (filter.getTitle().equalsIgnoreCase(TOKO)) {
+                    for (Option option : filter.getOptions()) {
+                        if (option.getName().equalsIgnoreCase(POWER_BADGE)) {
+                            optionList.add(0, option);
+                        } else if (option.getName().equalsIgnoreCase(OFFICIAL_STORE)) {
+                            optionList.add(0, option);
+                        }
                     }
-                }
-            } else if (filter.getTitle().equalsIgnoreCase("Dukungan Pengiriman")) {
-                for (Option option: filter.getOptions()) {
-                    if (option.getName().equalsIgnoreCase("Instant Courier")) {
-                        optionList.add(0, option);
+                } else if (filter.getTitle().equalsIgnoreCase(PENGIRIMAN)) {
+                    for (Option option : filter.getOptions()) {
+                        if (option.getName().equalsIgnoreCase(INSTANT_COURIER)) {
+                            optionList.add(0, option);
+                        }
                     }
                 }
             }
-        }
 
-        if (this.quickFilterItems != null && this.quickFilterItems.isEmpty()) {
-            for (int i = 0; i < optionList.size(); i++) {
-                CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
-                quickFilterItem.setName(optionList.get(i).getName());
-                quickFilterItem.setType(optionList.get(i).getKey() + "=" + optionList.get(i).getValue());
-                this.quickFilterItems.add(quickFilterItem);
+            if (this.quickFilterItems != null && this.quickFilterItems.isEmpty()) {
+                for (int i = 0; i < optionList.size(); i++) {
+                    CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
+                    quickFilterItem.setName(optionList.get(i).getName());
+                    quickFilterItem.setType(optionList.get(i).getKey() + "=" + optionList.get(i).getValue());
+                    this.quickFilterItems.add(quickFilterItem);
+                }
             }
-        }
 
-        if (!adapter.getItemList().isEmpty()) {
-            CategoryHeaderModel categoryHeaderModel = (CategoryHeaderModel) adapter.getItemList().get(0);
-            categoryHeaderModel.setQuickFilterList(this.quickFilterItems);
-            adapter.notifyDataSetChanged();
+            if (!adapter.getItemList().isEmpty()) {
+                CategoryHeaderModel categoryHeaderModel = (CategoryHeaderModel) adapter.getItemList().get(0);
+                categoryHeaderModel.setQuickFilterList(this.quickFilterItems);
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 }
