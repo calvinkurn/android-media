@@ -33,8 +33,6 @@ dependencies {
 //    implementation project(rootProject.ext.libraries.core_legacy)
 //    implementation project(rootProject.ext.features.core)
 
-    implementation project(rootProject.ext.features.discoveryCommon)
-    implementation project(rootProject.ext.features.discovery)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.wishlistCommon)
@@ -55,6 +53,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.abstraction)
+
+    implementation project(rootProject.ext.features.discoveryCommon)
+    implementation project(rootProject.ext.features.discovery)
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
