@@ -32,8 +32,8 @@ public class SplashScreenActivity extends SplashScreen {
             getResources().getDrawable(R.drawable.launch_screen);
         } catch (Throwable e) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Aplikasi Tokopedia tidak valid.");
-            builder.setMessage("Install Tokopedia dari Google Play Store untuk melanjutkan");
+            builder.setTitle(getString(R.string.title_dialog_tokopedia_app_not_valid));
+            builder.setMessage(getString(R.string.title_message_install_from_playstore));
             builder.setPositiveButton("OK", (DialogInterface dialogInterface, int i) -> {
                 startActivity(
                         new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id="
