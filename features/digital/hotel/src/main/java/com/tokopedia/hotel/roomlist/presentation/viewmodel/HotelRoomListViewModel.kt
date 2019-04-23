@@ -26,10 +26,10 @@ class HotelRoomListViewModel @Inject constructor(
     var filterPayInHotel = false
     var isFilter = false
 
-    fun getRoomList(rawQuery: String, hotelRoomListPageModel: HotelRoomListPageModel) {
+    fun getRoomList(rawQuery: String, hotelRoomListPageModel: HotelRoomListPageModel, fromCloud: Boolean = true) {
         isFilter = false
         launch {
-            roomListResult.value = useCase.execute(rawQuery, hotelRoomListPageModel)
+            roomListResult.value = useCase.execute(rawQuery, hotelRoomListPageModel, fromCloud)
             doFilter()
         }
     }

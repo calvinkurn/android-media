@@ -2,6 +2,8 @@ package com.tokopedia.hotel.roomlist.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
@@ -36,9 +38,14 @@ class GetHotelRoomListUseCase(graphqlRepository: GraphqlRepository): MultiReques
         return roomListParam
     }
 
-    suspend fun execute(rawQuery: String, hotelRoomListPageModel: HotelRoomListPageModel): Result<MutableList<HotelRoom>> {
+    suspend fun execute(rawQuery: String, hotelRoomListPageModel: HotelRoomListPageModel,
+                        fromCloud: Boolean = true): Result<MutableList<HotelRoom>> {
         val requestParams = createRequestParam(hotelRoomListPageModel)
         val params = mapOf(PARAM_ROOM_LIST_PROPERTY to requestParams)
+
+        if (fromCloud) setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        else setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
+
         clearRequest()
 
         try {

@@ -67,7 +67,7 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
                     TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut))
         }
 
-        getRoomList()
+        getRoomList(false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -125,8 +125,8 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         hotel_date_layout.setOnClickListener { onDateClicked() }
     }
 
-    fun getRoomList() {
-        roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list), hotelRoomListPageModel)
+    fun getRoomList(fromCloud: Boolean = true) {
+        roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list), hotelRoomListPageModel, fromCloud)
     }
 
     fun onGuestInfoClicked() {
@@ -178,7 +178,7 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         hotelRoomListPageModel.child = child
 
         renderRoomAndGuestView()
-        getRoomList()
+        getRoomList(true)
     }
 
     fun renderRoomAndGuestView() {
