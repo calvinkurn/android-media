@@ -310,7 +310,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         })
 
         productInfoViewModel.productInfoP3resp.observe(this, Observer {
-            performanceMonitoringFull.stopTrace()
+            if (::performanceMonitoringFull.isInitialized)
+                performanceMonitoringFull.stopTrace()
             it?.run { renderProductInfo3(this) }
         })
 
@@ -758,7 +759,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun collapsedAppBar() {
         initStatusBarLight()
         initToolbarLight()
-        fab_detail.hide()
+        fab_detail?.hide()
         label_cod.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
     }
 
@@ -1197,7 +1198,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         productInfoViewModel.productInfoP1Resp.value != null) ||
                 productInfoViewModel.productInfoP3resp.value != null ||
                 (shopInfo != null && shopInfo?.isAllowManage == 1)) {
-            fab_detail.show()
+            fab_detail?.show()
         }
     }
 
