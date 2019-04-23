@@ -17,7 +17,8 @@ class CheckShipmentPromoFirstStepAfterClashSubscriber(private val view: Shipment
                                                       private val isOneClickShipment: Boolean,
                                                       private val cornerId: String,
                                                       private val isTradeIn: Boolean,
-                                                      private val deviceId: String) : Subscriber<GraphqlResponse>() {
+                                                      private val deviceId: String,
+                                                      private val type: String) : Subscriber<GraphqlResponse>() {
 
     override fun onCompleted() {
 
@@ -38,7 +39,7 @@ class CheckShipmentPromoFirstStepAfterClashSubscriber(private val view: Shipment
             view?.showToastError(message)
         } else {
             if (responseGetPromoStack.data.clashings.isClashedPromos) {
-                view?.onClashCheckPromo(responseGetPromoStack.data.clashings)
+                view?.onClashCheckPromo(responseGetPromoStack.data.clashings, type)
             } else {
                 view?.onSuccessCheckPromoFirstStep(responseGetPromoStack)
             }

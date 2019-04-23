@@ -104,7 +104,7 @@ public class CartMapper implements ICartMapper {
             }
 
             boolean shopError = false;
-            if (shopGroup.getErrors().size() > 0 || errorItemCountPerShop == shopGroup.getCartDetails().size()) {
+            if (shopGroup.getErrors().size() > 0 && errorItemCountPerShop == shopGroup.getCartDetails().size()) {
                 shopError = true;
                 isDisableAllProducts = true;
             }

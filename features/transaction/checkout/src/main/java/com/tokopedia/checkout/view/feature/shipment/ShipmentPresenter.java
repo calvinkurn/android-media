@@ -900,7 +900,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                     if (responseGetPromoStack.getStatus().equalsIgnoreCase(statusOK)) {
                         if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
-                            getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings());
+                            getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_LOGISTIC);
                         } else {
                             boolean flagError = false;
 
@@ -991,7 +991,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 } else {
                                     if (responseGetPromoStack.getStatus().equalsIgnoreCase("OK")) {
                                         if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
-                                            getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings());
+                                            getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_LOGISTIC);
                                         } else {
                                             getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack, itemPosition, noToast);
                                         }
@@ -1352,7 +1352,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList,
                                                     boolean isFromMultipleAddress, boolean isOneClickShipment, boolean isTradeIn,
-                                                    @Nullable String cornerId, String deviceId) {
+                                                    @Nullable String cornerId, String deviceId, String type) {
         String corner = "";
         if (cornerId != null) {
             corner = cornerId;
@@ -1361,13 +1361,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
         clearCacheAutoApplyStackUseCase.execute(RequestParams.create(),
                 new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this,
-                        newPromoList, isFromMultipleAddress, isOneClickShipment, corner, isTradeIn, deviceId));
+                        newPromoList, isFromMultipleAddress, isOneClickShipment, corner, isTradeIn, deviceId, type));
     }
 
     @Override
     public void applyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList,
                                           boolean isFromMultipleAddress, boolean isOneClickShipment,
-                                          boolean isTradeIn, String cornerId, String deviceId) {
+                                          boolean isTradeIn, String cornerId, String deviceId, String type) {
         Promo promo = getView().generateCheckPromoFirstStepParam();
         promo.setCodes(new ArrayList<>());
         if (promo.getOrders() != null) {
@@ -1403,7 +1403,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             CurrentApplyCode currentApplyCode = new CurrentApplyCode();
                             if (!model.getCode().isEmpty()) {
                                 currentApplyCode.setCodes(model.getCode());
-                                currentApplyCode.setType(PARAM_MERCHANT);
+                                currentApplyCode.setType(type);
                             }
                             promo.setCurrentApplyCode(currentApplyCode);
                             break;
@@ -1416,7 +1416,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             checkPromoStackingCodeUseCase.execute(RequestParams.create(),
                     new CheckShipmentPromoFirstStepAfterClashSubscriber(getView(), this,
                             checkPromoStackingCodeMapper, isFromMultipleAddress, isOneClickShipment,
-                            cornerId, isTradeIn, deviceId));
+                            cornerId, isTradeIn, deviceId, type));
         }
     }
 

@@ -13,7 +13,8 @@ import rx.Subscriber
 
 class ClearCacheAutoApplyAfterClashSubscriber(val view: ICartListView?,
                                               val presenter: ICartListPresenter,
-                                              val newPromoList: ArrayList<ClashingVoucherOrderUiModel>) : Subscriber<GraphqlResponse>() {
+                                              val newPromoList: ArrayList<ClashingVoucherOrderUiModel>,
+                                              val type: String) : Subscriber<GraphqlResponse>() {
 
     override fun onCompleted() {
 
@@ -30,7 +31,7 @@ class ClearCacheAutoApplyAfterClashSubscriber(val view: ICartListView?,
         val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
         if (responseData.successData.success) {
             view?.onSuccessClearPromoStachAfterClash()
-            presenter.processApplyPromoStackAfterClash(newPromoList)
+            presenter.processApplyPromoStackAfterClash(newPromoList, type)
         } else {
             view?.onFailedClearPromoStack(false)
         }

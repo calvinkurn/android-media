@@ -1693,7 +1693,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             if (bundle != null) {
                 ClashingInfoDetailUiModel clashingInfoDetailUiModel = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_CLASHING_DATA());
                 if (clashingInfoDetailUiModel != null) {
-                    onClashCheckPromo(clashingInfoDetailUiModel);
+                    String type = bundle.getString(TickerCheckoutUtilKt.getEXTRA_TYPE());
+                    if (type == null) type = "";
+                    onClashCheckPromo(clashingInfoDetailUiModel, type);
                 }
             }
         }
@@ -1932,12 +1934,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onClashCheckPromo(@NonNull ClashingInfoDetailUiModel clashingInfoDetailUiModel) {
+    public void onClashCheckPromo(@NonNull ClashingInfoDetailUiModel clashingInfoDetailUiModel, @NotNull String type) {
         ClashBottomSheetFragment clashBottomSheetFragment = ClashBottomSheetFragment.newInstance();
         clashBottomSheetFragment.setData(clashingInfoDetailUiModel);
         clashBottomSheetFragment.setActionListener(this);
         clashBottomSheetFragment.setAnalyticsCart(cartPageAnalytics);
         clashBottomSheetFragment.setSource("cart");
+        clashBottomSheetFragment.setType(type);
         clashBottomSheetFragment.show(getFragmentManager(), "");
     }
 
@@ -2047,7 +2050,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onSubmitNewPromoAfterClash(@NotNull ArrayList<String> oldPromoList, @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
-        dPresenter.processCancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList);
+    public void onSubmitNewPromoAfterClash(@NotNull ArrayList<String> oldPromoList, @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList, @NotNull String type) {
+        dPresenter.processCancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList, type);
     }
 }

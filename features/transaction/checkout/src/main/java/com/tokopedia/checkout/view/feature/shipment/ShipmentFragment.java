@@ -1193,7 +1193,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (bundle != null) {
                 ClashingInfoDetailUiModel clashingInfoDetailUiModel = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_CLASHING_DATA());
                 if (clashingInfoDetailUiModel != null) {
-                    onClashCheckPromo(clashingInfoDetailUiModel);
+                    String type = bundle.getString(TickerCheckoutUtilKt.getEXTRA_TYPE());
+                    if (type == null) type = "";
+                    onClashCheckPromo(clashingInfoDetailUiModel, type);
                 }
             }
         }
@@ -2301,12 +2303,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onClashCheckPromo(@NotNull ClashingInfoDetailUiModel clashingInfoDetailUiModel) {
+    public void onClashCheckPromo(@NotNull ClashingInfoDetailUiModel clashingInfoDetailUiModel, @NotNull String type) {
         ClashBottomSheetFragment clashBottomSheetFragment = ClashBottomSheetFragment.newInstance();
         clashBottomSheetFragment.setData(clashingInfoDetailUiModel);
         clashBottomSheetFragment.setActionListener(this);
         clashBottomSheetFragment.setAnalyticsShipment(checkoutAnalyticsCourierSelection);
         clashBottomSheetFragment.setSource("shipment");
+        clashBottomSheetFragment.setType(type);
         clashBottomSheetFragment.show(getFragmentManager(), "");
     }
 
@@ -2376,10 +2379,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onSubmitNewPromoAfterClash(@NotNull ArrayList<String> oldPromoList,
-                                           @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList
+                                           @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList,
+                                           @NotNull String type
     ) {
         shipmentPresenter.cancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList,
-                true, isOneClickShipment(), isTradeIn(), getCornerId(), getDeviceId());
+                true, isOneClickShipment(), isTradeIn(), getCornerId(), getDeviceId(), type);
     }
 
     @Override

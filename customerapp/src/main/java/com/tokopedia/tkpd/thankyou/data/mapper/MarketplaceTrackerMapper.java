@@ -136,9 +136,9 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
         purchase.setCurrentSite(TOKOPEDIA_MARKETPLACE);
 
-        for (Product product : getProductList(orderData)) {
+        /*for (Product product : getProductList(orderData)) {
             purchase.addProduct(addCouponToProduct(product.getProduct(), couponCode));
-        }
+        }*/
 
         return purchase;
     }

@@ -1088,14 +1088,14 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
+    public void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type) {
         view.showProgressLoading();
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
-        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplyAfterClashSubscriber(view, this, newPromoList));
+        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplyAfterClashSubscriber(view, this, newPromoList, type));
     }
 
     @Override
-    public void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
+    public void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type) {
         Promo promo = view.generateCheckPromoFirstStepParam();
         promo.setCodes(new ArrayList<>());
         if (promo.getOrders() != null) {
@@ -1120,7 +1120,7 @@ public class CartListPresenter implements ICartListPresenter {
                 }
                 promo.setCurrentApplyCode(currentApplyCode);
             } else {
-                // This promo is merchant promo
+                // This promo is merchant/logistic promo
                 if (promo.getOrders() != null) {
                     for (Order order : promo.getOrders()) {
                         if (model.getUniqueId().equals(order.getUniqueId())) {
@@ -1131,7 +1131,7 @@ public class CartListPresenter implements ICartListPresenter {
                             CurrentApplyCode currentApplyCode = new CurrentApplyCode();
                             if (!model.getCode().isEmpty()) {
                                 currentApplyCode.setCodes(model.getCode());
-                                currentApplyCode.setType(PARAM_MERCHANT);
+                                currentApplyCode.setType(type);
                             }
                             promo.setCurrentApplyCode(currentApplyCode);
                             break;
@@ -1142,7 +1142,7 @@ public class CartListPresenter implements ICartListPresenter {
             view.showProgressLoading();
             checkPromoStackingCodeUseCase.setParams(promo);
             checkPromoStackingCodeUseCase.execute(RequestParams.create(),
-                    new CheckPromoFirstStepAfterClashSubscriber(view, this, checkPromoStackingCodeMapper));
+                    new CheckPromoFirstStepAfterClashSubscriber(view, this, checkPromoStackingCodeMapper, type));
         }
     }
 
