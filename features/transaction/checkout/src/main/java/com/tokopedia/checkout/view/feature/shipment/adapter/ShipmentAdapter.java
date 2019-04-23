@@ -790,35 +790,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void clearAllPromo(String title, String counterLabel) {
-        if (promoGlobalStackData != null) {
-            promoGlobalStackData.setDescription("");
-            promoGlobalStackData.setPromoCode("");
-            promoGlobalStackData.setAmount(0);
-            promoGlobalStackData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
-            promoGlobalStackData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
-            promoGlobalStackData.setTitle(title);
-            promoGlobalStackData.setTypePromo(0);
-            promoGlobalStackData.setCounterLabel(counterLabel);
-        }
-
-        if (shipmentCartItemModelList != null) {
-            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
-                shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
-            }
-        }
-
-        if (shipmentCostModel != null){
-            shipmentCostModel.setPromoMessage("");
-            shipmentCostModel.setPromoPrice(0);
-            shipmentCostModel.setTotalPromoStackAmount(0);
-            shipmentCostModel.setTotalPromoStackAmountStr("");
-        }
-
-        notifyDataSetChanged();
-    }
-
     public void updatePromoStack(DataUiModel dataUiModel) {
         if (dataUiModel != null) {
             if (shipmentCostModel != null) {
