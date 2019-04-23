@@ -512,7 +512,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoViewModel.isUserSessionActive()) {
                 val isExpressCheckout = (productInfoViewModel.productInfoP3resp.value)?.isExpressCheckoutType
                         ?: false
-                if (isExpressCheckout || isSpecialPrize) {
+                if (isExpressCheckout) {
                     goToAtcExpress()
                 } else {
                     goToNormalCheckout()
