@@ -293,12 +293,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public int getStartProductPosition() {
-        for(int i = 0; i<visitables.size(); i++){
-            Visitable visitable = visitables.get(i);
-            if (visitable instanceof RecomendationEntity.Recommendation) {
-                return i+1;
-            }
-        }
-        return 0;
+        //product start after inbox data (like chat, diskusi, etc) + 1 recom title
+        return (getData().size()-1)+1;
     }
 }
