@@ -100,6 +100,7 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
         if (emptyCartFragment == null) {
             emptyCartFragment = EmptyCartFragment.newInstance(autoApplyMessage, "", state, titleDesc, promoCode);
         }
+        if (emptyCartFragment.isAdded()) return;
         getSupportFragmentManager().beginTransaction()
                 .replace(com.tokopedia.abstraction.R.id.parent_view, emptyCartFragment, getTagFragment())
                 .commit();

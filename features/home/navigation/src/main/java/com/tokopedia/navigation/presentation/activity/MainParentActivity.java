@@ -778,6 +778,7 @@ public class MainParentActivity extends BaseActivity implements
             if (emptyCartFragment == null) {
                 emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc, promoCode);
             }
+            if (emptyCartFragment.isAdded()) return;
             fragmentList.set(CART_MENU, emptyCartFragment);
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
         }
