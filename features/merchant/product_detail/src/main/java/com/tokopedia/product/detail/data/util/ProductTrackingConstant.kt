@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.util
 
 object ProductTrackingConstant {
     object Category {
-        const val PDP = "product petail page"
+        const val PDP = "product detail page"
         const val PRODUCT_PAGE = "Product Page"
     }
 
