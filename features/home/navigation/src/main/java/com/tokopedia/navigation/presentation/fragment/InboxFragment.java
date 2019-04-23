@@ -18,6 +18,7 @@ import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.InboxGtmTracker;
+import com.tokopedia.navigation.data.entity.RecomendationEntity;
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.view.InboxAdapterListener;
@@ -68,6 +69,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private GridLayoutManager layoutManager;
     protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TrackingQueue trackingQueue;
+    private List<Visitable> visitables;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -265,6 +267,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onRenderRecomInbox(List<Visitable> list) {
+        this.visitables = list;
         adapter.addElement(list);
     }
 
@@ -286,5 +289,16 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void setPresenter(GlobalNavComponent presenter) {
+    }
+
+    @Override
+    public int getStartProductPosition() {
+        for(int i = 0; i<visitables.size(); i++){
+            Visitable visitable = visitables.get(i);
+            if (visitable instanceof RecomendationEntity.Recommendation) {
+                return i+1;
+            }
+        }
+        return 0;
     }
 }

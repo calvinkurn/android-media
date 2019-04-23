@@ -21,6 +21,7 @@ import com.tokopedia.topads.sdk.domain.model.Product
 class RecomendationViewHolder(itemView: View, private val listener: InboxAdapterListener) : AbstractViewHolder<Recomendation>(itemView), RecommendationCardView.TrackingListener {
     private val recommendationCardView: RecommendationCardView? = itemView.findViewById(R.id.productCardView)
     private val context: Context? = itemView.context
+    private val pos = (adapterPosition - listener.getStartProductPosition())+1
 
     override fun onImpressionTopAds(item: RecommendationItem) {
         val product = Product()
@@ -28,11 +29,11 @@ class RecomendationViewHolder(itemView: View, private val listener: InboxAdapter
         product.name = item.name
         product.priceFormat = item.price
         product.category = Category(item.departmentId)
-        TopAdsGtmTracker.getInstance().addInboxProductViewImpressions(product, adapterPosition)
+        TopAdsGtmTracker.getInstance().addInboxProductViewImpressions(product, pos)
     }
 
     override fun onImpressionOrganic(item: RecommendationItem) {
-        InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, adapterPosition)
+        InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, pos)
     }
 
     override fun onClickTopAds(item: RecommendationItem) {
@@ -42,13 +43,13 @@ class RecomendationViewHolder(itemView: View, private val listener: InboxAdapter
         product.priceFormat = item.price
         product.category = Category(item.departmentId)
         context?.run {
-            TopAdsGtmTracker.getInstance().eventInboxProductClick(context, product, adapterPosition)
+            TopAdsGtmTracker.getInstance().eventInboxProductClick(context, product, pos)
         }
     }
 
     override fun onClickOrganic(item: RecommendationItem) {
         context?.run {
-            InboxGtmTracker.getInstance().eventInboxProductClick(context, item, adapterPosition)
+            InboxGtmTracker.getInstance().eventInboxProductClick(context, item, pos)
         }
     }
 
