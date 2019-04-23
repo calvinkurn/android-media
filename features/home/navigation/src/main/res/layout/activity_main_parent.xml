@@ -17,7 +17,6 @@
         android:id="@+id/bottomnav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:saveEnabled="false"
         app:itemTextColor="@color/bottom_sheet_text_selector"
         app:menu="@menu/menu_parent_main"/>
 
