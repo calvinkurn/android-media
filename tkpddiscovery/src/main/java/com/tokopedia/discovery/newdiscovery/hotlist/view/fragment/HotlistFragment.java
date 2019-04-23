@@ -83,6 +83,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.track.TrackApp;
@@ -395,13 +396,13 @@ public class HotlistFragment extends BrowseSectionFragment
     private void setupListener() {
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
-//        topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
-//            @Override
-//            public void onImpressionProductAdsItem(int position, Product product) {
-//                TopAdsGtmTracker.eventHotlistProductView(getContext(), getQueryModel().getQueryKey(),
-//                        product, position);
-//            }
-//        });
+        topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventHotlistProductView(getContext(), getQueryModel().getQueryKey(),
+                        product, position);
+            }
+        });
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnScrollListener() {
             @Override
             public void onLoad(int page, int totalCount) {
