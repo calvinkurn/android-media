@@ -265,6 +265,7 @@ ext {
             productManageList               : ":features:merchant:product_manage_list",
             productManageDetail             : ":features:merchant:product_detail",
             productShare                    : ":features:merchant:product_share",
+            report                          : ":features:merchant:report",
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
 
