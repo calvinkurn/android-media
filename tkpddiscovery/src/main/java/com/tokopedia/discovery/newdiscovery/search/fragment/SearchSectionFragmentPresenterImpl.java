@@ -1,8 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment;
 
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 
 import java.util.HashMap;
