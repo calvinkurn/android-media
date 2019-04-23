@@ -8,6 +8,7 @@ data class PromoStackingData(var typePromo: Int = 0,
                              var promoCode: String = "",
                              var description: String = "",
                              var title: String = "",
+                             var counterLabel: String = "",
                              var amount: Int = 0,
                              var state: TickerPromoStackingCheckoutView.State = TickerPromoStackingCheckoutView.State.EMPTY,
                              var variant: TickerPromoStackingCheckoutView.Variant = TickerPromoStackingCheckoutView.Variant.GLOBAL) : Parcelable {
@@ -25,16 +26,17 @@ data class PromoStackingData(var typePromo: Int = 0,
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
+            parcel.readString(),
             parcel.readInt(),
             parcel.readParcelable(TickerPromoStackingCheckoutView.State::class.java.classLoader),
-            parcel.readParcelable(TickerPromoStackingCheckoutView.Variant::class.java.classLoader)) {
-    }
+            parcel.readParcelable(TickerPromoStackingCheckoutView.Variant::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(typePromo)
         parcel.writeString(promoCode)
         parcel.writeString(description)
         parcel.writeString(title)
+        parcel.writeString(counterLabel)
         parcel.writeInt(amount)
         parcel.writeParcelable(state, flags)
         parcel.writeParcelable(variant, flags)
@@ -64,6 +66,7 @@ data class PromoStackingData(var typePromo: Int = 0,
         var promoCode: String = ""
         var description: String = ""
         var title: String = ""
+        var counterLabel: String = ""
         var amount: Int = 0
         var state: TickerPromoStackingCheckoutView.State = TickerPromoStackingCheckoutView.State.EMPTY
         var variant: TickerPromoStackingCheckoutView.Variant = TickerPromoStackingCheckoutView.Variant.GLOBAL
@@ -72,6 +75,7 @@ data class PromoStackingData(var typePromo: Int = 0,
         fun promoCode(promoCode: String) = apply { this.promoCode = promoCode }
         fun description(description: String) = apply { this.description = description }
         fun title(title: String) = apply { this.title = title }
+        fun counterLabel(counterLabel: String) = apply {this.counterLabel = counterLabel}
         fun amount(amount: Int) = apply { this.amount = amount }
         fun state(state: TickerPromoStackingCheckoutView.State) = apply { this.state = state }
         fun variant(variant: TickerPromoStackingCheckoutView.Variant) = apply { this.variant = variant }
@@ -81,6 +85,7 @@ data class PromoStackingData(var typePromo: Int = 0,
                 promoCode,
                 description,
                 title,
+                counterLabel,
                 amount,
                 state,
                 variant

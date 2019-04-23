@@ -1,8 +1,12 @@
 package com.tokopedia.profile.view.fragment
 
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -27,6 +31,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.feature.onboarding.view.fragment.UsernameInputFragment
+import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
+import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
@@ -112,7 +118,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
         VideoViewHolder.VideoViewListener,
-        EmptyAffiliateViewHolder.OnEmptyItemClickedListener{
+        EmptyAffiliateViewHolder.OnEmptyItemClickedListener {
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
@@ -125,6 +131,20 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var resultIntent: Intent? = null
     private var affiliatePostQuota: AffiliatePostQuota? = null
     private var profileHeader: ProfileHeaderViewModel? = null
+    private val submitPostReceiver: BroadcastReceiver by lazy {
+        object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (context == null || intent == null) {
+                    return
+                }
+
+                if (intent.action == BROADCAST_SUBMIT_POST
+                        && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS) == true) {
+                    onSwipeRefresh()
+                }
+            }
+        }
+    }
     private lateinit var layoutManager: LinearLayoutManager
 
     override lateinit var profileRouter: ProfileModuleRouter
@@ -182,6 +202,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         profileAnalytics.sendScreen(activity!!, screenName)
     }
 
+    override fun onResume() {
+        super.onResume()
+        registerBroadcastReceiver()
+        hideLoadingLayout()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterBroadcastReceiver()
+    }
 
     override fun onDestroy() {
         presenter.detachView()
@@ -275,11 +305,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        hideLoadingLayout()
-    }
-
     override fun onItemClicked(t: Visitable<*>?) {
     }
 
@@ -353,7 +378,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 openShare = false
             }
         }
-        recyclerView.scrollTo(0,0)
+        recyclerView.scrollTo(0, 0)
     }
 
     override fun hideHeader() {
@@ -945,7 +970,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
         })
-
     }
 
     private fun hasFeed(): Boolean {
@@ -1263,7 +1287,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         doShare(link, getString(R.string.profile_share_text), getString(R.string.profile_share_title))
     }
 
-    private fun doShare(link: String, formatString : String, shareTitle : String) {
+    private fun doShare(link: String, formatString: String, shareTitle: String) {
         val shareBody = String.format(formatString, link)
         val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
         sharingIntent.type = TEXT_PLAIN
@@ -1485,5 +1509,24 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 userId,
                 isOwner
         )
+    }
+
+    private fun registerBroadcastReceiver() {
+        context?.applicationContext?.let {
+            val intentFilter = IntentFilter()
+            intentFilter.addAction(BROADCAST_SUBMIT_POST)
+
+            LocalBroadcastManager
+                    .getInstance(it)
+                    .registerReceiver(submitPostReceiver, intentFilter)
+        }
+    }
+
+    private fun unregisterBroadcastReceiver() {
+        context?.applicationContext?.let {
+            LocalBroadcastManager
+                    .getInstance(it)
+                    .unregisterReceiver(submitPostReceiver)
+        }
     }
 }

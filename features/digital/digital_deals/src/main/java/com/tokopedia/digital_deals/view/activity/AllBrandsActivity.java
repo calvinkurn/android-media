@@ -27,6 +27,7 @@ public class AllBrandsActivity extends DealsBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.slide_in_left_brands, R.anim.slide_out_right_brands);
         setUpVariables();
         updateTitle(getResources().getString(R.string.brands));
     }

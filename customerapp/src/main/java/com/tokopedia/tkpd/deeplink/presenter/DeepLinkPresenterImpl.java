@@ -326,6 +326,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openContent(linkSegment);
                     screenName = "";
                     break;
+                case DeepLinkChecker.SMCREFERRAL:
+                    openSmcReferralPage(linkSegment, uriData);
+                    screenName = AppScreen.SCREEN_WEBVIEW;
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -428,6 +432,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (linkSegment.size() >= 2) {
             String contentId = linkSegment.get(1);
             Intent intent = RouteManager.getIntent(context, ApplinkConst.CONTENT_DETAIL, contentId);
+            viewListener.goToPage(intent);
+        }
+    }
+
+    private void openSmcReferralPage(List<String> linkSegment, Uri uriData) {
+        if (linkSegment != null && linkSegment.size() > 0) {
+            String url=ApplinkConst.SMC_REFERRAL+"?url="+uriData.toString();
+            Intent intent=RouteManager.getIntent(context, url);
             viewListener.goToPage(intent);
         }
     }
