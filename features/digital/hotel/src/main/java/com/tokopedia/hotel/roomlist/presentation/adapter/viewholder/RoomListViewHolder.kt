@@ -1,39 +1,29 @@
 package com.tokopedia.hotel.roomlist.presentation.adapter.viewholder
 
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.TextUtils
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.design.list.adapter.TouchImageAdapter
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.destination.data.model.SearchDestination
-import com.tokopedia.hotel.destination.view.adapter.SearchDestinationListener
+import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomFacilityAdapter
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
-import com.tokopedia.hotel.roomlist.widget.ImageViewPagerAdapter
 import kotlinx.android.synthetic.main.item_hotel_room_list.view.*
-import kotlinx.android.synthetic.main.item_search_destination_result.view.*
 
 /**
  * @author by jessica on 25/03/19
  */
 
-class RoomListViewHolder(val view: View, val imageViewPagerListener: ImageViewPager.ImageViewPagerListener): AbstractViewHolder<RoomListModel>(view) {
+class RoomListViewHolder(val view: View, val imageViewPagerListener: ImageViewPager.ImageViewPagerListener): AbstractViewHolder<HotelRoom>(view) {
 
-   override fun bind(roomListModel: RoomListModel) {
+   override fun bind(hotelRoom: HotelRoom) {
         with(itemView) {
+            val roomListModel = mapToRoomListModel(hotelRoom)
+
             room_image_view_pager.imageViewPagerListener = imageViewPagerListener
             room_image_view_pager.imageUrls = ArrayList(roomListModel.images)
             room_image_view_pager.buildView()
-            room_image_view_pager.setPagerAdapter(ImageViewPagerAdapter(roomListModel.images,
-                    room_image_view_pager.imageViewPagerListener))
+            room_image_view_pager.setImages(roomListModel.images)
             room_name_text_view.text = roomListModel.roomName
             max_occupancy_text_view.text = roomListModel.occupancyText
             bed_info_text_view.text = roomListModel.bedInfo
@@ -54,6 +44,31 @@ class RoomListViewHolder(val view: View, val imageViewPagerListener: ImageViewPa
 
     companion object {
         val LAYOUT = R.layout.item_hotel_room_list
+    }
+
+    fun mapToRoomListModel(hotelRoom: HotelRoom): RoomListModel {
+        var roomListModel = RoomListModel()
+        if (hotelRoom != null) {
+            roomListModel.roomName = hotelRoom.roomInfo.name
+            roomListModel.maxOccupancy = hotelRoom.occupancyInfo.maxOccupancy
+            roomListModel.maxFreeChild = hotelRoom.occupancyInfo.maxFreeChild
+            roomListModel.occupancyText = hotelRoom.occupancyInfo.occupancyText
+            roomListModel.bedInfo = hotelRoom.bedInfo
+            roomListModel.roomFacility = hotelRoom.roomInfo.facility
+//            roomListModel.payInHotel = hotelRoom.roomInfo
+            roomListModel.breakfastIncluded = hotelRoom.breakfastInfo.isBreakfastIncluded
+            roomListModel.isRefundable = hotelRoom.refundInfo.isRefundable
+            roomListModel.isCcRequired = hotelRoom.creditCardInfo.isCCRequired
+            roomListModel.price = hotelRoom.roomPrice[0].roomPrice
+            roomListModel.actualPrice = hotelRoom.roomPrice[0].totalPrice
+
+            val images: MutableList<String> = arrayListOf()
+            for (item in hotelRoom.roomInfo.roomImages) {
+                images.add(item.urlOriginal)
+            }
+            roomListModel.images = images
+        }
+        return roomListModel
     }
 
 }

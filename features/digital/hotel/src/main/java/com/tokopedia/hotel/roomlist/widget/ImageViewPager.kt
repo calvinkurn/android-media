@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.roomlist.widget
 
 import android.content.Context
+import android.media.Image
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PagerSnapHelper
 import android.support.v7.widget.RecyclerView
@@ -91,8 +92,8 @@ class ImageViewPager: BaseCustomView {
         }
     }
 
-    fun setPagerAdapter(imageViewPagerAdapter: ImageViewPagerAdapter) {
-        viewpager_banner_category.setAdapter(imageViewPagerAdapter)
+    fun setImages(images: List<String>) {
+        viewpager_banner_category.setAdapter(ImageViewPagerAdapter(images, imageViewPagerListener))
     }
 
     fun getIndicatorFocus(): Int = R.drawable.indicator_focus

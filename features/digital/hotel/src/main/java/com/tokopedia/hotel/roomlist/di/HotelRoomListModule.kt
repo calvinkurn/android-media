@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.roomlist.di
 
-import com.tokopedia.hotel.roomlist.data.mapper.RoomListModelMapper
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.hotel.roomlist.usecase.GetHotelRoomListUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -9,7 +10,9 @@ import dagger.Provides
  */
 @Module
 class HotelRoomListModule {
+
     @HotelRoomListScope
     @Provides
-    fun providesRoomListModelMapper(): RoomListModelMapper = RoomListModelMapper()
+    fun provideGetRoomListUseCase(graphqlRepository: GraphqlRepository): GetHotelRoomListUseCase =
+            GetHotelRoomListUseCase(graphqlRepository)
 }

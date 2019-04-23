@@ -2,6 +2,8 @@ package com.tokopedia.hotel.roomlist.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 
 /**
  * @author by jessica on 15/04/19
@@ -71,8 +73,11 @@ data class HotelRoom(
         @Expose
         val extraBedInfo: ExtraBedInfo
 
-        ) {
-    data class RoomBreakfastInfo(
+        ): Visitable<RoomListTypeFactory> {
+
+        override fun type(typeFactory: RoomListTypeFactory) = typeFactory.type(this)
+
+        data class RoomBreakfastInfo(
             @SerializedName("isBreakFastIncluded")
             @Expose
             val isBreakfastIncluded: Boolean,

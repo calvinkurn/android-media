@@ -198,6 +198,7 @@
                app:buttonCompatType="transaction"
                android:text="Pilih Kamar"
                tools:layout_height="@dimen/dp_40"
+               android:padding="@dimen/dp_12"
                tools:gravity="center_vertical"
                app:layout_constraintTop_toBottomOf="@id/room_left_text_view"
                app:layout_constraintEnd_toEndOf="parent"

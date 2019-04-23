@@ -21,6 +21,4 @@ data class RoomListModel(
         var price: String = "",
         var actualPrice: String = "",
         var images: List<String> = listOf()
-) : Visitable<RoomListTypeFactory> {
-    override fun type(typeFactory: RoomListTypeFactory) = typeFactory.type(this)
-}
+)
