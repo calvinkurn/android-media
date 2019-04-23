@@ -1,6 +1,10 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 
@@ -11,6 +15,11 @@ import java.util.HashMap;
  */
 
 public abstract class SearchSectionFragmentPresenterImpl<V extends SearchSectionFragmentView> extends BaseDaggerPresenter<V> implements SearchSectionFragmentPresenter<V> {
+
+    public AppComponent getComponent(Context context) {
+        return ((MainApplication) context).getAppComponent();
+    }
+
     @Override
     public void requestDynamicFilter() {
         requestDynamicFilter(new HashMap<String, String>());
