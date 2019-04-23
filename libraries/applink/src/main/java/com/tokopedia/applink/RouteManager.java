@@ -32,6 +32,9 @@ public class RouteManager {
     }
 
     public static void route(Context context, String applinkPattern, String... parameter) {
+        if (context == null) {
+            return;
+        }
         String uriString = UriUtil.buildUri(applinkPattern, parameter);
         Intent intent = getIntent(context, uriString);
         if (intent != null) {
