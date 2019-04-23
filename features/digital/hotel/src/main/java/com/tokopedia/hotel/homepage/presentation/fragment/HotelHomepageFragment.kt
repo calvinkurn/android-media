@@ -49,8 +49,6 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        startActivity(HotelRoomListActivity.getCallingIntent(activity!!))
-
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             homepageViewModel = viewModelProvider.get(HotelHomepageViewModel::class.java)
