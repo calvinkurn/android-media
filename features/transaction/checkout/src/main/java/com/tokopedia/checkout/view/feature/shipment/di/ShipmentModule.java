@@ -46,6 +46,7 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
@@ -206,7 +207,8 @@ public class ShipmentModule {
                                                         UserSessionInterface userSessionInterface,
                                                         IVoucherCouponMapper voucherCouponMapper,
                                                         CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
-                                                        CodAnalytics codAnalytics) {return new ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
+                                                        CodAnalytics codAnalytics,
+                                                        CheckoutAnalyticsCourierSelection checkoutAnalytics) {return new ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
             checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
             checkoutUseCase, getThanksToppayUseCase, getShipmentAddressFormUseCase,
             getShipmentAddressFormOneClickShipementUseCase,
@@ -214,7 +216,7 @@ public class ShipmentModule {
                 saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, shippingCourierConverter,
             shipmentAnalyticsActionListener, voucherCouponMapper, userSessionInterface,
-            analyticsPurchaseProtection, codAnalytics);
+            analyticsPurchaseProtection, codAnalytics, checkoutAnalytics);
     }
 
     @Provides

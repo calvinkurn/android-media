@@ -87,6 +87,10 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                     shippingCourierViewModel.setSelected(true);
                                     presenter.setShippingCourierViewModelsState(shippingDurationViewModel.getShippingCourierViewModelList(), itemPosition);
                                     CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
+                                    if (shippingRecommendationData.getLogisticPromo() != null) {
+                                        String disableMsg = shippingRecommendationData.getLogisticPromo().getDisableText();
+                                        courierItemData.setLogPromoMsg(disableMsg);
+                                    }
                                     view.renderCourierStateSuccess(courierItemData, itemPosition);
                                     return;
                                 }

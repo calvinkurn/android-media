@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.EmptyDetailViewModel;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.SeeAllCommentsViewModel;
 
 /**
@@ -21,5 +22,6 @@ public interface KolPostDetailTypeFactory extends AdapterTypeFactory {
 
     int type(SeeAllCommentsViewModel seeAllCommentsViewModel);
 
+    int type(EmptyDetailViewModel emptyDetailViewModel);
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

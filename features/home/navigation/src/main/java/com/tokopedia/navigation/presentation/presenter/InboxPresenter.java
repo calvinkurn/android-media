@@ -139,6 +139,7 @@ public class InboxPresenter extends BaseDaggerPresenter {
     }
 
     public void onDestroy() {
+        this.getRecomendationUseCase.unsubscribe();
         this.getNotificationUseCase.unsubscribe();
         this.inboxView = null;
     }

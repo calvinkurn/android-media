@@ -86,6 +86,7 @@
                             android:layout_height="wrap_content"
                             android:lineSpacingExtra="@dimen/sp_5"
                             android:text="@string/label_select_all_product"
+                            android:textSize="@dimen/sp_12"
                             tools:ignore="RelativeOverlap" />
 
                     </LinearLayout>
@@ -131,7 +132,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
-                            android:background="@color/grey_300" />
+                            android:background="@color/grey_shadow" />
 
                         <LinearLayout
                             android:id="@+id/layout_1"

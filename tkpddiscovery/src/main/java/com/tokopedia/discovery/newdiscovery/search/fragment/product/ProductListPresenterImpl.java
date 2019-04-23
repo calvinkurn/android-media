@@ -73,6 +73,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     private Context context;
     private boolean isUsingFilterV4;
 
+    private Subscriber<GraphqlResponse> loadDataSubscriber;
+    private Subscriber<GraphqlResponse> loadMoreDataSubscriber;
+
     public ProductListPresenterImpl(Context context) {
         this.context = context;
         SearchComponent component = DaggerSearchComponent.builder()
@@ -204,9 +207,17 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         enrichWithAdditionalParams(requestParams, additionalParams);
         removeDefaultCategoryParam(requestParams);
 
-        Subscriber<GraphqlResponse> subscriber = getLoadMoreDataSubscriber(searchParameter);
+        unsubscribeLoadMoreDataSubscriberIfStillSubscribe();
 
-        GqlSearchHelper.requestProductLoadMore(context, requestParams, graphqlUseCase, subscriber);
+        loadMoreDataSubscriber = getLoadMoreDataSubscriber(searchParameter);
+
+        GqlSearchHelper.requestProductLoadMore(context, requestParams, graphqlUseCase, loadMoreDataSubscriber);
+    }
+
+    private void unsubscribeLoadMoreDataSubscriberIfStillSubscribe() {
+        if(loadMoreDataSubscriber != null && !loadMoreDataSubscriber.isUnsubscribed()) {
+            loadMoreDataSubscriber.unsubscribe();
+        }
     }
 
     private DefaultSubscriber<GraphqlResponse> getLoadMoreDataSubscriber(final SearchParameter searchParameter) {
@@ -265,7 +276,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     private void getViewToShowMoreData(ProductViewModel productViewModel) {
         List<Visitable> list = new ArrayList<>(ProductViewModelHelper.convertToListOfVisitable(productViewModel));
         getView().removeLoading();
-        getView().setProductList(list);
+        getView().addProductList(list);
         getView().addLoading();
     }
 
@@ -292,9 +303,17 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         enrichWithAdditionalParams(requestParams, additionalParams);
         removeDefaultCategoryParam(requestParams);
 
-        Subscriber<GraphqlResponse> subscriber = getLoadDataSubscriber(isFirstTimeLoad);
+        unsubscribeLoadDataSubscriberIfStillSubscribe();
 
-        GqlSearchHelper.requestProductFirstPage(context, requestParams, graphqlUseCase, subscriber);
+        loadDataSubscriber = getLoadDataSubscriber(isFirstTimeLoad);
+
+        GqlSearchHelper.requestProductFirstPage(context, requestParams, graphqlUseCase, loadDataSubscriber);
+    }
+
+    private void unsubscribeLoadDataSubscriberIfStillSubscribe() {
+        if(loadDataSubscriber != null && !loadDataSubscriber.isUnsubscribed()) {
+            loadDataSubscriber.unsubscribe();
+        }
     }
 
     private DefaultSubscriber<GraphqlResponse> getLoadDataSubscriber(final boolean isFirstTimeLoad) {
