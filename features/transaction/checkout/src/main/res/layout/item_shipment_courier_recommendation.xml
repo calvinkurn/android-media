@@ -189,7 +189,7 @@
                 style="@style/TextSmallNormal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Kurir ini error ya pak buk"
+                android:text="@string/logistic_promo_err_msg"
                 android:textColor="@color/error_red_text" />
 
         </LinearLayout>
