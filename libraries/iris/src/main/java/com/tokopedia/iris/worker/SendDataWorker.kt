@@ -3,6 +3,7 @@ package com.tokopedia.iris.worker
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import retrofit2.Response
 import com.tokopedia.iris.MAX_ROW
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
