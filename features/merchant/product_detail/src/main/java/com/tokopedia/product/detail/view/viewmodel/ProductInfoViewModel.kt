@@ -406,9 +406,9 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }
 
             if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
-                productInfoP3.isExpressCheckoutType = response
+                productInfoP3.cartType = response
                     .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
-                    .getCartType.isExpress
+                    .getCartType.data.cartType
             }
 
             if (needRequestCod && response.getError(UserCodStatus.Response::class.java)?.isNotEmpty() != true){
