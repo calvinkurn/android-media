@@ -1,6 +1,8 @@
 package com.tokopedia.sellerapp;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +28,24 @@ public class SplashScreenActivity extends SplashScreen {
 
     @Override
     public void finishSplashScreen() {
+        try {
+            getResources().getDrawable(R.drawable.launch_screen);
+        } catch (Throwable e) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Aplikasi Tokopedia tidak valid.");
+            builder.setMessage("Install Tokopedia dari Google Play Store untuk melanjutkan");
+            builder.setPositiveButton("OK", (DialogInterface dialogInterface, int i) -> {
+                startActivity(
+                        new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id="
+                                + getApplication().getPackageName()))
+                );
+                dialogInterface.dismiss();
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            return;
+        }
+
         if (SessionHandler.isUserHasShop(this)) {
             if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
                 String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
