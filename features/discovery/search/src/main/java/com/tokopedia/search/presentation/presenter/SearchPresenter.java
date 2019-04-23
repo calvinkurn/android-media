@@ -8,7 +8,7 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.search.SearchContract;
 import com.tokopedia.search.presentation.view.activity.SearchActivity;
 
-final class SearchPresenter extends DiscoveryPresenter<SearchContract.View, SearchActivity>
+public class SearchPresenter extends DiscoveryPresenter<SearchContract.View, SearchActivity>
         implements SearchContract.Presenter {
 
     public SearchPresenter(Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {

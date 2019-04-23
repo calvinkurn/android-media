@@ -20,6 +20,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
@@ -48,6 +49,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
 import com.tokopedia.search.di.component.SearchComponent;
+import com.tokopedia.search.presentation.presenter.SearchPresenter;
 import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
@@ -106,7 +108,7 @@ public class SearchActivity extends DiscoveryActivity
     private boolean isHandlingIntent;
 
     @Inject
-    SearchContract.Presenter searchPresenter;
+    SearchPresenter searchPresenter;
 
     @Inject
     SearchTracking searchTracking;
@@ -403,7 +405,7 @@ public class SearchActivity extends DiscoveryActivity
     private void initInjector() {
         searchComponent =
                 DaggerSearchComponent.builder()
-                        .appComponent(getApplicationComponent())
+                        .baseAppComponent(getBaseAppComponent())
                         .build();
         searchComponent.inject(this);
     }
