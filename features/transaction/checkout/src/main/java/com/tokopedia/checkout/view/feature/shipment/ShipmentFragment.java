@@ -2369,7 +2369,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentCartItemModelList != null) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
-
+                shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
             }
         }
 
