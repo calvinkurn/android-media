@@ -40,6 +40,10 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         this.context = context;
     }
 
+    public DiscoveryPresenter(Context context) {
+        this.context = context;
+    }
+
     @Override
     public void initiateSearch(SearchParameter searchParameter, boolean forceSearch) {
         super.initiateSearch(searchParameter, forceSearch);
@@ -76,7 +80,9 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     @Override
     public void detachView() {
         super.detachView();
-        getProductUseCase.unsubscribe();
-    }
 
+        if (getProductUseCase != null) {
+            getProductUseCase.unsubscribe();
+        }
+    }
 }
