@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.productcard.ProductCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 class RecommendationCardView : ProductCardView {
     constructor(context: Context) : super(context) {}
@@ -30,19 +31,33 @@ class RecommendationCardView : ProductCardView {
         imageView.setViewHintListener(
                 item
         ) {
-            //Impression Here
-            trackingListener.onImpression(item)
+            if(item.isTopAds){
+                ImpresionTask().execute(item.trackerImageUrl)
+                //Impression for topads item
+                trackingListener.onImpressionTopAds(item)
+            } else {
+                //Impression for organic item
+                trackingListener.onImpressionOrganic(item)
+            }
         }
 
         setOnClickListener {
-            //Click here
-            trackingListener.onClick(item)
+            if (item.isTopAds) {
+                ImpresionTask().execute(item.clickUrl)
+                //Click for topads item
+                trackingListener.onClickTopAds(item)
+            } else {
+                //Click for organic item
+                trackingListener.onClickOrganic(item)
+            }
             RouteManager.route(context!!, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
         }
     }
 
     interface TrackingListener {
-        fun onImpression(item: RecommendationItem)
-        fun onClick(item: RecommendationItem)
+        fun onImpressionTopAds(item: RecommendationItem)
+        fun onImpressionOrganic(item: RecommendationItem)
+        fun onClickTopAds(item: RecommendationItem)
+        fun onClickOrganic(item: RecommendationItem)
     }
 }
