@@ -407,13 +407,9 @@ public class SearchActivity extends DiscoveryActivity
     private void initInjector() {
         searchComponent =
                 DaggerSearchComponent.builder()
-                        .baseAppComponent(getBaseAppComponent())
+                        .appComponent(getApplicationComponent())
                         .build();
         searchComponent.inject(this);
-    }
-
-    public BaseAppComponent getBaseAppComponent() {
-        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 
     private void loadSection(ProductViewModel productViewModel, boolean forceSwipeToShop) {

@@ -1,15 +1,13 @@
 package com.tokopedia.search.di.component;
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.search.presentation.view.activity.SearchActivity;
 
 import dagger.Component;
 
 @SearchScope
-@Component(modules = SearchModule.class, dependencies = BaseAppComponent.class)
-public interface SearchComponent {
+@Component
+public interface SearchComponent extends com.tokopedia.discovery.newdiscovery.di.component.SearchComponent {
     void inject(SearchActivity searchActivity);
 
 }
