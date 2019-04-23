@@ -971,9 +971,7 @@ public class HotlistFragment extends BrowseSectionFragment
             for (Filter filter : pojo.getData().getFilter()) {
                 if (filter.getTitle().equalsIgnoreCase(TOKO)) {
                     for (Option option : filter.getOptions()) {
-                        if (option.getName().equalsIgnoreCase(OFFICIAL_STORE)) {
-                            optionList.add(0, option);
-                        } else if (option.getName().equalsIgnoreCase(POWER_BADGE)) {
+                        if (option.getName().equalsIgnoreCase(POWER_BADGE) || option.getName().equalsIgnoreCase(OFFICIAL_STORE)) {
                             optionList.add(0, option);
                         }
                     }
