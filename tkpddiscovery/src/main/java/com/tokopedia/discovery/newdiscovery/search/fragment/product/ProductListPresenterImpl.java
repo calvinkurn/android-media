@@ -31,6 +31,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -72,6 +75,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     GraphqlUseCase graphqlUseCase;
     private Context context;
     private boolean isUsingFilterV4;
+    private boolean enableGlobalNavWidget;
 
     public ProductListPresenterImpl(Context context) {
         this.context = context;
@@ -80,6 +84,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 .build();
         component.inject(this);
         graphqlUseCase = new GraphqlUseCase();
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        enableGlobalNavWidget = remoteConfig.getBoolean(
+                RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET,false);
     }
 
     @Override
@@ -370,6 +377,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     }
 
     private void getViewToShowProductList(ProductViewModel productViewModel) {
+
         List<Visitable> list = new ArrayList<>();
 
         HeaderViewModel headerViewModel = new HeaderViewModel();
@@ -381,11 +389,13 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 && productViewModel.getQuickFilterModel().getFilter() != null) {
             headerViewModel.setQuickFilterList(getView().getQuickFilterOptions(productViewModel.getQuickFilterModel()));
         }
-        if (productViewModel.getGlobalNavViewModel() != null) {
+        boolean isGlobalNavWidgetAvailable
+                = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
+        if (isGlobalNavWidgetAvailable) {
             headerViewModel.setGlobalNavViewModel(productViewModel.getGlobalNavViewModel());
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
         }
-        if (productViewModel.getCpmModel() != null) {
+        if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable) {
             headerViewModel.setCpmModel(productViewModel.getCpmModel());
         }
         list.add(headerViewModel);
