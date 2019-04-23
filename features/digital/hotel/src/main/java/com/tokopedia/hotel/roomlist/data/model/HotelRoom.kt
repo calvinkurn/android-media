@@ -12,66 +12,66 @@ import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 data class HotelRoom(
         @SerializedName("ID")
         @Expose
-        val roomId: String,
+        val roomId: String = "",
 
         @SerializedName("breakfastInfo")
         @Expose
-        val breakfastInfo: RoomBreakfastInfo,
+        val breakfastInfo: RoomBreakfastInfo = RoomBreakfastInfo(),
 
         @SerializedName("occupancyInfo")
         @Expose
-        val occupancyInfo: RoomOccupancyInfo,
+        val occupancyInfo: RoomOccupancyInfo = RoomOccupancyInfo(),
 
         @SerializedName("depositInfo")
         @Expose
-        val depositInfo: DepositInfo,
+        val depositInfo: DepositInfo = DepositInfo(),
 
         @SerializedName("refundInfo")
         @Expose
-        val refundInfo: RefundInfo,
+        val refundInfo: RefundInfo = RefundInfo(),
 
         @SerializedName("creditcardInfo")
         @Expose
-        val creditCardInfo: CreditCardInfo,
+        val creditCardInfo: CreditCardInfo = CreditCardInfo(),
 
         @SerializedName("numberRoomLeft")
         @Expose
-        val numberRoomLeft: Int,
+        val numberRoomLeft: Int = 0,
 
         @SerializedName("roomPrice")
         @Expose
-        val roomPrice: List<HotelRoomPrice>,
+        val roomPrice: List<HotelRoomPrice> = listOf(),
 
         @SerializedName("roomPolicy")
         @Expose
-        val roomPolicy: List<RoomPolicy>,
+        val roomPolicy: List<RoomPolicy> = listOf(),
 
         @SerializedName("cancelPolicy")
         @Expose
-        val cancelPolicy: List<CancelPolicy>,
+        val cancelPolicy: List<CancelPolicy> = listOf(),
 
         @SerializedName("refundableUntil")
         @Expose
-        val refundableUntil: String,
+        val refundableUntil: String = "",
 
 
         @SerializedName("roomInfo")
         @Expose
-        val roomInfo: HotelRoomInfo,
+        val roomInfo: HotelRoomInfo = HotelRoomInfo(),
 
 
         @SerializedName("bedInfo")
         @Expose
-        val bedInfo: String,
+        val bedInfo: String = "",
 
 
         @SerializedName("taxes")
         @Expose
-        val taxes: String,
+        val taxes: String = "",
 
         @SerializedName("extraBedInfo")
         @Expose
-        val extraBedInfo: ExtraBedInfo
+        val extraBedInfo: ExtraBedInfo = ExtraBedInfo()
 
         ): Visitable<RoomListTypeFactory> {
 
@@ -80,89 +80,89 @@ data class HotelRoom(
         data class RoomBreakfastInfo(
             @SerializedName("isBreakFastIncluded")
             @Expose
-            val isBreakfastIncluded: Boolean,
+            val isBreakfastIncluded: Boolean = false,
 
             @SerializedName("mealPlan")
             @Expose
-            val mealPlan: String,
+            val mealPlan: String = "",
 
             @SerializedName("breakFast")
             @Expose
-            val breakFast: String
+            val breakFast: String = ""
     )
 
     data class RoomOccupancyInfo(
             @SerializedName("maxOccupancy")
             @Expose
-            val maxOccupancy: Int,
+            val maxOccupancy: Int = 0,
 
             @SerializedName("maxFreeChild")
             @Expose
-            val maxFreeChild: Int,
+            val maxFreeChild: Int = 0,
 
             @SerializedName("occupancyText")
             @Expose
-            val occupancyText: String
+            val occupancyText: String = ""
     )
 
     data class DepositInfo(
             @SerializedName("isNeedDeposit")
             @Expose
-            val isNeedDeposit: Boolean,
+            val isNeedDeposit: Boolean = false,
 
             @SerializedName("depositText")
             @Expose
-            val depositText: String
+            val depositText: String = ""
     )
 
     data class RefundInfo(
             @SerializedName("isRefundAble")
             @Expose
-            val isRefundable: Boolean,
+            val isRefundable: Boolean = false,
 
             @SerializedName("refundStatus")
             @Expose
-            val refundStatus: String
+            val refundStatus: String = ""
     )
 
     data class CreditCardInfo(
             @SerializedName("isCCRequired")
             @Expose
-            val isCCRequired: Boolean,
+            val isCCRequired: Boolean = false,
 
             @SerializedName("info")
             @Expose
-            val creditCardInfo: String
+            val creditCardInfo: String = ""
     )
 
     data class RoomPolicy(
             @SerializedName("class")
             @Expose
-            val roomPolicyClass: String,
+            val roomPolicyClass: String = "",
 
             @SerializedName("content")
             @Expose
-            val content: String
+            val content: String = ""
     )
 
     data class CancelPolicy(
             @SerializedName("subHeader")
             @Expose
-            val subheader: String,
+            val subheader: String = "",
 
             @SerializedName("content")
             @Expose
-            val content: String
+            val content: String = ""
     )
 
     data class ExtraBedInfo(
             @SerializedName("IsFreeExtraBed")
             @Expose
-            val isFreeExtraBed: Boolean,
+            val isFreeExtraBed: Boolean = false,
 
             @SerializedName("Content")
             @Expose
-            val content: String
+            val content: String = ""
     )
 
 }

@@ -10,28 +10,28 @@ import com.google.gson.annotations.SerializedName
 data class HotelRoomData(
         @SerializedName("propertyID")
         @Expose
-        val propertyId: String,
+        val propertyId: String = "",
 
         @SerializedName("rooms")
         @Expose
-        val rooms: List<HotelRoom>,
+        val rooms: List<HotelRoom> = listOf(),
 
         @SerializedName("isAddressRequired")
         @Expose
-        val isAddressRequired: Boolean,
+        val isAddressRequired: Boolean = false,
 
         @SerializedName("isCvCRequired")
         @Expose
-        val isCvCRequired: Boolean,
+        val isCvCRequired: Boolean = false,
 
         @SerializedName("isDirectPayment")
         @Expose
-        val isDirectPayment: Boolean
+        val isDirectPayment: Boolean = false
 ) {
         data class Response(
                 @SerializedName("propertySearchRoom")
                 @Expose
-                val response: HotelRoomData
+                val response: HotelRoomData = HotelRoomData()
         )
 }
 

@@ -22,7 +22,7 @@ data class RoomListParam(
 
         @SerializedName("guest")
         @Expose
-        var guest: Guest = Guest(0, listOf()),
+        var guest: Guest = Guest(),
 
         @SerializedName("room")
         @Expose
@@ -32,10 +32,10 @@ data class RoomListParam(
     data class Guest(
             @SerializedName("adult")
             @Expose
-            var adult: Int,
+            var adult: Int = 0,
 
             @SerializedName("childAge")
             @Expose
-            var childAge: List<Int>
+            var childAge: List<Int> = listOf()
     )
 }

@@ -17,6 +17,4 @@ interface HotelRoomListComponent {
     fun inject(hotelRoomListActivity: HotelRoomListActivity)
 
     fun inject(hotelRoomListFragment: HotelRoomListFragment)
-
-    fun inject(useCase: GetHotelRoomListUseCase)
 }

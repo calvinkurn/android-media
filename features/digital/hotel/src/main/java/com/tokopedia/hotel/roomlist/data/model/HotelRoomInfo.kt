@@ -10,69 +10,69 @@ import com.google.gson.annotations.SerializedName
 data class HotelRoomInfo(
    @SerializedName("description")
    @Expose
-   val description: String,
+   val description: String = "",
 
    @SerializedName("name")
    @Expose
-   val name: String,
+   val name: String = "",
 
    @SerializedName("bathRoomCount")
    @Expose
-   val bathRoomCount: Int,
+   val bathRoomCount: Int = 0,
 
    @SerializedName("size")
    @Expose
-   val size: Int,
+   val size: Int = 0,
 
    @SerializedName("maxGuest")
    @Expose
-   val maxGuest: Int,
+   val maxGuest: Int = 0,
 
    @SerializedName("facility")
    @Expose
-   val facility: List<Facility>,
+   val facility: List<Facility> = listOf(),
 
    @SerializedName("mainFacility")
    @Expose
-   val mainFacility: List<Facility>,
+   val mainFacility: List<Facility> = listOf(),
 
 
    @SerializedName("roomImages")
    @Expose
-   val roomImages: List<RoomImage>,
+   val roomImages: List<RoomImage> = listOf(),
 
 
    @SerializedName("maxPrice")
    @Expose
-   val maxPrice: Double,
+   val maxPrice: Double = 0.0,
 
 
    @SerializedName("minPrice")
    @Expose
-   val minPrice: Double
+   val minPrice: Double = 0.0
 
    ) {
     data class Facility(
             @SerializedName("name")
             @Expose
-            val name: String,
+            val name: String = "",
 
             @SerializedName("icon")
             @Expose
-            val icon: String
+            val icon: String = ""
     )
 
     data class RoomImage(
             @SerializedName("urlMax300")
             @Expose
-            val url300: String,
+            val url300: String = "",
 
             @SerializedName("urlOriginal")
             @Expose
-            val urlOriginal: String,
+            val urlOriginal: String = "",
 
             @SerializedName("urlSquare")
             @Expose
-            val urlSquare: String
+            val urlSquare: String = ""
     )
 }
