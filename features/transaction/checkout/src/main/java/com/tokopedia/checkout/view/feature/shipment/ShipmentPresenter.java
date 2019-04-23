@@ -951,7 +951,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             CurrentApplyCode currentApplyCode = new CurrentApplyCode();
             if (!promoCode.isEmpty()) {
                 currentApplyCode.setCodes(promoCode);
-                currentApplyCode.setType(PARAM_LOGISTIC);
+                currentApplyCode.setType(PARAM_GLOBAL);
             }
             promo.setCurrentApplyCode(currentApplyCode);
         }
@@ -991,7 +991,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 } else {
                                     if (responseGetPromoStack.getStatus().equalsIgnoreCase("OK")) {
                                         if (responseGetPromoStack.getData().getClashings().isClashedPromos()) {
-                                            getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_LOGISTIC);
+                                            getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_GLOBAL);
                                         } else {
                                             getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack, itemPosition, noToast);
                                         }
