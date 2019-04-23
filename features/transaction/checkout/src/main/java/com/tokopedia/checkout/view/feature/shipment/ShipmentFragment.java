@@ -885,7 +885,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderErrorCheckPromoShipmentData(String message) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
-        shipmentAdapter.clearAllPromo();
         shipmentAdapter.resetCourierPromoState();
     }
 
@@ -2360,7 +2359,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentCartItemModelList != null) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
-
+                shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
             }
         }
 

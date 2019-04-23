@@ -790,35 +790,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void clearAllPromo() {
-        if (promoGlobalStackData != null) {
-            promoGlobalStackData.setDescription("");
-            promoGlobalStackData.setPromoCode("");
-            promoGlobalStackData.setAmount(0);
-            promoGlobalStackData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
-            promoGlobalStackData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
-            promoGlobalStackData.setTitle(promoGlobalStackData.getTitleDefault());
-            promoGlobalStackData.setTypePromo(0);
-            promoGlobalStackData.setCounterLabel(promoGlobalStackData.getCounterLabelDefault());
-        }
-
-        if (shipmentCartItemModelList != null) {
-            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
-                shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
-            }
-        }
-
-        if (shipmentCostModel != null){
-            shipmentCostModel.setPromoMessage("");
-            shipmentCostModel.setPromoPrice(0);
-            shipmentCostModel.setTotalPromoStackAmount(0);
-            shipmentCostModel.setTotalPromoStackAmountStr("");
-        }
-
-        notifyDataSetChanged();
-    }
-
     public void updatePromoStack(DataUiModel dataUiModel) {
         if (dataUiModel != null) {
             if (shipmentCostModel != null) {
@@ -906,6 +877,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         } else if (voucherOrdersItemUiModel.getType().equalsIgnoreCase(TickerCheckoutUtilKt.getLOGISTIC())) {
                             VoucherLogisticItemUiModel model = new VoucherLogisticItemUiModel();
                             model.setCode(voucherOrdersItemUiModel.getCode());
+                            model.setMessage(voucherOrdersItemUiModel.getMessage());
                             model.setCouponDesc(voucherOrdersItemUiModel.getTitleDescription());
                             shipmentCartItemModel.setVoucherLogisticItemUiModel(model);
                         }
