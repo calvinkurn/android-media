@@ -877,6 +877,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         } else if (voucherOrdersItemUiModel.getType().equalsIgnoreCase(TickerCheckoutUtilKt.getLOGISTIC())) {
                             VoucherLogisticItemUiModel model = new VoucherLogisticItemUiModel();
                             model.setCode(voucherOrdersItemUiModel.getCode());
+                            model.setMessage(voucherOrdersItemUiModel.getMessage());
                             model.setCouponDesc(voucherOrdersItemUiModel.getTitleDescription());
                             shipmentCartItemModel.setVoucherLogisticItemUiModel(model);
                         }
