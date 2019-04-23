@@ -8,10 +8,12 @@ import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
@@ -54,15 +56,26 @@ public class BaseDiscoveryActivity
     private boolean isStartingSearchActivityWithProductViewModel = false;
     private ProductViewModel productViewModelForOnResume;
 
+    protected GCMHandler gcmHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        gcmHandler = new GCMHandler(this);
+
         if (savedInstanceState != null) {
             setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION, 0));
             setForceSwipeToShop(savedInstanceState.getBoolean(KEY_FORCE_SWIPE_TO_SHOP, false));
             setForceSearch(savedInstanceState.getBoolean(KEY_FORCE_SEARCH, false));
             setRequestOfficialStoreBanner(savedInstanceState.getBoolean(KEY_REQUEST_OS, false));
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        gcmHandler = null;
+
+        super.onDestroy();
     }
 
     public int getActiveTabPosition() {
@@ -116,6 +129,10 @@ public class BaseDiscoveryActivity
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    public AppComponent getApplicationComponent() {
+        return ((MainApplication) getApplication()).getAppComponent();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 /**

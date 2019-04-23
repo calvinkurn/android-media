@@ -2,8 +2,8 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;

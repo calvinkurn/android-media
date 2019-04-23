@@ -20,6 +20,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -48,6 +49,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
+import com.tokopedia.search.di.component.DaggerSearchComponent;
 import com.tokopedia.search.di.component.SearchComponent;
 import com.tokopedia.search.presentation.presenter.SearchPresenter;
 import com.tokopedia.track.TrackApp;
@@ -408,6 +410,10 @@ public class SearchActivity extends DiscoveryActivity
                         .baseAppComponent(getBaseAppComponent())
                         .build();
         searchComponent.inject(this);
+    }
+
+    public BaseAppComponent getBaseAppComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 
     private void loadSection(ProductViewModel productViewModel, boolean forceSwipeToShop) {
