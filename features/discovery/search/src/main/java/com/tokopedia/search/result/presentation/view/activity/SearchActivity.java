@@ -1,4 +1,4 @@
-package com.tokopedia.search.presentation.view.activity;
+package com.tokopedia.search.result.presentation.view.activity;
 
 import android.Manifest;
 import android.content.ClipData;
@@ -47,9 +47,9 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
-import com.tokopedia.search.di.component.DaggerSearchComponent;
-import com.tokopedia.search.di.component.SearchComponent;
-import com.tokopedia.search.presentation.presenter.SearchPresenter;
+import com.tokopedia.search.result.di.component.DaggerSearchComponent;
+import com.tokopedia.search.result.di.component.SearchComponent;
+import com.tokopedia.search.result.presentation.presenter.SearchPresenter;
 import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;

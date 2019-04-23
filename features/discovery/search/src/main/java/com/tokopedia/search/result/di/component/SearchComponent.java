@@ -1,9 +1,9 @@
-package com.tokopedia.search.di.component;
+package com.tokopedia.search.result.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
-import com.tokopedia.search.di.module.SearchModule;
-import com.tokopedia.search.presentation.view.activity.SearchActivity;
+import com.tokopedia.search.result.di.module.SearchModule;
+import com.tokopedia.search.result.presentation.view.activity.SearchActivity;
 
 import dagger.Component;
 

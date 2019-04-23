@@ -1,4 +1,4 @@
-package com.tokopedia.search.di.module;
+package com.tokopedia.search.result.di.module;
 
 import android.content.Context;
 
@@ -21,7 +21,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListP
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListPresenterImpl;
-import com.tokopedia.search.presentation.presenter.SearchPresenter;
+import com.tokopedia.search.result.presentation.presenter.SearchPresenter;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;

@@ -321,7 +321,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
-import com.tokopedia.search.presentation.view.activity.SearchActivity;
+import com.tokopedia.search.result.presentation.view.activity.SearchActivity;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
