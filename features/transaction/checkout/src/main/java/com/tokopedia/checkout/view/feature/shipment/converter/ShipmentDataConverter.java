@@ -125,7 +125,15 @@ public class ShipmentDataConverter {
                         if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders() != null) {
                             for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
                                 if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
-                                    shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                                    if (voucherOrdersItemData.getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
+                                        shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                                    } else if (voucherOrdersItemData.getType().equalsIgnoreCase(LOGISTIC_VOUCHER_TYPE)) {
+                                        VoucherLogisticItemUiModel voucherLogisticItemUiModel = new VoucherLogisticItemUiModel();
+                                        voucherLogisticItemUiModel.setCode(voucherOrdersItemData.getCode());
+                                        voucherLogisticItemUiModel.setCouponDesc(voucherOrdersItemData.getTitleDescription());
+                                        voucherLogisticItemUiModel.setMessage(convertFromMessage(voucherOrdersItemData.getMessageData()));
+                                        shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
+                                    }
                                 }
                             }
                         }
