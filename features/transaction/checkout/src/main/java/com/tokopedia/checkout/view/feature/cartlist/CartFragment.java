@@ -992,14 +992,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 if (cartListData.getGlobalCouponAttr().getDescription() != null) {
                     if (!cartListData.getGlobalCouponAttr().getDescription().isEmpty()) {
                         builderGlobal.title(cartListData.getGlobalCouponAttr().getDescription());
-                        saveGlobalCouponAttr(GLOBAL_COUPON_ATTR_DESC, cartListData.getGlobalCouponAttr().getDescription());
+                        builderGlobal.titleDefault(cartListData.getGlobalCouponAttr().getDescription());
                     }
                 }
 
                 if (cartListData.getGlobalCouponAttr().getQuantityLabel() != null) {
                     if (!cartListData.getGlobalCouponAttr().getQuantityLabel().isEmpty()) {
                         builderGlobal.counterLabel(cartListData.getGlobalCouponAttr().getQuantityLabel());
-                        saveGlobalCouponAttr(GLOBAL_COUPON_ATTR_QTY, cartListData.getGlobalCouponAttr().getQuantityLabel());
+                        builderGlobal.counterLabelDefault(cartListData.getGlobalCouponAttr().getQuantityLabel());
                     }
                 }
             }
@@ -1041,18 +1041,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
 
         cartPageAnalytics.eventViewCartListFinishRender();
-    }
-
-    private void saveGlobalCouponAttr(String key, String value) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(key, value);
-        editor.apply();
-    }
-
-    private String getGlobalCouponAttr(String key) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return prefs.getString(key, "");
     }
 
     @Override
@@ -2008,8 +1996,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             promoStackingData.setAmount(0);
             promoStackingData.setPromoCode("");
             promoStackingData.setDescription("");
-            promoStackingData.setTitle(getGlobalCouponAttr(GLOBAL_COUPON_ATTR_DESC));
-            promoStackingData.setCounterLabel(getGlobalCouponAttr(GLOBAL_COUPON_ATTR_QTY));
+            promoStackingData.setTitle(promoStackingData.getTitleDefault());
+            promoStackingData.setCounterLabel(promoStackingData.getCounterLabelDefault());
             cartAdapter.updateItemPromoStackVoucher(promoStackingData);
         } else {
             CartShopHolderData cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(shopIndex);
@@ -2021,15 +2009,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onSuccessClearPromoStachAfterClash() {
+    public void onSuccessClearPromoStackAfterClash() {
         // Reset global promo
         PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobaldata();
         promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
         promoStackingData.setAmount(0);
         promoStackingData.setPromoCode("");
         promoStackingData.setDescription("");
-        promoStackingData.setTitle(getGlobalCouponAttr(GLOBAL_COUPON_ATTR_DESC));
-        promoStackingData.setCounterLabel(getGlobalCouponAttr(GLOBAL_COUPON_ATTR_QTY));
+        promoStackingData.setTitle(promoStackingData.getTitleDefault());
+        promoStackingData.setCounterLabel(promoStackingData.getCounterLabelDefault());
 
         // Reset merchant promo
         List<CartShopHolderData> cartShopHolderDataList = cartAdapter.getAllCartShopHolderData();

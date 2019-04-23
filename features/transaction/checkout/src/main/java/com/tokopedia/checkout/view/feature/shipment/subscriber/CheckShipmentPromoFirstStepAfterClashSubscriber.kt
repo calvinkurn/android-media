@@ -33,6 +33,7 @@ class CheckShipmentPromoFirstStepAfterClashSubscriber(private val view: Shipment
     override fun onNext(response: GraphqlResponse) {
         view?.hideLoading()
         presenter.couponStateChanged = true
+        checkPromoStackingCodeMapper.isFinal = false
         val responseGetPromoStack = checkPromoStackingCodeMapper.call(response)
         if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
             val message = responseGetPromoStack.data.message.text
