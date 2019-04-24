@@ -215,6 +215,6 @@ public class AutoCompleteActivity extends DiscoveryActivity
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_search;
+        return R.layout.activity_auto_complete;
     }
 }
