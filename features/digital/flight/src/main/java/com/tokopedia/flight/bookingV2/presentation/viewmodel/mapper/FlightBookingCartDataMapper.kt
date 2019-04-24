@@ -8,6 +8,8 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingAmenityViewModelMapper
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightInsuranceViewModelMapper
 import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity
 import javax.inject.Inject
 
 /**
@@ -29,11 +31,13 @@ class FlightBookingCartDataMapper @Inject constructor(private val flightBookingA
                 // replace price
                 if (data.departureTrip != null && data.departureTrip.id != null &&
                         item.id.equals(data.departureTrip.id, true)) {
+                    data.departureTrip.isRefundable = isRefundable(item.routes)
                     data.departureTrip.adultNumericPrice = item.totalPerPax.adultTotal.toInt()
                     data.departureTrip.childNumericPrice = item.totalPerPax.childTotal.toInt()
                     data.departureTrip.infantNumericPrice = item.totalPerPax.infantTotal.toInt()
                 } else if (data.returnTrip != null && data.returnTrip.id != null &&
                         item.id.equals(data.returnTrip.id, true)) {
+                    data.returnTrip.isRefundable = isRefundable(item.routes)
                     data.returnTrip.adultNumericPrice = item.totalPerPax.adultTotal.toInt()
                     data.returnTrip.childNumericPrice = item.totalPerPax.childTotal.toInt()
                     data.returnTrip.infantNumericPrice = item.totalPerPax.infantTotal.toInt()
@@ -86,6 +90,20 @@ class FlightBookingCartDataMapper @Inject constructor(private val flightBookingA
             data.newFarePrices = entity.attributes.newPrice
         }
         return data
+    }
+
+    private fun isRefundable(routes: List<RouteEntity>) : RefundableEnum {
+        var refundableCount = 0
+        for (route in routes) {
+            if (route.isRefundable) {
+                refundableCount++
+            }
+        }
+        return when (refundableCount) {
+            routes.size -> RefundableEnum.REFUNDABLE
+            0 -> RefundableEnum.NOT_REFUNDABLE
+            else -> RefundableEnum.PARTIAL_REFUNDABLE
+        }
     }
 
     private fun transform(voucher: Voucher): FlightBookingVoucherViewModel {
