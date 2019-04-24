@@ -352,8 +352,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setEgoldAttributeModel(savedEgoldAttributeModel);
             shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
             shipmentAdapter.setLastServiceId(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID));
-            renderCheckoutPage(true, isOneClickShipment());
             shipmentAdapter.addPromoStackingVoucherData(savedPromoStackingData);
+            renderCheckoutPage(true, isOneClickShipment());
             swipeToRefresh.setEnabled(false);
         }
     }
