@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +36,6 @@ import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
-import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CategoryDetailCallbacks;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
@@ -45,8 +43,6 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.net.URI;
-import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
@@ -304,9 +300,9 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         Location location = Utils.getSingletonInstance().getLocation(getContext());
         if (location != null) {
             uri = replaceUriParameter(Uri.parse(categoriesModel.getCategoryUrl()), Utils.QUERY_PARAM_CITY_ID, String.valueOf(location.getId()));
-            Log.d("Naveen", "value of Uri " + uri);
+            return uri.toString();
         }
-        return uri.toString();
+        return categoriesModel.getCategoryUrl();
     }
 
 
