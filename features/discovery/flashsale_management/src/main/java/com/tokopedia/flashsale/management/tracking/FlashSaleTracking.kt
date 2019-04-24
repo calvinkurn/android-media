@@ -2,13 +2,9 @@ package com.tokopedia.flashsale.management.tracking
 
 import android.app.Activity
 import android.text.TextUtils
-import java.sql.RowId
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.track.TrackApp
 
-class FlashSaleTracking() {
+class FlashSaleTracking {
 
     private fun sendScreenName(activity: Activity, screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
