@@ -119,7 +119,7 @@ class FlightBookingCartDataMapper @Inject constructor(private val flightBookingA
                 if (itemDetail.getDepartureAirportCode().equals(itemRoute.departureAirportCode, true) &&
                         itemDetail.getArrivalAirportCode().equals(itemRoute.arrivalAirportCode, true)) {
                     itemDetail.setRefundable(itemRoute.isRefundable)
-                    Log.d("STATUS REFUND", itemRoute.isRefundable)
+                    Log.d("STATUS REFUND", "" + itemRoute.isRefundable)
                 }
             }
         }
