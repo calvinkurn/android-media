@@ -29,7 +29,7 @@ class RecomendationViewHolder(itemView: View, private val listener: InboxAdapter
         product.name = item.name
         product.priceFormat = item.price
         product.category = Category(item.departmentId)
-        TopAdsGtmTracker.getInstance().addInboxProductViewImpressions(product, pos)
+        TopAdsGtmTracker.getInstance().addInboxProductViewImpressions(product, pos, item.recommendationType)
     }
 
     override fun onImpressionOrganic(item: RecommendationItem) {
@@ -45,7 +45,7 @@ class RecomendationViewHolder(itemView: View, private val listener: InboxAdapter
         product.priceFormat = item.price
         product.category = Category(item.departmentId)
         context?.run {
-            TopAdsGtmTracker.getInstance().eventInboxProductClick(context, product, pos)
+            TopAdsGtmTracker.getInstance().eventInboxProductClick(context, product, pos, item.recommendationType)
         }
     }
 

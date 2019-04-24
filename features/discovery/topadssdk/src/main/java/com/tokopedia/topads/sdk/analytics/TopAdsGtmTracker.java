@@ -181,14 +181,14 @@ public class TopAdsGtmTracker {
                 "position", position));
     }
 
-    public void addInboxProductViewImpressions(Product product, int position) {
+    public void addInboxProductViewImpressions(Product product, int position, String recommendationType) {
         this.dataLayerList.add(DataLayer.mapOf("name", product.getName(),
                 "id", product.getId(),
                 "price", product.getPriceFormat().replaceAll("[^0-9]", ""),
                 "brand", "none/other",
                 "variant", "none/other",
                 "category", product.getCategory().getId(),
-                "list", "/inbox - topads - rekomendasi untuk anda",
+                "list", "/inbox - topads - rekomendasi untuk anda - "+recommendationType,
                 "position", position));
     }
 
@@ -275,7 +275,7 @@ public class TopAdsGtmTracker {
         }
     }
 
-    public void eventInboxProductClick(Context context, Product product, int position) {
+    public void eventInboxProductClick(Context context, Product product, int position, String recommendationType) {
         Analytics tracker = getTracker();
         Map<String, Object> map = DataLayer.mapOf(
                 "event", "productClick",
@@ -284,7 +284,7 @@ public class TopAdsGtmTracker {
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                         "click", DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", "/inbox - topads - rekomendasi untuk anda"),
+                                DataLayer.mapOf("list", "/inbox - topads - rekomendasi untuk anda - "+recommendationType),
                                 "products", DataLayer.listOf(DataLayer.mapOf(
                                         "name", product.getName(),
                                         "id", product.getId(),
