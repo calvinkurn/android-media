@@ -44,8 +44,6 @@ import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.di.component.DaggerSearchComponent;
 import com.tokopedia.search.result.di.component.SearchComponent;
-import com.tokopedia.search.result.di.module.SearchModule;
-import com.tokopedia.search.result.presentation.presenter.SearchPresenterModule;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -106,7 +104,7 @@ public class SearchActivity extends BaseActivity
     private boolean isHasCatalog;
     private int activeTabPosition;
 
-    @Inject SearchContract.Presenter searchPresenter;
+    //@Inject SearchContract.Presenter searchPresenter;
     @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
 
@@ -465,7 +463,7 @@ public class SearchActivity extends BaseActivity
 
     @Override
     protected void onDestroy() {
-        searchPresenter.detachView();
+//        searchPresenter.detachView();
         super.onDestroy();
     }
 
