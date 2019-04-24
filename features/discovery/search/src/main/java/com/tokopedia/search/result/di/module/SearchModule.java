@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
-import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.search.result.presentation.presenter.SearchPresenterModule;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -18,12 +17,6 @@ import dagger.Provides;
         SearchPresenterModule.class
 })
 public class SearchModule {
-
-    @SearchScope
-    @Provides
-    SearchContract.Presenter provideSearchPresenter(SearchContract.Presenter presenter) {
-        return presenter;
-    }
 
     @SearchScope
     @Provides
