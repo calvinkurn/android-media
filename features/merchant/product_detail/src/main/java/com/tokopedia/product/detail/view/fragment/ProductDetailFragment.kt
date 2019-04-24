@@ -310,7 +310,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         })
 
         productInfoViewModel.productInfoP3resp.observe(this, Observer {
-            performanceMonitoringFull.stopTrace()
+            if (::performanceMonitoringFull.isInitialized)
+                performanceMonitoringFull.stopTrace()
             it?.run { renderProductInfo3(this) }
         })
 
@@ -512,7 +513,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoViewModel.isUserSessionActive()) {
                 val isExpressCheckout = (productInfoViewModel.productInfoP3resp.value)?.isExpressCheckoutType
                         ?: false
-                if (isExpressCheckout || isSpecialPrize) {
+                if (isExpressCheckout) {
                     goToAtcExpress()
                 } else {
                     goToNormalCheckout()
@@ -761,7 +762,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun collapsedAppBar() {
         initStatusBarLight()
         initToolbarLight()
-        fab_detail.hide()
+        fab_detail?.hide()
         label_cod.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
     }
 
@@ -1197,10 +1198,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
         // 2. getWishlist (P3) is success
         // 3. user is allowed to manage product
         if ((!productInfoViewModel.isUserSessionActive() &&
-                productInfoViewModel.productInfoP1Resp.value != null) ||
-            productInfoViewModel.productInfoP3resp.value != null ||
-            (shopInfo != null && shopInfo?.isAllowManage == 1)) {
-            fab_detail.show()
+                        productInfoViewModel.productInfoP1Resp.value != null) ||
+                productInfoViewModel.productInfoP3resp.value != null ||
+                (shopInfo != null && shopInfo?.isAllowManage == 1)) {
+            fab_detail?.show()
         }
     }
 
