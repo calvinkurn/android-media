@@ -161,7 +161,8 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected void initInjector() {
         SearchComponent component = DaggerSearchComponent.builder()
-                .appComponent(getComponent(AppComponent.class))
+//                .appComponent(getComponent(AppComponent.class))
+                .appComponent(getAppComponent())
                 .build();
         component.inject(this);
     }

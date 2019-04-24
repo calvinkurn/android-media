@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.discovery.R;
@@ -656,5 +657,15 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
         return OptionHelper.combinePriceFilterIfExists(filterController.getActiveFilterOptionList(),
                 getResources().getString(R.string.empty_state_selected_filter_price_name));
+    }
+
+    protected AppComponent getAppComponent() {
+        if(getActivity() != null) {
+            if(getActivity().getApplication() instanceof MainApplication) {
+                return ((MainApplication)getActivity().getApplication()).getAppComponent();
+            }
+        }
+
+        return null;
     }
 }

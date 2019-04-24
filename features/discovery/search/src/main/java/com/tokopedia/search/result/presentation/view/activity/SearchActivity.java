@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -67,7 +68,8 @@ public class SearchActivity extends BaseActivity
         implements SearchContract.View,
         RedirectionListener,
         BottomSheetListener,
-        SearchNavigationListener {
+        SearchNavigationListener,
+        HasComponent<BaseAppComponent> {
 
     public static Intent newInstance(Context context) {
         return new Intent(context, SearchActivity.class);
@@ -632,5 +634,10 @@ public class SearchActivity extends BaseActivity
             menuChangeGrid.setIcon(iconResId);
             menuChangeGrid.setTitle(titleResId);
         }
+    }
+
+    @Override
+    public BaseAppComponent getComponent() {
+        return getBaseAppComponent();
     }
 }
