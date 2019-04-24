@@ -22,6 +22,7 @@
         android:maxLines="2"
         android:ellipsize="end"
         android:breakStrategy="simple"
+        android:hyphenationFrequency="none"
         android:fontFamily="sans-serif"
         android:gravity="center_horizontal|top"
         android:lineSpacingExtra="4sp"
