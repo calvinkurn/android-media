@@ -356,8 +356,7 @@ public class SearchTracking {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventTracking);
     }
 
-    public static void eventUserClickProfileResultInTabProfile(Context context,
-                                                               List<Object> profileData,
+    public static void eventUserClickProfileResultInTabProfile(Object profileData,
                                                                String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -368,7 +367,7 @@ public class SearchTracking {
                         ECOMMERCE, DataLayer.mapOf(
                                 PROMO_CLICK, DataLayer.mapOf(
                                         PROMOTIONS, DataLayer.listOf(
-                                                profileData.toArray(new Object[profileData.size()])
+                                                profileData
                                         )
                                 )
                         )
@@ -408,7 +407,7 @@ public class SearchTracking {
     }
 
     public static void eventUserImpressionProfileResultInTabProfile(TrackingQueue trackingQueue,
-                                                               List<Object> profileData,
+                                                               List<Object> profileListData,
                                                                String keyword) {
         trackingQueue.putEETracking(
                 (HashMap<String, Object>) DataLayer.mapOf(
@@ -418,9 +417,7 @@ public class SearchTracking {
                         EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 PROMO_VIEW, DataLayer.mapOf(
-                                        PROMOTIONS, DataLayer.listOf(
-                                                profileData.toArray(new Object[profileData.size()])
-                                        )
+                                        PROMOTIONS, profileListData
                                 )
                         )
                 )
