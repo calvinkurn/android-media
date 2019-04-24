@@ -31,12 +31,14 @@ class FlightBookingCartDataMapper @Inject constructor(private val flightBookingA
                 // replace price
                 if (data.departureTrip != null && data.departureTrip.id != null &&
                         item.id.equals(data.departureTrip.id, true)) {
+                    data.departureTrip.routeList = setRouteRefundable(data.departureTrip.routeList, item.routes)
                     data.departureTrip.isRefundable = isRefundable(item.routes)
                     data.departureTrip.adultNumericPrice = item.totalPerPax.adultTotal.toInt()
                     data.departureTrip.childNumericPrice = item.totalPerPax.childTotal.toInt()
                     data.departureTrip.infantNumericPrice = item.totalPerPax.infantTotal.toInt()
                 } else if (data.returnTrip != null && data.returnTrip.id != null &&
                         item.id.equals(data.returnTrip.id, true)) {
+                    data.returnTrip.routeList = setRouteRefundable(data.returnTrip.routeList, item.routes)
                     data.returnTrip.isRefundable = isRefundable(item.routes)
                     data.returnTrip.adultNumericPrice = item.totalPerPax.adultTotal.toInt()
                     data.returnTrip.childNumericPrice = item.totalPerPax.childTotal.toInt()
@@ -92,7 +94,7 @@ class FlightBookingCartDataMapper @Inject constructor(private val flightBookingA
         return data
     }
 
-    private fun isRefundable(routes: List<RouteEntity>) : RefundableEnum {
+    private fun isRefundable(routes: List<RouteEntity>): RefundableEnum {
         var refundableCount = 0
         for (route in routes) {
             if (route.isRefundable) {
@@ -104,6 +106,19 @@ class FlightBookingCartDataMapper @Inject constructor(private val flightBookingA
             0 -> RefundableEnum.NOT_REFUNDABLE
             else -> RefundableEnum.PARTIAL_REFUNDABLE
         }
+    }
+
+    private fun setRouteRefundable(routeDetailList: List<FlightDetailRouteViewModel>, routeEntityList: List<RouteEntity>)
+            : List<FlightDetailRouteViewModel> {
+        for (itemDetail in routeDetailList) {
+            for (itemRoute in routeEntityList) {
+                if (itemDetail.getDepartureAirportCode().equals(itemRoute.departureAirportCode) &&
+                        itemDetail.getArrivalAirportCode().equals(itemRoute.arrivalAirportCode)) {
+                    itemDetail.setRefundable(itemRoute.isRefundable)
+                }
+            }
+        }
+        return routeDetailList
     }
 
     private fun transform(voucher: Voucher): FlightBookingVoucherViewModel {
