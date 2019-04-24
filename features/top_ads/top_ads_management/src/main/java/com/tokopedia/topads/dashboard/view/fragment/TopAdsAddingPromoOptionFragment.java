@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsAddingPromoOptionAdapter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsAddingPromoOptionView;
 import com.tokopedia.topads.dashboard.view.model.TopAdsAddingPromoOptionModel;
@@ -22,6 +23,7 @@ public class TopAdsAddingPromoOptionFragment extends BaseListFragment<TopAdsAddi
         implements TopAdsAddingPromoOptionView {
 
     public static final String EXTRA_SELECTED_OPTION = "selected_option";
+    public static final String DASHBOARD_USER_ADD_PRODUCT = "dashboard_user_add_product";
 
     private TopAdsAddingPromoOptionPresenter promoOptionPresenter;
     @Override
@@ -68,6 +70,7 @@ public class TopAdsAddingPromoOptionFragment extends BaseListFragment<TopAdsAddi
     public void onItemClicked(TopAdsAddingPromoOptionModel topAdsAddingPromoOptionModel) {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_SELECTED_OPTION, topAdsAddingPromoOptionModel.getOptionId());
+        intent.putExtra(TopAdsExtraConstant.EXTRA_SOURCE, DASHBOARD_USER_ADD_PRODUCT);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
