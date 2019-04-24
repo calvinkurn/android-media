@@ -10,6 +10,7 @@ import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightInsuranceViewMod
 import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel
 import javax.inject.Inject
 
 /**
