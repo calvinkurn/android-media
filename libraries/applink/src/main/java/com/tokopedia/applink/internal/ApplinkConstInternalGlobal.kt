@@ -1,6 +1,6 @@
 package com.tokopedia.applink.internal
 
-import com.tokopedia.applink.internal.ApplinkConstInternal.INTERNAL_SCHEME
+import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
  * This class is used to store deeplink "tokopedia-android-internal://global".
@@ -11,7 +11,7 @@ object ApplinkConstInternalGlobal {
     val HOST_GLOBAL = "global"
 
     @JvmField
-    val INTERNAL_GLOBAL = "${INTERNAL_SCHEME}://${HOST_GLOBAL}"
+    val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
 
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw
