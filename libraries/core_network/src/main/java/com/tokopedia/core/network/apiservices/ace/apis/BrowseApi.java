@@ -105,6 +105,7 @@ public interface BrowseApi {
     String RELATED = "related";
     String PAGE = "page";
     String PAGE_SIZE = "page_size";
+    String IS_CURATED = "is_curated";
 
     /**
      * @param sc
