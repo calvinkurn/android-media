@@ -34,6 +34,7 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.merchantVoucher)
 

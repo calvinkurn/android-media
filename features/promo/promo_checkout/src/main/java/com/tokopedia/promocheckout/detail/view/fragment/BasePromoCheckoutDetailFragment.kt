@@ -133,6 +133,15 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         NetworkErrorHelper.createSnackbarRedWithAction(activity, message, { onClickUse() }).showRetrySnackbar()
     }
 
+    override fun onErrorValidatePromoStacking(e: Throwable) {
+        var message = ErrorHandler.getErrorMessage(activity, e)
+        if (e is CheckPromoCodeException) {
+            message = e.message
+        }
+        NetworkErrorHelper.showRedCloseSnackbar(activity, message)
+        setDisabledButtonUse()
+    }
+
     override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
 
     }
@@ -142,7 +151,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         val variant = "global"
         val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
         val promoStackingData = PromoStackingData(typePromo, data.codes[0],
-                data.message.text, data.titleDescription,
+                data.message.text, data.titleDescription, "",
                 data.cashbackWalletAmount, data.message.state.mapToStatePromoStackingCheckout(),
                 variant.mapToVariantPromoStackingCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)

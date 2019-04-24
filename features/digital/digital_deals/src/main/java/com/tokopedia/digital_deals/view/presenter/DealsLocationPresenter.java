@@ -47,7 +47,6 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
     }
 
     public void getLocations() {
-        getView().showProgressBar();
         getSearchLocationListRequestUseCase.setRequestParams(getView().getParams());
         getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -59,7 +58,6 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
             public void onError(Throwable e) {
                 CommonUtils.dumper("enter error");
                 e.printStackTrace();
-                getView().hideProgressBar();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -78,8 +76,6 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
                 mTopLocations = locationResponse.getLocations();
                 mAllLocations = locationResponse.getLocations();
                 getView().renderFromSearchResults(mTopLocations, isTopLocations);
-                getView().showViews();
-                getView().hideProgressBar();
             }
         });
     }

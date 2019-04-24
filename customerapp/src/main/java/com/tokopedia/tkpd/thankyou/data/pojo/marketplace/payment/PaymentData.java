@@ -34,6 +34,12 @@ public class PaymentData {
     @SerializedName("payment_gateway")
     @Expose
     private PaymentGateway paymentGateway;
+    @SerializedName("payment_type")
+    @Expose
+    private PaymentType paymentType;
+    @SerializedName("stacked_promos")
+    @Expose
+    private StackedPromos stackedPromos;
 
     public int getPaymentId() {
         return paymentId;
@@ -97,5 +103,17 @@ public class PaymentData {
 
     public void setPaymentGateway(PaymentGateway paymentGateway) {
         this.paymentGateway = paymentGateway;
+    }
+
+    public PaymentType getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(PaymentType paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public StackedPromos getStackedPromos() {
+        return stackedPromos;
     }
 }

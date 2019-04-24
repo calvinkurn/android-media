@@ -412,7 +412,9 @@ public class ExploreFragment
             autoCompleteLayout.setVisibility(View.GONE);
         }
         exploreParams.setSearchParam(text);
-        adapter.clearProductElements();
+        adapter.removeEmptySearch();
+        adapter.clearAllElements();
+        adapter.addElement(sections);
         presenter.unsubscribeAutoComplete();
         presenter.getData(exploreParams);
     }
@@ -436,9 +438,9 @@ public class ExploreFragment
 
     @Override
     public void onSearchReset() {
-        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
             autoCompleteLayout.setVisibility(View.GONE);
-        dropKeyboard();
+        }
         searchView.removeSearchTextWatcher();
         exploreParams.resetSearch();
         bottomActionView.show(false);
