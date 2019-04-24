@@ -908,18 +908,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
                                     responseGetPromoStack.getData().getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
                                 flagError = true;
+                                errMessage = responseGetPromoStack.getData().getMessage().getState();
                             }
                             for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStack.getData().getVoucherOrders()) {
                                 if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
                                     flagError = true;
+                                    errMessage = voucherOrdersItemUiModel.getMessage().getText();
                                     break;
                                 }
                             }
 
                             if (flagError) {
-                                if (!responseGetPromoStack.getData().getVoucherOrders().isEmpty()) {
-                                    errMessage = responseGetPromoStack.getData().getVoucherOrders().get(0).getMessage().getText();
-                                }
                                 mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
                                 getView().showToastError(errMessage);
                                 getView().resetCourier(cartPosition);
