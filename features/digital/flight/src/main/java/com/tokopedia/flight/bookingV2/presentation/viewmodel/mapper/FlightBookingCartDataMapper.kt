@@ -21,6 +21,7 @@ class FlightBookingCartDataMapper @Inject constructor(private val flightBookingA
 
     fun transform(flightBookingCartData: FlightBookingCartData?, entity: GetCartEntity?): FlightBookingCartData {
         val data = flightBookingCartData ?: FlightBookingCartData()
+
         if (entity != null) {
             data.id = entity.cartId
             data.refreshTime = entity.attributes.flight.repriceTime
@@ -113,9 +114,10 @@ class FlightBookingCartDataMapper @Inject constructor(private val flightBookingA
             : List<FlightDetailRouteViewModel> {
         for (itemDetail in routeDetailList) {
             for (itemRoute in routeEntityList) {
-                if (itemDetail.getDepartureAirportCode().equals(itemRoute.departureAirportCode) &&
-                        itemDetail.getArrivalAirportCode().equals(itemRoute.arrivalAirportCode)) {
+                if (itemDetail.getDepartureAirportCode().equals(itemRoute.departureAirportCode, true) &&
+                        itemDetail.getArrivalAirportCode().equals(itemRoute.arrivalAirportCode, true)) {
                     itemDetail.setRefundable(itemRoute.isRefundable)
+                    Log.d("STATUS REFUND", itemRoute.isRefundable)
                 }
             }
         }
