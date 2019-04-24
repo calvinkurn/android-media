@@ -121,7 +121,7 @@ class FlightBookingCartDataMapper @Inject constructor(private val flightBookingA
                 }
             }
         }
-        return routeDetailList
+        return detailRouteList
     }
 
     private fun transform(voucher: Voucher): FlightBookingVoucherViewModel {
