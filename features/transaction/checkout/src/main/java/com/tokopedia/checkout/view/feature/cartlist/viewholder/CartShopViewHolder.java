@@ -125,12 +125,12 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectShop.setChecked(cartShopHolderData.isAllSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
 
-        if (cartShopHolderData.getShopGroupData().isFulfillment()) {
-            imgFulfillment.setVisibility(View.VISIBLE);
+        imgFulfillment.setVisibility(cartShopHolderData.getShopGroupData().isFulfillment() ?
+                View.VISIBLE : View.GONE);
+        if (!TextUtils.isEmpty(cartShopHolderData.getShopGroupData().getFulfillmentName())) {
             tvFulfillDistrict.setVisibility(View.VISIBLE);
             tvFulfillDistrict.setText(cartShopHolderData.getShopGroupData().getFulfillmentName());
         } else {
-            imgFulfillment.setVisibility(View.GONE);
             tvFulfillDistrict.setVisibility(View.GONE);
         }
 

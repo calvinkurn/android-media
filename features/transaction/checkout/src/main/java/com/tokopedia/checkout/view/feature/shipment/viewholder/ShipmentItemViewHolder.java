@@ -451,12 +451,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderFulfillment(ShipmentCartItemModel model) {
-        if (model.isFulfillment()) {
-            imgFulfill.setVisibility(View.VISIBLE);
+        imgFulfill.setVisibility(model.isFulfillment() ? View.VISIBLE : View.GONE);
+        if (!TextUtils.isEmpty(model.getFulfillmentName())) {
             tvFulfillName.setVisibility(View.VISIBLE);
             tvFulfillName.setText(model.getFulfillmentName());
         } else {
-            imgFulfill.setVisibility(View.GONE);
             tvFulfillName.setVisibility(View.GONE);
         }
     }
