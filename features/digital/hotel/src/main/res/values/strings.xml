@@ -51,8 +51,20 @@
     <string name="hotel_destination_empty_view_holder_subtitle">Coba cari ulang pakai kata kunci lain.</string>
     <string name="hotel_destination_toolbar_title">Tujuan</string>
 
+    <string name="hotel_room_list_check_in_check_out_date">%1$s - %2$s</string>
     <string name="hotel_room_list_filter_pay_in_hotel">Bayar di Hotel</string>
     <string name="hotel_room_list_filter_free_breakfast">Sarapan Gratis</string>
     <string name="hotel_room_list_filter_free_cancelable">Pembatalan Gratis</string>
+    <string name="hotel_room_not_found_title_after_filter">Kamar yang kamu cari nggak ketemu</string>
+    <string name="hotel_room_not_found_subtitle_after_filter">Coba ubah Filter dan cari sekali lagi, yuk!</string>
+    <string name="hotel_room_not_found_button_text">Reset Filter</string>
+    <string name="hotel_room_not_found_title">Nggak ada kamar yang cocok sama pencarianmu</string>
+    <string name="hotel_room_not_found_subtitle">Tenang, mungkin kamu cuma perlu ubah detail pencarian di awal</string>
+    <string name="hotel_room_room_left_text">Sisa %1$s Kamar!</string>
+    <string name="hotel_room_full_text_view">Sudah Penuh</string>
+    <string name="hotel_room_list_free_breakfast">Sarapan Gratis</string>
+    <string name="hotel_room_list_breakfast_not_included">Tanpa Sarapan</string>
+    <string name="hotel_room_list_refundable_with_condition">Refund Bersyarat</string>
+    <string name="hotel_room_list_not_refundable">Non-refundable</string>
 
 </resources>

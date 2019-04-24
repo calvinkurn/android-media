@@ -54,7 +54,6 @@ class HotelRoomListViewModel @Inject constructor(
             }
             roomListResult.value = Success(list)
         } else {
-            isFilter = false
             roomListResult.value = Success(roomList.toMutableList())
         }
     }

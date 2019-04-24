@@ -25,11 +25,14 @@ import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
 import com.tokopedia.hotel.roomlist.widget.ChipAdapter
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
+import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
 import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
 import kotlinx.android.synthetic.main.widget_filter_chip_recycler_view.view.*
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -69,8 +72,6 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
             hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
                     TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut))
         }
-
-        getRoomList(false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -78,10 +79,16 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
 
         roomListViewModel.roomListResult.observe(this, android.arch.lifecycle.Observer { when (it) {
             is Success -> {
-                if (!roomListViewModel.isFilter) roomListViewModel.roomList = it.data
+                if (!roomListViewModel.isFilter) {
+                    roomListViewModel.roomList = it.data
+                    showFilterRecyclerView(it.data.size > 0)
+                } else showFilterRecyclerView(true)
                 renderList(it.data)
             }
-            is Fail -> { }
+            is Fail -> {
+                showGetListError(it.throwable)
+                showFilterRecyclerView(false)
+            }
         } })
     }
 
@@ -100,6 +107,8 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         initView()
         renderRoomAndGuestView()
         renderDate()
+
+        getRoomList(false)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -119,8 +128,8 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
                 val itemPosition = parent.getChildLayoutPosition(view)
                 val itemCount = state.getItemCount()
 
-                outRect.left = if (itemPosition == 0) 8 else 0
-                outRect.right = if (itemCount > 0 && itemPosition == itemCount - 1) 8 else 0
+                outRect.left = if (itemPosition == 0) 20 else 0
+                outRect.right = if (itemCount > 0 && itemPosition == itemCount - 1) 20 else 0
             }
         })
 
@@ -128,7 +137,12 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         hotel_date_layout.setOnClickListener { onDateClicked() }
     }
 
+    fun showFilterRecyclerView(show: Boolean) {
+        filter_recycler_view.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
     fun getRoomList(fromCloud: Boolean = true) {
+        showFilterRecyclerView(false)
         loadInitialData()
         roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list), hotelRoomListPageModel, fromCloud)
     }
@@ -143,7 +157,89 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
     }
 
     fun onDateClicked() {
+        configAndRenderCheckInDate()
+    }
 
+    private fun configAndRenderCheckInDate() {
+        val minDate = TravelDateUtil.removeTime(TravelDateUtil.addTimeToSpesificDate(
+                TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1))
+
+        val maxDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time,
+                Calendar.YEAR, 1)
+        val maxDateCalendar = TravelDateUtil.getCurrentCalendar()
+        maxDateCalendar.time = maxDate
+        maxDateCalendar.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY)
+        maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_SEC_IN_DAY)
+        maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_MIN_SEC_IN_DAY)
+
+        val selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkIn)
+
+        renderTravelCalendar(selectedDate, minDate, maxDateCalendar.time, getString(R.string.hotel_check_in_calendar_title), TAG_CALENDAR_CHECK_IN)
+    }
+
+    private fun configAndRenderCheckOutDate() {
+        val minDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.stringToDate(
+                TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkIn), Calendar.DATE, 1)
+
+        val maxDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD,
+                hotelRoomListPageModel.checkIn), Calendar.DATE, MAX_SELECTION_DATE)
+        val maxDateCalendar = TravelDateUtil.getCurrentCalendar()
+        maxDateCalendar.time = maxDate
+        maxDateCalendar.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY)
+        maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_SEC_IN_DAY)
+        maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_MIN_SEC_IN_DAY)
+
+        val selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut)
+
+        renderTravelCalendar(selectedDate, minDate, maxDateCalendar.time, getString(R.string.hotel_check_out_calendar_title), TAG_CALENDAR_CHECK_OUT)
+    }
+
+    private fun renderTravelCalendar(selectedDate: Date, minDate: Date, maxDate: Date, title: String, calendarTag: String) {
+        val travelCalendarBottomSheet = TravelCalendarBottomSheet.Builder()
+                .setMinDate(minDate)
+                .setMaxDate(maxDate)
+                .setSelectedDate(selectedDate)
+                .setShowHoliday(true)
+                .setTitle(title)
+                .build()
+        travelCalendarBottomSheet.setListener(object : TravelCalendarBottomSheet.ActionListener {
+            override fun onClickDate(dateSelected: Date) {
+                val calendarSelected = Calendar.getInstance()
+                calendarSelected.time = dateSelected
+                if (calendarTag == TAG_CALENDAR_CHECK_IN) {
+                    onCheckInDateChanged(dateSelected)
+                    configAndRenderCheckOutDate()
+                } else if (calendarTag == TAG_CALENDAR_CHECK_OUT) {
+                    onCheckOutDateChanged(dateSelected)
+                }
+            }
+        })
+        travelCalendarBottomSheet.show(activity!!.supportFragmentManager, calendarTag)
+    }
+
+    private fun onCheckInDateChanged(newCheckInDate: Date) {
+        hotelRoomListPageModel.checkIn = TravelDateUtil.dateToString(
+                TravelDateUtil.YYYY_MM_DD, newCheckInDate)
+        hotelRoomListPageModel.checkInDateFmt = TravelDateUtil.dateToString(
+                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckInDate)
+
+        if (newCheckInDate >= TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut)) {
+            val tomorrow = TravelDateUtil.addTimeToSpesificDate(newCheckInDate,
+                    Calendar.DATE, 1)
+            hotelRoomListPageModel.checkOut = TravelDateUtil.dateToString(
+                    TravelDateUtil.YYYY_MM_DD, tomorrow)
+            hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(
+                    TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
+        }
+    }
+
+    private fun onCheckOutDateChanged(newCheckOutDate: Date) {
+        hotelRoomListPageModel.checkOut = TravelDateUtil.dateToString(
+                TravelDateUtil.YYYY_MM_DD, newCheckOutDate)
+        hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(
+                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
+        renderDate()
+        getRoomList(true)
     }
 
     override fun getAdapterTypeFactory(): RoomListTypeFactory {
@@ -187,14 +283,20 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
     }
 
     fun renderDate() {
-        date_text_view.text = "${hotelRoomListPageModel.checkInDateFmt} - ${hotelRoomListPageModel.checkOutDateFmt}"
+        date_text_view.text = getString(R.string.hotel_room_list_check_in_check_out_date,
+                hotelRoomListPageModel.checkInDateFmt, hotelRoomListPageModel.checkOutDateFmt)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         var emptyModel = EmptyModel()
-        emptyModel.title = "Kamar yang kamu cari nggak ketemu"
-        emptyModel.content = "Coba ubah Filter dan cari sekali lagi, yuk!"
-        emptyModel.buttonTitle = "Reset Filter"
+        if (roomListViewModel.isFilter) {
+            emptyModel.title = getString(R.string.hotel_room_not_found_title_after_filter)
+            emptyModel.content = getString(R.string.hotel_room_not_found_subtitle_after_filter)
+            emptyModel.buttonTitle = getString(R.string.hotel_room_not_found_button_text)
+        } else {
+            emptyModel.title = getString(R.string.hotel_room_not_found_title)
+            emptyModel.content = getString(R.string.hotel_room_not_found_subtitle)
+        }
         return emptyModel
     }
 
@@ -217,6 +319,16 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         const val ARG_TOTAL_ROOM = "arg_total_room"
         const val ARG_TOTAL_ADULT = "arg_total_adult"
         const val ARG_TOTAL_CHILDREN = "arg_total_children"
+        const val TAG_GUEST_INFO = "guestHotelInfo"
+        const val EXTRA_ROOM_DATA = "extra_room_data"
+        const val EXTRA_HOTEL_ROOM_LIST_MODEL = "extra_room_list_model"
+
+        val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"
+        val TAG_CALENDAR_CHECK_OUT = "calendarHotelCheckOut"
+        val ONE_DAY: Long = TimeUnit.DAYS.toMillis(1)
+        val MAX_SELECTION_DATE = 30
+        val DEFAULT_LAST_HOUR_IN_DAY = 23
+        val DEFAULT_LAST_MIN_SEC_IN_DAY = 59
 
         fun createInstance(propertyId: Int = 0, checkIn: String = "", checkOut: String = "",
                            totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0): HotelRoomListFragment {
@@ -232,11 +344,6 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
                 }
             }
         }
-
-        val TAG_GUEST_INFO = "guestHotelInfo"
-
-        const val EXTRA_ROOM_DATA = "extra_room_data"
-        const val EXTRA_HOTEL_ROOM_LIST_MODEL = "extra_room_list_model"
     }
 
 }

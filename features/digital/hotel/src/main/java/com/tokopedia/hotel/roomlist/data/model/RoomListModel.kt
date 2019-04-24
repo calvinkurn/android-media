@@ -20,5 +20,6 @@ data class RoomListModel(
         var isCcRequired: Boolean = false,
         var price: String = "",
         var actualPrice: String = "",
-        var images: List<String> = listOf()
+        var images: List<String> = listOf(),
+        var roomLeft: Int = 0
 )

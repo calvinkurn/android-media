@@ -18,9 +18,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_12">
-
+        android:layout_height="wrap_content">
 
         <com.tokopedia.hotel.roomlist.widget.ImageViewPager
             android:id="@+id/room_image_view_pager"
@@ -29,211 +27,224 @@
             app:layout_constraintTop_toTopOf="parent"
             android:background="@color/colorGray"/>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/room_meta_info_layout"
+        <include layout="@layout/item_hotel_room_full"
+            android:id="@+id/room_full_layout"
+            app:layout_constraintTop_toTopOf="@id/room_image_view_pager"
+            app:layout_constraintBottom_toBottomOf="@id/room_image_view_pager"
+            android:visibility="gone"
+            />
+
+        <LinearLayout
+            android:id="@+id/room_description_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/room_image_view_pager"
-            android:padding="@dimen/dp_12">
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/room_name_text_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:lines="1"
-                app:fontSize="small"
-                app:weight="medium"
-                tools:text="Kamar International Deluxe Double Bed Kamar International Deluxe Double Bed "
-                android:ellipsize="end"
-                app:textViewTheme="lightPrimary"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/arrow_right"
-                app:layout_constraintRight_toLeftOf="@id/arrow_right"
-                />
-
-            <ImageView
-                android:id="@+id/arrow_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/dp_6"
-                android:src="@drawable/ic_arrow_right_grey"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/room_name_text_view"
-                app:layout_constraintBottom_toBottomOf="@id/room_name_text_view"
-                />
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/max_occupancy_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fontSize="micro"
-                android:layout_marginTop="@dimen/dp_10"
-                app:layout_constraintTop_toBottomOf="@id/room_name_text_view"
-                tools:text="Maksimum: 2 dewasa, 1 anak"
-                />
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/bed_info_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_3"
-                app:fontSize="micro"
-                app:layout_constraintTop_toBottomOf="@id/max_occupancy_text_view"
-                tools:text="27 m² • 1 super-king atau 2 single" />
-        </android.support.constraint.ConstraintLayout>
-
-        <View android:id="@+id/seperator"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/bg_line_separator"
-            android:layout_marginTop="@dimen/dp_8"
-            app:layout_constraintTop_toBottomOf="@id/room_meta_info_layout"/>
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/room_info_and_facility_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/seperator"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingStart="@dimen/dp_12"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingEnd="@dimen/dp_12"
-            android:paddingRight="@dimen/dp_12"
+            android:orientation="vertical"
             android:paddingBottom="@dimen/dp_12"
             >
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/room_facility_recycler_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_12"
-                app:layout_constraintEnd_toStartOf="@id/room_info_layout"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_height="100dp" />
-
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/room_info_layout"
-                android:layout_width="wrap_content"
+                android:id="@+id/room_meta_info_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
+               android:padding="@dimen/dp_12">
 
                 <com.tokopedia.design.component.TextViewCompat
-                    android:id="@+id/room_price_text_view"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/room_name_text_view"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_32"
+                    android:lines="1"
                     app:fontSize="small"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:textViewTheme="lightPrimary"
                     app:weight="medium"
-                    tools:text="Rp 50.000.000"
-                    tools:textSize="@dimen/sp_16"
-                    tools:textStyle="bold" />
+                    tools:text="Kamar International Deluxe Double Bed Kamar International Deluxe Double Bed "
+                    android:ellipsize="end"
+                    app:textViewTheme="lightPrimary"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/arrow_right"
+                    app:layout_constraintRight_toLeftOf="@id/arrow_right"
+                    />
 
-                <com.tokopedia.design.component.TextViewCompat
-                    android:id="@+id/per_room_text_view"
+                <ImageView
+                    android:id="@+id/arrow_right"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_6"
-                    android:textSize="@dimen/sp_10"
+                    android:padding="@dimen/dp_6"
+                    android:src="@drawable/ic_arrow_right_grey"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/room_price_text_view"
-                    app:textViewTheme="lightDisabled"
-                    android:text="/kamar/malam"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/room_name_text_view"
+                    app:layout_constraintBottom_toBottomOf="@id/room_name_text_view"
                     />
 
                 <com.tokopedia.design.component.TextViewCompat
-                    android:id="@+id/include_tax_text_view"
+                    android:id="@+id/max_occupancy_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:fontSize="micro"
+                    android:layout_marginTop="@dimen/dp_10"
+                    app:layout_constraintTop_toBottomOf="@id/room_name_text_view"
+                    tools:text="Maksimum: 2 dewasa, 1 anak"
+                    />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/bed_info_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_3"
+                    app:fontSize="micro"
+                    app:layout_constraintTop_toBottomOf="@id/max_occupancy_text_view"
+                    tools:text="27 m² • 1 super-king atau 2 single" />
+            </android.support.constraint.ConstraintLayout>
+
+            <View android:id="@+id/seperator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/bg_line_separator"
+                android:layout_marginTop="@dimen/dp_8"
+                app:layout_constraintTop_toBottomOf="@id/room_meta_info_layout"/>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/room_info_and_facility_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/seperator"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingStart="@dimen/dp_12"
+                android:paddingLeft="@dimen/dp_12"
+                android:paddingEnd="@dimen/dp_12"
+                android:paddingRight="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_12"
+                >
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/room_facility_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:layout_marginRight="@dimen/dp_12"
+                    app:layout_constraintEnd_toStartOf="@id/room_info_layout"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:layout_height="100dp" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/room_info_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_10"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/per_room_text_view"
-                    app:textViewTheme="lightDisabled"
-                    android:text="Termasuk pajak" />
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/room_price_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_32"
+                        app:fontSize="small"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:textViewTheme="lightPrimary"
+                        app:weight="medium"
+                        tools:text="Rp 50.000.000"
+                        tools:textSize="@dimen/sp_16"
+                        tools:textStyle="bold" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/per_room_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_6"
+                        android:textSize="@dimen/sp_10"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/room_price_text_view"
+                        app:textViewTheme="lightDisabled"
+                        android:text="/kamar/malam"
+                        />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/include_tax_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_10"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/per_room_text_view"
+                        app:textViewTheme="lightDisabled"
+                        android:text="Termasuk pajak" />
+
+                </android.support.constraint.ConstraintLayout>
             </android.support.constraint.ConstraintLayout>
-        </android.support.constraint.ConstraintLayout>
 
-       <android.support.constraint.ConstraintLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           app:layout_constraintTop_toBottomOf="@id/room_info_and_facility_layout"
-           android:layout_marginStart="@dimen/dp_12"
-           android:layout_marginRight="@dimen/dp_12"
-           android:layout_marginEnd="@dimen/dp_12"
-           android:layout_marginBottom="8dp"
-           >
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/room_info_and_facility_layout"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginRight="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginBottom="8dp"
+                >
 
-           <com.tokopedia.design.component.TextViewCompat
-               android:id="@+id/room_left_text_view"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               app:fontSize="micro"
-               android:textColor="@color/red_pink"
-               app:layout_constraintTop_toTopOf="parent"
-               app:layout_constraintEnd_toEndOf="parent"
-               tools:text="Sisa 4 Kamar!"
-               tools:visibility="gone"
-               />
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/room_left_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fontSize="micro"
+                    android:textColor="@color/red_pink"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:text="Sisa 4 Kamar!"
+                    tools:visibility="gone"
+                    />
 
-           <com.tokopedia.design.component.ButtonCompat
-               android:id="@+id/choose_room_button"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="@dimen/dp_8"
-               app:buttonCompatSize="big"
-               app:buttonCompatTextAllCaps="false"
-               app:buttonCompatType="transaction"
-               android:text="Pilih Kamar"
-               tools:layout_height="@dimen/dp_40"
-               android:padding="@dimen/dp_12"
-               tools:gravity="center_vertical"
-               app:layout_constraintTop_toBottomOf="@id/room_left_text_view"
-               app:layout_constraintEnd_toEndOf="parent"
-               app:layout_constraintRight_toRightOf="parent" />
+                <com.tokopedia.design.component.ButtonCompat
+                    android:id="@+id/choose_room_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    app:buttonCompatSize="big"
+                    app:buttonCompatTextAllCaps="false"
+                    app:buttonCompatType="transaction"
+                    android:text="Pilih Kamar"
+                    tools:layout_height="@dimen/dp_40"
+                    android:padding="@dimen/dp_12"
+                    tools:gravity="center_vertical"
+                    app:layout_constraintTop_toBottomOf="@id/room_left_text_view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
 
-           <android.support.constraint.ConstraintLayout
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintBottom_toBottomOf="@id/choose_room_button"
-               >
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/choose_room_button"
+                    >
 
-               <com.tokopedia.design.component.TextViewCompat
-                   android:id="@+id/pay_hotel_text_view"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   app:layout_constraintTop_toTopOf="parent"
-                   app:layout_constraintStart_toStartOf="parent"
-                   android:text="Bayar di Hotel"
-                   android:textColor="@color/tkpd_main_orange"/>
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/pay_hotel_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:text="Bayar di Hotel"
+                        android:textColor="@color/tkpd_main_orange"/>
 
-               <com.tokopedia.design.component.TextViewCompat
-                   android:id="@+id/cc_not_required_text_view"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_marginEnd="8dp"
-                   android:layout_marginRight="8dp"
-                   android:text="Tanpa Jaminan Kartu Kredit"
-                   android:textSize="@dimen/sp_10"
-                   app:layout_constraintEnd_toEndOf="parent"
-                   app:layout_constraintStart_toStartOf="parent"
-                   app:layout_constraintTop_toBottomOf="@id/pay_hotel_text_view" />
-
-
-           </android.support.constraint.ConstraintLayout>
-       </android.support.constraint.ConstraintLayout>
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/cc_not_required_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="Tanpa Jaminan Kartu Kredit"
+                        android:textSize="@dimen/sp_10"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/pay_hotel_text_view" />
+                </android.support.constraint.ConstraintLayout>
+            </android.support.constraint.ConstraintLayout>
+        </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

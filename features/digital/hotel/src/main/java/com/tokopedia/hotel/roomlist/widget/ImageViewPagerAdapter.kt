@@ -13,7 +13,7 @@ import com.tokopedia.hotel.R
  * @author by jessica on 16/04/19
  */
 
-class ImageViewPagerAdapter(val images: List<String>, val clickListener: ImageViewPager.ImageViewPagerListener?): RecyclerView.Adapter<ImageViewPagerAdapter.ViewHolder>() {
+class ImageViewPagerAdapter(val images: MutableList<String>, val clickListener: ImageViewPager.ImageViewPagerListener?): RecyclerView.Adapter<ImageViewPagerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
         = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_image_slider, parent, false))
@@ -38,10 +38,15 @@ class ImageViewPagerAdapter(val images: List<String>, val clickListener: ImageVi
         }
     }
 
+    fun addImages(list: List<String>) {
+        images.clear()
+        images.addAll(list)
+        notifyDataSetChanged()
+    }
+
     inner class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
         val bannerImage: ImageView = view.findViewById(R.id.image_banner)
     }
-
 
 }
 

@@ -1,7 +1,6 @@
 package com.tokopedia.hotel.roomlist.widget
 
 import android.content.Context
-import android.media.Image
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PagerSnapHelper
 import android.support.v7.widget.RecyclerView
@@ -49,14 +48,15 @@ class ImageViewPager: BaseCustomView {
     fun buildView() {
         visibility = View.VISIBLE
         indicator_banner_container.visibility = View.VISIBLE
-        indicatorItems.clear()
-        indicator_banner_container.removeAllViews()
 
-        viewpager_banner_category.setHasFixedSize(true)
         indicatorItems.clear()
         indicator_banner_container.removeAllViews()
+        viewpager_banner_category.setHasFixedSize(true)
+
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         viewpager_banner_category.layoutManager = layoutManager
+
+        imageViewPagerAdapter = ImageViewPagerAdapter(arrayListOf(), imageViewPagerListener)
         viewpager_banner_category.adapter = imageViewPagerAdapter
 
         for (count in 0..imageUrls.size - 1) {
@@ -68,6 +68,7 @@ class ImageViewPager: BaseCustomView {
             indicatorItems.add(pointView)
             indicator_banner_container.addView(pointView)
         }
+
         viewpager_banner_category.clearOnScrollListeners()
         viewpager_banner_category.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -93,7 +94,9 @@ class ImageViewPager: BaseCustomView {
     }
 
     fun setImages(images: List<String>) {
-        viewpager_banner_category.setAdapter(ImageViewPagerAdapter(images, imageViewPagerListener))
+        imageUrls.clear()
+        imageUrls.addAll(images)
+        imageViewPagerAdapter?.addImages(images)
     }
 
     fun getIndicatorFocus(): Int = R.drawable.indicator_focus
