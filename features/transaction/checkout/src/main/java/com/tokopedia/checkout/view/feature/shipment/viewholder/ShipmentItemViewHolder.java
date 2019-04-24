@@ -797,17 +797,21 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvChooseDuration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActionListener.onChooseShipmentDuration(
-                        shipmentCartItemModel, currentAddress, shopShipmentList, getAdapterPosition()
-                );
+                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    mActionListener.onChooseShipmentDuration(
+                            shipmentCartItemModel, currentAddress, shopShipmentList, getAdapterPosition()
+                    );
+                }
             }
         });
 
         tvChangeSelectedDuration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActionListener.onChangeShippingDuration(shipmentCartItemModel, currentAddress,
-                        shopShipmentList, getAdapterPosition());
+                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    mActionListener.onChangeShippingDuration(shipmentCartItemModel, currentAddress,
+                            shopShipmentList, getAdapterPosition());
+                }
             }
         });
 
@@ -815,9 +819,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvChangeSelectedCourierRecommendation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActionListener.onChangeShippingCourier(
-                        shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
-                        currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition());
+                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    mActionListener.onChangeShippingCourier(
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
+                            currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition());
+                }
             }
         });
 
@@ -887,13 +893,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                                 shipmentCartItemModel, tmpRecipientAddressModel);
 
                         if (!shipmentCartItemModel.isStateHasLoadCourierState()) {
-                            mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
-                                    shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
-                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), true);
-                            shipmentCartItemModel.setStateLoadingCourierState(true);
-                            shipmentCartItemModel.setStateHasLoadCourierState(true);
-                            llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
-                            llSelectShipmentRecommendation.setVisibility(View.GONE);
+                            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                                mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
+                                        shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
+                                        shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), true);
+                                shipmentCartItemModel.setStateLoadingCourierState(true);
+                                shipmentCartItemModel.setStateHasLoadCourierState(true);
+                                llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
+                                llSelectShipmentRecommendation.setVisibility(View.GONE);
+                            }
                         }
                     }
                 } else {
@@ -901,7 +909,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
                 }
             }
-
         }
     }
 
