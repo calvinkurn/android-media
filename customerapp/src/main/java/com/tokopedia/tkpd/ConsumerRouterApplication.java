@@ -92,6 +92,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -2809,10 +2810,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent gotoSearchAutoCompletePage(Context context) {
-        Intent intent = new Intent(context, SearchActivity.class);
-        intent.putExtra(SearchActivity.EXTRA_IS_AUTOCOMPLETE, true);
-
-        return intent;
+        return new Intent(context, AutoCompleteActivity.class);
     }
 
     @Override

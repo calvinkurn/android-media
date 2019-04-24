@@ -125,7 +125,7 @@ public class SearchActivity extends DiscoveryActivity
         return createIntentToSearchActivityFromBundle(context, bundle);
     }
 
-    @DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+    //@DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
     public static Intent getCallingApplinkAutoCompleteSearchIntent(Context context, Bundle bundle) {
         Intent intent = createIntentToSearchActivityFromBundle(context, bundle);
 
