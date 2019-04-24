@@ -61,6 +61,8 @@ public class Utils {
     public static String BRAND_QUERY_PARAM_BRAND = "brand";
     public static String QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
     public static String QUERY_PARAM_CITY_ID = "cities";
+    public static String LOCATION_NAME = "jakarta";
+    public static int LOCATION_ID = 318;
     public static final String NEXT_URL = "nexturl";
     private static final float MAX_RADIUS = 25.0f;
     private static final float MIN_RADIUS = 0.0f;
@@ -266,8 +268,8 @@ public class Utils {
         }
         if(location == null) {
             location = new Location();
-            location.setName("jakarta");
-            location.setId(318);
+            location.setName(LOCATION_NAME);
+            location.setId(LOCATION_ID);
             updateLocation(context, location);
         }
         return location;
