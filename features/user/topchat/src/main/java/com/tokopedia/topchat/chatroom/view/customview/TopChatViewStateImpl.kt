@@ -200,11 +200,11 @@ class TopChatViewStateImpl(
             listMenu.add(Menus.ItemMenus(profileText, R.drawable.ic_plus_add))
         }
 
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation),
-                R.drawable.ic_trash))
-
         listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_incoming_settings), R.drawable
                 .ic_chat_settings))
+
+        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation),
+                R.drawable.ic_trash))
 
         headerMenu.itemMenuList = listMenu
         headerMenu.setActionText(view.context.getString(R.string.cancel_bottom_sheet))
