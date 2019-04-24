@@ -222,7 +222,11 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+        try {
+           super.onRestoreInstanceState(savedInstanceState);
+        } catch (Exception e) {
+           reloadPage();
+        }
     }
 
     public boolean isFirstTimeUser() {
