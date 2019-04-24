@@ -868,7 +868,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
             CurrentApplyCode currentApplyCode = new CurrentApplyCode();
-            currentApplyCode.setCodes(code);
+            currentApplyCode.setCode(code);
             currentApplyCode.setType(PARAM_LOGISTIC);
             generatedPromo.setCurrentApplyCode(currentApplyCode);
         }
@@ -950,7 +950,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             CurrentApplyCode currentApplyCode = new CurrentApplyCode();
             if (!promoCode.isEmpty()) {
-                currentApplyCode.setCodes(promoCode);
+                currentApplyCode.setCode(promoCode);
                 currentApplyCode.setType(PARAM_GLOBAL);
             }
             promo.setCurrentApplyCode(currentApplyCode);
@@ -1388,7 +1388,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                 CurrentApplyCode currentApplyCode = new CurrentApplyCode();
                 if (!model.getCode().isEmpty()) {
-                    currentApplyCode.setCodes(model.getCode());
+                    currentApplyCode.setCode(model.getCode());
                     currentApplyCode.setType(PARAM_GLOBAL);
                 }
                 promo.setCurrentApplyCode(currentApplyCode);
@@ -1402,7 +1402,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             CurrentApplyCode currentApplyCode = new CurrentApplyCode();
                             if (!model.getCode().isEmpty()) {
-                                currentApplyCode.setCodes(model.getCode());
+                                currentApplyCode.setCode(model.getCode());
                                 currentApplyCode.setType(type);
                             }
                             promo.setCurrentApplyCode(currentApplyCode);

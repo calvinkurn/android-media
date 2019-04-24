@@ -1115,7 +1115,7 @@ public class CartListPresenter implements ICartListPresenter {
 
                 CurrentApplyCode currentApplyCode = new CurrentApplyCode();
                 if (!model.getCode().isEmpty()) {
-                    currentApplyCode.setCodes(model.getCode());
+                    currentApplyCode.setCode(model.getCode());
                     currentApplyCode.setType(PARAM_GLOBAL);
                 }
                 promo.setCurrentApplyCode(currentApplyCode);
@@ -1130,7 +1130,7 @@ public class CartListPresenter implements ICartListPresenter {
 
                             CurrentApplyCode currentApplyCode = new CurrentApplyCode();
                             if (!model.getCode().isEmpty()) {
-                                currentApplyCode.setCodes(model.getCode());
+                                currentApplyCode.setCode(model.getCode());
                                 currentApplyCode.setType(type);
                             }
                             promo.setCurrentApplyCode(currentApplyCode);
