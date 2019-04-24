@@ -24,7 +24,7 @@ initOkBuck( ) {
     echo "[cache]" >> .buckconfig
     echo "mode = http" >> .buckconfig
     echo "http_url = http://jenkins.tkpd:6457" >> .buckconfig
-    echo "http_mode = readwrite" >> .buckconfig
+    echo "http_mode = read" >> .buckconfig
     echo "[android]" >> .buckconfig
     echo "sdk_path = $1" >> .buckconfig
 

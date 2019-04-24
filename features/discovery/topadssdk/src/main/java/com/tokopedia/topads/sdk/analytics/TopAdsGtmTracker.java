@@ -103,7 +103,7 @@ public class TopAdsGtmTracker {
                 "brand", "none/other",
                 "variant", "none/other",
                 "category", product.getCategory().getId(),
-                "list", "/searchproduct - topads  productlist",
+                "list", "/searchproduct - topads productlist",
                 "position", position));
     }
 
@@ -648,8 +648,7 @@ public class TopAdsGtmTracker {
                                         "brand", "none/other",
                                         "category", product.getCategory().getId(),
                                         "variant", "none/other",
-                                        "position", position + 1),
-                                        "attribution", "")))
+                                        "position", position + 1))))
         );
         tracker.sendEnhanceEcommerceEvent(map);
     }

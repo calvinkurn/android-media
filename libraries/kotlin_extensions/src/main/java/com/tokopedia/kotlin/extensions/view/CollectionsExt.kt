@@ -41,3 +41,14 @@ fun <T> Appendable.appendElement(element: T, transform: ((T) -> CharSequence)?) 
         else -> append(element.toString())
     }
 }
+
+fun <T> MutableIterable<T>.removeFirst(predicate: (T) -> Boolean): Boolean {
+    val iterator: MutableIterator<T> = this.iterator()
+    while (iterator.hasNext()) {
+        if (predicate(iterator.next())) {
+            iterator.remove()
+            return true
+        }
+    }
+    return false
+}

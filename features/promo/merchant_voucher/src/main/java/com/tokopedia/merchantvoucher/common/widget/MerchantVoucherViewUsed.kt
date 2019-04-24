@@ -58,8 +58,6 @@ class MerchantVoucherViewUsed : CustomVoucherView {
         mDashColor = ContextCompat.getColor(this.context, R.color.colorGray)
         LayoutInflater.from(context).inflate(R.layout.widget_merchant_voucher_view,
                 this, true)
-        btnUseVoucher.text = context.getString(R.string.use_voucher)
-
     }
 
     fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?) {

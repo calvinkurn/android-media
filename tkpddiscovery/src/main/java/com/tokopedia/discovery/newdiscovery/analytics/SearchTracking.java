@@ -7,6 +7,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -106,9 +107,9 @@ public class SearchTracking {
         ));
     }
 
-    public static void eventImpressionSearchResultProduct(Context context, List<Object> list, String eventLabel) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf("event", "productView",
+    public static void eventImpressionSearchResultProduct(TrackingQueue trackingQueue, List<Object> list, String eventLabel) {
+        trackingQueue.putEETracking(
+                (HashMap<String, Object>) DataLayer.mapOf("event", "productView",
                         "eventCategory", "search result",
                         "eventAction", "impression - product",
                         "eventLabel", eventLabel,
@@ -406,11 +407,11 @@ public class SearchTracking {
         ));
     }
 
-    public static void eventUserImpressionProfileResultInTabProfile(Context context,
+    public static void eventUserImpressionProfileResultInTabProfile(TrackingQueue trackingQueue,
                                                                List<Object> profileData,
                                                                String keyword) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
+        trackingQueue.putEETracking(
+                (HashMap<String, Object>) DataLayer.mapOf(
                         EVENT, PROMO_VIEW,
                         EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT_PROFILE,
                         EVENT_ACTION, EVENT_ACTION_IMPRESSION_PROFILE,

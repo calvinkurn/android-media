@@ -50,6 +50,7 @@ public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
         }
         tickerPromoStackingCheckoutView.setState(data.getState());
         tickerPromoStackingCheckoutView.setTitle(data.getTitle());
+        tickerPromoStackingCheckoutView.setCounterCoupons(data.getCounterLabel());
         tickerPromoStackingCheckoutView.setDesc(data.getDescription());
         tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
     }
