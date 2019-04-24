@@ -116,6 +116,8 @@ public class CartMapper implements ICartMapper {
                     shopError = true;
                     isDisableAllProducts = true;
                     shopGroupData.setErrorTitle(defaultErrorMessage);
+                } else {
+                    isDisableAllProducts = false;
                 }
                 shopGroupData.setError(shopError);
             }

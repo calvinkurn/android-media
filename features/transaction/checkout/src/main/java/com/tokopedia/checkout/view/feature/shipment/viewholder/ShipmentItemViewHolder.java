@@ -1039,19 +1039,22 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         String totalItemLabel = tvTotalItem.getContext().getString(R.string.label_item_count_without_format);
 
         for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-            totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
-            totalItem += cartItemModel.getQuantity();
-            totalWeight += cartItemModel.getWeight();
-            if (cartItemModel.isProtectionOptIn()) {
-                totalPurchaseProtectionItem += cartItemModel.getQuantity();
-                totalPurchaseProtectionPrice += cartItemModel.getProtectionPrice();
+            if (!cartItemModel.isError()) {
+                totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
+                totalItem += cartItemModel.getQuantity();
+                totalWeight += cartItemModel.getWeight();
+                if (cartItemModel.isProtectionOptIn()) {
+                    totalPurchaseProtectionItem += cartItemModel.getQuantity();
+                    totalPurchaseProtectionPrice += cartItemModel.getProtectionPrice();
+                }
             }
         }
         totalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
         String totalPPPItemLabel = String.format("Proteksi Gadget (%d Barang)", totalPurchaseProtectionItem);
 
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
+                !shipmentCartItemModel.isError()) {
             shippingPrice = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier()
                     .getShipperPrice();
             Boolean useInsurance = shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance();
