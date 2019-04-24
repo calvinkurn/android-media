@@ -66,5 +66,10 @@
     <string name="hotel_room_list_breakfast_not_included">Tanpa Sarapan</string>
     <string name="hotel_room_list_refundable_with_condition">Refund Bersyarat</string>
     <string name="hotel_room_list_not_refundable">Non-refundable</string>
+    <string name="hotel_room_list_per_room_per_night">/kamar/malam</string>
+    <string name="hotel_room_list_include_tax">Termasuk pajak</string>
+    <string name="hotel_room_list_choose_room_button">Pilih Kamar</string>
+    <string name="hotel_room_list_pay_in_hotel">Bayar di Hotel</string>
+    <string name="hotel_room_list_without_credit_card">Tanpa Jaminan Kartu Kredit</string>
 
 </resources>

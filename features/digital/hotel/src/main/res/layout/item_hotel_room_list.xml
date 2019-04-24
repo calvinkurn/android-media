@@ -161,8 +161,8 @@
                         android:textSize="@dimen/sp_10"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/room_price_text_view"
-                        app:textViewTheme="lightDisabled"
-                        android:text="/kamar/malam"
+                        android:textColor="@color/clr_ae31353b"
+                        android:text="@string/hotel_room_list_per_room_per_night"
                         />
 
                     <com.tokopedia.design.component.TextViewCompat
@@ -172,8 +172,8 @@
                         android:textSize="@dimen/sp_10"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/per_room_text_view"
-                        app:textViewTheme="lightDisabled"
-                        android:text="Termasuk pajak" />
+                        android:textColor="@color/clr_ae31353b"
+                        android:text="@string/hotel_room_list_include_tax" />
 
                 </android.support.constraint.ConstraintLayout>
             </android.support.constraint.ConstraintLayout>
@@ -196,7 +196,6 @@
                     android:textColor="@color/red_pink"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    tools:text="Sisa 4 Kamar!"
                     tools:visibility="gone"
                     />
 
@@ -208,7 +207,7 @@
                     app:buttonCompatSize="big"
                     app:buttonCompatTextAllCaps="false"
                     app:buttonCompatType="transaction"
-                    android:text="Pilih Kamar"
+                    android:text="@string/hotel_room_list_choose_room_button"
                     tools:layout_height="@dimen/dp_40"
                     android:padding="@dimen/dp_12"
                     tools:gravity="center_vertical"
@@ -229,7 +228,7 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        android:text="Bayar di Hotel"
+                        android:text="@string/hotel_room_list_pay_in_hotel"
                         android:textColor="@color/tkpd_main_orange"/>
 
                     <com.tokopedia.design.component.TextViewCompat
@@ -238,7 +237,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:layout_marginRight="8dp"
-                        android:text="Tanpa Jaminan Kartu Kredit"
+                        android:text="@string/hotel_room_list_without_credit_card"
                         android:textSize="@dimen/sp_10"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

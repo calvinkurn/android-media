@@ -133,6 +133,16 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
             }
         })
 
+        recycler_view.addItemDecoration(object: RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                super.getItemOffsets(outRect, view, parent, state)
+
+                val itemPosition = parent.getChildLayoutPosition(view)
+                val itemCount = state.getItemCount()
+                outRect.bottom = if (itemCount > 0 && itemPosition == itemCount - 1) 20 else 0
+            }
+        })
+
         hotel_room_and_guest_layout.setOnClickListener { onGuestInfoClicked() }
         hotel_date_layout.setOnClickListener { onDateClicked() }
     }
