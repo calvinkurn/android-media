@@ -12,6 +12,7 @@ import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel
 import javax.inject.Inject
+import android.util.Log
 
 /**
  * @author by furqan on 08/03/19
@@ -112,7 +113,8 @@ class FlightBookingCartDataMapper @Inject constructor(private val flightBookingA
 
     private fun setRouteRefundable(routeDetailList: List<FlightDetailRouteViewModel>, routeEntityList: List<RouteEntity>)
             : List<FlightDetailRouteViewModel> {
-        for (itemDetail in routeDetailList) {
+        val detailRouteList = routeDetailList
+        for (itemDetail in detailRouteList) {
             for (itemRoute in routeEntityList) {
                 if (itemDetail.getDepartureAirportCode().equals(itemRoute.departureAirportCode, true) &&
                         itemDetail.getArrivalAirportCode().equals(itemRoute.arrivalAirportCode, true)) {
