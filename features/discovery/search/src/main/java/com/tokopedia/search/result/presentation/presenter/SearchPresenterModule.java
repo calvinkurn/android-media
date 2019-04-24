@@ -12,7 +12,7 @@ public class SearchPresenterModule {
 
     @SearchScope
     @Provides
-    public SearchContract.Presenter getSearchPresenter() {
+    SearchContract.Presenter getSearchPresenter() {
         return new SearchPresenter();
     }
 }
