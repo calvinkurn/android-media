@@ -46,7 +46,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-;
+
 
 public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DealCategoryAdapterContract.View {
 
@@ -760,6 +760,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         private TextView tvDealTitle;
         private TextView tvBrandName;
+        private ImageView brandImage;
+        private TextView salesPrice, mrpPrice, discount;
         private View itemView;
         private ProductItem valueItem;
         private int index;
@@ -771,30 +773,51 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             itemView.setOnClickListener(this);
             tvDealTitle = itemView.findViewById(R.id.tv_simple_item);
             tvBrandName = itemView.findViewById(R.id.tv_brand_name);
+            brandImage = itemView.findViewById(R.id.iv_brand);
+            salesPrice = itemView.findViewById(R.id.tv_sales_price);
+            mrpPrice = itemView.findViewById(R.id.mrp);
+            discount = itemView.findViewById(R.id.tv_off);
         }
 
         private void setDealTitle(int position, ProductItem value) {
-            this.valueItem = value;
-            if (showHighlightText) {
-                SpannableString spannableString = new SpannableString(valueItem.getDisplayName());
-                if (highLightText != null && !highLightText.isEmpty() && Utils.containsIgnoreCase(valueItem.getDisplayName(), highLightText)) {
-                    StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
-                    int fromindex = valueItem.getDisplayName().toLowerCase().indexOf(highLightText.toLowerCase());
-                    if (fromindex == -1) {
-                        fromindex = valueItem.getDisplayName().toLowerCase().indexOf(lowerhighlight.toLowerCase());
+            if (value != null) {
+                this.valueItem = value;
+                if (showHighlightText) {
+                    SpannableString spannableString = new SpannableString(valueItem.getDisplayName());
+                    if (highLightText != null && !highLightText.isEmpty() && Utils.containsIgnoreCase(valueItem.getDisplayName(), highLightText)) {
+                        StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
+                        int fromindex = valueItem.getDisplayName().toLowerCase().indexOf(highLightText.toLowerCase());
+                        if (fromindex == -1) {
+                            fromindex = valueItem.getDisplayName().toLowerCase().indexOf(lowerhighlight.toLowerCase());
+                        }
+                        if (fromindex == -1) {
+                            fromindex = valueItem.getDisplayName().toLowerCase().indexOf(upperhighlight.toLowerCase());
+                        }
+                        int toIndex = fromindex + highLightText.length();
+                        spannableString.setSpan(styleSpan, fromindex, toIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
-                    if (fromindex == -1) {
-                        fromindex = valueItem.getDisplayName().toLowerCase().indexOf(upperhighlight.toLowerCase());
-                    }
-                    int toIndex = fromindex + highLightText.length();
-                    spannableString.setSpan(styleSpan, fromindex, toIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
-                tvDealTitle.setText(spannableString);
-            } else {
-                tvDealTitle.setText(valueItem.getDisplayName());
+                    tvDealTitle.setText(spannableString);
+                } else {
+                    tvDealTitle.setText(valueItem.getDisplayName());
 
+                }
+                tvBrandName.setText(value.getBrand().getTitle());
+                ImageHandler.loadImage(context, brandImage, value.getThumbnailWeb(), R.color.grey_1100, R.color.grey_1100);
+                if (value.getMrp() > 0) {
+                    mrpPrice.setText(Utils.convertToCurrencyString(value.getMrp()));
+                    mrpPrice.setPaintFlags(mrpPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                } else {
+                    mrpPrice.setVisibility(View.GONE);
+                }
+                if (!TextUtils.isEmpty(value.getSavingPercentage())) {
+                    discount.setText(value.getSavingPercentage());
+                    discount.setBackground(context.getResources().getDrawable(R.drawable.background_lightgreen_oval));
+                } else {
+                    discount.setVisibility(View.GONE);
+                    discount.setBackground(null);
+                }
+                salesPrice.setText(Utils.convertToCurrencyString(value.getSalesPrice()));
             }
-            tvBrandName.setText(value.getBrand().getTitle());
         }
 
         public void setIndex(int position) {
