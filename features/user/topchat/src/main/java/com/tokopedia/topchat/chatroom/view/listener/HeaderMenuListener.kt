@@ -13,4 +13,6 @@ interface HeaderMenuListener{
 
     fun onGoToChatSetting(blockedStatus: BlockedStatus)
 
+    fun onGoToReportUser()
+
 }

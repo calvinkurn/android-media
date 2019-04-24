@@ -79,6 +79,7 @@ yang ditemukan</string>
     <string name="view_profile_container_string">Lihat Profil %s</string>
     <string name="delete_conversation">Hapus Percakapan</string>
     <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
+    <string name="chat_report_user">Laporkan Pengguna</string>
     <string name="delete_chat_question">Hapus chat?</string>
     <string name="delete_chat_warning_message">Chat akan terhapus selamanya</string>
 
