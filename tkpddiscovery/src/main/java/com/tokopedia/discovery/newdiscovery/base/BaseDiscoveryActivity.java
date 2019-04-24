@@ -30,6 +30,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_FORCE_SWIPE_TO_SHOP;
+import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_HAS_CATALOG;
+import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_SEARCH_PARAMETER_MODEL;
+
 /**
  * Created by hangnadi on 9/26/17.
  */
@@ -37,9 +41,6 @@ import java.util.Map;
 public class BaseDiscoveryActivity
         extends BaseActivity
         implements BaseDiscoveryContract.View, HasComponent {
-
-    private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
-    private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
 
     private static final String KEY_FORCE_SWIPE_TO_SHOP = "KEY_FORCE_SWIPE_TO_SHOP";
     private static final String KEY_TAB_POSITION = "KEY_TAB_POSITION";
@@ -202,7 +203,8 @@ public class BaseDiscoveryActivity
 
     private Intent getSearchActivityIntent(@NonNull DiscoveryRouter router, ProductViewModel productViewModel) {
         Intent searchActivityIntent = router.gotoSearchPage(this);
-        searchActivityIntent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
+        searchActivityIntent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, productViewModel.getSearchParameter());
+        searchActivityIntent.putExtra(EXTRA_HAS_CATALOG, productViewModel.isHasCatalog());
         searchActivityIntent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
 
         return searchActivityIntent;

@@ -63,6 +63,9 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 
+import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_FORCE_SWIPE_TO_SHOP;
+import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_HAS_CATALOG;
+import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_SEARCH_PARAMETER_MODEL;
 import static com.tokopedia.search.constant.SearchConstant.FROM_APP_SHORTCUTS;
 
 public class SearchActivity extends DiscoveryActivity
@@ -78,12 +81,6 @@ public class SearchActivity extends DiscoveryActivity
     public static final int TAB_THIRD_POSITION = 2;
     public static final int TAB_SECOND_POSITION = 1;
     public static final int TAB_PRODUCT = 0;
-    public static final String EXTRA_IS_AUTOCOMPLETE= "EXTRA_IS_AUTOCOMPLETE";
-
-    private static final String DEEP_LINK_URI = "deep_link_uri";
-    private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
-    private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
-    private static final String EXTRA_SEARCH_PARAMETER_MODEL = "EXTRA_SEARCH_PARAMETER_MODEL";
 
     private ProductListFragment productListFragment;
     private CatalogFragment catalogFragment;
@@ -155,15 +152,9 @@ public class SearchActivity extends DiscoveryActivity
         initPresenter();
         initResources();
 
-        boolean isAutoComplete = intent.getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false);
         SearchParameter searchParameter = getSearchParameterFromIntent(intent);
 
-        if(isAutoComplete) {
-            handleIntentAutoComplete(searchParameter);
-        }
-        else {
-            handleIntentSearch(intent, searchParameter);
-        }
+        handleIntentSearch(intent, searchParameter);
 
         if (intent != null &&
                 intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
@@ -202,20 +193,15 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void handleIntentSearch(Intent intent, SearchParameter searchParameter) {
-        ProductViewModel productViewModel = intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
+        this.searchParameter = searchParameter;
+        boolean isHasCatalog = intent.getBooleanExtra(EXTRA_HAS_CATALOG, false);
 
-        if (productViewModel != null) {
-            handleIntentWithProductViewModel(productViewModel);
-        } else {
-            handleIntentWithSearchQuery(searchParameter);
-        }
+        handleIntentWithProductViewModel(searchParameter, isHasCatalog);
     }
 
-    private void handleIntentWithProductViewModel(ProductViewModel productViewModel) {
-        this.searchParameter = productViewModel.getSearchParameter();
-
+    private void handleIntentWithProductViewModel(SearchParameter searchParameter, boolean isHasCatalog) {
         setLastQuerySearchView(searchParameter.getSearchQuery());
-        loadSection(productViewModel, forceSwipeToShop);
+        loadSection(isHasCatalog, forceSwipeToShop);
         setToolbarTitle(searchParameter.getSearchQuery());
 
         isHandlingIntent = false;
@@ -365,11 +351,11 @@ public class SearchActivity extends DiscoveryActivity
         searchComponent.inject(this);
     }
 
-    private void loadSection(ProductViewModel productViewModel, boolean forceSwipeToShop) {
+    private void loadSection(boolean isHasCatalog, boolean forceSwipeToShop) {
 
         List<SearchSectionItem> searchSectionItemList = new ArrayList<>();
 
-        if (productViewModel.isHasCatalog()) {
+        if (isHasCatalog) {
             populateFourTabItem(searchSectionItemList);
         } else {
             populateThreeTabItem(searchSectionItemList);
@@ -378,7 +364,7 @@ public class SearchActivity extends DiscoveryActivity
         searchSectionPagerAdapter.setData(searchSectionItemList);
         viewPager.setAdapter(searchSectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-        setActiveTab(forceSwipeToShop, productViewModel.isHasCatalog());
+        setActiveTab(forceSwipeToShop, isHasCatalog);
     }
 
     private void setActiveTab(final boolean swipeToShop, final boolean hasCatalogTab) {

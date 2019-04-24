@@ -38,24 +38,21 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.discovery.common.constants.IntentExtraConstants.DEEP_LINK_URI;
+import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_IS_AUTOCOMPLETE;
+import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_SEARCH_PARAMETER_MODEL;
+import static com.tokopedia.discovery.common.constants.IntentExtraConstants.FROM_APP_SHORTCUTS;
+
 @RuntimePermissions
 public class AutoCompleteActivity extends DiscoveryActivity
         implements AutoCompleteContract.View {
 
-    private static final String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
-    private static final String DEEP_LINK_URI = "deep_link_uri";
-    private static final String EXTRA_IS_AUTOCOMPLETE= "EXTRA_IS_AUTOCOMPLETE";
-    private static final String EXTRA_SEARCH_PARAMETER_MODEL = "EXTRA_SEARCH_PARAMETER_MODEL";
+    public static Intent newInstance(Context context) {
+        Intent intent = new Intent(context, AutoCompleteActivity.class);
+        intent.putExtra(EXTRA_IS_AUTOCOMPLETE, true);
 
-    private boolean isHandlingIntent = false;
-
-    @Inject
-    AutoCompletePresenter autoCompletePresenter;
-
-    @Inject
-    SearchTracking searchTracking;
-
-    private SearchComponent searchComponent;
+        return intent;
+    }
 
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
@@ -65,7 +62,6 @@ public class AutoCompleteActivity extends DiscoveryActivity
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
     public static Intent getCallingApplinkAutoCompleteSearchIntent(Context context, Bundle bundle) {
         Intent intent = createIntentToAutoCompleteActivityFromBundle(context, bundle);
-
         intent.putExtra(EXTRA_IS_AUTOCOMPLETE, true);
 
         return intent;
@@ -74,7 +70,7 @@ public class AutoCompleteActivity extends DiscoveryActivity
     private static Intent createIntentToAutoCompleteActivityFromBundle(Context context, Bundle bundle) {
         SearchParameter searchParameter = createSearchParameterFromBundle(bundle);
 
-        Intent intent = newInstance(context);
+        Intent intent = new Intent(context, AutoCompleteActivity.class);
         intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
 
         return intent;
@@ -85,9 +81,10 @@ public class AutoCompleteActivity extends DiscoveryActivity
         return new SearchParameter(deepLinkURI == null ? "" : deepLinkURI);
     }
 
-    public static Intent newInstance(Context context) {
-        return new Intent(context, AutoCompleteActivity.class);
-    }
+    @Inject AutoCompletePresenter autoCompletePresenter;
+    @Inject SearchTracking searchTracking;
+    private SearchComponent searchComponent;
+    private boolean isHandlingIntent = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
