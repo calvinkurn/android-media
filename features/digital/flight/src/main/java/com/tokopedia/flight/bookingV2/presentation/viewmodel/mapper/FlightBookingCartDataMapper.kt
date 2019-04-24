@@ -38,8 +38,22 @@ class FlightBookingCartDataMapper @Inject constructor(private val flightBookingA
                     data.departureTrip.adultNumericPrice = item.totalPerPax.adultTotal.toInt()
                     data.departureTrip.childNumericPrice = item.totalPerPax.childTotal.toInt()
                     data.departureTrip.infantNumericPrice = item.totalPerPax.infantTotal.toInt()
+                } else if (data.departureTrip != null && data.departureTrip.departureAirport != null &&
+                        item.departureId.equals(data.departureTrip.departureAirport, true)) {
+                    data.departureTrip.routeList = setRouteRefundable(data.departureTrip.routeList, item.routes)
+                    data.departureTrip.isRefundable = isRefundable(item.routes)
+                    data.departureTrip.adultNumericPrice = item.totalPerPax.adultTotal.toInt()
+                    data.departureTrip.childNumericPrice = item.totalPerPax.childTotal.toInt()
+                    data.departureTrip.infantNumericPrice = item.totalPerPax.infantTotal.toInt()
                 } else if (data.returnTrip != null && data.returnTrip.id != null &&
                         item.id.equals(data.returnTrip.id, true)) {
+                    data.returnTrip.routeList = setRouteRefundable(data.returnTrip.routeList, item.routes)
+                    data.returnTrip.isRefundable = isRefundable(item.routes)
+                    data.returnTrip.adultNumericPrice = item.totalPerPax.adultTotal.toInt()
+                    data.returnTrip.childNumericPrice = item.totalPerPax.childTotal.toInt()
+                    data.returnTrip.infantNumericPrice = item.totalPerPax.infantTotal.toInt()
+                } else if (data.returnTrip != null && data.returnTrip.departureAirport != null &&
+                        item.departureId.equals(data.returnTrip.departureAirport, true)) {
                     data.returnTrip.routeList = setRouteRefundable(data.returnTrip.routeList, item.routes)
                     data.returnTrip.isRefundable = isRefundable(item.routes)
                     data.returnTrip.adultNumericPrice = item.totalPerPax.adultTotal.toInt()
