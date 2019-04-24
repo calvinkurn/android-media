@@ -88,7 +88,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         proceed();
     }
 
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);

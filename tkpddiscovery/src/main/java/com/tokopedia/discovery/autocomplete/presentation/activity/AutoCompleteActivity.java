@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.presentation.AutoCompleteContract;
@@ -31,13 +32,22 @@ import com.tokopedia.track.TrackApp;
 import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
+@RuntimePermissions
 public class AutoCompleteActivity extends DiscoveryActivity
         implements AutoCompleteContract.View {
 
     private static final String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
     private static final String DEEP_LINK_URI = "deep_link_uri";
+    private static final String EXTRA_IS_AUTOCOMPLETE= "EXTRA_IS_AUTOCOMPLETE";
     private static final String EXTRA_SEARCH_PARAMETER_MODEL = "EXTRA_SEARCH_PARAMETER_MODEL";
+
+    private boolean isHandlingIntent = false;
 
     @Inject
     AutoCompletePresenter autoCompletePresenter;
@@ -47,15 +57,24 @@ public class AutoCompleteActivity extends DiscoveryActivity
 
     private SearchComponent searchComponent;
 
+    @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
+    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
+        return createIntentToAutoCompleteActivityFromBundle(context, bundle);
+    }
+
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
     public static Intent getCallingApplinkAutoCompleteSearchIntent(Context context, Bundle bundle) {
-        return createIntentToAutoCompleteActivityFromBundle(context, bundle);
+        Intent intent = createIntentToAutoCompleteActivityFromBundle(context, bundle);
+
+        intent.putExtra(EXTRA_IS_AUTOCOMPLETE, true);
+
+        return intent;
     }
 
     private static Intent createIntentToAutoCompleteActivityFromBundle(Context context, Bundle bundle) {
         SearchParameter searchParameter = createSearchParameterFromBundle(bundle);
 
-        Intent intent = new Intent(context, AutoCompleteActivity.class);
+        Intent intent = newInstance(context);
         intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
 
         return intent;
@@ -64,6 +83,10 @@ public class AutoCompleteActivity extends DiscoveryActivity
     private static SearchParameter createSearchParameterFromBundle(Bundle bundle) {
         String deepLinkURI = bundle.getString(DEEP_LINK_URI);
         return new SearchParameter(deepLinkURI == null ? "" : deepLinkURI);
+    }
+
+    public static Intent newInstance(Context context) {
+        return new Intent(context, AutoCompleteActivity.class);
     }
 
     @Override
@@ -94,10 +117,19 @@ public class AutoCompleteActivity extends DiscoveryActivity
     }
 
     private void handleIntent(Intent intent) {
+        isHandlingIntent = true;
+
         initPresenter();
 
+        boolean isAutoComplete = intent.getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false);
         SearchParameter searchParameter = getSearchParameterFromIntent(intent);
-        handleIntentAutoComplete(searchParameter);
+
+        if(isAutoComplete) {
+            handleIntentAutoComplete(searchParameter);
+        }
+        else {
+            handleIntentInitiateSearch(intent, searchParameter);
+        }
 
         if (intent != null &&
                 intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
@@ -124,7 +156,13 @@ public class AutoCompleteActivity extends DiscoveryActivity
     }
 
     private void handleIntentAutoComplete(SearchParameter searchParameter) {
+        isHandlingIntent = false;
         searchView.showSearch(true, false, searchParameter);
+    }
+
+    private void handleIntentInitiateSearch(Intent intent, SearchParameter searchParameter) {
+        this.searchParameter = searchParameter;
+        onProductQuerySubmit();
     }
 
     private void handleImageUri(Intent intent) {
@@ -160,11 +198,6 @@ public class AutoCompleteActivity extends DiscoveryActivity
                 "");
     }
 
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void onImageSuccess(String uri) {
-        onImagePickedSuccess(uri);
-    }
-
     private boolean isValidMimeType(String url) {
         String mimeType = getMimeTypeUri(Uri.parse(url));
 
@@ -194,7 +227,9 @@ public class AutoCompleteActivity extends DiscoveryActivity
         super.onResume();
         unregisterShake();
 
-        showAutoCompleteOnResume();
+        if (!isHandlingIntent) {
+            showAutoCompleteOnResume();
+        }
     }
 
     private void showAutoCompleteOnResume() {
@@ -216,5 +251,35 @@ public class AutoCompleteActivity extends DiscoveryActivity
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_auto_complete;
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void onImageSuccess(String uri) {
+        onImagePickedSuccess(uri);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(this, new RequestPermissionUtil.PermissionRequestListener() {
+            @Override
+            public void onProceed() {
+                request.proceed();
+            }
+
+            @Override
+            public void onCancel() {
+                request.cancel();
+            }
+        }, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 }

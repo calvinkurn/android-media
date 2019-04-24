@@ -19,10 +19,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
@@ -64,16 +62,18 @@ import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.search.constant.SearchConstant.FROM_APP_SHORTCUTS;
 
-@RuntimePermissions
 public class SearchActivity extends DiscoveryActivity
         implements SearchContract.View,
         RedirectionListener,
         BottomSheetListener,
         SearchNavigationListener {
+
+    public static Intent newInstance(Context context) {
+        return new Intent(context, SearchActivity.class);
+    }
 
     public static final int TAB_THIRD_POSITION = 2;
     public static final int TAB_SECOND_POSITION = 1;
@@ -118,51 +118,6 @@ public class SearchActivity extends DiscoveryActivity
 
     public SearchComponent getSearchComponent() {
         return searchComponent;
-    }
-
-    @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
-    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        return createIntentToSearchActivityFromBundle(context, bundle);
-    }
-
-    //@DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
-    public static Intent getCallingApplinkAutoCompleteSearchIntent(Context context, Bundle bundle) {
-        Intent intent = createIntentToSearchActivityFromBundle(context, bundle);
-
-        intent.putExtra(EXTRA_IS_AUTOCOMPLETE, true);
-
-        return intent;
-    }
-
-    private static Intent createIntentToSearchActivityFromBundle(Context context, Bundle bundle) {
-        SearchParameter searchParameter = createSearchParameterFromBundle(bundle);
-
-        Intent intent = new Intent(context, SearchActivity.class);
-        intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
-
-        return intent;
-    }
-
-    private static SearchParameter createSearchParameterFromBundle(Bundle bundle) {
-        String deepLinkURI = bundle.getString(DEEP_LINK_URI);
-        return new SearchParameter(deepLinkURI == null ? "" : deepLinkURI);
-    }
-
-    public static Intent newInstance(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, SearchActivity.class);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    public static void moveTo(AppCompatActivity activity,
-                              ProductViewModel productViewModel,
-                              boolean forceSwipeToShop) {
-        if (activity != null) {
-            Intent intent = new Intent(activity, SearchActivity.class);
-            intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
-            intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
-            activity.startActivity(intent);
-        }
     }
 
     @Override

@@ -2810,12 +2810,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent gotoSearchAutoCompletePage(Context context) {
-        return new Intent(context, AutoCompleteActivity.class);
+        return AutoCompleteActivity.newInstance(context);
     }
 
     @Override
     public Intent gotoSearchPage(Context context) {
-        return new Intent(context, SearchActivity.class);
+        return SearchActivity.newInstance(context);
     }
 
     @Override
