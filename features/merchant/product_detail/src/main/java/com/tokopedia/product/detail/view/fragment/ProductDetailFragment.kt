@@ -271,7 +271,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             trackerListName = it.getString(ARG_TRACKER_LIST_NAME)
             isFromDeeplink = it.getBoolean(ARG_FROM_DEEPLINK, false)
             isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
-            isSpecialPrize = it.getBoolean(ARG_IS_SPECIAL_PRIZE, false)
+//            isSpecialPrize = it.getBoolean(ARG_IS_SPECIAL_PRIZE, false)
         }
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
