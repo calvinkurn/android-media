@@ -92,6 +92,7 @@ public class DealsSearchPresenter
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
                 SearchResponse searchResponse = (SearchResponse) dataResponse.getData();
+                getView().setSuggestedBrands(searchResponse.getBrandList());
                 getView().setTrendingDealsOrSuggestions(processSearchResponse(searchResponse), false, highlight, searchResponse.getCount());
                 checkIfToLoad(getView().getLayoutManager());
                 CommonUtils.dumper("enter onNext");
@@ -104,7 +105,7 @@ public class DealsSearchPresenter
 //        mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
         mTopDeals = TopDealsCacheHandler.init().getTopDeals();
         if (mTopDeals != null && mTopDeals.size() > 0) {
-            getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+            getView().showSuggestedDeals(mTopDeals, true);
         }
     }
 
@@ -125,7 +126,9 @@ public class DealsSearchPresenter
         } else {
             getSearchDealsListRequestUseCase.unsubscribe();
             getSearchNextUseCase.unsubscribe();
-            getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+            if (mTopDeals != null && mTopDeals.size() > 0) {
+                getView().showSuggestedDeals(mTopDeals, true);
+            }
         }
     }
 
@@ -136,7 +139,7 @@ public class DealsSearchPresenter
 
     @Override
     public boolean onItemClick(int id) {
-        if (id == R.id.tv_change_city) {
+        if (id == R.id.tv_location) {
             getLocations(false);
         } else if (id == R.id.imageViewBack) {
             getView().goBack();

@@ -99,5 +99,11 @@
     <string name="sell_all_category">Semua\nKategori</string>
     <string name="deals_toolbar_title">Lokasi Deals</string>
     <string name="selected_location_text">(Terpilih)</string>
+    <string name="brands_title_search">PILIHAN BRAND</string>
+    <string name="products_title_search" formatted="false">DEALS POPULER DI %s</string>
+    <string name="products_title_search_default">PILIHAN DEALS</string>
+    <string name="location_text_search">Lokasi</string>
+    <string name="no_brand_text">Yaah, Deals yang kamu cari nggak ketemu</string>
+    <string name="no_brand_subtext">Coba cari lagi pakai kata kunci lain, yuk!</string>
 
 </resources>

@@ -1347,23 +1347,27 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (getActivity() != null) getActivity().invalidateOptionsMenu();
         checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
 
-        if (emptyCartListener != null) {
-            emptyCartListener.onCartEmpty(
-                    cartListData.getAutoApplyStackData().getMessageSuccess(),
-                    cartListData.getAutoApplyStackData().getState(),
-                    cartListData.getAutoApplyStackData().getTitleDescription(),
-                    cartListData.getAutoApplyStackData().getCode());
-        } else {
-            if (getActivity() instanceof EmptyCartListener) {
-                ((EmptyCartListener) getActivity()).onCartEmpty(
+        try {
+            if (emptyCartListener != null) {
+                emptyCartListener.onCartEmpty(
                         cartListData.getAutoApplyStackData().getMessageSuccess(),
                         cartListData.getAutoApplyStackData().getState(),
                         cartListData.getAutoApplyStackData().getTitleDescription(),
                         cartListData.getAutoApplyStackData().getCode());
+            } else {
+                if (getActivity() instanceof EmptyCartListener) {
+                    ((EmptyCartListener) getActivity()).onCartEmpty(
+                            cartListData.getAutoApplyStackData().getMessageSuccess(),
+                            cartListData.getAutoApplyStackData().getState(),
+                            cartListData.getAutoApplyStackData().getTitleDescription(),
+                            cartListData.getAutoApplyStackData().getCode());
+                }
             }
+            showEmptyCartContainer();
+            notifyBottomCartParent();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
-        showEmptyCartContainer();
-        notifyBottomCartParent();
     }
 
     @Override
