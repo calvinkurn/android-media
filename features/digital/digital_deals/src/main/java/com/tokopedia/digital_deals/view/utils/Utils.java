@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 
@@ -365,6 +366,17 @@ public class Utils {
 
     public static String fetchOrderId(String url) {
         return url.substring(url.lastIndexOf('/') + 1);
+    }
+
+    public static Uri replaceUriParameter(Uri uri, String key, String newValue) {
+        final Set<String> params = uri.getQueryParameterNames();
+        final Uri.Builder newUri = uri.buildUpon().clearQuery();
+        for (String param : params) {
+            newUri.appendQueryParameter(param,
+                    param.equals(key) ? newValue : uri.getQueryParameter(param));
+        }
+
+        return newUri.build();
     }
 
 }

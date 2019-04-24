@@ -299,22 +299,10 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         Uri uri = null;
         Location location = Utils.getSingletonInstance().getLocation(getContext());
         if (location != null) {
-            uri = replaceUriParameter(Uri.parse(categoriesModel.getCategoryUrl()), Utils.QUERY_PARAM_CITY_ID, String.valueOf(location.getId()));
+            uri = Utils.replaceUriParameter(Uri.parse(categoriesModel.getCategoryUrl()), Utils.QUERY_PARAM_CITY_ID, String.valueOf(location.getId()));
             return uri.toString();
         }
         return categoriesModel.getCategoryUrl();
-    }
-
-
-    private static Uri replaceUriParameter(Uri uri, String key, String newValue) {
-        final Set<String> params = uri.getQueryParameterNames();
-        final Uri.Builder newUri = uri.buildUpon().clearQuery();
-        for (String param : params) {
-            newUri.appendQueryParameter(param,
-                    param.equals(key) ? newValue : uri.getQueryParameter(param));
-        }
-
-        return newUri.build();
     }
 
     @Override
