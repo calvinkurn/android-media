@@ -91,7 +91,7 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         requestParams.putString(BrowseApi.Q, omitNewline(searchParameter.getQueryKey()));
         requestParams.putString(BrowseApi.UNIQUE_ID, searchParameter.getUniqueID());
         requestParams.putBoolean(BrowseApi.REFINED, forceSearch);
-        requestParams.putInt(TopAdsParams.KEY_ITEM, 2);
+        requestParams.putInt(TopAdsParams.KEY_ITEM, 4);
         requestParams.putString(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
         requestParams.putString(TopAdsParams.KEY_SRC, requestParams.getString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH));
         requestParams.putBoolean(TopAdsParams.KEY_WITH_TEMPLATE, true);

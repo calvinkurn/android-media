@@ -49,8 +49,8 @@ public class GetSellerAccountUseCase extends UseCase<SellerViewModel> {
                     String topadsQuery = requestParam.getString(TOPADS_QUERY, "");
                     String saldoQuery = requestParam.getString(SALDO_QUERY, "");
                     Map<String, Object> variables = (Map<String, Object>) requestParam.getObject(VARIABLES);
-                    int[] shopIds = (int[]) variables.get("shop_ids");
-                    String shopId = (shopIds != null && shopIds.length > 0) ? shopIds[0] + "" : "";
+                    int[] shopIds = (int[])variables.get("shop_ids");
+                    String shopId = (shopIds != null && shopIds.length > 0) ? shopIds[0]+"" : "";
 
                     if(!TextUtils.isEmpty(query) && variables != null) {
                         GraphqlRequest request = new GraphqlRequest(query, AccountModel.class, variables, false);
@@ -58,10 +58,8 @@ public class GetSellerAccountUseCase extends UseCase<SellerViewModel> {
                         graphqlUseCase.addRequest(request);
                         graphqlUseCase.addRequest(TopAdsGetShopDepositGraphQLUseCase.createGraphqlRequest(topadsQuery,
                                 TopAdsGetShopDepositGraphQLUseCase.createRequestParams(topadsQuery, shopId)));
-
                         GraphqlRequest saldoGraphql = new GraphqlRequest(saldoQuery, SaldoModel.class);
                         graphqlUseCase.addRequest(saldoGraphql);
-
                         return graphqlUseCase.createObservable(null);
                     }
 

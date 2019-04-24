@@ -3,8 +3,8 @@ package com.tokopedia.tokopoints.view.util;
 import android.app.Activity;
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +23,7 @@ public class AnalyticsTrackerUtil {
         String EVENT_CLICK_COUPON = "clickCoupon";
         String EVENT_VIEW_COUPON = "viewCoupon";
         String EVENT_VIEW_PROMO = "promoView";
+        String EVENT_CLICK_PROMO = "promoClick";
         String TOKOPOINTS_LABEL = "tokopoints";
         String TOKOPOINTS_ON_BOARDING_LABEL = "tokopoints on boarding";
         String TOKOPOINTS_LUCKY_EGG_CLOSE_LABEL = "close cara mendapatkan lucky egg";
@@ -54,6 +55,7 @@ public class AnalyticsTrackerUtil {
         String CLICK_POINT = "click point & tier status";
         String CLICK_CEK = "click cek tokopoints";
         String CLICK_MEMBERSHIP = "click lihat status membership";
+        String CLICK_STATUS_MEMBERSHIP = "click status membership";
         String CLICK_POINT_SAYA = "click points saya";
         String CLICK_LOYALTY_SAYA = "click loyalty saya";
         String VIEW_TICKER = "view ticker";
@@ -82,9 +84,12 @@ public class AnalyticsTrackerUtil {
         String VIEW_MY_COUPON = "view my coupon";
         String CLICK_COUPON = "click coupon";
         String CLICK_PENUKARAN = "click penukaran point";
+        String CLICK_EXPLORE = "click explore";
         String CLICK_KUPON_SAYA = "click kupon saya";
         String CLICK_DYNAMIC_CAT = "click dynamic category";
+        String CLICK_DYNAMIC_ICON = "click dynamic icon";
         String VIEW_DYNAMIC_CAT = "view dynamic category";
+        String VIEW_DYNAMIC_ICON = "view dynamic icon";
         String CLICK_FLOATING_LUCKY = "click floating lucky egg";
         String CLICK_FILTER = "click filter";
         String PILIH_FILTER = "pilih filter";
@@ -100,50 +105,53 @@ public class AnalyticsTrackerUtil {
         String CLICK_OK_ON_FAILED = "click ok on failed";
         String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
         String VIEW_REDEEM_SUCCESS = "view redeem success";
+        String CLICK_LEADERBOARD = "click leaderboard";
+        String CLICK_COUNTER_KUPON_SAYA = "click counter kupon saya";
+        String CLICK_TICKER = "click ticker";
+        String CLICK_SEE_ALL_EXPLORE_CATALOG = "click lihat semua coupon catalog";
+        String CLICK_SEE_ALL_EXPLORE_BANNER = "click lihat semua on banner";
+        String VIEW_BANNERS_ON_HOME_TOKOPOINTS = "view banner on home tokopoints";
+        String CLICK_BANNERS_ON_HOME_TOKOPOINTS = "click banner on home tokopoints";
+        String CLICK_COUPON_ON_CATALOG = "view coupon on catalog";
+    }
+
+    public interface EcommerceKeys{
+        String POSITION="position";
+        String NAME="name";
+        String CREATIVE="creative";
+        String PROMOTIONS="promotions";
+
     }
 
     public static void sendScreenEvent(Activity context, String screenName) {
-        if (context == null) {
-            return;
-        }
-
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        if (tracker == null) {
-            return;
-        }
-
-        tracker.sendScreen(context, screenName);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated( screenName);
     }
 
     public static void sendEvent(Context context, String event, String category,
                                  String action, String label) {
-        if (context == null) {
-            return;
-        }
-
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        if (tracker == null) {
-            return;
-        }
-
-        tracker.sendEventTracking(event, category, action, label);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(event, category, action, label));
     }
 
     public static void sendECommerceEvent(Context context, String event, String category,
                                           String action, String label, Map<String, Map<String, List<Map<String, String>>>> ecommerce) {
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        if (tracker == null)
-            return;
         HashMap<String, Object> map = new HashMap<>();
         map.put(EventKeys.EVENT, event);
         map.put(EventKeys.EVENT_CATEGORY, category);
         map.put(EventKeys.EVENT_ACTION, action);
         map.put(EventKeys.EVENT_LABEL, label);
         map.put(EventKeys.ECOMMERCE, ecommerce);
-        tracker.sendEnhancedEcommerce(map);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
+    }
+
+    public static void sendECommerceEvent(String event, String category,
+                                          String action, String label, Map<String, Object> ecommerce) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(EventKeys.EVENT, event);
+        map.put(EventKeys.EVENT_CATEGORY, category);
+        map.put(EventKeys.EVENT_ACTION, action);
+        map.put(EventKeys.EVENT_LABEL, label);
+        map.put(EventKeys.ECOMMERCE, ecommerce);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
     }
 
     public interface ScreenKeys {

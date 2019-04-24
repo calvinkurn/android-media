@@ -5,8 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/checkout_module_color_background"
     android:orientation="vertical">
+
+    <View
+        android:visibility="invisible"
+        app:layout_collapseMode="pin"
+        android:id="@+id/status_bar_bg"
+        android:background="@color/green_600"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_25"/>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -58,7 +66,7 @@
                         android:foreground="?selectableItemBackground"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingLeft="@dimen/dp_25"
+                        android:paddingLeft="@dimen/dp_9"
                         android:paddingTop="@dimen/dp_16"
                         android:paddingRight="@dimen/dp_25"
                         android:paddingBottom="@dimen/dp_16">
@@ -76,10 +84,9 @@
                             style="@style/TextSmallNormalBlack54"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_4"
-                            android:layout_marginRight="@dimen/dp_4"
                             android:lineSpacingExtra="@dimen/sp_5"
                             android:text="@string/label_select_all_product"
+                            android:textSize="@dimen/sp_12"
                             tools:ignore="RelativeOverlap" />
 
                     </LinearLayout>
@@ -97,7 +104,7 @@
                         android:id="@+id/rv_cart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1" />
 
                 </LinearLayout>
 
@@ -125,7 +132,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
-                            android:background="@color/grey_300" />
+                            android:background="@color/grey_shadow" />
 
                         <LinearLayout
                             android:id="@+id/layout_1"

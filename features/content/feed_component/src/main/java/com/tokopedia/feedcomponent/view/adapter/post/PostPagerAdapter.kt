@@ -10,10 +10,12 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 import com.tokopedia.feedcomponent.view.widget.WrapContentViewPager
 
@@ -23,7 +25,8 @@ import com.tokopedia.feedcomponent.view.widget.WrapContentViewPager
 class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImagePostListener,
                        private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
                        private val pollOptionListener: PollAdapter.PollOptionListener,
-                       private val gridItemListener: GridPostAdapter.GridItemListener)
+                       private val gridItemListener: GridPostAdapter.GridItemListener,
+                       private val videoViewListener: VideoViewHolder.VideoViewListener)
     : PagerAdapter() {
 
     private val itemList: MutableList<BasePostViewModel> = ArrayList()
@@ -41,6 +44,7 @@ class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImageP
             is YoutubeViewModel -> YoutubeViewHolder(youtubePostListener) as BasePostViewHolder<BasePostViewModel>
             is PollContentViewModel -> PollViewHolder(pollOptionListener) as BasePostViewHolder<BasePostViewModel>
             is GridPostViewModel -> GridPostViewHolder(gridItemListener) as BasePostViewHolder<BasePostViewModel>
+            is VideoViewModel -> VideoViewHolder(videoViewListener) as BasePostViewHolder<BasePostViewModel>
             else -> throw IllegalStateException(this.javaClass.simpleName
                     .plus(" doesn't support view model of this type: ")
                     .plus(element.javaClass.simpleName))

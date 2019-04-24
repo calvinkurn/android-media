@@ -23,6 +23,8 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.user.session.UserSession;
 import com.google.gson.Gson;
+import com.tokopedia.user.session.UserSessionInterface;
+
 import android.content.Context;
 
 /**
@@ -56,6 +58,7 @@ public class AuthUtil {
     private static final String HEADER_OS_TYPE = "os-type";
     public static final String HEADER_SESSION_ID = "Tkpd-SessionId";
     public static final String HEADER_OS_VERSION = "os_version";
+    public static final String HEADER_USER_AGENT="User-Agent";
 
     private static final String KEY_FINGERPRINT_DATA = "Fingerprint-Data";
     private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";
@@ -110,7 +113,9 @@ public class AuthUtil {
 
     public static Map<String, String> getDefaultHeaderMap(String path, String strParam, String method,
                                                           String contentType, String authKey,
-                                                          String dateFormat, String userId) {
+                                                          String dateFormat, String userId,
+                                                          UserSessionInterface session) {
+
         String date = generateDate(dateFormat);
         String contentMD5 = generateContentMd5(strParam);
 
@@ -124,10 +129,14 @@ public class AuthUtil {
         headerMap.put(HEADER_CONTENT_MD5, contentMD5);
         headerMap.put(HEADER_DATE, date);
         headerMap.put(HEADER_AUTHORIZATION, HEADER_HMAC_SIGNATURE_KEY + signature.trim());
+        headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION);
+        headerMap.put(HEADER_ACCOUNT_AUTHORIZATION, String.format("%s %s", HEADER_PARAM_BEARER,
+                session.getAccessToken()));
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put(HEADER_OS_VERSION, String.valueOf(Build.VERSION.SDK_INT));
+        headerMap.put(HEADER_USER_AGENT, getUserAgent());
 
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
@@ -135,11 +144,12 @@ public class AuthUtil {
     }
 
     public static Map<String, String> generateHeaders(
-            String path, String strParam, String method, String authKey, String contentType, String userId
+            String path, String strParam, String method, String authKey, String contentType,
+            String userId, UserSessionInterface userSessionInterface
     ) {
         Map<String, String> finalHeader = getDefaultHeaderMap(
                 path, strParam, method, contentType != null ? contentType : CONTENT_TYPE,
-                authKey, DATE_FORMAT, userId
+                authKey, DATE_FORMAT, userId, userSessionInterface
         );
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
         return finalHeader;
@@ -168,11 +178,12 @@ public class AuthUtil {
     }
 
     public static Map<String, String> generateHeadersWithPath(
-            String path, String strParam, String method, String authKey, String contentType, String userId
+            String path, String strParam, String method, String authKey, String contentType,
+            String userId, UserSessionInterface userSessionInterface
     ) {
         Map<String, String> finalHeader = getDefaultHeaderMapOld(
                 path, strParam, method, contentType != null ? contentType : CONTENT_TYPE,
-                authKey, DATE_FORMAT, userId
+                authKey, DATE_FORMAT, userId, userSessionInterface
         );
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
         finalHeader.put(HEADER_PATH, path);
@@ -181,7 +192,8 @@ public class AuthUtil {
 
     public static Map<String, String> getDefaultHeaderMapOld(String path, String strParam, String method,
                                                           String contentType, String authKey,
-                                                          String dateFormat, String userId) {
+                                                          String dateFormat, String userId,
+                                                             UserSessionInterface session) {
         String date = generateDate(dateFormat);
         String contentMD5 = generateContentMd5(strParam);
 
@@ -195,10 +207,14 @@ public class AuthUtil {
         headerMap.put(HEADER_CONTENT_MD5, contentMD5);
         headerMap.put(HEADER_DATE, date);
         headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
+        headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION);
+        headerMap.put(HEADER_ACCOUNT_AUTHORIZATION, String.format("%s %s", HEADER_PARAM_BEARER,
+                session.getAccessToken()));
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put(HEADER_OS_VERSION, String.valueOf(Build.VERSION.SDK_INT));
+        headerMap.put(HEADER_USER_AGENT, getUserAgent());
 
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
@@ -262,12 +278,20 @@ public class AuthUtil {
         }
     }
 
+    private static final String userAgentFormat = "TkpdConsumer/%s (%s;)";
+
+    public static String getUserAgent(){
+        return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android "+ Build.VERSION.RELEASE);
+    }
+
     public static String getHeaderRequestReactNative(Context context) {
         UserSession session = new UserSession(context);
         Map<String, String> header = new HashMap<>();
         header.put(HEADER_SESSION_ID, session.getDeviceId());
         header.put(HEADER_TKPD_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
         header.put(HEADER_AUTHORIZATION, String.format("Bearer %s", session.getAccessToken()));
+        header.remove(HEADER_ACCOUNT_AUTHORIZATION);
+        header.put(HEADER_ACCOUNT_AUTHORIZATION, String.format("%s %s", HEADER_PARAM_BEARER, session.getAccessToken()));
         header.put(PARAM_OS_TYPE, "1");
         header.put(HEADER_DEVICE, String.format("android-%s", GlobalConfig.VERSION_NAME));
         header.put(HEADER_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
@@ -285,9 +309,11 @@ public class AuthUtil {
                                                          String method,
                                                          String contentType) {
         UserSession session = new UserSession(context);
-        Map<String, String> headers = getDefaultHeaderMap(path, strParam, method, contentType, KEY.KEY_WSV4_NEW, DATE_FORMAT, session.getUserId());
+        Map<String, String> headers = getDefaultHeaderMap(path, strParam, method, contentType,
+                KEY.KEY_WSV4_NEW, DATE_FORMAT, session.getUserId(), session);
         headers.put(HEADER_SESSION_ID, session.getDeviceId());
         headers.put(HEADER_TKPD_USER_ID, session.isLoggedIn() ? session.getUserId() : "0");
+        headers.remove(HEADER_ACCOUNT_AUTHORIZATION);
         headers.put(HEADER_ACCOUNT_AUTHORIZATION, String.format("%s %s", HEADER_PARAM_BEARER, session.getAccessToken()));
         headers.put(PARAM_OS_TYPE, "1");
         headers.put(HEADER_DEVICE, String.format("android-%s", GlobalConfig.VERSION_NAME));

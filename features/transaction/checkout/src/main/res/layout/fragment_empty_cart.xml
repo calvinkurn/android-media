@@ -10,11 +10,21 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
         android:theme="@style/AppTheme.AppBarOverlay">
+
+        <View
+            android:visibility="invisible"
+            app:layout_collapseMode="pin"
+            android:id="@+id/status_bar_bg"
+            android:background="@color/green_600"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_25"/>
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
+            app:layout_anchor="@id/status_bar_bg"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:background="@color/white"
@@ -43,9 +53,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-
-                <com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-                    android:id="@+id/ticker_checkout_view"
+                <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+                    android:id="@+id/ticker_promostacking_checkout_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"

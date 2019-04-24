@@ -10,7 +10,7 @@ import java.lang.reflect.Type
 import javax.inject.Inject
 
 /**
- * @author by furqan on 15/03/19
+ * @author by furqan on 14/03/19
  */
 class FlightVerifyJsonDeserializer @Inject constructor(private val gson: Gson) : JsonDeserializer<DataResponseVerify> {
 

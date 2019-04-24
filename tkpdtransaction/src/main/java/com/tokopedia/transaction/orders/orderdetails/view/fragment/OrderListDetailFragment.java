@@ -425,7 +425,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void setItems(List<Items> items) {
+    public void setItems(List<Items> items,boolean isTradeIn) {
 
     }
 

@@ -7,7 +7,9 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.PagingHandler;
@@ -25,6 +27,7 @@ import com.tokopedia.inbox.rescenter.inbox.model.ResCenterHeader;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterInboxData;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterInboxDataPass;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
+import com.tokopedia.track.TrackApp;
 
 import java.util.Map;
 
@@ -71,7 +74,15 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
             //current user as seller, need buyer username
             context.startActivity(DetailResChatActivity.newSellerInstance(context, resolutionID, username));
         }
-        UnifyTracking.eventResolutionDetail(listener.getRootView().getContext(), getResCenterTabModel().titleFragment);
+        eventResolutionDetail(getResCenterTabModel().titleFragment);
+    }
+
+    public void eventResolutionDetail(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION,
+                AppEventTracking.Action.VIEW,
+                label);
     }
 
     @Override

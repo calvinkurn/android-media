@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.inbox.adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -12,6 +13,8 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -22,6 +25,7 @@ import com.tokopedia.inbox.rescenter.inbox.model.ResolutionDetail;
 import com.tokopedia.inbox.rescenter.inbox.presenter.InboxResCenterPresenter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,10 +74,18 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventResolutionDetail(view.getContext());
+                eventResolutionDetail();
                 presenter.setActionOnItemListClickListener(view.getContext(), resolutionID, shopName, username);
             }
         });
+    }
+
+    public void eventResolutionDetail() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION,
+                AppEventTracking.Action.VIEW,
+                AppEventTracking.EventLabel.COMPLAINT_DETAIL);
     }
 
     private void setViewByStateStatus(View view, boolean show) {

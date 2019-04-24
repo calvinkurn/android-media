@@ -12,10 +12,9 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostMo
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +44,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     private MultipleAddressFragment fragment;
 
     public static Intent createInstance(Context context,
-                                        PromoData promoData,
+                                        PromoStackingData promoStackingData,
                                         CartPromoSuggestion cartPromoSuggestion,
                                         RecipientAddressModel recipientAddressData,
                                         List<ShipmentCartItemModel> shipmentCartItemModels,
@@ -54,7 +53,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
                                         String cartIds
     ) {
         Intent intent = new Intent(context, MultipleAddressFormActivity.class);
-        intent.putExtra(EXTRA_PROMO_DATA, promoData);
+        intent.putExtra(EXTRA_PROMO_DATA, promoStackingData);
         intent.putExtra(EXTRA_PROMO_SUGGESTION_DATA, cartPromoSuggestion);
         intent.putExtra(EXTRA_RECIPIENT_ADDRESS_DATA, recipientAddressData);
         intent.putExtra(EXTRA_SHIPMENT_CART_TEM_LIST_DATA, new ArrayList<>(shipmentCartItemModels));
@@ -137,7 +136,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     private void setActivityResult() {
         Intent resultIntent = new Intent();
         if (getIntent().hasExtra(EXTRA_PROMO_DATA)) {
-            resultIntent.putExtra(EXTRA_PROMO_DATA, (PromoData) getIntent().getParcelableExtra(EXTRA_PROMO_DATA));
+            resultIntent.putExtra(EXTRA_PROMO_DATA, (PromoStackingData) getIntent().getParcelableExtra(EXTRA_PROMO_DATA));
         }
         if (getIntent().hasExtra(EXTRA_PROMO_SUGGESTION_DATA)) {
             resultIntent.putExtra(EXTRA_PROMO_SUGGESTION_DATA, (CartPromoSuggestion) getIntent().getParcelableExtra(EXTRA_PROMO_SUGGESTION_DATA));

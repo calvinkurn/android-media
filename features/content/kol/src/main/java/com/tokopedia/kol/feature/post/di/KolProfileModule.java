@@ -3,6 +3,10 @@ package com.tokopedia.kol.feature.post.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
+import com.tokopedia.affiliatecommon.domain.DeletePostUseCase;
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.feature.post.data.mapper.LikeKolPostMapper;
 import com.tokopedia.kol.feature.post.data.source.LikeKolPostSourceCloud;
@@ -13,18 +17,27 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
 import com.tokopedia.kol.feature.post.view.presenter.KolPostPresenter;
 import com.tokopedia.kol.feature.post.view.presenter.KolPostShopPresenter;
-import com.tokopedia.kol.feature.postdetail.domain.interactor.GetKolPostDetailUseCase;
+import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.presenter.KolPostDetailPresenter;
+import com.tokopedia.network.CommonNetwork;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.vote.di.VoteModule;
+import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 /**
  * @author by milhamj on 12/02/18.
  */
 
-@Module
+@Module(includes = {VoteModule.class})
 public class KolProfileModule {
     @KolProfileScope
     @Provides
@@ -41,11 +54,56 @@ public class KolProfileModule {
     @KolProfileScope
     @Provides
     KolPostDetailContract.Presenter
-    provideKolPostDetailPresenter(GetKolPostDetailUseCase getKolPostDetailUseCase,
+    provideKolPostDetailPresenter(GetPostDetailUseCase getPostDetailUseCase,
                                   LikeKolPostUseCase likeKolPostUseCase,
-                                  FollowKolPostGqlUseCase followKolPostGqlUseCase) {
-        return new KolPostDetailPresenter(getKolPostDetailUseCase, likeKolPostUseCase,
-                followKolPostGqlUseCase);
+                                  FollowKolPostGqlUseCase followKolPostGqlUseCase,
+                                  ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
+                                  SendVoteUseCase sendVoteUseCase,
+                                  TrackAffiliateClickUseCase trackAffiliateClickUseCase,
+                                  DeletePostUseCase deletePostUseCase,
+                                  UserSessionInterface userSession) {
+        return new KolPostDetailPresenter(getPostDetailUseCase,
+                likeKolPostUseCase,
+                followKolPostGqlUseCase,
+                toggleFavouriteShopUseCase,
+                sendVoteUseCase,
+                trackAffiliateClickUseCase,
+                deletePostUseCase,
+                userSession);
+    }
+
+    @KolProfileScope
+    @Provides
+    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(@ApplicationContext Context context) {
+        return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
+    }
+
+    @KolProfileScope
+    @Provides
+    UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @KolProfileScope
+    @Provides
+    Retrofit provideWsRetrofitDomain(@ApplicationContext Context context,
+                                     UserSession userSession) {
+        if (!(context instanceof NetworkRouter)) {
+            throw new IllegalStateException("Application must implement NetworkRouter");
+        }
+
+        return CommonNetwork.createRetrofit(
+                context,
+                TkpdBaseURL.TOPADS_DOMAIN,
+                (NetworkRouter) context,
+                userSession
+        );
+    }
+
+    @KolProfileScope
+    @Provides
+    TopAdsApi provideTopAdsApi(Retrofit retrofit) {
+        return retrofit.create(TopAdsApi.class);
     }
 
     @KolProfileScope

@@ -27,6 +27,8 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    
+    implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.miscDependencies.multiDex
 
@@ -53,6 +55,7 @@ dependencies {
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.merchantVoucher)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -71,6 +74,9 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
+
+    
+    implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
