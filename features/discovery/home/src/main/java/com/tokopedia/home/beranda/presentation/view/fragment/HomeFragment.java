@@ -448,6 +448,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
+        sendScreen();
         presenter.onResume();
         if (activityStateListener != null) {
             activityStateListener.onResume();
