@@ -62,7 +62,7 @@ public class InboxGtmTracker {
                 "brand", "none/other",
                 "varian", "none/other",
                 "category", recommendationItem.getDepartmentId(),
-                "list", "/inbox - rekomendasi untuk anda "+recommendationItem.getRecommendationType(),
+                "list", "/inbox - rekomendasi untuk anda - "+recommendationItem.getRecommendationType(),
                 "position", position));
     }
 
