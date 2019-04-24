@@ -19,6 +19,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -186,6 +187,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout llCourierRecommendationStateLoading;
     private TextView tvErrorShipmentItemTitle;
     private TextView tvErrorShipmentItemDescription;
+    private RelativeLayout rlProductInfo;
+    private FrameLayout flDisableContainer;
 
     // robinhood III
     private LinearLayout llCourierBlackboxStateLoading;
@@ -333,6 +336,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llCourierRecommendationStateLoading = itemView.findViewById(R.id.ll_courier_recommendation_state_loading);
         tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
+        rlProductInfo = itemView.findViewById(R.id.rl_product_info);
+        flDisableContainer = itemView.findViewById(R.id.fl_disable_container);
 
         // robinhood III
         llCourierBlackboxStateLoading = itemView.findViewById(R.id.ll_courier_blackbox_state_loading);
@@ -445,11 +450,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderFulfillment(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderShippingType(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
-        renderErrorAndWarning(shipmentCartItemModel);
         renderInsurance(shipmentCartItemModel);
         renderDropshipper(recipientAddressModel != null && recipientAddressModel.isCornerAddress());
         renderCostDetail(shipmentCartItemModel);
         renderCartItem(shipmentCartItemModel);
+        renderErrorAndWarning(shipmentCartItemModel);
     }
 
     private void renderFulfillment(ShipmentCartItemModel model) {
@@ -1402,9 +1407,46 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tvErrorDescription.setVisibility(View.GONE);
             }
             layoutError.setVisibility(View.VISIBLE);
-
+            flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext(), R.drawable.fg_disabled_item));
+            cbPPP.setEnabled(false);
+            cbInsurance.setEnabled(false);
+            llInsurance.setClickable(false);
+            cbDropshipper.setEnabled(false);
+            llDropshipper.setClickable(false);
+            tvPPPMore.setClickable(false);
+            chooseCourierButton.setClickable(false);
+            tvChangeCourier.setClickable(false);
+            tvChooseDuration.setClickable(false);
+            tvChangeSelectedDuration.setClickable(false);
+            tvChangeSelectedCourierRecommendation.setClickable(false);
+            tvChangeSelectedCourierBlackbox.setClickable(false);
+            etShipperName.setClickable(false);
+            etShipperName.setFocusable(false);
+            etShipperName.setFocusableInTouchMode(false);
+            etShipperPhone.setClickable(false);
+            etShipperPhone.setFocusable(false);
+            etShipperPhone.setFocusableInTouchMode(false);
         } else {
             layoutError.setVisibility(View.GONE);
+            flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext(), R.drawable.fg_enabled_item));
+            cbPPP.setEnabled(true);
+            cbInsurance.setEnabled(true);
+            llInsurance.setClickable(true);
+            cbDropshipper.setEnabled(true);
+            llDropshipper.setClickable(true);
+            tvPPPMore.setClickable(true);
+            chooseCourierButton.setClickable(true);
+            tvChangeCourier.setClickable(true);
+            tvChooseDuration.setClickable(true);
+            tvChangeSelectedDuration.setClickable(true);
+            tvChangeSelectedCourierRecommendation.setClickable(true);
+            tvChangeSelectedCourierBlackbox.setClickable(true);
+            etShipperName.setClickable(true);
+            etShipperName.setFocusable(true);
+            etShipperName.setFocusableInTouchMode(true);
+            etShipperPhone.setClickable(true);
+            etShipperPhone.setFocusable(true);
+            etShipperPhone.setFocusableInTouchMode(true);
         }
     }
 
