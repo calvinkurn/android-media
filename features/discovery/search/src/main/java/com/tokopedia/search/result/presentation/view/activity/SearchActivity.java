@@ -134,8 +134,6 @@ public class SearchActivity extends BaseActivity
         searchComponent =
                 DaggerSearchComponent.builder()
                         .baseAppComponent(getBaseAppComponent())
-                        .searchModule(new SearchModule())
-                        .searchPresenterModule(new SearchPresenterModule())
                         .build();
         searchComponent.inject(this);
     }

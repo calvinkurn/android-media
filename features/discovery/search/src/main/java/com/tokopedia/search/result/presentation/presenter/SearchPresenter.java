@@ -5,4 +5,7 @@ import com.tokopedia.search.result.presentation.SearchContract;
 
 final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> implements SearchContract.Presenter {
 
+    SearchPresenter() {
+
+    }
 }
