@@ -121,27 +121,6 @@ public class InboxPresenter extends BaseDaggerPresenter {
                 });
     }
 
-//    @NonNull
-//    private List<Visitable> getRecomendations(RecomendationEntity.RecomendationData recomendationData) {
-//        List<Visitable> recomendationList = new ArrayList<>();
-//        for (RecomendationEntity.Recommendation r : recomendationData.getRecommendation()) {
-//            Recomendation recomendation = new Recomendation();
-//            recomendation.setImageUrl(r.getImageUrl());
-//            recomendation.setCategoryBreadcrumbs(r.getCategoryBreadcrumbs());
-//            recomendation.setClickUrl(r.getClickUrl());
-//            recomendation.setPrice(r.getPrice());
-//            recomendation.setPriceNumber(r.getPriceInt());
-//            recomendation.setProductId(r.getId());
-//            recomendation.setDepartementId(r.getDepartmentId());
-//            recomendation.setProductName(r.getName());
-//            recomendation.setRecommendationType(r.getRecommendationType());
-//            recomendation.setTopAds(r.isIsTopads());
-//            recomendation.setTrackerImageUrl(r.getTrackerImageUrl());
-//            recomendationList.add(recomendation);
-//        }
-//        return recomendationList;
-//    }
-
     @NonNull
     private List<Visitable> getRecommendationVisitables(RecommendationModel recommendationModel) {
         List<Visitable> recomendationList = new ArrayList<>();
