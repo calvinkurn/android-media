@@ -1,54 +1,50 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
-import android.Manifest;
-import android.content.ClipData;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputMethodManager;
-import android.webkit.MimeTypeMap;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
-import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.SearchContract;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
-import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.di.component.DaggerSearchComponent;
 import com.tokopedia.search.result.di.component.SearchComponent;
-import com.tokopedia.search.result.presentation.presenter.SearchPresenter;
-import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,18 +53,17 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_ACTIVE_TAB_POSITION;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SEARCH;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_HAS_CATALOG;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
+import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 
-import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_FORCE_SWIPE_TO_SHOP;
-import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_HAS_CATALOG;
-import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_SEARCH_PARAMETER_MODEL;
-import static com.tokopedia.search.constant.SearchConstant.FROM_APP_SHORTCUTS;
-
-public class SearchActivity extends DiscoveryActivity
+public class SearchActivity extends BaseActivity
         implements SearchContract.View,
         RedirectionListener,
         BottomSheetListener,
@@ -78,15 +73,18 @@ public class SearchActivity extends DiscoveryActivity
         return new Intent(context, SearchActivity.class);
     }
 
-    public static final int TAB_THIRD_POSITION = 2;
-    public static final int TAB_SECOND_POSITION = 1;
-    public static final int TAB_PRODUCT = 0;
+    private static final int TAB_FIRST_POSITION = 0;
+    private static final int TAB_THIRD_POSITION = 2;
+    private static final int TAB_SECOND_POSITION = 1;
 
     private ProductListFragment productListFragment;
     private CatalogFragment catalogFragment;
     private ShopListFragment shopListFragment;
     private ProfileListFragment profileListFragment;
 
+    private Toolbar toolbar;
+    private FrameLayout container;
+    private ProgressBar loadingView;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SearchSectionPagerAdapter searchSectionPagerAdapter;
@@ -94,416 +92,118 @@ public class SearchActivity extends DiscoveryActivity
     private TextView buttonSort;
     private View searchNavDivider;
     private View searchNavContainer;
+    private BottomSheetFilterView bottomSheetFilterView;
+    private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
     private String productTabTitle;
     private String catalogTabTitle;
     private String shopTabTitle;
     private String profileTabTitle;
-    private boolean forceSwipeToShop;
-    private BottomSheetFilterView bottomSheetFilterView;
-    private SearchNavigationListener.ClickListener searchNavigationClickListener;
-    private boolean isHandlingIntent;
+    private boolean isForceSwipeToShop;
+    private boolean isForceSearch;
+    private boolean isHasCatalog;
+    private int activeTabPosition;
 
-    @Inject
-    SearchPresenter searchPresenter;
-
-    @Inject
-    SearchTracking searchTracking;
+    @Inject SearchContract.Presenter searchPresenter;
+    @Inject SearchTracking searchTracking;
+    @Inject UserSessionInterface userSession;
 
     private SearchComponent searchComponent;
     private MenuItem menuChangeGrid;
-
-    public SearchComponent getSearchComponent() {
-        return searchComponent;
-    }
+    private PerformanceMonitoring performanceMonitoring;
+    private SearchParameter searchParameter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initActivityOnCreate(savedInstanceState);
+        setContentView(R.layout.activity_search);
+        initActivityOnCreate();
 
+        proceed();
         handleIntent(getIntent());
     }
 
-    private void initActivityOnCreate(Bundle savedInstanceState) {
+    private void initActivityOnCreate() {
         GraphqlClient.init(this);
         initInjector();
-        initForceSwipeToShop(savedInstanceState);
-        bottomSheetFilterView.initFilterBottomSheet();
-    }
-
-    private void initForceSwipeToShop(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            forceSwipeToShop = isForceSwipeToShop();
-        } else {
-            forceSwipeToShop = getIntent().getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
-        }
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        handleIntent(intent);
-    }
-
-    private void handleIntent(Intent intent) {
-        isHandlingIntent = true;
-
-        initPresenter();
-        initResources();
-
-        SearchParameter searchParameter = getSearchParameterFromIntent(intent);
-
-        handleIntentSearch(intent, searchParameter);
-
-        if (intent != null &&
-                intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
-            searchTracking.eventSearchShortcut();
-        }
-
-        handleImageUri(intent);
-    }
-
-    private void initPresenter() {
-        setPresenter(searchPresenter);
-        searchPresenter.attachView(this);
-        searchPresenter.setDiscoveryView(this);
-    }
-
-    private void initResources() {
-        productTabTitle = getString(R.string.product_tab_title);
-        catalogTabTitle = getString(R.string.catalog_tab_title);
-        shopTabTitle = getString(R.string.shop_tab_title);
-        profileTabTitle = getString(R.string.title_profile);
-    }
-
-    private SearchParameter getSearchParameterFromIntent(Intent intent) {
-        SearchParameter searchParameter = intent.getParcelableExtra(EXTRA_SEARCH_PARAMETER_MODEL);
-
-        if(searchParameter == null) {
-            searchParameter = new SearchParameter();
-        }
-
-        return searchParameter;
-    }
-
-    private void handleIntentAutoComplete(SearchParameter searchParameter) {
-        searchView.showSearch(true, false, searchParameter);
-        isHandlingIntent = false;
-    }
-
-    private void handleIntentSearch(Intent intent, SearchParameter searchParameter) {
-        this.searchParameter = searchParameter;
-        boolean isHasCatalog = intent.getBooleanExtra(EXTRA_HAS_CATALOG, false);
-
-        handleIntentWithProductViewModel(searchParameter, isHasCatalog);
-    }
-
-    private void handleIntentWithProductViewModel(SearchParameter searchParameter, boolean isHasCatalog) {
-        setLastQuerySearchView(searchParameter.getSearchQuery());
-        loadSection(isHasCatalog, forceSwipeToShop);
-        setToolbarTitle(searchParameter.getSearchQuery());
-
-        isHandlingIntent = false;
-    }
-
-    private void handleIntentWithSearchQuery(SearchParameter searchParameter) {
-        this.searchParameter = searchParameter;
-        onProductQuerySubmit();
-    }
-
-    private void handleImageUri(Intent intent) {
-
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-
-        if (remoteConfig.getBoolean(RemoteConfigKey.SHOW_IMAGE_SEARCH, false) &&
-                intent != null) {
-
-            if (intent.getClipData() != null &&
-                    intent.getClipData().getItemCount() > 0) {
-
-                searchView.hideShowCaseDialog(true);
-                sendImageSearchFromGalleryGTM("");
-                ClipData clipData = intent.getClipData();
-                Uri uri = clipData.getItemAt(0).getUri();
-                onImageSuccess(uri.toString());
-            } else if (intent.getData() != null &&
-                    !TextUtils.isEmpty(intent.getData().toString()) &&
-                    isValidMimeType(intent.getData().toString())) {
-                searchView.hideShowCaseDialog(true);
-                sendImageSearchFromGalleryGTM("");
-                onImageSuccess(intent.getData().toString());
-            }
-        }
-    }
-
-    private boolean isValidMimeType(String url) {
-        String mimeType = getMimeTypeUri(Uri.parse(url));
-
-        return mimeType != null &&
-                (mimeType.equalsIgnoreCase("image/jpg") ||
-                        mimeType.equalsIgnoreCase("image/png") ||
-                        mimeType.equalsIgnoreCase("image/jpeg"));
-
-    }
-
-    private String getMimeTypeUri(Uri uri) {
-        String mimeType = null;
-        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
-            ContentResolver cr = getContentResolver();
-            mimeType = cr.getType(uri);
-        } else {
-            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
-                    .toString());
-            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                    fileExtension.toLowerCase());
-        }
-        return mimeType;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        unregisterShake();
-
-        if(!isHandlingIntent && !hasSearchData()) {
-            showAutoCompleteOnResume();
-        }
-    }
-
-    private boolean hasSearchData() {
-        return searchSectionPagerAdapter != null
-                && searchSectionPagerAdapter.getCount() > 0;
-    }
-
-    private void showAutoCompleteOnResume() {
-        if(searchView.isSearchOpen()) {
-            searchView.searchTextViewRequestFocus();
-            searchView.searchTextViewSetCursorSelectionAtTextEnd();
-            forceShowKeyBoard();
-        }
-        else {
-            searchView.showSearch(true, false);
-        }
-    }
-
-    private void forceShowKeyBoard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void onImageSuccess(String uri) {
-        onImagePickedSuccess(uri);
-    }
-
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(this, new RequestPermissionUtil.PermissionRequestListener() {
-            @Override
-            public void onProceed() {
-                request.proceed();
-            }
-
-            @Override
-            public void onCancel() {
-                request.cancel();
-            }
-        }, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        onRequestPermissionsResult(
-                requestCode, permissions, grantResults);
-
-    }
-
-    private void sendImageSearchFromGalleryGTM(String label) {
-        eventDiscoveryExternalImageSearch( label);
-    }
-
-    public void eventDiscoveryExternalImageSearch(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
-                SearchEventTracking.Category.IMAGE_SEARCH,
-                SearchEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
-                "");
     }
 
     private void initInjector() {
         searchComponent =
                 DaggerSearchComponent.builder()
-                        .appComponent(getApplicationComponent())
+                        .baseAppComponent(getBaseAppComponent())
                         .build();
         searchComponent.inject(this);
     }
 
-    private void loadSection(boolean isHasCatalog, boolean forceSwipeToShop) {
-
-        List<SearchSectionItem> searchSectionItemList = new ArrayList<>();
-
-        if (isHasCatalog) {
-            populateFourTabItem(searchSectionItemList);
-        } else {
-            populateThreeTabItem(searchSectionItemList);
-        }
-        searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
-        searchSectionPagerAdapter.setData(searchSectionItemList);
-        viewPager.setAdapter(searchSectionPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-        setActiveTab(forceSwipeToShop, isHasCatalog);
-    }
-
-    private void setActiveTab(final boolean swipeToShop, final boolean hasCatalogTab) {
-        viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                if (swipeToShop) {
-                    viewPager.setCurrentItem(getShopTabPosition(hasCatalogTab));
-                } else {
-                    viewPager.setCurrentItem(getActiveTabPosition());
-                }
-            }
-        });
-    }
-
-    private int getShopTabPosition(boolean hasCatalogTab) {
-        return hasCatalogTab ? 2 : 1;
-    }
-
-    private void populateFourTabItem(List<SearchSectionItem> searchSectionItemList) {
-        productListFragment = getProductFragment();
-        catalogFragment = getCatalogFragment();
-        shopListFragment = getShopFragment();
-        profileListFragment = getProfileListFragment(searchParameter.getSearchQuery(), this);
-
-        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
-        searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
-        searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-        searchSectionItemList.add(new SearchSectionItem(profileTabTitle, profileListFragment));
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case TAB_PRODUCT:
-                        productListFragment.backToTop();
-                        break;
-                    case TAB_SECOND_POSITION:
-                        catalogFragment.backToTop();
-                        break;
-                    case TAB_THIRD_POSITION:
-                        shopListFragment.backToTop();
-                        break;
-                }
-            }
-
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case TAB_PRODUCT:
-                        SearchTracking.eventSearchResultTabClick(getActivityContext(), productTabTitle);
-                        break;
-                    case TAB_SECOND_POSITION:
-                        SearchTracking.eventSearchResultTabClick(getActivityContext(), catalogTabTitle);
-                        break;
-                    case TAB_THIRD_POSITION:
-                        SearchTracking.eventSearchResultTabClick(getActivityContext(), shopTabTitle);
-                        break;
-                }
-            }
-        });
-    }
-
-    private CatalogFragment getCatalogFragment() {
-        return CatalogFragment.newInstance(searchParameter);
-    }
-
-    private ProductListFragment getProductFragment() {
-        return ProductListFragment.newInstance(searchParameter, isForceSearch());
-    }
-
-    private ShopListFragment getShopFragment() {
-        return ShopListFragment.newInstance(searchParameter);
-    }
-
-    private ProfileListFragment getProfileListFragment(String query, SearchNavigationListener searchNavigationListener) {
-        return ProfileListFragment.Companion.newInstance(query, searchNavigationListener, this);
-    }
-
-    private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList) {
-        productListFragment = getProductFragment();
-        shopListFragment = getShopFragment();
-        profileListFragment = getProfileListFragment(searchParameter.getSearchQuery(), this);
-
-        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
-        searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
-        searchSectionItemList.add(new SearchSectionItem(profileTabTitle, profileListFragment));
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case TAB_PRODUCT:
-                        productListFragment.backToTop();
-                        break;
-                    case TAB_SECOND_POSITION:
-                        shopListFragment.backToTop();
-                        break;
-                }
-            }
-
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case TAB_PRODUCT:
-                        SearchTracking.eventSearchResultTabClick(getActivityContext(), productTabTitle);
-                        break;
-                    case TAB_SECOND_POSITION:
-                        SearchTracking.eventSearchResultTabClick(getActivityContext(), shopTabTitle);
-                        break;
-                }
-            }
-        });
+    private BaseAppComponent getBaseAppComponent() {
+        return ((BaseMainApplication)getApplication()).getBaseAppComponent();
     }
 
     @Override
-    protected int getLayoutRes() {
-        return R.layout.activity_search;
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        proceed();
+        handleIntent(intent);
     }
 
-    @Override
-    protected void initView() {
-        super.initView();
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        bottomSheetFilterView = (BottomSheetFilterView) findViewById(R.id.bottomSheetFilter);
+    private void proceed() {
+        findViews();
+        prepareView();
+    }
+
+    protected void findViews() {
+        toolbar = findViewById(com.tokopedia.discovery.R.id.toolbar);
+        container = findViewById(com.tokopedia.discovery.R.id.container);
+        loadingView = findViewById(com.tokopedia.discovery.R.id.progressBar);
+        tabLayout = findViewById(R.id.tabs);
+        viewPager = findViewById(R.id.pager);
+        bottomSheetFilterView = findViewById(R.id.bottomSheetFilter);
         buttonFilter = findViewById(R.id.button_filter);
         buttonSort = findViewById(R.id.button_sort);
         searchNavDivider = findViewById(R.id.search_nav_divider);
         searchNavContainer = findViewById(R.id.search_nav_container);
     }
 
-    @Override
     protected void prepareView() {
-        super.prepareView();
+        initToolbar();
+        showLoadingView(false);
 
+        initViewPager();
+        initBottomSheetListener();
+        initSearchNavigationListener();
+
+        bottomSheetFilterView.initFilterBottomSheet();
+    }
+
+    private void initToolbar() {
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+
+        toolbar.setOnClickListener(v -> startActivity(getAutoCompleteIntent()));
+    }
+
+    private Intent getAutoCompleteIntent() {
+        SearchParameter autoCompleteSearchParameter = new SearchParameter();
+        autoCompleteSearchParameter.setSearchQuery(searchParameter.getSearchQuery());
+
+        Intent intent = ((DiscoveryRouter)getApplicationContext()).gotoSearchAutoCompletePage(SearchActivity.this);
+        intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, autoCompleteSearchParameter);
+
+        return intent;
+    }
+
+    private void showLoadingView(boolean visible) {
+        loadingView.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    private void initViewPager() {
         viewPager.setOffscreenPageLimit(3);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -513,8 +213,7 @@ public class SearchActivity extends DiscoveryActivity
 
             @Override
             public void onPageSelected(int position) {
-                setForceSwipeToShop(false);
-                setActiveTabPosition(position);
+                SearchActivity.this.onPageSelected(position);
             }
 
             @Override
@@ -522,28 +221,11 @@ public class SearchActivity extends DiscoveryActivity
 
             }
         });
-        initBottomSheetListener();
-        initSearchNavigationListener();
     }
 
-    private void initSearchNavigationListener() {
-        buttonFilter.setOnClickListener(view -> {
-            if (searchNavigationClickListener != null) {
-                searchNavigationClickListener.onFilterClick();
-            }
-        });
-
-        buttonSort.setOnClickListener(view -> {
-            if (searchNavigationClickListener != null) {
-                searchNavigationClickListener.onSortClick();
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        bottomSheetFilterView.onActivityResult(requestCode, resultCode, data);
+    private void onPageSelected(int position) {
+        this.isForceSwipeToShop = false;
+        this.activeTabPosition = position;
     }
 
     private void initBottomSheetListener() {
@@ -566,7 +248,7 @@ public class SearchActivity extends DiscoveryActivity
 
             @Override
             public boolean isSearchShown() {
-                return searchView.isSearchOpen();
+                return false;
             }
 
             @Override
@@ -581,38 +263,6 @@ public class SearchActivity extends DiscoveryActivity
         });
     }
 
-    private void sendBottomSheetHideEventForProductList() {
-        SearchSectionFragment selectedFragment
-                = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
-
-        if (selectedFragment instanceof ProductListFragment) {
-            selectedFragment.onBottomSheetHide();
-        }
-    }
-
-    @Override
-    public void performNewProductSearch(String query, boolean forceSearch) {
-        searchParameter = new SearchParameter();
-
-        setForceSearch(forceSearch);
-        setForceSwipeToShop(false);
-        setRequestOfficialStoreBanner(true);
-
-        performRequestProduct(query);
-    }
-
-    @Override
-    public void showSearchInputView() {
-        searchView.showSearch(true, DiscoverySearchView.TAB_DEFAULT_SUGGESTION);
-        searchView.setFinishOnClose(false);
-    }
-
-    @Override
-    protected void onDestroy() {
-        searchPresenter.detachView();
-        super.onDestroy();
-    }
-
     private void applyFilter(Map<String, String> filterParameter) {
         SearchSectionFragment selectedFragment
                 = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
@@ -623,6 +273,200 @@ public class SearchActivity extends DiscoveryActivity
         selectedFragment.reloadData();
     }
 
+    private void sendBottomSheetHideEventForProductList() {
+        SearchSectionFragment selectedFragment
+                = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
+
+        if (selectedFragment instanceof ProductListFragment) {
+            selectedFragment.onBottomSheetHide();
+        }
+    }
+
+    private void initSearchNavigationListener() {
+        buttonFilter.setOnClickListener(view -> {
+            if (searchNavigationClickListener != null) {
+                searchNavigationClickListener.onFilterClick();
+            }
+        });
+
+        buttonSort.setOnClickListener(view -> {
+            if (searchNavigationClickListener != null) {
+                searchNavigationClickListener.onSortClick();
+            }
+        });
+    }
+
+    private void handleIntent(Intent intent) {
+        initResources();
+        getExtrasFromIntent(intent);
+
+        loadSection();
+        setToolbarTitle(searchParameter.getSearchQuery());
+
+        // TODO:: Is this still needed?
+        if (intent != null &&
+                intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
+            searchTracking.eventSearchShortcut();
+        }
+    }
+
+    private void initResources() {
+        productTabTitle = getString(R.string.product_tab_title);
+        catalogTabTitle = getString(R.string.catalog_tab_title);
+        shopTabTitle = getString(R.string.shop_tab_title);
+        profileTabTitle = getString(R.string.title_profile);
+    }
+
+    private void getExtrasFromIntent(Intent intent) {
+        searchParameter = intent.getParcelableExtra(EXTRA_SEARCH_PARAMETER_MODEL);
+        isForceSwipeToShop = intent.getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
+        isHasCatalog = intent.getBooleanExtra(EXTRA_HAS_CATALOG, false);
+
+        createNewSearchParameterIfNull();
+    }
+
+    private void createNewSearchParameterIfNull() {
+        if(searchParameter == null) {
+            searchParameter = new SearchParameter();
+        }
+    }
+
+    private void loadSection() {
+        List<SearchSectionItem> searchSectionItemList = new ArrayList<>();
+        populateTab(searchSectionItemList);
+
+        searchSectionPagerAdapter = new SearchSectionPagerAdapter(getSupportFragmentManager());
+        searchSectionPagerAdapter.setData(searchSectionItemList);
+        viewPager.setAdapter(searchSectionPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+
+        setActiveTab();
+    }
+
+    private void populateTab(List<SearchSectionItem> searchSectionItemList) {
+        initFragments();
+        addFragmentsToList(searchSectionItemList);
+
+        initTabLayout();
+    }
+
+    private void initFragments() {
+        productListFragment = getProductFragment();
+        if(isHasCatalog) catalogFragment = getCatalogFragment();
+        shopListFragment = getShopFragment();
+        profileListFragment = getProfileListFragment();
+    }
+
+    private ProductListFragment getProductFragment() {
+        return ProductListFragment.newInstance(searchParameter, isForceSearch);
+    }
+
+    private ShopListFragment getShopFragment() {
+        return ShopListFragment.newInstance(searchParameter);
+    }
+
+    private CatalogFragment getCatalogFragment() {
+        return CatalogFragment.newInstance(searchParameter);
+    }
+
+    private ProfileListFragment getProfileListFragment() {
+        return ProfileListFragment.Companion.newInstance(searchParameter.getSearchQuery(), this, this);
+    }
+
+    private void addFragmentsToList(List<SearchSectionItem> searchSectionItemList) {
+        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
+        if(isHasCatalog) searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
+        searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
+        searchSectionItemList.add(new SearchSectionItem(profileTabTitle, profileListFragment));
+    }
+
+    private void initTabLayout() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                SearchActivity.this.onTabReselected(tab.getPosition());
+            }
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                SearchActivity.this.onTabSelected(tab.getPosition());
+            }
+        });
+    }
+
+    private void onTabReselected(int tabPosition) {
+        switch (tabPosition) {
+            case TAB_FIRST_POSITION:
+                productListFragment.backToTop();
+                break;
+            case TAB_SECOND_POSITION:
+                if(isHasCatalog) catalogFragment.backToTop();
+                else shopListFragment.backToTop();
+                break;
+            case TAB_THIRD_POSITION:
+                if(isHasCatalog) shopListFragment.backToTop();
+                break;
+        }
+    }
+
+    private void onTabSelected(int tabPosition) {
+        switch (tabPosition) {
+            case TAB_FIRST_POSITION:
+                SearchTracking.eventSearchResultTabClick(this, productTabTitle);
+                break;
+            case TAB_SECOND_POSITION:
+                if(isHasCatalog) SearchTracking.eventSearchResultTabClick(this, catalogTabTitle);
+                else SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
+                break;
+            case TAB_THIRD_POSITION:
+                if(isHasCatalog) SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
+                break;
+        }
+    }
+
+    private void setActiveTab() {
+        viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                viewPager.setCurrentItem(getViewPagerCurrentItem());
+            }
+        });
+    }
+
+    private int getViewPagerCurrentItem() {
+        if(isForceSwipeToShop) return getShopTabPosition();
+        else return activeTabPosition;
+    }
+
+    private int getShopTabPosition() {
+        return isHasCatalog ? 2 : 1;
+    }
+
+    protected void setToolbarTitle(String query) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(query);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        bottomSheetFilterView.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onDestroy() {
+        searchPresenter.detachView();
+        super.onDestroy();
+    }
+
     @Override
     public void onBackPressed() {
         if (!bottomSheetFilterView.onBackPressed()) {
@@ -631,9 +475,106 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     @Override
-    public void onSearchViewShown() {
-        super.onSearchViewShown();
-        bottomSheetFilterView.closeView();
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean(EXTRA_FORCE_SEARCH, isForceSearch);
+        outState.putBoolean(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop);
+        outState.putInt(EXTRA_ACTIVE_TAB_POSITION, activeTabPosition);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        isForceSearch = savedInstanceState.getBoolean(EXTRA_FORCE_SEARCH);
+        isForceSwipeToShop = savedInstanceState.getBoolean(EXTRA_FORCE_SWIPE_TO_SHOP);
+        activeTabPosition = savedInstanceState.getInt(EXTRA_ACTIVE_TAB_POSITION);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_change_grid, menu);
+        menuChangeGrid = menu.findItem(R.id.action_change_grid);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_change_grid) {
+            if (searchNavigationClickListener != null) {
+                searchNavigationClickListener.onChangeGridClick();
+            }
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void performNewProductSearch(String query, boolean forceSearch) {
+        this.searchParameter = new SearchParameter();
+        this.isForceSwipeToShop = false;
+        this.isForceSearch = forceSearch;
+
+        updateSearchParameterBeforeSearch(query);
+        onSearchingStart();
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
+
+        // TODO:: Discuss how to do this???
+//        getPresenter().initiateSearch(searchParameter, isForceSearch());
+    }
+
+    private void updateSearchParameterBeforeSearch(String searchQuery) {
+        setSearchParameterQueryIfNotEmpty(searchQuery);
+        setSearchParameterUniqueId();
+        setSearchParameterUserIdIfLoggedIn();
+    }
+
+    private void setSearchParameterQueryIfNotEmpty(String searchQuery) {
+        if(!TextUtils.isEmpty(searchQuery)) {
+            searchParameter.setSearchQuery(searchQuery);
+        }
+    }
+
+    private void setSearchParameterUniqueId() {
+        String uniqueId = userSession.isLoggedIn() ?
+                AuthUtil.md5(userSession.getUserId()) :
+                AuthUtil.md5(getRegistrationId(this));
+
+        searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
+    }
+
+    public static String getRegistrationId(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        return cache.getString(GCM_ID, "");
+    }
+
+    private void setSearchParameterUserIdIfLoggedIn() {
+        if(userSession.isLoggedIn()) {
+            searchParameter.set(SearchApiConst.USER_ID, userSession.getUserId());
+        }
+    }
+
+    protected void onSearchingStart() {
+        showLoadingView(true);
+        showContainer(false);
+        hideBottomNavigation();
+    }
+
+    protected void stopPerformanceMonitoring() {
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+        }
+    }
+
+    private void showContainer(boolean visible) {
+        container.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showSearchInputView() {
+        startActivity(getAutoCompleteIntent());
     }
 
     @Override
@@ -662,17 +603,9 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    private Context getActivityContext() {
-        return this;
-    }
-
-    @Override
     public void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled) {
         showBottomNavigation();
+
         if (isSortEnabled) {
             buttonSort.setVisibility(View.VISIBLE);
             searchNavDivider.setVisibility(View.VISIBLE);
@@ -680,36 +613,10 @@ public class SearchActivity extends DiscoveryActivity
             buttonSort.setVisibility(View.GONE);
             searchNavDivider.setVisibility(View.GONE);
         }
+
         this.searchNavigationClickListener = clickListener;
     }
 
-    @Override
-    public void refreshMenuItemGridIcon(int titleResId, int iconResId) {
-        if (menuChangeGrid != null) {
-            menuChangeGrid.setIcon(iconResId);
-            menuChangeGrid.setTitle(titleResId);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_change_grid, menu);
-        menuChangeGrid = menu.findItem(R.id.action_change_grid);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_change_grid) {
-            if (searchNavigationClickListener != null) {
-                searchNavigationClickListener.onChangeGridClick();
-            }
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void showBottomNavigation() {
         searchNavContainer.setVisibility(View.VISIBLE);
     }
@@ -720,8 +627,10 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     @Override
-    protected void onSearchingStart(String keyword) {
-        super.onSearchingStart(keyword);
-        hideBottomNavigation();
+    public void refreshMenuItemGridIcon(int titleResId, int iconResId) {
+        if (menuChangeGrid != null) {
+            menuChangeGrid.setIcon(iconResId);
+            menuChangeGrid.setTitle(titleResId);
+        }
     }
 }

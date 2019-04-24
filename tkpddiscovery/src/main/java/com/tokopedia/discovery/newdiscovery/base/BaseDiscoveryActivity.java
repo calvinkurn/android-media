@@ -30,9 +30,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_FORCE_SWIPE_TO_SHOP;
-import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_HAS_CATALOG;
-import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_SEARCH_PARAMETER_MODEL;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_HAS_CATALOG;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 
 /**
  * Created by hangnadi on 9/26/17.
@@ -250,7 +250,7 @@ public class BaseDiscoveryActivity
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
     }
 
-        @Override
+    @Override
     public void onHandleImageSearchResponseError() {
     }
 

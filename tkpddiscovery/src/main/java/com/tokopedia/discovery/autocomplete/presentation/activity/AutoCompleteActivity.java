@@ -38,10 +38,10 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.tokopedia.discovery.common.constants.IntentExtraConstants.DEEP_LINK_URI;
-import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_IS_AUTOCOMPLETE;
-import static com.tokopedia.discovery.common.constants.IntentExtraConstants.EXTRA_SEARCH_PARAMETER_MODEL;
-import static com.tokopedia.discovery.common.constants.IntentExtraConstants.FROM_APP_SHORTCUTS;
+import static com.tokopedia.discovery.common.constants.SearchConstant.DEEP_LINK_URI;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_IS_AUTOCOMPLETE;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
+import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
 
 @RuntimePermissions
 public class AutoCompleteActivity extends DiscoveryActivity
