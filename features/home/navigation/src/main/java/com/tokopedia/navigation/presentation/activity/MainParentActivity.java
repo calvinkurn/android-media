@@ -782,6 +782,8 @@ public class MainParentActivity extends BaseActivity implements
             if (emptyCartFragment == null) {
                 emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc, promoCode);
             }
+            if (emptyCartFragment.isAdded()) return;
+            cartFragment = null;
             fragmentList.set(CART_MENU, emptyCartFragment);
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
         }
@@ -795,6 +797,8 @@ public class MainParentActivity extends BaseActivity implements
             } else if (bundle != null) {
                 cartFragment.setArguments(bundle);
             }
+            if (cartFragment.isAdded()) return;
+            emptyCartFragment = null;
             fragmentList.set(CART_MENU, cartFragment);
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
         }
