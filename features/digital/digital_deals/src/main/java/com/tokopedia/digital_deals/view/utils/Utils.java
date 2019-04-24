@@ -263,6 +263,12 @@ public class Utils {
                 location = gson.fromJson(locationjson, Location.class);
             }
         }
+        if(location == null) {
+            location = new Location();
+            location.setName("jakarta");
+            location.setId(318);
+            updateLocation(context, location);
+        }
         return location;
     }
 

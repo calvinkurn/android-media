@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,7 +45,10 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -294,13 +299,26 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     };
 
     @Override
-    public RequestParams getCategoryParams() {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(DealsHomePresenter.TAG, categoriesModel.getCategoryUrl());
+    public String getCategoryParams() {
+        Uri uri = null;
         Location location = Utils.getSingletonInstance().getLocation(getContext());
-        if (location != null)
-            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
-        return requestParams;
+        if (location != null) {
+            uri = replaceUriParameter(Uri.parse(categoriesModel.getCategoryUrl()), Utils.QUERY_PARAM_CITY_ID, String.valueOf(location.getId()));
+            Log.d("Naveen", "value of Uri " + uri);
+        }
+        return uri.toString();
+    }
+
+
+    private static Uri replaceUriParameter(Uri uri, String key, String newValue) {
+        final Set<String> params = uri.getQueryParameterNames();
+        final Uri.Builder newUri = uri.buildUpon().clearQuery();
+        for (String param : params) {
+            newUri.appendQueryParameter(param,
+                    param.equals(key) ? newValue : uri.getQueryParameter(param));
+        }
+
+        return newUri.build();
     }
 
     @Override
