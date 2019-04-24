@@ -69,7 +69,7 @@ public class SearchActivity extends BaseActivity
         RedirectionListener,
         BottomSheetListener,
         SearchNavigationListener,
-        HasComponent<BaseAppComponent> {
+        HasComponent<SearchComponent> {
 
     public static Intent newInstance(Context context) {
         return new Intent(context, SearchActivity.class);
@@ -106,7 +106,7 @@ public class SearchActivity extends BaseActivity
     private boolean isHasCatalog;
     private int activeTabPosition;
 
-    //@Inject SearchContract.Presenter searchPresenter;
+    @Inject SearchContract.Presenter searchPresenter;
     @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
 
@@ -465,7 +465,7 @@ public class SearchActivity extends BaseActivity
 
     @Override
     protected void onDestroy() {
-//        searchPresenter.detachView();
+        searchPresenter.detachView();
         super.onDestroy();
     }
 
@@ -637,7 +637,7 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public BaseAppComponent getComponent() {
-        return getBaseAppComponent();
+    public SearchComponent getComponent() {
+        return searchComponent;
     }
 }
