@@ -62,7 +62,6 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORC
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_HAS_CATALOG;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
-import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
@@ -303,17 +302,16 @@ public class SearchActivity extends BaseActivity
     }
 
     private void handleIntent(Intent intent) {
+        initPresenter();
         initResources();
         getExtrasFromIntent(intent);
 
         loadSection();
         setToolbarTitle(searchParameter.getSearchQuery());
+    }
 
-        // TODO:: Is this still needed?
-        if (intent != null &&
-                intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
-            searchTracking.eventSearchShortcut();
-        }
+    private void initPresenter() {
+        searchPresenter.attachView(this);
     }
 
     private void initResources() {
