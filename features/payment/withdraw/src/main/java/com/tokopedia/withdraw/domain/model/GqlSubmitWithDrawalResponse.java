@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class GqlSubmitWithDrawalResponse {
 
+    @SerializedName("status")
+    private String status;
+
     @SerializedName("submitWithdrawal")
     private SubmitWithdrawResponse response;
 
@@ -13,5 +16,13 @@ public class GqlSubmitWithDrawalResponse {
 
     public void setResponse(SubmitWithdrawResponse response) {
         this.response = response;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
