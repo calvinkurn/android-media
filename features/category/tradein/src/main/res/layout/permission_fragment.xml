@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dp_16"
     android:layout_marginEnd="@dimen/dp_16"
-    android:background="@drawable/bg_rect_white"
+    android:background="@drawable/bg_rect_white_round"
     tools:context="view.viewcontrollers.AccessRequestFragment">
 
     <TextView
