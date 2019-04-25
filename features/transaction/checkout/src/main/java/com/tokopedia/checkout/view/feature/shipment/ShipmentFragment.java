@@ -1785,7 +1785,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onDonationChecked(boolean checked) {
-        shipmentAdapter.updateDonation(checked);
+        if (rvShipment.isComputingLayout()) {
+            rvShipment.post(new Runnable() {
+                @Override
+                public void run() {
+                    shipmentAdapter.updateDonation(checked);
+                }
+            });
+        } else {
+            shipmentAdapter.updateDonation(checked);
+        }
         if (checked) sendAnalyticsOnClickTopDonation();
     }
 
