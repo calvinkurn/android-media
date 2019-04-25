@@ -129,7 +129,8 @@
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_height="100dp" />
+                    tools:layout_height="100dp"
+                    />
 
                 <android.support.constraint.ConstraintLayout
                     android:id="@+id/room_info_layout"
@@ -137,7 +138,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintBottom_toBottomOf="@id/room_facility_recycler_view">
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:id="@+id/room_price_text_view"
@@ -157,8 +158,8 @@
                         android:id="@+id/per_room_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_6"
                         android:textSize="@dimen/sp_10"
+                        android:layout_marginTop="@dimen/dp_4"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/room_price_text_view"
                         android:textColor="@color/clr_ae31353b"
@@ -204,16 +205,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_8"
-                    app:buttonCompatSize="big"
+                    app:buttonCompatSize="medium"
                     app:buttonCompatTextAllCaps="false"
                     app:buttonCompatType="transaction"
                     android:text="@string/hotel_room_list_choose_room_button"
-                    tools:layout_height="@dimen/dp_40"
-                    android:padding="@dimen/dp_12"
+                    android:paddingLeft="@dimen/dp_24"
+                    android:paddingRight="@dimen/dp_24"
                     tools:gravity="center_vertical"
                     app:layout_constraintTop_toBottomOf="@id/room_left_text_view"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:textSize="@dimen/dp_14"
+                    style="@style/TextView.Small.White.Bold"
+                    />
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="wrap_content"

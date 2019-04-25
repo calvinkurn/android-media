@@ -55,14 +55,21 @@
         tools:text="@string/app_name" />
 
     <!-- text will be override programmatically -->
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
+        android:id="@+id/button_add_promo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button_add_promo"
-        android:background="@drawable/bg_button_green"
-        style="@style/Button.Submit.Green"
-        android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/title_try_again"/>
+        android:layout_marginTop="@dimen/dp_8"
+        app:buttonCompatSize="medium"
+        app:buttonCompatTextAllCaps="false"
+        app:buttonCompatType="primary"
+        android:text="@string/title_try_again"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_24"
+        tools:gravity="center_vertical"
+        android:textSize="@dimen/dp_14"
+        style="@style/TextView.Small.White.Bold"
+        />
 
     <View
         android:layout_width="wrap_content"
