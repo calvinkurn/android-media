@@ -62,11 +62,6 @@ class RecomendationEntity {
         var wholesalePrice: List<*>? = listOf<Any>()
 
         class Shop {
-            /**
-             * id : 979672
-             * name : maxstoreband
-             */
-
             @SerializedName("id")
             var id: Int = 0
             @SerializedName("name")
