@@ -42,15 +42,15 @@ public class GqlMerchantCreditResponse implements Parcelable {
     @SerializedName("box_info")
     private GqlBoxInfoResponse boxInfo;
 
-    public static final Creator<GqlDetailsResponse> CREATOR = new Creator<GqlDetailsResponse>() {
+    public static final Creator<GqlMerchantCreditResponse> CREATOR = new Creator<GqlMerchantCreditResponse>() {
         @Override
-        public GqlDetailsResponse createFromParcel(Parcel in) {
-            return new GqlDetailsResponse(in);
+        public GqlMerchantCreditResponse createFromParcel(Parcel in) {
+            return new GqlMerchantCreditResponse(in);
         }
 
         @Override
-        public GqlDetailsResponse[] newArray(int size) {
-            return new GqlDetailsResponse[size];
+        public GqlMerchantCreditResponse[] newArray(int size) {
+            return new GqlMerchantCreditResponse[size];
         }
     };
 
