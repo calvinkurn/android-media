@@ -272,6 +272,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
+    private fun onNoInternetConnection(): () -> Unit {
+        return {
+            performanceMonitoring.stopTrace()
+            viewState.onNoInternetConnection()
+            onToolbarEnabled(false)
+        }
+    }
+
     override fun onToolbarEnabled(isEnabled: Boolean) {
         optionsMenuEnable = isEnabled
 
@@ -286,7 +294,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onRetryGetInfo() {
-        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo())
+        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo(), onNoInternetConnection())
     }
 
     private fun setExitDialog(exitMessage: ExitMessage?) {
@@ -539,7 +547,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun setSnackBarRetryConnectingWebSocket() {
         if (userSession.isLoggedIn && !viewState.errorViewShown()) {
-            snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.sendbird_error_retry))
+            snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.error_websocket_play))
             snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
                 it.setAction(getString(R.string.retry)) {
@@ -565,7 +573,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun loadFirstTime() {
-        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo())
+        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo(), onNoInternetConnection())
     }
 
     override fun addIncomingMessage(it: Visitable<*>) {
