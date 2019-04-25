@@ -14,6 +14,7 @@ ext {
     tkpdPushNotifVersion = '2.22'
     tkpdTrackingOptimizerVersion = '2.22'
     tkpdUseCaseVersion = '2.23'
+    tkpdVideoplayerVersion = '2.22'
     tkpdYoutubeUtilVersion = '2.22'
     tkpdBaseAdapterlVersion = '2.22'
     tkpdGraphViewVersion = '2.22'
@@ -29,6 +30,7 @@ ext {
             pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
             trackingOptimizer     : "com.tokopedia.trackingoptimizer:trackingoptimizer:${tkpdTrackingOptimizerVersion}",
             usecase               : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
+            videoplayer           : "com.tokopedia.videoplayer:videoplayer:${tkpdVideoplayerVersion}",
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
     ]
 
@@ -43,6 +45,7 @@ ext {
             cacheManager      : ":libraries:cache_manager",
 //            cacheManager      : ":libraries:cache_manager_no_op",
             cameraView        : ":libraries:camera_view",
+            cameraview        : ":libraries:cameraview",
             cmnotification    :":libraries:cm_push_notifications",
             commonNetwork     : ":libraries:common_network",
             coreNetwork       : ":libraries:core_network",
@@ -68,19 +71,24 @@ ext {
             trackingOptimizer : ":libraries:tracking_optimizer",
             useCase           : ":libraries:use_case",
             userSession       : ":libraries:user_session",
+            videoRecorder     : ":libraries:video_recorder",
+            videoUploader     : ":libraries:videouploader",
             webview           : ":libraries:webview",
             websocket         : ":libraries:websocket",
             williamchart      : ":libraries:williamchart",
+            videoplayer       : ":libraries:videoplayer",
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil       : ":libraries:youtubeutil",
             core_legacy       : ":libraries:core_legacy",
             abstraction       : ":tkpdabstraction",
             design            : ":tkpddesign",
+            sharecontent      : ":libraries:sharecontent",
             track             : ":libraries:track",
-            trackinterface    : ":libraries:trackinterface",
             graphView         :":libraries:graph_view",
             iris              : ":libraries:iris",
 //            iris              : ":libraries:iris_no_op",
-            banner            : ":libraries:banner"
+            banner            : ":libraries:banner",
+            collapsingTabLayout: ":libraries:collapsing_tab_layout",
+            cpm              : ":libraries:cpm"
     ]
 }

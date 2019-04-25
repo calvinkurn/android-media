@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.navigation.GlobalNavRouter;
@@ -12,6 +11,7 @@ import com.tokopedia.navigation.data.mapper.NotificationMapper;
 import com.tokopedia.navigation.domain.GetBottomNavNotificationUseCase;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.domain.GetNewFeedCheckerUseCase;
+import com.tokopedia.navigation.domain.GetRecomendationUseCase;
 import com.tokopedia.navigation.listener.CartListener;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.user.session.UserSession;
@@ -32,14 +32,6 @@ public class GlobalNavModule {
     }
 
     @Provides
-    AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
-        if (context instanceof AbstractionRouter) {
-            return ((AbstractionRouter) context).getAnalyticTracker();
-        }
-        throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
-    }
-
-    @Provides
     GetBottomNavNotificationUseCase provideGetBottomNavNotificationUseCase(
             GetDrawerNotificationUseCase getDrawerNotificationUseCase,
             GetNewFeedCheckerUseCase getNewFeedCheckerUseCase) {
@@ -56,6 +48,13 @@ public class GlobalNavModule {
     @Provides
     GetDrawerNotificationUseCase provideGetDrawerNotificationUseCase(GraphqlUseCase graphqlUseCase, CartListener cartListener) {
         return new GetDrawerNotificationUseCase(graphqlUseCase, new NotificationMapper(), cartListener);
+    }
+
+    @Provides
+    GetRecomendationUseCase provideGetRecomendationUseCase(@ApplicationContext Context context,
+                                                           GraphqlUseCase graphqlUseCase,
+                                                           UserSessionInterface userSession){
+        return new GetRecomendationUseCase(context, graphqlUseCase, userSession);
     }
 
     @Provides

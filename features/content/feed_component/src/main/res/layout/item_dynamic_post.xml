@@ -180,6 +180,10 @@
                     app:tabIndicatorHeight="0dp" />
             </RelativeLayout>
 
+            <include
+                android:id="@+id/layoutPostTag"
+                layout="@layout/item_posttag"/>
+
             <LinearLayout
                 android:id="@+id/footer"
                 android:layout_width="match_parent"
@@ -219,10 +223,11 @@
                 </FrameLayout>
 
                 <RelativeLayout
+                    android:id="@+id/footerCta"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingTop="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_8"
                     android:paddingBottom="@dimen/dp_16">
 
                     <LinearLayout

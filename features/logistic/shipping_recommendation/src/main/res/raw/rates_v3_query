@@ -19,6 +19,7 @@
       is_blackbox:$is_blackbox
       address_id:"$address_id"
       preorder:$preorder
+      trade_in:$trade_in
   }) {
   ratesv3 {
     id
@@ -101,6 +102,22 @@
                 formatted_price
             }
         }
+    }
+    promo_stacking {
+      is_promo
+      promo_code
+      title
+      shipper_id
+      shipper_product_id
+      shipper_name
+      shipper_desc
+      promo_detail
+      benefit_desc
+      point_change
+      user_point
+      promo_tnc_html
+      shipper_disable_text
+      service_id
     }
     info {
       blackbox_info {

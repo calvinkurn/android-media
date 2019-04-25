@@ -9,6 +9,13 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
       backgroundColor
       fontSize
     }
+    flag {
+      isOrderCOD
+      isOrderNow
+      isOrderTradeIn
+      warehouseID
+      fulfillBy
+    }
     title {
       label
       value

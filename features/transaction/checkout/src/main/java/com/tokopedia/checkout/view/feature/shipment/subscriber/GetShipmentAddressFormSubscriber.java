@@ -23,17 +23,17 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
 
     private final ShipmentPresenter shipmentPresenter;
     private final ShipmentContract.View view;
-    private final boolean isFromMultipleAddress;
-    private final boolean isFromPdp;
+    private final boolean isReloadData;
+    private final boolean isOneClickShipment;
 
     public GetShipmentAddressFormSubscriber(ShipmentPresenter shipmentPresenter,
                                             ShipmentContract.View view,
-                                            boolean isFromMultipleAddress,
-                                            boolean isFromPdp) {
+                                            boolean isReloadData,
+                                            boolean isOneClickShipment) {
         this.shipmentPresenter = shipmentPresenter;
         this.view = view;
-        this.isFromMultipleAddress = isFromMultipleAddress;
-        this.isFromPdp = isFromPdp;
+        this.isReloadData = isReloadData;
+        this.isOneClickShipment = isOneClickShipment;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        if (isFromMultipleAddress) {
+        if (isReloadData) {
             view.hideLoading();
         } else {
             view.hideInitialLoading();
@@ -73,7 +73,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
 
     @Override
     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        if (isFromMultipleAddress) {
+        if (isReloadData) {
             view.hideLoading();
         } else {
             view.hideInitialLoading();
@@ -86,7 +86,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
                 view.renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
             } else {
                 shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
-                view.renderCheckoutPage(!isFromMultipleAddress, isFromPdp);
+                view.renderCheckoutPage(!isReloadData, isOneClickShipment);
                 view.stopTrace();
             }
         }

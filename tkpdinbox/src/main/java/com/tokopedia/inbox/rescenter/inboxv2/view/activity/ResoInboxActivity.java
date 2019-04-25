@@ -43,7 +43,7 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
     public static Intent newSellerInstance(Context context) {
         Intent intent = null;
         if (isToggleResoEnabled(context)) {
-            intent = getApplinkIntent(context, ResolutionUrl.RESO_INBOX_SELLER);
+            intent = getApplinkIntent(context, ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_INBOX_SELLER);
         }
 
         if (intent == null) {
@@ -59,7 +59,7 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
     public static Intent newBuyerInstance(Context context) {
         Intent intent = null;
         if (isToggleResoEnabled(context)) {
-            intent = getApplinkIntent(context, ResolutionUrl.RESO_INBOX_BUYER);
+            intent = getApplinkIntent(context, ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_INBOX_BUYER);
         }
 
         if (intent == null) {

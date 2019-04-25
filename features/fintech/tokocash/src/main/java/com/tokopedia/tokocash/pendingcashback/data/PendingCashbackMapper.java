@@ -19,9 +19,13 @@ public class PendingCashbackMapper implements Func1<PendingCashbackEntity, Pendi
     @Override
     public PendingCashback call(PendingCashbackEntity pendingCashbackEntity) {
         if (pendingCashbackEntity != null) {
+            int amount = 0;
+            try {
+                amount = Integer.parseInt(pendingCashbackEntity.getBalance());
+            } catch (NumberFormatException ignored) { }
             PendingCashback pendingCashback = new PendingCashback();
-            pendingCashback.setAmount(pendingCashbackEntity.getAmount());
-            pendingCashback.setAmountText(pendingCashbackEntity.getAmountText());
+            pendingCashback.setAmount(amount);
+            pendingCashback.setAmountText(pendingCashbackEntity.getBalanceText());
             return pendingCashback;
         }
         throw new RuntimeException("Error");

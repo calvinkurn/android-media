@@ -44,6 +44,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.ConfirmShippingActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.common.TransactionRouter;
@@ -142,7 +143,7 @@ public class OrderDetailActivity extends TActivity
         presenter.setMainViewListener(this);
         presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
         orderDetailAnalytics =
-                new OrderDetailAnalytics(this);
+                new OrderDetailAnalytics();
     }
 
     private void initInjector() {
@@ -169,6 +170,24 @@ public class OrderDetailActivity extends TActivity
         setButtonView(data);
         setPickupPointView(data);
         setUploadAwb(data);
+        setFulfillment(data);
+    }
+
+    private void setFulfillment(OrderDetailData data) {
+        View fulfill = findViewById(R.id.layout_fulfillment);
+        if (data.isFulfillment()) {
+            fulfill.setVisibility(View.VISIBLE);
+            fulfill.setOnClickListener(view -> {
+                Context context = view.getContext();
+                Tooltip tooltip = new Tooltip(context);
+                tooltip.setTitle(getString(R.string.tooltip_fulfillment_title));
+                tooltip.setDesc(getString(R.string.tooltip_fulfillment_desc));
+                tooltip.setTextButton(getString(R.string.understand));
+                tooltip.setIcon(R.drawable.ic_logistic_som_tokocabang_normal);
+                tooltip.getBtnAction().setOnClickListener(view1 -> tooltip.dismiss());
+                tooltip.show();
+            });
+        } else fulfill.setVisibility(View.GONE);
     }
 
     private void setBookingCode(OrderDetailData data) {

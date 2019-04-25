@@ -1,0 +1,59 @@
+{
+  tokopoints {
+
+    resultStatus {
+      code
+      message
+      status
+    }
+    status {
+      fullName
+      tier {
+        id
+        name
+        nameDesc
+        imageURL
+        eggImageURL
+        eggImageHomepageURL
+        backgroundImgURL
+        backgroundImgURLMobile
+      }
+      points {
+        reward
+        rewardStr
+        loyalty
+        loyaltyStr
+        rewardExpiryInfo
+        loyaltyExpiryInfo
+      }
+    }
+    sheetHowToGet {
+      title
+      description
+      services {
+        icon
+        text
+        url
+        appLink
+      }
+    }
+    ticker {
+      tickerList {
+        id
+        type
+        metadata {
+          text {
+            content
+          }
+          image {
+            url
+          }
+          link {
+            url
+            applink
+          }
+        }
+      }
+    }
+  }
+}

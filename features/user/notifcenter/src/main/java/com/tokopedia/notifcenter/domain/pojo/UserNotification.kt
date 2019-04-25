@@ -4,6 +4,9 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class UserNotification(
+        @SerializedName("template_key")
+        @Expose
+        val templateKey: String = "",
         @SerializedName("notif_id")
         @Expose
         val notifId: String = "",
