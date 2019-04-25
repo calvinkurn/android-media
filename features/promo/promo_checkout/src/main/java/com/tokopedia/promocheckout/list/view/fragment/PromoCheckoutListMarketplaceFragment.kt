@@ -99,7 +99,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onErrorEmptyPromoCode() {
-        textInputLayoutCoupon.error = getString(R.string.promo_checkout_label_error_empty_voucher_code)
+        textInputLayoutCoupon.error = getString(R.string.promostacking_checkout_label_error_empty_voucher_code)
     }
 
     override fun onSuccessCheckPromoStackingCode(data: DataUiModel) {
@@ -111,7 +111,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         val intent = Intent()
         val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
         val promoStackingData = PromoStackingData(typePromo, data.codes[0],
-                data.message.text, data.titleDescription,
+                data.message.text, data.titleDescription, "",
                 data.cashbackWalletAmount, data.message.state.mapToStatePromoStackingCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         activity?.setResult(Activity.RESULT_OK, intent)

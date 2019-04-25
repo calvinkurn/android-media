@@ -476,8 +476,6 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     private void destroyCamera() {
         try {
             hideLoading();
-            cameraView.destroy();
-            isCameraOpen = false;
         } catch (Throwable e) {
             // no-op
         }

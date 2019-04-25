@@ -1,6 +1,6 @@
 package com.tokopedia.permissionchecker
 
-import android.app.Activity
+import android.support.v4.app.FragmentActivity
 
 /**
  * Created by isfaaghyth on 05/04/19.
@@ -17,7 +17,7 @@ import android.app.Activity
  */
 
 fun PermissionCheckerHelper.request(
-        activity: Activity,
+        activity: FragmentActivity,
         requests: Array<String>,
         granted: () -> Unit) {
     this.checkPermissions(activity,
@@ -41,7 +41,7 @@ fun PermissionCheckerHelper.request(
 }
 
 fun PermissionCheckerHelper.request(
-        activity: Activity,
+        activity: FragmentActivity,
         requests: Array<String>,
         granted: () -> Unit, denied: () -> Unit) {
     this.checkPermissions(activity,

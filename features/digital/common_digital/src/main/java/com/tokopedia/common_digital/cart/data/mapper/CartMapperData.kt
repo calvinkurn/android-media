@@ -161,6 +161,7 @@ class CartMapperData : ICartMapperData {
             checkoutDigitalData.successCallbackUrl = responseCheckoutData.attributes!!.callbackUrlSuccess
             checkoutDigitalData.redirectUrl = responseCheckoutData.attributes!!.redirectUrl
             checkoutDigitalData.stringQuery = responseCheckoutData.attributes!!.queryString
+            checkoutDigitalData.thanksUrl = responseCheckoutData.attributes!!.thanksUrl
             if (responseCheckoutData.attributes!!.parameter != null) {
                 checkoutDigitalData.transactionId = responseCheckoutData.attributes!!.parameter!!.transactionId
             }

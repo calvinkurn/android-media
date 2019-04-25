@@ -31,6 +31,7 @@ import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
@@ -213,6 +214,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -236,6 +238,7 @@ import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
+
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
 
 /**
@@ -264,8 +267,7 @@ public abstract class SellerRouterApplication extends MainApplication
         SaldoDetailsRouter,
         FlashSaleRouter,
         LinkerRouter,
-        CharacterPerMinuteInterface
-{
+        CharacterPerMinuteInterface {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -429,6 +431,10 @@ public abstract class SellerRouterApplication extends MainApplication
         goToDefaultRoute(context);
     }
 
+    /**
+     * User PersistentCacheManager Library directly
+     */
+    @Deprecated
     @Override
     public CacheManager getGlobalCacheManager() {
         return new GlobalCacheManager();
@@ -1263,6 +1269,7 @@ public abstract class SellerRouterApplication extends MainApplication
         //From DialogLogoutFragment
         if (activity != null) {
             new GlobalCacheManager().deleteAll();
+            PersistentCacheManager.instance.delete();
             Router.clearEtalase(activity);
             DbManagerImpl.getInstance().removeAllEtalase();
             try {
@@ -1650,8 +1657,25 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getCheckoutIntent(Context context) {
+    public Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest) {
         return null;
+    }
+
+    @Override
+    public Intent getCheckoutIntent(Context context, String deviceid) {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public String getDeviceId(@NotNull Context context) {
+        return "";
+    }
+
+    @Override
+    public boolean isMerchantCreditLineEnabled() {
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_MERCHANT_CREDIT_LINE,
+                true);
     }
 
     @Override
@@ -1704,12 +1728,9 @@ public abstract class SellerRouterApplication extends MainApplication
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
-    public void shareFeed(Activity activity, String detailId, String url, String title, String
-            imageUrl, String description) {
-    }
-
     @Override
-    public void saveCPM(@NonNull String cpm) {}
+    public void saveCPM(@NonNull String cpm) {
+    }
 
     @Override
     public String getCPM() {

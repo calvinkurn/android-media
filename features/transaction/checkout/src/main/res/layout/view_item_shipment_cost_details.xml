@@ -294,16 +294,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/item_shipment_divider"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_16"
+            android:layout_toStartOf="@+id/iv_total_info"
+            android:layout_toLeftOf="@+id/iv_total_info"
             android:gravity="end"
             android:textColor="@color/total_benefit"
             android:textStyle="bold"
             tools:text="Rp100.000" />
+
+        <ImageView
+            android:id="@+id/iv_total_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_shipment_divider"
+            android:layout_alignTop="@+id/tv_total_promo_label"
+            android:layout_alignBottom="@+id/tv_total_promo_label"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:src="@drawable/ic_coupon_info" />
 
     </RelativeLayout>
 
