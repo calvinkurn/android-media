@@ -216,6 +216,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -1645,6 +1646,27 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate) {
+    }
+
+    @Override
+    public Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest) {
+        return null;
+    }
+
+    @Override
+    public Intent getCheckoutIntent(Context context, String deviceid) {
+        return null;
+    }
+
+    @Override
+    public boolean isMerchantCreditLineEnabled() {
+        return false;
+    }
+
+    @NotNull
+    @Override
+    public String getDeviceId(@NotNull Context context) {
+        return "";
     }
 
     @Override
