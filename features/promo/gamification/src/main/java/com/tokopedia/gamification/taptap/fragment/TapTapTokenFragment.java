@@ -222,6 +222,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public void onDestroyView() {
+        stopTimer();
         clearViewAndAnimations();
         crackTokenPresenter.detachView();
         super.onDestroyView();
