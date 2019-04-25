@@ -36,6 +36,7 @@ import com.tokopedia.expresscheckout.view.profile.CheckoutProfileFragmentListene
 import com.tokopedia.expresscheckout.view.profile.viewmodel.ProfileViewModel
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
+import com.tokopedia.expresscheckout.view.variant.di.DaggerCheckoutVariantComponent
 import com.tokopedia.expresscheckout.view.variant.util.isOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.util.setOnboardingStateHasNotShown
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
@@ -43,7 +44,6 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewMod
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.expresscheckout.view.variant.di.DaggerCheckoutVariantComponent
 import com.tokopedia.logisticcommon.LogisticCommonConstant
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
@@ -59,6 +59,7 @@ import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurat
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics
 import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField
@@ -156,11 +157,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_detail_product_page, container, false)
-
-        tkpdProgressDialog = ProgressDialog(activity)
-        tkpdProgressDialog.setCancelable(false)
-        tkpdProgressDialog.setMessage(getString(R.string.title_loading))
-
+        tkpdProgressDialog = ProgressDialog(getActivity());
         recyclerView = getRecyclerView(view)
         recyclerView.addItemDecoration(itemDecorator)
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
@@ -206,11 +203,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showLoadingDialog() {
-        if (!tkpdProgressDialog.isShowing) tkpdProgressDialog.show()
+        tkpdProgressDialog.show()
     }
 
     override fun hideLoadingDialog() {
-        if (tkpdProgressDialog.isShowing) tkpdProgressDialog.dismiss()
+        tkpdProgressDialog.dismiss()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -609,7 +606,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun navigateCheckoutToOcs() {
-        if (activity != null) startActivity(router.getCheckoutIntent(activity as Context))
+        if (activity != null) startActivity(router.getCheckoutIntent(activity as Context, ShipmentFormRequest.BundleBuilder().build()))
         activity?.finish()
     }
 
@@ -924,14 +921,15 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onShippingDurationChoosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>?,
-                                           courierItemData: CourierItemData?,
-                                           recipientAddressModel: RecipientAddressModel?,
+    override fun onShippingDurationChoosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>,
+                                           courierItemData: CourierItemData,
+                                           recipientAddressModel: RecipientAddressModel,
                                            cartPosition: Int,
                                            selectedServiceId: Int,
                                            selectedServiceName: String,
                                            flagNeedToSetPinpoint: Boolean,
-                                           hasCourierPromo: Boolean) {
+                                           hasCourierPromo: Boolean,
+                                           isClearPromo: Boolean) {
         if (shippingCourierViewModels != null) {
             val summaryViewModel = fragmentViewModel.getSummaryViewModel()
             if (summaryViewModel != null) {
@@ -1059,6 +1057,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     }
                 }
             }))
+    }
+
+    override fun onLogisticPromoChosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>, courierData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, selectedServiceId: Int, selectedServiceName: String, flagNeedToSetPinpoint: Boolean, promoCode: String) {
+        // Haven't discussed yet
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

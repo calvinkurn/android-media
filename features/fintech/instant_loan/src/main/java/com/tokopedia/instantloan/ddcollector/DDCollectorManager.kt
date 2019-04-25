@@ -9,7 +9,6 @@ import com.tokopedia.instantloan.ddcollector.DDConstants.Constant.RGEX_PERMISSIO
 import com.tokopedia.instantloan.ddcollector.account.Account
 import com.tokopedia.instantloan.ddcollector.app.Application
 import com.tokopedia.instantloan.ddcollector.bdd.BasicDeviceData
-import com.tokopedia.instantloan.ddcollector.contact.Contact
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
@@ -29,7 +28,6 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
     private val defaultsComponents: Set<String>
         get() {
             val components = HashSet<String>()
-            components.add(DDConstants.DDComponents.READ_CONTACTS.`val`())
             components.add(DDConstants.DDComponents.GET_ACCOUNTS.`val`())
             components.add(DDConstants.DDComponents.APP.`val`())
             components.add(DDConstants.DDComponents.BASIC_DEVICE_DATA.`val`())
@@ -104,10 +102,6 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
                 info.add(Account(mContext!!.getSystemService(Context.ACCOUNT_SERVICE) as AccountManager))
             }
 
-            if (mComponents.contains(DDConstants.DDComponents.READ_CONTACTS.`val`())) {
-                info.add(Contact(mContext!!.contentResolver))
-            }
-
             if (mComponents.contains(DDConstants.DDComponents.BASIC_DEVICE_DATA.`val`())) {
                 info.add(BasicDeviceData(mContext!!, mContext!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager))
             }
@@ -119,8 +113,8 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
 
     }
 
-    fun onRequestPermissionsResult(requestCode: Int,requiredPermissions: List<String>, permissions: Array<String>, grantResults: IntArray) {
-        if(mPermissionUtils != null) {
+    fun onRequestPermissionsResult(requestCode: Int, requiredPermissions: List<String>, permissions: Array<String>, grantResults: IntArray) {
+        if (mPermissionUtils != null) {
             mPermissionUtils?.onRequestPermissionsResult(requestCode, requiredPermissions, permissions, grantResults)
         }
     }

@@ -50,7 +50,7 @@ public class TrackAppTest  {
         }
 
         @Override
-        public void sendEnhanceECommerceEvent(Map<String, Object> value) {
+        public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
 
         }
 

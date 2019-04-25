@@ -35,8 +35,6 @@ import rx.schedulers.Schedulers;
 
 public class GetCourierRecommendationUseCase extends GraphqlUseCase {
 
-    private static final int KILOGRAM_DIVIDER = 1000;
-
     private final ShippingDurationConverter shippingDurationConverter;
 
     @Inject
@@ -88,6 +86,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                 // Check if has info
                                 String blackboxInfo = "";
                                 if (data.getRatesData().getRatesDetailData().getInfo() != null &&
+                                        data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo() != null &&
                                         !TextUtils.isEmpty(data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo())) {
                                     blackboxInfo = data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo();
                                 }
@@ -98,6 +97,9 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                         shippingDurationConverter.convertToViewModel(
                                                 data.getRatesData().getRatesDetailData().getServices(),
                                                 shopShipments, selectedSpId, ratesId, selectedServiceId, blackboxInfo));
+                                shippingRecommendationData.setLogisticPromo(
+                                        shippingDurationConverter.convertToPromoModel(
+                                                data.getRatesData().getRatesDetailData().getPromoStacking()));
                             }
                         }
                         return shippingRecommendationData;
@@ -172,6 +174,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         queryStringBuilder = setParam(queryStringBuilder, Param.IS_BLACKBOX, String.valueOf(shippingParam.getIsBlackbox() ? 1 : 0));
         queryStringBuilder = setParam(queryStringBuilder, Param.ADDRESS_ID, String.valueOf(shippingParam.getAddressId()));
         queryStringBuilder = setParam(queryStringBuilder, Param.PREORDER, String.valueOf(shippingParam.getIsPreorder() ? 1 : 0));
+        queryStringBuilder = setParam(queryStringBuilder, Param.IS_TRADEIN, String.valueOf(shippingParam.isTradein() ? 1 : 0));
 
         return queryStringBuilder.toString();
     }
@@ -202,6 +205,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         static final String IS_BLACKBOX = "$is_blackbox";
         static final String ADDRESS_ID = "$address_id";
         static final String PREORDER = "$preorder";
+        static final String IS_TRADEIN = "$trade_in";
 
         static final String VALUE_ANDROID = "android";
         static final String VALUE_CLIENT = "client";

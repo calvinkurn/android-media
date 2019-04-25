@@ -24,6 +24,10 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private double donation;
     private String promoMessage;
     private double emasPrice;
+    private double tradeInPrice;
+    private int totalPromoStackAmount;
+    private String totalPromoStackAmountStr;
+    private int TotalDiscWithoutCashback;
 
     public int getTotalItem() {
         return totalItem;
@@ -129,6 +133,38 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.emasPrice = emasPrice;
     }
 
+    public double getTradeInPrice() {
+        return tradeInPrice;
+    }
+
+    public void setTradeInPrice(double tradeInPrice) {
+        this.tradeInPrice = tradeInPrice;
+    }
+
+    public int getTotalPromoStackAmount() {
+        return totalPromoStackAmount;
+    }
+
+    public void setTotalPromoStackAmount(int totalPromoStackAmount) {
+        this.totalPromoStackAmount = totalPromoStackAmount;
+    }
+
+    public int getTotalDiscWithoutCashback() {
+        return TotalDiscWithoutCashback;
+    }
+
+    public void setTotalDiscWithoutCashback(int totalDiscWithoutCashback) {
+        TotalDiscWithoutCashback = totalDiscWithoutCashback;
+    }
+
+    public String getTotalPromoStackAmountStr() {
+        return totalPromoStackAmountStr;
+    }
+
+    public void setTotalPromoStackAmountStr(String totalPromoStackAmountStr) {
+        this.totalPromoStackAmountStr = totalPromoStackAmountStr;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -147,6 +183,8 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         dest.writeDouble(this.additionalFee);
         dest.writeDouble(this.donation);
         dest.writeDouble(this.emasPrice);
+        dest.writeDouble(this.tradeInPrice);
+        dest.writeInt(this.totalPromoStackAmount);
     }
 
     public ShipmentCostModel() {
@@ -164,6 +202,8 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.additionalFee = in.readDouble();
         this.donation = in.readDouble();
         this.emasPrice = in.readDouble();
+        this.tradeInPrice = in.readDouble();
+        this.totalPromoStackAmount = in.readInt();
     }
 
     public static final Creator<ShipmentCostModel> CREATOR = new Creator<ShipmentCostModel>() {

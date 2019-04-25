@@ -11,4 +11,21 @@
     <string name="post_time_hours_ago">\u0020jam yang lalu</string>
     <string name="post_time_hour">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
+
+    <!-- Action -->
+    <string name="feed_content_reported">Konten berhasil dilaporkan</string>
+
+    <!-- Dialog Delete Post-->
+    <string name="card_dialog_delete_post">Hapus Post</string>
+    <string name="card_dialog_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari kurasi ini</string>
+    <string name="card_dialog_title_delete">Hapus</string>
+    <string name="card_dialog_title_cancel">Batal</string>
+
+    <!-- Empty Card Detail Feed -->
+    <string name="feed_post_detail_empty_title">Duh, Halamannya ga ketemu</string>
+    <string name="feed_post_detail_empty_subtitle">Ada sedikit kendala nih. Coba beberapa
+        saat lagi ya.</string>
+    <string name="feed_post_detail_empty_button">Kembali</string>
+
+
 </resources>

@@ -10,4 +10,5 @@
     <color name="default_reward_color">#FFD65C</color>
     <color name="toolbar_color">#33ffffff</color>
     <color name="egg_source_color">#ffd63b</color>
+    <color name="red_toast_bg_color">#ef144a</color>
 </resources>

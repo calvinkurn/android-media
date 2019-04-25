@@ -56,8 +56,8 @@ query ConsumerDrawerData($userID: Int!) {
     }
   }
   balance {
-      buyer_usable
-      seller_usable
+    buyer_usable
+    seller_usable
   }
   paymentAdminProfile {
     is_purchased_marketplace

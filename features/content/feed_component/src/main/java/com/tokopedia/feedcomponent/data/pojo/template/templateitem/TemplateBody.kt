@@ -14,6 +14,9 @@ data class TemplateBody (
     @SerializedName("caption")
     @Expose
     val caption: Boolean = false,
+    @SerializedName("postTag")
+    @Expose
+    val postTag: Boolean = false,
     @SerializedName("mediaGridButton")
     @Expose
     val mediaGridButton: Boolean = false

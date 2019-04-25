@@ -38,4 +38,12 @@
     <dimen name="tp_height_bottom_membership_view">52dp</dimen>
     <dimen name="tp_tnc_height">800dp</dimen>
 
+    <dimen name="tp_home_top_bg_height">192dp</dimen>
+    <dimen name="tp_toolbar_icon_wh">38dp</dimen>
+
+    <dimen name="tp_coupon_card_xxlarge">280dp</dimen>
+    <dimen name="tp_coupon_card_xlarge">260dp</dimen>
+    <dimen name="tp_coupon_card_large">240dp</dimen>
+    <dimen name="tp_coupon_card_medium">220dp</dimen>
+
 </resources>

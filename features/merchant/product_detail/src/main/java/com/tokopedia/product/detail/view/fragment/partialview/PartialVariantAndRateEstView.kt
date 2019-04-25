@@ -1,8 +1,10 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.Typeface
+import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -11,8 +13,9 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
+import com.tokopedia.product.detail.data.model.shop.ShopCommitment
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.view.*
 
@@ -22,12 +25,22 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
         fun build(_view: View) = PartialVariantAndRateEstView(_view)
     }
 
+    init {
+        val titleFulfillment = view.title_multiorigin.text
+        val spanText = SpannableString(titleFulfillment)
+        val from = titleFulfillment.length - "tokopedia".length - 1
+        spanText.setSpan(StyleSpan(Typeface.BOLD), from, titleFulfillment.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanText.setSpan(ForegroundColorSpan(ContextCompat.getColor(view.context, R.color.tkpd_main_green)),
+                from, titleFulfillment.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        view.title_multiorigin.text = spanText
+    }
+
     fun renderData(productVariant: ProductVariant?, selectedOptionString: String, onVariantClickedListener: (() -> Unit)? = null) {
         with(view) {
             if (productVariant != null) {
                 label_variant.visible()
                 label_choose_variant.visible()
-                if (txt_rate_estimation_start.isVisible || txt_courier_dest.isVisible) {
+                if (title_multiorigin.isVisible || txt_rate_estimation_start.isVisible || txt_courier_dest.isVisible) {
                     variant_divider.visible()
                 } else {
                     variant_divider.gone()
@@ -35,13 +48,13 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
                 label_variant.setOnClickListener { onVariantClickedListener?.invoke() }
                 label_choose_variant.setOnClickListener { onVariantClickedListener?.invoke() }
                 val chooseString =
-                    if (selectedOptionString.isEmpty()) {
-                        "${view.context.getString(R.string.choose)} " +
-                            productVariant.variant.map { it.name }.joinToStringWithLast(separator = ", ",
-                                lastSeparator = " ${view.context.getString(R.string.and)} ")
-                    } else {
-                        selectedOptionString
-                    }
+                        if (selectedOptionString.isEmpty()) {
+                            "${view.context.getString(R.string.choose)} " +
+                                    productVariant.variant.map { it.name }.joinToStringWithLast(separator = ", ",
+                                            lastSeparator = " ${view.context.getString(R.string.and)} ")
+                        } else {
+                            selectedOptionString
+                        }
                 label_choose_variant.text = chooseString
                 visible()
             } else {
@@ -53,17 +66,17 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
 
     }
 
-    fun renderRateEstimation(summarize: SummaryText, shopLocation: String, onRateEstimationClicked: (()-> Unit)? = null) {
+    fun renderRateEstimation(summarize: SummaryText, onRateEstimationClicked: (() -> Unit)? = null) {
         if (summarize.destination.isBlank()) return
 
-        with(view){
+        with(view) {
             txt_rate_estimation_start.text = summarize.minPrice
             txt_rate_estimation_start.visible()
             icon_shop_location.visible()
-            txt_shop_location.text = context.getString(R.string.from, shopLocation).boldPartial("dari".length)
+            txt_shop_location.text = context.getString(R.string.from_x, summarize.shopCity).boldPartial("dari".length)
             txt_shop_location.visible()
             icon_courier_est.visible()
-            txt_courier_dest.text = context.getString(R.string.to, summarize.destination).boldPartial("ke".length)
+            txt_courier_dest.text = context.getString(R.string.to_x, summarize.destination).boldPartial("ke".length)
             txt_courier_dest.visible()
 
             if (label_variant.isVisible) {
@@ -100,6 +113,49 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
                 icon_priority_order.gone()
                 txt_priority_order_title.gone()
                 txt_priority_order_message.gone()
+            }
+        }
+    }
+
+    fun renderPurchaseProtectionData(productInfo: ProductPurchaseProtectionInfo) {
+        with(view) {
+            if (productInfo.ppItemDetailPage?.isProtectionAvailable!!) {
+
+                if (txt_courier_dest.isVisible || txt_shop_location.isVisible) {
+                    purchase_protection_divider.visible()
+                } else {
+                    purchase_protection_divider.gone()
+                }
+                icon_purchase_protection.visible()
+                txt_purchase_protection_title.visible()
+                txt_purchase_protection_message.visible()
+                base_variant.visible()
+
+                txt_purchase_protection_title.text = productInfo.ppItemDetailPage!!.titlePDP
+                txt_purchase_protection_message.text = productInfo.ppItemDetailPage!!.subTitlePDP
+            } else {
+                purchase_protection_divider.gone()
+                icon_purchase_protection.gone()
+                txt_purchase_protection_title.gone()
+                txt_purchase_protection_message.gone()
+            }
+        }
+    }
+
+    fun renderFulfillment(fulfillment: Boolean) {
+        with(view){
+            if (fulfillment){
+                title_multiorigin.visible()
+                subtitle_multiorigin.visible()
+                if (label_variant.isVisible) {
+                    variant_divider.visible()
+                } else {
+                    variant_divider.gone()
+                }
+                visible()
+            } else {
+                title_multiorigin.gone()
+                subtitle_multiorigin.gone()
             }
         }
     }

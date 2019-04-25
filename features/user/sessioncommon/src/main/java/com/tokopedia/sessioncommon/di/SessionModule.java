@@ -2,6 +2,7 @@ package com.tokopedia.sessioncommon.di;
 
 import android.content.Context;
 
+import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -129,6 +130,7 @@ public class SessionModule {
 
         builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(basicInterceptor);
+        builder.addInterceptor(new AkamaiBotInterceptor());
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TokenErrorResponse.class));
 

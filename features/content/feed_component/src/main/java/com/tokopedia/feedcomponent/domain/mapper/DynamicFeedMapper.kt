@@ -1,14 +1,14 @@
 package com.tokopedia.feedcomponent.domain.mapper
 
-import android.os.Build
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.BuildConfig
 import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.data.pojo.TemplateData
+import com.tokopedia.feedcomponent.data.pojo.feed.Cardpost
 import com.tokopedia.feedcomponent.data.pojo.feed.Feed
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Body
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.template.Template
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
@@ -23,6 +23,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
@@ -47,6 +48,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
         private const val CONTENT_IMAGE = "image"
         private const val CONTENT_YOUTUBE = "youtube"
+        private const val CONTENT_VIDEO = "video"
         private const val CONTENT_VOTE = "vote"
         private const val CONTENT_GRID = "productgrid"
 
@@ -219,15 +221,17 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     }
 
     private fun mapCardPost(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
-        val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost.body, template)
+        val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost, template)
         val trackingPostModel = mapPostTracking(feed)
 
         if (shouldAddCardPost(feed, contentList)) {
+            var postTag = feed.content.cardpost.body.postTag.firstOrNull() ?: PostTag()
             posts.add(
                     DynamicPostViewModel(
                             feed.id,
                             feed.content.cardpost.title,
                             feed.content.cardpost.header,
+                            postTag,
                             feed.content.cardpost.footer,
                             feed.content.cardpost.body.caption,
                             contentList,
@@ -251,15 +255,22 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 isGridNotEmpty
     }
 
-    private fun mapPostContent(body: Body, template: Template): MutableList<BasePostViewModel> {
+    private fun mapPostContent(cardPost: Cardpost, template: Template): MutableList<BasePostViewModel> {
         val list: MutableList<BasePostViewModel> = ArrayList()
 
-        for (media in body.media) {
+        for (media in cardPost.body.media) {
             when (media.type) {
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
                 CONTENT_YOUTUBE -> list.add(mapPostYoutube(media))
                 CONTENT_VOTE -> list.add(mapPostPoll(media))
                 CONTENT_GRID -> list.add(mapPostGrid(media, template))
+                CONTENT_VIDEO -> {
+                    if (media.thumbnail.isNotBlank()
+                            && media.videoList.isNotEmpty()
+                            && media.videoList[0].url.isNotBlank()) {
+                        list.add(mapPostVideo(media))
+                    }
+                }
             }
         }
 
@@ -296,6 +307,14 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         return YoutubeViewModel(
                 media.id,
                 mapTrackingData(media.tracking)
+        )
+    }
+
+    private fun mapPostVideo(media: Media): VideoViewModel {
+        return VideoViewModel(
+                media.id,
+                media.thumbnail,
+                media.videoList.getOrNull(0)?.url ?: ""
         )
     }
 
@@ -363,7 +382,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         }
     }
 
-    private fun mapTrackingData(trackList: List<Tracking>) : MutableList<TrackingViewModel> {
+    private fun mapTrackingData(trackList: List<Tracking>): MutableList<TrackingViewModel> {
         val trackingList: MutableList<TrackingViewModel> = ArrayList()
 
         for (track in trackList) {

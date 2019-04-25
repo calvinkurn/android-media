@@ -3,6 +3,9 @@ package com.tokopedia.shipping_recommendation.domain.shipping;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.promocheckout.common.domain.model.promostacking.response.VoucherOrdersItem;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -37,6 +40,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private String shopBadge;
 
     // Cart item state
+    private String cartString;
     private int shippingId;
     private int spId;
     private String dropshiperName;
@@ -77,6 +81,15 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private int addressId;
     private String blackboxInfo;
 
+    private boolean isFulfillment;
+    private int fulfillmentId;
+    private String fulfillmentName;
+
+    // promo stacking
+    private boolean hasPromoList;
+    private VoucherOrdersItemUiModel voucherOrdersItemUiModel;
+    private VoucherLogisticItemUiModel voucherLogisticItemUiModel;
+
     public ShipmentCartItemModel() {
     }
 
@@ -88,17 +101,25 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isWarning = in.readByte() != 0;
         warningTitle = in.readString();
         warningDescription = in.readString();
-        shopId = in.readInt();
         shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
         selectedShipmentDetailData = in.readParcelable(ShipmentDetailData.class.getClassLoader());
         shopShipmentList = in.createTypedArrayList(ShopShipment.CREATOR);
+        shopId = in.readInt();
         shopName = in.readString();
         isGoldMerchant = in.readByte() != 0;
         isOfficialStore = in.readByte() != 0;
+        shopBadge = in.readString();
+        cartString = in.readString();
+        shippingId = in.readInt();
+        spId = in.readInt();
+        dropshiperName = in.readString();
+        dropshiperPhone = in.readString();
+        isInsurance = in.readByte() != 0;
         weightUnit = in.readInt();
         productFinsurance = in.readByte() != 0;
         productFcancelPartial = in.readByte() != 0;
         productIsPreorder = in.readByte() != 0;
+        cartItemModels = in.createTypedArrayList(CartItemModel.CREATOR);
         destinationDistrictId = in.readString();
         destinationDistrictName = in.readString();
         tokenPickup = in.readString();
@@ -108,21 +129,20 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         stateAllItemViewExpanded = in.readByte() != 0;
         stateDropshipperDetailExpanded = in.readByte() != 0;
         stateDropshipperHasError = in.readByte() != 0;
-        recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
-        cartItemModels = in.createTypedArrayList(CartItemModel.CREATOR);
-        useCourierRecommendation = in.readByte() != 0;
-        shippingId = in.readInt();
-        spId = in.readInt();
-        dropshiperName = in.readString();
-        dropshiperPhone = in.readString();
-        isInsurance = in.readByte() != 0;
         stateLoadingCourierState = in.readByte() != 0;
         stateHasLoadCourierState = in.readByte() != 0;
         stateHasExtraMarginTop = in.readByte() != 0;
-        shopBadge = in.readString();
+        recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
+        useCourierRecommendation = in.readByte() != 0;
         isBlackbox = in.readByte() != 0;
         addressId = in.readInt();
         blackboxInfo = in.readString();
+        isFulfillment = in.readByte() != 0;
+        fulfillmentId = in.readInt();
+        fulfillmentName = in.readString();
+        hasPromoList = in.readByte() != 0;
+        voucherOrdersItemUiModel = in.readParcelable(VoucherOrdersItemUiModel.class.getClassLoader());
+        voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
     }
 
     @Override
@@ -134,17 +154,25 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (isWarning ? 1 : 0));
         dest.writeString(warningTitle);
         dest.writeString(warningDescription);
-        dest.writeInt(shopId);
         dest.writeParcelable(shipmentCartData, flags);
         dest.writeParcelable(selectedShipmentDetailData, flags);
         dest.writeTypedList(shopShipmentList);
+        dest.writeInt(shopId);
         dest.writeString(shopName);
         dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
         dest.writeByte((byte) (isOfficialStore ? 1 : 0));
+        dest.writeString(shopBadge);
+        dest.writeString(cartString);
+        dest.writeInt(shippingId);
+        dest.writeInt(spId);
+        dest.writeString(dropshiperName);
+        dest.writeString(dropshiperPhone);
+        dest.writeByte((byte) (isInsurance ? 1 : 0));
         dest.writeInt(weightUnit);
         dest.writeByte((byte) (productFinsurance ? 1 : 0));
         dest.writeByte((byte) (productFcancelPartial ? 1 : 0));
         dest.writeByte((byte) (productIsPreorder ? 1 : 0));
+        dest.writeTypedList(cartItemModels);
         dest.writeString(destinationDistrictId);
         dest.writeString(destinationDistrictName);
         dest.writeString(tokenPickup);
@@ -154,21 +182,20 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (stateAllItemViewExpanded ? 1 : 0));
         dest.writeByte((byte) (stateDropshipperDetailExpanded ? 1 : 0));
         dest.writeByte((byte) (stateDropshipperHasError ? 1 : 0));
-        dest.writeParcelable(recipientAddressModel, flags);
-        dest.writeTypedList(cartItemModels);
-        dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
-        dest.writeInt(shippingId);
-        dest.writeInt(spId);
-        dest.writeString(dropshiperName);
-        dest.writeString(dropshiperPhone);
-        dest.writeByte((byte) (isInsurance ? 1 : 0));
         dest.writeByte((byte) (stateLoadingCourierState ? 1 : 0));
         dest.writeByte((byte) (stateHasLoadCourierState ? 1 : 0));
         dest.writeByte((byte) (stateHasExtraMarginTop ? 1 : 0));
-        dest.writeString(shopBadge);
+        dest.writeParcelable(recipientAddressModel, flags);
+        dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
         dest.writeInt(addressId);
         dest.writeString(blackboxInfo);
+        dest.writeByte((byte) (isFulfillment ? 1 : 0));
+        dest.writeInt(fulfillmentId);
+        dest.writeString(fulfillmentName);
+        dest.writeByte((byte) (hasPromoList ? 1 : 0));
+        dest.writeParcelable(voucherOrdersItemUiModel, flags);
+        dest.writeParcelable(voucherLogisticItemUiModel, flags);
     }
 
     @Override
@@ -219,6 +246,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setGoldMerchant(shipmentCartItemModel.isGoldMerchant());
         newShipmentCartItemModel.setShopShipmentList(shipmentCartItemModel.getShopShipmentList());
         newShipmentCartItemModel.setUseCourierRecommendation(shipmentCartItemModel.isUseCourierRecommendation());
+        newShipmentCartItemModel.setCartString(shipmentCartItemModel.getCartString());
         newShipmentCartItemModel.setShippingId(shipmentCartItemModel.getShippingId());
         newShipmentCartItemModel.setSpId(shipmentCartItemModel.getSpId());
         newShipmentCartItemModel.setDropshiperName(shipmentCartItemModel.getDropshiperName());
@@ -230,8 +258,13 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setShopBadge(shipmentCartItemModel.getShopBadge());
         newShipmentCartItemModel.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
         newShipmentCartItemModel.setAddressId(shipmentCartItemModel.getAddressId());
+        newShipmentCartItemModel.setFulfillment(shipmentCartItemModel.isFulfillment);
+        newShipmentCartItemModel.setFulfillmentId(shipmentCartItemModel.getFulfillmentId());
+        newShipmentCartItemModel.setFulfillmentName(shipmentCartItemModel.getFulfillmentName());
         newShipmentCartItemModel.setBlackboxInfo(shipmentCartItemModel.getBlackboxInfo());
-
+        newShipmentCartItemModel.setHasPromoList(shipmentCartItemModel.getHasPromoList());
+        newShipmentCartItemModel.setVoucherOrdersItemUiModel(shipmentCartItemModel.getVoucherOrdersItemUiModel());
+        newShipmentCartItemModel.setVoucherLogisticItemUiModel(shipmentCartItemModel.getVoucherLogisticItemUiModel());
         return newShipmentCartItemModel;
     }
 
@@ -475,6 +508,10 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.useCourierRecommendation = useCourierRecommendation;
     }
 
+    public String getCartString() { return cartString; }
+
+    public void setCartString(String cartString) { this.cartString = cartString; }
+
     public int getShippingId() {
         return shippingId;
     }
@@ -563,9 +600,55 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.addressId = addressId;
     }
 
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setFulfillment(boolean fulfillment) {
+        isFulfillment = fulfillment;
+    }
+
+    public int getFulfillmentId() {
+        return fulfillmentId;
+    }
+
+    public void setFulfillmentId(int fulfillmentId) {
+        this.fulfillmentId = fulfillmentId;
+    }
+
+    public String getFulfillmentName() {
+        return fulfillmentName;
+    }
+
+    public void setFulfillmentName(String fulfillmentName) {
+        this.fulfillmentName = fulfillmentName;
+    }
+
     public String getBlackboxInfo() { return blackboxInfo; }
 
     public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
+
+    public boolean getHasPromoList() { return hasPromoList; }
+
+    public void setHasPromoList(boolean hasPromoList) {
+        this.hasPromoList = hasPromoList;
+    }
+
+    public VoucherOrdersItemUiModel getVoucherOrdersItemUiModel() {
+        return voucherOrdersItemUiModel;
+    }
+
+    public void setVoucherOrdersItemUiModel(VoucherOrdersItemUiModel voucherOrdersItemUiModel) {
+        this.voucherOrdersItemUiModel = voucherOrdersItemUiModel;
+    }
+
+    public VoucherLogisticItemUiModel getVoucherLogisticItemUiModel() {
+        return voucherLogisticItemUiModel;
+    }
+
+    public void setVoucherLogisticItemUiModel(VoucherLogisticItemUiModel voucherLogisticItemUiModel) {
+        this.voucherLogisticItemUiModel = voucherLogisticItemUiModel;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -601,7 +684,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isUseCourierRecommendation(), that.isUseCourierRecommendation())
                 .append(getIsBlackbox(), that.getIsBlackbox())
                 .append(getAddressId(), that.getAddressId())
-                .append(getBlackboxInfo(), that.getBlackboxInfo())
                 .isEquals();
     }
 
@@ -633,7 +715,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isUseCourierRecommendation())
                 .append(getIsBlackbox())
                 .append(getAddressId())
-                .append(getBlackboxInfo())
                 .toHashCode();
     }
 }

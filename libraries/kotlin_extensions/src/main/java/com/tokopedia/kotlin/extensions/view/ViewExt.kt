@@ -1,6 +1,8 @@
 package com.tokopedia.kotlin.extensions.view
 
 import android.content.Context
+import android.content.res.Resources
+import android.graphics.Rect
 import android.os.Build
 import android.support.annotation.DimenRes
 import android.support.annotation.StringRes
@@ -13,10 +15,15 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.view.ViewGroup
 import android.widget.TextView
+import android.view.*
+import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.kotlin.model.ImpressHolder
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  * @author by milhamj on 30/11/18.
@@ -71,9 +78,9 @@ fun ViewGroup.inflateLayout(layoutId: Int, isAttached: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutId, this, isAttached)
 }
 
-fun Activity.createDefaultProgressDialog(loadingMessage:String?,
-                                         cancelable:Boolean = true,
-                                         onCancelClicked: (() -> Unit)?) : ProgressDialog{
+fun Activity.createDefaultProgressDialog(loadingMessage: String?,
+                                         cancelable: Boolean = true,
+                                         onCancelClicked: (() -> Unit)?): ProgressDialog {
     return ProgressDialog(this).apply {
         setMessage(loadingMessage)
         setCancelable(cancelable)
@@ -106,6 +113,30 @@ fun View.hideLoading() {
         e.debugTrace()
     }
 }
+
+fun View.showLoadingTransparent() {
+    try {
+        this.findViewById<View>(R.id.loadingTransparentView)!!.show()
+    } catch (e: NullPointerException) {
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        params.gravity = Gravity.CENTER
+        params.weight = 1.0f
+        inflater.inflate(R.layout.partial_loading_transparent_layout, this as ViewGroup)
+    }
+}
+
+fun View.hideLoadingTransparent() {
+    try {
+        this.findViewById<View>(R.id.loadingTransparentView)!!.hide()
+    } catch (e: NullPointerException) {
+        e.debugTrace()
+    }
+}
+
 
 fun View.showErrorToaster(errorMessage: String) {
     this.showErrorToaster(errorMessage, null as String?) { }
@@ -165,4 +196,54 @@ fun View.setMargin(left: Int, top: Int, right: Int, bottom: Int) {
 
 fun View.getDimens(@DimenRes id: Int): Int {
     return this.context.resources.getDimension(id).toInt()
+}
+
+fun ImageView.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
+    if (!holder.isInvoke) {
+        viewTreeObserver.addOnScrollChangedListener(
+                object : ViewTreeObserver.OnScrollChangedListener {
+                    override fun onScrollChanged() {
+                        if (!holder.isInvoke && viewIsVisible(this@addOnImpressionListener)) {
+                            listener.onViewHint()
+                            holder.invoke()
+                            viewTreeObserver.removeOnScrollChangedListener(this)
+                        }
+                    }
+                })
+    }
+}
+
+
+private fun viewIsVisible(view: View?): Boolean {
+    if (view == null) {
+        return false
+    }
+    if (!view.isShown) {
+        return false
+    }
+    val screen = Rect(0, 0, getScreenWidth(), getScreenHeight())
+    val offset = 100
+    val location = IntArray(2)
+    view.getLocationOnScreen(location)
+    val X = location[0] + offset
+    val Y = location[1] + offset
+    return if (screen.top <= Y && screen.bottom >= Y &&
+            screen.left <= X && screen.right >= X) {
+        true
+    } else {
+        false
+    }
+}
+
+
+private fun getScreenWidth(): Int {
+    return Resources.getSystem().displayMetrics.widthPixels
+}
+
+private fun getScreenHeight(): Int {
+    return Resources.getSystem().displayMetrics.heightPixels
+}
+
+interface ViewHintListener {
+    fun onViewHint()
 }

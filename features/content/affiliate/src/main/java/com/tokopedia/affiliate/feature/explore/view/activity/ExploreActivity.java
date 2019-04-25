@@ -9,6 +9,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.explore.view.fragment.ExploreFragment;
+import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.applink.ApplinkConst;
 
 /**
@@ -60,5 +61,18 @@ public class ExploreActivity extends BaseActivity {
         return TAG_FRAGMENT;
     }
 
+    @Override
+    public void onBackPressed() {
+        if (getFragment() instanceof ExploreContract.View) {
+            ExploreContract.View view = (ExploreContract.View) getFragment();
 
+            if (view.shouldBackPressed()) {
+                super.onBackPressed();
+            } else {
+                view.refresh();
+            }
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

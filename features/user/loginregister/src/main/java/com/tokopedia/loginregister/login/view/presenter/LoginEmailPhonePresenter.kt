@@ -141,7 +141,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         view.showLoadingLogin()
         loginWithSosmedUseCase.execute(LoginWithSosmedUseCase.getParamFacebook(accessToken),
                 LoginThirdPartySubscriber(context, view.loginRouter,
-                        LoginRegisterAnalytics.FACEBOOK, view, email))
+                        email, view,  LoginRegisterAnalytics.FACEBOOK))
     }
 
     override fun loginGoogle(accessToken: String?, email: String?) {
