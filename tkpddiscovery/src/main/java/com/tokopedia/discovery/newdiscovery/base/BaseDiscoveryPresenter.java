@@ -43,7 +43,7 @@ public class BaseDiscoveryPresenter<T extends CustomerView, D extends BaseDiscov
     }
 
     @Override
-    public void initiateSearch(SearchParameter searchParameter, boolean forceSearch) {
+    public void initiateSearch(SearchParameter searchParameter, boolean forceSearch, InitiateSearchListener initiateSearchListener) {
         checkDiscoveryViewAttached();
     }
 
