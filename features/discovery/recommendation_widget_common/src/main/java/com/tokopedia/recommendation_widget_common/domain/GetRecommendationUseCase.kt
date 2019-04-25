@@ -36,7 +36,7 @@ constructor(private val context: Context,
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map<RecomendationEntity.RecomendationData> { graphqlResponse ->
                     val entity = graphqlResponse.getData<RecomendationEntity>(RecomendationEntity::class.java)
-                    entity!!.productRecommendationWidget.data[0]
+                    entity?.productRecommendationWidget?.data?.get(0)
                 }
                 .map(RecommendationEntityMapper())
     }
