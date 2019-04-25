@@ -85,7 +85,7 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
                     roomListViewModel.roomList = it.data
                     showFilterRecyclerView(it.data.size > 0)
                 } else showFilterRecyclerView(true)
-                loadInitialData()
+                clearAllData()
                 renderList(it.data)
             }
             is Fail -> {
