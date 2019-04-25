@@ -242,11 +242,15 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                 @Override
                 public void onError(Throwable e) {
                     Log.e(TAG, e.toString());
+                    if(isViewNotAttached()) {
+                        return;
+                    }
                     hideLoading();
                     ErrorHandler.getErrorMessage(getView().getContext(), e);
                     if (e instanceof UnknownHostException ||
                             e instanceof SocketTimeoutException) {
-                        if (getView().getAdapter().getItemCount() == 0) {
+                        if (getView().getAdapter() != null &&
+                                getView().getAdapter().getItemCount() == 0) {
                             getView().showEmptyState();
                         } else {
                             getView().setRetry();
@@ -254,7 +258,8 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
                     } else {
                         getView().setActionsEnabled(true);
-                        if (getView().getAdapter().getItemCount() == 0) {
+                        if (getView().getAdapter() != null &&
+                                getView().getAdapter().getItemCount() == 0) {
                             getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
                         } else {
                             getView().setRetry(getView().getString(R.string.sp_empty_state_error));
@@ -447,11 +452,15 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                 @Override
                 public void onError(Throwable e) {
                     Log.e(TAG, e.toString());
+                    if(isViewNotAttached()) {
+                        return;
+                    }
                     hideLoading();
                     ErrorHandler.getErrorMessage(getView().getContext(), e);
                     if (e instanceof UnknownHostException ||
                             e instanceof SocketTimeoutException) {
-                        if (getView().getAdapter().getItemCount() == 0) {
+                        if (getView().getAdapter() != null &&
+                                getView().getAdapter().getItemCount() == 0) {
                             getView().showEmptyState();
                         } else {
                             getView().setRetry();
@@ -459,7 +468,8 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
                     } else {
                         getView().setActionsEnabled(true);
-                        if (getView().getAdapter().getItemCount() == 0) {
+                        if (getView().getAdapter() != null &&
+                                getView().getAdapter().getItemCount() == 0) {
                             getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
                         } else {
                             getView().setRetry(getView().getString(R.string.sp_empty_state_error));
@@ -538,11 +548,15 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                 @Override
                 public void onError(Throwable e) {
                     Log.e(TAG, e.toString());
+                    if(isViewNotAttached()) {
+                        return;
+                    }
                     hideLoading();
                     ErrorHandler.getErrorMessage(getView().getContext(), e);
                     if (e instanceof UnknownHostException ||
                             e instanceof SocketTimeoutException) {
-                        if (getView().getAdapter().getItemCount() == 0) {
+                        if (getView().getAdapter() != null &&
+                                getView().getAdapter().getItemCount() == 0) {
                             getView().showEmptyState();
                         } else {
                             getView().setRetry();
@@ -550,7 +564,8 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
                     } else {
                         getView().setActionsEnabled(true);
-                        if (getView().getAdapter().getItemCount() == 0) {
+                        if (getView().getAdapter() != null &&
+                                getView().getAdapter().getItemCount() == 0) {
                             getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
                         } else {
                             getView().setRetry(getView().getString(R.string.sp_empty_state_error));
@@ -635,11 +650,15 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                 @Override
                 public void onError(Throwable e) {
                     Log.e(TAG, e.toString());
+                    if(isViewNotAttached()) {
+                        return;
+                    }
                     hideLoading();
                     ErrorHandler.getErrorMessage(getView().getContext(), e);
                     if (e instanceof UnknownHostException ||
                             e instanceof SocketTimeoutException) {
-                        if (getView().getAdapter().getItemCount() == 0) {
+                        if (getView().getAdapter() != null &&
+                                getView().getAdapter().getItemCount() == 0) {
                             getView().showEmptyState();
                         } else {
                             getView().setRetry();
@@ -647,7 +666,8 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
                     } else {
                         getView().setActionsEnabled(true);
-                        if (getView().getAdapter().getItemCount() == 0) {
+                        if (getView().getAdapter() != null &&
+                                getView().getAdapter().getItemCount() == 0) {
                             getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
                         } else {
                             getView().setRetry(getView().getString(R.string.sp_empty_state_error));
