@@ -1648,11 +1648,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getCheckoutIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Intent getExpressCheckoutIntent(Activity activity,
                                            com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam atcRequestParam) {
         return null;
