@@ -198,6 +198,7 @@ public class SearchActivity extends BaseActivity
         autoCompleteSearchParameter.setSearchQuery(searchParameter.getSearchQuery());
 
         Intent intent = ((DiscoveryRouter)getApplicationContext()).gotoSearchAutoCompletePage(SearchActivity.this);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, autoCompleteSearchParameter);
 
         return intent;
