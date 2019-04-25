@@ -14,5 +14,4 @@ public class GqlSubmitWithDrawalResponse {
     public void setResponse(SubmitWithdrawResponse response) {
         this.response = response;
     }
-
 }

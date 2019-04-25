@@ -93,21 +93,15 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        withdrawButton.setTextColor(getResources().getColor(R.color.black_26));
-        withdrawButton.setEnabled(false);
-        withdrawButton.setClickable(false);
+        disableWithdrawButton();
 
         passwordView.addTextChangedListener(new AfterTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                if (!s.toString().isEmpty()) {
-                    withdrawButton.setTextColor(Color.WHITE);
-                    withdrawButton.setEnabled(true);
-                    withdrawButton.setClickable(true);
+                if (s.toString().isEmpty()) {
+                    disableWithdrawButton();
                 } else {
-                    withdrawButton.setTextColor(getResources().getColor(R.color.black_26));
-                    withdrawButton.setEnabled(false);
-                    withdrawButton.setClickable(false);
+                    enableWithdrawButton();
                 }
             }
         });
@@ -137,6 +131,18 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
                     snackBarError.dismiss();
                 });
 
+    }
+
+    private void disableWithdrawButton() {
+        withdrawButton.setTextColor(getResources().getColor(R.color.black_26));
+        withdrawButton.setEnabled(false);
+        withdrawButton.setClickable(false);
+    }
+
+    private void enableWithdrawButton() {
+        withdrawButton.setTextColor(Color.WHITE);
+        withdrawButton.setEnabled(true);
+        withdrawButton.setClickable(true);
     }
 
     @Override
