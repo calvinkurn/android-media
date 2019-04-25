@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.list.decoration.SpaceItemDecoration
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.data.model.PropertySearch
@@ -22,18 +23,18 @@ import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchFilterActivity
+import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
+import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
-import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
-import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
 import javax.inject.Inject
 
-class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeFactory>() {
+class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -54,6 +55,8 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
         const val ARG_TOTAL_ADULT = "arg_total_adult"
         const val ARG_TOTAL_CHILDREN = "arg_total_children"
         const val ARG_DESTINATION_NAME = "arg_destination_name"
+
+        val REQUEST_CODE_DETAIL_HOTEL = 101
 
         fun createInstance(destinationName: String = "", destinationID: Int = 0, type: String = "",
                            latitude: Float = 0f, longitude: Float = 0f, checkIn: String = "",
@@ -96,7 +99,7 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         searchResultviewModel.liveSearchResult.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccessGetResult(it.data)
                 is Fail -> onErrorGetResult(it.throwable)
             }
@@ -124,8 +127,8 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK){
-            if (requestCode == REQUEST_FILTER && data != null && data.hasExtra(CommonParam.ARG_CACHE_FILTER_ID)){
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_FILTER && data != null && data.hasExtra(CommonParam.ARG_CACHE_FILTER_ID)) {
                 val cacheId = data.getStringExtra(CommonParam.ARG_CACHE_FILTER_ID)
                 val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheId) } ?: return
                 searchResultviewModel.addFilter(cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java)
@@ -178,7 +181,13 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
 
     override fun getAdapterTypeFactory(): PropertyAdapterTypeFactory = PropertyAdapterTypeFactory()
 
-    override fun onItemClicked(t: Property?) {}
+    override fun onItemClicked(t: Property) {
+        with(searchResultviewModel.searchParam) {
+            startActivityForResult(HotelDetailActivity.getCallingIntent(context!!,
+                    checkIn, checkOut, t.id, room, guest.adult, guest.childAge.size),
+                    REQUEST_CODE_DETAIL_HOTEL)
+        }
+    }
 
     override fun getScreenName(): String? = null
 
