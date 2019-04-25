@@ -10,6 +10,7 @@ import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
+import com.tokopedia.discovery.newdiscovery.helper.GqlSearchQueryHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 
@@ -28,6 +29,7 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     private GetImageSearchUseCase getImageSearchUseCase;
     private GraphqlUseCase graphqlUseCase;
     private Context context;
+    private GqlSearchQueryHelper gqlSearchQueryHelper;
 
     public DiscoveryPresenter(GetProductUseCase getProductUseCase) {
         this.getProductUseCase = getProductUseCase;
@@ -38,20 +40,25 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         this.getImageSearchUseCase = getImageSearchUseCase;
         this.graphqlUseCase = new GraphqlUseCase();
         this.context = context;
+        this.gqlSearchQueryHelper = new GqlSearchQueryHelper(context);
     }
 
     @Override
-    public void initiateSearch(SearchParameter searchParameter, boolean forceSearch) {
+    public void initiateSearch(SearchParameter searchParameter, boolean forceSearch, InitiateSearchListener initiateSearchListener) {
         super.initiateSearch(searchParameter, forceSearch);
 
-        RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, forceSearch);
+        com.tokopedia.usecase.RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, forceSearch);
 
-        GqlSearchHelper.initiateSearch(context, requestParams, graphqlUseCase,
-                new InitiateSearchSubscriber(getBaseDiscoveryView(), searchParameter, forceSearch));
+        GqlSearchHelper.initiateSearch(
+                gqlSearchQueryHelper.getInitiateSearchQuery(),
+                requestParams,
+                graphqlUseCase,
+                new InitiateSearchSubscriber(initiateSearchListener)
+        );
     }
 
-    private RequestParams createInitiateSearchRequestParams(SearchParameter searchParameter, boolean isForceSearch) {
-        RequestParams requestParams = RequestParams.create();
+    private com.tokopedia.usecase.RequestParams createInitiateSearchRequestParams(SearchParameter searchParameter, boolean isForceSearch) {
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
 
         requestParams.putAll(searchParameter.getSearchParameterMap());
 

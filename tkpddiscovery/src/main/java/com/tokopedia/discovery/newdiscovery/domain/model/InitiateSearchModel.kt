@@ -1,9 +1,9 @@
-package com.tokopedia.discovery.newdiscovery.domain.gql
+package com.tokopedia.discovery.newdiscovery.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class InitiateSearchGqlResponse(
+data class InitiateSearchModel(
     @SerializedName("searchProduct")
     @Expose
     val searchProduct : SearchProduct? = SearchProduct()

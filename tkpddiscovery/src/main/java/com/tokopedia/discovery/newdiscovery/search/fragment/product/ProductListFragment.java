@@ -161,7 +161,7 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected void initInjector() {
         SearchComponent component = DaggerSearchComponent.builder()
-//                .appComponent(getComponent(AppComponent.class))
+                // getAppComponent from tkpdcore. Temporary solution until this Fragment moved to search module
                 .appComponent(getAppComponent())
                 .build();
         component.inject(this);

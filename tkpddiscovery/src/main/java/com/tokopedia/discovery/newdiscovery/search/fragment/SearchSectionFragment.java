@@ -659,6 +659,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 getResources().getString(R.string.empty_state_selected_filter_price_name));
     }
 
+    // getAppComponent from tkpdcore. Temporary solution until this Fragment moved to search module
     protected AppComponent getAppComponent() {
         if(getActivity() != null) {
             if(getActivity().getApplication() instanceof MainApplication) {

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -358,7 +359,40 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         onSearchingStart(searchQuery);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
 
-        getPresenter().initiateSearch(searchParameter, isForceSearch());
+        getPresenter().initiateSearch(searchParameter, isForceSearch(), getInitiateSearchListener());
+    }
+
+    private InitiateSearchListener getInitiateSearchListener() {
+        return new InitiateSearchListener() {
+            @Override
+            public void onHandleResponseSearch(boolean isHasCatalog) {
+                ProductViewModel model = new ProductViewModel();
+                model.setSearchParameter(searchParameter);
+                model.setHasCatalog(isHasCatalog);
+                model.setForceSearch(isForceSearch());
+
+                DiscoveryActivity.this.onHandleResponseSearch(model);
+            }
+
+            @Override
+            public void onHandleApplink(@NonNull String applink) {
+                DiscoveryActivity.this.onHandleApplink(applink);
+            }
+
+            @Override
+            public void onHandleResponseError() {
+                DiscoveryActivity.this.onHandleResponseError();
+            }
+
+            @Override
+            public void onHandleResponseUnknown() {
+                DiscoveryActivity.this.onHandleResponseUnknown();
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        };
     }
 
     private void updateSearchParameterBeforeSearchIfNotEmpty(String searchQuery, String categoryId) {

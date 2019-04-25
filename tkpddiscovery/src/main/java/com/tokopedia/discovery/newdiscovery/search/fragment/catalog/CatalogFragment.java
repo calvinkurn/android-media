@@ -164,6 +164,7 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     protected void initInjector() {
+        // getAppComponent from tkpdcore. Temporary solution until this Fragment moved to search module
         SearchComponent component = DaggerSearchComponent.builder()
                 .appComponent(getAppComponent())
                 .build();

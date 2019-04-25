@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -21,12 +22,14 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
+import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
@@ -105,6 +108,7 @@ public class SearchActivity extends BaseActivity
     private boolean isForceSearch;
     private boolean isHasCatalog;
     private int activeTabPosition;
+    private boolean isPausing;
 
     @Inject SearchContract.Presenter searchPresenter;
     @Inject SearchTracking searchTracking;
@@ -452,8 +456,15 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        isPausing = true;
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        isPausing = false;
         unregisterShake();
     }
 
@@ -472,7 +483,7 @@ public class SearchActivity extends BaseActivity
     @Override
     public void onBackPressed() {
         if (!bottomSheetFilterView.onBackPressed()) {
-            super.onBackPressed();
+            finish();
         }
     }
 
@@ -519,12 +530,15 @@ public class SearchActivity extends BaseActivity
         this.isForceSwipeToShop = false;
         this.isForceSearch = forceSearch;
 
+        performProductSearch(query);
+    }
+
+    private void performProductSearch(String query) {
         updateSearchParameterBeforeSearch(query);
         onSearchingStart();
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
 
-        // TODO:: Discuss how to do this???
-//        getPresenter().initiateSearch(searchParameter, isForceSearch());
+        searchPresenter.initiateSearch(searchParameter, isForceSearch, getInitiateSearchListener());
     }
 
     private void updateSearchParameterBeforeSearch(String searchQuery) {
@@ -562,6 +576,88 @@ public class SearchActivity extends BaseActivity
         showLoadingView(true);
         showContainer(false);
         hideBottomNavigation();
+    }
+
+    private InitiateSearchListener getInitiateSearchListener() {
+        return new InitiateSearchListener() {
+            @Override
+            public void onHandleResponseSearch(boolean isHasCatalog) {
+                if (!isPausing) {
+                    finish();
+                    moveToSearchActivity(isHasCatalog);
+                }
+
+                stopPerformanceMonitoring();
+            }
+
+            @Override
+            public void onHandleApplink(@NonNull String applink) {
+                moveWithApplink(applink);
+            }
+
+            @Override
+            public void onHandleResponseError() {
+                NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
+                    if(searchParameter == null) return;
+                    SearchActivity.this.performProductSearch(searchParameter.getSearchQuery());
+                });
+            }
+
+            @Override
+            public void onHandleResponseUnknown() {
+                throw new RuntimeException("Not yet handle unknown response");
+            }
+
+            @Override
+            public void onComplete() {
+                showLoadingView(false);
+                showContainer(true);
+                showBottomNavigation();
+            }
+        };
+    }
+
+    private void moveToSearchActivity(boolean isHasCatalog) {
+        if(getApplication() instanceof DiscoveryRouter) {
+            DiscoveryRouter router = (DiscoveryRouter)getApplication();
+            Intent searchActivityIntent = getSearchActivityIntent(router, isHasCatalog);
+            startActivity(searchActivityIntent);
+        }
+    }
+
+    private Intent getSearchActivityIntent(DiscoveryRouter router, boolean isHasCatalog) {
+        Intent searchActivityIntent = router.gotoSearchPage(this);
+        searchActivityIntent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
+        searchActivityIntent.putExtra(EXTRA_HAS_CATALOG, isHasCatalog);
+        searchActivityIntent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop);
+
+        return searchActivityIntent;
+    }
+
+    public void moveWithApplink(String applink) {
+        if(getApplication() instanceof DiscoveryRouter) {
+            DiscoveryRouter router = (DiscoveryRouter)getApplication();
+
+            if (router.isSupportApplink(applink)) {
+                openApplink(router, applink);
+            } else {
+                openWebViewURL(router, applink, this);
+            }
+        }
+
+        finish();
+    }
+
+    public void openApplink(DiscoveryRouter router, String applink) {
+        if (!TextUtils.isEmpty(applink)) {
+            router.goToApplinkActivity(this, applink);
+        }
+    }
+
+    public void openWebViewURL(DiscoveryRouter router, String url, Context context) {
+        if (!TextUtils.isEmpty(url) && context != null) {
+            router.actionOpenGeneralWebView(this, url);
+        }
     }
 
     protected void stopPerformanceMonitoring() {
