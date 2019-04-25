@@ -1,6 +1,6 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder
+import com.tokopedia.kotlin.model.ImpressHolder
 
 class RecommendationItem(val productId: Int,
                          val name: String,

@@ -9,6 +9,8 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
@@ -28,18 +30,20 @@ class RecommendationCardView : ProductCardView {
         setWishlistButtonVisible(TextUtils.isEmpty(item.wishlistUrl))
         setRatingReviewCount(item.rating, item.countReview)
 
-        imageView.setViewHintListener(
-                item
-        ) {
-            if(item.isTopAds){
-                ImpresionTask().execute(item.trackerImageUrl)
-                //Impression for topads item
-                trackingListener.onImpressionTopAds(item)
-            } else {
-                //Impression for organic item
-                trackingListener.onImpressionOrganic(item)
-            }
-        }
+        imageView.addOnImpressionListener(item,
+                object: ViewHintListener {
+                    override fun onViewHint() {
+                        if(item.isTopAds){
+                            ImpresionTask().execute(item.trackerImageUrl)
+                            //Impression for topads item
+                            trackingListener.onImpressionTopAds(item)
+                        } else {
+                            //Impression for organic item
+                            trackingListener.onImpressionOrganic(item)
+                        }
+                    }
+                }
+        )
 
         setOnClickListener {
             if (item.isTopAds) {
