@@ -20,6 +20,7 @@ import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListene
 import com.tokopedia.checkout.view.feature.shipment.ShipmentFragment;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
+import com.tokopedia.checkout.view.feature.shipment.util.Utils;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentCostViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentEmasViewHolder;
@@ -882,6 +883,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             model.setCode(voucherOrdersItemUiModel.getCode());
                             model.setMessage(voucherOrdersItemUiModel.getMessage());
                             model.setCouponDesc(voucherOrdersItemUiModel.getTitleDescription());
+                            model.setCouponAmount(Utils.getFormattedCurrency(voucherOrdersItemUiModel.getDiscountAmount()));
                             shipmentCartItemModel.setVoucherLogisticItemUiModel(model);
                         }
                         notifyItemChanged(i);
