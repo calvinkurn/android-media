@@ -85,6 +85,7 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
                     roomListViewModel.roomList = it.data
                     showFilterRecyclerView(it.data.size > 0)
                 } else showFilterRecyclerView(true)
+                loadInitialData()
                 renderList(it.data)
             }
             is Fail -> {
@@ -156,7 +157,6 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
 
     fun getRoomList(fromCloud: Boolean = true) {
         showFilterRecyclerView(false)
-        loadInitialData()
         roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list), hotelRoomListPageModel, fromCloud)
     }
 
