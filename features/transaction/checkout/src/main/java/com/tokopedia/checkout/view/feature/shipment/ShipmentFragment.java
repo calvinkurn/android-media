@@ -1870,8 +1870,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 if (isToogleYearEndPromoOn()) {
                     sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(recommendedCourier.getShipperProductId());
                 }
-                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(
-                        cartItemPosition, recommendedCourier);
+                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
 
                 // Clear logistic voucher data when any duration is selected and voucher is not null
                 if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
@@ -1881,6 +1880,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
                 }
 
+                shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
                 shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, recommendedCourier, cartItemPosition);
                 if (!TextUtils.isEmpty(recommendedCourier.getPromoCode())) {
