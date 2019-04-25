@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateTypeFactory
 
 class NotificationUpdateItemViewModel(
+        var notificationId: String = "",
         var isRead: Boolean = false,
         var iconUrl: String = "",
         var contentUrl: String = "",
@@ -14,7 +15,8 @@ class NotificationUpdateItemViewModel(
         var title: String = "",
         var sectionTitle: String = "",
         var body: String = "",
-        var templateKey: String = ""
+        var templateKey: String = "",
+        var appLink: String = ""
 ) : Visitable<NotificationUpdateTypeFactory>, Parcelable {
 
     override fun type(typeFactory: NotificationUpdateTypeFactory): Int {
@@ -22,6 +24,7 @@ class NotificationUpdateItemViewModel(
     }
 
     constructor(`in`: Parcel) : this() {
+        notificationId = `in`.readString()
         isRead = `in`.readInt() != 0
         iconUrl = `in`.readString()
         contentUrl = `in`.readString()
@@ -30,9 +33,11 @@ class NotificationUpdateItemViewModel(
         title = `in`.readString()
         body = `in`.readString()
         templateKey = `in`.readString()
+        appLink = `in`.readString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(notificationId)
         parcel.writeInt(if (isRead) 1 else 0)
         parcel.writeString(iconUrl)
         parcel.writeString(contentUrl)
@@ -41,6 +46,7 @@ class NotificationUpdateItemViewModel(
         parcel.writeString(title)
         parcel.writeString(body)
         parcel.writeString(templateKey)
+        parcel.writeString(appLink)
     }
 
     override fun describeContents(): Int {

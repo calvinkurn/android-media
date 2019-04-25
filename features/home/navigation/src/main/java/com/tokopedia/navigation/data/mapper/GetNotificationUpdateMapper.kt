@@ -14,6 +14,7 @@ class GetNotificationUpdateMapper @Inject constructor(){
         var list = arrayListOf<NotificationUpdateItemViewModel>()
         for (notificationUpdateItem in item.list) {
             var datum = NotificationUpdateItemViewModel(
+                    notificationId = notificationUpdateItem.notifId,
                     iconUrl = notificationUpdateItem.dataNotification.infoThumbnailUrl,
                     contentUrl = notificationUpdateItem.dataNotification.infoThumbnailUrl,
                     time = notificationUpdateItem.createTime,
@@ -21,7 +22,8 @@ class GetNotificationUpdateMapper @Inject constructor(){
                     body = notificationUpdateItem.shortDescription,
                     sectionTitle = notificationUpdateItem.sectionKey,
                     templateKey = notificationUpdateItem.templateKey,
-                    isRead = convertReadStatus(notificationUpdateItem.readStatus)
+                    isRead = convertReadStatus(notificationUpdateItem.readStatus),
+                    appLink = notificationUpdateItem.dataNotification.appLink
 
             )
             list.add(datum)

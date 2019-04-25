@@ -3,8 +3,11 @@ package com.tokopedia.navigation.presentation.fragment
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
+import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
@@ -28,6 +32,7 @@ import com.tokopedia.navigation.presentation.view.listener.NotificationSectionFi
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterSectionItemViewModel
+import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateViewModel
 import javax.inject.Inject
 
@@ -37,6 +42,7 @@ import javax.inject.Inject
 class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         , NotificationUpdateContract.View, NotificationSectionFilterListener{
 
+    private var cursor = ""
     private val filterViewModel = createDummy()
     private val selectedItemList = HashMap<Int, Int>()
     private lateinit var bottomSheetDialog: BottomSheetDialog
@@ -202,12 +208,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         presenter.attachView(this)
     }
 
-    override fun loadInitialData() {
-        super.loadInitialData()
-    }
-
     override fun loadData(page: Int) {
-        presenter.loadData("", onSuccessInitiateData(), onErrorInitiateData())
+        presenter.loadData(cursor, onSuccessInitiateData(), onErrorInitiateData())
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
@@ -221,11 +223,32 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
     private fun onSuccessInitiateData(): (NotificationUpdateViewModel) -> Unit {
         return {
-            renderList(it.list, false)
-//            (adapter as NotificationUpdateAdapter).addElement(it.list)
+            var canLoadMore = it.paging.hasNext
+            if (canLoadMore && !it.list.isEmpty()) {
+                cursor = (it.list.last().notificationId)
+            }
+            renderList(it.list, canLoadMore)
         }
     }
 
+
+    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(getRecyclerView(view).layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                showLoading()
+                loadData(page)
+            }
+        }
+    }
+
+    override fun onSwipeRefresh() {
+        cursor = ""
+        super.onSwipeRefresh()
+    }
+
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return view?.findViewById(R.id.swipeToRefresh)
+    }
 
     class SpacingItemDecoration(private val dimen: Int, val size: Int) : RecyclerView.ItemDecoration() {
 
