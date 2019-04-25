@@ -228,7 +228,6 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
 
-
     private void renderViewCrackEgg() {
         TokenAsset tokenAsset = tokenData.getTokenAsset();
         TokensUser tokenUser = tokenData.getTokensUser();
@@ -267,7 +266,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             widgetTokenView.setListener(new WidgetTokenViewTapTap.WidgetTokenListener() {
                 @Override
                 public void onClick() {
-                    if(getContext()==null)
+                    if (getContext() == null)
                         return;
                     fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
                     hideInfoTitle();
@@ -453,10 +452,11 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
     private long currentTime;
+
     private void showCountdownTimer(final long timeRemainingSeconds) {
         if (timeRemainingSeconds > 0) {
             stopTimer();
-            currentTime=timeRemainingSeconds;
+            currentTime = timeRemainingSeconds;
             countDownTimer = Observable.interval(0, 1, TimeUnit.SECONDS, Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .takeUntil(new Func1<Object, Boolean>() {
@@ -510,7 +510,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (getContext()!=null && crackTokenPresenter != null) {
+                    if (getContext() != null && crackTokenPresenter != null) {
                         crackTokenPresenter.getGetTokenTokopoints(false, true);
                     }
                 }
@@ -694,7 +694,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
     private void downloadAssets() {
-        if (tokenData!=null && tokenData.getTokensUser() != null) {
+        if (tokenData != null && tokenData.getTokensUser() != null) {
             if (tokenData.getTokensUser().isEmptyState()) {
                 //            listener.directPageToCrackEmpty(tokenData);
                 crackTokenPresenter.downloadEmptyAssets(getContext(), this.tokenData);
@@ -879,7 +879,10 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     public void clearViewAndAnimations() {
         widgetTokenView.releaseResourcesOnDestroy();
         widgetCrackResult.clearCrackResult();
-        crackTokenSuccessHandler.removeCallbacksAndMessages(null);
+        if (crackTokenSuccessHandler != null)
+            crackTokenSuccessHandler.removeCallbacksAndMessages(null);
+        if(crackTokenErrorhandler != null)
+            crackTokenErrorhandler.removeCallbacksAndMessages(null);
     }
 
     public void showBackPopup() {
