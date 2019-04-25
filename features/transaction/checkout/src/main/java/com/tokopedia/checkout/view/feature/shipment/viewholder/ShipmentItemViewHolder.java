@@ -215,7 +215,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     // promostacking
     private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
     private View llLogPromo;
-    private TextView tvLogPromoLabel;
+    private RelativeLayout tvLogPromoLabel;
+    private TextView tvLogPromoTitle;
+    private TextView tvLogPromoDiscAmount;
     private TextView tvLogPromoMsg;
     private TextView tvLogPromoErr;
 
@@ -359,6 +361,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
         llLogPromo = itemView.findViewById(R.id.layout_logistic_promo_stacking);
         tvLogPromoLabel = itemView.findViewById(R.id.tv_logistic_promo_label);
+        tvLogPromoTitle = itemView.findViewById(R.id.tv_logistic_title_desc);
+        tvLogPromoDiscAmount = itemView.findViewById(R.id.tv_logistic_disc_amount);
         tvLogPromoMsg = itemView.findViewById(R.id.tv_logistic_promo_msg);
         tvLogPromoErr = itemView.findViewById(R.id.tv_logistic_promo_err);
 
@@ -844,9 +848,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvLogPromoErr.setVisibility(isRed ? View.VISIBLE : View.GONE);
             tvLogPromoLabel.setVisibility(isRed ? View.GONE : View.VISIBLE);
             tvLogPromoMsg.setVisibility(isRed ? View.GONE : View.VISIBLE);
-            if (!TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc())) {
-                tvLogPromoLabel.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
-            } else tvLogPromoLabel.setVisibility(View.GONE);
+            if (!TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc()) &&
+                    !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount())) {
+                tvLogPromoTitle.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
+
+                String labelCouponAmount = "- Rp " + shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount();
+                tvLogPromoDiscAmount.setText(labelCouponAmount);
+            } else {
+                tvLogPromoLabel.setVisibility(View.GONE);
+            }
             tvChangeSelectedCourierRecommendation.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
             tvChangeSelectedCourierRecommendation.setOnClickListener(null);
         }

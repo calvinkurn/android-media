@@ -98,25 +98,15 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                             if (promo.skipApply == 0 && responseGetPromoStack.data.clashings.isClashedPromos) {
                                 view.onClashCheckPromo(responseGetPromoStack.data.clashings)
                             } else {
-                                var isRed = false
-                                var message = ""
-                                if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-                                    isRed = true
-                                    message = responseGetPromoStack.data.message.text
-                                } else {
-                                    responseGetPromoStack.data.voucherOrders.forEach {
-                                        if (it.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-                                            isRed = true
-                                            message = it.message.text
+                                responseGetPromoStack.data.codes.forEach {
+                                    if (it.equals(promoCode, true)) {
+                                        if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+                                            view?.hideProgressLoading()
+                                            view.onErrorValidatePromoStacking(MessageErrorException(responseGetPromoStack.data.message.text))
+                                        } else {
+                                            view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
                                         }
                                     }
-                                }
-
-                                if (isRed) {
-                                    view?.hideProgressLoading()
-                                    view.onErrorValidatePromoStacking(MessageErrorException(message))
-                                } else {
-                                    view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
                                 }
                             }
                         }
