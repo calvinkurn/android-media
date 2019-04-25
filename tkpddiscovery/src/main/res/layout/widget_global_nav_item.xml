@@ -8,27 +8,27 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
         
-        <ImageView
-            android:layout_width="@dimen/dp_72"
-            android:layout_height="@dimen/dp_72"
+        <com.tokopedia.design.image.SquareImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:src="@drawable/squircle"
             android:scaleType="fitXY"/>
 
         <ImageView
             android:id="@+id/globalNavItemImage"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
-            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_20"
             android:scaleType="centerInside"/>
         
     </RelativeLayout>
 
     <TextView
         android:id="@+id/globalNavItemName"
-        android:layout_width="@dimen/dp_72"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"
         style="@style/TextView.Micro"
@@ -39,7 +39,7 @@
 
     <TextView
         android:id="@+id/globalNavItemInfo"
-        android:layout_width="@dimen/dp_72"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:ellipsize="end"
@@ -47,6 +47,7 @@
         android:textColor="#f531353b"
         style="@style/TextView.Micro.Bold"
         android:textSize="@dimen/sp_10"
+        android:visibility="gone"
         android:gravity="center_horizontal"/>
 
 </LinearLayout>

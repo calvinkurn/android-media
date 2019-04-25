@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -150,8 +151,18 @@ public class GlobalNavWidget extends BaseCustomView {
         }
 
         public void bind(final GlobalNavViewModel.Item item) {
-            globalNavItemName.setText(item.getName());
-            globalNavItemInfo.setText(item.getInfo());
+            if (!TextUtils.isEmpty(item.getName())) {
+                globalNavItemName.setText(item.getName());
+                globalNavItemName.setVisibility(VISIBLE);
+            } else {
+                globalNavItemName.setVisibility(GONE);
+            }
+            if (!TextUtils.isEmpty(item.getInfo())) {
+                globalNavItemInfo.setText(item.getInfo());
+                globalNavItemInfo.setVisibility(VISIBLE);
+            } else {
+                globalNavItemInfo.setVisibility(GONE);
+            }
             ImageHandler.loadImageFitCenter(context, globalNavItemImage, item.getImageUrl());
             globalNavItemContainer.setOnClickListener(new OnClickListener() {
                 @Override
