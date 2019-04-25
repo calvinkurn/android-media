@@ -15,20 +15,20 @@ class TkpdVideoView @JvmOverloads constructor(
         defStyleAttr: Int = 0): PlayerView(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val LANDSCAPE = "landscape"
-        private const val PORTRAIT = "portrait"
-        private const val SQUARE = "square"
+        private const val PORTRAIT = 1
+        private const val LANDSCAPE = 2
+        private const val SQUARE = 3
 
         private const val aspectRatio = .5625f
     }
 
     //attributes options
-    var attrRatioType: String? = "portrait"
+    private var attrRatioType: Int? = 0
 
     init {
         if (attrs != null) {
             val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.TkpdVideoView)
-            attrRatioType = attributeArray.getString(R.styleable.TkpdVideoView_type)
+            attrRatioType = attributeArray.getInt(R.styleable.TkpdVideoView_type, 0)
             attributeArray.recycle()
         }
     }
