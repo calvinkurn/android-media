@@ -35,7 +35,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         const val TAG = "VideoDetailPlayer"
         private const val EXOPLAYER_AGENT = "exoplayer-codelab"
 
-        fun show(videoSource: String): BottomSheetDialogFragment {
+        fun set(videoSource: String): BottomSheetDialogFragment {
             val videoPlayer = VideoDetailPlayer()
             val bundle = Bundle()
             bundle.putString(VIDEO_SOURCE, videoSource)
@@ -58,6 +58,14 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
             val behavior = BottomSheetBehavior.from(bottomSheet!!)
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
             behavior.peekHeight = 0
+            behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                        dismiss()
+                    }
+                }
+            })
         }
 
         initView()
