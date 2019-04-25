@@ -22,4 +22,9 @@
         <item name="android:textStyle">bold</item>
         <item name="textColor">@color/black_38</item>
     </style>
+
+    <style name="Transparent" parent="Theme.Tokopedia3">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>
