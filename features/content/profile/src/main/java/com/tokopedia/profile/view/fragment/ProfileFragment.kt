@@ -1128,7 +1128,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         }
 
-        if (spannableString.indexOf(following) != -1) {
+        if (spannableString.indexOf(following) < 1) {
             spannableString.setSpan(
                     goToFollowing,
                     spannableString.indexOf(following),
