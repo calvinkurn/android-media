@@ -21,6 +21,7 @@ import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomS
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.di.HotelRoomListComponent
+import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
 import com.tokopedia.hotel.roomlist.widget.ChipAdapter
@@ -62,6 +63,7 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
 
         arguments?.let {
             hotelRoomListPageModel.propertyId = it.getInt(ARG_PROPERTY_ID, 0)
+            hotelRoomListPageModel.propertyName = it.getString(ARG_PROPERTY_NAME, "")
             hotelRoomListPageModel.checkIn = it.getString(ARG_CHECK_IN, "")
             hotelRoomListPageModel.checkOut = it.getString(ARG_CHECK_OUT, "")
             hotelRoomListPageModel.adult = it.getInt(ARG_TOTAL_ADULT, 0)
@@ -104,6 +106,7 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
             hotelRoomListPageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_ROOM_LIST_MODEL)!!
         }
 
+        (activity as HotelRoomListActivity).updateTitle(hotelRoomListPageModel.propertyName)
         initView()
         renderRoomAndGuestView()
         renderDate()
@@ -324,6 +327,7 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         val PAY_IN_HOTEL = R.string.hotel_room_list_filter_pay_in_hotel
 
         const val ARG_PROPERTY_ID = "arg_property_id"
+        const val ARG_PROPERTY_NAME = "arg_property_name"
         const val ARG_CHECK_IN = "arg_check_in"
         const val ARG_CHECK_OUT = "arg_check_out"
         const val ARG_TOTAL_ROOM = "arg_total_room"
@@ -340,12 +344,13 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         val DEFAULT_LAST_HOUR_IN_DAY = 23
         val DEFAULT_LAST_MIN_SEC_IN_DAY = 59
 
-        fun createInstance(propertyId: Int = 0, checkIn: String = "", checkOut: String = "",
+        fun createInstance(propertyId: Int = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",
                            totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0): HotelRoomListFragment {
 
             return HotelRoomListFragment().also {
                 it.arguments = Bundle().apply {
                     putInt(ARG_PROPERTY_ID, propertyId)
+                    putString(ARG_PROPERTY_NAME, propertyName)
                     putString(ARG_CHECK_IN, checkIn)
                     putString(ARG_CHECK_OUT, checkOut)
                     putInt(ARG_TOTAL_ROOM, totalRoom)
