@@ -38,7 +38,7 @@ final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> imp
 
     @Override
     public void initiateSearch(SearchParameter searchParameter, boolean isForceSearch, InitiateSearchListener initiateSearchListener) {
-        checkViewAttached();
+        if(searchParameter == null || initiateSearchListener == null) return;
 
         RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, isForceSearch);
 

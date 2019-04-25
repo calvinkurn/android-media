@@ -517,13 +517,24 @@ public class SearchActivity extends BaseActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_change_grid) {
-            if (searchNavigationClickListener != null) {
-                searchNavigationClickListener.onChangeGridClick();
-            }
+            changeGrid();
             return true;
+        }
+        else if (item.getItemId() == R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        else if (item.getItemId() == R.id.action_search) {
+            return false;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void changeGrid() {
+        if (searchNavigationClickListener != null) {
+            searchNavigationClickListener.onChangeGridClick();
+        }
     }
 
     @Override
