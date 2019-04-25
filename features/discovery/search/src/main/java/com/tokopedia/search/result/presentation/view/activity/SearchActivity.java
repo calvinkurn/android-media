@@ -520,7 +520,7 @@ public class SearchActivity extends BaseActivity
             changeGrid();
             return true;
         }
-        else if (item.getItemId() == R.id.home) {
+        else if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
         }
