@@ -60,6 +60,7 @@ import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.chatreport.view.activity.ChatReportActivity
 import javax.inject.Inject
 
 /**
@@ -690,7 +691,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onGoToReportUser() {
-        // TODO: Go to report user page
+        context?.let {
+            val intent = ChatReportActivity.getStartIntent(it, messageId)
+            startActivity(intent)
+        }
     }
 
     override fun onDualAnnouncementClicked(redirectUrl: String, attachmentId: String, blastId: Int) {
