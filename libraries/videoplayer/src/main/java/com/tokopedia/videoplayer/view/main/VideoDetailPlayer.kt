@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.BottomSheetDialogFragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +32,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         private const val VIDEO_SOURCE = "video_uri"
 
         //const variables
+        const val TAG = "VideoDetailPlayer"
         private const val EXOPLAYER_AGENT = "exoplayer-codelab"
 
         fun show(videoSource: String): BottomSheetDialogFragment {
@@ -79,14 +81,18 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
     }
 
     private fun videoPlayerInit(source: String) {
-        playerOptions = ExoPlayerFactory.newSimpleInstance(context,
-                DefaultRenderersFactory(context),
-                DefaultTrackSelector(),
-                DefaultLoadControl())
-        videoPlayerView.player = playerOptions
+        try {
+            playerOptions = ExoPlayerFactory.newSimpleInstance(context,
+                    DefaultRenderersFactory(context),
+                    DefaultTrackSelector(),
+                    DefaultLoadControl())
+            playerView.player = playerOptions
 
-        val mediaSource = buildMediaSource(Uri.parse(source))
-        playerOptions.prepare(mediaSource, true, false)
+            val mediaSource = buildMediaSource(Uri.parse(source))
+            playerOptions.prepare(mediaSource, true, false)
+        } catch (e: Exception) {
+            Log.e(TAG, e.message)
+        }
     }
 
     private fun buildMediaSource(uri: Uri): MediaSource {

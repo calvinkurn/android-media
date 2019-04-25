@@ -7,12 +7,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.videoplayer.view.widget.TkpdVideoView
-        android:id="@+id/videoPlayerView"
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/playerView"
         app:controller_layout_id="@layout/video_control_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        app:type="portrait"/>
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>
