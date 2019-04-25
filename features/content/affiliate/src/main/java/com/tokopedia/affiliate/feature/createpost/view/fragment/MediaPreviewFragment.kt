@@ -101,7 +101,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
         }
 
         btnPlay.setOnClickListener {
-            val player = VideoDetailPlayer.show(viewModel.completeImageList.first().path)
+            val player = VideoDetailPlayer.set(viewModel.completeImageList.first().path)
             player.show(childFragmentManager, VideoDetailPlayer.TAG)
         }
 
