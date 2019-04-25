@@ -39,5 +39,4 @@ data class SearchDestination(
         val hotelCount: Int = 0
 ): Visitable<SearchDestinationTypeFactory> {
     override fun type(typeFactory: SearchDestinationTypeFactory) = typeFactory.type(this)
-
 }

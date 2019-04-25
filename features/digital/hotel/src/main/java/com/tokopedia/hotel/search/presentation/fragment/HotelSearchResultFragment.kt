@@ -1,8 +1,10 @@
 package com.tokopedia.hotel.search.presentation.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -16,6 +18,7 @@ import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.data.model.PropertySearch
 import com.tokopedia.hotel.search.data.model.Sort
+import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchFilterActivity
@@ -120,6 +123,19 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK){
+            if (requestCode == REQUEST_FILTER && data != null && data.hasExtra(CommonParam.ARG_CACHE_FILTER_ID)){
+                val cacheId = data.getStringExtra(CommonParam.ARG_CACHE_FILTER_ID)
+                val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheId) } ?: return
+                searchResultviewModel.addFilter(cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java)
+                        ?: ParamFilter())
+                loadInitialData()
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     private fun onErrorGetResult(throwable: Throwable) {
         super.showGetListError(throwable)
     }
@@ -136,6 +152,7 @@ class HotelSearchResultFragment: BaseListFragment<Property, PropertyAdapterTypeF
             context?.let {
                 val cacheManager = SaveInstanceCacheManager(it, true).apply {
                     put(CommonParam.ARG_FILTER, filter)
+                    put(CommonParam.ARG_SELECTED_FILTER, searchResultviewModel.selectedFilter)
                 }
                 startActivityForResult(HotelSearchFilterActivity.createIntent(it, cacheManager.id), REQUEST_FILTER)
             }

@@ -26,6 +26,10 @@
             android:label="@string/label_filter"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Hotel"/>
+
+        <activity android:name=".roomlist.presentation.activity.HotelRoomListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Hotel"/>
     </application>
 
 </manifest>

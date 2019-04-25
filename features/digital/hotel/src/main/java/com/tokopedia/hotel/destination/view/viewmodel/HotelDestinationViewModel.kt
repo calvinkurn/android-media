@@ -3,12 +3,14 @@ package com.tokopedia.hotel.destination.view.viewmodel
 import android.app.Activity
 import android.arch.lifecycle.MutableLiveData
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.hotel.destination.data.model.*
+import com.tokopedia.hotel.search.data.model.PropertySearch
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
@@ -16,8 +18,10 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.experimental.CoroutineDispatcher
 import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.withContext
 import javax.inject.Inject
 
@@ -26,6 +30,7 @@ import javax.inject.Inject
  */
 
 class HotelDestinationViewModel @Inject constructor(
+        val userSessionInterface: UserSessionInterface,
         val graphqlRepository: GraphqlRepository,
         val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher){
 
@@ -36,27 +41,26 @@ class HotelDestinationViewModel @Inject constructor(
     val searchDestination = MutableLiveData<RecentSearchState<MutableList<SearchDestination>>>()
     val longLat = MutableLiveData<Result<Pair<Double, Double>>>()
 
-    init {
-        //dummy data
-        var list: MutableList<RecentSearch> = arrayListOf()
-        list.add(RecentSearch(0,"", "Jakarta", ""))
-        list.add(RecentSearch(0,"", "Jalan Sudirman", ""))
-        list.add(RecentSearch(0,"", "Central Park Mall", ""))
-        list.add(RecentSearch(0,"", "Bandung", ""))
-        list.add(RecentSearch(0,"", "Kyoto Japan", ""))
-        recentSearch.value = Success(list)
-    }
-
-    fun getHotelRecommendation(rawQuery: String) {
+    fun getHotelRecommendation(popularRawQuery: String, recentSearchRawQuery: String, dummySearch: String) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default){
-                val graphqlRequest = GraphqlRequest(rawQuery, TYPE_POPULAR_RESPONSE, false)
+                val graphqlRequest = GraphqlRequest(popularRawQuery, TYPE_POPULAR_RESPONSE, false)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<HotelRecommendation>()
+            }.getSuccessData<PopularSearch.Response>()
 
             popularSearch.value = Success(data.popularSearchList.toMutableList())
         }) {
             popularSearch.value = Fail(it)
+        }
+
+        if (userSessionInterface.isLoggedIn) {
+            launchCatchError(block = {
+                val gson = Gson()
+                recentSearch.value = Success(gson.fromJson(dummySearch,
+                        RecentSearch.Response::class.java).recentSearchList.toMutableList())
+            }){
+                it.printStackTrace()
+            }
         }
     }
 
@@ -97,10 +101,12 @@ class HotelDestinationViewModel @Inject constructor(
     }
 
     companion object {
-        private val TYPE_POPULAR_RESPONSE = HotelRecommendation::class.java
+        private val TYPE_POPULAR_RESPONSE = PopularSearch.Response::class.java
+        private val TYPE_RECENT_RESPONSE = RecentSearch.Response::class.java
         private val TYPE_SEARCH_RESPONSE = HotelSuggestion.Response::class.java
 
         const val PARAM_SEARCH_KEY = "searchKey"
         const val PARAM_DATA = "data"
+        const val PARAM_USER_ID = "id"
     }
 }

@@ -10,10 +10,10 @@ class HotelPromoAttributesEntity(
         @SerializedName("description")
         @Expose
         val description: String = "",
-        @SerializedName("linkUrl")
+        @SerializedName("linkURL")
         @Expose
         val linkUrl: String = "",
-        @SerializedName("imageUrl")
+        @SerializedName("imageURL")
         @Expose
         val imageUrl: String = "",
         @SerializedName("promoCode")

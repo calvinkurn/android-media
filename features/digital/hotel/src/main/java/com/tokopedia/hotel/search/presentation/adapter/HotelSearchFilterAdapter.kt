@@ -24,6 +24,11 @@ class HotelSearchFilterAdapter<E: HotelSearchFilterAdapter.HotelFilterItem>(
         notifyDataSetChanged()
     }
 
+    fun clearSelection(){
+        selectedItems.clear()
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotelSearchFilterViewHolder<E> {
         return HotelSearchFilterViewHolder(parent.inflateLayout(R.layout.item_hotel_search_filter))
     }

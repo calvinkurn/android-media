@@ -29,7 +29,8 @@
     <string name="hotel_homepage_button_search">Cari</string>
     <string name="hotel_homepage_promo_title">Promo</string>
     <string name="hotel_homepage_all_promo">Lihat Semua</string>
-    <string name="hotel_homepage_guest_detail" formatted="false"> %d kamar, %d dewasa, %d anak</string>
+    <string name="hotel_homepage_guest_detail_with_child" formatted="false"> %d kamar, %d dewasa, %d anak</string>
+    <string name="hotel_homepage_guest_detail_without_child" formatted="false"> %d kamar, %d dewasa</string>
     <string name="hotel_bottom_sheets_room_guest_title">Kamar dan Tamu</string>
     <string name="hotel_bottom_sheets_room_count_title">Kamar</string>
     <string name="hotel_bottom_sheets_adult_count_title">Dewasa</string>
@@ -49,6 +50,27 @@
     <string name="hotel_destination_empty_view_holder_title">Nggak ada hasil yang cocok</string>
     <string name="hotel_destination_empty_view_holder_subtitle">Coba cari ulang pakai kata kunci lain.</string>
     <string name="hotel_destination_toolbar_title">Tujuan</string>
+
+    <string name="hotel_room_list_check_in_check_out_date">%1$s - %2$s</string>
+    <string name="hotel_room_list_filter_pay_in_hotel">Bayar di Hotel</string>
+    <string name="hotel_room_list_filter_free_breakfast">Sarapan Gratis</string>
+    <string name="hotel_room_list_filter_free_cancelable">Pembatalan Gratis</string>
+    <string name="hotel_room_not_found_title_after_filter">Kamar yang kamu cari nggak ketemu</string>
+    <string name="hotel_room_not_found_subtitle_after_filter">Coba ubah Filter dan cari sekali lagi, yuk!</string>
+    <string name="hotel_room_not_found_button_text">Reset Filter</string>
+    <string name="hotel_room_not_found_title">Nggak ada kamar yang cocok sama pencarianmu</string>
+    <string name="hotel_room_not_found_subtitle">Tenang, mungkin kamu cuma perlu ubah detail pencarian di awal</string>
+    <string name="hotel_room_room_left_text">Sisa %1$s Kamar!</string>
+    <string name="hotel_room_full_text_view">Sudah Penuh</string>
+    <string name="hotel_room_list_free_breakfast">Sarapan Gratis</string>
+    <string name="hotel_room_list_breakfast_not_included">Tanpa Sarapan</string>
+    <string name="hotel_room_list_refundable_with_condition">Refund Bersyarat</string>
+    <string name="hotel_room_list_not_refundable">Non-refundable</string>
+    <string name="hotel_room_list_per_room_per_night">/kamar/malam</string>
+    <string name="hotel_room_list_include_tax">Termasuk pajak</string>
+    <string name="hotel_room_list_choose_room_button">Pilih Kamar</string>
+    <string name="hotel_room_list_pay_in_hotel">Bayar di Hotel</string>
+    <string name="hotel_room_list_without_credit_card">Tanpa Jaminan Kartu Kredit</string>
 
     <string name="hotel_room_detail_header_capacity">Maksimum: %1$s</string>
     <string name="hotel_room_detail_header_breakfast">Sarapan Gratis</string>

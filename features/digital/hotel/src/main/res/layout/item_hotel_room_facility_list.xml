@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    >
+
+    <ImageView
+        android:id="@+id/facility_icon"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:src="@drawable/ic_facility_add"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="@dimen/dp_4"
+        />
+    
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/facility_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:ellipsize="end"
+        tools:text="Sarapan Gratis"
+        app:fontSize="micro"
+        android:layout_gravity="center_vertical"/>
+</LinearLayout>

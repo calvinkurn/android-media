@@ -1,0 +1,18 @@
+query propertyRecentSearch($id: Int!){
+  propertyRecentSearch(userID:$id){
+    UUID
+    name
+    hotelRoom
+    guestNo
+    startTime
+    endTime
+    lastSearch
+    location{
+      district
+      region
+      city
+      country
+    }
+    hotelID
+  }
+}

@@ -43,11 +43,7 @@ class RecentSearchAdapter(val listener: RecentSearchListener): RecyclerView.Adap
 
     inner class ViewHolder(val itemview: View, val listener: RecentSearchListener): RecyclerView.ViewHolder(itemview) {
 
-        var textView: DeletableItemView
-
-        init {
-            textView = itemView.findViewById(R.id.autocomplete_chips_item)
-        }
+        var textView: DeletableItemView = itemView.findViewById(R.id.autocomplete_chips_item)
 
         fun bind(data: RecentSearch, position: Int) {
             textView.setItemName(data.name)

@@ -15,8 +15,31 @@ data class Filter(
 
         @SerializedName("filterPreferences")
         @Expose
-        val preferences: List<FilterPreference> = listOf()
+        val preferences: List<FilterPreference> = listOf(),
+
+        @SerializedName("filterStar")
+        @Expose
+        val filterStar: FilterStar = FilterStar(),
+
+        @SerializedName("filterReview")
+        @Expose
+        val filterReview: FilterReview = FilterReview()
 ) {
+    data class FilterStar(
+            @SerializedName("stars")
+            @Expose
+            val stars: List<Int> = (1..5).toList()
+    )
+
+    data class FilterReview(
+            @SerializedName("minReview")
+            @Expose
+            val minReview: Float = 1f,
+
+            @SerializedName("maxReview")
+            @Expose
+            val maxReview: Float = 10f
+    )
 
     data class FilterPrice(
             @SerializedName("minPrice")

@@ -20,6 +20,11 @@
         app:siv_search_hint="@string/hotel_destination_edittext_hint"
         />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/bg_line_separator" />
+
     <FrameLayout android:id="@+id/parent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
