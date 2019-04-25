@@ -77,7 +77,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private String imagePath;
     private UserSessionInterface userSession;
     private PerformanceMonitoring performanceMonitoring;
-    private View root;
+    protected View root;
 
     protected SearchParameter searchParameter;
 

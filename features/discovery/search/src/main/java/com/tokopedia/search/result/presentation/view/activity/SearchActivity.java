@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.discovery.DiscoveryRouter;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
@@ -191,7 +193,11 @@ public class SearchActivity extends BaseActivity
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
-        toolbar.setOnClickListener(v -> startActivity(getAutoCompleteIntent()));
+        toolbar.setOnClickListener(v -> moveToAutoCompleteActivity());
+    }
+
+    private void moveToAutoCompleteActivity() {
+        ActivityCompat.startActivity(this, getAutoCompleteIntent(), getOptionsForTransitionAnimation().toBundle());
     }
 
     private Intent getAutoCompleteIntent() {
@@ -205,7 +211,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private ActivityOptionsCompat getOptionsForTransitionAnimation() {
-        return ActivityOptionsCompat.makeSceneTransitionAnimation(this, toolbar, "transition");
+        return ActivityOptionsCompat.makeSceneTransitionAnimation(this, toolbar, SearchConstant.TRANSITION);
     }
 
     private void showLoadingView(boolean visible) {
@@ -680,7 +686,7 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void showSearchInputView() {
-        startActivity(getAutoCompleteIntent());
+        moveToAutoCompleteActivity();
     }
 
     @Override

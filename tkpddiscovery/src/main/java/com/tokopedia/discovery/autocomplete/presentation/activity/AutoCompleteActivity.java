@@ -6,8 +6,11 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 
@@ -23,6 +26,7 @@ import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.util.AnimationUtil;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -154,7 +158,52 @@ public class AutoCompleteActivity extends DiscoveryActivity
 
     private void handleIntentAutoComplete(SearchParameter searchParameter) {
         isHandlingIntent = false;
-        searchView.showSearch(true, true, searchParameter);
+        searchView.showSearch(true, false, searchParameter);
+
+        animateActivityTransition();
+    }
+
+    private void animateActivityTransition() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            root.setVisibility(View.INVISIBLE);
+
+            ViewTreeObserver viewTreeObserver = root.getViewTreeObserver();
+            addOnGlobalLayoutListenerForAnimationIfAlive(viewTreeObserver);
+        }
+        else {
+            root.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void addOnGlobalLayoutListenerForAnimationIfAlive(ViewTreeObserver viewTreeObserver) {
+        if (viewTreeObserver.isAlive()) {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    revealActivity();
+                    root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
+        }
+    }
+
+    private void revealActivity() {
+        AnimationUtil.reveal(root, new AnimationUtil.AnimationListener() {
+            @Override
+            public boolean onAnimationStart(View view) {
+                return false;
+            }
+
+            @Override
+            public boolean onAnimationEnd(View view) {
+                return false;
+            }
+
+            @Override
+            public boolean onAnimationCancel(View view) {
+                return false;
+            }
+        });
     }
 
     private void handleIntentInitiateSearch(Intent intent, SearchParameter searchParameter) {
