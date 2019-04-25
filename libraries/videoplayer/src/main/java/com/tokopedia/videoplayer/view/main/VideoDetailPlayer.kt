@@ -98,6 +98,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
 
             val mediaSource = buildMediaSource(Uri.parse(source))
             playerOptions.prepare(mediaSource, true, false)
+            playerOptions.playWhenReady = true
         } catch (e: Exception) {
             Log.e(TAG, e.message)
         }
