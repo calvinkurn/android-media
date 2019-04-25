@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 public class ThanksTrackerService extends JobIntentService {
     public static final String DATA = "ThanksTrackerData";
+    private static final int THANKSTRACKER_JOB_ID = 1000;
 
     @Inject
     ThanksTracker.Presenter presenter;
@@ -23,7 +24,7 @@ public class ThanksTrackerService extends JobIntentService {
         Intent intent = new Intent(context, ThanksTrackerService.class);
         intent.putExtra(DATA, data);
 
-        context.startService(intent);
+        enqueueWork(context, ThanksTrackerService.class, THANKSTRACKER_JOB_ID, intent);
     }
 
     @Override
