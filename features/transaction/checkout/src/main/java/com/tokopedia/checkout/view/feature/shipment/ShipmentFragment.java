@@ -1825,7 +1825,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onLogisticPromoChosen(List<ShippingCourierViewModel> shippingCourierViewModels, CourierItemData courierData, RecipientAddressModel recipientAddressModel, int cartPosition, int selectedServiceId, String selectedServiceName, boolean flagNeedToSetPinpoint, String promoCode) {
-        onShippingDurationChoosen(shippingCourierViewModels, courierData, recipientAddressModel, cartPosition, selectedServiceId, selectedServiceName, flagNeedToSetPinpoint, false, false);
+        onShippingDurationChoosen(shippingCourierViewModels, courierData, recipientAddressModel, cartPosition, selectedServiceId, selectedServiceName, flagNeedToSetPinpoint, false, true);
         String cartString = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition).getCartString();
         if (!flagNeedToSetPinpoint)
             shipmentPresenter.processCheckPromoStackingLogisticPromo(cartPosition, cartString, promoCode);
@@ -1880,6 +1880,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentPresenter.cancelAutoApplyPromoStackLogistic(
                             shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                     shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
+                    setBenefitSummaryInfoUiModel(null);
+                    shipmentAdapter.clearTotalPromoStackAmount();
+                    shipmentAdapter.updateShipmentCostModel();
+                    shipmentAdapter.updateCheckoutButtonData(null);
                 }
 
                 shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
