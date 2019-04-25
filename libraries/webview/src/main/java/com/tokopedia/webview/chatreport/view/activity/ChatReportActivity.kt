@@ -2,11 +2,21 @@ package com.tokopedia.webview.chatreport.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.webview.BaseSessionWebViewFragment
 
 class ChatReportActivity : BaseSimpleActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        hideToolbar()
+    }
+
+    private fun hideToolbar() {
+        supportActionBar?.hide()
+    }
 
     override fun getNewFragment(): Fragment {
         if (doesNotHasIntentAndReportUrl()) {
