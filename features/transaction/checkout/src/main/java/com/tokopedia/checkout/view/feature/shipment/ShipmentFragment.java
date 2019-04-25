@@ -56,6 +56,7 @@ import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConver
 import com.tokopedia.checkout.view.feature.shipment.di.DaggerShipmentComponent;
 import com.tokopedia.checkout.view.feature.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.feature.shipment.di.ShipmentModule;
+import com.tokopedia.checkout.view.feature.shipment.util.Utils;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
@@ -812,6 +813,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                         VoucherLogisticItemUiModel model = new VoucherLogisticItemUiModel();
                                         model.setCode(voucherOrdersItemData.getCode());
                                         model.setCouponDesc(voucherOrdersItemData.getTitleDescription());
+                                        model.setCouponAmount(Utils.getFormattedCurrency(voucherOrdersItemData.getDiscountAmount()));
                                         shipmentCartItemModel.setVoucherLogisticItemUiModel(model);
                                     }
                                 }
@@ -2332,6 +2334,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             VoucherLogisticItemUiModel log = new VoucherLogisticItemUiModel();
                             log.setCode(voucherOrdersItemUiModel.getCode());
                             log.setCouponDesc(voucherOrdersItemUiModel.getTitleDescription());
+                            log.setCouponAmount(Utils.getFormattedCurrency(voucherOrdersItemUiModel.getDiscountAmount()));
                             log.setMessage(voucherOrdersItemUiModel.getMessage());
                             shipmentCartItemModel.setVoucherLogisticItemUiModel(log);
                         }
