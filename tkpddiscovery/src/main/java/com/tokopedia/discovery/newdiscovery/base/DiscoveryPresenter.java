@@ -45,7 +45,7 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
 
     @Override
     public void initiateSearch(SearchParameter searchParameter, boolean forceSearch, InitiateSearchListener initiateSearchListener) {
-        super.initiateSearch(searchParameter, forceSearch);
+        super.initiateSearch(searchParameter, forceSearch, initiateSearchListener);
 
         com.tokopedia.usecase.RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, forceSearch);
 
