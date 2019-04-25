@@ -312,7 +312,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
                     activity?.let {
                         if (it.isTaskRoot) {
-                            (activity as PlayActivity).startActivity(getInboxChannelsIntent())
+                            getInboxChannelsIntent()?.let {startActivity(it)}
                         }
                     }
                     activity?.finish()
@@ -433,7 +433,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun getInboxChannelsIntent(): Intent? {
-        return (context as GroupChatModuleRouter).getInboxChannelsIntent(activity)
+        return (activity?.applicationContext as GroupChatModuleRouter).getInboxChannelsIntent(activity)
     }
 
     override fun onOpenWebSocket() {
@@ -472,7 +472,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun backToChannelList() {
         activity?.let {
             if (it.isTaskRoot) {
-                startActivity((it.applicationContext as GroupChatModuleRouter).getInboxChannelsIntent(context))
+                startActivity(getInboxChannelsIntent())
             }
             it.finish()
             it.onBackPressed()
@@ -735,7 +735,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onDestroy() {
-        viewState.destroy()
+        viewState?.destroy()
         presenter.detachView()
         super.onDestroy()
     }
