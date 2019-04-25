@@ -388,10 +388,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             public void onHandleResponseUnknown() {
                 DiscoveryActivity.this.onHandleResponseUnknown();
             }
-
-            @Override
-            public void onComplete() {
-            }
         };
     }
 

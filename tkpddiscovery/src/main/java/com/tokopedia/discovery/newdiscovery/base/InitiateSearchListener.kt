@@ -9,6 +9,4 @@ interface InitiateSearchListener {
     fun onHandleResponseError()
 
     fun onHandleResponseUnknown()
-
-    fun onComplete()
 }

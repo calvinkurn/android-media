@@ -107,7 +107,6 @@ public class SearchActivity extends BaseActivity
     private boolean isForceSearch;
     private boolean isHasCatalog;
     private int activeTabPosition;
-    private boolean isPausing;
 
     @Inject SearchContract.Presenter searchPresenter;
     @Inject SearchTracking searchTracking;
@@ -456,14 +455,18 @@ public class SearchActivity extends BaseActivity
     @Override
     protected void onPause() {
         super.onPause();
-        isPausing = true;
+        searchPresenter.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        isPausing = false;
+        searchPresenter.onResume();
         unregisterShake();
+
+        showContainer(true);
+        showLoadingView(false);
+        showBottomNavigation();
     }
 
     @Override
@@ -474,6 +477,7 @@ public class SearchActivity extends BaseActivity
 
     @Override
     protected void onDestroy() {
+        searchPresenter.onDestroy();
         searchPresenter.detachView();
         super.onDestroy();
     }
@@ -580,11 +584,8 @@ public class SearchActivity extends BaseActivity
         return new InitiateSearchListener() {
             @Override
             public void onHandleResponseSearch(boolean isHasCatalog) {
-                if (!isPausing) {
-                    finish();
-                    moveToSearchActivity(isHasCatalog);
-                }
-
+                finish();
+                moveToSearchActivity(isHasCatalog);
                 stopPerformanceMonitoring();
             }
 
@@ -604,13 +605,6 @@ public class SearchActivity extends BaseActivity
             @Override
             public void onHandleResponseUnknown() {
                 throw new RuntimeException("Not yet handle unknown response");
-            }
-
-            @Override
-            public void onComplete() {
-                showLoadingView(false);
-                showContainer(true);
-                showBottomNavigation();
             }
         };
     }

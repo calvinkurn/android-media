@@ -48,7 +48,6 @@ class InitiateSearchSubscriber(
     }
 
     override fun onCompleted() {
-        initiateSearchListener.onComplete()
     }
 
     override fun onError(e: Throwable?) {

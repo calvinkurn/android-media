@@ -12,6 +12,10 @@ public interface SearchContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
+        void onPause();
+        void onResume();
+        void onDestroy();
+
         void initiateSearch(SearchParameter searchParameter, boolean isForceSearch, InitiateSearchListener initiateSearchSubscriber);
     }
 }

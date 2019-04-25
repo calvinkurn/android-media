@@ -22,6 +22,21 @@ final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> imp
     }
 
     @Override
+    public void onPause() {
+        graphqlUseCase.unsubscribe();
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+
+    }
+
+    @Override
     public void initiateSearch(SearchParameter searchParameter, boolean isForceSearch, InitiateSearchListener initiateSearchListener) {
         checkViewAttached();
 
