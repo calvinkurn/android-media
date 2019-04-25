@@ -9,11 +9,11 @@ import com.google.gson.annotations.SerializedName
 class RecomendationEntity {
 
     @SerializedName("productRecommendationWidget")
-    var productRecommendationWidget: ProductRecommendationWidget? = null
+    var productRecommendationWidget: ProductRecommendationWidget? = ProductRecommendationWidget()
 
     class ProductRecommendationWidget {
         @SerializedName("data")
-        var data: List<RecomendationData>? = null
+        var data: List<RecomendationData>? = listOf()
     }
 
     class Recommendation {
@@ -21,27 +21,27 @@ class RecomendationEntity {
         @SerializedName("id")
         var id: Int = 0
         @SerializedName("name")
-        var name: String? = null
+        var name: String? = ""
         @SerializedName("categoryBreadcrumbs")
-        var categoryBreadcrumbs: String? = null
+        var categoryBreadcrumbs: String? = ""
         @SerializedName("url")
-        var url: String? = null
+        var url: String? = ""
         @SerializedName("appUrl")
-        var appUrl: String? = null
+        var appUrl: String? = ""
         @SerializedName("clickUrl")
-        var clickUrl: String? = null
+        var clickUrl: String? = ""
         @SerializedName("wishlistUrl")
-        var wishlistUrl: String? = null
+        var wishlistUrl: String? = ""
         @SerializedName("trackerImageUrl")
-        var trackerImageUrl: String? = null
+        var trackerImageUrl: String? = ""
         @SerializedName("imageUrl")
-        var imageUrl: String? = null
+        var imageUrl: String? = ""
         @SerializedName("price")
-        var price: String? = null
+        var price: String? = ""
         @SerializedName("priceInt")
         var priceInt: Int = 0
         @SerializedName("shop")
-        var shop: Shop? = null
+        var shop: Shop? = Shop()
         @SerializedName("departmentId")
         var departmentId: Int = 0
         @SerializedName("rating")
@@ -49,17 +49,17 @@ class RecomendationEntity {
         @SerializedName("countReview")
         var countReview: Int = 0
         @SerializedName("recommendationType")
-        var recommendationType: String? = null
+        var recommendationType: String? = ""
         @SerializedName("stock")
         var stock: Int = 0
         @SerializedName("isTopads")
         var isIsTopads: Boolean = false
         @SerializedName("labels")
-        var labels: List<*>? = null
+        var labels: List<*>? = listOf<Any>()
         @SerializedName("badges")
-        var badges: List<Badges>? = null
+        var badges: List<Badges>? = listOf()
         @SerializedName("wholesalePrice")
-        var wholesalePrice: List<*>? = null
+        var wholesalePrice: List<*>? = listOf<Any>()
 
         class Shop {
             /**
@@ -70,32 +70,32 @@ class RecomendationEntity {
             @SerializedName("id")
             var id: Int = 0
             @SerializedName("name")
-            var name: String? = null
+            var name: String? = ""
         }
 
         class Badges {
 
             @SerializedName("title")
-            var title: String? = null
+            var title: String? = ""
             @SerializedName("imageUrl")
-            var imageUrl: String? = null
+            var imageUrl: String? = ""
         }
     }
 
     class RecomendationData {
 
         @SerializedName("tID")
-        var tid: String? = null
+        var tid: String? = ""
         @SerializedName("source")
-        var source: String? = null
+        var source: String? = ""
         @SerializedName("title")
-        var title: String? = null
+        var title: String? = ""
         @SerializedName("foreignTitle")
-        var foreignTitle: String? = null
+        var foreignTitle: String? = ""
         @SerializedName("widgetUrl")
-        var widgetUrl: String? = null
+        var widgetUrl: String? = ""
         @SerializedName("recommendation")
-        var recommendation: List<Recommendation>? = null
+        var recommendation: List<Recommendation>? = listOf()
 
     }
 }
