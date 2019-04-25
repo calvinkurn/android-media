@@ -15,4 +15,6 @@
     <color name="digital_ussd_light_yellow">#fff5dd</color>
     <color name="digital_body_text_5_inverse">#848484</color>
     <color name="digital_green_btn">#239229</color>
+    <color name="digital_grey_bg_header">#f3f4f5</color>
+    <color name="digital_title_header_non_active">#7031353b</color>
 </resources>
