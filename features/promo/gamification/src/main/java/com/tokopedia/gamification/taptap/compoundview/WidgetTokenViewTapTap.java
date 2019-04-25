@@ -860,7 +860,12 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         }
     }
 
-    public void onDestroyView() {
+
+    /**
+     * This is method is clearing all Animation and releasing media player
+     *  called from onDestroyView of Fragment
+     * */
+    public void releaseResourcesOnDestroy() {
         clearTokenAnimation();
         releaseMediaPlayer();
     }

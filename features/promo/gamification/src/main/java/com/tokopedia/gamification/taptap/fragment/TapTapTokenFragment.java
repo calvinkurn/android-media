@@ -877,7 +877,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
     public void clearViewAndAnimations() {
-        widgetTokenView.onDestroyView();
+        widgetTokenView.releaseResourcesOnDestroy();
         widgetCrackResult.clearCrackResult();
         crackTokenSuccessHandler.removeCallbacksAndMessages(null);
     }

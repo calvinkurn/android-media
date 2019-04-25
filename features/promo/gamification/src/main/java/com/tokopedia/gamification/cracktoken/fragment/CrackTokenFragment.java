@@ -252,7 +252,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     @Override
     public void onDestroyView() {
         widgetCrackResult.clearCrackResult();
-        widgetTokenView.onDestroyView();
+        widgetTokenView.releaseResourcesOnDestroy();
         crackTokenPresenter.detachView();
         super.onDestroyView();
     }
