@@ -28,7 +28,7 @@
             android:id="@+id/globalNavSeeAllButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TextView.Micro"
+            style="@style/TextView.Micro.Bold"
             android:textColor="#03ac0e"
             android:text="@string/global_nav_see_all_text"
             />
@@ -39,6 +39,7 @@
         android:id="@+id/globalNavRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"/>
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"/>
 
 </LinearLayout>
