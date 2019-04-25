@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -198,10 +199,13 @@ public class SearchActivity extends BaseActivity
         autoCompleteSearchParameter.setSearchQuery(searchParameter.getSearchQuery());
 
         Intent intent = ((DiscoveryRouter)getApplicationContext()).gotoSearchAutoCompletePage(SearchActivity.this);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, autoCompleteSearchParameter);
 
         return intent;
+    }
+
+    private ActivityOptionsCompat getOptionsForTransitionAnimation() {
+        return ActivityOptionsCompat.makeSceneTransitionAnimation(this, toolbar, "transition");
     }
 
     private void showLoadingView(boolean visible) {

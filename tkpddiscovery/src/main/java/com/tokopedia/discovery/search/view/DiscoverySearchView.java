@@ -780,18 +780,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     private void setVisibleWithAnimation() {
-        ViewTreeObserver viewTreeObserver = mSearchContainer.getViewTreeObserver();
-        if (viewTreeObserver.isAlive()) {
-            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    animateOnGlobalLayout(this);
-                }
-            });
-        }
-    }
-
-    private void animateOnGlobalLayout(ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener) {
         AnimationUtil.AnimationListener animationListener = new AnimationUtil.AnimationListener() {
             @Override
             public boolean onAnimationStart(View view) {
@@ -819,8 +807,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         } else {
             AnimationUtil.fadeInView(mSearchLayout, mAnimationDuration, animationListener);
         }
-
-        mSearchContainer.getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
     }
 
     private void setVisibleWithoutAnimation() {
