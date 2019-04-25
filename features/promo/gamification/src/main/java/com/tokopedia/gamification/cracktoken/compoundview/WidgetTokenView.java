@@ -559,6 +559,17 @@ public class WidgetTokenView extends FrameLayout {
         }
     }
 
+    public void releaseMediaPlayer(){
+        if (crackMediaPlayer != null) {
+            crackMediaPlayer.release();
+        }
+    }
+
+    public void onDestroyView() {
+        clearTokenAnimation();
+        releaseMediaPlayer();
+    }
+
     public void clearTokenAnimationAndCrack() {
         clearTokenAnimation();
         shakeHardAndCrackAnimation();

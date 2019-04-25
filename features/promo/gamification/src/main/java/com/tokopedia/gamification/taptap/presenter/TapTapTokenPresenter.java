@@ -42,17 +42,14 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
         implements TapTapTokenContract.Presenter {
     private GraphqlUseCase getTokenTokopointsUseCase;
     private GraphqlUseCase getCrackResultEggUseCase;
-    Lazy<GraphqlUseCase> getCrackResultEggUseCaseProvider;
     private UserSessionInterface userSession;
 
     @Inject
     public TapTapTokenPresenter(GraphqlUseCase getTokenTokopointsUseCase,
                                 GraphqlUseCase getCrackResultEggUseCase,
-                                Lazy<GraphqlUseCase> getCrackResultEggUseCaseProvider,
                                 UserSessionInterface userSession) {
         this.getTokenTokopointsUseCase = getTokenTokopointsUseCase;
         this.getCrackResultEggUseCase = getCrackResultEggUseCase;
-        this.getCrackResultEggUseCaseProvider = getCrackResultEggUseCaseProvider;
         this.userSession = userSession;
     }
 
@@ -131,6 +128,8 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
             }
 
             private void showErrorView(int errorImage, String string, boolean showRetryButton) {
+                if(isViewNotAttached())
+                    return;
                 NetworkErrorHelper.showEmptyState(getView().getContext(),
                         getView().getRootView(),
                         errorImage,
@@ -174,7 +173,7 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
     @Override
     public void getGetTokenTokopoints(boolean showLoading, boolean isRefetchEgg) {
-        if (getView() == null) {
+        if (isViewNotAttached()) {
             return;
         }
         if (showLoading)
@@ -218,6 +217,8 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
             }
 
             private void showErrorView(int errorImage, String string) {
+                if(isViewNotAttached())
+                    return;
                 NetworkErrorHelper.showEmptyState(getView().getContext(),
                         getView().getRootView(),
                         errorImage,
@@ -244,6 +245,14 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
     @Override
     public void downloadAllAsset(Context context, GamiTapEggHome tokenData) {
+
+        if (isViewNotAttached()
+                || tokenData == null
+                || tokenData.getTokenAsset() == null
+                || tokenData.getTokenAsset().getImageV2URLs() == null
+                || tokenData.getTokenAsset().getImageV2URLs().size() < GamificationConstants.EggImageUrlIndex.IMAGE_ARRAY_SIZE_NORMAL) {
+            return;
+        }
         getView().showLoading();
 
         TokenAsset tokenAsset = tokenData.getTokenAsset();
@@ -275,6 +284,14 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
     }
 
     public void downloadEmptyAssets(Context context, GamiTapEggHome tokenData) {
+
+        if (isViewNotAttached()
+                || tokenData == null
+                || tokenData.getTokenAsset() == null
+                || tokenData.getTokenAsset().getImageV2URLs() == null
+                || tokenData.getTokenAsset().getImageV2URLs().size() < GamificationConstants.EggImageUrlIndex.IMAGE_ARRAY_SIZE_EMPTY) {
+            return;
+        }
 
         getView().showLoading();
 

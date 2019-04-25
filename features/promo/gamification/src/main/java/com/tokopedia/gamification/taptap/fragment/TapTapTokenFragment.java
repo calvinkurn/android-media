@@ -221,10 +221,12 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        clearViewAndAnimations();
         crackTokenPresenter.detachView();
+        super.onDestroyView();
     }
+
 
 
     private void renderViewCrackEgg() {
@@ -265,6 +267,8 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             widgetTokenView.setListener(new WidgetTokenViewTapTap.WidgetTokenListener() {
                 @Override
                 public void onClick() {
+                    if(getContext()==null)
+                        return;
                     fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
                     hideInfoTitle();
                     vibrate();
@@ -690,7 +694,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
     private void downloadAssets() {
-        if (tokenData.getTokensUser() != null) {
+        if (tokenData!=null && tokenData.getTokensUser() != null) {
             if (tokenData.getTokensUser().isEmptyState()) {
                 //            listener.directPageToCrackEmpty(tokenData);
                 crackTokenPresenter.downloadEmptyAssets(getContext(), this.tokenData);
@@ -873,8 +877,9 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
     public void clearViewAndAnimations() {
-        widgetTokenView.clearTokenAnimation();
+        widgetTokenView.onDestroyView();
         widgetCrackResult.clearCrackResult();
+        crackTokenSuccessHandler.removeCallbacksAndMessages(null);
     }
 
     public void showBackPopup() {
