@@ -780,42 +780,32 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     private void setVisibleWithAnimation() {
-        ViewTreeObserver viewTreeObserver = mSearchContainer.getViewTreeObserver();
-        if (viewTreeObserver.isAlive()) {
-            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    AnimationUtil.AnimationListener animationListener = new AnimationUtil.AnimationListener() {
-                        @Override
-                        public boolean onAnimationStart(View view) {
-                            return false;
-                        }
+        AnimationUtil.AnimationListener animationListener = new AnimationUtil.AnimationListener() {
+            @Override
+            public boolean onAnimationStart(View view) {
+                return false;
+            }
 
-                        @Override
-                        public boolean onAnimationEnd(View view) {
-                            if (mSearchViewListener != null) {
-                                mSearchViewListener.onSearchViewShown();
-                            }
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onAnimationCancel(View view) {
-                            return false;
-                        }
-                    };
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        mSearchLayout.setVisibility(View.VISIBLE);
-                        AnimationUtil.reveal(mSearchContainer, animationListener);
-
-                    } else {
-                        AnimationUtil.fadeInView(mSearchLayout, mAnimationDuration, animationListener);
-                    }
-
-                    mSearchContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            @Override
+            public boolean onAnimationEnd(View view) {
+                if (mSearchViewListener != null) {
+                    mSearchViewListener.onSearchViewShown();
                 }
-            });
+                return false;
+            }
+
+            @Override
+            public boolean onAnimationCancel(View view) {
+                return false;
+            }
+        };
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mSearchLayout.setVisibility(View.VISIBLE);
+            AnimationUtil.reveal(mSearchContainer, animationListener);
+
+        } else {
+            AnimationUtil.fadeInView(mSearchLayout, mAnimationDuration, animationListener);
         }
     }
 
