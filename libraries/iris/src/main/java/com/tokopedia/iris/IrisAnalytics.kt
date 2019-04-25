@@ -25,15 +25,23 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
     private var cache: Cache = Cache(context)
     
     override fun setService(config: Configuration) {
-        cache.setEnabled(config)
-        if (cache.isEnabled()) {
-            setWorkManager(config)
-        }
+        try {
+            cache.setEnabled(config)
+            if (cache.isEnabled()) {
+                setWorkManager(config)
+            }
+        } catch(ignored: Exception) { }
     }
 
     override fun resetService(config: Configuration) {
-        WorkManager.getInstance().cancelAllWorkByTag(WORKER_SEND_DATA)
-        setWorkManager(config)
+        try {
+            if (cache.isEnabled()) {
+                WorkManager.getInstance().cancelAllWorkByTag(WORKER_SEND_DATA)
+                setWorkManager(config)
+            }
+        } catch (ignored: Exception) {
+
+        }
     }
 
     override fun saveEvent(map: Map<String, Any>) {
