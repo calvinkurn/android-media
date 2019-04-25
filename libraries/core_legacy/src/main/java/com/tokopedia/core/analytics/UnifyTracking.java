@@ -29,8 +29,8 @@ import static com.appsflyer.AFInAppEventParameterName.REGSITRATION_METHOD;
 public class UnifyTracking extends TrackingUtils {
     public static final String EXTRA_LABEL = "label";
     
-    public static void eventPushNotifLowTopadsReceived() {
-        sendGTMEvent(new EventTracking(
+ public static void eventPushNotifLowTopadsReceived(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
                 AppEventTracking.Category.PUSH_NOTIFICATION,
                 AppEventTracking.Action.RECEIVED,
@@ -38,8 +38,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
     
-     public static void eventPushNotifSuccessTopadsReceived() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPushNotifSuccessTopadsReceived(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
                 AppEventTracking.Category.PUSH_NOTIFICATION,
                 AppEventTracking.Action.RECEIVED,
@@ -47,13 +47,13 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
     
-    public static void eventSellerHomeDashboardClick(String main, String item) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSellerHomeDashboardClick(Context context, String main, String item) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,
                 AppEventTracking.Category.DASHBOARD,
                 AppEventTracking.Action.CLICK + " " + main,
                 item)
-                .setUserId()
+                .setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId())
                 .getEvent());
     }
     
