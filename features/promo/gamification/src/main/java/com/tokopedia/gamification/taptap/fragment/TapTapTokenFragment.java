@@ -556,7 +556,8 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public void closePage() {
-        getActivity().finish();
+        if (getActivity() != null && !getActivity().isFinishing())
+            getActivity().finish();
     }
 
     @Override
@@ -634,8 +635,8 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public void navigateToHomePage() {
-        if (getContext() != null)
-            ((GamificationRouter) getContext().getApplicationContext()).goToHome(getContext());
+        if (getActivity() != null && !getActivity().isFinishing())
+            getActivity().finish();
     }
 
 
@@ -881,7 +882,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         widgetCrackResult.clearCrackResult();
         if (crackTokenSuccessHandler != null)
             crackTokenSuccessHandler.removeCallbacksAndMessages(null);
-        if(crackTokenErrorhandler != null)
+        if (crackTokenErrorhandler != null)
             crackTokenErrorhandler.removeCallbacksAndMessages(null);
     }
 
