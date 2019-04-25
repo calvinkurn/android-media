@@ -157,6 +157,7 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
 
     fun getRoomList(fromCloud: Boolean = true) {
         showFilterRecyclerView(false)
+        loadInitialData()
         roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list), hotelRoomListPageModel, fromCloud)
     }
 
