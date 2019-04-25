@@ -49,8 +49,9 @@
                 <TextView
                     android:id="@+id/invoice"
                     android:layout_width="wrap_content"
-                    android:paddingBottom="@dimen/dp_8"
+                    android:paddingBottom="@dimen/dp_4"
                     android:layout_height="wrap_content"
+                    tools:text="vhvvhjvjkvkkvk"
                     android:fontFamily="OpenSans"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="bold" />
@@ -204,7 +205,6 @@
             android:background="@color/grey_hint" />
 
         <LinearLayout
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
