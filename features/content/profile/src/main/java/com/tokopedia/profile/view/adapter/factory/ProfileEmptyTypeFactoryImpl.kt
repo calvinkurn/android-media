@@ -8,6 +8,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.profile.view.adapter.viewholder.ProfileEmptyViewHolder
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
+import com.tokopedia.profile.view.viewmodel.EmptyAffiliateViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 
@@ -26,6 +27,10 @@ class ProfileEmptyTypeFactoryImpl(private val viewListener: ProfileEmptyContract
     }
 
     override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
+        return 0
+    }
+
+    override fun type(emptyAffiliateViewModel: EmptyAffiliateViewModel): Int {
         return 0
     }
 
