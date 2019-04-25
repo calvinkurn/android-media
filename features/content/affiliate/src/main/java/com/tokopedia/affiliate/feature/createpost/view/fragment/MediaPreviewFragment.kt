@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.videoplayer.view.main.VideoDetailPlayer
 import kotlinx.android.synthetic.main.fragment_af_media_preview.*
 
 
@@ -99,6 +100,11 @@ class MediaPreviewFragment : BaseDaggerFragment() {
             imageAdapter.setList(imageList)
         }
 
+        btnPlay.setOnClickListener {
+            val player = VideoDetailPlayer.show(viewModel.completeImageList.first().path)
+            player.show(childFragmentManager, VideoDetailPlayer.TAG)
+        }
+
         mediaViewPager.adapter = imageAdapter
         mediaViewPager.offscreenPageLimit = imageAdapter.count
         tabLayout.setupWithViewPager(mediaViewPager)
@@ -149,7 +155,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
                     tabLayout.selectedTabPosition - viewModel.fileImageList.size
             )
         }
-        imageAdapter.setList(ArrayList(viewModel.completeImageList.map { it.path?: "" }))
+        imageAdapter.setList(ArrayList(viewModel.completeImageList.map { it.path }))
 
         updateDeleteBtn()
         updateResultIntent()
