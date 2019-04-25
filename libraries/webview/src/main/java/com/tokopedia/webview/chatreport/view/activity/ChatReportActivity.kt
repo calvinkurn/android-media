@@ -26,7 +26,7 @@ class ChatReportActivity : BaseSimpleActivity() {
     companion object {
         val INTENT_KEY_REPORT_URL = "INTENT_KEY_REPORT_URL"
 
-        fun getIntent(context: Context, messageId: String): Intent {
+        fun getStartIntent(context: Context, messageId: String): Intent {
             val reportUrl = "https://m.tokopedia.com/chat/report/$messageId"
             return Intent(context, ChatReportActivity::class.java).apply {
                 putExtra(INTENT_KEY_REPORT_URL, reportUrl)
