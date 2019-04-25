@@ -65,9 +65,9 @@ class ModerateShopUseCase @Inject constructor(@ApplicationContext private val co
 
     fun getContentSubmitInput(requestParams: RequestParams): ModerateSubmitInput {
         return ModerateSubmitInput(
-                arrayListOf(requestParams.getInt(SHOP_ID,0)),
-                requestParams.getInt(PARAM_STATUS, 0),
-                requestParams.getString(PARAM_NOTES,"")
+                shopIDs = arrayListOf(requestParams.getInt(SHOP_ID,0)),
+                status = requestParams.getInt(PARAM_STATUS, 0),
+                notes = requestParams.getString(PARAM_NOTES,"")
         )
     }
 
