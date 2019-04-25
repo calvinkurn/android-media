@@ -1,5 +1,7 @@
 package com.tokopedia.shop.page.view.listener;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -25,4 +27,10 @@ public interface ShopPageView extends CustomerView {
     void onSuccessGetFeedWhitelist(Boolean isWhitelist, String createPostUrl);
 
     void stopPerformanceMonitor();
+
+    void onErrorModerateListener(String message);
+
+    void onSuccessModerateListener();
+
+    Context getContext();
 }

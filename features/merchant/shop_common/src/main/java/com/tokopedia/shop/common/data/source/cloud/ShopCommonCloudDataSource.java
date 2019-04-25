@@ -47,4 +47,6 @@ public class ShopCommonCloudDataSource {
         String deviceId = userSession.getDeviceId();
         return shopCommonWS4Api.toggleFavouriteShop(shopId, userId, osType, deviceId);
     }
+
+
 }

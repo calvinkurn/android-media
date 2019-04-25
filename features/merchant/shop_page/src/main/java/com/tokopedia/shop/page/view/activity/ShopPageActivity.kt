@@ -1,6 +1,7 @@
 package com.tokopedia.shop.page.view.activity
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -27,6 +28,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
+import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.Dialog
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.design.component.ToasterNormal.show
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
@@ -56,6 +62,7 @@ import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener {
+
 
     var shopId: String? = null
     var shopDomain: String? = null
@@ -511,8 +518,51 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
     }
 
-    override fun requestOpenShop() {
 
+    override fun onErrorModerateListener(message:String) {
+        ToasterError.make(window.decorView.rootView,message,BaseToaster.LENGTH_LONG)
+                .setAction(R.string.title_ok){
+                    v->
+                }
+                .show()
+    }
+
+    override fun onSuccessModerateListener() {
+        ToasterNormal.make( window.decorView.rootView, getString(R.string.moderate_shop_success), BaseToaster.LENGTH_LONG)
+                .setAction(R.string.title_ok) { v ->
+
+                }
+                .show()
+
+    }
+
+    override fun getContext(): Context {
+        return this.context
+    }
+
+    override fun requestOpenShop(shopInfo: ShopInfo) {
+        val dialog = Dialog(this, Dialog.Type.PROMINANCE)
+        val moderateOptionOne = getString(R.string.moderate_shop_option_1)
+        val moderateOptionTwo = getString(R.string.moderate_shop_option_2)
+        var notes = ""
+        val shopIdInt = shopInfo.info.shopId.toInt()
+        val builder = AlertDialog.Builder(this)
+
+        dialog.setTitle(getString(R.string.moderate_shop_title))
+        dialog.setBtnOk(moderateOptionOne)
+        dialog.setBtnCancel(moderateOptionTwo)
+        dialog.setOnOkClickListener(View.OnClickListener {
+            notes = moderateOptionOne
+            dialog.dismiss()
+        })
+        dialog.setOnCancelClickListener(View.OnClickListener {
+            notes= moderateOptionTwo
+            dialog.dismiss()
+        })
+
+        if(!notes.isEmpty()){
+            presenter.moderateShopRequest(shopIdInt, notes)
+        }
     }
 
     override fun goToHowActivate() {

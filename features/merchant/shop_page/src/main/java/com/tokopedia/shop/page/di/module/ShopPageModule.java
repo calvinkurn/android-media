@@ -7,6 +7,7 @@ import com.tokopedia.reputation.common.domain.interactor.DeleteReputationSpeedDa
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
 import com.tokopedia.shop.note.domain.interactor.DeleteShopNoteUseCase;
 import com.tokopedia.shop.page.di.scope.ShopPageScope;
+import com.tokopedia.shop.page.domain.interactor.ModerateShopUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
@@ -61,4 +62,7 @@ public class ShopPageModule {
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
+
+
+
 }

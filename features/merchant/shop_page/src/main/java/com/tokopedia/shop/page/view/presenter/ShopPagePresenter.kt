@@ -14,8 +14,10 @@ import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.note.domain.interactor.DeleteShopNoteUseCase
+import com.tokopedia.shop.page.domain.interactor.ModerateShopUseCase
 import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase
 import com.tokopedia.shop.page.view.listener.ShopPageView
+import com.tokopedia.shop.page.view.subscriber.ShopModerateSubscriber
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,6 +30,7 @@ import javax.inject.Inject
 
 class ShopPagePresenter @Inject
 constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
+            private val moderateShopUseCase: ModerateShopUseCase,
             private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
             private val toggleFavouriteShopAndDeleteCacheUseCase: ToggleFavouriteShopAndDeleteCacheUseCase,
             private val deleteShopProductUseCase: DeleteShopProductUseCase,
@@ -110,6 +113,13 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
                         }
                     }
                 }
+        )
+    }
+
+    fun moderateShopRequest(shopId: Int,notes:String){
+        moderateShopUseCase.execute(
+                ModerateShopUseCase.createRequestParams(
+                        shopId,notes), ShopModerateSubscriber(view)
         )
     }
 

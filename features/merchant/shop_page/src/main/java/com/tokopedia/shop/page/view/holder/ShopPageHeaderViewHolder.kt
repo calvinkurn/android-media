@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -64,8 +65,8 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         view.buttonActionAbnormal.visibility = if (isMyShop) View.VISIBLE else View.GONE
         when (shopInfo.info.shopStatus){
             ShopStatusDef.CLOSED -> showShopClosed(shopInfo)
-            ShopStatusDef.MODERATED -> showShopModerated(isMyShop,false)
-            ShopStatusDef.MODERATED_PERMANENTLY -> showShopModerated(isMyShop,true)
+            ShopStatusDef.MODERATED -> showShopModerated(isMyShop,false,shopInfo)
+            ShopStatusDef.MODERATED_PERMANENTLY -> showShopModerated(isMyShop,true,shopInfo)
             ShopStatusDef.NOT_ACTIVE -> showShopNotActive(isMyShop, shopInfo)
             else -> {
                 view.buttonActionAbnormal.visibility = View.GONE
@@ -75,6 +76,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     }
 
     private fun showShopNotActive(isMyShop: Boolean, shopInfo: ShopInfo) {
+
         var title = view.context.getString(R.string.shop_page_header_shop_not_active_title)
         var description = view.context.getString(R.string.shop_page_header_shop_not_active_description_seller)
         if (!isMyShop) {
@@ -94,7 +96,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         shopPageTracking.impressionHowToActivateShop(CustomDimensionShopPage.create(shopInfo))
     }
 
-    private fun showShopModerated(isMyShop: Boolean, isPermanent: Boolean) {
+    private fun showShopModerated(isMyShop: Boolean, isPermanent: Boolean,shopInfo: ShopInfo) {
         var title = if (isPermanent) { R.string.shop_page_header_shop_in_permanent_moderation }
         else {R.string.shop_page_header_shop_in_moderation}
         var description = view.context.getString(R.string.shop_page_header_shop_in_moderation_desc)
@@ -111,7 +113,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
 
         view.buttonActionAbnormal.apply {
             text = view.context.getString(R.string.shop_info_label_open_request)
-            setOnClickListener { listener.requestOpenShop() }
+            setOnClickListener { listener.requestOpenShop(shopInfo) }
         }
     }
 
@@ -240,7 +242,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         fun toggleFavorite(isFavourite: Boolean)
         fun goToAddProduct()
         fun openShop()
-        fun requestOpenShop()
+        fun requestOpenShop(shopInfo: ShopInfo)
         fun goToHowActivate()
         fun goToHelpCenter(url: String)
     }
