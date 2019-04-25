@@ -27,6 +27,36 @@ import static com.appsflyer.AFInAppEventParameterName.REGSITRATION_METHOD;
  */
 
 public class UnifyTracking extends TrackingUtils {
+    public static final String EXTRA_LABEL = "label";
+    
+    public static void eventPushNotifLowTopadsReceived() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.RECEIVED,
+                AppEventTracking.EventLabel.TOPADS_LOW_CREDIT
+        ).getEvent());
+    }
+    
+     public static void eventPushNotifSuccessTopadsReceived() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.RECEIVED,
+                AppEventTracking.EventLabel.TOPADS_SUCCESS_TOPUP
+        ).getEvent());
+    }
+    
+    public static void eventSellerHomeDashboardClick(String main, String item) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,
+                AppEventTracking.Category.DASHBOARD,
+                AppEventTracking.Action.CLICK + " " + main,
+                item)
+                .setUserId()
+                .getEvent());
+    }
+    
     public static void eventTopAdsProductEditGrupCost(Context context, String budgetOption) {
         eventTopAdsProduct(context, AppEventTracking.EventLabel.EDIT_GROUP_COST + budgetOption);
     }
