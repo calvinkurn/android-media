@@ -96,7 +96,7 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                         val responseGetPromoStack = checkPromoStackingCodeMapper.call(response)
                         if (responseGetPromoStack.status.equals(statusOK, true)) {
                             if (responseGetPromoStack.data.clashings.isClashedPromos) {
-                                view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings)
+                                view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings, paramMerchant)
                             } else {
                                 var isRed = false
                                 var message = ""

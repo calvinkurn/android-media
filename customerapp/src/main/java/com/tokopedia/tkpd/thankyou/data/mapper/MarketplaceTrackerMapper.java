@@ -155,7 +155,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setCurrentSite(TOKOPEDIA_MARKETPLACE);
 
         for (Product product : getProductList(orderData)) {
-            purchase.addProduct(addCouponToProduct(product.getProduct(), couponCode));
+            purchase.addProduct(product.getProduct());
         }
 
         return purchase;
