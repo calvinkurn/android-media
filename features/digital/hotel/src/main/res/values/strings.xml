@@ -50,4 +50,24 @@
     <string name="hotel_destination_empty_view_holder_subtitle">Coba cari ulang pakai kata kunci lain.</string>
     <string name="hotel_destination_toolbar_title">Tujuan</string>
 
+    <string name="hotel_room_detail_header_capacity">Maksimum: %1$s</string>
+    <string name="hotel_room_detail_header_breakfast">Sarapan Gratis</string>
+    <string name="hotel_room_detail_header_refund">Refund Bersyarat</string>
+    <string name="hotel_room_detail_header_count">Sisa %1$d kamar!</string>
+    <string name="hotel_room_detail_pay_at_hotel">Bayar di Hotel</string>
+    <string name="hotel_room_detail_pay_at_hotel_desc">Perlu jaminan kartu kredit\nKartu kredit diperlukan untuk verifikasi, biaya pemesanan akan ditagihkan saat tiba di hotel.</string>
+    <string name="hotel_room_detail_cancellation">Pembatalan</string>
+    <string name="hotel_room_detail_upfront_payment">Pembayaran di muka</string>
+    <string name="hotel_room_detail_upfront_payment_desc">Kartu kredit Anda akan terpotong sejumlah biaya pada waktu yang telah ditentukan.</string>
+    <string name="hotel_room_detail_tax">Pajak</string>
+    <string name="hotel_room_detail_tax_desc">Termasuk pajak 10% dan biaya layanan 10%</string>
+    <string name="hotel_room_detail_deposit">Deposit</string>
+    <string name="hotel_room_detail_deposit_desc">Kamar ini menerapkan sistem deposit yang harus dibayar saat check-in.</string>
+    <string name="hotel_room_detail_facilities">Fasilitas kamar</string>
+    <string name="hotel_room_detail_description">Deskripsi</string>
+    <string name="hotel_room_detail_breakfast">Makanan</string>
+    <string name="hotel_room_detail_extra_bed">Extra bed</string>
+    <string name="hotel_room_detail_price_info">Harga /kamar/malam</string>
+    <string name="hotel_room_detail_price">Rp %1$d</string>
+    <string name="hotel_room_detail_button">Pilih %1$sKamar</string>
 </resources>
