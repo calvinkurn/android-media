@@ -1,2 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.webview"/>
+          package="com.tokopedia.webview">
+
+    <application
+        android:label="@string/title_report_chat">
+        <activity
+            android:name=".chatreport.view.activity.ChatReportActivity"
+            android:label="@string/title_report_chat"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"/>
+    </application>
+
+</manifest>
