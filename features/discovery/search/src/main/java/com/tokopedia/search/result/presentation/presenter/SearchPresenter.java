@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.repository.gql.GqlSpecification;
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchSubscriber;
@@ -12,19 +11,14 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.usecase.RequestParams;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> implements SearchContract.Presenter {
 
     private GraphqlUseCase graphqlUseCase;
+    private GqlSpecification gqlInitiateSearchSpec;
 
-    @Inject
-    @Named(SearchConstant.GQL_INITIATE_SEARCH)
-    GqlSpecification gqlInitiateSearchSpec;
-
-    SearchPresenter(GraphqlUseCase graphqlUseCase) {
+    SearchPresenter(GraphqlUseCase graphqlUseCase, GqlSpecification gqlInitiateSearchSpec) {
         this.graphqlUseCase = graphqlUseCase;
+        this.gqlInitiateSearchSpec = gqlInitiateSearchSpec;
     }
 
     @Override
