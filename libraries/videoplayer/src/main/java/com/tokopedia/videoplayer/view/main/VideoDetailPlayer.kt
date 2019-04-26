@@ -17,7 +17,10 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
+import com.google.android.exoplayer2.upstream.FileDataSource
 import com.tokopedia.videoplayer.R
 import kotlinx.android.synthetic.main.fragment_video_preview.*
 import java.io.File
@@ -98,13 +101,17 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
 
     private fun initPlayer(path: String) {
         val file = File(path)
-        initPlayer(Uri.fromFile(file))
+        val mediaSource = buildMediaSource(Uri.fromFile(file), true)
+        initPlayer(mediaSource)
     }
 
     private fun initPlayer(uri: Uri) {
-        try {
-            val mediaSource = buildMediaSource(uri)
+        val mediaSource = buildMediaSource(uri, false)
+        initPlayer(mediaSource)
+    }
 
+    private fun initPlayer(mediaSource: MediaSource) {
+        try {
             playerOptions = ExoPlayerFactory.newSimpleInstance(context,
                     DefaultRenderersFactory(context),
                     DefaultTrackSelector(),
@@ -121,10 +128,20 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         }
     }
 
-    private fun buildMediaSource(uri: Uri): MediaSource {
-        return ExtractorMediaSource.Factory(
-                DefaultHttpDataSourceFactory(EXOPLAYER_AGENT))
-                .createMediaSource(uri)
+    private fun buildMediaSource(uri: Uri, isFile: Boolean): MediaSource {
+        return if (isFile) {
+            val dataSpec = DataSpec(uri)
+            val fileDataSource = FileDataSource()
+            fileDataSource.open(dataSpec)
+            val dataFactory = DataSource.Factory { fileDataSource }
+            ExtractorMediaSource.Factory(
+                    dataFactory)
+                    .createMediaSource(uri)
+        } else {
+            ExtractorMediaSource.Factory(
+                    DefaultHttpDataSourceFactory(EXOPLAYER_AGENT))
+                    .createMediaSource(uri)
+        }
     }
 
 }
