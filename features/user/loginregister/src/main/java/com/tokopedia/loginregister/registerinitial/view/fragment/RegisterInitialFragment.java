@@ -346,7 +346,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 getActivity(),
                 RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
                 phone,
-               ""
+                ""
         );
         startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE);
     }
@@ -369,7 +369,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 getActivity().finish();
             } else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity
                     .RESULT_OK) {
-                goToAddName();
+                String uuid =
+                        data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
+                goToAddName(uuid);
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity
                     .RESULT_CANCELED) {
                 dismissProgressBar();
@@ -393,8 +395,13 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                     .RESULT_CANCELED) {
                 dismissProgressBar();
                 getActivity().setResult(Activity.RESULT_CANCELED);
-            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                goToAddName();
+            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE
+                    && resultCode == Activity.RESULT_OK
+                    && data != null
+                    && data.getExtras() != null) {
+                String uuid =
+                        data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
+                goToAddName(uuid);
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
                         REQUEST_WELCOME_PAGE);
@@ -459,12 +466,14 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
 
-    private void goToAddName() {
+    private void goToAddName(String uuid) {
         if (getActivity() != null) {
             String applink = ApplinkConst.ADD_NAME_REGISTER;
             applink = applink.replace("{phone}", phoneNumber);
             Intent intent = ((ApplinkRouter) getActivity().getApplicationContext()).getApplinkIntent(getActivity
                     (), applink);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid);
             startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE);
         }
     }
@@ -767,7 +776,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private void goToVerifyAccountPage(String phoneNumber) {
         if (getActivity() != null && getActivity().getApplicationContext() != null) {
             Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(getActivity(),
-                    RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER,  phoneNumber, "");
+                    RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER, phoneNumber, "");
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH);
         }
     }
