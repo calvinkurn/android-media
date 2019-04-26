@@ -85,8 +85,10 @@ public class AutoCompleteActivity extends DiscoveryActivity
         return new SearchParameter(deepLinkURI == null ? "" : deepLinkURI);
     }
 
-    @Inject AutoCompletePresenter autoCompletePresenter;
-    @Inject SearchTracking searchTracking;
+    @Inject
+    AutoCompletePresenter autoCompletePresenter;
+    @Inject
+    SearchTracking searchTracking;
     private SearchComponent searchComponent;
     private boolean isHandlingIntent = false;
 
@@ -125,15 +127,13 @@ public class AutoCompleteActivity extends DiscoveryActivity
         boolean isAutoComplete = intent.getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false);
         SearchParameter searchParameter = getSearchParameterFromIntent(intent);
 
-        if(isAutoComplete) {
+        if (isAutoComplete) {
             handleIntentAutoComplete(searchParameter);
-        }
-        else {
-            handleIntentInitiateSearch(intent, searchParameter);
+        } else {
+            handleIntentInitiateSearch(searchParameter);
         }
 
-        if (intent != null &&
-                intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
+        if (intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             searchTracking.eventSearchShortcut();
         }
 
@@ -149,7 +149,7 @@ public class AutoCompleteActivity extends DiscoveryActivity
     private SearchParameter getSearchParameterFromIntent(Intent intent) {
         SearchParameter searchParameter = intent.getParcelableExtra(EXTRA_SEARCH_PARAMETER_MODEL);
 
-        if(searchParameter == null) {
+        if (searchParameter == null) {
             searchParameter = new SearchParameter();
         }
 
@@ -160,35 +160,34 @@ public class AutoCompleteActivity extends DiscoveryActivity
         isHandlingIntent = false;
         searchView.showSearch(true, false, searchParameter);
 
-        animateActivityTransition();
+        animateActivityTransition(() -> AnimationUtil.reveal(root, getEmptyAnimationListener()));
     }
 
-    private void animateActivityTransition() {
+    private void animateActivityTransition(AnimationCallback animationCallback) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             root.setVisibility(View.INVISIBLE);
 
             ViewTreeObserver viewTreeObserver = root.getViewTreeObserver();
-            addOnGlobalLayoutListenerForAnimationIfAlive(viewTreeObserver);
-        }
-        else {
+            addOnGlobalLayoutListenerForAnimationIfAlive(viewTreeObserver, animationCallback);
+        } else {
             root.setVisibility(View.VISIBLE);
         }
     }
 
-    private void addOnGlobalLayoutListenerForAnimationIfAlive(ViewTreeObserver viewTreeObserver) {
+    private void addOnGlobalLayoutListenerForAnimationIfAlive(ViewTreeObserver viewTreeObserver, AnimationCallback animationCallback) {
         if (viewTreeObserver.isAlive()) {
             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    revealActivity();
+                    animationCallback.doAnimation();
                     root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
             });
         }
     }
 
-    private void revealActivity() {
-        AnimationUtil.reveal(root, new AnimationUtil.AnimationListener() {
+    private AnimationUtil.AnimationListener getEmptyAnimationListener() {
+        return new AnimationUtil.AnimationListener() {
             @Override
             public boolean onAnimationStart(View view) {
                 return false;
@@ -203,10 +202,10 @@ public class AutoCompleteActivity extends DiscoveryActivity
             public boolean onAnimationCancel(View view) {
                 return false;
             }
-        });
+        };
     }
 
-    private void handleIntentInitiateSearch(Intent intent, SearchParameter searchParameter) {
+    private void handleIntentInitiateSearch(SearchParameter searchParameter) {
         this.searchParameter = searchParameter;
         onProductQuerySubmit();
     }
@@ -269,6 +268,15 @@ public class AutoCompleteActivity extends DiscoveryActivity
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (isFinishing() && root != null) {
+            animateActivityTransition(() -> AnimationUtil.unreveal(root, getEmptyAnimationListener()));
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         unregisterShake();
@@ -279,12 +287,11 @@ public class AutoCompleteActivity extends DiscoveryActivity
     }
 
     private void showAutoCompleteOnResume() {
-        if(searchView.isSearchOpen()) {
+        if (searchView.isSearchOpen()) {
             searchView.searchTextViewRequestFocus();
             searchView.searchTextViewSetCursorSelectionAtTextEnd();
             forceShowKeyBoard();
-        }
-        else {
+        } else {
             searchView.showSearch(true, false);
         }
     }
@@ -327,5 +334,9 @@ public class AutoCompleteActivity extends DiscoveryActivity
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
         RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    private interface AnimationCallback {
+        void doAnimation();
     }
 }
