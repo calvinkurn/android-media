@@ -5,12 +5,6 @@ import android.support.design.widget.AppBarLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
@@ -22,9 +16,9 @@ import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 /**
  * @author by furqan on 22/04/19
  */
-class HotelDetailFragment : BaseDaggerFragment(), OnMapReadyCallback {
+class HotelDetailFragment : BaseDaggerFragment() {
 
-    private lateinit var googleMap: GoogleMap
+//    private lateinit var googleMap: GoogleMap
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_detail, container, false)
@@ -41,9 +35,10 @@ class HotelDetailFragment : BaseDaggerFragment(), OnMapReadyCallback {
         getComponent(HotelDetailComponent::class.java).inject(this)
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        this.googleMap = googleMap
-    }
+//    override fun onMapReady(googleMap: GoogleMap) {
+//        this.googleMap = googleMap
+//        setGoogleMap()
+//    }
 
     private fun setupLayout() {
         (activity as HotelDetailActivity).setSupportActionBar(detail_toolbar)
@@ -78,38 +73,42 @@ class HotelDetailFragment : BaseDaggerFragment(), OnMapReadyCallback {
             hotel_rating_container.addView(RatingStarView(context!!))
         }
 
-        initHotelLocationMap()
+        iv_hotel_detail_location.loadImage("https://media-cdn.tripadvisor.com/media/photo-s/11/4d/61/99/location-map.jpg")
+
+//        initHotelLocationMap()
     }
 
-    private fun initHotelLocationMap() {
-        if (map_view != null) {
-            map_view.onCreate(null)
-            map_view.onResume()
-            map_view.getMapAsync(this)
-        }
+//    private fun initHotelLocationMap() {
+//        if (map_view != null) {
+//            map_view.onCreate(null)
+//            map_view.onResume()
+//            map_view.getMapAsync(this)
+//        }
+//
+//        setGoogleMap()
+//    }
 
-        setGoogleMap()
-    }
-
-    private fun setGoogleMap() {
-        if (::googleMap.isInitialized) {
-            val latitude = getLatitude("-6.221091").toDouble()
-            val longitude = getLongitude("106.821637").toDouble()
-            val latLng = LatLng(latitude, longitude)
-
-            googleMap.uiSettings.isMapToolbarEnabled = false
-            googleMap.addMarker(
-                    MarkerOptions().position(latLng).icon(
-                            BitmapDescriptorFactory.fromResource(R.drawable.ic_hotel_pin_location))
-            ).isDraggable = false
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-            googleMap.setOnMapClickListener {
-                // need this even it's not used
-                // it's used to override default function of OnMapClickListener
-                // which is navigate to default Google Map Apps
-            }
-        }
-    }
+//    private fun setGoogleMap() {
+//        if (::googleMap.isInitialized) {
+//            val latitude = getLatitude("-6.221091").toDouble()
+//            val longitude = getLongitude("106.821637").toDouble()
+//            val latLng = LatLng(latitude, longitude)
+//
+//            googleMap.uiSettings.isMapToolbarEnabled = false
+//            googleMap.uiSettings.isZoomControlsEnabled = false
+//            googleMap.uiSettings.isMyLocationButtonEnabled = false
+//            googleMap.addMarker(
+//                    MarkerOptions().position(latLng).icon(
+//                            BitmapDescriptorFactory.fromResource(R.drawable.ic_hotel_pin_location))
+//            ).isDraggable = false
+//            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+//            googleMap.setOnMapClickListener {
+//                // need this even it's not used
+//                // it's used to override default function of OnMapClickListener
+//                // which is navigate to default Google Map Apps
+//            }
+//        }
+//    }
 
     private fun getLatitude(latitude: String): String = if (!latitude.isEmpty()) latitude else DEFAULT_LATITUDE
 
