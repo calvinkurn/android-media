@@ -147,19 +147,6 @@ public class SearchActivity extends BaseActivity
         return ((BaseMainApplication)getApplication()).getBaseAppComponent();
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-//        setIntent(intent);
-//
-//        proceed();
-//        handleIntent(intent);
-
-        startActivity(intent);
-        finish();
-        overridePendingTransition(0, 0);
-    }
-
     private void proceed() {
         findViews();
         prepareView();
@@ -470,6 +457,19 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        restartActivityWithoutAnimation(intent);
+    }
+
+    private void restartActivityWithoutAnimation(Intent intent) {
+        startActivity(intent);
+        finish();
+        overridePendingTransition(0, 0);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         searchPresenter.onPause();
@@ -612,9 +612,8 @@ public class SearchActivity extends BaseActivity
         return new InitiateSearchListener() {
             @Override
             public void onHandleResponseSearch(boolean isHasCatalog) {
-                finish();
-                moveToSearchActivity(isHasCatalog);
                 stopPerformanceMonitoring();
+                moveToSearchActivity(isHasCatalog);
             }
 
             @Override
