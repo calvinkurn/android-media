@@ -124,8 +124,8 @@ public class AnimationUtil {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                listener.onAnimationEnd(view);
                 view.setVisibility(View.INVISIBLE);
+                listener.onAnimationEnd(view);
             }
 
             @Override
