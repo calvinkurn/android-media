@@ -273,7 +273,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 .setUri(shareUrl)
                 .build();
 
-        if(getActivity() instanceof HotlistActivity) {
+        if(getActivity() instanceof HotlistActivity){
             shareData.setType(LinkerData.HOTLIST_TYPE);
         } else {
             SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
@@ -369,7 +369,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected boolean isFilterActive() {
-        if (filterController == null) return false;
+        if(filterController == null) return false;
 
         return filterController.isFilterActive();
     }
