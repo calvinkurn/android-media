@@ -121,18 +121,20 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     }
 
     private void hitHomeFeedImpressionTracker(HomeFeedViewModel homeFeedViewModel) {
-        if (userSession.isLoggedIn()){
-            HomePageTracking.eventImpressionOnProductRecommendationForLoggedInUser(
-                    homeTrackingQueue,
-                    homeFeedViewModel,
-                    tabName.toLowerCase()
-            );
-        } else {
-            HomePageTracking.eventImpressionOnProductRecommendationForNonLoginUser(
-                    homeTrackingQueue,
-                    homeFeedViewModel,
-                    tabName.toLowerCase()
-            );
+        if(homeTrackingQueue != null) {
+            if (userSession.isLoggedIn()) {
+                HomePageTracking.eventImpressionOnProductRecommendationForLoggedInUser(
+                        homeTrackingQueue,
+                        homeFeedViewModel,
+                        tabName.toLowerCase()
+                );
+            } else {
+                HomePageTracking.eventImpressionOnProductRecommendationForNonLoginUser(
+                        homeTrackingQueue,
+                        homeFeedViewModel,
+                        tabName.toLowerCase()
+                );
+            }
         }
     }
 
