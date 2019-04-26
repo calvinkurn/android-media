@@ -5,6 +5,7 @@ import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.search.result.di.module.GraphqlModule;
 import com.tokopedia.search.result.di.module.SearchTrackingModule;
 import com.tokopedia.search.result.di.module.UserSessionModule;
+import com.tokopedia.search.result.gql.initiatesearch.GqlInitiateSearchSpecModule;
 import com.tokopedia.search.result.presentation.presenter.SearchPresenterModule;
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity;
 
@@ -15,6 +16,7 @@ import dagger.Component;
         UserSessionModule.class,
         SearchTrackingModule.class,
         GraphqlModule.class,
+        GqlInitiateSearchSpecModule.class,
         SearchPresenterModule.class
 }, dependencies = BaseAppComponent.class)
 public interface SearchComponent {

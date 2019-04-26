@@ -20,4 +20,6 @@ public interface SearchConstant {
     String GCM_STORAGE = "GCM_STORAGE";
 
     String TRANSITION = "transition";
+
+    String GQL_INITIATE_SEARCH = "gql_initiate_search";
 }

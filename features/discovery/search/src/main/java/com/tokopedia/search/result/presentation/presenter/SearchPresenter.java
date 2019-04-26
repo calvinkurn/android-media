@@ -1,24 +1,30 @@
 package com.tokopedia.search.result.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.discovery.common.repository.gql.GqlSpecification;
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchSubscriber;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
-import com.tokopedia.discovery.newdiscovery.helper.GqlSearchQueryHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.usecase.RequestParams;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> implements SearchContract.Presenter {
 
     private GraphqlUseCase graphqlUseCase;
-    private GqlSearchQueryHelper gqlSearchQueryHelper;
 
-    SearchPresenter(GraphqlUseCase graphqlUseCase, GqlSearchQueryHelper gqlSearchQueryHelper) {
+    @Inject
+    @Named(SearchConstant.GQL_INITIATE_SEARCH)
+    GqlSpecification gqlInitiateSearchSpec;
+
+    SearchPresenter(GraphqlUseCase graphqlUseCase) {
         this.graphqlUseCase = graphqlUseCase;
-        this.gqlSearchQueryHelper = gqlSearchQueryHelper;
     }
 
     @Override
@@ -43,7 +49,7 @@ final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> imp
         RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, isForceSearch);
 
         GqlSearchHelper.initiateSearch(
-                gqlSearchQueryHelper.getInitiateSearchQuery(),
+                gqlInitiateSearchSpec.getQuery(),
                 requestParams,
                 graphqlUseCase,
                 new InitiateSearchSubscriber(initiateSearchListener)

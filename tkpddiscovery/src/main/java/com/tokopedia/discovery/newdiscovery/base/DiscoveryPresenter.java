@@ -3,14 +3,15 @@ package com.tokopedia.discovery.newdiscovery.base;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
-import com.tokopedia.discovery.newdiscovery.helper.GqlSearchQueryHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 
@@ -29,7 +30,6 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     private GetImageSearchUseCase getImageSearchUseCase;
     private GraphqlUseCase graphqlUseCase;
     private Context context;
-    private GqlSearchQueryHelper gqlSearchQueryHelper;
 
     public DiscoveryPresenter(GetProductUseCase getProductUseCase) {
         this.getProductUseCase = getProductUseCase;
@@ -40,7 +40,6 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         this.getImageSearchUseCase = getImageSearchUseCase;
         this.graphqlUseCase = new GraphqlUseCase();
         this.context = context;
-        this.gqlSearchQueryHelper = new GqlSearchQueryHelper(context);
     }
 
     @Override
@@ -50,7 +49,7 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         com.tokopedia.usecase.RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, forceSearch);
 
         GqlSearchHelper.initiateSearch(
-                gqlSearchQueryHelper.getInitiateSearchQuery(),
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_initiate_search),
                 requestParams,
                 graphqlUseCase,
                 new InitiateSearchSubscriber(initiateSearchListener)

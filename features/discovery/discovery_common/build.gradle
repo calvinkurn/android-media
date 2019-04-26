@@ -7,4 +7,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation rootProject.ext.miscDependencies.gson
+    implementation project(rootProject.ext.libraries.abstraction)
 }
