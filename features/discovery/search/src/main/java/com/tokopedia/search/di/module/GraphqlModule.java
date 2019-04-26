@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.di.module;
+package com.tokopedia.search.di.module;
 
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
