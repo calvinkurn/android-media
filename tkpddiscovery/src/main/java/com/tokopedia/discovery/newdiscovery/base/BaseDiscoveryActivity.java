@@ -186,8 +186,8 @@ public class BaseDiscoveryActivity
     private void finishAndMoveToSearchActivity(ProductViewModel productViewModel) {
         isStartingSearchActivityWithProductViewModel = false;
 
-        finish();
         moveToSearchActivity(productViewModel);
+        finish();
     }
 
     private void moveToSearchActivity(ProductViewModel productViewModel) {
