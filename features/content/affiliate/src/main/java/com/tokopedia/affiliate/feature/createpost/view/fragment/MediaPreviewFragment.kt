@@ -21,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.fragment_af_media_preview.*
 
-
 /**
  * @author by milhamj on 25/02/19.
  */
