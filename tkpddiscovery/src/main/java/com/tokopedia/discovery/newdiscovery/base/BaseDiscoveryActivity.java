@@ -188,7 +188,6 @@ public class BaseDiscoveryActivity
 
         finish();
         moveToSearchActivity(productViewModel);
-        overridePendingTransition(0, 0);
     }
 
     private void moveToSearchActivity(ProductViewModel productViewModel) {
