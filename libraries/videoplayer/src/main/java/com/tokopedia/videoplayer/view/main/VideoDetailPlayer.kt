@@ -20,6 +20,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.tokopedia.videoplayer.R
 import kotlinx.android.synthetic.main.fragment_video_preview.*
+import java.io.File
 
 /**
  * Created by isfaaghyth on 25/04/19.
@@ -38,7 +39,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         fun set(videoSource: String): BottomSheetDialogFragment {
             val videoPlayer = VideoDetailPlayer()
             val bundle = Bundle()
-            bundle.putString(VIDEO_SOURCE, "file://$videoSource")
+            bundle.putString(VIDEO_SOURCE, videoSource)
             videoPlayer.arguments = bundle
             return videoPlayer
         }
@@ -77,7 +78,14 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         if (videoSource == null || videoSource.isEmpty()) {
             dismiss()
         } else {
-            videoPlayerInit(videoSource)
+            //check if it is file or not
+            if (File(videoSource).exists()) {
+                initPlayer(videoSource)
+            } else {
+                //if a videosource is URL
+                val url = Uri.parse(videoSource)
+                initPlayer(url)
+            }
         }
     }
 
@@ -88,19 +96,28 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         } catch (ignored: Exception) {}
     }
 
-    private fun videoPlayerInit(source: String) {
+    private fun initPlayer(path: String) {
+        val file = File(path)
+        initPlayer(Uri.fromFile(file))
+    }
+
+    private fun initPlayer(uri: Uri) {
         try {
+            val mediaSource = buildMediaSource(uri)
+
             playerOptions = ExoPlayerFactory.newSimpleInstance(context,
                     DefaultRenderersFactory(context),
                     DefaultTrackSelector(),
                     DefaultLoadControl())
             playerView.player = playerOptions
+
+            //auto play enabled
             playerOptions.playWhenReady = true
 
-            val mediaSource = buildMediaSource(Uri.parse(source))
             playerOptions.prepare(mediaSource, true, false)
         } catch (e: Exception) {
             Log.e(TAG, e.message)
+            dismiss()
         }
     }
 
