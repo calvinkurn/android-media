@@ -25,6 +25,7 @@ public class AccountHomeUrl {
 
     public static String MORE_SELLER = BASE_SELLER_URL + "mulai-berjualan/";
     public static String GOLD_MERCHANT = BASE_SELLER_URL + "gold-merchant/";
+    public static String EDU_MORE_SELLER = BASE_SELLER_URL + "edu/mulai-berjualan/";
 
     public static class Pulsa {
 
