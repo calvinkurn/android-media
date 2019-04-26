@@ -2209,10 +2209,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 Order order = new Order();
                 ArrayList<ProductDetail> productDetails = new ArrayList<>();
                 for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                    ProductDetail productDetail = new ProductDetail();
-                    productDetail.setProductId(cartItemModel.getProductId());
-                    productDetail.setQuantity(cartItemModel.getQuantity());
-                    productDetails.add(productDetail);
+                    if (!cartItemModel.isError()) {
+                        ProductDetail productDetail = new ProductDetail();
+                        productDetail.setProductId(cartItemModel.getProductId());
+                        productDetail.setQuantity(cartItemModel.getQuantity());
+                        productDetails.add(productDetail);
+                    }
                 }
                 order.setProductDetails(productDetails);
 
