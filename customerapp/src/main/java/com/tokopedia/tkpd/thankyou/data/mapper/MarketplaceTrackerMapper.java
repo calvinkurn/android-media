@@ -216,6 +216,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             product.setPrice(String.valueOf(orderDetail.getProductPrice()));
             product.setCategory(getProductCategory(orderDetail));
             product.setQty(String.valueOf(orderDetail.getQuantity()));
+            product.setDimension54(orderData.isFulfillment() ? "tokopedia" : "regular");
 
             products.add(product);
         }
