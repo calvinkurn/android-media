@@ -160,15 +160,15 @@ public class AutoCompleteActivity extends DiscoveryActivity
         isHandlingIntent = false;
         searchView.showSearch(true, false, searchParameter);
 
-        animateActivityTransition(() -> AnimationUtil.reveal(root, getEmptyAnimationListener()));
+        animateEnterActivityTransition();
     }
 
-    private void animateActivityTransition(AnimationCallback animationCallback) {
+    private void animateEnterActivityTransition() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             root.setVisibility(View.INVISIBLE);
 
             ViewTreeObserver viewTreeObserver = root.getViewTreeObserver();
-            addOnGlobalLayoutListenerForAnimationIfAlive(viewTreeObserver, animationCallback);
+            addOnGlobalLayoutListenerForAnimationIfAlive(viewTreeObserver, () -> AnimationUtil.reveal(root, getEmptyAnimationListener()));
         } else {
             root.setVisibility(View.VISIBLE);
         }
@@ -272,7 +272,16 @@ public class AutoCompleteActivity extends DiscoveryActivity
         super.onPause();
 
         if (isFinishing() && root != null) {
-            animateActivityTransition(() -> AnimationUtil.unreveal(root, getEmptyAnimationListener()));
+            animateExitActivityTransition();
+        }
+    }
+
+    private void animateExitActivityTransition() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ViewTreeObserver viewTreeObserver = root.getViewTreeObserver();
+            addOnGlobalLayoutListenerForAnimationIfAlive(viewTreeObserver, () -> AnimationUtil.unreveal(root, getEmptyAnimationListener()));
+        } else {
+            root.setVisibility(View.INVISIBLE);
         }
     }
 
