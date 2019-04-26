@@ -38,7 +38,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         fun set(videoSource: String): BottomSheetDialogFragment {
             val videoPlayer = VideoDetailPlayer()
             val bundle = Bundle()
-            bundle.putString(VIDEO_SOURCE, videoSource)
+            bundle.putString(VIDEO_SOURCE, "file://$videoSource")
             videoPlayer.arguments = bundle
             return videoPlayer
         }
