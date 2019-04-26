@@ -1,6 +1,9 @@
 package com.tokopedia.shop.page.view.holder
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.drawable.GradientDrawable
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
@@ -21,13 +24,13 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.extension.formatToSimpleNumber
+import io.hansel.pebbletracesdk.uimanager.UIManager.dialog
 import kotlinx.android.synthetic.main.partial_shop_page_header.view.*
 
 class ShopPageHeaderViewHolder(private val view: View, private val listener: ShopPageHeaderListener,
                                private val shopPageTracking: ShopPageTrackingBuyer,
                                private val context: Context){
     private var isShopFavourited = false
-
     fun bind(shopInfo: ShopInfo, isMyShop: Boolean) {
         isShopFavourited = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited())
         view.shopName.text = MethodChecker.fromHtml(shopInfo.info.shopName).toString()
@@ -96,14 +99,21 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         shopPageTracking.impressionHowToActivateShop(CustomDimensionShopPage.create(shopInfo))
     }
 
-    private fun showShopModerated(isMyShop: Boolean, isPermanent: Boolean,shopInfo: ShopInfo) {
-        var title = if (isPermanent) { R.string.shop_page_header_shop_in_permanent_moderation }
-        else {R.string.shop_page_header_shop_in_moderation}
+    private fun showShopModerated(isMyShop: Boolean, isPermanent: Boolean, shopInfo: ShopInfo) {
+        var title = if (isPermanent) {
+            R.string.shop_page_header_shop_in_permanent_moderation
+        } else {
+            R.string.shop_page_header_shop_in_moderation
+        }
         var description = view.context.getString(R.string.shop_page_header_shop_in_moderation_desc)
+        val shopId = shopInfo.info.shopId.toInt()
 
         if (!isMyShop) {
-            title = if (isPermanent) { R.string.shop_page_header_shop_in_permanent_moderation_buyer }
-            else {R.string.shop_page_header_shop_in_moderation_buyer}
+            title = if (isPermanent) {
+                R.string.shop_page_header_shop_in_permanent_moderation_buyer
+            } else {
+                R.string.shop_page_header_shop_in_moderation_buyer
+            }
             description = view.context.getString(R.string.shop_page_header_shop_in_moderation_desc_buyer)
         }
 
@@ -113,8 +123,35 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
 
         view.buttonActionAbnormal.apply {
             text = view.context.getString(R.string.shop_info_label_open_request)
-            setOnClickListener { listener.requestOpenShop(shopInfo) }
+            setOnClickListener {
+                initDialog(shopId)
+            }
         }
+    }
+
+    private fun initDialog(shopId:Int) {
+        val moderateOptionOne = context.getString(R.string.moderate_shop_option_1)
+        val moderateOptionTwo = context.getString(R.string.moderate_shop_option_2)
+        val arrayOption: Array<String> = arrayOf(moderateOptionOne, moderateOptionTwo)
+        var notes = ""
+        val dialog = AlertDialog.Builder(listener.getActivity())
+
+        dialog.setTitle(context.getString(R.string.moderate_shop_title))
+                .setSingleChoiceItems(arrayOption, 0, null)
+                .setPositiveButton(R.string.title_ok, DialogInterface.OnClickListener { dialog, which ->
+                    var selectedPosition = (dialog as AlertDialog).listView.checkedItemPosition
+                    if (selectedPosition == 0 ) {
+                        notes = moderateOptionOne
+                    } else if (selectedPosition == 1) {
+                        notes = moderateOptionTwo
+                    }
+
+                    if (!notes.isEmpty()) {
+                        listener.requestOpenShop(shopId, notes)
+                    }
+                    dialog.dismiss()
+                })
+        dialog.show()
     }
 
     private fun showShopClosed(shopInfo: ShopInfo) {
@@ -242,9 +279,10 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         fun toggleFavorite(isFavourite: Boolean)
         fun goToAddProduct()
         fun openShop()
-        fun requestOpenShop(shopInfo: ShopInfo)
+        fun requestOpenShop(shopId: Int, notes: String)
         fun goToHowActivate()
         fun goToHelpCenter(url: String)
+        fun getActivity(): Activity
     }
 
 }

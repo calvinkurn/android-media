@@ -119,8 +119,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
     fun moderateShopRequest(shopId: Int,notes:String){
         moderateShopUseCase.execute(
                 ModerateShopUseCase.createRequestParams(
-                        shopId,notes), ShopModerateSubscriber(view)
-        )
+                        shopId,notes), ShopModerateSubscriber(view))
     }
 
     fun clearCache() {

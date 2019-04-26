@@ -540,28 +540,13 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         return this.context
     }
 
-    override fun requestOpenShop(shopInfo: ShopInfo) {
-        val dialog = Dialog(this, Dialog.Type.PROMINANCE)
-        val moderateOptionOne = getString(R.string.moderate_shop_option_1)
-        val moderateOptionTwo = getString(R.string.moderate_shop_option_2)
-        var notes = ""
-        val shopIdInt = shopInfo.info.shopId.toInt()
-        val builder = AlertDialog.Builder(this)
+    override fun getActivity(): Activity {
+        return this@ShopPageActivity
+    }
 
-        dialog.setTitle(getString(R.string.moderate_shop_title))
-        dialog.setBtnOk(moderateOptionOne)
-        dialog.setBtnCancel(moderateOptionTwo)
-        dialog.setOnOkClickListener(View.OnClickListener {
-            notes = moderateOptionOne
-            dialog.dismiss()
-        })
-        dialog.setOnCancelClickListener(View.OnClickListener {
-            notes= moderateOptionTwo
-            dialog.dismiss()
-        })
-
+    override fun requestOpenShop(shopId: Int,notes:String) {
         if(!notes.isEmpty()){
-            presenter.moderateShopRequest(shopIdInt, notes)
+            presenter.moderateShopRequest(shopId, notes)
         }
     }
 

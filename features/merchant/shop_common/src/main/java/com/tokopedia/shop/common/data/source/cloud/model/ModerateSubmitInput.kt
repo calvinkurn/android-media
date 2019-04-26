@@ -15,6 +15,10 @@ data class ModerateSubmitInput (
 
         @SerializedName("notes")
         @Expose
-        var notes:String ? = ""
+        var notes:String ? = "",
+
+        @SerializedName("responseDesc")
+        @Expose
+        var responseDesc:String ? = ""
 
 )
