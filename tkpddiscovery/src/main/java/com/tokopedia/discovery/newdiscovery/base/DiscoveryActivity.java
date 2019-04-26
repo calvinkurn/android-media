@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
@@ -29,6 +30,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
+import com.tokopedia.discovery.util.AnimationUtil;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -329,10 +331,35 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     public void onBackPressed() {
         if (searchView.isSearchOpen()) {
             if (searchView.isFinishOnClose()) {
-                finish();
+                finishWithAnimation();
             } else {
                 searchView.closeSearch();
             }
+        } else {
+            finish();
+        }
+    }
+
+    private void finishWithAnimation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AnimationUtil.unreveal(root, new AnimationUtil.AnimationListener() {
+                @Override
+                public boolean onAnimationStart(View view) {
+                    return false;
+                }
+
+                @Override
+                public boolean onAnimationEnd(View view) {
+                    finish();
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+
+                @Override
+                public boolean onAnimationCancel(View view) {
+                    return false;
+                }
+            });
         } else {
             finish();
         }

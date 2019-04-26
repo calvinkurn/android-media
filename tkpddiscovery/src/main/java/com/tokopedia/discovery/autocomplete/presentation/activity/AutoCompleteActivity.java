@@ -268,36 +268,6 @@ public class AutoCompleteActivity extends DiscoveryActivity
     }
 
     @Override
-    public void finish() {
-        animateExitActivityTransition();
-    }
-
-    private void animateExitActivityTransition() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AnimationUtil.unreveal(root, new AnimationUtil.AnimationListener() {
-                @Override
-                public boolean onAnimationStart(View view) {
-                    return false;
-                }
-
-                @Override
-                public boolean onAnimationEnd(View view) {
-                    AutoCompleteActivity.super.finish();
-                    AutoCompleteActivity.super.overridePendingTransition(0, 0);
-                    return true;
-                }
-
-                @Override
-                public boolean onAnimationCancel(View view) {
-                    return false;
-                }
-            });
-        } else {
-            super.finish();
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         unregisterShake();
