@@ -274,8 +274,7 @@ public class AutoCompleteActivity extends DiscoveryActivity
 
     private void animateExitActivityTransition() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ViewTreeObserver viewTreeObserver = root.getViewTreeObserver();
-            addOnGlobalLayoutListenerForAnimationIfAlive(viewTreeObserver, () -> AnimationUtil.unreveal(root, new AnimationUtil.AnimationListener() {
+            AnimationUtil.unreveal(root, new AnimationUtil.AnimationListener() {
                 @Override
                 public boolean onAnimationStart(View view) {
                     return false;
@@ -283,7 +282,7 @@ public class AutoCompleteActivity extends DiscoveryActivity
 
                 @Override
                 public boolean onAnimationEnd(View view) {
-                    finish();
+                    AutoCompleteActivity.super.finish();
                     return true;
                 }
 
@@ -291,9 +290,9 @@ public class AutoCompleteActivity extends DiscoveryActivity
                 public boolean onAnimationCancel(View view) {
                     return false;
                 }
-            }));
+            });
         } else {
-            finish();
+            super.finish();
         }
     }
 
