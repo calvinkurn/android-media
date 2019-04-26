@@ -520,7 +520,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
 
     override fun onErrorModerateListener(message:String) {
-        ToasterError.make(window.decorView.rootView,message,BaseToaster.LENGTH_LONG)
+        ToasterError.make(window.decorView.rootView,message,BaseToaster.LENGTH_INDEFINITE)
                 .setAction(R.string.title_ok){
                     v->
                 }
@@ -537,7 +537,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun getContext(): Context {
-        return this.context
+        return this@ShopPageActivity
     }
 
     override fun getActivity(): Activity {

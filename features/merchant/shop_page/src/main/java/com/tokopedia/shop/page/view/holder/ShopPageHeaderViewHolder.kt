@@ -8,9 +8,11 @@ import android.graphics.drawable.GradientDrawable
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.content.res.AppCompatResources
+import android.support.v7.view.ContextThemeWrapper
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
+import android.view.WindowManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
@@ -132,15 +134,17 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     private fun initDialog(shopId:Int) {
         val moderateOptionOne = context.getString(R.string.moderate_shop_option_1)
         val moderateOptionTwo = context.getString(R.string.moderate_shop_option_2)
-        val arrayOption: Array<String> = arrayOf(moderateOptionOne, moderateOptionTwo)
+        val arrayOption = arrayOf(moderateOptionOne, moderateOptionTwo)
         var notes = ""
-        val dialog = AlertDialog.Builder(listener.getActivity())
+        val customThemeDialog = ContextThemeWrapper(listener.getActivity(), R.style.AlertDialogTheme)
+        val dialog = AlertDialog.Builder(customThemeDialog)
+
 
         dialog.setTitle(context.getString(R.string.moderate_shop_title))
                 .setSingleChoiceItems(arrayOption, 0, null)
                 .setPositiveButton(R.string.title_ok, DialogInterface.OnClickListener { dialog, which ->
                     var selectedPosition = (dialog as AlertDialog).listView.checkedItemPosition
-                    if (selectedPosition == 0 ) {
+                    if (selectedPosition == 0) {
                         notes = moderateOptionOne
                     } else if (selectedPosition == 1) {
                         notes = moderateOptionTwo
