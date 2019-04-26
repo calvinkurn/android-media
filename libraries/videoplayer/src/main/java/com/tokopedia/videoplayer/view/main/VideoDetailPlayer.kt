@@ -77,6 +77,8 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
     }
 
     fun initView() {
+        btnClose.setOnClickListener { dismiss() }
+
         //get video source path
         val videoSource = arguments?.getString(VIDEO_SOURCE, "")
         if (videoSource == null || videoSource.isEmpty()) {
