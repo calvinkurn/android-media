@@ -283,6 +283,7 @@ public class AutoCompleteActivity extends DiscoveryActivity
                 @Override
                 public boolean onAnimationEnd(View view) {
                     AutoCompleteActivity.super.finish();
+                    AutoCompleteActivity.super.overridePendingTransition(0, 0);
                     return true;
                 }
 
