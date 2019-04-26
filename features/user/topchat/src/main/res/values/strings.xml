@@ -113,5 +113,6 @@ yang ditemukan</string>
     <string name="title_understand">Mengerti</string>
     <string name="title_save">Simpan</string>
 
+    <string name="chat_report_url">https://m.tokopedia.com/chat/report/%1$s</string>
 
 </resources>
