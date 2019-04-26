@@ -150,9 +150,14 @@ public class SearchActivity extends BaseActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+//        setIntent(intent);
+//
+//        proceed();
+//        handleIntent(intent);
 
-        proceed();
-        handleIntent(intent);
+        startActivity(intent);
+        finish();
+        overridePendingTransition(0, 0);
     }
 
     private void proceed() {
@@ -395,6 +400,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initTabLayout() {
+        tabLayout.clearOnTabSelectedListeners();
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
