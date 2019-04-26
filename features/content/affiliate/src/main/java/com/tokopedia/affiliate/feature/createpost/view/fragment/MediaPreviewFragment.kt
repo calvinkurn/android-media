@@ -100,10 +100,6 @@ class MediaPreviewFragment : BaseDaggerFragment() {
             imageAdapter.setList(imageList)
         }
 
-        btnPlay.setOnClickListener {
-            val player = VideoDetailPlayer.set(viewModel.completeImageList.first().path)
-            player.show(childFragmentManager, VideoDetailPlayer.TAG)
-        }
 
         mediaViewPager.adapter = imageAdapter
         mediaViewPager.offscreenPageLimit = imageAdapter.count
