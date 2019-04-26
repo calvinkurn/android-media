@@ -227,7 +227,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
-                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 2", getScreenName());
                 break;
             case GRID_2:
                 setSpanCount(1);
@@ -238,14 +238,14 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
-                SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "list", getScreenName());
                 break;
         }
         refreshMenuItemGridIcon();
     }
 
     public void refreshMenuItemGridIcon() {
-        if(searchNavigationListener == null) return;
+        if (searchNavigationListener == null) return;
 
         searchNavigationListener.refreshMenuItemGridIcon(getAdapter().getTitleTypeRecyclerView(), getAdapter().getIconTypeRecyclerView());
     }
@@ -273,7 +273,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 .setUri(shareUrl)
                 .build();
 
-        if(getActivity() instanceof HotlistActivity){
+        if (getActivity() instanceof HotlistActivity) {
             shareData.setType(LinkerData.HOTLIST_TYPE);
         } else {
             SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
@@ -288,9 +288,9 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             if (requestCode == getSortRequestCode()) {
                 setSelectedSort(new HashMap<>(getMapFromIntent(data, SortProductActivity.EXTRA_SELECTED_SORT)));
                 String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
-                UnifyTracking.eventSearchResultSort(getActivity(),getScreenName(), selectedSortName);
+                UnifyTracking.eventSearchResultSort(getActivity(), getScreenName(), selectedSortName);
 
-                if(searchParameter != null) {
+                if (searchParameter != null) {
                     searchParameter.getSearchParameterHashMap().putAll(getSelectedSort());
                 }
 
@@ -313,12 +313,12 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private Map<String, String> getMapFromIntent(Intent data, String extraName) {
         Serializable serializableExtra = data.getSerializableExtra(extraName);
 
-        if(serializableExtra == null) return new HashMap<>();
+        if (serializableExtra == null) return new HashMap<>();
 
-        Map<?, ?> filterParameterMapIntent = (Map<?, ?>)data.getSerializableExtra(extraName);
+        Map<?, ?> filterParameterMapIntent = (Map<?, ?>) data.getSerializableExtra(extraName);
         Map<String, String> filterParameter = new HashMap<>(filterParameterMapIntent.size());
 
-        for(Map.Entry<?, ?> entry: filterParameterMapIntent.entrySet()) {
+        for (Map.Entry<?, ?> entry : filterParameterMapIntent.entrySet()) {
             filterParameter.put(entry.getKey().toString(), entry.getValue().toString());
         }
 
@@ -363,13 +363,13 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     @Override
     public HashMap<String, String> getSelectedFilter() {
-        if(filterController == null) return new HashMap<>();
+        if (filterController == null) return new HashMap<>();
 
         return new HashMap<>(filterController.getActiveFilterMap());
     }
 
     protected boolean isFilterActive() {
-        if(filterController == null) return false;
+        if (filterController == null) return false;
 
         return filterController.isFilterActive();
     }
@@ -381,7 +381,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     @Override
     public void setSelectedFilter(HashMap<String, String> selectedFilter) {
-        if(filterController == null) return;
+        if (filterController == null || getFilters() == null) return;
 
         List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
         filterController.initFilterController(selectedFilter, initializedFilterList);
@@ -410,7 +410,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void openBottomSheetFilter() {
-        if(searchParameter == null) return;
+        if (searchParameter == null || getFilters() == null) return;
 
         bottomSheetListener.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap());
         bottomSheetListener.launchFilterBottomSheet();
@@ -440,7 +440,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             );
             startActivityForResult(intent, getSortRequestCode());
 
-            if(getActivity() != null) {
+            if (getActivity() != null) {
                 getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
             }
         } else {
@@ -476,18 +476,21 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
 
-        if(filterController == null || searchParameter == null) return;
+        if (filterController == null || searchParameter == null
+                || getFilters() == null || getSort() == null) return;
 
         List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
         filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList);
         initSelectedSort();
 
-        if(isListEmpty) {
+        if (isListEmpty) {
             refreshAdapterForEmptySearch();
         }
     }
 
     private void initSelectedSort() {
+        if(getSort() == null) return;
+
         HashMap<String, String> selectedSort = new HashMap<>(
                 SortHelper.Companion.getSelectedSortFromSearchParameter(searchParameter.getSearchParameterHashMap(), getSort())
         );
@@ -606,7 +609,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void removeSelectedFilter(String uniqueId) {
-        if(filterController == null) return;
+        if (filterController == null) return;
 
         Option option = OptionHelper.generateOptionFromUniqueId(uniqueId);
 
@@ -617,7 +620,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     public void removeFilterFromFilterController(Option option) {
-        if(filterController == null) return;
+        if (filterController == null) return;
 
         String optionKey = option.getKey();
 
@@ -645,14 +648,14 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     public void applyFilterToSearchParameter(Map<String, String> filterParameter) {
-        if(searchParameter == null) return;
+        if (searchParameter == null) return;
 
         this.searchParameter.getSearchParameterHashMap().clear();
         this.searchParameter.getSearchParameterHashMap().putAll(filterParameter);
     }
 
     protected List<Option> getOptionListFromFilterController() {
-        if(filterController == null) return new ArrayList<>();
+        if (filterController == null) return new ArrayList<>();
 
         return OptionHelper.combinePriceFilterIfExists(filterController.getActiveFilterOptionList(),
                 getResources().getString(R.string.empty_state_selected_filter_price_name));
