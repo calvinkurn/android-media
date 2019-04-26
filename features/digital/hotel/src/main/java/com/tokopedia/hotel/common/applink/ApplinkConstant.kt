@@ -7,4 +7,5 @@ import com.tokopedia.abstraction.constant.TkpdAppLink
  */
 object ApplinkConstant: TkpdAppLink() {
     const val HOTEL = "tokopedia://hotel"
+    const val HOTEL_DETAIL = "tokopedia://hotel/detail/{id}"
 }

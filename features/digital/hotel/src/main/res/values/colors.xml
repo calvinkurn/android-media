@@ -2,4 +2,5 @@
 <resources>
     <color name="blue_booking">#0066a9</color>
     <color name="pink_property">#ef144a</color>
+    <color name="blue_backround">#e5f5ff</color>
 </resources>
