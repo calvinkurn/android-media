@@ -15,7 +15,7 @@ abstract class ExpandableRecyclerViewAdapter<P: ParentItem<C>, C: Any, PVH: Pare
     }
 
     private val flatItemList = mutableListOf<FlattenedWrapper<P, C>>()
-    private val parentList = mutableListOf<P>()
+    protected val parentList = mutableListOf<P>()
     var expandCollapseListener: ExpandCollapseListener? = null
     private val attachedRecyclerViewPool = mutableListOf<RecyclerView>()
     private var stateMap = mutableMapOf<P, Boolean>()
@@ -72,14 +72,18 @@ abstract class ExpandableRecyclerViewAdapter<P: ParentItem<C>, C: Any, PVH: Pare
         } else {
             with(holder as CVH){
                 child = item.child
-                onBindChilViewHolder(this, getNearestParentPosition(flatPosition), getChildPosition(flatPosition))
+                onBindChildViewHolder(this, getNearestParentPosition(flatPosition), getChildPosition(flatPosition))
             }
         }
     }
 
+    abstract fun onCreateParentViewHolder(parent: ViewGroup, viewType: Int): PVH
+
+    abstract fun onCreateChildrenViewHolder(parent: ViewGroup, viewType: Int): CVH
+
     abstract fun onBindParentViewHolder(holder: PVH, parentPosition: Int)
 
-    abstract fun onBindChilViewHolder(holder: CVH, parentPosition: Int, childPosition: Int)
+    abstract fun onBindChildViewHolder(holder: CVH, parentPosition: Int, childPosition: Int)
 
     override fun getItemCount(): Int = flatItemList.size
 
@@ -100,16 +104,12 @@ abstract class ExpandableRecyclerViewAdapter<P: ParentItem<C>, C: Any, PVH: Pare
         if (flatPosition == 0) return flatPosition
         var childIndex = 0
         flatItemList.forEachIndexed { index, flattenedWrapper ->
-            if (index == flatPosition) return@forEachIndexed
+            if (index == flatPosition) return childIndex
             childIndex = if (flattenedWrapper.isWrappedParent) 0
             else childIndex+1
         }
         return childIndex
     }
-
-    abstract fun onCreateParentViewHolder(parent: ViewGroup, viewType: Int): PVH
-
-    abstract fun onCreateChildrenViewHolder(parent: ViewGroup, viewType: Int): CVH
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)

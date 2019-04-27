@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Report</string>
+    <string name="product_report">Laporkan Produk</string>
+    <string name="product_report_header">Pilih kategori pelanggaran yang terjadi pada produk ini</string>
 </resources>
