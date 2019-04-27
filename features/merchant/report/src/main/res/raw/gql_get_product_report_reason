@@ -1,0 +1,31 @@
+{
+  visionProductReportReason(lang: "id"){
+    category_id
+    child{
+      category_id
+      child{
+        category_id
+        detail
+        value
+      }
+      additional_fields{
+        detail
+        key
+        Max
+        type
+        value
+      }
+      detail
+      value
+    }
+    additional_fields{
+      detail
+      key
+      Max
+      type
+      value
+    }
+    detail
+    value
+  }
+}
