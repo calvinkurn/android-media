@@ -1,7 +1,6 @@
 package com.tokopedia.shop.page.view.activity
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -16,8 +15,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.google.android.gms.tagmanager.DataLayer
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
@@ -29,10 +26,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.design.component.ToasterNormal.show
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
@@ -62,7 +57,6 @@ import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener {
-
 
     var shopId: String? = null
     var shopDomain: String? = null
@@ -544,9 +538,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         return this@ShopPageActivity
     }
 
-    override fun requestOpenShop(shopId: Int,notes:String) {
-        if(!notes.isEmpty()){
-            presenter.moderateShopRequest(shopId, notes)
+    override fun requestOpenShop(shopId: Int, moderateNotes:String) {
+        if(!moderateNotes.isEmpty()){
+            presenter.moderateShopRequest(shopId, moderateNotes)
         }
     }
 

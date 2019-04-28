@@ -31,12 +31,12 @@ class ModerateShopUseCase @Inject constructor(@ApplicationContext private val co
         private const val DESC_VALUE = "Moderate"
 
 
-        fun createRequestParams(shopIds: Int,notes:String): RequestParams {
+        fun createRequestParams(shopIds: Int, moderateNotes :String): RequestParams {
             val requestParams = RequestParams.create()
 
             requestParams.putInt(SHOP_ID, shopIds)
             requestParams.putInt(PARAM_STATUS, STATUS_VALUE)
-            requestParams.putString(PARAM_NOTES, notes)
+            requestParams.putString(PARAM_NOTES, moderateNotes)
             requestParams.putString(PARAM_DESC, DESC_VALUE)
             return requestParams
         }
@@ -76,8 +76,5 @@ class ModerateShopUseCase @Inject constructor(@ApplicationContext private val co
                 responseDesc = requestParams.getString(PARAM_DESC,"")
         )
     }
-
-
-
 
 }

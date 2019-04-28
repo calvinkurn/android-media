@@ -20,5 +20,4 @@ data class ModerateSubmitInput (
         @SerializedName("responseDesc")
         @Expose
         var responseDesc:String ? = ""
-
 )

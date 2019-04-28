@@ -19,7 +19,6 @@ import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCac
 import com.tokopedia.shop.page.view.listener.ShopPageView
 import com.tokopedia.shop.page.view.subscriber.ShopModerateSubscriber
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
@@ -116,10 +115,10 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         )
     }
 
-    fun moderateShopRequest(shopId: Int,notes:String){
+    fun moderateShopRequest(shopId: Int, moderateNotes:String){
         moderateShopUseCase.execute(
                 ModerateShopUseCase.createRequestParams(
-                        shopId,notes), ShopModerateSubscriber(view))
+                        shopId,moderateNotes), ShopModerateSubscriber(view))
     }
 
     fun clearCache() {
