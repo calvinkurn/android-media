@@ -24,20 +24,6 @@
             android:layout_marginLeft="@dimen/dp_10"
             android:src="@drawable/ic_kupon_telur" />
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/title_button_coupon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_toRightOf="@id/ic_button_coupon"
-            android:gravity="center"
-            android:text="Pakai Promo Tokopedia"
-            android:textSize="@dimen/sp_12"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/tkpd_main_green" />
-
         <ImageView
             android:id="@+id/bg_button_coupon"
             android:layout_width="wrap_content"
@@ -47,6 +33,46 @@
             android:layout_centerInParent="true"
             android:scaleType="centerCrop"
             android:src="@drawable/bg_button_promostacking" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/title_button_coupon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_toRightOf="@id/ic_button_coupon"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="Pakai Promo Tokopedia"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="@dimen/sp_12" />
+
+        <LinearLayout
+            android:id="@+id/layout_counter_coupons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:background="@drawable/bg_counter">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/counter_coupons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:paddingStart="@dimen/dp_3"
+                android:paddingLeft="@dimen/dp_3"
+                android:paddingEnd="@dimen/dp_3"
+                android:paddingRight="@dimen/dp_3"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_10" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/title_action_coupon"
@@ -111,14 +137,15 @@
 
                 <ImageView
                     android:id="@+id/imageCloseGlobal"
-                    android:layout_width="@dimen/dp_15"
-                    android:layout_height="@dimen/dp_15"
+                    android:layout_width="@dimen/dp_35"
+                    android:layout_height="@dimen/dp_35"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:layout_marginEnd="@dimen/dp_10"
-                    android:layout_marginRight="@dimen/dp_10"
+                    android:paddingStart="@dimen/dp_4"
+                    android:paddingLeft="@dimen/dp_4"
+                    android:paddingBottom="@dimen/dp_4"
+                    android:scaleType="center"
                     android:src="@drawable/ic_close_promo_checkout" />
 
                 <LinearLayout
@@ -136,8 +163,8 @@
                     <TextView
                         android:id="@+id/titleCouponGlobal"
                         style="@style/TextView.Micro11.FontMedium.Bold"
-                        android:layout_marginEnd="@dimen/dp_60"
-                        android:layout_marginRight="@dimen/dp_60"
+                        android:layout_marginEnd="@dimen/dp_5"
+                        android:layout_marginRight="@dimen/dp_5"
                         android:ellipsize="end"
                         android:maxLines="2"
                         android:textSize="@dimen/sp_13"
@@ -147,13 +174,13 @@
                         android:id="@+id/descCouponGlobal"
                         style="@style/TextView.Micro11.FontMedium.BlackDisabled"
                         android:layout_marginTop="@dimen/dp_3"
-                        android:layout_marginEnd="@dimen/dp_60"
-                        android:layout_marginRight="@dimen/dp_60"
+                        android:layout_marginEnd="@dimen/dp_5"
+                        android:layout_marginRight="@dimen/dp_5"
                         android:layout_marginBottom="@dimen/dp_3"
+                        android:lineSpacingExtra="2sp"
                         android:maxLines="2"
                         android:textSize="@dimen/sp_13"
                         android:visibility="gone"
-                        android:lineSpacingExtra="2sp"
                         tools:text="Pilih Kurir terlebih dahulu untuk memastikan benefit yang akan didapat" />
 
                 </LinearLayout>

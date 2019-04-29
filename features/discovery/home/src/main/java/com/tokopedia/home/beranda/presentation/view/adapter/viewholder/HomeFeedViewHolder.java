@@ -32,6 +32,7 @@ public class HomeFeedViewHolder extends AbstractViewHolder<HomeFeedViewModel> {
         productCardView.setWishlistButtonVisible(false);
         productCardView.setSlashedPrice(element.getSlashedPrice());
         productCardView.setDiscount(element.getDiscountPercentage());
+        productCardView.setRatingReviewCount(element.getRating(), element.getCountReview());
         productCardView.getImageView().setViewHintListener(element, new ImpressedImageView.ViewHintListener() {
             @Override
             public void onViewHint() {
