@@ -6,7 +6,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.page.view.listener.ShopPageView
 import rx.Subscriber
 
-class ShopModerateSubscriber(val view: ShopPageView):Subscriber<Boolean>() {
+class RequestShopModerateSubscriber(val view: ShopPageView):Subscriber<Boolean>() {
 
     override fun onNext(isSuccess: Boolean?) {
         if (isSuccess == false) {

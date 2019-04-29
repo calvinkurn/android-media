@@ -10,15 +10,14 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.data.source.cloud.model.ModerateSubmitInput
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateData
-import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateError
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import java.util.HashMap
 import javax.inject.Inject
 
-class ModerateShopUseCase @Inject constructor(@ApplicationContext private val context: Context,
-                                              private val graphqlUseCase: GraphqlUseCase) : UseCase<Boolean>() {
+class RequestModerateShopUseCase @Inject constructor(@ApplicationContext private val context: Context,
+                                                     private val graphqlUseCase: GraphqlUseCase) : UseCase<Boolean>() {
 
 
     companion object {
@@ -57,7 +56,7 @@ class ModerateShopUseCase @Inject constructor(@ApplicationContext private val co
 
         return graphqlUseCase.createObservable(requestParams).map {
             val data: ShopModerateData? = it.getData(ShopModerateData::class.java)
-            val error: MutableList<GraphqlError>? = it.getError(ShopModerateError::class.java)
+            val error: MutableList<GraphqlError>? = it.getError(GraphqlError::class.java)
 
             if (data == null) {
                 throw RuntimeException()

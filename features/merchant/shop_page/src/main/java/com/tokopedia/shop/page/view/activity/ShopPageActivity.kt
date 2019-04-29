@@ -38,6 +38,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
@@ -314,6 +315,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopId = info.shopId
             shopPageViewPagerAdapter.shopId = shopId
             shopDomain = info.shopDomain
+            presenter.getModerateShopInfo()
             shopPageViewHolder.bind(this, presenter.isMyShop(shopId!!))
             searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_2,
                     MethodChecker.fromHtml(info.shopName).toString()))
@@ -386,6 +388,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun onErrorGetReputation(e: Throwable?) {
 
+    }
+
+    override fun onSuccessGetModerateInfo(shopModerateRequestData: ShopModerateRequestData) {
+        val statusModerate = shopModerateRequestData.shopModerateRequestStatus.result.status
+        shopPageViewHolder.updateViewModerateStatus(statusModerate)
     }
 
     override fun onSuccessToggleFavourite(successValue: Boolean) {

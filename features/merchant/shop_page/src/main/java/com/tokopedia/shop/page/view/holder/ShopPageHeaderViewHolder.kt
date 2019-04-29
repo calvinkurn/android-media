@@ -36,7 +36,6 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
 
     }
 
-
     fun bind(shopInfo: ShopInfo, isMyShop: Boolean) {
         isShopFavourited = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited())
         view.shopName.text = MethodChecker.fromHtml(shopInfo.info.shopName).toString()
@@ -68,6 +67,12 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         }
 
         updateViewShopStatus(shopInfo, isMyShop)
+    }
+
+    fun updateViewModerateStatus(moderateStatus: Int){
+        if (moderateStatus == 1){
+            view.buttonActionAbnormal.visibility = View.GONE
+        }
     }
 
     private fun updateViewShopStatus(shopInfo: ShopInfo, isMyShop: Boolean) {
