@@ -72,13 +72,7 @@ public class GlobalNavWidget extends BaseCustomView {
         globalNavTitle = (TextView) view.findViewById(R.id.globalNavTitle);
         globalNavSeeAllButton = (TextView) view.findViewById(R.id.globalNavSeeAllButton);
         globalNavRecyclerView = (RecyclerView) view.findViewById(R.id.globalNavRecyclerView);
-        setupFont();
         setupBackground();
-    }
-
-    private void setupFont() {
-        Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
-        globalNavTitle.setTypeface(typeface);
     }
 
     private void setupBackground() {

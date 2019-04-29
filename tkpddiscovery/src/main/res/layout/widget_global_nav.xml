@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/globalNavContainerLayout"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -15,13 +16,13 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/globalNavTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            style="@style/TextView.Small"
             android:textColor="@color/charcoal_grey_88"
+            app:typographyType="heading_5"
             />
 
         <TextView
