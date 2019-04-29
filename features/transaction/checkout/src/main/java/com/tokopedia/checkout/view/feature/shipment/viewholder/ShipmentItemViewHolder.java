@@ -475,7 +475,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llLogPromo.setVisibility(View.GONE);
         if (shipmentCartItemModel.isUseCourierRecommendation()) {
             if (shipmentCartItemModel.getIsBlackbox()) {
-                renderCourierBlackbox(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
+                renderRobinhoodV3(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
                         recipientAddressModel, shipmentCartItemModel.getShopShipmentList(), ratesDataConverter);
                 if (showCaseObjectList.size() == 1) {
                     showCaseObjectList.add(new ShowCaseObject(llSelectShipmentRecommendation,
@@ -485,7 +485,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     );
                 }
             } else {
-                renderCourierRecommendation(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
+                renderRobinhoodV2(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
                         recipientAddressModel, shipmentCartItemModel.getShopShipmentList(), ratesDataConverter);
                 if (showCaseObjectList.size() == 1) {
                     showCaseObjectList.add(new ShowCaseObject(llSelectShipmentRecommendation,
@@ -496,7 +496,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
             }
         } else {
-            renderCourier(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
+            renderRobinhoodV1(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
                     recipientAddressModel, ratesDataConverter);
             if (showCaseObjectList.size() == 1) {
                 showCaseObjectList.add(new ShowCaseObject(llShipmentOptionViewLayout,
@@ -688,10 +688,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
-    private void renderCourier(ShipmentCartItemModel shipmentCartItemModel,
-                               ShipmentDetailData shipmentDetailData,
-                               RecipientAddressModel recipientAddressModel,
-                               RatesDataConverter ratesDataConverter) {
+    // Choose duration, then manually choose courier
+    // Deprecated
+    private void renderRobinhoodV1(ShipmentCartItemModel shipmentCartItemModel,
+                                   ShipmentDetailData shipmentDetailData,
+                                   RecipientAddressModel recipientAddressModel,
+                                   RatesDataConverter ratesDataConverter) {
         llShipmentRecommendationContainer.setVisibility(View.GONE);
         llShipmentBlackboxContainer.setVisibility(View.GONE);
         llShipmentContainer.setVisibility(View.VISIBLE);
@@ -778,11 +780,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     }
 
-    private void renderCourierRecommendation(ShipmentCartItemModel shipmentCartItemModel,
-                                             ShipmentDetailData shipmentDetailData,
-                                             RecipientAddressModel recipientAddressModel,
-                                             List<ShopShipment> shopShipmentList,
-                                             RatesDataConverter ratesDataConverter) {
+    private void renderRobinhoodV2(ShipmentCartItemModel shipmentCartItemModel,
+                                   ShipmentDetailData shipmentDetailData,
+                                   RecipientAddressModel recipientAddressModel,
+                                   List<ShopShipment> shopShipmentList,
+                                   RatesDataConverter ratesDataConverter) {
         RecipientAddressModel currentAddress;
         if (recipientAddressModel == null) {
             currentAddress = shipmentCartItemModel.getRecipientAddressModel();
@@ -899,11 +901,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
-    private void renderCourierBlackbox(ShipmentCartItemModel shipmentCartItemModel,
-                                       ShipmentDetailData shipmentDetailData,
-                                       RecipientAddressModel recipientAddressModel,
-                                       List<ShopShipment> shopShipmentList,
-                                       RatesDataConverter ratesDataConverter) {
+    // Choose duration, then remove courier option, forcing user to continue without choosing courier
+    // Deprecated
+    private void renderRobinhoodV3(ShipmentCartItemModel shipmentCartItemModel,
+                                   ShipmentDetailData shipmentDetailData,
+                                   RecipientAddressModel recipientAddressModel,
+                                   List<ShopShipment> shopShipmentList,
+                                   RatesDataConverter ratesDataConverter) {
         RecipientAddressModel currentAddress;
         if (recipientAddressModel == null) {
             currentAddress = shipmentCartItemModel.getRecipientAddressModel();
