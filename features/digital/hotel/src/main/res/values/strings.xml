@@ -83,5 +83,6 @@
     <string name="hotel_detail_check_from_to">%1$s - %2$s</string>
     <string name="hotel_detail_check_start_from">Mulai %1$s</string>
     <string name="hotel_detail_check_to">Sampai %1$s</string>
+    <string name="hotel_detail_map_marker_title"><![CDATA[<strong>%1$s</strong> - %2$s]]></string>
 
 </resources>

@@ -21,6 +21,7 @@ import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
+import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailMapActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
@@ -36,8 +37,6 @@ import javax.inject.Inject
  * @author by furqan on 22/04/19
  */
 class HotelDetailFragment : BaseDaggerFragment() {
-
-//    private lateinit var googleMap: GoogleMap
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -130,11 +129,6 @@ class HotelDetailFragment : BaseDaggerFragment() {
         outState.putBoolean(SAVED_ENABLE_BUTTON, isButtonEnabled)
     }
 
-//    override fun onMapReady(googleMap: GoogleMap) {
-//        this.googleMap = googleMap
-//        setGoogleMap()
-//    }
-
     private fun setupLayout(data: PropertyDetailData) {
         hideLoadingLayout()
         (activity as HotelDetailActivity).setSupportActionBar(detail_toolbar)
@@ -181,7 +175,10 @@ class HotelDetailFragment : BaseDaggerFragment() {
                 FacilityItem(1, "Restoran", ""),
                 FacilityItem(1, "Kolam Renang", "")))
 
-//        initHotelLocationMap()
+        btn_hotel_detail_show.setOnClickListener {
+            startActivity(HotelDetailMapActivity.getCallingIntent(context!!, data.property.name,
+                    data.property.latitude, data.property.longitude, data.property.address))
+        }
     }
 
     private fun showLoadingLayout() {
@@ -292,42 +289,6 @@ class HotelDetailFragment : BaseDaggerFragment() {
             tv_hotel_price.text = data[0].roomPrice[0].roomPrice
         }
     }
-
-//    private fun initHotelLocationMap() {
-//        if (map_view != null) {
-//            map_view.onCreate(null)
-//            map_view.onResume()
-//            map_view.getMapAsync(this)
-//        }
-//
-//        setGoogleMap()
-//    }
-
-//    private fun setGoogleMap() {
-//        if (::googleMap.isInitialized) {
-//            val latitude = getLatitude("-6.221091").toDouble()
-//            val longitude = getLongitude("106.821637").toDouble()
-//            val latLng = LatLng(latitude, longitude)
-//
-//            googleMap.uiSettings.isMapToolbarEnabled = false
-//            googleMap.uiSettings.isZoomControlsEnabled = false
-//            googleMap.uiSettings.isMyLocationButtonEnabled = false
-//            googleMap.addMarker(
-//                    MarkerOptions().position(latLng).icon(
-//                            BitmapDescriptorFactory.fromResource(R.drawable.ic_hotel_pin_location))
-//            ).isDraggable = false
-//            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-//            googleMap.setOnMapClickListener {
-//                // need this even it's not used
-//                // it's used to override default function of OnMapClickListener
-//                // which is navigate to default Google Map Apps
-//            }
-//        }
-//    }
-
-//    private fun getLatitude(latitude: String): String = if (!latitude.isEmpty()) latitude else DEFAULT_LATITUDE
-
-//    private fun getLongitude(longitude: String): String = if (!longitude.isEmpty()) longitude else DEFAULT_LONGITUDE
 
     companion object {
 

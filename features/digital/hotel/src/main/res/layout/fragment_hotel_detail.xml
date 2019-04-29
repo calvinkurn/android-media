@@ -290,16 +290,6 @@
                             android:layout_height="@dimen/dp_100"
                             android:scaleType="centerCrop" />
 
-                        <!--
-                                            <com.google.android.gms.maps.MapView
-                                                android:id="@+id/map_view"
-                                                android:layout_width="match_parent"
-                                                android:layout_height="@dimen/dp_100"
-                                                android:clickable="false"
-                                                app:cameraZoom="15"
-                                                app:liteMode="true"
-                                                app:mapType="normal" />-->
-
                         <com.tokopedia.design.component.ButtonCompat
                             android:id="@+id/btn_hotel_detail_show"
                             android:layout_width="wrap_content"
