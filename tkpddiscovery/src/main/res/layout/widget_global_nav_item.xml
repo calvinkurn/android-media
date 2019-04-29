@@ -21,7 +21,7 @@
             android:id="@+id/globalNavItemImage"
             android:layout_width="@dimen/dp_72"
             android:layout_height="@dimen/dp_72"
-            android:padding="@dimen/dp_20"
+            android:padding="@dimen/dp_16"
             android:scaleType="centerInside"/>
         
     </RelativeLayout>
