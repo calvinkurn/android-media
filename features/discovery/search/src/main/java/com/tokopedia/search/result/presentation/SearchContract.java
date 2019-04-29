@@ -3,8 +3,8 @@ package com.tokopedia.search.result.presentation;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
-import com.tokopedia.discovery.newdiscovery.base.InitiateSearchSubscriber;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+
+import java.util.Map;
 
 public interface SearchContract {
     interface View extends CustomerView {
@@ -16,6 +16,6 @@ public interface SearchContract {
         void onResume();
         void onDestroy();
 
-        void initiateSearch(SearchParameter searchParameter, boolean isForceSearch, InitiateSearchListener initiateSearchSubscriber);
+        void initiateSearch(Map<String, Object> searchParameter, boolean isForceSearch, InitiateSearchListener initiateSearchSubscriber);
     }
 }

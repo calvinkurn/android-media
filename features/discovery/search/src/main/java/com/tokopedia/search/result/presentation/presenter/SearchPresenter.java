@@ -6,15 +6,21 @@ import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchSubscriber;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.Map;
+
+import javax.inject.Inject;
+
 final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> implements SearchContract.Presenter {
 
-    private GraphqlUseCase graphqlUseCase;
-    private GqlSpecification gqlInitiateSearchSpec;
+    @Inject
+    GraphqlUseCase graphqlUseCase;
+
+    @Inject
+    GqlSpecification gqlInitiateSearchSpec;
 
     SearchPresenter(GraphqlUseCase graphqlUseCase, GqlSpecification gqlInitiateSearchSpec) {
         this.graphqlUseCase = graphqlUseCase;
@@ -37,7 +43,7 @@ final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> imp
     }
 
     @Override
-    public void initiateSearch(SearchParameter searchParameter, boolean isForceSearch, InitiateSearchListener initiateSearchListener) {
+    public void initiateSearch(Map<String, Object> searchParameter, boolean isForceSearch, InitiateSearchListener initiateSearchListener) {
         if(searchParameter == null || initiateSearchListener == null) return;
 
         RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, isForceSearch);
@@ -50,10 +56,10 @@ final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> imp
         );
     }
 
-    private RequestParams createInitiateSearchRequestParams(SearchParameter searchParameter, boolean isForceSearch) {
+    private RequestParams createInitiateSearchRequestParams(Map<String, Object> searchParameter, boolean isForceSearch) {
         RequestParams requestParams = RequestParams.create();
 
-        requestParams.putAll(searchParameter.getSearchParameterMap());
+        requestParams.putAll(searchParameter);
 
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);

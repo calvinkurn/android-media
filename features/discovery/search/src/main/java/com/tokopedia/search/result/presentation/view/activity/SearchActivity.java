@@ -568,7 +568,7 @@ public class SearchActivity extends BaseActivity
         onSearchingStart();
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
 
-        searchPresenter.initiateSearch(searchParameter, isForceSearch, getInitiateSearchListener());
+        searchPresenter.initiateSearch(searchParameter.getSearchParameterMap(), isForceSearch, getInitiateSearchListener());
     }
 
     private void updateSearchParameterBeforeSearch(String searchQuery) {
