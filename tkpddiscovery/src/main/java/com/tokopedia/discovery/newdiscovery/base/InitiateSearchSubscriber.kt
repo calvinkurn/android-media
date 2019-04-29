@@ -11,14 +11,17 @@ import rx.Subscriber
 private const val DISCOVERY_URL_SEARCH = 1
 private const val DISCOVERY_APPLINK = 2
 
-class InitiateSearchSubscriber(
+open class InitiateSearchSubscriber(
     private val initiateSearchListener: InitiateSearchListener
 ) : Subscriber<GraphqlResponse>() {
 
     override fun onNext(graphqlResponse: GraphqlResponse?) {
-        if(graphqlResponse == null) throw Exception("GraphQL Response is null")
+        if(graphqlResponse == null) {
+            initiateSearchListener.onHandleResponseError()
+            return
+        }
 
-        val initiateSearchModel : InitiateSearchModel = graphqlResponse.getData(
+        val initiateSearchModel : InitiateSearchModel? = graphqlResponse.getData(
             InitiateSearchModel::class.java)
 
         val redirectApplink = getRedirectApplink(initiateSearchModel)
@@ -30,8 +33,8 @@ class InitiateSearchSubscriber(
         }
     }
 
-    private fun getRedirectApplink(initiateSearchModel: InitiateSearchModel) : String {
-        return initiateSearchModel.searchProduct?.redirection?.redirectApplink ?: ""
+    private fun getRedirectApplink(initiateSearchModel: InitiateSearchModel?) : String {
+        return initiateSearchModel?.searchProduct?.redirection?.redirectApplink ?: ""
     }
 
     private fun defineRedirectApplink(applink: String): Int {
@@ -42,8 +45,8 @@ class InitiateSearchSubscriber(
         }
     }
 
-    private fun onHandleSearch(initiateSearchModel: InitiateSearchModel) {
-        val isHasCatalog = ListHelper.isContainItems(initiateSearchModel.searchProduct?.catalogs)
+    private fun onHandleSearch(initiateSearchModel: InitiateSearchModel?) {
+        val isHasCatalog = ListHelper.isContainItems(initiateSearchModel?.searchProduct?.catalogs)
         initiateSearchListener.onHandleResponseSearch(isHasCatalog)
     }
 
