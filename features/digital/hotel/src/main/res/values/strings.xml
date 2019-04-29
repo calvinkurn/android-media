@@ -79,4 +79,6 @@
     <string name="hotel_room_list_pay_in_hotel">Bayar di Hotel</string>
     <string name="hotel_room_list_without_credit_card">Tanpa Jaminan Kartu Kredit</string>
 
+    <string name="hotel_detail_more_image_counter">+%1$d</string>
+
 </resources>

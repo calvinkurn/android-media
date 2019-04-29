@@ -1,17 +1,30 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
+import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
+import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
+import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_detail.*
+import java.util.*
+import javax.inject.Inject
 
 /**
  * @author by furqan on 22/04/19
@@ -20,13 +33,80 @@ class HotelDetailFragment : BaseDaggerFragment() {
 
 //    private lateinit var googleMap: GoogleMap
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var detailViewModel: HotelDetailViewModel
+
+    private var hotelHomepageModel = HotelHomepageModel()
+    private var isButtonEnabled: Boolean = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            detailViewModel = viewModelProvider.get(HotelDetailViewModel::class.java)
+        }
+
+        arguments?.let {
+            hotelHomepageModel.locId = it.getInt(HotelDetailActivity.EXTRA_PROPERTY_ID)
+            hotelHomepageModel.checkInDate = it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE,
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(
+                            TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1)))
+            hotelHomepageModel.checkOutDate = it.getString(HotelDetailActivity.EXTRA_CHECK_OUT_DATE,
+                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(
+                            TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 2)))
+            hotelHomepageModel.roomCount = it.getInt(HotelDetailActivity.EXTRA_ROOM_COUNT)
+            hotelHomepageModel.adultCount = it.getInt(HotelDetailActivity.EXTRA_ADULT_COUNT, 1)
+            hotelHomepageModel.childCount = it.getInt(HotelDetailActivity.EXTRA_CHILD_COUNT, 0)
+            isButtonEnabled = it.getBoolean(HotelDetailActivity.EXTRA_ENABLE_BUTTON, true)
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_detail, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupLayout()
+        if (savedInstanceState != null && savedInstanceState.containsKey(SAVED_SEARCH_PARAMETER)) {
+            hotelHomepageModel = savedInstanceState.getParcelable(SAVED_SEARCH_PARAMETER)!!
+        }
+
+        showLoadingLayout()
+
+        detailViewModel.getHotelDetailData(
+                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
+                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                hotelHomepageModel.locId,
+                hotelHomepageModel)
+
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        detailViewModel.roomListResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    // TODO Success get Room List
+                }
+                is Fail -> {
+                    // TODO Fail get Room List
+                }
+            }
+        })
+
+        detailViewModel.hotelInfoResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    setupLayout(it.data)
+                }
+                is Fail -> {
+                    // TODO Fail get Hotel Info
+                }
+            }
+        })
     }
 
     override fun getScreenName(): String = ""
@@ -35,17 +115,23 @@ class HotelDetailFragment : BaseDaggerFragment() {
         getComponent(HotelDetailComponent::class.java).inject(this)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(SAVED_SEARCH_PARAMETER, hotelHomepageModel)
+        outState.putBoolean(SAVED_ENABLE_BUTTON, isButtonEnabled)
+    }
+
 //    override fun onMapReady(googleMap: GoogleMap) {
 //        this.googleMap = googleMap
 //        setGoogleMap()
 //    }
 
-    private fun setupLayout() {
+    private fun setupLayout(data: PropertyDetailData) {
+        hideLoadingLayout()
         (activity as HotelDetailActivity).setSupportActionBar(detail_toolbar)
         (activity as HotelDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        (activity as HotelDetailActivity).updateTitle(arguments?.getString(HotelDetailActivity.EXTRA_PROPERTY_ID))
 
-        collapsing_toolbar.title = " "
+        collapsing_toolbar.title = ""
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
             var scrollRange = -1
@@ -55,7 +141,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
                     scrollRange = appBarLayout.totalScrollRange
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsing_toolbar.title = "Avissa Suites"
+                    collapsing_toolbar.title = data.property.name
                     isShow = true
                 } else if (isShow) {
                     collapsing_toolbar.title = " "
@@ -64,18 +150,67 @@ class HotelDetailFragment : BaseDaggerFragment() {
             }
         })
 
-        iv_main_photo_preview.loadImage("https://q-xx.bstatic.com/xdata/images/hotel/max300/183774920.jpg?k=ac0ee9d89053eae24e3d5e23dabeb0f3aadbc4d5857cdf4cf130c950999c6a06&amp;o=")
-        iv_first_photo_preview.loadImage("https://q-xx.bstatic.com/xdata/images/hotel/max300/183774920.jpg?k=ac0ee9d89053eae24e3d5e23dabeb0f3aadbc4d5857cdf4cf130c950999c6a06&amp;o=")
-        iv_second_photo_preview.loadImage("https://q-xx.bstatic.com/xdata/images/hotel/max300/183774923.jpg?k=7cb4bfda6f21d7c9aa427e5472dbe7ecae218d8050b6e5c01d2c529fc7d2474c&amp;o=")
-        iv_third_photo_preview.loadImage("https://q-xx.bstatic.com/xdata/images/hotel/max300/183774928.jpg?k=11c5465ec9f67150f3591694051e2431c7350c82137dc8f50e3c589e376851b9&amp;o=")
+        setupMainImage(data.property.images)
 
-        for (i in 1..5) {
+        tv_hotel_name.text = data.property.name
+        hotel_property_type.text = data.property.typeName
+        for (i in 1..data.property.star) {
             hotel_rating_container.addView(RatingStarView(context!!))
         }
+        tv_hotel_address.text = data.property.address
 
-        iv_hotel_detail_location.loadImage("https://media-cdn.tripadvisor.com/media/photo-s/11/4d/61/99/location-map.jpg")
+        iv_hotel_detail_location.loadImage(data.property.locationImageStatic)
 
 //        initHotelLocationMap()
+    }
+
+    private fun showLoadingLayout() {
+        app_bar_layout.visibility = View.GONE
+        container_hotel_detail.visibility = View.GONE
+        container_hotel_detail_shimmering.visibility = View.VISIBLE
+    }
+
+    private fun hideLoadingLayout() {
+        app_bar_layout.visibility = View.VISIBLE
+        container_hotel_detail.visibility = View.VISIBLE
+        container_hotel_detail_shimmering.visibility = View.GONE
+    }
+
+    private fun setupMainImage(images: List<PropertyImageItem>) {
+        // TODO add action to open preview
+
+        var imageCounter = 0
+
+        loop@ for ((imageIndex, item) in images.withIndex()) {
+            when (imageCounter) {
+                0 -> {
+                    // do nothing, preventing break if mainPhoto not in the first item
+                }
+                1 -> {
+                    iv_first_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    imageCounter++
+                }
+                2 -> {
+                    iv_second_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    imageCounter++
+                }
+                3 -> {
+                    iv_third_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    imageCounter++
+                }
+                else -> {
+                    break@loop
+                }
+            }
+            if (item.mainPhoto) {
+                iv_main_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                imageCounter++
+            }
+        }
+
+        if (images.size - imageCounter > 0) {
+            tv_more_image_counter.text = getString(R.string.hotel_detail_more_image_counter, images.size - imageCounter)
+        }
     }
 
 //    private fun initHotelLocationMap() {
@@ -110,14 +245,14 @@ class HotelDetailFragment : BaseDaggerFragment() {
 //        }
 //    }
 
-    private fun getLatitude(latitude: String): String = if (!latitude.isEmpty()) latitude else DEFAULT_LATITUDE
+//    private fun getLatitude(latitude: String): String = if (!latitude.isEmpty()) latitude else DEFAULT_LATITUDE
 
-    private fun getLongitude(longitude: String): String = if (!longitude.isEmpty()) longitude else DEFAULT_LONGITUDE
+//    private fun getLongitude(longitude: String): String = if (!longitude.isEmpty()) longitude else DEFAULT_LONGITUDE
 
     companion object {
 
-        val DEFAULT_LATITUDE = "-6.221212"
-        val DEFAULT_LONGITUDE = "106.819494"
+        const val SAVED_SEARCH_PARAMETER = "SAVED_SEARCH_PARAMETER"
+        const val SAVED_ENABLE_BUTTON = "SAVED_ENABLE_BUTTON"
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
                         adultCount: Int, childCount: Int = 0, enableButton: Boolean = true): HotelDetailFragment =

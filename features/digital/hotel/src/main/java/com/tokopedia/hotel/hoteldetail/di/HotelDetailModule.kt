@@ -1,27 +1,20 @@
 package com.tokopedia.hotel.hoteldetail.di
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
-import dagger.Binds
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Module
-import dagger.multibindings.IntoMap
+import dagger.Provides
 
 /**
  * @author by furqan on 22/04/19
  */
 @Module
 @HotelDetailScope
-abstract class HotelDetailModule {
+class HotelDetailModule {
 
     @HotelDetailScope
-    @Binds
-    internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    @Provides
+    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
+            MultiRequestGraphqlUseCase(graphqlRepository)
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(HotelDetailViewModel::class)
-    internal abstract fun hotelDetailViewModel(viewModel: HotelDetailViewModel): ViewModel
 }
