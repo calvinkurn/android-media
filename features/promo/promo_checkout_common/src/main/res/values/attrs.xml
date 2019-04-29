@@ -8,6 +8,7 @@
             <enum name="empty" value="3"/>
         </attr>
         <attr name="title" format="string"/>
+        <attr name="counter" format="string"/>
         <attr name="desc" format="string"/>
     </declare-styleable>
 </resources>

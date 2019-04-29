@@ -31,6 +31,14 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
     private static boolean mAllowShake = true;
     private PermissionListener mPermissionListener;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().hide();
+        }
+    }
+
     @DeepLink({Constants.Applinks.DISCOVERY_PAGE})
     public static Intent getDiscoveryPageIntent(Context context, Bundle bundle) {
         if (bundle != null) {

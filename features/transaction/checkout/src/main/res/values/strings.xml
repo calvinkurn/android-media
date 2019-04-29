@@ -251,10 +251,9 @@
     <string name="label_promo">Promo</string>
     <string name="label_total_nilai_promo">Total Nilai Promo</string>
 
-    <string name="clash_bottomsheet_title">Oops.. Terjadi Konflik Voucher</string>
-    <string name="clash_bottomsheet_title_new">Oops, Terjadi Promo Konflik</string>
+    <string name="clash_bottomsheet_title">Oops.. terjadi konflik promo</string>
     <string name="clash_bottomsheet_subtitle">Pilih Voucher yang akan digunakan</string>
-    <string name="clash_bottomsheet_subtitle_new">Pilih Promo yang Akan Digunakan</string>
+    <string name="clash_bottomsheet_subtitle_new">Pilih promo yang akan digunakan</string>
     <string name="clash_bottomsheet_latest_voucher">Voucher Baru Dipilih</string>
     <string name="clash_bottomsheet_latest_potential_promo">Nilai Potensi Promo Rp 75.000</string>
     <string name="clash_bottomsheet_latest_potential_promo_desc">Cashback Tokped Hingga Rp 75.000</string>
@@ -264,7 +263,6 @@
     <string name="clash_bottomsheet_previous_potential_promo_desc1">Cashback Tokped Hingga Rp 75.000</string>
     <string name="clash_bottomsheet_previous_potential_promo_origin2">Dari toko Bandung</string>
     <string name="clash_bottomsheet_previous_potential_promo_desc2">Cashback Tokped Hingga Rp 75.000</string>
-    <string name="clash_bottomsheet_info_warning">Voucher yang baru dipilih tidak dapat digunakan bersamaan dengan voucher sebelumnya.</string>
     <string name="clash_bottomsheet_info_warning_new">Promo yang barusan kamu pilih nggak bisa dipakai bareng promo lain.</string>
     <string name="clash_bottomsheet_submit">Gunakan Promo</string>
 
@@ -280,11 +278,11 @@
     <string name="totalbenefit_bottomsheet_info">Cashback akan ditambahkan ke OVO Points setelah kamu terima barang</string>
 
     <string name="variant_merchant_voucher">merchant_voucher</string>
-    <string name="checkout_module_promo_clashing_promo_potential">Nilai Potensi Promo %s</string>
-    <string name="checkout_module_title_promo_clashing_newly_selected">Voucher Baru Dipilih</string>
-    <string name="checkout_module_title_promo_clashing_previously_selected">Voucher Sebelumnya</string>
-    <string name="checkout_module_label_clasing_benefit_shop_name">Dari toko %s</string>
-    <string name="checkout_module_label_clasing_benefit_global">Dari Tokopedia</string>
+    <string name="checkout_module_promo_clashing_promo_potential">Promo yang bisa didapat %s</string>
+    <string name="checkout_module_title_promo_clashing_newly_selected">Promo baru dipilih</string>
+    <string name="checkout_module_title_promo_clashing_previously_selected">Promo awal</string>
+    <string name="checkout_module_label_clasing_benefit_shop_name">Toko %s</string>
+    <string name="checkout_module_label_clasing_benefit_global">Tokopedia</string>
     <string name="gratis_ongkir_promo_kurir">Gratis Ongkir (Promo Kurir)</string>
     <string name="checkout_module_label_promo_no_item_checked">Silakan pilih item terlebih dahulu</string>
 
