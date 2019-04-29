@@ -65,6 +65,7 @@ import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.Tooltip;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -1431,8 +1432,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration, boolean isCod) {
-        checkoutAnalyticsCourierSelection.eventClickChecklistPilihDurasiPengiriman(isCourierPromo, duration, isCod);
+    public void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration, boolean isCod, String shippingPriceMin, String shippingPriceHigh) {
+        checkoutAnalyticsCourierSelection.eventClickChecklistPilihDurasiPengiriman(isCourierPromo, duration, isCod, shippingPriceMin, shippingPriceHigh);
     }
 
     @Override
@@ -1848,7 +1849,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ServiceData serviceData = shippingCourierViewModels.get(0).getServiceData();
             sendAnalyticsOnClickDurationThatContainPromo(
                     (serviceData.getIsPromo() == 1),
-                    serviceData.getServiceName(), (serviceData.getCodData().getIsCod() == 1)
+                    serviceData.getServiceName(),
+                    (serviceData.getCodData().getIsCod() == 1),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(serviceData.getRangePrice().getMinPrice(), false),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(serviceData.getRangePrice().getMaxPrice(), false)
             );
         }
         if (flagNeedToSetPinpoint) {
