@@ -422,9 +422,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_8"
                         app:leftSubtitleText="@string/hotel_homepage_check_in"
-                        app:leftTitleText="Mulai 11:00"
-                        app:rightSubtitleText="@string/hotel_check_out_calendar_title"
-                        app:rightTitleText="Sampai 21:00" />
+                        app:rightSubtitleText="@string/hotel_check_out_calendar_title" />
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:layout_width="match_parent"
@@ -442,7 +440,7 @@
                         android:layout_marginTop="@dimen/dp_8"
                         android:ellipsize="end"
                         android:maxLines="3"
-                        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                         app:fontSize="micro"
                         app:weight="regular" />
 
@@ -470,7 +468,7 @@
                         android:layout_marginTop="@dimen/dp_8"
                         android:ellipsize="end"
                         android:maxLines="3"
-                        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                         app:fontSize="micro"
                         app:weight="regular" />
 

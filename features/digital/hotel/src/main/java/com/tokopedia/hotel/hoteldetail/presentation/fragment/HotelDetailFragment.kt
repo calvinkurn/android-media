@@ -161,6 +161,21 @@ class HotelDetailFragment : BaseDaggerFragment() {
 
         iv_hotel_detail_location.loadImage(data.property.locationImageStatic)
 
+        if (data.property.checkinTo.isNotEmpty()) {
+            scv_hotel_date.setLeftTitleText(getString(R.string.hotel_detail_check_from_to, data.property.checkInFrom, data.property.checkinTo))
+        } else {
+            scv_hotel_date.setLeftTitleText(getString(R.string.hotel_detail_check_start_from, data.property.checkInFrom))
+        }
+
+        if (data.property.checkoutFrom.isNotEmpty()) {
+            scv_hotel_date.setRightTitleText(getString(R.string.hotel_detail_check_from_to, data.property.checkoutFrom, data.property.checkoutTo))
+        } else {
+            scv_hotel_date.setRightTitleText(getString(R.string.hotel_detail_check_to, data.property.checkoutTo))
+        }
+
+        tv_hotel_important_info.text = data.property.importantInformation
+        tv_hotel_description.text = data.property.description
+
 //        initHotelLocationMap()
     }
 
