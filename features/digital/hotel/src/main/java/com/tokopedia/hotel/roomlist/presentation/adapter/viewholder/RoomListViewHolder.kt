@@ -2,11 +2,11 @@ package com.tokopedia.hotel.roomlist.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomInfo
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
+import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import kotlinx.android.synthetic.main.item_hotel_room_full.view.*
 import kotlinx.android.synthetic.main.item_hotel_room_list.view.*
 import kotlin.math.min
@@ -50,34 +50,23 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
 
     fun initRoomFacility(breakfastIncluded: Boolean, refundable: Boolean, roomFacility: List<HotelRoomInfo.Facility>) {
         with(itemView) {
-
             room_facility_recycler_view.removeAllViews()
 
-            var breakfastTextView = TextViewCompat(context)
-            breakfastTextView.text = if (breakfastIncluded) getString(R.string.hotel_room_list_filter_free_breakfast)
-            else getString(R.string.hotel_room_list_breakfast_not_included)
-            breakfastTextView.setFontSize(TextViewCompat.FontSize.MICRO)
-            breakfastTextView.setDrawableLeft(R.drawable.ic_facility_add)
-            breakfastTextView.compoundDrawablePadding = 6
-            breakfastTextView.setPadding(0,5,0,5)
+            var breakfastTextView = FacilityTextView(context)
+            breakfastTextView.setIconAndText("",
+                    if (breakfastIncluded) getString(R.string.hotel_room_list_free_breakfast)
+                    else getString(R.string.hotel_room_list_breakfast_not_included))
             room_facility_recycler_view.addView(breakfastTextView)
 
-            var refundableTextView = TextViewCompat(context)
-            refundableTextView.text = if (refundable) getString(R.string.hotel_room_list_refundable_with_condition)
-            else getString(R.string.hotel_room_list_not_refundable)
-            refundableTextView.setFontSize(TextViewCompat.FontSize.MICRO)
-            refundableTextView.setDrawableLeft(R.drawable.ic_facility_add)
-            refundableTextView.compoundDrawablePadding = 6
-            refundableTextView.setPadding(0,5,0,5)
+            var refundableTextView = FacilityTextView(context)
+            refundableTextView.setIconAndText("",
+                    if (refundable) getString(R.string.hotel_room_list_refundable_with_condition)
+                    else getString(R.string.hotel_room_list_not_refundable) )
             room_facility_recycler_view.addView(refundableTextView)
 
             for (i in 0..min(roomFacility.size, 1)) {
-                var textView = TextViewCompat(context)
-                textView.text = roomFacility[i].name
-                textView.setFontSize(TextViewCompat.FontSize.MICRO)
-                textView.setDrawableLeft(R.drawable.ic_facility_add)
-                textView.compoundDrawablePadding = 6
-                textView.setPadding(0,5,0,5)
+                var textView = FacilityTextView(context)
+                textView.setIconAndText(roomFacility[i].icon, roomFacility[i].name)
                 room_facility_recycler_view.addView(textView)
             }
         }
