@@ -24,7 +24,7 @@ class PropertyDetailData(
         val facility: List<FacilityData> = listOf(),
         @SerializedName("MAIN_FACILITY")
         @Expose
-        val MAIN_FACILITY: List<FacilityItem> = listOf(),
+        val mainFacility: List<FacilityItem> = listOf(),
         @SerializedName("propertyPolicy")
         @Expose
         val propertyPolicy: List<PropertyPolicyData> = listOf()) {

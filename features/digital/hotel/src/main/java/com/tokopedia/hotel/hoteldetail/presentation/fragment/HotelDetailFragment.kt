@@ -15,10 +15,12 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
+import com.tokopedia.hotel.hoteldetail.data.entity.FacilityItem
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
+import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -43,6 +45,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
     private var isButtonEnabled: Boolean = true
 
     private lateinit var detailReviewAdapter: HotelDetailReviewAdapter
+    private lateinit var mainFacilityAdapter: HotelDetailMainFacilityAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -177,10 +180,14 @@ class HotelDetailFragment : BaseDaggerFragment() {
             scv_hotel_date.setRightTitleText(getString(R.string.hotel_detail_check_to, data.property.checkoutTo))
         }
 
-        tv_hotel_important_info.text = data.property.importantInformation
         tv_hotel_description.text = data.property.description
 
+        setupImportantInfo(data.property.importantInformation)
         setupReviewItem(listOf("", "", "", "", ""))
+        setupMainFacilityItem(listOf(FacilityItem(1, "Internet", ""),
+                FacilityItem(1, "Kamar Mandi", ""),
+                FacilityItem(1, "Air", ""),
+                FacilityItem(1, "Listrik", "")))
 
 //        initHotelLocationMap()
     }
@@ -244,6 +251,30 @@ class HotelDetailFragment : BaseDaggerFragment() {
         rv_best_review.setHasFixedSize(true)
         rv_best_review.isNestedScrollingEnabled = false
         rv_best_review.adapter = detailReviewAdapter
+    }
+
+    private fun setupMainFacilityItem(facilityList: List<FacilityItem>) {
+        if (!::mainFacilityAdapter.isInitialized) {
+            mainFacilityAdapter = HotelDetailMainFacilityAdapter(facilityList)
+        }
+
+        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        rv_hotel_facilities.layoutManager = layoutManager
+        rv_hotel_facilities.setHasFixedSize(true)
+        rv_hotel_facilities.isNestedScrollingEnabled = false
+        rv_hotel_facilities.adapter = mainFacilityAdapter
+    }
+
+    private fun setupImportantInfo(importantInfo: String) {
+        if (importantInfo.isNotEmpty()) {
+            tv_hotel_important_info.text = importantInfo
+        } else {
+            container_important_info.visibility = View.GONE
+        }
+    }
+
+    private fun setupDescription(description: String) {
+
     }
 
 //    private fun initHotelLocationMap() {

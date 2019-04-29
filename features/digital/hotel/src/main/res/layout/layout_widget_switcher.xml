@@ -35,7 +35,6 @@
     <View
         android:layout_width="1dp"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:background="@color/grey_300"
         android:visibility="visible" />
 

@@ -429,62 +429,76 @@
                         app:leftSubtitleText="@string/hotel_homepage_check_in"
                         app:rightSubtitleText="@string/hotel_check_out_calendar_title" />
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <LinearLayout
+                        android:id="@+id/container_important_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_24"
-                        android:text="@string/hotel_important_info_title"
-                        app:fontSize="title"
-                        app:textViewTheme="lightPrimary"
-                        app:weight="medium" />
+                        android:orientation="vertical">
 
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/tv_hotel_important_info"
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_24"
+                            android:text="@string/hotel_important_info_title"
+                            app:fontSize="title"
+                            app:textViewTheme="lightPrimary"
+                            app:weight="medium" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/tv_hotel_important_info"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_8"
+                            android:ellipsize="end"
+                            android:maxLines="3"
+                            app:fontSize="micro"
+                            app:weight="regular"
+                            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/tv_hotel_important_info_more"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/hotel_read_more_title"
+                            android:textColor="@color/green_500"
+                            app:fontSize="micro" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_hotel_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:ellipsize="end"
-                        android:maxLines="3"
-                        app:fontSize="micro"
-                        app:weight="regular"
-                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
+                        android:orientation="vertical">
 
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/tv_hotel_important_info_more"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/hotel_read_more_title"
-                        android:textColor="@color/green_500"
-                        app:fontSize="micro" />
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_24"
+                            android:text="@string/hotel_description_title"
+                            app:fontSize="title"
+                            app:textViewTheme="lightPrimary"
+                            app:weight="medium" />
 
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_24"
-                        android:text="@string/hotel_description_title"
-                        app:fontSize="title"
-                        app:textViewTheme="lightPrimary"
-                        app:weight="medium" />
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/tv_hotel_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_8"
+                            android:ellipsize="end"
+                            android:maxLines="3"
+                            app:fontSize="micro"
+                            app:weight="regular"
+                            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
 
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/tv_hotel_description"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:ellipsize="end"
-                        android:maxLines="3"
-                        app:fontSize="micro"
-                        app:weight="regular"
-                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
-
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/tv_hotel_description_more"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/hotel_read_more_title"
-                        android:textColor="@color/green_500"
-                        app:fontSize="micro" />
-
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/tv_hotel_description_more"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/hotel_read_more_title"
+                            android:textColor="@color/green_500"
+                            app:fontSize="micro" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
