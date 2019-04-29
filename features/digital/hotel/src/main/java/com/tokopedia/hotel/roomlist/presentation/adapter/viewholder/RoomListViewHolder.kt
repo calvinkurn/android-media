@@ -1,13 +1,12 @@
 package com.tokopedia.hotel.roomlist.presentation.adapter.viewholder
 
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomInfo
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
-import com.tokopedia.hotel.roomlist.presentation.adapter.RoomFacilityAdapter
 import kotlinx.android.synthetic.main.item_hotel_room_full.view.*
 import kotlinx.android.synthetic.main.item_hotel_room_list.view.*
 import kotlin.math.min
@@ -16,7 +15,7 @@ import kotlin.math.min
  * @author by jessica on 25/03/19
  */
 
-class RoomListViewHolder(val view: View): AbstractViewHolder<HotelRoom>(view) {
+class RoomListViewHolder(val view: View, val listener: OnClickBookListener): AbstractViewHolder<HotelRoom>(view) {
 
    override fun bind(hotelRoom: HotelRoom) {
         with(itemView) {
@@ -38,6 +37,8 @@ class RoomListViewHolder(val view: View): AbstractViewHolder<HotelRoom>(view) {
                 cc_not_required_text_view.visibility = if (roomListModel.isCcRequired) View.GONE else View.VISIBLE
                 initRoomFacility(roomListModel.breakfastIncluded, roomListModel.isRefundable, roomListModel.roomFacility)
 
+                choose_room_button.setOnClickListener { listener.onClickBookListener(hotelRoom) }
+                choose_room_button.text = getString(R.string.hotel_room_list_choose_room_button, "")
             } else {
                 room_description_layout.visibility = View.GONE
                 room_full_layout.visibility = View.VISIBLE
@@ -49,19 +50,35 @@ class RoomListViewHolder(val view: View): AbstractViewHolder<HotelRoom>(view) {
 
     fun initRoomFacility(breakfastIncluded: Boolean, refundable: Boolean, roomFacility: List<HotelRoomInfo.Facility>) {
         with(itemView) {
-            var adapter = RoomFacilityAdapter()
-            val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            room_facility_recycler_view.layoutManager = layoutManager
-            room_facility_recycler_view.adapter = adapter
 
-            if (breakfastIncluded) adapter.addFacility(getString(R.string.hotel_room_list_filter_free_breakfast))
-            else adapter.addFacility(getString(R.string.hotel_room_list_breakfast_not_included))
+            room_facility_recycler_view.removeAllViews()
 
-            if (refundable) adapter.addFacility(getString(R.string.hotel_room_list_refundable_with_condition))
-            else adapter.addFacility(getString(R.string.hotel_room_list_not_refundable))
+            var breakfastTextView = TextViewCompat(context)
+            breakfastTextView.text = if (breakfastIncluded) getString(R.string.hotel_room_list_filter_free_breakfast)
+            else getString(R.string.hotel_room_list_breakfast_not_included)
+            breakfastTextView.setFontSize(TextViewCompat.FontSize.MICRO)
+            breakfastTextView.setDrawableLeft(R.drawable.ic_facility_add)
+            breakfastTextView.compoundDrawablePadding = 6
+            breakfastTextView.setPadding(0,5,0,5)
+            room_facility_recycler_view.addView(breakfastTextView)
 
-            for(i in 0..min(roomFacility.size, 1)) {
-                adapter.addFacility(roomFacility[i].name)
+            var refundableTextView = TextViewCompat(context)
+            refundableTextView.text = if (refundable) getString(R.string.hotel_room_list_refundable_with_condition)
+            else getString(R.string.hotel_room_list_not_refundable)
+            refundableTextView.setFontSize(TextViewCompat.FontSize.MICRO)
+            refundableTextView.setDrawableLeft(R.drawable.ic_facility_add)
+            refundableTextView.compoundDrawablePadding = 6
+            refundableTextView.setPadding(0,5,0,5)
+            room_facility_recycler_view.addView(refundableTextView)
+
+            for (i in 0..min(roomFacility.size, 1)) {
+                var textView = TextViewCompat(context)
+                textView.text = roomFacility[i].name
+                textView.setFontSize(TextViewCompat.FontSize.MICRO)
+                textView.setDrawableLeft(R.drawable.ic_facility_add)
+                textView.compoundDrawablePadding = 6
+                textView.setPadding(0,5,0,5)
+                room_facility_recycler_view.addView(textView)
             }
         }
     }
@@ -101,6 +118,10 @@ class RoomListViewHolder(val view: View): AbstractViewHolder<HotelRoom>(view) {
             roomListModel.images = images
         }
         return roomListModel
+    }
+
+    interface OnClickBookListener {
+        fun onClickBookListener(room: HotelRoom)
     }
 
 }
