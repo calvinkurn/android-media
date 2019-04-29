@@ -164,7 +164,6 @@ data class HotelRoom(
             @Expose
             val content: String = ""
     )
-
 }
 
 

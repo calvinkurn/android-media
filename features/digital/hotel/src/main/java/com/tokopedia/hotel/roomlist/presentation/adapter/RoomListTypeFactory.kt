@@ -19,11 +19,11 @@ import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListView
  * @author by jessica on 25/03/19
  */
 
-class RoomListTypeFactory(val callback: BaseEmptyViewHolder.Callback): BaseAdapterTypeFactory() {
+class RoomListTypeFactory(val callback: BaseEmptyViewHolder.Callback, val listener: RoomListViewHolder.OnClickBookListener): BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
-            RoomListViewHolder.LAYOUT -> return RoomListViewHolder(parent)
+            RoomListViewHolder.LAYOUT -> return RoomListViewHolder(parent, listener)
             RoomListShimmeringViewHolder.LAYOUT -> return RoomListShimmeringViewHolder(parent)
             emptyLayout -> return EmptyViewHolder(parent, callback)
             else -> return super.createViewHolder(parent, type)
