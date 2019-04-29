@@ -32,7 +32,7 @@ data class HotelRoomInfo(
    @Expose
    val facility: List<Facility> = listOf(),
 
-   @SerializedName("mainFacility")
+   @SerializedName("MAIN_FACILITY")
    @Expose
    val mainFacility: List<Facility> = listOf(),
 

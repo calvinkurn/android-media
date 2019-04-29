@@ -209,7 +209,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/tv_hotel_homepage_all_promo"
-                android:text="@string/hotel_homepage_all_promo"
+                android:text="@string/hotel_show_all_text"
                 android:textColor="@color/green_500"
                 app:fontSize="micro" />
 

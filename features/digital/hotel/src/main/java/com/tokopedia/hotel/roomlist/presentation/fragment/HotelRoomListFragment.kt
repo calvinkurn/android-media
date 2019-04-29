@@ -25,7 +25,6 @@ import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
 import com.tokopedia.hotel.roomlist.widget.ChipAdapter
-import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -167,7 +166,6 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         hotelRoomAndGuestBottomSheets.listener = this
         hotelRoomAndGuestBottomSheets.roomCount = hotelRoomListPageModel.room
         hotelRoomAndGuestBottomSheets.adultCount = hotelRoomListPageModel.adult
-        hotelRoomAndGuestBottomSheets.childCount = hotelRoomListPageModel.child
         hotelRoomAndGuestBottomSheets.show(activity!!.supportFragmentManager, TAG_GUEST_INFO)
     }
 
@@ -283,10 +281,9 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         }
     }
 
-    override fun onSaveGuest(room: Int, adult: Int, child: Int) {
+    override fun onSaveGuest(room: Int, adult: Int) {
         hotelRoomListPageModel.room = room
         hotelRoomListPageModel.adult = adult
-        hotelRoomListPageModel.child = child
 
         renderRoomAndGuestView()
         getRoomList(true)

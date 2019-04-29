@@ -26,16 +26,6 @@
         app:spv_subtitle=""
         app:spv_title="@string/hotel_bottom_sheets_adult_count_title" />
 
-    <com.tokopedia.common.travel.widget.SelectPassengerView
-        android:id="@+id/spv_hotel_child"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:spv_icon="@drawable/ic_hotel_child"
-        app:spv_max_value="30"
-        app:spv_min_value="0"
-        app:spv_subtitle="@string/hotel_bottom_sheets_child_count_subtitle"
-        app:spv_title="@string/hotel_bottom_sheets_child_count_title" />
-
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_hotel_save_guest"
         android:layout_width="match_parent"

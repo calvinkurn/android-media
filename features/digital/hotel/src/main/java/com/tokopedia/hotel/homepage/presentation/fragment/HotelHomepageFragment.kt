@@ -73,7 +73,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         super.onActivityCreated(savedInstanceState)
 
         homepageViewModel.promoData.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     if (it.data.size > 0) {
                         renderHotelPromo(it.data)
@@ -81,7 +81,8 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                         hidePromoContainer()
                     }
                 }
-                is Fail -> {}
+                is Fail -> {
+                }
             }
         })
     }
@@ -97,10 +98,9 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
 
     override fun getScreenName(): String = ""
 
-    override fun onSaveGuest(room: Int, adult: Int, child: Int) {
+    override fun onSaveGuest(room: Int, adult: Int) {
         hotelHomepageModel.roomCount = room
         hotelHomepageModel.adultCount = adult
-        hotelHomepageModel.childCount = child
 
         renderView()
     }
@@ -151,13 +151,8 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         tv_hotel_homepage_checkin_date.setText(hotelHomepageModel.checkInDateFmt)
         tv_hotel_homepage_checkout_date.setText(hotelHomepageModel.checkOutDateFmt)
         tv_hotel_homepage_night_count.text = hotelHomepageModel.nightCounter.toString()
-        if (hotelHomepageModel.childCount > 0) {
-            tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail_with_child),
-                    hotelHomepageModel.roomCount, hotelHomepageModel.adultCount, hotelHomepageModel.childCount))
-        } else {
-            tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
-                    hotelHomepageModel.roomCount, hotelHomepageModel.adultCount))
-        }
+        tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
+                hotelHomepageModel.roomCount, hotelHomepageModel.adultCount))
     }
 
     private fun onDestinationChangeClicked() {
@@ -226,7 +221,6 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         hotelRoomAndGuestBottomSheets.listener = this
         hotelRoomAndGuestBottomSheets.roomCount = hotelHomepageModel.roomCount
         hotelRoomAndGuestBottomSheets.adultCount = hotelHomepageModel.adultCount
-        hotelRoomAndGuestBottomSheets.childCount = hotelHomepageModel.childCount
         hotelRoomAndGuestBottomSheets.show(activity!!.supportFragmentManager, TAG_GUEST_INFO)
     }
 
@@ -274,16 +268,16 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     }
 
     private fun onSearchButtonClicked() {
-            startActivityForResult(HotelSearchResultActivity.createIntent(activity!!, hotelHomepageModel.locName,
-                    hotelHomepageModel.locId, hotelHomepageModel.locType, hotelHomepageModel.locLat.toFloat(),
-                    hotelHomepageModel.locLong.toFloat(), hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate,
-                    hotelHomepageModel.roomCount, hotelHomepageModel.adultCount, hotelHomepageModel.childCount),
-                    REQUEST_CODE_SEARCH)
+        startActivityForResult(HotelSearchResultActivity.createIntent(activity!!, hotelHomepageModel.locName,
+                hotelHomepageModel.locId, hotelHomepageModel.locType, hotelHomepageModel.locLat.toFloat(),
+                hotelHomepageModel.locLong.toFloat(), hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate,
+                hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
+                REQUEST_CODE_SEARCH)
     }
 
     private fun countNightDifference(): Long =
             ((TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time -
-                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate).time)) / ONE_DAY
+                    TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate).time)) / ONE_DAY
 
     private fun loadPromoData() {
         homepageViewModel.getHotelPromo(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_home_promo))

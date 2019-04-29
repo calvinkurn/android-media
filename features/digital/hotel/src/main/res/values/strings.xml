@@ -5,7 +5,12 @@
     <string name="hotel_bottom_menu_promo">Promo</string>
     <string name="hotel_bottom_menu_help">Bantuan</string>
     <string name="hotel_bottom_menu_action_text">Tutup</string>
-    <string name="hotel_toolbar_title">Hotel</string>
+    <string name="hotel_show_all_text">Lihat Semua</string>
+
+    <string name="hotel_show_map_text">Lihat Peta</string>
+    <string name="hotel_address_title">Alamat</string>
+    <string name="hotel_facility_title">Fasilitas</string>
+    <string name="hotel_policy_title">Kebijakan</string>
 
     <string name="hotel_bottomsheet_sort_title">Urutkan Berdasarkan</string>
     <string name="hotel_filter_reset">Reset</string>
@@ -16,7 +21,7 @@
     <string name="hotel_search_filter_rating_title">Rating</string>
     <string name="hotel_search_filter_accomodation_type_title">Tipe akomodasi</string>
     <string name="hotel_search_filter_preference_title">Preference</string>
-    <string name="template_search_subtitle">%1$s - %2$s, %3$d Kamar, %4$d Tamu, %5$d Anak</string>
+    <string name="template_search_subtitle">%1$s - %2$s, %3$d Kamar, %4$d Tamu</string>
 
     <string name="hotel_check_in_calendar_title">Check-in</string>
     <string name="hotel_check_out_calendar_title">Check-out</string>
@@ -28,16 +33,12 @@
     <string name="hotel_homepage_check_out">Check-out</string>
     <string name="hotel_homepage_button_search">Cari</string>
     <string name="hotel_homepage_promo_title">Promo</string>
-    <string name="hotel_homepage_all_promo">Lihat Semua</string>
-    <string name="hotel_homepage_guest_detail_with_child" formatted="false"> %d kamar, %d dewasa, %d anak</string>
-    <string name="hotel_homepage_guest_detail_without_child" formatted="false"> %d kamar, %d dewasa</string>
+    <string name="hotel_homepage_guest_detail_without_child" formatted="false"> %d kamar, %d tamu</string>
     <string name="hotel_bottom_sheets_room_guest_title">Kamar dan Tamu</string>
     <string name="hotel_bottom_sheets_room_count_title">Kamar</string>
-    <string name="hotel_bottom_sheets_adult_count_title">Dewasa</string>
-    <string name="hotel_bottom_sheets_child_count_title">Anak</string>
-    <string name="hotel_bottom_sheets_child_count_subtitle">0 - 6 tahun</string>
+    <string name="hotel_bottom_sheets_adult_count_title">Tamu</string>
     <string name="hotel_button_save">Simpan</string>
-    <string name="hotel_guest_info_room_more_than_adult_error_message">Jumlah kamar tidak boleh melebihi jumlah tamu dewasa.</string>
+    <string name="hotel_guest_info_room_more_than_adult_error_message">Jumlah kamar tidak boleh melebihi jumlah tamu tamu.</string>
     <string name="hotel_homepage_near_by_destination">Hotel dekat lokasimu</string>
 
     <string name="hotel_destination_edittext_hint">Cari kota, area, atau hotel</string>
@@ -50,6 +51,9 @@
     <string name="hotel_destination_empty_view_holder_title">Nggak ada hasil yang cocok</string>
     <string name="hotel_destination_empty_view_holder_subtitle">Coba cari ulang pakai kata kunci lain.</string>
     <string name="hotel_destination_toolbar_title">Tujuan</string>
+    <string name="hotel_important_info_title">Informasi penting</string>
+    <string name="hotel_read_more_title">Baca Selengkapnya</string>
+    <string name="hotel_description_title">Deskripsi</string>
 
     <string name="hotel_room_list_check_in_check_out_date">%1$s - %2$s</string>
     <string name="hotel_room_list_filter_pay_in_hotel">Bayar di Hotel</string>
@@ -71,6 +75,12 @@
     <string name="hotel_room_list_choose_room_button">Pilih %1$sKamar</string>
     <string name="hotel_room_list_pay_in_hotel">Bayar di Hotel</string>
     <string name="hotel_room_list_without_credit_card">Tanpa Jaminan Kartu Kredit</string>
+
+    <string name="hotel_detail_more_image_counter">+%1$d</string>
+    <string name="hotel_detail_check_from_to">%1$s - %2$s</string>
+    <string name="hotel_detail_check_start_from">Mulai %1$s</string>
+    <string name="hotel_detail_check_to">Sampai %1$s</string>
+    <string name="hotel_detail_map_marker_title"><![CDATA[<strong>%1$s</strong> - %2$s]]></string>
 
     <string name="hotel_room_detail_header_capacity">Maksimum: %1$s</string>
     <string name="hotel_room_detail_header_breakfast">Sarapan Gratis</string>

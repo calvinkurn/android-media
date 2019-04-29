@@ -9,13 +9,7 @@ import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelPromoVi
 /**
  * @author by furqan on 10/04/19
  */
-class HotelPromoAdapter : RecyclerView.Adapter<HotelPromoViewHolder> {
-
-    private var viewModels: List<HotelPromoEntity>
-
-    constructor(viewModels: List<HotelPromoEntity>) : super() {
-        this.viewModels = viewModels
-    }
+class HotelPromoAdapter(private var viewModels: List<HotelPromoEntity>) : RecyclerView.Adapter<HotelPromoViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotelPromoViewHolder {
