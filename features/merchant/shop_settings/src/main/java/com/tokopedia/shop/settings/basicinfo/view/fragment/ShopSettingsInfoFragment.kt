@@ -40,6 +40,7 @@ import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPresenter
+import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.FORMAT_DATE
 import com.tokopedia.shop.settings.common.util.toReadableString
 import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
