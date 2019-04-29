@@ -14,11 +14,6 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_100"
-        android:background="@drawable/bg_dark_shadow_90" />
-
     <ImageView
         android:id="@+id/btnClose"
         android:layout_width="@dimen/dp_24"

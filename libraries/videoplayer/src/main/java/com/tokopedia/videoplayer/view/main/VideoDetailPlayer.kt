@@ -79,6 +79,9 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
     fun initView() {
         btnClose.setOnClickListener { dismiss() }
 
+        //showing close button on top
+        sendViewToBack(playerView)
+
         //get video source path
         val videoSource = arguments?.getString(VIDEO_SOURCE, "")
         if (videoSource == null || videoSource.isEmpty()) {
@@ -93,6 +96,12 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
                 initPlayer(url)
             }
         }
+    }
+
+    private fun sendViewToBack(child: View) {
+        val parent = child.parent as ViewGroup
+        parent.removeView(child)
+        parent.addView(child, 0)
     }
 
     override fun onDestroy() {
