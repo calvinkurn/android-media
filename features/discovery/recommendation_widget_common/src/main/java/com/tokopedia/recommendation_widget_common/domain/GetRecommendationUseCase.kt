@@ -1,7 +1,6 @@
 package com.tokopedia.recommendation_widget_common.domain
 
 import android.content.Context
-import android.text.TextUtils
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -47,20 +46,31 @@ constructor(private val context: Context,
         val params = RequestParams.create()
         params.putInt(USER_ID, userSession.userId.toInt())
         params.putInt(PAGE_NUMBER, pageNumber)
-        params.putString(X_SOURCE, if (TextUtils.isEmpty(xSource)) DEFAULT_VALUE_X_SOURCE else xSource)
+
+        if(xSource.isEmpty()) {
+            params.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE)
+        } else {
+            params.putString(X_SOURCE, xSource)
+        }
+
+        if(pageName.isEmpty()) {
+            params.putString(PAGE_NAME, DEFAULT_PAGE_NAME)
+        } else {
+            params.putString(PAGE_NAME, pageName)
+        }
+
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
-        params.putString(PAGE_NAME, if (TextUtils.isEmpty(pageName)) DEFAULT_PAGE_NAME else pageName)
         return params
     }
 
     companion object {
-        private val USER_ID = "userID"
-        private val X_SOURCE = "xSource"
-        private val PAGE_NUMBER = "pageNumber"
-        private val X_DEVICE = "xDevice"
-        private val PAGE_NAME = "pageName"
-        private val DEFAULT_VALUE_X_SOURCE = "recom_widget"
-        private val DEFAULT_VALUE_X_DEVICE = "android"
+        val USER_ID = "userID"
+        val X_SOURCE = "xSource"
+        val PAGE_NUMBER = "pageNumber"
+        val X_DEVICE = "xDevice"
+        val PAGE_NAME = "pageName"
+        val DEFAULT_VALUE_X_SOURCE = "recom_widget"
+        val DEFAULT_VALUE_X_DEVICE = "android"
         val DEFAULT_PAGE_NAME = ""
     }
 }

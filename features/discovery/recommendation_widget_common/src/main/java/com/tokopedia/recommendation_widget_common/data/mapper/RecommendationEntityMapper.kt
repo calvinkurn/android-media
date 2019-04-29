@@ -19,8 +19,6 @@ import rx.functions.Func1
 
 class RecommendationEntityMapper : Func1<RecomendationEntity.RecomendationData, RecommendationModel> {
     override fun call(recomendationData: RecomendationEntity.RecomendationData): RecommendationModel {
-        mappingToRecommendationModel(recomendationData)
-
         isContainNull(recomendationData) {
             val exception = ContainNullException("Found $it in ${RecommendationEntityMapper::class.java.simpleName}")
             if (!BuildConfig.DEBUG) {
