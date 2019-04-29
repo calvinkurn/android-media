@@ -3,8 +3,6 @@ package com.tokopedia.discovery.newdiscovery.base
 import android.text.TextUtils
 import com.tokopedia.discovery.newdiscovery.domain.model.InitiateSearchModel
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ListHelper
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
 
@@ -21,7 +19,7 @@ open class InitiateSearchSubscriber(
             return
         }
 
-        val initiateSearchModel : InitiateSearchModel? = graphqlResponse.getData(
+        val initiateSearchModel : InitiateSearchModel? = graphqlResponse.getData<InitiateSearchModel>(
             InitiateSearchModel::class.java)
 
         val redirectApplink = getRedirectApplink(initiateSearchModel)
