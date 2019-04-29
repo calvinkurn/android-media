@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/dp_16">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/review_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:textViewTheme="lightPrimary"
+        app:fontSize="small"
+        app:weight="medium"
+        tools:text="Sangat Baik"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue_booking"
+        tools:text="8,6"
+        android:textStyle="bold"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/review_title"
+        app:layout_constraintBottom_toBottomOf="@id/review_title"
+        android:background="#e5f5ff"
+        />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/good_review_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/review_title"
+        android:layout_marginTop="@dimen/dp_8">
+
+        <ImageView
+            android:id="@+id/icon_good_review"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:src="@drawable/ic_good_review"
+            />
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/icon_good_review"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/icon_good_review"
+            app:layout_constraintTop_toTopOf="@id/icon_good_review"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            app:fontSize="micro"
+            tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+            />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/bad_review_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/good_review_layout"
+        android:layout_marginTop="@dimen/dp_8">
+
+        <ImageView
+            android:id="@+id/icon_bad_review"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:src="@drawable/ic_bad_review"
+            />
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/icon_bad_review"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/icon_bad_review"
+            app:layout_constraintTop_toTopOf="@id/icon_bad_review"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+            />
+    </android.support.constraint.ConstraintLayout>
+    
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/reviewer_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Ignatius Andrew"
+        app:layout_constraintTop_toBottomOf="@id/bad_review_layout"
+        android:layout_marginTop="@dimen/dp_8"
+        app:weight="medium"
+        app:fontSize="micro"
+        />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/reviewer_origin_and_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fontSize="micro"
+        android:textColor="@color/light_disabled"
+        app:layout_constraintTop_toBottomOf="@id/reviewer_name"
+        tools:text="Indonesia -  8 Sep 2018"
+        />
+
+
+</android.support.constraint.ConstraintLayout>
