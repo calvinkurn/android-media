@@ -99,6 +99,6 @@ class ImageViewPager: BaseCustomView {
         imageViewPagerAdapter?.addImages(images)
     }
 
-    fun getIndicatorFocus(): Int = R.drawable.indicator_focus
-    fun getIndicator(): Int = R.drawable.indicator
+    fun getIndicatorFocus(): Int = R.drawable.widget_image_view_indicator_focus
+    fun getIndicator(): Int = R.drawable.widget_image_view_indicator
 }
