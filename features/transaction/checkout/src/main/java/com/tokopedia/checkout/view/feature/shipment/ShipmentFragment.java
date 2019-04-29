@@ -1436,11 +1436,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void sendAnalyticsOnClickButtonDoneShowCaseDurationShipmentRecommendation() {
-        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickCtaButton();
-    }
-
-    @Override
     public void sendAnalyticsOnClickCheckBoxDropShipperOption() {
         checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickDropship();
     }
@@ -1914,11 +1909,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onShippingDurationButtonCloseClicked() {
         sendAnalyticsOnClickButtonCloseShipmentRecommendationDuration();
-    }
-
-    @Override
-    public void onShippingDurationButtonShowCaseDoneClicked() {
-        sendAnalyticsOnClickButtonDoneShowCaseDurationShipmentRecommendation();
     }
 
     @Override

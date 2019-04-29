@@ -958,10 +958,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         shippingDurationBottomsheet.dismiss()
     }
 
-    override fun onShippingDurationButtonShowCaseDoneClicked() {
-
-    }
-
     override fun onShowDurationListWithCourierPromo(isCourierPromo: Boolean, duration: String?) {
 
     }

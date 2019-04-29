@@ -29,7 +29,5 @@ public interface ShippingDurationBottomsheetListener {
 
     void onShippingDurationButtonCloseClicked();
 
-    void onShippingDurationButtonShowCaseDoneClicked();
-
     void onShowDurationListWithCourierPromo(boolean isCourierPromo, String duration);
 }
