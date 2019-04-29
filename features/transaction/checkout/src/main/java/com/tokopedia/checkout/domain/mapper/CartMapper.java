@@ -20,6 +20,7 @@ import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemDa
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;
+import com.tokopedia.transactiondata.entity.response.cartlist.GlobalCouponAttr;
 import com.tokopedia.transactiondata.entity.response.cartlist.Message;
 import com.tokopedia.transactiondata.entity.response.cartlist.Shop;
 import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
@@ -43,6 +44,7 @@ public class CartMapper implements ICartMapper {
     private static final String SHOP_TYPE_OFFICIAL_STORE = "official_store";
     private static final String SHOP_TYPE_GOLD_MERCHANT = "gold_merchant";
     private static final String SHOP_TYPE_REGULER = "reguler";
+    private static final String MERCHANT_VOUCHER_TYPE = "merchant";
     private final IMapperUtil mapperUtil;
 
     @Inject
@@ -90,9 +92,24 @@ public class CartMapper implements ICartMapper {
         cartListData.setDefaultPromoDialogTab(cartDataListResponse.getDefaultPromoDialogTab());
 
         List<ShopGroupData> shopGroupDataList = new ArrayList<>();
+        boolean isDisableAllProducts = false;
         for (ShopGroup shopGroup : cartDataListResponse.getShopGroups()) {
             ShopGroupData shopGroupData = new ShopGroupData();
-            shopGroupData.setError(!mapperUtil.isEmpty(shopGroup.getErrors()));
+
+            int errorItemCountPerShop = 0;
+            for (CartDetail cartDetail : shopGroup.getCartDetails()) {
+                if (cartDetail.getErrors() != null && cartDetail.getErrors().size() > 0) {
+                    errorItemCountPerShop++;
+                }
+            }
+
+            boolean shopError = false;
+            if (shopGroup.getErrors().size() > 0 || errorItemCountPerShop == shopGroup.getCartDetails().size()) {
+                shopError = true;
+                isDisableAllProducts = true;
+            }
+            shopGroupData.setError(shopError);
+            // shopGroupData.setError(!mapperUtil.isEmpty(shopGroup.getErrors()));
             shopGroupData.setErrorTitle(mapperUtil.convertToString(shopGroup.getErrors()));
             shopGroupData.setShopId(String.valueOf(shopGroup.getShop().getShopId()));
             shopGroupData.setShopName(shopGroup.getShop().getShopName());
@@ -113,7 +130,9 @@ public class CartMapper implements ICartMapper {
 
             if (cartDataListResponse.getAutoapplyStack() != null && cartDataListResponse.getAutoapplyStack().getVoucherOrders() != null) {
                 for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
-                    if (voucherOrdersItem.getUniqueId().equals(shopGroup.getCartString())) {
+                    if (voucherOrdersItem.getUniqueId().equals(shopGroup.getCartString())
+                            && !voucherOrdersItem.getType().isEmpty()
+                            && voucherOrdersItem.getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
                         VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
                         voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
                         voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
@@ -244,22 +263,24 @@ public class CartMapper implements ICartMapper {
                     }
                 }
 
-                if (cartItemData.isSingleChild()) {
-                    if (!shopGroupData.isError() && !shopGroupData.isWarning()) {
-                        cartItemData.setParentHasErrorOrWarning(false);
-                        if (cartItemData.isError()) {
-                            shopGroupData.setError(true);
-                            shopGroupData.setErrorTitle(cartItemData.getErrorMessageTitle());
-                            shopGroupData.setErrorDescription(cartItemData.getErrorMessageDescription());
-                        } else if (cartItemData.isWarning()) {
-                            shopGroupData.setWarning(true);
-                            shopGroupData.setWarningTitle(cartItemData.getWarningMessageTitle());
-                            shopGroupData.setWarningDescription(cartItemData.getWarningMessageDescription());
-                        }
-                    } else {
-                        cartItemData.setParentHasErrorOrWarning(true);
-                    }
+                // if (cartItemData.isSingleChild()) {
+                if (!shopGroupData.isError() && !shopGroupData.isWarning()) {
+                    cartItemData.setParentHasErrorOrWarning(false);
+                } else {
+                    cartItemData.setParentHasErrorOrWarning(true);
                 }
+                // if (cartItemData.isError()) {
+                if (isDisableAllProducts) {
+                    shopGroupData.setError(true);
+                    shopGroupData.setErrorTitle(cartItemData.getErrorMessageTitle());
+                    shopGroupData.setErrorDescription(cartItemData.getErrorMessageDescription());
+                } else if (cartItemData.isWarning()) {
+                    shopGroupData.setWarning(true);
+                    shopGroupData.setWarningTitle(cartItemData.getWarningMessageTitle());
+                    shopGroupData.setWarningDescription(cartItemData.getWarningMessageDescription());
+                }
+                cartItemData.setDisableAllProducts(isDisableAllProducts);
+                // }
 
                 if (!cartItemData.isError() && shopGroupData.isError()) {
                     cartItemData.setError(true);
@@ -281,6 +302,13 @@ public class CartMapper implements ICartMapper {
         cartPromoSuggestion.setText(cartDataListResponse.getPromoSuggestion().getText());
         cartPromoSuggestion.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
         cartListData.setCartPromoSuggestion(cartPromoSuggestion);
+
+        GlobalCouponAttr globalCouponAttr = new GlobalCouponAttr();
+        if (cartDataListResponse.getGlobalCouponAttr() != null && cartDataListResponse.getGlobalCouponAttr().getDescription() != null) {
+            globalCouponAttr.setDescription(cartDataListResponse.getGlobalCouponAttr().getDescription());
+            globalCouponAttr.setQuantityLabel(cartDataListResponse.getGlobalCouponAttr().getQuantityLabel());
+        }
+        cartListData.setGlobalCouponAttr(globalCouponAttr);
 
         AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
         if (cartDataListResponse.getAutoapplyStack() != null) {

@@ -38,6 +38,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
@@ -98,6 +99,8 @@ public class CartListPresenter implements ICartListPresenter {
     private static final String PARAM_PARAMS = "params";
     private static final String PARAM_LANG = "lang";
     private static final String PARAM_STEP = "step";
+    private static final String PARAM_GLOBAL = "global";
+    private static final String PARAM_MERCHANT = "merchant";
 
     public static final int ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0;
     public static final int ITEM_CHECKED_ALL_WITH_CHANGES = 1;
@@ -1109,6 +1112,13 @@ public class CartListPresenter implements ICartListPresenter {
                 ArrayList<String> codes = new ArrayList<>();
                 codes.add(model.getCode());
                 promo.setCodes(codes);
+
+                CurrentApplyCode currentApplyCode = new CurrentApplyCode();
+                if (!model.getCode().isEmpty()) {
+                    currentApplyCode.setCodes(model.getCode());
+                    currentApplyCode.setType(PARAM_GLOBAL);
+                }
+                promo.setCurrentApplyCode(currentApplyCode);
             } else {
                 // This promo is merchant promo
                 if (promo.getOrders() != null) {
@@ -1117,6 +1127,13 @@ public class CartListPresenter implements ICartListPresenter {
                             ArrayList<String> codes = new ArrayList<>();
                             codes.add(model.getCode());
                             order.setCodes(codes);
+
+                            CurrentApplyCode currentApplyCode = new CurrentApplyCode();
+                            if (!model.getCode().isEmpty()) {
+                                currentApplyCode.setCodes(model.getCode());
+                                currentApplyCode.setType(PARAM_MERCHANT);
+                            }
+                            promo.setCurrentApplyCode(currentApplyCode);
                             break;
                         }
                     }

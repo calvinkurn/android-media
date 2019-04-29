@@ -91,9 +91,6 @@ public class SearchProductGqlResponse {
         @SerializedName("additional_params")
         @Expose
         private String additionalParams;
-        @SerializedName("redirection")
-        @Expose
-        private Redirection redirection = new Redirection();
         @SerializedName("suggestion")
         @Expose
         private Suggestion suggestion = new Suggestion();
@@ -103,9 +100,6 @@ public class SearchProductGqlResponse {
         @SerializedName("products")
         @Expose
         private List<Product> products = null;
-        @SerializedName("catalogs")
-        @Expose
-        private List<Catalog> catalogs = null;
 
         public String getQuery() {
             return query;
@@ -135,20 +129,12 @@ public class SearchProductGqlResponse {
             return additionalParams;
         }
 
-        public Redirection getRedirection() {
-            return redirection;
-        }
-
         public Suggestion getSuggestion() {
             return suggestion;
         }
 
         public List<Product> getProducts() {
             return products;
-        }
-
-        public List<Catalog> getCatalogs() {
-            return catalogs;
         }
 
         public Related getRelated() {

@@ -22,6 +22,7 @@ public class CartItemData implements Parcelable {
     private String warningMessageDescription;
     private String errorMessageTitle;
     private String errorMessageDescription;
+    private boolean isDisableAllProducts;
 
     public boolean isFulfillment() {
         return isFulfillment;
@@ -119,6 +120,14 @@ public class CartItemData implements Parcelable {
 
     public void setParentHasErrorOrWarning(boolean parentHasError) {
         this.parentHasErrorOrWarning = parentHasError;
+    }
+
+    public boolean isDisableAllProducts() {
+        return isDisableAllProducts;
+    }
+
+    public void setDisableAllProducts(boolean disableAllProducts) {
+        isDisableAllProducts = disableAllProducts;
     }
 
     public static class OriginData implements Parcelable {
@@ -844,6 +853,7 @@ public class CartItemData implements Parcelable {
         dest.writeString(this.errorMessageTitle);
         dest.writeString(this.errorMessageDescription);
         dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isDisableAllProducts ? (byte) 1 : (byte) 0);
     }
 
     protected CartItemData(Parcel in) {
@@ -857,6 +867,7 @@ public class CartItemData implements Parcelable {
         this.warningMessageTitle = in.readString();
         this.warningMessageDescription = in.readString();
         this.errorMessageTitle = in.readString();
+        this.isDisableAllProducts = in.readByte() != 0;
         this.errorMessageDescription = in.readString();
         this.isFulfillment = in.readByte() != 0;
     }

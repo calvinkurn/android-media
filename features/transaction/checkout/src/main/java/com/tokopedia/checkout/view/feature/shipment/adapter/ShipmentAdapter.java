@@ -787,15 +787,16 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void clearAllPromo() {
+    public void clearAllPromo(String title, String counterLabel) {
         if (promoGlobalStackData != null) {
             promoGlobalStackData.setDescription("");
             promoGlobalStackData.setPromoCode("");
             promoGlobalStackData.setAmount(0);
             promoGlobalStackData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
             promoGlobalStackData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
-            promoGlobalStackData.setTitle("");
+            promoGlobalStackData.setTitle(title);
             promoGlobalStackData.setTypePromo(0);
+            promoGlobalStackData.setCounterLabel(counterLabel);
         }
 
         if (shipmentCartItemModelList != null) {
@@ -995,6 +996,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (itemAdapter instanceof ShipmentCartItemModel) {
                 if (((ShipmentCartItemModel) itemAdapter).getVoucherOrdersItemUiModel() != null) {
                     if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(((ShipmentCartItemModel) itemAdapter).getVoucherOrdersItemUiModel().getMessage().getState()) != TickerPromoStackingCheckoutView.State.EMPTY) {
+                        hasApplied = true;
+                    }
+                }
+
+                if (((ShipmentCartItemModel) itemAdapter).getVoucherLogisticItemUiModel() != null) {
+                    if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(((ShipmentCartItemModel) itemAdapter).getVoucherLogisticItemUiModel().getMessage().getState()) != TickerPromoStackingCheckoutView.State.EMPTY) {
                         hasApplied = true;
                     }
                 }

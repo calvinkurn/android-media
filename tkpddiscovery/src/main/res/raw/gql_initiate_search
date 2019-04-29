@@ -1,0 +1,10 @@
+query SearchProduct($params: String) {
+  searchProduct(params: $params) {
+    redirection {
+      redirect_applink
+    }
+    catalogs {
+    	id
+    }
+  }
+}

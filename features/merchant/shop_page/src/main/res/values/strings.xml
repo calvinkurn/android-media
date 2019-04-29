@@ -82,6 +82,7 @@
     <string name="shop_product_discount_percentage_format">%1$s%% Off</string>
     <string name="shop_product_search_hint">Cari produk di toko ini</string>
     <string name="shop_product_search_hint_2">Cari di toko %1$s</string>
+    <string name="shop_product_search_hint_3">Cari di etalase %1$s</string>
     <string name="shop_product_manage_item_cashback">Cashback %1$d%%</string>
     <string name="shop_product_label_wholesale">Grosir</string>
     <string name="shop_product_label_po">PO</string>
