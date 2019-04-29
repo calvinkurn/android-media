@@ -62,7 +62,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
                 checkIn = searchParam.checkInDate,
                 checkOut = searchParam.checkOutDate,
                 adult = searchParam.adultCount,
-                child = searchParam.childCount,
+                child = 0,
                 room = searchParam.roomCount))
     }
 

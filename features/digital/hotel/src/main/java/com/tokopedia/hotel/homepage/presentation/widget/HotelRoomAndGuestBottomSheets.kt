@@ -15,24 +15,20 @@ class HotelRoomAndGuestBottomSheets : BottomSheets() {
 
     private lateinit var spvRoomCounter: SelectPassengerView
     private lateinit var spvAdultCounter: SelectPassengerView
-    private lateinit var spvChildCounter: SelectPassengerView
     private lateinit var btnSave: ButtonCompat
 
     var roomCount = DEFAULT_ROOM
     var adultCount = DEFAULT_ADULT
-    var childCount = DEFAULT_CHILD
 
     override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_hotel_room_and_guest
 
     override fun initView(view: View) {
         spvRoomCounter = view.findViewById(R.id.spv_hotel_room) as SelectPassengerView
         spvAdultCounter = view.findViewById(R.id.spv_hotel_adult) as SelectPassengerView
-        spvChildCounter = view.findViewById(R.id.spv_hotel_child) as SelectPassengerView
         btnSave = view.findViewById(R.id.btn_hotel_save_guest) as ButtonCompat
 
         spvRoomCounter.value = roomCount
         spvAdultCounter.value = adultCount
-        spvChildCounter.value = childCount
 
         spvRoomCounter.setOnPassengerCountChangeListener {
             if (spvRoomCounter.value > spvAdultCounter.value) {
@@ -46,12 +42,9 @@ class HotelRoomAndGuestBottomSheets : BottomSheets() {
             }
             true
         }
-        spvChildCounter.setOnPassengerCountChangeListener {
-            true
-        }
         btnSave.setOnClickListener {
             if (::listener.isInitialized) {
-                listener.onSaveGuest(spvRoomCounter.value, spvAdultCounter.value, spvChildCounter.value)
+                listener.onSaveGuest(spvRoomCounter.value, spvAdultCounter.value)
             }
             dismiss()
         }
@@ -61,12 +54,11 @@ class HotelRoomAndGuestBottomSheets : BottomSheets() {
 
     interface HotelGuestListener {
 
-        fun onSaveGuest(room: Int, adult: Int, child: Int)
+        fun onSaveGuest(room: Int, adult: Int)
     }
 
     companion object {
-        val DEFAULT_ROOM = 1
-        val DEFAULT_ADULT = 1
-        val DEFAULT_CHILD = 0
+        const val DEFAULT_ROOM = 1
+        const val DEFAULT_ADULT = 1
     }
 }

@@ -13,7 +13,6 @@ class HotelHomepageModel(var checkInDate: String = "",
                          var nightCounter: Long = 0,
                          var roomCount: Int = 1,
                          var adultCount: Int = 1,
-                         var childCount: Int = 0,
                          var locLat: Double = 0.0,
                          var locLong: Double = 0.0,
                          var locName: String = "Bali",
@@ -26,7 +25,6 @@ class HotelHomepageModel(var checkInDate: String = "",
             parcel.readString(),
             parcel.readString(),
             parcel.readLong(),
-            parcel.readInt(),
             parcel.readInt(),
             parcel.readInt(),
             parcel.readDouble(),
@@ -43,7 +41,6 @@ class HotelHomepageModel(var checkInDate: String = "",
         parcel.writeLong(nightCounter)
         parcel.writeInt(roomCount)
         parcel.writeInt(adultCount)
-        parcel.writeInt(childCount)
         parcel.writeDouble(locLat)
         parcel.writeDouble(locLong)
         parcel.writeString(locName)

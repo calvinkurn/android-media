@@ -66,7 +66,6 @@ class HotelDetailFragment : BaseDaggerFragment() {
                             TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 2)))
             hotelHomepageModel.roomCount = it.getInt(HotelDetailActivity.EXTRA_ROOM_COUNT)
             hotelHomepageModel.adultCount = it.getInt(HotelDetailActivity.EXTRA_ADULT_COUNT, 1)
-            hotelHomepageModel.childCount = it.getInt(HotelDetailActivity.EXTRA_CHILD_COUNT, 0)
             isButtonEnabled = it.getBoolean(HotelDetailActivity.EXTRA_ENABLE_BUTTON, true)
         }
     }
@@ -296,7 +295,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
         const val SAVED_ENABLE_BUTTON = "SAVED_ENABLE_BUTTON"
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
-                        adultCount: Int, childCount: Int = 0, enableButton: Boolean = true): HotelDetailFragment =
+                        adultCount: Int, enableButton: Boolean = true): HotelDetailFragment =
                 HotelDetailFragment().also {
                     it.arguments = Bundle().apply {
                         putString(HotelDetailActivity.EXTRA_CHECK_IN_DATE, checkInDate)
@@ -304,7 +303,6 @@ class HotelDetailFragment : BaseDaggerFragment() {
                         putInt(HotelDetailActivity.EXTRA_PROPERTY_ID, propertyId)
                         putInt(HotelDetailActivity.EXTRA_ROOM_COUNT, roomCount)
                         putInt(HotelDetailActivity.EXTRA_ADULT_COUNT, adultCount)
-                        putInt(HotelDetailActivity.EXTRA_CHILD_COUNT, childCount)
                         putBoolean(HotelDetailActivity.EXTRA_ENABLE_BUTTON, enableButton)
                     }
                 }

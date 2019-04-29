@@ -34,7 +34,6 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                         getIntExtra(EXTRA_PROPERTY_ID, 0),
                         getIntExtra(EXTRA_ROOM_COUNT, 1),
                         getIntExtra(EXTRA_ADULT_COUNT, 1),
-                        getIntExtra(EXTRA_CHILD_COUNT, 0),
                         getBooleanExtra(EXTRA_ENABLE_BUTTON, true))
             }
 
@@ -50,20 +49,18 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
         const val EXTRA_PROPERTY_ID = "EXTRA_PROPERTY_ID"
         const val EXTRA_ROOM_COUNT = "EXTRA_ROOM_COUNT"
         const val EXTRA_ADULT_COUNT = "EXTRA_ADULT_COUNT"
-        const val EXTRA_CHILD_COUNT = "EXTRA_CHILD_COUNT"
         const val EXTRA_CHECK_IN_DATE = "EXTRA_CHECK_IN_DATE"
         const val EXTRA_CHECK_OUT_DATE = "EXTRA_CHECK_OUT_DATE"
         const val EXTRA_ENABLE_BUTTON = "EXTRA_ENABLE_BUTTON"
 
         fun getCallingIntent(context: Context, checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
-                             adultCount: Int, childCount: Int = 0, enableButton: Boolean = true): Intent =
+                             adultCount: Int, enableButton: Boolean = true): Intent =
                 Intent(context, HotelDetailActivity::class.java)
                         .putExtra(EXTRA_CHECK_IN_DATE, checkInDate)
                         .putExtra(EXTRA_CHECK_OUT_DATE, checkOutDate)
                         .putExtra(EXTRA_PROPERTY_ID, propertyId)
                         .putExtra(EXTRA_ROOM_COUNT, roomCount)
                         .putExtra(EXTRA_ADULT_COUNT, adultCount)
-                        .putExtra(EXTRA_CHILD_COUNT, childCount)
                         .putExtra(EXTRA_ENABLE_BUTTON, enableButton)
 
     }
@@ -86,7 +83,6 @@ fun getCallingIntent(context: Context, extras: Bundle): Intent {
             extras.getString("check_out", ""),
             extras.getInt("id"),
             extras.getInt("room", 1),
-            extras.getInt("adult", 1),
-            enableButton = extras.getInt("enable_book") == 1)
+            extras.getInt("adult", 1),extras.getInt("enable_book") == 1)
             .setData(uri.build())
 }

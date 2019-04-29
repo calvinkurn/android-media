@@ -21,7 +21,7 @@
     <string name="hotel_search_filter_rating_title">Rating</string>
     <string name="hotel_search_filter_accomodation_type_title">Tipe akomodasi</string>
     <string name="hotel_search_filter_preference_title">Preference</string>
-    <string name="template_search_subtitle">%1$s - %2$s, %3$d Kamar, %4$d Tamu, %5$d Anak</string>
+    <string name="template_search_subtitle">%1$s - %2$s, %3$d Kamar, %4$d Tamu</string>
 
     <string name="hotel_check_in_calendar_title">Check-in</string>
     <string name="hotel_check_out_calendar_title">Check-out</string>
@@ -33,15 +33,12 @@
     <string name="hotel_homepage_check_out">Check-out</string>
     <string name="hotel_homepage_button_search">Cari</string>
     <string name="hotel_homepage_promo_title">Promo</string>
-    <string name="hotel_homepage_guest_detail_with_child" formatted="false"> %d kamar, %d dewasa, %d anak</string>
-    <string name="hotel_homepage_guest_detail_without_child" formatted="false"> %d kamar, %d dewasa</string>
+    <string name="hotel_homepage_guest_detail_without_child" formatted="false"> %d kamar, %d tamu</string>
     <string name="hotel_bottom_sheets_room_guest_title">Kamar dan Tamu</string>
     <string name="hotel_bottom_sheets_room_count_title">Kamar</string>
-    <string name="hotel_bottom_sheets_adult_count_title">Dewasa</string>
-    <string name="hotel_bottom_sheets_child_count_title">Anak</string>
-    <string name="hotel_bottom_sheets_child_count_subtitle">0 - 6 tahun</string>
+    <string name="hotel_bottom_sheets_adult_count_title">Tamu</string>
     <string name="hotel_button_save">Simpan</string>
-    <string name="hotel_guest_info_room_more_than_adult_error_message">Jumlah kamar tidak boleh melebihi jumlah tamu dewasa.</string>
+    <string name="hotel_guest_info_room_more_than_adult_error_message">Jumlah kamar tidak boleh melebihi jumlah tamu tamu.</string>
     <string name="hotel_homepage_near_by_destination">Hotel dekat lokasimu</string>
 
     <string name="hotel_destination_edittext_hint">Cari kota, area, atau hotel</string>
