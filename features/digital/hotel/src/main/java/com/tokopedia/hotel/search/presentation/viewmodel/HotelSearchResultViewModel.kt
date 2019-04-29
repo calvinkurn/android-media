@@ -13,10 +13,8 @@ import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.experimental.CoroutineDispatcher
 import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -30,7 +28,7 @@ class HotelSearchResultViewModel @Inject constructor(
         private val dummySearchResult: String
 ): BaseViewModel(dispatcher){
 
-    private val searchParam: SearchParam = SearchParam()
+    val searchParam: SearchParam = SearchParam()
     var selectedSort: Sort = Sort()
     val selectedFilter: ParamFilter
         get() = searchParam.filter

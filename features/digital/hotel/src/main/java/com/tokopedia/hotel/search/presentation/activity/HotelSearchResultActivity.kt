@@ -23,8 +23,7 @@ class HotelSearchResultActivity: BaseSimpleActivity(), HasComponent<HotelSearchP
                 checkIn,
                 checkOut,
                 intent.getIntExtra(HotelSearchResultFragment.ARG_TOTAL_ROOM, 1),
-                intent.getIntExtra(HotelSearchResultFragment.ARG_TOTAL_ADULT, 1),
-                intent.getIntExtra(HotelSearchResultFragment.ARG_TOTAL_CHILDREN, 0))
+                intent.getIntExtra(HotelSearchResultFragment.ARG_TOTAL_ADULT, 1))
         updateTitle(intent.getStringExtra(HotelSearchResultFragment.ARG_DESTINATION_NAME), subtitle)
     }
 

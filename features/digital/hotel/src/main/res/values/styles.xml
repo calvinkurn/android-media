@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.White.Hotel">
-        <item name="popupTheme">@style/HotelPopupTheme</item>
-    </style>
-
-    <style name="HotelPopupTheme">
-        <item name="android:background">@android:color/transparent</item>
+    <style name="Theme.White.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 </resources>
