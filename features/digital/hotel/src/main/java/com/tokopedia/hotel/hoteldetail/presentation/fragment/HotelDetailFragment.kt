@@ -16,6 +16,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityItem
+import com.tokopedia.hotel.hoteldetail.data.entity.PropertyData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
@@ -23,6 +24,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
+import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -96,7 +98,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
         detailViewModel.roomListResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    // TODO Success get Room List
+                    setupPriceButton(it.data)
                 }
                 is Fail -> {
                     // TODO Fail get Room List
@@ -168,26 +170,16 @@ class HotelDetailFragment : BaseDaggerFragment() {
 
         iv_hotel_detail_location.loadImage(data.property.locationImageStatic)
 
-        if (data.property.checkinTo.isNotEmpty()) {
-            scv_hotel_date.setLeftTitleText(getString(R.string.hotel_detail_check_from_to, data.property.checkInFrom, data.property.checkinTo))
-        } else {
-            scv_hotel_date.setLeftTitleText(getString(R.string.hotel_detail_check_start_from, data.property.checkInFrom))
-        }
-
-        if (data.property.checkoutFrom.isNotEmpty()) {
-            scv_hotel_date.setRightTitleText(getString(R.string.hotel_detail_check_from_to, data.property.checkoutFrom, data.property.checkoutTo))
-        } else {
-            scv_hotel_date.setRightTitleText(getString(R.string.hotel_detail_check_to, data.property.checkoutTo))
-        }
-
-        tv_hotel_description.text = data.property.description
-
+        setupPolicySwitcher(data.property)
         setupImportantInfo(data.property.importantInformation)
+        setupDescription(data.property.description)
         setupReviewItem(listOf("", "", "", "", ""))
         setupMainFacilityItem(listOf(FacilityItem(1, "Internet", ""),
                 FacilityItem(1, "Kamar Mandi", ""),
                 FacilityItem(1, "Air", ""),
-                FacilityItem(1, "Listrik", "")))
+                FacilityItem(1, "Listrik", ""),
+                FacilityItem(1, "Restoran", ""),
+                FacilityItem(1, "Kolam Renang", "")))
 
 //        initHotelLocationMap()
     }
@@ -274,7 +266,31 @@ class HotelDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupDescription(description: String) {
+        if (description.isNotEmpty()) {
+            tv_hotel_description.text = description
+        } else {
+            container_hotel_description.visibility = View.GONE
+        }
+    }
 
+    private fun setupPolicySwitcher(property: PropertyData) {
+        if (property.checkinTo.isNotEmpty()) {
+            scv_hotel_date.setLeftTitleText(getString(R.string.hotel_detail_check_from_to, property.checkInFrom, property.checkinTo))
+        } else {
+            scv_hotel_date.setLeftTitleText(getString(R.string.hotel_detail_check_start_from, property.checkInFrom))
+        }
+
+        if (property.checkoutFrom.isNotEmpty()) {
+            scv_hotel_date.setRightTitleText(getString(R.string.hotel_detail_check_from_to, property.checkoutFrom, property.checkoutTo))
+        } else {
+            scv_hotel_date.setRightTitleText(getString(R.string.hotel_detail_check_to, property.checkoutTo))
+        }
+    }
+
+    private fun setupPriceButton(data: List<HotelRoom>) {
+        if (data.isNotEmpty()) {
+            tv_hotel_price.text = data[0].roomPrice[0].roomPrice
+        }
     }
 
 //    private fun initHotelLocationMap() {

@@ -9,14 +9,8 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.viewholder.HotelDeta
 /**
  * @author by furqan on 29/04/19
  */
-class HotelDetailMainFacilityAdapter : RecyclerView.Adapter<HotelDetailMainFacilityViewHolder> {
+class HotelDetailMainFacilityAdapter(private var viewModels: List<FacilityItem>) : RecyclerView.Adapter<HotelDetailMainFacilityViewHolder>() {
 
-
-    private var viewModels: List<FacilityItem>
-
-    constructor(viewModels: List<FacilityItem>) : super() {
-        this.viewModels = viewModels
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotelDetailMainFacilityViewHolder = HotelDetailMainFacilityViewHolder(
             LayoutInflater.from(parent.context).inflate(HotelDetailMainFacilityViewHolder.LAYOUT, parent, false))
