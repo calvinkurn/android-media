@@ -303,9 +303,9 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @Override
     public void onPause() {
-        TopAdsGtmTracker.getInstance().eventRecomendationProductView(homeTrackingQueue,
-                tabName.toLowerCase(), userSession.isLoggedIn());
-        if (homeTrackingQueue != null) {
+        if(homeTrackingQueue != null) {
+            TopAdsGtmTracker.getInstance().eventRecomendationProductView(homeTrackingQueue,
+                    tabName.toLowerCase(), userSession.isLoggedIn());
             homeTrackingQueue.sendAll();
         }
         super.onPause();
