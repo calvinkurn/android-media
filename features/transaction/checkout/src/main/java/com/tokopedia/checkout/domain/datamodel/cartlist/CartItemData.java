@@ -852,8 +852,8 @@ public class CartItemData implements Parcelable {
         dest.writeString(this.warningMessageDescription);
         dest.writeString(this.errorMessageTitle);
         dest.writeString(this.errorMessageDescription);
-        dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isDisableAllProducts ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
     }
 
     protected CartItemData(Parcel in) {
@@ -867,8 +867,8 @@ public class CartItemData implements Parcelable {
         this.warningMessageTitle = in.readString();
         this.warningMessageDescription = in.readString();
         this.errorMessageTitle = in.readString();
-        this.isDisableAllProducts = in.readByte() != 0;
         this.errorMessageDescription = in.readString();
+        this.isDisableAllProducts = in.readByte() != 0;
         this.isFulfillment = in.readByte() != 0;
     }
 
