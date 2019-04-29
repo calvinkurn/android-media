@@ -211,6 +211,15 @@ public class ShopPageTrackingUser {
                 customDimensionShopPage);
     }
 
+    public void sendOpenShop() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "clickManageShop",
+                "Manage Shop",
+                "Click",
+                "Shop Info"
+        );
+    }
+
     public void clickFollowerList(boolean isOwner,
                                   CustomDimensionShopPage customDimensionShopPage) {
         sendEvent(CLICK_SHOP_PAGE,

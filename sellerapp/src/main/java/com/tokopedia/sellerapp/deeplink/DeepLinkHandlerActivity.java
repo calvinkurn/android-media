@@ -95,7 +95,11 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         UserIdentificationApplinkModule.class,
         ChatbotApplinkModule.class
 })
-
+/* **
+ * Navigation will via RouteManager -> manifest instead.
+ * Put new Deeplink directly into the target activity
+ */
+@Deprecated
 public class DeepLinkHandlerActivity extends AppCompatActivity {
 
 
