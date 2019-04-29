@@ -23,6 +23,7 @@ import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.FileDataSource
 import com.tokopedia.videoplayer.R
+import com.tokopedia.videoplayer.utils.sendViewToBack
 import kotlinx.android.synthetic.main.fragment_video_preview.*
 import java.io.File
 
@@ -96,12 +97,6 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
                 initPlayer(url)
             }
         }
-    }
-
-    private fun sendViewToBack(child: View) {
-        val parent = child.parent as ViewGroup
-        parent.removeView(child)
-        parent.addView(child, 0)
     }
 
     override fun onDestroy() {
