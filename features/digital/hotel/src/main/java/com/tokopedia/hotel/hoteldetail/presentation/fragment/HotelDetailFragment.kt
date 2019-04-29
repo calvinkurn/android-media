@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
+import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.usecase.coroutines.Fail
@@ -39,6 +41,8 @@ class HotelDetailFragment : BaseDaggerFragment() {
 
     private var hotelHomepageModel = HotelHomepageModel()
     private var isButtonEnabled: Boolean = true
+
+    private lateinit var detailReviewAdapter: HotelDetailReviewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -176,6 +180,8 @@ class HotelDetailFragment : BaseDaggerFragment() {
         tv_hotel_important_info.text = data.property.importantInformation
         tv_hotel_description.text = data.property.description
 
+        setupReviewItem(listOf("", "", "", "", ""))
+
 //        initHotelLocationMap()
     }
 
@@ -226,6 +232,18 @@ class HotelDetailFragment : BaseDaggerFragment() {
         if (images.size - imageCounter > 0) {
             tv_more_image_counter.text = getString(R.string.hotel_detail_more_image_counter, images.size - imageCounter)
         }
+    }
+
+    private fun setupReviewItem(reviewList: List<String>) {
+        if (!::detailReviewAdapter.isInitialized) {
+            detailReviewAdapter = HotelDetailReviewAdapter(reviewList)
+        }
+
+        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        rv_best_review.layoutManager = layoutManager
+        rv_best_review.setHasFixedSize(true)
+        rv_best_review.isNestedScrollingEnabled = false
+        rv_best_review.adapter = detailReviewAdapter
     }
 
 //    private fun initHotelLocationMap() {

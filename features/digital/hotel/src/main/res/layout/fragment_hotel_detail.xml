@@ -188,13 +188,14 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_16">
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16">
 
                     <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/iv_booking_logo"
                         android:layout_width="@dimen/dp_20"
                         android:layout_height="@dimen/dp_20"
-                        android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/dp_4"
                         android:layout_marginRight="@dimen/dp_4"
                         app:srcCompat="@drawable/status_no_result" />
@@ -207,7 +208,6 @@
                         android:layout_marginRight="@dimen/dp_4"
                         android:layout_toEndOf="@+id/iv_booking_logo"
                         android:layout_toRightOf="@+id/iv_booking_logo"
-                        android:text="8,6"
                         android:textColor="@color/blue_booking"
                         app:fontSize="title"
                         app:weight="medium"
@@ -256,7 +256,12 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_hotel_review_gradient"
                     android:clipToPadding="false"
-                    android:padding="@dimen/dp_16" />
+                    android:paddingStart="@dimen/dp_16"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_8"
+                    android:paddingEnd="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
+                    android:paddingBottom="@dimen/dp_16" />
 
                 <LinearLayout
                     android:id="@+id/container_hotel_address"
@@ -440,9 +445,9 @@
                         android:layout_marginTop="@dimen/dp_8"
                         android:ellipsize="end"
                         android:maxLines="3"
-                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                         app:fontSize="micro"
-                        app:weight="regular" />
+                        app:weight="regular"
+                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:id="@+id/tv_hotel_important_info_more"
@@ -468,9 +473,9 @@
                         android:layout_marginTop="@dimen/dp_8"
                         android:ellipsize="end"
                         android:maxLines="3"
-                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                         app:fontSize="micro"
-                        app:weight="regular" />
+                        app:weight="regular"
+                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:id="@+id/tv_hotel_description_more"
