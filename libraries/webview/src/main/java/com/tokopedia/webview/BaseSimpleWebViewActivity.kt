@@ -8,36 +8,69 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 
 class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
+    private lateinit var url: String
+    private var needToolbar = DEFAULT_TOOLBAR_VISIBILITY
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        initField(savedInstanceState)
+        validateField()
+
         super.onCreate(savedInstanceState)
-        hideToolbar()
+        setupToolbar()
     }
+
+    private fun initField(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            assignField(savedInstanceState)
+        } else {
+            assignField(intent.extras)
+        }
+    }
+
+    private fun assignField(bundle: Bundle?) {
+        if (bundle == null) return
+        with(bundle) {
+            url = getString(KEY_URL, "")
+            needToolbar = getBoolean(KEY_SHOW_TOOLBAR, DEFAULT_TOOLBAR_VISIBILITY)
+        }
+    }
+
+    private fun validateField() {
+        if (!::url.isInitialized || url.isEmpty()) {
+            finish()
+        }
+    }
+
+    private fun setupToolbar() {
+        if (doesNotNeedToShowToolbar()) {
+            hideToolbar()
+        }
+    }
+
+    private fun doesNotNeedToShowToolbar(): Boolean = !needToolbar
 
     private fun hideToolbar() {
         supportActionBar?.hide()
     }
 
     override fun getNewFragment(): Fragment {
-        if (doesNotHasIntentAndUrl()) {
-            finish()
-        }
-
-        val url = getUrl()
         return BaseSessionWebViewFragment.newInstance(url)
     }
 
-    private fun doesNotHasIntentAndUrl(): Boolean {
-        return (intent == null) || (getUrl() == null)
-    }
-
-    private fun getUrl(): String? = intent.getStringExtra(INTENT_KEY_URL)
-
     companion object {
-        const val INTENT_KEY_URL = "INTENT_KEY_URL"
+        private const val KEY_URL = "KEY_URL"
+        private const val KEY_SHOW_TOOLBAR = "KEY_SHOW_TOOLBAR"
 
-        fun getStartIntent(context: Context, url: String): Intent {
+        private const val DEFAULT_TOOLBAR_VISIBILITY = true
+
+        fun getStartIntent(
+                context: Context,
+                url: String,
+                showToolbar: Boolean = DEFAULT_TOOLBAR_VISIBILITY
+        ): Intent {
             return Intent(context, BaseSimpleWebViewActivity::class.java).apply {
-                putExtra(INTENT_KEY_URL, url)
+                putExtra(KEY_URL, url)
+                putExtra(KEY_SHOW_TOOLBAR, showToolbar)
             }
         }
     }
