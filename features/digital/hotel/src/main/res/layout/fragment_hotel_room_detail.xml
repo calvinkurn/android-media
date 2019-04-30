@@ -42,9 +42,9 @@
                 android:layout_height="?attr/actionBarSize"
                 android:elevation="@dimen/dp_4"
                 android:gravity="top"
-                app:contentInsetLeft="0dp"
-                app:contentInsetStart="0dp"
-                app:contentInsetStartWithNavigation="0dp"
+                app:contentInsetLeft="@dimen/dp_0"
+                app:contentInsetStart="@dimen/dp_0"
+                app:contentInsetStartWithNavigation="@dimen/dp_0"
                 app:elevation="@dimen/dp_4"
                 app:layout_anchor="@+id/toolbar_container"
                 app:layout_collapseMode="pin"
@@ -96,43 +96,44 @@
                         android:id="@+id/tv_room_detail_occupancy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:lineSpacingExtra="6sp"
+                        android:lineSpacingExtra="@dimen/sp_6"
                         android:text="@string/hotel_room_detail_header_occupancy"
-                        android:textColor="#ae31353b"
-                        android:textSize="12sp"
+                        app:fontSize="micro"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:textViewTheme="lightSecondary" />
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:id="@+id/tv_room_detail_size"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:lineSpacingExtra="6sp"
+                        android:lineSpacingExtra="@dimen/sp_6"
                         android:textColor="#ae31353b"
-                        android:textSize="12sp"
-                        tools:text="27 m² • 1 super-king atau 2 single"
+                        app:fontSize="micro"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_room_detail_occupancy" />
+                        app:layout_constraintTop_toBottomOf="@+id/tv_room_detail_occupancy"
+                        app:textViewTheme="lightSecondary"
+                        tools:text="27 m² • 1 super-king atau 2 single" />
 
                     <LinearLayout
                         android:id="@+id/room_detail_header_facilities"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/dp_8"
                         android:orientation="vertical"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_room_detail_size"></LinearLayout>
+                        app:layout_constraintTop_toBottomOf="@+id/tv_room_detail_size"/>
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:id="@+id/tv_room_detail_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="end"
-                        android:lineSpacingExtra="6sp"
+                        android:lineSpacingExtra="@dimen/sp_6"
                         android:text="@string/hotel_room_room_left_text"
-                        android:textColor="#ef144a"
-                        android:textSize="12sp"
+                        android:textColor="@color/pink_property"
                         android:visibility="gone"
+                        app:fontSize="micro"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -156,19 +157,20 @@
                         android:id="@+id/tv_room_detail_pay_at_hotel_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:lineSpacingExtra="6sp"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:lineSpacingExtra="@dimen/sp_6"
                         android:text="@string/hotel_room_detail_pay_at_hotel"
-                        android:textColor="#f531353b"
-                        android:textSize="16sp" />
+                        app:fontSize="title"
+                        app:textViewTheme="lightPrimary" />
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:id="@+id/tv_room_detail_pay_at_hotel_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:lineSpacingExtra="6sp"
+                        android:lineSpacingExtra="@dimen/sp_6"
                         android:text="@string/hotel_room_detail_pay_at_hotel_desc"
-                        android:textColor="#ae31353b"
-                        android:textSize="12sp" />
+                        app:fontSize="micro"
+                        app:textViewTheme="lightSecondary" />
 
                 </LinearLayout>
 
@@ -264,7 +266,7 @@
             android:paddingBottom="@dimen/dp_8">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
@@ -274,22 +276,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_room_detail_price_info"
-                    app:fontSize="micro" />
+                    app:fontSize="micro"
+                    app:textViewTheme="lightSecondary" />
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/tv_room_detail_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rp 10.800.000"
                     app:fontSize="title"
                     app:textViewTheme="lightPrimary"
-                    app:weight="medium" />
+                    app:weight="medium"
+                    tools:text="Rp 10.800.000"/>
 
             </LinearLayout>
 
             <com.tokopedia.design.component.ButtonCompat
                 android:id="@+id/room_detail_button"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/hotel_room_list_choose_room_button"
