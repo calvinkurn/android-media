@@ -132,6 +132,14 @@
                     android:layout_height="wrap_content"
                     tools:text="Rp20.000" />
 
+                <TextView
+                    android:id="@+id/tv_button_change_courier"
+                    style="@style/TextSmallNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_button_change_courier_recommendation"
+                    android:textColor="@color/tkpd_main_green" />
+
             </LinearLayout>
 
             <TextView
@@ -180,8 +188,8 @@
                 android:id="@+id/tv_logistic_promo_msg"
                 style="@style/TextSmallNormalBlack54"
                 android:layout_width="match_parent"
-                android:lineSpacingExtra="@dimen/dp_4"
                 android:layout_height="wrap_content"
+                android:lineSpacingExtra="@dimen/dp_4"
                 tools:text="Tidak dapat ubah kurir karena promo telah diterapkan" />
         </LinearLayout>
 
