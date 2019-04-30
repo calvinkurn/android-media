@@ -23,6 +23,7 @@ import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.view.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import kotlinx.android.synthetic.main.fragment_hotel_room_detail.*
+import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 
 /**
  * @author by resakemal on 23/04/19
@@ -82,16 +83,18 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
             }
         })
 
+        // Room images
         if (!hotelRoom.roomInfo.roomImages.isEmpty()) {
             val roomDetailImages = hotelRoom.roomInfo.roomImages.map { it.url300 }
             room_detail_images.setImages(roomDetailImages)
         }
         room_detail_images.buildView()
 
-        room_detail_title.setText(hotelRoom.roomInfo.name)
-        room_detail_occupancy.setText(getString(R.string.hotel_room_detail_header_occupancy,
+        // Room detail header
+        tv_room_detail_title.setText(hotelRoom.roomInfo.name)
+        tv_room_detail_occupancy.setText(getString(R.string.hotel_room_detail_header_occupancy,
                 hotelRoom.occupancyInfo.occupancyText))
-        room_detail_size.setText(hotelRoom.bedInfo)
+        tv_room_detail_size.setText(hotelRoom.bedInfo)
 
         val breakfastTextView = FacilityTextView(context!!)
         breakfastTextView.setIconAndText("",
@@ -105,19 +108,22 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
                 else getString(R.string.hotel_room_list_not_refundable) )
         room_detail_header_facilities.addView(refundableTextView)
 
+        // Room count
         if (hotelRoom.numberRoomLeft <= MINIMUM_ROOM_COUNT) {
-            room_detail_count.setText(getString(R.string.hotel_room_room_left_text,
+            tv_room_detail_count.setText(getString(R.string.hotel_room_room_left_text,
                     Integer.toString(hotelRoom.numberRoomLeft)))
-            room_detail_count.visibility = View.VISIBLE
+            tv_room_detail_count.visibility = View.VISIBLE
         }
 
-        val spannableString = SpannableString(getString(R.string.hotel_room_detail_pay_at_hotel_desc))
+        // Pay at hotel
+        val spannableString = SpannableString("  " + getString(R.string.hotel_room_detail_pay_at_hotel_desc))
         val icon = ContextCompat.getDrawable(context!!, R.drawable.ic_hotel_calendar)
-        spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, 26, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(StyleSpan(Typeface.BOLD), 2, 28, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(ImageSpan(icon, ImageSpan.ALIGN_BASELINE), 0, 1,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        room_detail_pay_at_hotel_desc.setText(spannableString)
+        tv_room_detail_pay_at_hotel_desc.setText(spannableString)
 
+        // Room cancellation
         if (!hotelRoom.cancelPolicy.isEmpty()) {
             val spannableStringBuilder = SpannableStringBuilder()
             for (policy in hotelRoom.cancelPolicy) {
@@ -131,21 +137,25 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
 
             room_detail_cancellation.infoTitle = getString(R.string.hotel_room_detail_cancellation)
             room_detail_cancellation.infoDescription = spannableStringBuilder
+//            room_detail_cancellation.truncateDescription = false
             room_detail_cancellation.buildView()
         }
 
+        // Room tax
         if (!hotelRoom.taxes.isEmpty()) {
             room_detail_tax.infoTitle = getString(R.string.hotel_room_detail_tax)
             room_detail_tax.infoDescription = hotelRoom.taxes
             room_detail_tax.buildView()
         }
 
+        // Room deposit
         if (!hotelRoom.depositInfo.depositText.isEmpty()) {
             room_detail_deposit.infoTitle = getString(R.string.hotel_room_detail_deposit)
             room_detail_deposit.infoDescription = hotelRoom.depositInfo.depositText
             room_detail_deposit.buildView()
         }
 
+        // Room facilities
         if (!hotelRoom.roomInfo.facility.isEmpty()) {
             val facilityList = hotelRoom.roomInfo.facility
             val stringBuilder = StringBuffer()
@@ -166,34 +176,42 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
 
             room_detail_facilities.infoTitle = getString(R.string.hotel_room_detail_facilities)
             room_detail_facilities.infoDescription = previewFacilitiesString
-            room_detail_facilities.hotelInfoViewListener = object : InfoTextView.HotelInfoViewListener {
+            room_detail_facilities.info_more.visibility = View.VISIBLE
+            room_detail_facilities.infoViewListener = object : InfoTextView.InfoViewListener {
                 override fun onMoreClicked() {
-                    room_detail_facilities.infoDescription = fullFacilitiesString
+                    room_detail_facilities.info_desc.setText(fullFacilitiesString)
+                    room_detail_facilities.resetMaxLineCount()
+                    room_detail_facilities.invalidate()
                 }
             }
+            room_detail_facilities.truncateDescription = false
             room_detail_facilities.descriptionLineCount = ROOM_FACILITY_DEFAULT_COUNT
             room_detail_facilities.buildView()
         }
 
+        // Room description
         if (!hotelRoom.roomInfo.description.isEmpty()) {
             room_detail_description.infoTitle = getString(R.string.hotel_room_detail_description)
             room_detail_description.infoDescription = hotelRoom.roomInfo.description
             room_detail_description.buildView()
         }
 
+        // Breakfast
         if (!hotelRoom.breakfastInfo.mealPlan.isEmpty()) {
             room_detail_breakfast.infoTitle = getString(R.string.hotel_room_detail_breakfast)
             room_detail_breakfast.infoDescription = hotelRoom.breakfastInfo.mealPlan
             room_detail_breakfast.buildView()
         }
 
+        // Extra bed
         if (!hotelRoom.extraBedInfo.content.isEmpty()) {
             room_detail_extra_bed.infoTitle = getString(R.string.hotel_room_detail_extra_bed)
             room_detail_extra_bed.infoDescription = hotelRoom.extraBedInfo.content
             room_detail_extra_bed.buildView()
         }
 
-        room_detail_price.setText(getString(R.string.hotel_room_detail_price, hotelRoom.roomPrice[0].roomPrice))
+        tv_room_detail_price.setText(hotelRoom.roomPrice[0].roomPrice)
+        room_detail_button.setText(getString(R.string.hotel_room_list_choose_room_button, ""))
     }
 
     override fun getScreenName(): String = ""

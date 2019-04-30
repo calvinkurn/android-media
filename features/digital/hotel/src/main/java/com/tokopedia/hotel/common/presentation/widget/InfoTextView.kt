@@ -18,10 +18,11 @@ class InfoTextView: BaseCustomView {
     var infoTitle: CharSequence = ""
     var infoDescription: CharSequence = ""
     var descriptionLineCount = INFO_DESC_DEFAULT_LINE_COUNT
+    var truncateDescription = true
 
-    var hotelInfoViewListener: HotelInfoViewListener? = null
+    var infoViewListener: InfoViewListener? = null
 
-    interface HotelInfoViewListener {
+    interface InfoViewListener {
         fun onMoreClicked()
     }
 
@@ -31,7 +32,7 @@ class InfoTextView: BaseCustomView {
 
     fun init() {
         View.inflate(context, R.layout.widget_info_text_view, this)
-        hotelInfoViewListener = object : HotelInfoViewListener {
+        infoViewListener = object : InfoViewListener {
             override fun onMoreClicked() {
                 resetMaxLineCount()
                 invalidate()
@@ -44,18 +45,23 @@ class InfoTextView: BaseCustomView {
         info_title.setText(infoTitle)
 
         info_desc.setText(infoDescription)
-        if (info_desc.lineCount > descriptionLineCount) {
-            info_desc.setEllipsize(TextUtils.TruncateAt.END)
-            info_desc.setMaxLines(descriptionLineCount)
-            info_more.visibility = View.VISIBLE
+        if (truncateDescription) {
+            info_desc.post {
+                if (info_desc.lineCount > descriptionLineCount) {
+                    info_desc.setEllipsize(TextUtils.TruncateAt.END)
+                    info_desc.setMaxLines(descriptionLineCount)
+                    info_more.visibility = View.VISIBLE
+                }
+            }
         }
 
-        hotelInfoViewListener?.let { listener -> info_more.setOnClickListener{ listener.onMoreClicked() } }
+        infoViewListener?.let { listener -> info_more.setOnClickListener{ listener.onMoreClicked() } }
     }
 
     fun resetMaxLineCount() {
         info_desc.setEllipsize(null)
         info_desc.setMaxLines(Integer.MAX_VALUE)
+        info_more.visibility = View.GONE
     }
 
     companion object {
