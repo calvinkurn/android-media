@@ -125,17 +125,6 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         filter_recycler_view.setItem(arrayListOf(getString(PAY_IN_HOTEL),
                 getString(FREE_BREAKFAST), getString(FREE_CANCELABLE)),
                 R.color.snackbar_border_normal)
-        filter_recycler_view.chip_recycler_view.addItemDecoration(object: RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                super.getItemOffsets(outRect, view, parent, state)
-
-                val itemPosition = parent.getChildLayoutPosition(view)
-                val itemCount = state.getItemCount()
-
-                outRect.left = if (itemPosition == 0) 20 else 0
-                outRect.right = if (itemCount > 0 && itemPosition == itemCount - 1) 20 else 0
-            }
-        })
 
         recycler_view.addItemDecoration(object: RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {

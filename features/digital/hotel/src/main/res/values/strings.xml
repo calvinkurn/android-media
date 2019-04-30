@@ -1,5 +1,6 @@
 <resources>
     <string name="hotel_app_name">Hotel</string>
+
     <string name="hotel_bottom_menu_transaction_list">Daftar Transaksi</string>
     <string name="hotel_bottom_menu_promo">Promo</string>
     <string name="hotel_bottom_menu_help">Bantuan</string>
@@ -80,6 +81,8 @@
     <string name="hotel_detail_check_start_from">Mulai %1$s</string>
     <string name="hotel_detail_check_to">Sampai %1$s</string>
     <string name="hotel_detail_map_marker_title"><![CDATA[<strong>%1$s</strong> - %2$s]]></string>
+
+    <string name="hotel_review_title">Ulasan</string>
 
     <string name="hotel_room_detail_header_occupancy">Maksimum: %1$s</string>
     <string name="hotel_room_detail_header_breakfast">Sarapan Gratis</string>

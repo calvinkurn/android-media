@@ -2,6 +2,7 @@ package com.tokopedia.hotel.hoteldetail.di
 
 import com.tokopedia.hotel.common.di.component.HotelComponent
 import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelDetailFragment
+import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelReviewFragment
 import dagger.Component
 
 /**
@@ -12,5 +13,7 @@ import dagger.Component
 interface HotelDetailComponent {
 
     fun inject(hotelDetailFragment: HotelDetailFragment)
+
+    fun inject(hotelReviewFragment: HotelReviewFragment)
 
 }
