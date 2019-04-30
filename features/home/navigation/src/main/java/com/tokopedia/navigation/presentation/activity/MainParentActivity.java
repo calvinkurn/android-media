@@ -333,7 +333,7 @@ public class MainParentActivity extends BaseActivity implements
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         startActivity(HotelHomepageActivity.Companion.getCallingIntent(this));
         return false;
-
+/*
         int position = getPositionFragmentByMenu(item);
         globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
 
@@ -354,7 +354,7 @@ public class MainParentActivity extends BaseActivity implements
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
-        return true;
+        return true;*/
     }
 
     private void hideStatusBar() {
