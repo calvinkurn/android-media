@@ -215,7 +215,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private View llLogPromo;
     private TextView tvLogPromoLabel;
     private TextView tvLogPromoMsg;
-    private TextView tvChangeCourier21a;
+    private TextView tvSelectedPriceOnly;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -326,7 +326,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llSelectedCourierRecommendationContainer = itemView.findViewById(R.id.ll_selected_courier_recommendation_container);
         tvSelectedCourierRecommendation = itemView.findViewById(R.id.tv_selected_courier_recommendation);
         tvSelectedPriceRecommendation = itemView.findViewById(R.id.tv_selected_price_recommendation);
-        tvChangeSelectedCourierRecommendation = itemView.findViewById(R.id.tv_change_selected_courier_recommendation);
+        tvSelectedPriceOnly = itemView.findViewById(R.id.tv_selected_price_b);
+        tvChangeSelectedCourierRecommendation = itemView.findViewById(R.id.tv_button_change_courier);
         tvTickerInfo = itemView.findViewById(R.id.tv_ticker_info);
         llShipmentInfoTicker = itemView.findViewById(R.id.ll_shipment_info_ticker);
         layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
@@ -334,8 +335,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llCourierRecommendationStateLoading = itemView.findViewById(R.id.ll_courier_recommendation_state_loading);
         tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
-
-        tvChangeCourier21a = itemView.findViewById(R.id.tv_button_change_courier);
 
         // robinhood III
         llCourierBlackboxStateLoading = itemView.findViewById(R.id.ll_courier_blackbox_state_loading);
@@ -798,7 +797,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 );
             }
         });
-
         tvChangeSelectedDuration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -806,21 +804,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         shopShipmentList, getAdapterPosition());
             }
         });
-
-        if (shipmentCartItemModel.isHidingCourier()) {
-            tvChangeCourier21a.setVisibility(View.VISIBLE);
-            tvChangeCourier21a.setTextColor(Color.parseColor("#42b549"));
-            tvChangeCourier21a.setOnClickListener(view -> mActionListener.onChangeShippingCourier(
-                    shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
-                    currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition()));
-            tvChangeSelectedCourierRecommendation.setVisibility(View.GONE);
-        } else {
-            tvChangeCourier21a.setVisibility(View.GONE);
-            tvChangeSelectedCourierRecommendation.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_grey_round));
-            tvChangeSelectedCourierRecommendation.setOnClickListener(v -> mActionListener.onChangeShippingCourier(
-                    shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
-                    currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition()));
-        }
+        tvChangeSelectedCourierRecommendation.setTextColor(Color.parseColor("#42b549"));
+        tvChangeSelectedCourierRecommendation.setOnClickListener(v -> mActionListener.onChangeShippingCourier(
+                shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
+                currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition()));
 
         // Logistic Promo
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
@@ -828,13 +815,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (!TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc())) {
                 tvLogPromoLabel.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
             } else tvLogPromoLabel.setVisibility(View.GONE);
-            if (shipmentCartItemModel.isHidingCourier()) {
-                tvChangeCourier21a.setTextColor(Color.parseColor("#7031353b"));
-                tvChangeCourier21a.setOnClickListener(null);
-            } else {
-                tvChangeSelectedCourierRecommendation.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
-                tvChangeSelectedCourierRecommendation.setOnClickListener(null);
-            }
+            tvChangeSelectedCourierRecommendation.setTextColor(Color.parseColor("#7031353b"));
+            tvChangeSelectedCourierRecommendation.setOnClickListener(null);
         }
 
         boolean isCourierSelected = shipmentDetailData != null
@@ -862,11 +844,25 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llSelectedShipmentRecommendation.setVisibility(View.VISIBLE);
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
             tvSelectedDurationRecommendation.setText(shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery());
-            tvSelectedCourierRecommendation.setText(shipmentDetailData.getSelectedCourier().getName());
-            tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
             llCourierRecommendationStateLoading.setVisibility(View.GONE);
             tvLogPromoMsg.setText(shipmentDetailData.getSelectedCourier().getLogPromoMsg());
+
+            if (shipmentCartItemModel.isHidingCourier()) {
+                // Robinhood Phase 21b
+                tvSelectedCourierRecommendation.setVisibility(View.GONE);
+                tvSelectedPriceRecommendation.setVisibility(View.GONE);
+                tvSelectedPriceOnly.setVisibility(View.VISIBLE);
+                tvSelectedPriceOnly.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
+            } else {
+                // Robinhood Phase 21a
+                tvSelectedPriceOnly.setVisibility(View.GONE);
+                tvSelectedCourierRecommendation.setVisibility(View.VISIBLE);
+                tvSelectedPriceRecommendation.setVisibility(View.VISIBLE);
+                tvSelectedCourierRecommendation.setText(shipmentDetailData.getSelectedCourier().getName());
+                tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
+            }
         } else {
             llSelectedShipmentRecommendation.setVisibility(View.GONE);
             llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
