@@ -30,12 +30,18 @@ class HotelRoomDetailActivity : HotelBaseActivity(), HasComponent<HotelRoomDetai
     override fun getScreenName(): String = ""
 
     override fun getNewFragment(): Fragment =
-        HotelRoomDetailFragment.getInstance()
+        HotelRoomDetailFragment.getInstance(
+                intent.getStringExtra(EXTRA_SAVED_INSTANCE_ID)
+        )
 
     override fun shouldShowOptionMenu(): Boolean = false
 
     companion object {
-        fun getCallingIntent(context: Context): Intent =
+
+        const val EXTRA_SAVED_INSTANCE_ID = "EXTRA_SAVED_INSTANCE_ID"
+
+        fun getCallingIntent(context: Context, savedInstanceId: String): Intent =
                 Intent(context, HotelRoomDetailActivity::class.java)
+                        .putExtra(EXTRA_SAVED_INSTANCE_ID, savedInstanceId)
     }
 }

@@ -12,9 +12,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
@@ -36,12 +34,14 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
     lateinit var saveInstanceCacheManager: SaveInstanceCacheManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
         saveInstanceCacheManager = SaveInstanceCacheManager(activity!!, savedInstanceState)
+        val manager = if (savedInstanceState == null) SaveInstanceCacheManager(activity!!,
+                arguments!!.getString(HotelRoomDetailActivity.EXTRA_SAVED_INSTANCE_ID)) else saveInstanceCacheManager
 
-        hotelRoom = saveInstanceCacheManager.get(EXTRA_ROOM_DATA, HotelRoom::class.java, HotelRoom())!!
-        initDummyRoomDetail()
+        hotelRoom = manager.get(EXTRA_ROOM_DATA, HotelRoom::class.java, HotelRoom())!!
+
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -55,12 +55,7 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
         initView()
     }
 
-    fun initDummyRoomDetail() {
-        val dummyRoomDetail = GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_room_detail)
-        hotelRoom = Gson().fromJson(dummyRoomDetail, HotelRoom::class.java)
-    }
-
-    fun initView() {
+    private fun initView() {
         (activity as HotelRoomDetailActivity).setSupportActionBar(detail_toolbar)
         (activity as HotelRoomDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -226,6 +221,11 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
         val MINIMUM_ROOM_COUNT = 3
         val ROOM_FACILITY_DEFAULT_COUNT = 6
 
-        fun getInstance(): HotelRoomDetailFragment = HotelRoomDetailFragment()
+        fun getInstance(savedInstanceId: String): HotelRoomDetailFragment =
+                HotelRoomDetailFragment().also {
+                    it.arguments = Bundle().apply {
+                        putString(HotelRoomDetailActivity.EXTRA_SAVED_INSTANCE_ID, savedInstanceId)
+                    }
+                }
     }
 }

@@ -17,6 +17,8 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
+import com.tokopedia.hotel.roomdetail.view.activity.HotelRoomDetailActivity
+import com.tokopedia.hotel.roomdetail.view.fragment.HotelRoomDetailFragment
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.di.HotelRoomListComponent
@@ -30,7 +32,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
 import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
-import kotlinx.android.synthetic.main.widget_filter_chip_recycler_view.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -39,22 +40,18 @@ import javax.inject.Inject
  * @author by jessica on 15/04/19
  */
 
-class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(), ChipAdapter.OnClickListener,
+class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>(), ChipAdapter.OnClickListener,
         HotelRoomAndGuestBottomSheets.HotelGuestListener, BaseEmptyViewHolder.Callback,
-        RoomListViewHolder.OnClickBookListener{
+        RoomListViewHolder.OnClickBookListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var roomListViewModel: HotelRoomListViewModel
 
-    lateinit var saveInstanceCacheManager: SaveInstanceCacheManager
-
     var hotelRoomListPageModel = HotelRoomListPageModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        saveInstanceCacheManager = SaveInstanceCacheManager(activity!!, savedInstanceState)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -79,20 +76,22 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        roomListViewModel.roomListResult.observe(this, android.arch.lifecycle.Observer { when (it) {
-            is Success -> {
-                if (!roomListViewModel.isFilter) {
-                    roomListViewModel.roomList = it.data
-                    showFilterRecyclerView(it.data.size > 0)
-                } else showFilterRecyclerView(true)
-                clearAllData()
-                renderList(it.data)
+        roomListViewModel.roomListResult.observe(this, android.arch.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    if (!roomListViewModel.isFilter) {
+                        roomListViewModel.roomList = it.data
+                        showFilterRecyclerView(it.data.size > 0)
+                    } else showFilterRecyclerView(true)
+                    clearAllData()
+                    renderList(it.data)
+                }
+                is Fail -> {
+                    showGetListError(it.throwable)
+                    showFilterRecyclerView(false)
+                }
             }
-            is Fail -> {
-                showGetListError(it.throwable)
-                showFilterRecyclerView(false)
-            }
-        } })
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -126,7 +125,7 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
                 getString(FREE_BREAKFAST), getString(FREE_CANCELABLE)),
                 R.color.snackbar_border_normal)
 
-        recycler_view.addItemDecoration(object: RecyclerView.ItemDecoration() {
+        recycler_view.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
 
@@ -249,7 +248,11 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
     }
 
     override fun onItemClicked(room: HotelRoom) {
-        saveInstanceCacheManager.put(EXTRA_ROOM_DATA, room)
+        val objectId = System.currentTimeMillis().toString()
+        SaveInstanceCacheManager(context!!, objectId).apply {
+            put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, room)
+        }
+        startActivityForResult(HotelRoomDetailActivity.getCallingIntent(context!!, objectId), RESULT_ROOM_DETAIL)
     }
 
     override fun getScreenName(): String = ""
@@ -264,9 +267,15 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
 
     override fun onChipClickListener(string: String) {
         when (string) {
-            getString(FREE_BREAKFAST) -> { roomListViewModel.clickFilter(clickFreeBreakfast = true) }
-            getString(FREE_CANCELABLE) -> { roomListViewModel.clickFilter(clickFreeCancelable = true) }
-            getString(PAY_IN_HOTEL) -> { roomListViewModel.clickFilter(clickPayInHotel = true) }
+            getString(FREE_BREAKFAST) -> {
+                roomListViewModel.clickFilter(clickFreeBreakfast = true)
+            }
+            getString(FREE_CANCELABLE) -> {
+                roomListViewModel.clickFilter(clickFreeCancelable = true)
+            }
+            getString(PAY_IN_HOTEL) -> {
+                roomListViewModel.clickFilter(clickPayInHotel = true)
+            }
         }
     }
 
@@ -301,7 +310,7 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         return emptyModel
     }
 
-    override fun onEmptyContentItemTextClicked() { }
+    override fun onEmptyContentItemTextClicked() {}
 
     override fun onEmptyButtonClicked() {
         //DELETE FILTER
@@ -318,6 +327,8 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         val FREE_CANCELABLE = R.string.hotel_room_list_filter_free_cancelable
         val PAY_IN_HOTEL = R.string.hotel_room_list_filter_pay_in_hotel
 
+        const val RESULT_ROOM_DETAIL = 102
+
         const val ARG_PROPERTY_ID = "arg_property_id"
         const val ARG_PROPERTY_NAME = "arg_property_name"
         const val ARG_CHECK_IN = "arg_check_in"
@@ -326,7 +337,6 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         const val ARG_TOTAL_ADULT = "arg_total_adult"
         const val ARG_TOTAL_CHILDREN = "arg_total_children"
         const val TAG_GUEST_INFO = "guestHotelInfo"
-        const val EXTRA_ROOM_DATA = "extra_room_data"
         const val EXTRA_HOTEL_ROOM_LIST_MODEL = "extra_room_list_model"
 
         val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"
