@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.roomdetail.di.DaggerHotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
@@ -18,12 +19,12 @@ class HotelRoomDetailActivity : HotelBaseActivity(), HasComponent<HotelRoomDetai
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        updateTitle("Kamar Deluxe Double")
+        supportActionBar?.hide()
     }
 
     override fun getComponent(): HotelRoomDetailComponent =
             DaggerHotelRoomDetailComponent.builder()
-                    .hotelComponent(getHotelComponent())
+                    .hotelComponent(HotelComponentInstance.getHotelComponent(application))
                     .build()
 
     override fun getScreenName(): String = ""
