@@ -46,6 +46,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
@@ -459,6 +460,26 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
+        if (!TextUtils.isEmpty(item.getApplink())) {
+            RouteManager.route(getActivity(), item.getApplink());
+        } else {
+            RouteManager.route(getActivity(), item.getUrl());
+        }
+        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(), keyword);
+    }
+
+    @Override
+    public void onGlobalNavWidgetClickSeeAll(String applink, String url) {
+        if (!TextUtils.isEmpty(applink)) {
+            RouteManager.route(getActivity(), applink);
+        } else {
+            RouteManager.route(getActivity(), url);
+        }
+        SearchTracking.eventUserClickSeeAllGlobalNavWidget();
+    }
+
+    @Override
     public void onItemClicked(ProductItem item, int adapterPosition) {
         Intent intent = getProductIntent(item.getProductID());
 
@@ -849,6 +870,15 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void setFirstTimeLoad(boolean isFirstTimeLoad) {
         this.isFirstTimeLoad = isFirstTimeLoad;
+    }
+
+    @Override
+    public void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel) {
+        List<Object> dataLayerList = new ArrayList<>();
+        for (GlobalNavViewModel.Item item : globalNavViewModel.getItemList()) {
+            dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer());
+        }
+        SearchTracking.trackEventImpressionGlobalNavWidgetItem(trackingQueue, dataLayerList, globalNavViewModel.getKeyword());
     }
 
     public void sendMoEngageSearchAttempt(Context context, String keyword, boolean isResultFound, HashMap<String, String> category) {

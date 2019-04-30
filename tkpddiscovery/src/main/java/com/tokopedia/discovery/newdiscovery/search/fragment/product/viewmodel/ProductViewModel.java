@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
@@ -37,6 +38,7 @@ public class ProductViewModel implements Parcelable {
     private CpmModel cpmModel;
     private RelatedSearchModel relatedSearchModel;
     private SearchParameter searchParameter;
+    private GlobalNavViewModel globalNavViewModel;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -178,6 +180,14 @@ public class ProductViewModel implements Parcelable {
         this.relatedSearchModel = relatedSearchModel;
     }
 
+    public GlobalNavViewModel getGlobalNavViewModel() {
+        return globalNavViewModel;
+    }
+
+    public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
+        this.globalNavViewModel = globalNavViewModel;
+    }
+
     public int getTotalItem() {
         return getProductList().size() + getAdsModel().getData().size();
     }
@@ -198,7 +208,6 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
         dest.writeInt(this.totalItem);
-        dest.writeParcelable(this.searchParameter, flags);
         dest.writeByte(this.forceSearch ? (byte) 1 : (byte) 0);
         dest.writeByte(this.imageSearch ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.dynamicFilterModel, flags);
@@ -207,6 +216,8 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.adsModel, flags);
         dest.writeParcelable(this.cpmModel, flags);
         dest.writeParcelable(this.relatedSearchModel, flags);
+        dest.writeParcelable(this.searchParameter, flags);
+        dest.writeParcelable(this.globalNavViewModel, flags);
     }
 
     protected ProductViewModel(Parcel in) {
@@ -219,7 +230,6 @@ public class ProductViewModel implements Parcelable {
         this.suggestionModel = in.readParcelable(SuggestionModel.class.getClassLoader());
         this.totalData = in.readInt();
         this.totalItem = in.readInt();
-        this.searchParameter = in.readParcelable(SearchParameter.class.getClassLoader());
         this.forceSearch = in.readByte() != 0;
         this.imageSearch = in.readByte() != 0;
         this.dynamicFilterModel = in.readParcelable(DynamicFilterModel.class.getClassLoader());
@@ -228,6 +238,8 @@ public class ProductViewModel implements Parcelable {
         this.adsModel = in.readParcelable(TopAdsModel.class.getClassLoader());
         this.cpmModel = in.readParcelable(CpmModel.class.getClassLoader());
         this.relatedSearchModel = in.readParcelable(RelatedSearchModel.class.getClassLoader());
+        this.searchParameter = in.readParcelable(SearchParameter.class.getClassLoader());
+        this.globalNavViewModel = in.readParcelable(GlobalNavViewModel.class.getClassLoader());
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {

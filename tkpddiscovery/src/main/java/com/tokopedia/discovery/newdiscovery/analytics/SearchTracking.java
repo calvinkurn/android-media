@@ -34,6 +34,7 @@ public class SearchTracking {
     public static final String EVENT_EMPTY = "";
     public static final String EVENT_CATEGORY_SEARCH_RESULT_PROFILE = "search result profile";
     public static final String EVENT_CATEGORY_EMPTY_SEARCH = "empty search";
+    public static final String EVENT_CATEGORY_SEARCH_RESULT = "search result";
     public static final String EVENT_ACTION_CLICK_PROFILE_RESULT = "click - profile result";
     public static final String PROMO_CLICK = "promoClick";
     public static final String PROMOTIONS = "promotions";
@@ -46,6 +47,9 @@ public class SearchTracking {
     public static final String EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE = "keyword: %s - profile: %s - profile id: %s - po: %s";
     public static final String PROMO_VIEW = "promoView";
     public static final String EVENT_ACTION_IMPRESSION_PROFILE = "impression - profile";
+    public static final String EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET = "click - lihat semua widget";
+    public static final String EVENT_ACTION_CLICK_WIDGET_DIGITAL_PRODUCT = "click widget - digital product";
+    public static final String EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT = "impression widget - digital product";
     public static String imageClick = "/imagesearch - p%s";
 
     private UserSessionInterface userSessionInterface;
@@ -455,6 +459,51 @@ public class SearchTracking {
                 EVENT_CATEGORY_EMPTY_SEARCH,
                 EVENT_ACTION_CLICK_NEW_SEARCH,
                 String.format("tab: %s", screenName)
+        );
+    }
+
+    public static void eventUserClickSeeAllGlobalNavWidget() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_SEARCH_RESULT,
+                EVENT_CATEGORY_SEARCH_RESULT,
+                EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET,
+                ""
+        );
+    }
+
+    public static void trackEventClickGlobalNavWidgetItem(Object item,
+                                                          String keyword) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, PROMO_CLICK,
+                        EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT,
+                        EVENT_ACTION, EVENT_ACTION_CLICK_WIDGET_DIGITAL_PRODUCT,
+                        EVENT_LABEL, keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                PROMO_CLICK, DataLayer.mapOf(
+                                        PROMOTIONS, DataLayer.listOf(item)
+                                )
+                        )
+                )
+        );
+    }
+
+    public static void trackEventImpressionGlobalNavWidgetItem(TrackingQueue trackingQueue,
+                                                               List<Object> list,
+                                                               String keyword) {
+
+        trackingQueue.putEETracking(
+                (HashMap<String, Object>) DataLayer.mapOf(EVENT, PROMO_VIEW,
+                        EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT,
+                        EVENT_ACTION, EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT,
+                        EVENT_LABEL, keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                PROMO_VIEW, DataLayer.mapOf(
+                                        PROMOTIONS, DataLayer.listOf(
+                                                list.toArray(new Object[list.size()])
+                                        )
+                                )
+                        )
+                )
         );
     }
 }
