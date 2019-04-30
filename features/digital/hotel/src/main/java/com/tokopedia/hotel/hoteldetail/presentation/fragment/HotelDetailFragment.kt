@@ -292,7 +292,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupPriceButton(data: List<HotelRoom>) {
-        if (data.isNotEmpty()) {
+        if (data.isNotEmpty() && data[0].roomPrice.isNotEmpty()) {
             tv_hotel_price.text = data[0].roomPrice[0].roomPrice
         }
         btn_see_room.setOnClickListener {
