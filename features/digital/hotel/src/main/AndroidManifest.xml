@@ -39,6 +39,11 @@
         <activity android:name=".roomlist.presentation.activity.HotelRoomListActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
+
+        <activity android:name=".roomdetail.view.activity.HotelRoomDetailActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.NoActionBar"/>
     </application>
 
 </manifest>
