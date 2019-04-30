@@ -9,16 +9,20 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.search.di.DaggerHotelSearchPropertyComponent
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 
-class HotelSearchResultActivity: BaseSimpleActivity(), HasComponent<HotelSearchPropertyComponent> {
+class HotelSearchResultActivity: HotelBaseActivity(), HasComponent<HotelSearchPropertyComponent> {
+    override fun shouldShowOptionMenu(): Boolean {
+        return true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val checkIn = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, intent.getStringExtra(HotelSearchResultFragment.ARG_CHECK_IN)))
-        val checkOut = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, intent.getStringExtra(HotelSearchResultFragment.ARG_CHECK_OUT)))
+        val checkIn = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, intent.getStringExtra(HotelSearchResultFragment.ARG_CHECK_IN)))
+        val checkOut = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, intent.getStringExtra(HotelSearchResultFragment.ARG_CHECK_OUT)))
         val subtitle = getString(R.string.template_search_subtitle,
                 checkIn,
                 checkOut,

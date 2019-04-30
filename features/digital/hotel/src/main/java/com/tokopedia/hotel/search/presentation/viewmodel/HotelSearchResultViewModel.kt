@@ -11,6 +11,7 @@ import com.tokopedia.hotel.search.data.model.Sort
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.experimental.CoroutineDispatcher
@@ -61,10 +62,7 @@ class HotelSearchResultViewModel @Inject constructor(
             val response = withContext(Dispatchers.IO){ graphqlRepository.getReseponse(listOf(graphqlRequest)) }
             liveSearchResult.value = Success(response.getSuccessData<PropertySearch.Response>().response)
         }){
-            it.printStackTrace()
-            val gson = Gson()
-            liveSearchResult.value = Success(gson.fromJson(dummySearchResult,
-                    PropertySearch.Response::class.java).response)
+            liveSearchResult.value = Fail(it)
         }
     }
 
