@@ -205,6 +205,7 @@ ext {
 //            train                         : ":features:digital:train_no_op",
 
             categoryCommon                  : ":features:discovery:category_common",
+            discoveryCommon                 : ":features:discovery:discovery_common",
             flashsaleManagement             : ":features:discovery:flashsale_management",
 //            flashsaleManagement             : ":features:discovery:flashsale_management_no_op",
             flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
@@ -212,6 +213,7 @@ ext {
             //home                          : ":features:discovery:home_no_op",
             recentview                      : ":features:discovery:recentview",
             //recentview                    : ":features:discovery:recentview_no_op",
+            search                          : ":features:discovery:search",
             topAdsSdk                       : ":features:discovery:topadssdk",
             wishlistCommon                  : ":features:discovery:wishlist_common",
             productCard                     : ":features:discovery:productcard",

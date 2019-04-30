@@ -2,8 +2,10 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +30,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
+import com.tokopedia.discovery.util.AnimationUtil;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -76,7 +79,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private String imagePath;
     private UserSessionInterface userSession;
     private PerformanceMonitoring performanceMonitoring;
-    private View root;
+    protected View root;
 
     protected SearchParameter searchParameter;
 
@@ -87,7 +90,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         userSession = new UserSession(this);
         proceed();
     }
-
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -329,10 +331,35 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     public void onBackPressed() {
         if (searchView.isSearchOpen()) {
             if (searchView.isFinishOnClose()) {
-                finish();
+                finishWithAnimation();
             } else {
                 searchView.closeSearch();
             }
+        } else {
+            finish();
+        }
+    }
+
+    private void finishWithAnimation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AnimationUtil.unreveal(root, new AnimationUtil.AnimationListener() {
+                @Override
+                public boolean onAnimationStart(View view) {
+                    return false;
+                }
+
+                @Override
+                public boolean onAnimationEnd(View view) {
+                    finish();
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+
+                @Override
+                public boolean onAnimationCancel(View view) {
+                    return false;
+                }
+            });
         } else {
             finish();
         }
@@ -359,7 +386,36 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         onSearchingStart(searchQuery);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
 
-        getPresenter().initiateSearch(searchParameter, isForceSearch());
+        getPresenter().initiateSearch(searchParameter, isForceSearch(), getInitiateSearchListener());
+    }
+
+    private InitiateSearchListener getInitiateSearchListener() {
+        return new InitiateSearchListener() {
+            @Override
+            public void onHandleResponseSearch(boolean isHasCatalog) {
+                ProductViewModel model = new ProductViewModel();
+                model.setSearchParameter(searchParameter);
+                model.setHasCatalog(isHasCatalog);
+                model.setForceSearch(isForceSearch());
+
+                DiscoveryActivity.this.onHandleResponseSearch(model);
+            }
+
+            @Override
+            public void onHandleApplink(@NonNull String applink) {
+                DiscoveryActivity.this.onHandleApplink(applink);
+            }
+
+            @Override
+            public void onHandleResponseError() {
+                DiscoveryActivity.this.onHandleResponseError();
+            }
+
+            @Override
+            public void onHandleResponseUnknown() {
+                DiscoveryActivity.this.onHandleResponseUnknown();
+            }
+        };
     }
 
     private void updateSearchParameterBeforeSearchIfNotEmpty(String searchQuery, String categoryId) {

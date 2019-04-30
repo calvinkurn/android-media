@@ -2,9 +2,9 @@ package com.tokopedia.discovery.newdiscovery.domain.gql;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.network.entity.discovery.GuidedSearchResponse;
+import com.tokopedia.discovery.common.data.DataValue;
+import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
