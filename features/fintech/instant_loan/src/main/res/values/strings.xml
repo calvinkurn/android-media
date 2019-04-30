@@ -2,10 +2,10 @@
     <string name="app_name">features/digital/instant_loan</string>
     <string name="title_instant_loan">Pinjaman Online</string>
     <string name="label_instant_fund">Dana Instan</string>
-    <string name="description_instant_fund">Dana Instan sebagai alternatif sumber dana darurat untuk memenuhi kebutuhan mendesak, seperti biaya darurat rumah sakit atau modal usaha.\nProsesnya dijamin aman karena didukung oleh mitra yang resmi terdaftar dan diawasi oleh Otoritas Jasa Keuangan (OJK).</string>
+    <string name="description_instant_fund">Alternatif sumber dana darurat untuk memenuhi kebutuhan mendesak, seperti biaya darurat rumah sakit atau modal usaha.</string>
     <string name="label_amount">Jumlah Pinjaman</string>
     <string name="label_duration">Periode Pinjaman</string>
-    <string name="label_processing_time">Periode Proses</string>
+    <string name="label_processing_time">Waktu Proses</string>
     <string name="label_interest_rate">Bunga Pinjaman</string>
     <string name="label_nominal_pinjaman">Nominal Pinjaman</string>
     <string name="label_search_loans">Cari Pinjaman</string>
