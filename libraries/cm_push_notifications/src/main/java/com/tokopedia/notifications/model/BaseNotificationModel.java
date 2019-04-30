@@ -13,6 +13,7 @@ import java.util.List;
 public class BaseNotificationModel {
 
     private int notificationId;
+    private long campaignId;
     private String title;
     private String detailMessage;
     private String message;
@@ -238,5 +239,13 @@ public class BaseNotificationModel {
 
     public void setVisualExpandedImageUrl(String visualExpandedImageUrl) {
         this.visualExpandedImageUrl = visualExpandedImageUrl;
+    }
+
+    public long getCampaignId() {
+        return campaignId;
+    }
+
+    public void setCampaignId(long campaignId) {
+        this.campaignId = campaignId;
     }
 }

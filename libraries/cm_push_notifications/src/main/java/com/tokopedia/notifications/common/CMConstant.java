@@ -14,6 +14,8 @@ public interface CMConstant {
     String GADSID_CACHE_KEY = "gadsid_cache";
     String UNIQUE_APP_ID_CACHE_KEY = "unique_app_id__cache";
     String APP_VERSION_CACHE_KEY = "app_version_cache_key";
+    String EXTRA_CAMPAIGN_ID = "extra_campaign_id";
+
 
 
     interface NotificationType {
@@ -66,14 +68,15 @@ public interface CMConstant {
         String VISUAL_COLLAPSED_IMAGE = "collapsedImg";
         String VISUAL_EXPANDED_IMAGE = "expandedImg";
         String ACTION_BUTTON_ICON = "icon";
+        String CAMPAIGN_ID = "campaignId";
     }
 
     interface ReceiverExtraData {
         String ACTION_BUTTON_APP_LINK = "action_button_app_link";
         String PERSISTENT_BUTTON_DATA = "persistent_data";
         String ACTION_APP_LINK = "action_app_link";
-        String CAROUSAL_DATA = "carousal_data";
-        String CAROUSAL_DATA_ITEM = "carousal_data_item";
+        String CAROUSEL_DATA = "carousel_data";
+        String CAROUSEL_DATA_ITEM = "carousel_data_item";
 
 
         String GRID_APP_LINK = "GRID_APP_LINK";
@@ -96,7 +99,7 @@ public interface CMConstant {
         String ACTION_NOTIFICATION_CLICK = "com.tokopedia.notification.ACTION_NOTIFICATION_CLICK";
         String ACTION_RIGHT_ARROW_CLICK = "com.tokopedia.notification.ACTION_RIGHT_ARROW_CLICK";
         String ACTION_LEFT_ARROW_CLICK = "com.tokopedia.notification.ACTION_LEFT_ARROW_CLICK";
-        String ACTION_CAROUSAL_IMAGE_CLICK = "com.tokopedia.notification.ACTION_CAROUSAL_IMAGE_CLICK";
+        String ACTION_CAROUSEL_IMAGE_CLICK = "com.tokopedia.notification.ACTION_CAROUSEL_IMAGE_CLICK";
         String ACTION_GRID_CLICK = "com.tokopedia.notification.GRID_CLICK";
     }
 

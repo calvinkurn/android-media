@@ -3,43 +3,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/status_bar_latest_event_content"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:tag="bigPicture">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <include
             android:id="@+id/layout_collapsed"
-            layout="@layout/layout_collapsed" />
+            layout="@layout/layout_collapsed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" />
 
 
         <ImageView
             android:id="@+id/img_big"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/tv_extra_text"
+            android:layout_below="@+id/layout_collapsed"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
+            android:paddingBottom="@dimen/dp_10"
             android:scaleType="fitXY" />
 
         <TextView
             android:id="@+id/tv_extra_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/ll_action"
             android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/ll_action"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="@dimen/dp_10"
             android:gravity="right"
             android:orientation="horizontal"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingBottom="@dimen/dp_8">
+            android:paddingTop="@dimen/dp_8">
 
 
             <LinearLayout
@@ -137,5 +143,5 @@
 
 
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </FrameLayout>

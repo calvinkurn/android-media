@@ -36,6 +36,12 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         if (baseNotificationModel.media != null && !TextUtils.isEmpty(baseNotificationModel.media.mediumQuality)) {
             expandedView.setImageViewBitmap(R.id.img_big,
                     CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media.mediumQuality))
+            baseNotificationModel.actionButton?.let {
+                if (it.size > 0) {
+                    expandedView.setViewVisibility(R.id.layout_collapsed, View.GONE)
+                }
+            }
+
         }
         if (CMNotificationUtils.hasActionButton(baseNotificationModel)) {
             addActionButton(baseNotificationModel.actionButton, expandedView)
@@ -125,6 +131,7 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         val intent = Intent(context, CMBroadcastReceiver::class.java)
         intent.action = CMConstant.ReceiverAction.ACTION_BUTTON
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
+        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
         intent.putExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK, actionButton.appLink)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getBroadcast(

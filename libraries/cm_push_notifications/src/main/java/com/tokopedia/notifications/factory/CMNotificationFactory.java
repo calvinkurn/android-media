@@ -52,9 +52,6 @@ public class CMNotificationFactory {
                 case CMConstant.NotificationType.ACTION_BUTTONS:
                     return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
                 case CMConstant.NotificationType.BIG_IMAGE:
-                    if (CMNotificationUtils.hasActionButton(baseNotificationModel)) {
-                        return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
-                    }
                     return (new ImageNotification(context.getApplicationContext(), baseNotificationModel));
                 case CMConstant.NotificationType.PERSISTENT:
                     CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT_VIEW_NOTIFICATION, CMEvents.PersistentEvent.EVENT_CATEGORY,
@@ -95,6 +92,7 @@ public class CMNotificationFactory {
         model.setIcon(data.getString(CMConstant.PayloadKeys.ICON, ""));
         model.setSoundFileName(data.getString(CMConstant.PayloadKeys.SOUND, ""));
         model.setNotificationId(Integer.parseInt(data.getString(CMConstant.PayloadKeys.NOTIFICATION_ID, "500")));
+        model.setCampaignId(Long.parseLong(data.getString(CMConstant.PayloadKeys.CAMPAIGN_ID, "0")));
         model.setTribeKey(data.getString(CMConstant.PayloadKeys.TRIBE_KEY, ""));
         model.setType(data.getString(CMConstant.PayloadKeys.NOTIFICATION_TYPE, ""));
         model.setChannelName(data.getString(CMConstant.PayloadKeys.CHANNEL, ""));
@@ -207,7 +205,7 @@ public class CMNotificationFactory {
     private static List<Carousal> getCarousalList(Bundle extras) {
         String carousalData = extras.getString(CMConstant.PayloadKeys.CAROUSEL_DATA);
         if (TextUtils.isEmpty(carousalData)) {
-            List<Carousal> carousalList = extras.getParcelableArrayList(CMConstant.ReceiverExtraData.CAROUSAL_DATA);
+            List<Carousal> carousalList = extras.getParcelableArrayList(CMConstant.ReceiverExtraData.CAROUSEL_DATA);
             if (carousalList != null)
                 return carousalList;
             return null;

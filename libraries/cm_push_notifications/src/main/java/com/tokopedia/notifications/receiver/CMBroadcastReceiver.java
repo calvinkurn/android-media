@@ -62,7 +62,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
                 case CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK:
                     handleCarousalButtonClick(context, intent, notificationId, false);
                     break;
-                case CMConstant.ReceiverAction.ACTION_CAROUSAL_IMAGE_CLICK:
+                case CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK:
                     handleCarousalImageClick(context, intent, notificationId);
                     break;
                 case CMConstant.ReceiverAction.ACTION_GRID_CLICK:
@@ -147,7 +147,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
 
     private void handleCarousalButtonClick(Context context, Intent intent, int notificationId, boolean isNext) {
         try {
-            List<Carousal> carousalList = intent.getParcelableArrayListExtra(CMConstant.ReceiverExtraData.CAROUSAL_DATA);
+            List<Carousal> carousalList = intent.getParcelableArrayListExtra(CMConstant.ReceiverExtraData.CAROUSEL_DATA);
             int index = intent.getIntExtra(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0);
             if (null == carousalList || carousalList.size() == 0)
                 return;
@@ -165,7 +165,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
 
     private void handleCarousalImageClick(Context context, Intent intent, int notificationId) {
         try {
-            Carousal carousal = intent.getParcelableExtra(CMConstant.ReceiverExtraData.CAROUSAL_DATA_ITEM);
+            Carousal carousal = intent.getParcelableExtra(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM);
             Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), carousal.getAppLink());
             appLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             appLinkIntent.putExtras(intent.getExtras());

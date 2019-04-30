@@ -101,11 +101,14 @@ public class CarouselNotification extends BaseNotification {
         intent.setAction(action);
 
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
+        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.getCampaignId());
+
         intent.putExtra(CMConstant.PayloadKeys.CHANNEL, baseNotificationModel.getChannelName());
         intent.putExtra(CMConstant.PayloadKeys.UPDATE, true);
         intent.putExtra(CMConstant.PayloadKeys.CAROUSEL_INDEX, index);
 
-
+        intent.putExtra(CMConstant.PayloadKeys.CAMPAIGN_ID, baseNotificationModel.getCampaignId());
+        intent.putExtra(CMConstant.PayloadKeys.NOTIFICATION_ID, baseNotificationModel.getNotificationId());
         if (baseNotificationModel.getIcon() != null)
             intent.putExtra(CMConstant.PayloadKeys.ICON, baseNotificationModel.getIcon());
         if (baseNotificationModel.getTribeKey() != null)
@@ -122,7 +125,7 @@ public class CarouselNotification extends BaseNotification {
             intent.putExtra(CMConstant.PayloadKeys.SUB_TEXT, baseNotificationModel.getSubText());
 
 
-        intent.putParcelableArrayListExtra(CMConstant.ReceiverExtraData.CAROUSAL_DATA, (ArrayList<? extends Parcelable>) carousalList);
+        intent.putParcelableArrayListExtra(CMConstant.ReceiverExtraData.CAROUSEL_DATA, (ArrayList<? extends Parcelable>) carousalList);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getBroadcast(
                     context,
@@ -144,9 +147,10 @@ public class CarouselNotification extends BaseNotification {
     private PendingIntent getImagePendingIntent(Carousal carousal, int requestCode) {
         PendingIntent resultPendingIntent;
         Intent intent = new Intent(context, CMBroadcastReceiver.class);
-        intent.setAction(CMConstant.ReceiverAction.ACTION_CAROUSAL_IMAGE_CLICK);
+        intent.setAction(CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK);
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
-        intent.putExtra(CMConstant.ReceiverExtraData.CAROUSAL_DATA_ITEM, carousal);
+        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.getCampaignId());
+        intent.putExtra(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM, carousal);
         intent.putExtras(getBundle(baseNotificationModel));
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getBroadcast(

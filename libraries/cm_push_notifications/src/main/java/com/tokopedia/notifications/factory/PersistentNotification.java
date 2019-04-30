@@ -95,6 +95,7 @@ public class PersistentNotification extends BaseNotification {
     private PendingIntent getPersistentClosePIntent() {
         Intent intent = new Intent(context, CMBroadcastReceiver.class);
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
+        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.getCampaignId());
         intent.setAction(CMConstant.ReceiverAction.ACTION_CANCEL_PERSISTENT);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return PendingIntent.getBroadcast(
@@ -117,6 +118,7 @@ public class PersistentNotification extends BaseNotification {
         Intent intent = new Intent(context, CMBroadcastReceiver.class);
         intent.setAction(CMConstant.ReceiverAction.ACTION_PERSISTENT_CLICK);
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
+        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.getCampaignId());
         intent.putExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA, persistentButton);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getBroadcast(
@@ -141,6 +143,7 @@ public class PersistentNotification extends BaseNotification {
         Intent intent = new Intent(context, CMBroadcastReceiver.class);
         intent.setAction(CMConstant.ReceiverAction.ACTION_PERSISTENT_CLICK);
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
+        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.getCampaignId());
         intent.putExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK, baseNotificationModel.getAppLink());
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getBroadcast(

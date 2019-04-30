@@ -262,6 +262,7 @@ public abstract class BaseNotification {
         Intent intent = new Intent(context, CMBroadcastReceiver.class);
         intent.setAction(CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK);
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
+        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.getCampaignId());
         intent.putExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK, baseNotificationModel.getAppLink());
         intent.putExtras(getBundle(baseNotificationModel));
         intent = getCouponCode(intent);
