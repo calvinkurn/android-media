@@ -69,7 +69,7 @@ class HotelReviewFragment: BaseListFragment<HotelReview, ReviewAdapterTypeFactor
     }
 
     fun onSuccessGetResult(reviews: HotelReview.ReviewData) {
-        super.renderList(reviews.reviewList)
+        super.renderList(reviews.reviewList, reviews.hasNext)
         showHotelMetaReview(reviews.reviewList.size > 0)
         if (currentPage == 1) {
             review_point_text_view.text = reviews.averageScoreReview.toString()
