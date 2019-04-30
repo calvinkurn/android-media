@@ -32,6 +32,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.NoActionBar"/>
 
+        <activity android:name=".hoteldetail.presentation.activity.HotelDetailMapActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
         <activity android:name=".roomlist.presentation.activity.HotelRoomListActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>

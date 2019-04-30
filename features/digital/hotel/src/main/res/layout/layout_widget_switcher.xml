@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@drawable/bg_button_white_enabled_border">
+    android:background="@drawable/bg_button_white_enabled_border"
+    android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -35,8 +35,8 @@
     <View
         android:layout_width="1dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/bg_line_separator" />
+        android:background="@color/grey_300"
+        android:visibility="visible" />
 
     <LinearLayout
         android:layout_width="0dp"

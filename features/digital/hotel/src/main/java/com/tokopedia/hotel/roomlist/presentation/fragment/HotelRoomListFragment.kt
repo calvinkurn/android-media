@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -23,9 +22,9 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.di.HotelRoomListComponent
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
+import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
 import com.tokopedia.hotel.roomlist.widget.ChipAdapter
-import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -41,7 +40,8 @@ import javax.inject.Inject
  */
 
 class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(), ChipAdapter.OnClickListener,
-        HotelRoomAndGuestBottomSheets.HotelGuestListener, BaseEmptyViewHolder.Callback {
+        HotelRoomAndGuestBottomSheets.HotelGuestListener, BaseEmptyViewHolder.Callback,
+        RoomListViewHolder.OnClickBookListener{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -157,6 +157,7 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
 
     fun getRoomList(fromCloud: Boolean = true) {
         showFilterRecyclerView(false)
+        loadInitialData()
         roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list), hotelRoomListPageModel, fromCloud)
     }
 
@@ -165,7 +166,6 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         hotelRoomAndGuestBottomSheets.listener = this
         hotelRoomAndGuestBottomSheets.roomCount = hotelRoomListPageModel.room
         hotelRoomAndGuestBottomSheets.adultCount = hotelRoomListPageModel.adult
-        hotelRoomAndGuestBottomSheets.childCount = hotelRoomListPageModel.child
         hotelRoomAndGuestBottomSheets.show(activity!!.supportFragmentManager, TAG_GUEST_INFO)
     }
 
@@ -256,14 +256,14 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
     }
 
     override fun getAdapterTypeFactory(): RoomListTypeFactory {
-        return RoomListTypeFactory(this)
+        return RoomListTypeFactory(this, this)
     }
 
     override fun onItemClicked(room: HotelRoom) {
         saveInstanceCacheManager.put(EXTRA_ROOM_DATA, room)
     }
 
-    override fun getScreenName(): String = "Room List"
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(HotelRoomListComponent::class.java).inject(this)
@@ -281,10 +281,9 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         }
     }
 
-    override fun onSaveGuest(room: Int, adult: Int, child: Int) {
+    override fun onSaveGuest(room: Int, adult: Int) {
         hotelRoomListPageModel.room = room
         hotelRoomListPageModel.adult = adult
-        hotelRoomListPageModel.child = child
 
         renderRoomAndGuestView()
         getRoomList(true)
@@ -319,6 +318,10 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         //DELETE FILTER
         filter_recycler_view.resetChipSelected()
         roomListViewModel.clearFilter()
+    }
+
+    override fun onClickBookListener(room: HotelRoom) {
+
     }
 
     companion object {
