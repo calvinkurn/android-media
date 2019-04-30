@@ -22,7 +22,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
@@ -590,8 +589,8 @@ public class ProductListFragment extends SearchSectionFragment
         boolean isQuickFilterSelectedReversed = !isQuickFilterSelected(option);
 
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed);
-        applyFilterToSearchParameter(quickFilterController.getFilterParameter());
-        setSelectedFilter(new HashMap<>(quickFilterController.getFilterParameter()));
+        applyFilterToSearchParameter(quickFilterController.getParameter());
+        setSelectedFilter(new HashMap<>(quickFilterController.getParameter()));
 
         clearDataFilterSort();
         reloadData();
