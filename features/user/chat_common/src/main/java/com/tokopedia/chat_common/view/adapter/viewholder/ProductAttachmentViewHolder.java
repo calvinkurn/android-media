@@ -177,7 +177,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
 
     private void setFooter(View productContainer, ProductAttachmentViewModel element) {
         View separator = productContainer.findViewById(R.id.separator);
-        if (GlobalConfig.isCustomerApp() && element.getCanShowFooter()) {
+        if (element.getCanShowFooter() && !GlobalConfig.isSellerApp()) {
             separator.setVisibility(View.VISIBLE);
             footerLayout.setVisibility(View.VISIBLE);
             tvBuy.setVisibility(View.VISIBLE);
