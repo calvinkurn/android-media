@@ -1,18 +1,16 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
-import android.os.Bundle
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.graphics.Rect
-import android.support.v7.widget.RecyclerView
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.ReviewAdapterTypeFactory
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelReviewParam
@@ -22,7 +20,6 @@ import com.tokopedia.hotel.roomlist.widget.ChipAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_review.*
-import kotlinx.android.synthetic.main.widget_filter_chip_recycler_view.view.*
 import javax.inject.Inject
 
 /**
