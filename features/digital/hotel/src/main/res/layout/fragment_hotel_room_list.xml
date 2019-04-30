@@ -1,34 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <include android:id="@+id/hotel_date_and_guest"
-        layout="@layout/layout_sticky_hotel_date_and_guest"/>
+    <include
+        android:id="@+id/hotel_date_and_guest"
+        layout="@layout/layout_sticky_hotel_date_and_guest" />
 
-    <android.support.v4.widget.NestedScrollView
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <com.tokopedia.hotel.roomlist.widget.FilterChipRecyclerView
-                android:id="@+id/filter_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
-                android:nestedScrollingEnabled="false"
-                />
-        </LinearLayout>
+                android:orientation="vertical">
 
-    </android.support.v4.widget.NestedScrollView>
+
+                <com.tokopedia.hotel.roomlist.widget.FilterChipRecyclerView
+                    android:id="@+id/filter_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:nestedScrollingEnabled="false" />
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
 </LinearLayout>
