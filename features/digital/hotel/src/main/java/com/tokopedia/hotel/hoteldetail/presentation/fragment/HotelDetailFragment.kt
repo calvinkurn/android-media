@@ -22,6 +22,7 @@ import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailMapActivity
+import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
@@ -242,6 +243,10 @@ class HotelDetailFragment : BaseDaggerFragment() {
         rv_best_review.setHasFixedSize(true)
         rv_best_review.isNestedScrollingEnabled = false
         rv_best_review.adapter = detailReviewAdapter
+
+        tv_hotel_detail_all_promo.setOnClickListener {
+            startActivityForResult(HotelReviewActivity.getCallingIntent(context!!, hotelHomepageModel.locId), RESULT_REVIEW)
+        }
     }
 
     private fun setupMainFacilityItem(facilityList: List<FacilityItem>) {
@@ -303,6 +308,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
         const val SAVED_ENABLE_BUTTON = "SAVED_ENABLE_BUTTON"
 
         const val RESULT_ROOM_LIST = 101
+        const val RESULT_REVIEW = 102
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
                         adultCount: Int, enableButton: Boolean = true): HotelDetailFragment =
