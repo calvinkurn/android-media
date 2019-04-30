@@ -8,7 +8,7 @@
         android:id="@+id/map_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cameraZoom="15"
-        app:liteMode="true"
+        app:cameraZoom="20"
         app:mapType="normal" />
+
 </RelativeLayout>
