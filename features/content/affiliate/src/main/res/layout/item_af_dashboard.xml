@@ -73,6 +73,40 @@
                 tools:text="Nasgi goreng roboto memang nikmat dan sedap tiada tara 2 kali makan padti nik"/>
 
             <LinearLayout
+                android:id="@+id/layout_active"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dp_4">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_af_active_1"
+                    android:textSize="@dimen/sp_14"
+                    android:textColor="@color/font_black_secondary_54"/>
+
+                <TextView
+                    android:id="@+id/tv_product_commission"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/text_af_income"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:textSize="@dimen/sp_14"
+                    android:textColor="@color/tkpd_main_green"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_af_active_2"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:textSize="@dimen/sp_14"
+                    android:textColor="@color/font_black_secondary_54"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_inactive"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"

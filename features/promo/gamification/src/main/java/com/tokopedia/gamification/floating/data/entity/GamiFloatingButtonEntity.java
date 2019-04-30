@@ -14,6 +14,12 @@ public class GamiFloatingButtonEntity {
     @SerializedName("sumTokenStr")
     @Expose
     private String sumTokenStr;
+    @SerializedName("id")
+    @Expose
+    private int id;
+    @SerializedName("name")
+    @Expose
+    private String name;
     @SerializedName("tokenUnit")
     @Expose
     private String tokenUnit;
@@ -61,6 +67,22 @@ public class GamiFloatingButtonEntity {
 
     public void setSumTokenStr(String sumTokenStr) {
         this.sumTokenStr = sumTokenStr;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getTokenUnit() {

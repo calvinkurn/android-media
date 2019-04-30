@@ -4,12 +4,15 @@ import android.os.Bundle;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -35,6 +38,8 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
 
     void setHeaderTopAds(boolean hasHeader);
 
+    void addProductList(List<Visitable> list);
+
     void setProductList(List<Visitable> list);
 
     void disableWishlistButton(String productId);
@@ -42,6 +47,7 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void enableWishlistButton(String productId);
 
     void showNetworkError(int startRow);
+
     String getQueryKey();
 
     void setEmptyProduct();
@@ -65,4 +71,14 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void notifyAdapter();
 
     void stopTracePerformanceMonitoring();
+
+    void initQuickFilter(List<Filter> quickFilterList);
+
+    void setAdditionalParams(String additionalParams);
+
+    void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray);
+
+    void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
+
+    void setFirstTimeLoad(boolean isFirstTimeLoad);
 }
