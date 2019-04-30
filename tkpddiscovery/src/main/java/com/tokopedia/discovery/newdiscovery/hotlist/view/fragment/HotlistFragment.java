@@ -1130,21 +1130,26 @@ public class HotlistFragment extends BrowseSectionFragment
     }
 
     @Override
-    public void onQuickFilterSelected(String filterKey, String eventLabel, String filterValue) {
+    public void onQuickFilterSelected(String filterKey, String filterValue) {
+        String eventLabel;
+        if (this.selectedFilter == null) {
+            this.selectedFilter = new HashMap<>();
+        }
+        if (this.selectedFilter.containsKey(filterKey)) {
+            this.selectedFilter.remove(filterKey);
+            eventLabel = "false";
+        } else {
+            this.selectedFilter.put(filterKey, filterValue);
+            eventLabel = "true";
+        }
+        eventLabel = filterKey + "-" + filterValue + "-" + eventLabel;
+
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Event.HOTLIST_PAGE,
                 "quick filter" + "-" + getScreenName(),
                 eventLabel
         ).getEvent());
-        if (this.selectedFilter == null) {
-            this.selectedFilter = new HashMap<>();
-        }
-        if (this.selectedFilter.containsKey(filterKey)) {
-            this.selectedFilter.remove(filterKey);
-        } else {
-            this.selectedFilter.put(filterKey, filterValue);
-        }
         reloadData();
     }
 }

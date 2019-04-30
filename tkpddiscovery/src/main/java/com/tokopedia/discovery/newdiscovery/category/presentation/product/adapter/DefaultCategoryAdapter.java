@@ -90,7 +90,7 @@ public class DefaultCategoryAdapter extends
 
         String getUserId();
 
-        void onQuickFilterSelected(String filterKey, String eventLabel, String filterValue);
+        void onQuickFilterSelected(String filterKey, String filterValue);
     }
 
     public void addDataChild(List<ChildCategoryModel> children) {

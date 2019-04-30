@@ -72,7 +72,6 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     private final TopAdsBannerView topAdsBannerView;
     private final SubCategoryLifestyleItemDecoration itemDecoration;
     private boolean isInit;
-    HashMap<String, String> selectedFilterList = new HashMap<>();
 
     public CategoryLifestyleHeaderViewHolder(View itemView,
                                              RevampCategoryAdapter.CategoryListener listener) {
@@ -256,16 +255,11 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
 
     protected void renderQuickFilterView(List<QuickFilterItem> quickFilterItems) {
 
-        if(quickFilterItems==null || quickFilterItems.isEmpty()){
+        if(quickFilterItems == null || quickFilterItems.isEmpty()){
             return;
+        } else {
+            quickMultipleFilterView.renderFilter(quickFilterItems);
         }
-        for (QuickFilterItem quickFilterItem: quickFilterItems) {
-            String[] str = quickFilterItem.getType().split("=");
-            if (!quickFilterItem.isSelected() && selectedFilterList.containsKey(str[0])) {
-                selectedFilterList.remove(str[0]);
-            }
-        }
-        quickMultipleFilterView.renderFilter(quickFilterItems);
     }
 
     protected void renderSingleBanner(String headerImage, String categoryName) {
@@ -279,15 +273,6 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     @Override
     public void selectFilter(String typeFilter) {
         String[] str = typeFilter.split("=");
-        String eventLabel;
-        if (selectedFilterList.containsKey(str[0])) {
-            selectedFilterList.remove(str[0]);
-            eventLabel = "false";
-        } else {
-            selectedFilterList.put(str[0], str[1]);
-            eventLabel = "true";
-        }
-        eventLabel = str[0] + "-" + str[1] + "-" + eventLabel;
-        categoryListener.onQuickFilterSelected(str[0], eventLabel, str[1]);
+        categoryListener.onQuickFilterSelected(str[0], str[1]);
     }
 }

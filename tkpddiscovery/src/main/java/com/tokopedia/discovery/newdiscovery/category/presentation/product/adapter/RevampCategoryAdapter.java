@@ -89,7 +89,7 @@ public class RevampCategoryAdapter extends
 
         String getUserId();
 
-        void onQuickFilterSelected(String filterKey, String eventLabel, String filterValue);
+        void onQuickFilterSelected(String filterKey, String filterValue);
 
     }
 

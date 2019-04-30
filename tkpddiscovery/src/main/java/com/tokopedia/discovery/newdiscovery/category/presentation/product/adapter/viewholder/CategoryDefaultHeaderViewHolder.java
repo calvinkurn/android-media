@@ -74,7 +74,6 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
     private boolean isUsedUnactiveChildren = false;
     private CustomMultipleFilterView quickMultipleFilterView;
     private boolean isInit;
-    HashMap<String, String> selectedFilterList = new HashMap<>();
 
     public CategoryDefaultHeaderViewHolder(View itemView, DefaultCategoryAdapter.CategoryListener categoryListener) {
         super(itemView);
@@ -185,16 +184,11 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
 
     protected void renderQuickFilterView(List<QuickFilterItem> quickFilterItems) {
 
-        if(quickFilterItems==null || quickFilterItems.isEmpty()){
+        if (quickFilterItems == null || quickFilterItems.isEmpty()) {
             return;
+        } else {
+            quickMultipleFilterView.renderFilter(quickFilterItems);
         }
-        for (QuickFilterItem quickFilterItem: quickFilterItems) {
-            String[] str = quickFilterItem.getType().split("=");
-            if (!quickFilterItem.isSelected() && selectedFilterList.containsKey(str[0])) {
-                selectedFilterList.remove(str[0]);
-            }
-        }
-        quickMultipleFilterView.renderFilter(quickFilterItems);
     }
 
     public void eventShowMoreCategory(String parentCat) {
@@ -219,15 +213,6 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
     @Override
     public void selectFilter(String typeFilter) {
         String[] str = typeFilter.split("=");
-        String eventLabel;
-        if (selectedFilterList.containsKey(str[0])) {
-            selectedFilterList.remove(str[0]);
-            eventLabel = "false";
-        } else {
-            selectedFilterList.put(str[0], str[1]);
-            eventLabel = "true";
-        }
-        eventLabel = str[0] + "-" + str[1] + "-" + eventLabel;
-        categoryListener.onQuickFilterSelected(str[0], eventLabel, str[1]);
+        categoryListener.onQuickFilterSelected(str[0], str[1]);
     }
 }

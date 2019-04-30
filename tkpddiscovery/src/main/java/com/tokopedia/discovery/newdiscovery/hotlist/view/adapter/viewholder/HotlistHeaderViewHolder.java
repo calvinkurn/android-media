@@ -66,7 +66,6 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final CustomMultipleFilterView customViewRounderCornerFilterView;
     private final String searchQuery;
     private final String hotlistAlias;
-    HashMap<String, String> selectedFilterList = new HashMap<>();
 
     public HotlistHeaderViewHolder(View parent, HotlistListener mHotlistListener, String searchQuery,
                                    String hotlistAlias) {
@@ -147,12 +146,6 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
             return;
         } else {
             this.hastagList.setVisibility(View.GONE);
-            for (QuickFilterItem quickFilterItem : filterList) {
-                String[] str = quickFilterItem.getType().split("=");
-                if (!quickFilterItem.isSelected() && selectedFilterList.containsKey(str[0])) {
-                    selectedFilterList.remove(str[0]);
-                }
-            }
             customViewRounderCornerFilterView.renderFilter(filterList);
         }
     }
@@ -175,16 +168,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     @Override
     public void selectFilter(String typeFilter) {
         String[] str = typeFilter.split("=");
-        String eventLabel;
-        if (selectedFilterList.containsKey(str[0])) {
-            selectedFilterList.remove(str[0]);
-            eventLabel = "false";
-        } else {
-            selectedFilterList.put(str[0], str[1]);
-            eventLabel = "true";
-        }
-        eventLabel = str[0] + "-" + str[1] + "-" + eventLabel;
-        mHotlistListener.onQuickFilterSelected(str[0], eventLabel, str[1]);
+        mHotlistListener.onQuickFilterSelected(str[0], str[1]);
 
     }
 
