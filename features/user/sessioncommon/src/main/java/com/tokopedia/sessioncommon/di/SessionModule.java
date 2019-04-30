@@ -1,7 +1,9 @@
 package com.tokopedia.sessioncommon.di;
 
 import android.content.Context;
+import android.os.Build;
 
+import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -28,6 +30,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
@@ -129,8 +132,14 @@ public class SessionModule {
 
         builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(basicInterceptor);
+        builder.addInterceptor(new AkamaiBotInterceptor());
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TokenErrorResponse.class));
+        builder.addInterceptor(chain -> {
+            Request.Builder newRequest = chain.request().newBuilder();
+            newRequest.addHeader("User-Agent", getUserAgent());
+            return chain.proceed(newRequest.build());
+        });
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor);
@@ -139,6 +148,11 @@ public class SessionModule {
         }
 
         return builder.build();
+    }
+
+    private static final String userAgentFormat = "TkpdConsumer/%s (%s;)";
+    public static String getUserAgent(){
+        return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android "+ Build.VERSION.RELEASE);
     }
 
     @SessionCommonScope

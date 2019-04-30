@@ -111,5 +111,13 @@
     <string name="play_next_event">"Nantikan dan gabung di channel Play selanjutnya"</string>
     <string name="play_start_shopping">"Mulai belanja"</string>
     <string name="from">oleh</string>
+    <string name="hide_video">Sembunyikan Video</string>
+    <string name="show_video">Tampilkan Video</string>
+
+    <string name="error_websocket_play">Wah, antusiasme Toppers sedang tinggi sekali. Yuk cek koneksi internet kamu dan coba chat lagi!</string>
+    <string name="error_overload_play">Wah, antusiasme Toppers sedang tinggi sekali.</string>
+    <string name="try_channel_later">"Yuk coba akses %1$s lagi!"</string>
+    <string name="no_connection_play">Oops! Sepertinya ada masalah dengan koneksi internet kamu.</string>
+    <string name="try_connection_play">Coba cek dulu ya!</string>
 
 </resources>

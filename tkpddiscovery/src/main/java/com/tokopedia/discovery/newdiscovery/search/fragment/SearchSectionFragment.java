@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,38 +14,41 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.core.share.DefaultShare;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.linker.model.LinkerData;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.discovery.newdynamicfilter.helper.SortHelper;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.tokopedia.core.home.helper.ProductFeedHelper.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.core.home.helper.ProductFeedHelper.PORTRAIT_COLUMN_MAIN;
@@ -67,10 +71,10 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private static final String EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT";
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     private static final String EXTRA_IS_GETTING_DYNNAMIC_FILTER = "EXTRA_IS_GETTING_DYNNAMIC_FILTER";
-    private static final String EXTRA_FLAG_FILTER_HELPER = "EXTRA_FLAG_FILTER_HELPER";
     private static final String DEFAULT_GRID = "default";
     private static final String INSTAGRAM_GRID = "instagram grid";
     private static final String LIST_GRID = "list";
+    protected static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
 
     private SearchNavigationListener searchNavigationListener;
     private BottomSheetListener bottomSheetListener;
@@ -84,10 +88,12 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
-    private HashMap<String, String> selectedFilter;
-    private FilterFlagSelectedModel flagFilterHelper;
     private boolean isGettingDynamicFilter;
     private boolean isUsingBottomSheetFilter;
+    protected boolean isListEmpty = false;
+
+    protected SearchParameter searchParameter;
+    protected FilterController filterController = new FilterController();
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -97,19 +103,14 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         }
 
         if (savedInstanceState == null) {
-            refreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    onFirstTimeLaunch();
-                }
-            });
+            refreshLayout.post(this::onFirstTimeLaunch);
         } else {
             onRestoreInstanceState(savedInstanceState);
         }
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initSpan();
         initLayoutManager();
@@ -117,13 +118,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     private void initSwipeToRefresh(View view) {
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                onSwipeToRefresh();
-            }
-        });
+        refreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        refreshLayout.setOnRefreshListener(this::onSwipeToRefresh);
     }
 
     @Override
@@ -249,6 +245,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     public void refreshMenuItemGridIcon() {
+        if(searchNavigationListener == null) return;
+
         searchNavigationListener.refreshMenuItemGridIcon(getAdapter().getTitleTypeRecyclerView(), getAdapter().getIconTypeRecyclerView());
     }
 
@@ -288,24 +286,43 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == getSortRequestCode()) {
-                setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
+                setSelectedSort(new HashMap<>(getMapFromIntent(data, SortProductActivity.EXTRA_SELECTED_SORT)));
                 String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
                 UnifyTracking.eventSearchResultSort(getActivity(),getScreenName(), selectedSortName);
+
+                if(searchParameter != null) {
+                    searchParameter.getSearchParameterHashMap().putAll(getSelectedSort());
+                }
+
                 clearDataFilterSort();
                 reloadData();
             } else if (requestCode == getFilterRequestCode()) {
-                setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
-                setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
-                if (getActivity() instanceof HotlistActivity) {
-                    HotlistPageTracking.eventHotlistFilter(getActivity(), getSelectedFilter());
-                } else {
-                    SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
-                }
+                Map<String, String> filterParameter = getMapFromIntent(data, RevampedDynamicFilterActivity.EXTRA_FILTER_PARAMETER);
+                Map<String, String> activeFilterParameter = getMapFromIntent(data, RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS);
+
+                SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), activeFilterParameter);
+
+                applyFilterToSearchParameter(filterParameter);
+                setSelectedFilter(new HashMap<>(filterParameter));
                 clearDataFilterSort();
-                updateDepartmentId(getFlagFilterHelper().getCategoryId());
                 reloadData();
             }
         }
+    }
+
+    private Map<String, String> getMapFromIntent(Intent data, String extraName) {
+        Serializable serializableExtra = data.getSerializableExtra(extraName);
+
+        if(serializableExtra == null) return new HashMap<>();
+
+        Map<?, ?> filterParameterMapIntent = (Map<?, ?>)data.getSerializableExtra(extraName);
+        Map<String, String> filterParameter = new HashMap<>(filterParameterMapIntent.size());
+
+        for(Map.Entry<?, ?> entry: filterParameterMapIntent.entrySet()) {
+            filterParameter.put(entry.getKey().toString(), entry.getValue().toString());
+        }
+
+        return filterParameter;
     }
 
     private void setFilterData(List<Filter> filters) {
@@ -313,9 +330,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (filters == null) {
             return;
         }
-        for (Filter filter : filters) {
-            this.filters.add(filter);
-        }
+
+        this.filters.addAll(filters);
     }
 
     protected ArrayList<Filter> getFilters() {
@@ -327,9 +343,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (sorts == null) {
             return;
         }
-        for (Sort pojo : sorts) {
-            this.sort.add(pojo);
-        }
+
+        this.sort.addAll(sorts);
     }
 
     private ArrayList<Sort> getSort() {
@@ -348,11 +363,15 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     @Override
     public HashMap<String, String> getSelectedFilter() {
-        return selectedFilter;
+        if(filterController == null) return new HashMap<>();
+
+        return new HashMap<>(filterController.getActiveFilterMap());
     }
 
     protected boolean isFilterActive() {
-        return selectedFilter != null && !selectedFilter.isEmpty();
+        if(filterController == null) return false;
+
+        return filterController.isFilterActive();
     }
 
     @Override
@@ -362,15 +381,10 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     @Override
     public void setSelectedFilter(HashMap<String, String> selectedFilter) {
-        this.selectedFilter = selectedFilter;
-    }
+        if(filterController == null || getFilters() == null) return;
 
-    public void setFlagFilterHelper(FilterFlagSelectedModel flagFilterHelper) {
-        this.flagFilterHelper = flagFilterHelper;
-    }
-
-    protected FilterFlagSelectedModel getFlagFilterHelper() {
-        return flagFilterHelper;
+        List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
+        filterController.initFilterController(selectedFilter, initializedFilterList);
     }
 
     public void clearDataFilterSort() {
@@ -396,16 +410,23 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void openBottomSheetFilter() {
-        bottomSheetListener.loadFilterItems(getFilters(), getFlagFilterHelper());
+        if(searchParameter == null || getFilters() == null) return;
+
+        bottomSheetListener.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap());
         bottomSheetListener.launchFilterBottomSheet();
     }
 
     protected void openFilterPage() {
+        if (searchParameter == null) return;
+
         Intent intent = RevampedDynamicFilterActivity.createInstance(
-                getActivity(), getScreenName(), getFlagFilterHelper()
+                getActivity(), getScreenName(), searchParameter.getSearchParameterHashMap(), null
         );
         startActivityForResult(intent, getFilterRequestCode());
-        getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+
+        if (getActivity() != null) {
+            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+        }
     }
 
     protected boolean isFilterDataAvailable() {
@@ -418,7 +439,10 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                     getActivity(), getSort(), getSelectedSort()
             );
             startActivityForResult(intent, getSortRequestCode());
-            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+
+            if(getActivity() != null) {
+                getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+            }
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_sort_data_not_ready));
         }
@@ -430,12 +454,18 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     @Override
     public void getDynamicFilter() {
-        if (!isFilterDataAvailable() && !isGettingDynamicFilter) {
+        if (canRequestDynamicFilter()) {
             isGettingDynamicFilter = true;
             requestDynamicFilter();
         }
     }
-    
+
+    private boolean canRequestDynamicFilter() {
+        return !isFilterDataAvailable()
+                && !isGettingDynamicFilter;
+    }
+
+    //TODO will be removed after catalog and shop already migrated also to Gql
     protected void requestDynamicFilter() {
         getPresenter().requestDynamicFilter();
     }
@@ -445,7 +475,30 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         isGettingDynamicFilter = false;
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
+
+        if(filterController == null || searchParameter == null
+                || getFilters() == null || getSort() == null) return;
+
+        List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
+        filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList);
+        initSelectedSort();
+
+        if(isListEmpty) {
+            refreshAdapterForEmptySearch();
+        }
     }
+
+    private void initSelectedSort() {
+        if(getSort() == null) return;
+
+        HashMap<String, String> selectedSort = new HashMap<>(
+                SortHelper.Companion.getSelectedSortFromSearchParameter(searchParameter.getSearchParameterHashMap(), getSort())
+        );
+
+        setSelectedSort(selectedSort);
+    }
+
+    protected abstract void refreshAdapterForEmptySearch();
 
     @Override
     public void renderFailGetDynamicFilter() {
@@ -479,16 +532,16 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
+        outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
         outState.putParcelableArrayList(EXTRA_FILTER, getFilters());
         outState.putParcelableArrayList(EXTRA_SORT, getSort());
         outState.putSerializable(EXTRA_SELECTED_FILTER, getSelectedFilter());
         outState.putSerializable(EXTRA_SELECTED_SORT, getSelectedSort());
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
         outState.putBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER, isGettingDynamicFilter);
-        outState.putParcelable(EXTRA_FLAG_FILTER_HELPER, getFlagFilterHelper());
     }
 
     public abstract void reloadData();
@@ -518,19 +571,15 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     }
 
-    protected void updateDepartmentId(String deptId) {
-
-    }
-
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
-        setFilterData(savedInstanceState.<Filter>getParcelableArrayList(EXTRA_FILTER));
-        setSortData(savedInstanceState.<Sort>getParcelableArrayList(EXTRA_SORT));
+        copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
+        setFilterData(savedInstanceState.getParcelableArrayList(EXTRA_FILTER));
+        setSortData(savedInstanceState.getParcelableArrayList(EXTRA_SORT));
         setSelectedFilter((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_FILTER));
         setSelectedSort((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
         isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
-        setFlagFilterHelper((FilterFlagSelectedModel) savedInstanceState.getParcelable(EXTRA_FLAG_FILTER_HELPER));
     }
 
     @Override
@@ -560,42 +609,55 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void removeSelectedFilter(String uniqueId) {
+        if(filterController == null) return;
 
-        String optionKey = OptionHelper.parseKeyFromUniqueId(uniqueId);
-        String optionValue = OptionHelper.parseValueFromUniqueId(uniqueId);
+        Option option = OptionHelper.generateOptionFromUniqueId(uniqueId);
 
-        if (Option.KEY_CATEGORY.equals(optionKey)) {
-            getFlagFilterHelper().setCategoryId("");
-            getFlagFilterHelper().setSelectedCategoryName("");
-            getFlagFilterHelper().setSelectedCategoryRootId("");
-            getSelectedFilter().remove(Option.KEY_CATEGORY);
-        } else if (Option.KEY_PRICE_MIN.equals(optionKey) ||
-                Option.KEY_PRICE_MAX.equals(optionKey)) {
-            getFlagFilterHelper().getSavedTextInput().remove(Option.KEY_PRICE_MIN);
-            getFlagFilterHelper().getSavedTextInput().remove(Option.KEY_PRICE_MAX);
-            getSelectedFilter().remove(Option.KEY_PRICE_MIN);
-            getSelectedFilter().remove(Option.KEY_PRICE_MAX);
-        } else {
-            getFlagFilterHelper().getSavedCheckedState().remove(uniqueId);
-
-            String mapValue = getSelectedFilter().get(optionKey);
-            mapValue = removeValue(mapValue, optionValue);
-
-            if (!TextUtils.isEmpty(mapValue)) {
-                getSelectedFilter().put(optionKey, mapValue);
-            } else {
-                getSelectedFilter().remove(optionKey);
-            }
-        }
-
+        removeFilterFromFilterController(option);
+        applyFilterToSearchParameter(filterController.getFilterParameter());
         clearDataFilterSort();
         reloadData();
     }
 
-    protected String removeValue(String mapValue, String removedValue) {
-        if (TextUtils.isEmpty(mapValue)) {
-            return "";
+    public void removeFilterFromFilterController(Option option) {
+        if(filterController == null) return;
+
+        String optionKey = option.getKey();
+
+        if (Option.KEY_CATEGORY.equals(optionKey)) {
+            filterController.setFilter(option, false, true);
+        } else if (Option.KEY_PRICE_MIN.equals(optionKey) ||
+                Option.KEY_PRICE_MAX.equals(optionKey)) {
+            filterController.setFilter(generatePriceOption(Option.KEY_PRICE_MIN), false, true);
+            filterController.setFilter(generatePriceOption(Option.KEY_PRICE_MAX), false, true);
+        } else {
+            filterController.setFilter(option, false);
         }
-        return mapValue.replace(removedValue, "").replace(",,", ",");
+    }
+
+    private Option generatePriceOption(String priceOptionKey) {
+        Option option = new Option();
+        option.setKey(priceOptionKey);
+        return option;
+    }
+
+    protected void copySearchParameter(@Nullable SearchParameter searchParameterToCopy) {
+        if (searchParameterToCopy != null) {
+            this.searchParameter = new SearchParameter(searchParameterToCopy);
+        }
+    }
+
+    public void applyFilterToSearchParameter(Map<String, String> filterParameter) {
+        if(searchParameter == null) return;
+
+        this.searchParameter.getSearchParameterHashMap().clear();
+        this.searchParameter.getSearchParameterHashMap().putAll(filterParameter);
+    }
+
+    protected List<Option> getOptionListFromFilterController() {
+        if(filterController == null) return new ArrayList<>();
+
+        return OptionHelper.combinePriceFilterIfExists(filterController.getActiveFilterOptionList(),
+                getResources().getString(R.string.empty_state_selected_filter_price_name));
     }
 }

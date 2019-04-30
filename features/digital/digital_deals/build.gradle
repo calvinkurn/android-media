@@ -33,6 +33,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
@@ -41,7 +42,14 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
 
+
+    implementation project(rootProject.ext.libraries.track)
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
+        exclude group: 'com.android.support'
+    }
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

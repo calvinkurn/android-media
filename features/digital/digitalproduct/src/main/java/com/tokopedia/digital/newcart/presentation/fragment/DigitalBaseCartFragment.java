@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -28,6 +29,7 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
@@ -68,6 +70,10 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private PerformanceMonitoring performanceMonitoring;
     private static final String DIGITAL_CHECKOUT_TRACE = "dg_checkout";
     private SaveInstanceCacheManager saveInstanceCacheManager;
+    private DigitalAnalytics digitalAnalytics;
+    private String voucherName;
+
+    private static final String EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER";
 
     protected P presenter;
 
@@ -76,13 +82,25 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         super.onCreate(savedInstanceState);
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
+        digitalAnalytics = new DigitalAnalytics();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState != null) {
+            checkoutDataParameterBuilder = saveInstanceCacheManager.get(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER,
+                    CheckoutDataParameter.Builder.class, null);
+        }
         setupView(view);
         presenter.attachView(this);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveInstanceCacheManager.onSave(outState);
+        saveInstanceCacheManager.put(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER, checkoutDataParameterBuilder);
     }
 
     protected abstract void setupView(View view);
@@ -190,6 +208,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onClickUseVoucher() {
         presenter.onUseVoucherButtonClicked();
+        digitalAnalytics.eventclickUseVoucher(cartDigitalInfoData.getAttributes().getCategoryName());
     }
 
     @Override
@@ -198,19 +217,20 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public void trackingSuccessVoucher(String voucherName) {
-
+    public void trackingSuccessVoucher(String title, String voucherName) {
+        this.voucherName = voucherName;
     }
 
     @Override
     public void trackingCancelledVoucher() {
-
+        digitalAnalytics.eventclickCancelApplyCoupon(cartDigitalInfoData.getAttributes().getCategoryName(), voucherName);
     }
 
 
     @Override
     public void navigateToCouponActiveAndSelected(String categoryId) {
         Intent intent = LoyaltyActivity.newInstanceCouponActiveAndSelected(
+                cartDigitalInfoData.getAttributes().getCategoryName(),
                 getActivity(), IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, categoryId
         );
         navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
@@ -224,6 +244,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void navigateToCouponActive(String categoryId) {
         Intent intent = LoyaltyActivity.newInstanceCouponActive(
+                cartDigitalInfoData.getAttributes().getCategoryName(),
                 getActivity(), IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, categoryId
         );
         navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
@@ -232,6 +253,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void navigateToCouponNotActive(String categoryId) {
         Intent intent = LoyaltyActivity.newInstanceCouponNotActive(
+                cartDigitalInfoData.getAttributes().getCategoryName(),
                 getActivity(), IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING,
                 categoryId
         );
@@ -283,7 +305,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
                     if (getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
-                        ((DigitalModuleRouter)getActivity().getApplicationContext()).
+                        ((DigitalModuleRouter) getActivity().getApplicationContext()).
                                 showAdvancedAppRatingDialog(getActivity(), dialog -> {
                                     getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
                                     closeView();
@@ -360,7 +382,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public int getProductId() {
-        return Integer.parseInt(cartPassData.getProductId());
+        String productIdString = cartPassData.getProductId();
+        return TextUtils.isEmpty(productIdString) ? 0 : Integer.parseInt(productIdString);
     }
 
     @Override

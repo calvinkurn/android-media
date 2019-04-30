@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.JobIntentService
+import android.support.v4.content.LocalBroadcastManager
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliate.R
@@ -14,6 +15,9 @@ import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaType
+import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
+import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -62,23 +66,47 @@ class SubmitPostService : JobIntentService() {
         val notifId = Random().nextInt()
         notificationManager = getNotificationManager(id,
                 viewModel.authorType,
-                viewModel.completeImageList.firstOrNull() ?: "",
+                viewModel.completeImageList.firstOrNull()?.path?:"",
                 notifId,
                 viewModel.completeImageList.size)
         submitPostUseCase.notificationManager = notificationManager
-        submitPostUseCase.execute(
-                SubmitPostUseCase.createRequestParams(
-                        viewModel.authorType,
-                        viewModel.token,
-                        if (isTypeAffiliate(viewModel.authorType)) userSession.userId
-                        else userSession.shopId,
-                        viewModel.caption,
-                        viewModel.completeImageList,
-                        if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-                        else viewModel.productIdList
-                ),
-                getSubscriber()
-        )
+
+        if (isUploadVideo(viewModel)) {
+            submitPostUseCase.execute(
+                    SubmitPostUseCase.createRequestParamsVideo(
+                            viewModel.authorType,
+                            viewModel.token,
+                            if (isTypeAffiliate(viewModel.authorType)) userSession.userId
+                            else userSession.shopId,
+                            viewModel.caption,
+                            viewModel.fileImageList.first().path,
+                            if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
+                            else viewModel.productIdList
+                    ),
+                    getSubscriber()
+            )
+        } else {
+
+            submitPostUseCase.execute(
+                    SubmitPostUseCase.createRequestParams(
+                            viewModel.authorType,
+                            viewModel.token,
+                            if (isTypeAffiliate(viewModel.authorType)) userSession.userId
+                            else userSession.shopId,
+                            viewModel.caption,
+                            viewModel.completeImageList.map { it.path?: "" },
+                            if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
+                            else viewModel.productIdList
+                    ),
+                    getSubscriber()
+            )
+        }
+    }
+
+    private fun isUploadVideo(viewModel: CreatePostViewModel): Boolean {
+        return viewModel.fileImageList.isNotEmpty()
+                && viewModel.fileImageList.first().type == MediaType.VIDEO 
+                && viewModel.fileImageList.first().path.isNotBlank()
     }
 
     private fun initInjector() {
@@ -147,6 +175,7 @@ class SubmitPostService : JobIntentService() {
                     return
                 }
                 notificationManager?.onSuccessPost()
+                sendBroadcast()
             }
 
             override fun onCompleted() {
@@ -157,6 +186,12 @@ class SubmitPostService : JobIntentService() {
                         this@SubmitPostService,
                         e
                 ))
+            }
+
+            private fun sendBroadcast() {
+                val intent = Intent(BROADCAST_SUBMIT_POST)
+                intent.putExtra(SUBMIT_POST_SUCCESS, true)
+                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
             }
         }
     }

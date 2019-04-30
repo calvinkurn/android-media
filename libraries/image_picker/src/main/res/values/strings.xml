@@ -48,6 +48,7 @@
     <string name="max_no_of_image_reached">Anda sudah mencapai batas maksimal jumlah gambar.</string>
     <string name="max_file_size_reached">Ukuran gambar terlalu besar</string>
     <string name="max_video_size_reached">Ukuran video terlalu besar</string>
+    <string name="max_video_duration_reached">Kamu cuma bisa pilih video dengan durasi maksimum 1 menit</string>
     <string name="permission_enabled_needed">Untuk dapat mengakses media, permissions harus diaktifkan di bagian pengaturan aplikasi</string>
     <string name="label_return">Kembali</string>
     <string name="use_image">Gunakan</string>

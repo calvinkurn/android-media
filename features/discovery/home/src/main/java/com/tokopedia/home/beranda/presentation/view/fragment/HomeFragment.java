@@ -33,13 +33,11 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
@@ -66,6 +64,7 @@ import com.tokopedia.home.beranda.presentation.view.SectionContainer;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
+import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
@@ -89,9 +88,11 @@ import com.tokopedia.searchbar.HomeMainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
-import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -166,6 +167,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     int startToMainToolbarShadowTransition = 0;
 
+    private int startToTransitionOffset = 0;
+    private int searchBarTransitionRange = 0;
+
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -180,6 +184,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
+
+        searchBarTransitionRange =
+                getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
+        startToTransitionOffset =
+                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/4;
     }
 
     @Override
@@ -401,7 +410,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 FeedTabModel selectedFeedTabModel =
                         feedTabModelList.get(tab.getPosition());
                 HomePageTracking.eventClickOnHomePageRecommendationTab(
-                        trackingQueue,
+                        getActivity(),
                         selectedFeedTabModel
                 );
             }
@@ -413,7 +422,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                homeFeedPagerAdapter.getHomeFeedFragmentList().get(tab.getPosition()).scrollToTop();
+                HomeFeedFragment homeFeedFragment = homeFeedPagerAdapter.getRegisteredFragment(tab.getPosition());
+                if (homeFeedFragment != null) {
+                    homeFeedFragment.scrollToTop();
+                }
                 homeFeedsTabLayout.resetCollapseState();
             }
         });
@@ -436,6 +448,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
+        sendScreen();
         presenter.onResume();
         if (activityStateListener != null) {
             activityStateListener.onResume();
@@ -525,10 +538,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void calculateSearchbarView(int offset) {
         int positiveOffset = offset*-1;
 
-        int searchBarTransitionRange =
-                getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
-        int startToTransitionOffset =
-                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/2;
         int endTransitionOffset =
                 startToTransitionOffset + searchBarTransitionRange;
         int maxTransitionOffset = endTransitionOffset - startToTransitionOffset;
@@ -700,14 +709,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onDigitalMoreClicked(int pos) {
-        AnalyticTracker tracker = HomePageTracking.getTracker(getActivity());
+        Analytics tracker = HomePageTracking.getTracker(getActivity());
         if (tracker != null) {
-            tracker.sendEventTracking(
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
                     DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
                     DigitalEventTracking.Action.CLICK_SEE_ALL_PRODUCTS,
                     ""
-            );
+            ));
         }
     }
 
@@ -912,6 +921,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void addImpressionToTrackingQueue(List<TrackedVisitable> visitables) {
+        List<Object> combinedTracking = new ArrayList<>();
+        for (TrackedVisitable visitable : visitables) {
+            if (visitable.isTrackingCombined() && visitable.getTrackingDataForCombination() != null) {
+                combinedTracking.addAll(visitable.getTrackingDataForCombination());
+            } else if (!visitable.isTrackingCombined() && visitable.getTrackingData() != null) {
+                HomePageTracking.eventEnhancedImpressionWidgetHomePage(trackingQueue, visitable.getTrackingData());
+            }
+        }
+        if (!combinedTracking.isEmpty()) {
+            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, combinedTracking);
+        }
+    }
+
+    @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
         if (adapter.getItemCount() > 1 && adapter.getItem(1) instanceof HeaderViewModel) {
             adapter.getItems().set(1, headerViewModel);
@@ -1089,13 +1113,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         restartBanner(isVisibleToUser);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        HomePageTracking.sendScreen(getActivity(), getScreenName());
-        sendScreen();
-    }
-
     private void restartBanner(boolean isVisibleToUser) {
         if ((isVisibleToUser && getView() != null) && adapter != null) {
             adapter.notifyDataSetChanged();
@@ -1104,7 +1121,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            HomePageTracking.sendScreen(getActivity(), getScreenName());
             sendScreen();
         }
     }

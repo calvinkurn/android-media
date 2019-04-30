@@ -26,14 +26,19 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCodeComponent;
 import com.tokopedia.loyalty.di.component.PromoCodeComponent;
 import com.tokopedia.loyalty.di.module.PromoCodeViewModule;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
+import com.tokopedia.loyalty.view.LoyaltyTracking;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.presenter.IPromoCodePresenter;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
+import com.tokopedia.track.TrackApp;
 
 import javax.inject.Inject;
 
@@ -59,6 +64,8 @@ public class PromoCodeFragment extends BaseDaggerFragment implements IPromoCodeV
     private static final String PLATFORM_PAGE_KEY = "PLATFORM_PAGE_KEY";
 
     private static final String CATEGORY_KEY = "CATEGORY_KEY";
+
+    private static final String CATEGORY_NAME_KEY = "CATEGORY_NAME_KEY";
 
     private static final String ADDITIONAL_DATA_KEY = "ADDITIONAL_DATA_KEY";
 
@@ -294,13 +301,14 @@ public class PromoCodeFragment extends BaseDaggerFragment implements IPromoCodeV
     }
 
     public static Fragment newInstance(String platform,String platformPage, String categoryKey,
-                                       String cartId, String additionalDataString,
+                                       String categoryName, String cartId, String additionalDataString,
                                        String trainReservationId, String trainReservartionCode) {
         PromoCodeFragment fragment = new PromoCodeFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platform);
         bundle.putString(PLATFORM_PAGE_KEY, platformPage);
         bundle.putString(CATEGORY_KEY, categoryKey);
+        bundle.putString(CATEGORY_NAME_KEY, categoryName);
         bundle.putString(CART_ID, cartId);
         bundle.putString(ADDITIONAL_DATA_KEY, additionalDataString);
         bundle.putString(TRAIN_RESERVATION_ID, trainReservationId);
@@ -337,6 +345,16 @@ public class PromoCodeFragment extends BaseDaggerFragment implements IPromoCodeV
     @Override
     public Context getContext() {
         return getActivity();
+    }
+
+    @Override
+    public void sendTrackingOnCheckDigitalVoucherError(String errorMessage) {
+        LoyaltyTracking.eventclickBtnFailedUsePromoCode(getArguments().getString(CATEGORY_NAME_KEY), errorMessage);
+    }
+
+    @Override
+    public void sendTrackingOnCheckDigitalVoucherSuccess(String voucherCode) {
+        LoyaltyTracking.eventclickBtnSuccessUsePromoCode(getArguments().getString(CATEGORY_NAME_KEY), voucherCode);
     }
 
     @Override

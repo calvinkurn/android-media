@@ -7,15 +7,30 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
+    <EditText
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp">
+        <requestFocus/>
+    </EditText>
+
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/separator">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:focusable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
@@ -26,48 +41,95 @@
             tools:listitem="@layout/kol_post_layout" />
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
+    <View
+        app:layout_constraintBottom_toTopOf="@+id/footer"
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/grey_300"/>
+
     <LinearLayout
-        android:id="@+id/add_comment_layout"
+        android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/card_shadow_top"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/dp_10"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_10"
         android:visibility="gone"
+        tools:visibility="visible"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView
-            android:id="@+id/user_avatar"
+            android:id="@+id/like_button"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
+            android:padding="@dimen/dp_8"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/container_circle_corners_border"
+            app:srcCompat="@drawable/ic_thumb_gray"
             android:scaleType="centerCrop"
             tools:src="@tools:sample/avatars" />
 
-        <EditText
-            android:id="@+id/reply_edit_text"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="139"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/black_54"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dp_4"
+            />
+
+        <ImageView
+            android:id="@+id/comment_button"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:padding="@dimen/dp_8"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_comment_gray"
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="@dimen/dp_10"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/comment_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="200"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/black_54"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dp_4"
+            />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/share_button"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:padding="@dimen/dp_8"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_share_grey_profile"
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="@dimen/dp_10"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/share_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:background="@drawable/bg_kol_circle_white"
-            android:hint="@string/add_your_comment"
-            android:imeOptions="actionDone"
-            android:inputType="textMultiLine"
-            android:maxLines="5"
-            android:paddingBottom="@dimen/dp_12"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_12"
-            android:textColorHint="@color/comment_hint_color"
-            android:textSize="@dimen/sp_14"
-            tools:visibility="visible" />
+            android:layout_marginLeft="@dimen/dp_4"
+            android:textColor="@color/black_54"
+            android:gravity="center_vertical"
+            android:text="@string/action_share_detail"
+            />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

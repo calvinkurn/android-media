@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.core.model.share.ShareData;
 
 import java.util.Objects;
@@ -30,16 +32,14 @@ public class ShareBroadcastReceiver extends BroadcastReceiver {
 
                 if (intent.getExtras() != null) {
                     String type = intent.getExtras().getString(KEY_TYPE, "");
-                    AnalyticTracker analyticTracker = ((AbstractionRouter) context
-                            .getApplicationContext()).getAnalyticTracker();
 
-                    if (analyticTracker != null && type.equals(ShareData.GROUPCHAT_TYPE)) {
-                        analyticTracker.sendEventTracking(
+                    if (type.equals(ShareData.GROUPCHAT_TYPE)) {
+                        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                                 "clickShare",
                                 "groupchat room",
                                 "click on choose media to share",
                                 appName
-                        );
+                        ));
                     }
                 }
 

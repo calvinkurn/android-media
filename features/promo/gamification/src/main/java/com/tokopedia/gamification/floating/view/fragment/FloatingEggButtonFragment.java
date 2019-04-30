@@ -36,15 +36,11 @@ import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.signature.StringSignature;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
-import com.tokopedia.gamification.data.entity.TokenDataEntity;
-import com.tokopedia.gamification.data.entity.TokenFloatingEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.di.GamificationComponentInstance;
 import com.tokopedia.gamification.floating.data.entity.FloatingCtaEntity;
@@ -53,6 +49,7 @@ import com.tokopedia.gamification.floating.listener.OnDragTouchListener;
 import com.tokopedia.gamification.floating.view.contract.FloatingEggContract;
 import com.tokopedia.gamification.floating.view.presenter.FloatingEggPresenter;
 import com.tokopedia.gamification.util.HexValidator;
+import com.tokopedia.track.TrackApp;
 
 import javax.inject.Inject;
 
@@ -369,12 +366,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             hideFLoatingEgg();
         } else {
             showFloatingEgg();
+            trackingEggImpression(tokenData.getId(), tokenData.getName());
         }
 
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, CrackTokenActivity.class);
+                trackingEggClick(tokenData.getId(), tokenData.getName());
             }
         });
 
@@ -571,5 +570,23 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         void onDragStart();
 
         void onDragEnd();
+    }
+
+    private void trackingEggImpression(int idToken, String name) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                            GamificationEventTracking.Event.VIEW_LUCKY_EGG,
+                            GamificationEventTracking.Category.CLICK_LUCKY_EGG,
+                            GamificationEventTracking.Action.IMPRESSION_LUCKY_EGG,
+                            idToken +"_"+ name);
+
+    }
+
+    private void trackingEggClick(int idToken, String name) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                            GamificationEventTracking.Category.CLICK_LUCKY_EGG,
+                            GamificationEventTracking.Action.CLICK_LUCKY_EGG,
+                            idToken + "_" + name
+                    );
     }
 }

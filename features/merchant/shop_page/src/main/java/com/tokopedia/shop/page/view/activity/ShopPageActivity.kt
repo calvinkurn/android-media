@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -28,6 +29,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
@@ -46,14 +50,17 @@ import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
 import com.tokopedia.shop.page.view.listener.ShopPageView
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
+import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import kotlinx.android.synthetic.main.item_tablayout_new_badge.view.*
 import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
-        ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener {
+        ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener, ShopProductListFragment.OnShopProductListFragmentListener {
+
 
     var shopId: String? = null
     var shopDomain: String? = null
@@ -75,6 +82,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private lateinit var titles: Array<String>;
 
     private var tabPosition = 0
+    lateinit var remoteConfig: RemoteConfig
 
     private val errorTextView by lazy {
         findViewById<TextView>(R.id.message_retry)
@@ -148,11 +156,24 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
     }
 
+
+    override fun updateUIByShopName(shopName: String?) {
+        searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_2,
+                MethodChecker.fromHtml(shopName).toString()))
+    }
+
+    override fun updateUIByEtalaseName(etalaseName: String?) {
+        searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_3,
+                MethodChecker.fromHtml(etalaseName).toString()))
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         GraphqlClient.init(this)
         initInjector()
+        remoteConfig = FirebaseRemoteConfigImpl(this)
         performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
-        shopPageTracking = ShopPageTrackingBuyer(application as AbstractionRouter,
+        shopPageTracking = ShopPageTrackingBuyer(
                 TrackingQueue(this))
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
                 getString(R.string.shop_info_title_tab_info))
@@ -312,8 +333,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageViewPagerAdapter.shopId = shopId
             shopDomain = info.shopDomain
             shopPageViewHolder.bind(this, presenter.isMyShop(shopId!!))
-            searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_2,
-                    MethodChecker.fromHtml(info.shopName).toString()))
+            updateUIByShopName(info.shopName)
             searchInputView.setListener(object : SearchInputView.Listener {
                 override fun onSearchSubmitted(text: String?) {
                     if (TextUtils.isEmpty(text)) {
@@ -322,11 +342,20 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     val fragment = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
                     if (fragment == null)
                         return
-                    val etalaseId = (fragment as ShopProductListLimitedFragment).selectedEtalaseId
+
+                    val etalaseId:String?
+
+                    if (remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)) {
+                        etalaseId = null
+                    } else {
+                        etalaseId = (fragment as ShopProductListLimitedFragment).selectedEtalaseId
+                    }
+
                     startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity, info.shopId,
                             text, etalaseId, shopAttribution))
                     //reset the search, since the result will go to another activity.
                     searchInputView.searchTextView.text = null
+
                 }
 
                 override fun onSearchTextChanged(text: String?) {}
@@ -470,9 +499,30 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.clickFollowUnfollowShop(isFavourite,
                     CustomDimensionShopPage.create(shopInfo))
         }
-        shopInfo?.info?.isShopOfficial?.let { (application as ShopModuleRouter).sendMoEngageFavoriteEvent(shopInfo?.info?.shopName, shopInfo?.info?.shopId, shopInfo?.info?.shopDomain, shopInfo?.info?.shopLocation, it, isFavourite) }
+        shopInfo?.info?.isShopOfficial?.let {
+            sendMoEngageFavoriteEvent(shopInfo?.info?.shopName?: "",
+                shopInfo?.info?.shopId?: "",
+                shopInfo?.info?.shopDomain?: "",
+                shopInfo?.info?.shopLocation?: "",
+                it,
+                isFavourite)
+        }
         shopId?.run { presenter.toggleFavouriteShop(this) }
 
+    }
+
+    fun sendMoEngageFavoriteEvent(shopName: String, shopID: String, shopDomain: String, shopLocation: String,
+                                  isShopOfficaial: Boolean, isFollowed: Boolean) {
+        TrackApp.getInstance().moEngage.sendTrackEvent(mapOf(
+            "shop_name" to shopName,
+            "shop_id" to shopID,
+            "shop_location" to shopLocation,
+            "url_slug" to shopDomain,
+            "is_official_store" to isShopOfficaial),
+            if (isFollowed)
+                "Seller_Added_To_Favorite"
+            else
+                "Seller_Removed_From_Favorite")
     }
 
     override fun goToAddProduct() {

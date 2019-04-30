@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.loyalty.di.LoyaltyScope;
@@ -61,6 +60,7 @@ public class LoyaltyViewModule {
                                 activity.getPlatformString(),
                                 activity.getPlatformPageString(),
                                 activity.getCategoryString(),
+                                activity.getCategoryName(),
                                 activity.getCartIdString(),
                                 activity.getAdditionalDataString(),
                                 activity.getTrainReservationId(),
@@ -105,6 +105,7 @@ public class LoyaltyViewModule {
                                     activity.getCategoryString(),
                                     activity.getCartIdString(),
                                     activity.getCategoryId(),
+                                    activity.getCategoryName(),
                                     activity.getProductId()))
                             .position(0)
                             .tabTitle("Kupon Saya")
@@ -125,6 +126,7 @@ public class LoyaltyViewModule {
                                 activity.getPlatformString(),
                                 activity.getPlatformPageString(),
                                 activity.getCategoryString(),
+                                activity.getCategoryName(),
                                 activity.getCartIdString(),
                                 activity.getAdditionalDataString(),
                                 activity.getTrainReservationId(),
@@ -146,20 +148,12 @@ public class LoyaltyViewModule {
 
     @Provides
     CheckoutAnalyticsCart provideCheckoutAnalyticsCartPage() {
-        AnalyticTracker analyticTracker = null;
-        if (activity.getApplication() instanceof AbstractionRouter) {
-            analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
-        }
-        return new CheckoutAnalyticsCart(analyticTracker);
+        return new CheckoutAnalyticsCart();
     }
 
     @Provides
     CheckoutAnalyticsCourierSelection provideCheckoutAnalyticsCourierSelection() {
-        AnalyticTracker analyticTracker = null;
-        if (activity.getApplication() instanceof AbstractionRouter) {
-            analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
-        }
-        return new CheckoutAnalyticsCourierSelection(analyticTracker);
+        return new CheckoutAnalyticsCourierSelection();
     }
 
 }

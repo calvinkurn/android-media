@@ -38,7 +38,6 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
     protected void onCreate(Bundle savedInstanceState) {
         mUserSession = new UserSession(getApplicationContext());
         super.onCreate(savedInstanceState);
-        toolbar.setVisibility(View.GONE);
         updateTitle(getString(R.string.tp_title_tokopoints));
     }
 
