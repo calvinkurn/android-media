@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.shipment.viewholder;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
@@ -214,6 +215,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private View llLogPromo;
     private TextView tvLogPromoLabel;
     private TextView tvLogPromoMsg;
+    private TextView tvChangeCourier21a;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -332,6 +334,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llCourierRecommendationStateLoading = itemView.findViewById(R.id.ll_courier_recommendation_state_loading);
         tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
+
+        tvChangeCourier21a = itemView.findViewById(R.id.tv_button_change_courier);
 
         // robinhood III
         llCourierBlackboxStateLoading = itemView.findViewById(R.id.ll_courier_blackbox_state_loading);
@@ -803,15 +807,20 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
         });
 
-        tvChangeSelectedCourierRecommendation.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_grey_round));
-        tvChangeSelectedCourierRecommendation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mActionListener.onChangeShippingCourier(
-                        shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
-                        currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition());
-            }
-        });
+        if (shipmentCartItemModel.isHidingCourier()) {
+            tvChangeCourier21a.setVisibility(View.VISIBLE);
+            tvChangeCourier21a.setTextColor(Color.parseColor("#42b549"));
+            tvChangeCourier21a.setOnClickListener(view -> mActionListener.onChangeShippingCourier(
+                    shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
+                    currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition()));
+            tvChangeSelectedCourierRecommendation.setVisibility(View.GONE);
+        } else {
+            tvChangeCourier21a.setVisibility(View.GONE);
+            tvChangeSelectedCourierRecommendation.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_grey_round));
+            tvChangeSelectedCourierRecommendation.setOnClickListener(v -> mActionListener.onChangeShippingCourier(
+                    shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
+                    currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition()));
+        }
 
         // Logistic Promo
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
@@ -819,8 +828,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (!TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc())) {
                 tvLogPromoLabel.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
             } else tvLogPromoLabel.setVisibility(View.GONE);
-            tvChangeSelectedCourierRecommendation.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
-            tvChangeSelectedCourierRecommendation.setOnClickListener(null);
+            if (shipmentCartItemModel.isHidingCourier()) {
+                tvChangeCourier21a.setTextColor(Color.parseColor("#7031353b"));
+                tvChangeCourier21a.setOnClickListener(null);
+            } else {
+                tvChangeSelectedCourierRecommendation.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disabled));
+                tvChangeSelectedCourierRecommendation.setOnClickListener(null);
+            }
         }
 
         boolean isCourierSelected = shipmentDetailData != null
