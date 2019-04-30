@@ -50,6 +50,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     var hotelRoomListPageModel = HotelRoomListPageModel()
 
+    var firstTime = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -76,22 +78,21 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        roomListViewModel.roomListResult.observe(this, android.arch.lifecycle.Observer {
-            when (it) {
-                is Success -> {
-                    if (!roomListViewModel.isFilter) {
-                        roomListViewModel.roomList = it.data
-                        showFilterRecyclerView(it.data.size > 0)
-                    } else showFilterRecyclerView(true)
-                    clearAllData()
-                    renderList(it.data)
-                }
-                is Fail -> {
-                    showGetListError(it.throwable)
-                    showFilterRecyclerView(false)
-                }
+        roomListViewModel.roomListResult.observe(this, android.arch.lifecycle.Observer { when (it) {
+            is Success -> {
+                firstTime = false
+                if (!roomListViewModel.isFilter) {
+                    roomListViewModel.roomList = it.data
+                    showFilterRecyclerView(it.data.size > 0)
+                } else showFilterRecyclerView(true)
+                clearAllData()
+                renderList(it.data, false)
             }
-        })
+            is Fail -> {
+                showGetListError(it.throwable)
+                showFilterRecyclerView(false)
+            }
+        } })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -111,8 +112,12 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         renderRoomAndGuestView()
         renderDate()
 
-        getRoomList(false)
+        loadInitialData()
     }
+
+    override fun hasInitialSwipeRefresh(): Boolean = true
+
+    override fun callInitialLoadAutomatically(): Boolean = false
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -141,12 +146,6 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     fun showFilterRecyclerView(show: Boolean) {
         filter_recycler_view.visibility = if (show) View.VISIBLE else View.GONE
-    }
-
-    fun getRoomList(fromCloud: Boolean = true) {
-        showFilterRecyclerView(false)
-        loadInitialData()
-        roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list), hotelRoomListPageModel, fromCloud)
     }
 
     fun onGuestInfoClicked() {
@@ -240,7 +239,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
         renderDate()
-        getRoomList(true)
+        loadInitialData()
     }
 
     override fun getAdapterTypeFactory(): RoomListTypeFactory {
@@ -262,7 +261,12 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun loadData(page: Int) {
-
+        showFilterRecyclerView(false)
+        if (firstTime) {
+            roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                    hotelRoomListPageModel, false)
+        } else roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                hotelRoomListPageModel, true)
     }
 
     override fun onChipClickListener(string: String) {
@@ -284,7 +288,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         hotelRoomListPageModel.adult = adult
 
         renderRoomAndGuestView()
-        getRoomList(true)
+        loadInitialData()
     }
 
     fun renderRoomAndGuestView() {
