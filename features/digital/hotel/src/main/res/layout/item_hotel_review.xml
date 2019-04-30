@@ -24,8 +24,8 @@
 
         <TextView
             android:id="@+id/rating_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_20"
             android:textColor="@color/blue_booking"
             tools:text="8,6"
             android:textStyle="bold"
@@ -37,7 +37,7 @@
             app:layout_constraintTop_toTopOf="@id/review_title"
             app:layout_constraintBottom_toBottomOf="@id/review_title"
             android:gravity="center"
-            android:background="@drawable/bg_rating_placeholder_light_blue"
+            android:background="@drawable/bg_hotel_blue_radius"
             />
 
         <android.support.constraint.ConstraintLayout
