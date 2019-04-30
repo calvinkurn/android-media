@@ -96,8 +96,8 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
             roomListModel.breakfastIncluded = hotelRoom.breakfastInfo.isBreakfastIncluded
             roomListModel.isRefundable = hotelRoom.refundInfo.isRefundable
             roomListModel.isCcRequired = hotelRoom.creditCardInfo.isCCRequired
-            roomListModel.price = hotelRoom.roomPrice[0].roomPrice
-            roomListModel.actualPrice = hotelRoom.roomPrice[0].totalPrice
+            if (hotelRoom.roomPrice.isNotEmpty()) roomListModel.price = hotelRoom.roomPrice[0].roomPrice
+            if (hotelRoom.roomPrice.isNotEmpty()) roomListModel.actualPrice = hotelRoom.roomPrice[0].totalPrice
             roomListModel.roomLeft = hotelRoom.numberRoomLeft
 
             val images: MutableList<String> = arrayListOf()
