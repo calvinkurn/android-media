@@ -468,10 +468,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     private void goToAddName(String uuid) {
         if (getActivity() != null) {
-            String applink = ApplinkConst.ADD_NAME_REGISTER;
-            applink = applink.replace("{phone}", phoneNumber);
-            Intent intent = ((ApplinkRouter) getActivity().getApplicationContext()).getApplinkIntent(getActivity
-                    (), applink);
+            String applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER;
+            Intent intent = RouteManager.getIntent(getContext(), applink);
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber);
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid);
             startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE);

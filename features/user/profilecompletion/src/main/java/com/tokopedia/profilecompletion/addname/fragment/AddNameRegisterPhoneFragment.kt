@@ -1,4 +1,4 @@
-package com.tokopedia.loginphone.addname.fragment
+package com.tokopedia.profilecompletion.addname.fragment
 
 import android.app.Activity
 import android.graphics.Typeface
@@ -15,16 +15,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.text.TkpdHintTextInputLayout
-import com.tokopedia.loginphone.R
-import com.tokopedia.loginphone.addname.AddNameRegisterPhoneActivity
-import com.tokopedia.loginphone.addname.listener.AddNameListener
-import com.tokopedia.loginphone.addname.presenter.AddNamePresenter
+import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneActivity
+import com.tokopedia.profilecompletion.addname.listener.AddNameListener
+import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
+import com.tokopedia.profilecompletion.addname.ProfileCompletionAnalytics
+import com.tokopedia.profilecompletion.R
+import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import javax.inject.Inject
 
 /**
@@ -39,15 +43,20 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     lateinit var message: TextView
     lateinit var btnContinue: TextView
     lateinit var wrapperName: TkpdHintTextInputLayout
+    lateinit var progressBar: ProgressBar
+    lateinit var mainContent: View
+
     private var isError = false
 
     @Inject
     lateinit var presenter: AddNamePresenter
 
+    @Inject
+    lateinit var analytics: ProfileCompletionAnalytics
+
     companion object {
         val MIN_NAME = 3
         val MAX_NAME = 128
-
 
         fun createInstance(bundle: Bundle): AddNameRegisterPhoneFragment {
             val fragment = AddNameRegisterPhoneFragment()
@@ -61,9 +70,6 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     override fun initInjector() {
-        activity?.run {
-
-        }
         if (activity != null && activity?.application != null) {
             DaggerAddNameComponent.builder().baseAppComponent(
                     ((activity as Activity).application as BaseMainApplication).baseAppComponent)
@@ -79,6 +85,8 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         bottomInfo = view.findViewById(R.id.bottom_info)
         message = view.findViewById(R.id.message)
         wrapperName = view.findViewById(R.id.wrapper_name)
+        progressBar = view.findViewById(R.id.progress_bar)
+        mainContent = view.findViewById(R.id.main_content)
         return view
     }
 
@@ -126,12 +134,14 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
 
     protected fun onContinueClick() {
         KeyboardHandler.DropKeyboard(activity, view)
-        registerPhoneAndName(etName.text.toString())
+        phoneNumber?.let{
+            registerPhoneAndName(etName.text.toString(), it)
+        }
     }
 
-    private fun registerPhoneAndName(name: String) {
+    private fun registerPhoneAndName(name: String, phoneNumber : String) {
         if (isValidate(name)) {
-            presenter.registerPhoneNumberAndName(name)
+            presenter.registerPhoneNumberAndName(name, phoneNumber)
         }
     }
 
@@ -204,11 +214,13 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     override fun showLoading() {
-        //TODO change to loading
-//        if (progressDialog == null)
-//            progressDialog = TkpdProgressDialog(activity, TkpdProgressDialog
-//                    .NORMAL_PROGRESS)
-//        progressDialog.showDialog()
+        mainContent.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+    }
+
+    fun dismissLoading() {
+        mainContent.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
     }
 
     private class URLSpanNoUnderline(url: String) : URLSpan(url) {
@@ -218,4 +230,17 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         }
     }
 
+    override fun onErrorRegister(throwable: Throwable) {
+        dismissLoading()
+        showValidationError(ErrorHandler.getErrorMessage(context, throwable))
+    }
+
+    override fun onSuccessRegister(registerInfo: RegisterInfo) {
+        activity?.run {
+            dismissLoading()
+            analytics.trackSuccessRegisterPhoneNumber(registerInfo.userId)
+            setResult(Activity.RESULT_OK)
+            finish()
+        }
+    }
 }

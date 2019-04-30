@@ -41,5 +41,10 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val WITHDRAW = "$INTERNAL_GLOBAL/withdraw"
 
+    // AddNameRegisterActivity
+    // tokopedia-android-internal://global/add-name-register
+    @JvmField
+    val ADD_NAME_REGISTER = "$INTERNAL_GLOBAL/add-name-register"
+
 
 }

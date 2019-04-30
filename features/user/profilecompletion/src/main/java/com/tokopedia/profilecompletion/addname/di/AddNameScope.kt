@@ -1,4 +1,4 @@
-package com.tokopedia.loginphone.addname.di
+package com.tokopedia.profilecompletion.addname.di
 
 import javax.inject.Scope
 

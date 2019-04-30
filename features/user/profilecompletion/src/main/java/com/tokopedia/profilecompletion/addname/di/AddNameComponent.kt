@@ -1,7 +1,7 @@
-package com.tokopedia.loginphone.addname.di
+package com.tokopedia.profilecompletion.addname.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.loginphone.addname.fragment.AddNameRegisterPhoneFragment
+import com.tokopedia.profilecompletion.addname.fragment.AddNameRegisterPhoneFragment
 import dagger.Component
 
 /**
@@ -10,5 +10,5 @@ import dagger.Component
 @AddNameScope
 @Component(modules = arrayOf(AddNameModule::class), dependencies = arrayOf(BaseAppComponent::class))
 interface AddNameComponent {
-    fun inject(addCreditCardFragment: AddNameRegisterPhoneFragment)
+    fun inject(fragment: AddNameRegisterPhoneFragment)
 }

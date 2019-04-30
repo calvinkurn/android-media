@@ -1,0 +1,15 @@
+mutation register($input: RegisterRequest!){
+  register(input:$input){
+    user_id
+    sid
+    access_token
+    refresh_token
+    token_type
+    is_active
+    action
+    errors {
+      name
+      message
+    }
+  }
+}

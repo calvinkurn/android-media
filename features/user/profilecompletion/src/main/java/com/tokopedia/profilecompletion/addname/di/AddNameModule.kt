@@ -1,9 +1,8 @@
-package com.tokopedia.loginphone.addname.di
+package com.tokopedia.profilecompletion.addname.di
 
 import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.loginphone.choosetokocashaccount.di.ChooseAccountScope
 import dagger.Module
 import dagger.Provides
 
@@ -13,7 +12,7 @@ import dagger.Provides
 @Module
 class AddNameModule {
 
-    @ChooseAccountScope
+    @AddNameScope
     @Provides
     internal fun provideResources(@ApplicationContext context: Context): Resources {
         return context.resources

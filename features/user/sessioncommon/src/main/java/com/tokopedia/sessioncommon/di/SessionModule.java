@@ -1,6 +1,7 @@
 package com.tokopedia.sessioncommon.di;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.readystatesoftware.chuck.ChuckInterceptor;
@@ -44,6 +45,12 @@ public class SessionModule {
     private static final String SESSION_COMMON = "Session";
 
     public static final String SESSION_MODULE = "Session";
+
+    @SessionCommonScope
+    @Provides
+    Resources provideResources(@ApplicationContext Context context) {
+        return context.getResources();
+    }
 
     @Named(SESSION_MODULE)
     @SessionCommonScope
