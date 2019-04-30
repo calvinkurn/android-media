@@ -19,6 +19,7 @@ public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
     List<Option> quickFilterList = new ArrayList<>();
     private GuidedSearchViewModel guidedSearch;
     CpmModel cpmModel;
+    private GlobalNavViewModel globalNavViewModel;
 
     @Override
     public int type(ProductListTypeFactory typeFactory) {
@@ -63,5 +64,13 @@ public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
 
     public GuidedSearchViewModel getGuidedSearch() {
         return guidedSearch;
+    }
+
+    public GlobalNavViewModel getGlobalNavViewModel() {
+        return globalNavViewModel;
+    }
+
+    public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
+        this.globalNavViewModel = globalNavViewModel;
     }
 }

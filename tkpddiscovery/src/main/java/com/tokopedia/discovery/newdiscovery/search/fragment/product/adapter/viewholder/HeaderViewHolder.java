@@ -25,8 +25,10 @@ import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.widget.GlobalNavWidget;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
@@ -56,6 +58,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private QuickFilterAdapter quickFilterAdapter;
     private RecyclerView guidedSearchRecyclerView;
     private GuidedSearchAdapter guidedSearchAdapter;
+    private GlobalNavWidget globalNavWidget;
     private final String searchQuery;
 
     public HeaderViewHolder(View itemView, ProductListener productListener, String searchQuery) {
@@ -65,6 +68,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         this.productListener = productListener;
         suggestionContainer = (LinearLayout) itemView.findViewById(R.id.suggestion_container);
         adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
+        globalNavWidget = itemView.findViewById(R.id.globalNavWidget);
         quickFilterListView = (RecyclerView) itemView.findViewById(R.id.quickFilterListView);
         guidedSearchRecyclerView = itemView.findViewById(R.id.guidedSearchRecyclerView);
         guidedSearchAdapter = new GuidedSearchAdapter(productListener);
@@ -107,6 +111,22 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     @Override
     public void bind(final HeaderViewModel element) {
         adsBannerView.displayAds(element.getCpmModel());
+        if (element.getGlobalNavViewModel() != null) {
+            globalNavWidget.setData(element.getGlobalNavViewModel(), new GlobalNavWidget.ClickListener() {
+                @Override
+                public void onClickItem(GlobalNavViewModel.Item item) {
+                    productListener.onGlobalNavWidgetClicked(item, element.getGlobalNavViewModel().getKeyword());
+                }
+
+                @Override
+                public void onclickSeeAllButton(String applink, String url) {
+                    productListener.onGlobalNavWidgetClickSeeAll(applink, url);
+                }
+            });
+            globalNavWidget.setVisibility(View.VISIBLE);
+        } else {
+            globalNavWidget.setVisibility(View.GONE);
+        }
         if (element.getSuggestionModel() != null) {
             suggestionContainer.removeAllViews();
             View suggestionView = LayoutInflater.from(context).inflate(R.layout.suggestion_layout, null);

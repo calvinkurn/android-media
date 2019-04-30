@@ -217,7 +217,7 @@ ext {
             topAdsSdk                       : ":features:discovery:topadssdk",
             wishlistCommon                  : ":features:discovery:wishlist_common",
             productCard                     : ":features:discovery:productcard",
-
+            recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
             homecredit                      : ":features:fintech:home_credit",
             instantLoan                     : ":features:fintech:instant_loan",
 //            instantLoan                   : ":features:fintech:instant_loan_no_op",

@@ -7,6 +7,7 @@ import com.tokopedia.discovery.common.data.DataValue;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 import org.json.JSONArray;
@@ -81,4 +82,6 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
 
     void setFirstTimeLoad(boolean isFirstTimeLoad);
+
+    void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
 }

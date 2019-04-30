@@ -107,6 +107,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation project(rootProject.ext.features.kolCommon)
+    implementation project(rootProject.ext.libraries.unifyPrinciples)
 }
 
 apply from: '../publish_local.gradle'
