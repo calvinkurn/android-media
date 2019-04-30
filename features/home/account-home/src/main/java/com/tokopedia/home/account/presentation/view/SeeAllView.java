@@ -181,6 +181,16 @@ public class SeeAllView extends BottomSheets {
         );
         list.add(gridItem);
 
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_insurance_bom,
+                getContext().getString(R.string.title_menu_modal_toko),
+                ApplinkConst.MODAL_TOKO_ORDER,
+                0,
+                PEMBELI,
+                getContext().getString(R.string.title_menu_transaction)
+        );
+        list.add(gridItem);
+
         return list;
     }
 }
