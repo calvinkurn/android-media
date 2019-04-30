@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.video
 
 import android.os.Build
+import android.view.View
 import android.view.ViewTreeObserver
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
@@ -12,16 +13,26 @@ import kotlinx.android.synthetic.main.item_post_video.view.*
 /**
  * @author by yfsx on 20/03/19.
  */
-class VideoViewHolder(private val listener: VideoViewListener): BasePostViewHolder<VideoViewModel>() {
+class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHolder<VideoViewModel>() {
 
     override var layoutRes = R.layout.item_post_video
 
+    companion object {
+        const val STRING_DEFAULT_TRANSCODING = "customerTrans"
+    }
+
     override fun bind(element: VideoViewModel) {
-        itemView.image.setOnClickListener {
-           listener.onVideoPlayerClicked(
-                   element.positionInFeed,
-                   pagerPosition,
-                   element.postId.toString())
+        if (!element.url.contains(STRING_DEFAULT_TRANSCODING)) {
+            itemView.image.setOnClickListener {
+                if (!element.url.isBlank()) {
+                    listener.onVideoPlayerClicked(
+                            element.positionInFeed,
+                            pagerPosition,
+                            element.postId.toString())
+                }
+            }
+        } else {
+            itemView.ic_play.visibility = View.GONE
         }
         itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -48,6 +59,6 @@ class VideoViewHolder(private val listener: VideoViewListener): BasePostViewHold
                                  contentPosition: Int,
                                  postId: String)
 
-        fun onAffiliateTrackClicked(trackList : MutableList<TrackingViewModel>)
+        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>)
     }
 }

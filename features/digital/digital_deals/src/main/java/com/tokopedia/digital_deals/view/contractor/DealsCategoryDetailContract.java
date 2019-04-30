@@ -26,7 +26,7 @@ public class DealsCategoryDetailContract {
 
         void renderBrandList(List<Brand> brandList);
 
-        RequestParams getCategoryParams();
+        String getCategoryParams();
 
         RequestParams getBrandParams();
 

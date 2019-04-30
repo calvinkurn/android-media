@@ -27,15 +27,26 @@ import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
+import com.tokopedia.checkout.view.feature.cartlist.subscriber.CheckPromoFirstStepAfterClashSubscriber;
+import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplyAfterClashSubscriber;
+import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplySubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
+import com.tokopedia.promocheckout.common.data.entity.request.Order;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
@@ -88,6 +99,8 @@ public class CartListPresenter implements ICartListPresenter {
     private static final String PARAM_PARAMS = "params";
     private static final String PARAM_LANG = "lang";
     private static final String PARAM_STEP = "step";
+    private static final String PARAM_GLOBAL = "global";
+    private static final String PARAM_MERCHANT = "merchant";
 
     public static final int ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0;
     public static final int ITEM_CHECKED_ALL_WITH_CHANGES = 1;
@@ -110,7 +123,10 @@ public class CartListPresenter implements ICartListPresenter {
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
     private final UpdateAndReloadCartUseCase updateAndReloadCartUseCase;
+    private final CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase;
+    private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
     private final TopAdsGqlUseCase topAdsUseCase;
+    private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final UserSessionInterface userSessionInterface;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
@@ -123,6 +139,8 @@ public class CartListPresenter implements ICartListPresenter {
                              DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
                              UpdateCartUseCase updateCartUseCase,
                              ResetCartGetCartListUseCase resetCartGetCartListUseCase,
+                             CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
+                             CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
@@ -131,7 +149,8 @@ public class CartListPresenter implements ICartListPresenter {
                              RemoveWishListUseCase removeWishListUseCase,
                              UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
                              UserSessionInterface userSessionInterface,
-                             TopAdsGqlUseCase topAdsUseCase) {
+                             TopAdsGqlUseCase topAdsUseCase,
+                             ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
         this.view = cartListView;
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
@@ -139,6 +158,8 @@ public class CartListPresenter implements ICartListPresenter {
         this.deleteCartGetCartListUseCase = deleteCartGetCartListUseCase;
         this.updateCartUseCase = updateCartUseCase;
         this.resetCartGetCartListUseCase = resetCartGetCartListUseCase;
+        this.checkPromoStackingCodeUseCase = checkPromoStackingCodeUseCase;
+        this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
@@ -147,6 +168,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.updateAndReloadCartUseCase = updateAndReloadCartUseCase;
         this.userSessionInterface = userSessionInterface;
         this.topAdsUseCase = topAdsUseCase;
+        this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
     }
 
     @Override
@@ -162,6 +184,12 @@ public class CartListPresenter implements ICartListPresenter {
         }
         if (removeWishListUseCase != null) {
             removeWishListUseCase.unsubscribe();
+        }
+        if (clearCacheAutoApplyStackUseCase != null) {
+            clearCacheAutoApplyStackUseCase.unsubscribe();
+        }
+        if (checkPromoStackingCodeUseCase != null) {
+            checkPromoStackingCodeUseCase.unsubscribe();
         }
     }
 
@@ -262,9 +290,11 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processDeleteAndRefreshCart(List<CartItemData> removedCartItems,
-                                            boolean addWishList, boolean removeAllItem) {
+    public void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems,
+                                            ArrayList<String> appliedPromoOnDeletedProductList, boolean addWishList) {
         view.showProgressLoading();
+        boolean removeAllItem = allCartItemData.size() == removedCartItems.size();
+
         List<Integer> ids = new ArrayList<>();
         for (CartItemData cartItemData : removedCartItems) {
             ids.add(cartItemData.getOriginData().getCartId());
@@ -279,11 +309,28 @@ public class CartListPresenter implements ICartListPresenter {
         TKPDMapParam<String, String> paramGetList = new TKPDMapParam<>();
         paramGetList.put(PARAM_LANG, "id");
 
+        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
+        for (CartItemData data : allCartItemData) {
+            if (!data.isError()) {
+                updateCartRequestList.add(new UpdateCartRequest.Builder()
+                        .cartId(data.getOriginData().getCartId())
+                        .notes(data.getUpdatedData().getRemark())
+                        .quantity(data.getUpdatedData().getQuantity())
+                        .build());
+            }
+        }
+        TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
+        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
                 view.getGeneratedAuthParamNetwork(paramDelete));
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_CART,
                 view.getGeneratedAuthParamNetwork(paramGetList));
+        requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+                view.getGeneratedAuthParamNetwork(paramUpdate));
+        requestParams.putBoolean(DeleteCartGetCartListUseCase.PARAM_IS_DELETE_ALL_DATA, allCartItemData.size() == removedCartItems.size());
+        requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, appliedPromoOnDeletedProductList);
 
         compositeSubscription.add(deleteCartGetCartListUseCase.createObservable(requestParams)
                 .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
@@ -306,7 +353,7 @@ public class CartListPresenter implements ICartListPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(getSubscriberDeleteAndRefreshCart(removeAllItem)));
+                .subscribe(getSubscriberDeleteAndRefreshCart(removeAllItem, appliedPromoOnDeletedProductList)));
     }
 
     @Override
@@ -337,7 +384,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processUpdateCartDataPromo(List<CartItemData> cartItemDataList, PromoData promoData, int stateGoTo) {
+    public void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList, ShopGroupData shopGroupData) {
         view.showProgressLoading();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
@@ -359,11 +406,69 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberUpdateCartPromo(promoData, stateGoTo))
+                        .subscribe(getSubscriberUpdateCartPromoMerchant(shopGroupData))
         );
     }
 
-    private Subscriber<UpdateCartData> getSubscriberUpdateCartPromo(PromoData promoData, int stateGoTo) {
+    @Override
+    public void processUpdateCartDataPromoStacking(List<CartItemData> cartItemDataList, PromoStackingData promoStackingData, int goToDetail) {
+        view.showProgressLoading();
+        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
+        for (CartItemData data : cartItemDataList) {
+            updateCartRequestList.add(new UpdateCartRequest.Builder()
+                    .cartId(data.getOriginData().getCartId())
+                    .notes(data.getUpdatedData().getRemark())
+                    .quantity(data.getUpdatedData().getQuantity())
+                    .build());
+        }
+        TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
+        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+                view.getGeneratedAuthParamNetwork(paramUpdate));
+
+        compositeSubscription.add(
+                updateCartUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(getSubscriberUpdateCartPromoGlobal(promoStackingData, goToDetail))
+        );
+    }
+
+    private Subscriber<UpdateCartData> getSubscriberUpdateCartPromoMerchant(ShopGroupData shopGroupData) {
+        return new Subscriber<UpdateCartData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (view != null) {
+                    view.hideProgressLoading();
+                    view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivity(), e));
+                    processInitialGetCartData(cartListData == null);
+                }
+            }
+
+            @Override
+            public void onNext(UpdateCartData data) {
+                if (view != null) {
+                    view.hideProgressLoading();
+                    if (!data.isSuccess()) {
+                        view.showToastMessageRed(data.getMessage());
+                    } else {
+                        view.showMerchantVoucherListBottomsheet(shopGroupData);
+                    }
+                }
+            }
+        };
+    }
+
+    private Subscriber<UpdateCartData> getSubscriberUpdateCartPromoGlobal(PromoStackingData promoStackingData, int stateGoTo) {
         return new Subscriber<UpdateCartData>() {
             @Override
             public void onCompleted() {
@@ -374,25 +479,9 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
-                    view.showToastMessageRed(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    view.showToastMessageRed(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof CartResponseErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof CartResponseDataNullException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof CartHttpErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else {
-                    view.showToastMessageRed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                view.showToastMessageRed(
+                        ErrorHandler.getErrorMessage(view.getActivity(), e)
+                );
                 processInitialGetCartData(cartListData == null);
             }
 
@@ -405,7 +494,7 @@ public class CartListPresenter implements ICartListPresenter {
                     if (stateGoTo == CartFragment.GO_TO_LIST) {
                         view.goToCouponList();
                     } else {
-                        view.goToDetail(promoData);
+                        view.goToDetailPromoStacking(promoStackingData);
                     }
                 }
             }
@@ -656,6 +745,7 @@ public class CartListPresenter implements ICartListPresenter {
                         .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberCheckPromoCodeFromSuggestion(isAutoApply))
         );
+
     }
 
     @Override
@@ -787,7 +877,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(boolean removeAllItem) {
+    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(boolean removeAllItem, ArrayList<String> appliedPromoOnDeletedProductList) {
         return new Subscriber<DeleteAndRefreshCartListData>() {
             @Override
             public void onCompleted() {
@@ -843,25 +933,9 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
-                    view.showToastMessageRed(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    view.showToastMessageRed(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof CartResponseErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof CartResponseDataNullException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof CartHttpErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.showToastMessageRed(e.getMessage());
-                } else {
-                    view.showToastMessageRed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                view.showToastMessageRed(
+                        ErrorHandler.getErrorMessage(view.getActivity(), e)
+                );
                 processInitialGetCartData(cartListData == null);
             }
 
@@ -985,29 +1059,9 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof CartResponseErrorException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else if (e instanceof CartResponseDataNullException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else if (e instanceof CartHttpErrorException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else if (e instanceof CheckPromoCodeException) {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else {
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-                    );
-                }
+                view.renderErrorCheckPromoCodeFromSuggestedPromo(
+                        ErrorHandler.getErrorMessage(view.getActivity(), e)
+                );
             }
 
             @Override
@@ -1020,6 +1074,76 @@ public class CartListPresenter implements ICartListPresenter {
                     view.renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
             }
         };
+    }
+
+    @Override
+    public void processCancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse) {
+        if (promoCodeList.size() > 0) {
+            if (!ignoreAPIResponse) {
+                view.showProgressLoading();
+            }
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
+            clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplySubscriber(view, this, shopIndex, ignoreAPIResponse));
+        }
+    }
+
+    @Override
+    public void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type) {
+        view.showProgressLoading();
+        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
+        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplyAfterClashSubscriber(view, this, newPromoList, type));
+    }
+
+    @Override
+    public void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type) {
+        Promo promo = view.generateCheckPromoFirstStepParam();
+        promo.setCodes(new ArrayList<>());
+        if (promo.getOrders() != null) {
+            for (Order order : promo.getOrders()) {
+                order.setCodes(new ArrayList<>());
+            }
+        }
+
+        // New promo list is array, but it will always be 1 item
+        if (newPromoList != null && newPromoList.size() > 0) {
+            ClashingVoucherOrderUiModel model = newPromoList.get(0);
+            if (TextUtils.isEmpty(model.getUniqueId())) {
+                // This promo is global promo
+                ArrayList<String> codes = new ArrayList<>();
+                codes.add(model.getCode());
+                promo.setCodes(codes);
+
+                CurrentApplyCode currentApplyCode = new CurrentApplyCode();
+                if (!model.getCode().isEmpty()) {
+                    currentApplyCode.setCode(model.getCode());
+                    currentApplyCode.setType(PARAM_GLOBAL);
+                }
+                promo.setCurrentApplyCode(currentApplyCode);
+            } else {
+                // This promo is merchant/logistic promo
+                if (promo.getOrders() != null) {
+                    for (Order order : promo.getOrders()) {
+                        if (model.getUniqueId().equals(order.getUniqueId())) {
+                            ArrayList<String> codes = new ArrayList<>();
+                            codes.add(model.getCode());
+                            order.setCodes(codes);
+
+                            CurrentApplyCode currentApplyCode = new CurrentApplyCode();
+                            if (!model.getCode().isEmpty()) {
+                                currentApplyCode.setCode(model.getCode());
+                                currentApplyCode.setType(type);
+                            }
+                            promo.setCurrentApplyCode(currentApplyCode);
+                            break;
+                        }
+                    }
+                }
+            }
+            view.showProgressLoading();
+            checkPromoStackingCodeUseCase.setParams(promo);
+            checkPromoStackingCodeUseCase.execute(RequestParams.create(),
+                    new CheckPromoFirstStepAfterClashSubscriber(view, this, checkPromoStackingCodeMapper, type));
+        }
     }
 
     @Override
@@ -1235,5 +1359,4 @@ public class CartListPresenter implements ICartListPresenter {
     public Map<Integer, Boolean> getCheckedCartItemState() {
         return lastCheckedItem;
     }
-
 }

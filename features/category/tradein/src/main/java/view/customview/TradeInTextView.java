@@ -24,11 +24,15 @@ public class TradeInTextView extends ConstraintLayout {
     public TextView titleTextView;
     public TextView priceTextView;
     private TradeInTextView thisInstance;
+    private ClickTrackListener trackListener;
     public static final String ACTION_TRADEIN_ELLIGIBLE = "ACTION_TRADE_IN_ELLIGIBLE";
+    public static final String EXTRA_ISELLIGIBLE = "EXTRA_ISELLIGIBLE";
 
     private View.OnClickListener clickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (trackListener != null)
+                trackListener.trackClick();
             viewModel.showAccessRequestDialog();
         }
     };
@@ -91,5 +95,14 @@ public class TradeInTextView extends ConstraintLayout {
             return viewModel;
         else
             throw new NullPointerException("ITradeInParamReceiver is not initialised");
+    }
+
+
+    public void setTrackListener(ClickTrackListener listener) {
+        this.trackListener = listener;
+    }
+
+    public interface ClickTrackListener {
+        void trackClick();
     }
 }

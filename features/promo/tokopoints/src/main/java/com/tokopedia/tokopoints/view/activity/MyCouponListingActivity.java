@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Tabs;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.adapter.CouponFilterPagerAdapter;
@@ -59,8 +60,19 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
         initViews();
         UserSessionInterface userSession = new UserSession(this);
         if (userSession.isLoggedIn()) {
-            mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
-            showLoading();
+            if (getApplicationContext() instanceof TokopointRouter
+                    && ((TokopointRouter) getApplicationContext())
+                    .getBooleanRemoteConfig(CommonConstant.TOKOPOINTS_NEW_COUPON_LISTING, false)) {
+                finish();
+                if (getIntent() == null || getIntent().getExtras() == null) {
+                    startActivity(CouponListingStackedActivity.getCallingIntent(this));
+                } else {
+                    startActivity(CouponListingStackedActivity.getCallingIntent(this, getIntent().getExtras()));
+                }
+            } else {
+                mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
+                showLoading();
+            }
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
         }

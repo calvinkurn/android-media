@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_80"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/dp_80"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,7 +16,10 @@
         android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_12"
-        android:layout_gravity="center_vertical">
+        android:paddingRight="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_12"
+        android:layout_gravity="center_vertical"
+        android:paddingStart="@dimen/dp_12">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,6 +41,18 @@
                 android:layout_gravity="center_vertical"
                 tools:text="Cashback20Rb"/>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvVoucherSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textColor="@color/clr_ae31353b"
+            android:visibility="gone"
+            android:textStyle="bold"
+            style="@style/TextView.Micro10"
+            tools:text="Next Day (Rp 25.000)" />
+
         <TextView
             android:id="@+id/tvVoucherDesc"
             android:layout_width="match_parent"
@@ -52,8 +68,7 @@
         android:layout_weight="@integer/merchant_scallop_position_right_weight"
         android:orientation="vertical"
         android:layout_gravity="center"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/dp_4">
+        android:gravity="center">
         <TextView
             android:id="@+id/tvCode"
             style="@style/TextView.Title.OrangeRed.Bold"
@@ -67,9 +82,11 @@
             android:id="@+id/btnUseVoucher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Button.Submit.White.Border"
+            style="@style/Button.Submit"
             android:textSize="@dimen/sp_12"
-            tools:text="@string/use_voucher"
+            android:textColor="@color/tkpd_main_green"
+            android:background="@drawable/button_border_green"
+            android:text="@string/use_voucher"
             android:minWidth="@dimen/dp_60"
             android:minHeight="@dimen/dp_8"
             android:padding="@dimen/dp_8"/>

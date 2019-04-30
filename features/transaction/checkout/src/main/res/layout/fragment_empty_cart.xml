@@ -53,9 +53,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-
-                <com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-                    android:id="@+id/ticker_checkout_view"
+                <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+                    android:id="@+id/ticker_promostacking_checkout_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
