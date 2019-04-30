@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    >
+    android:background="@color/white">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -91,35 +90,40 @@
                 </android.support.constraint.ConstraintLayout>
 
                 <!--<View-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="@dimen/dp_1"-->
-                    <!--android:background="@drawable/bg_line_separator" />-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="@dimen/dp_1"-->
+                <!--android:background="@drawable/bg_line_separator" />-->
 
                 <!--<android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dp_16">-->
 
-                    <!--<com.tokopedia.design.component.TextViewCompat
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="Hanya ulasan dari Indonesia"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />-->
+                <!--<com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Hanya ulasan dari Indonesia"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />-->
 
-                    <!--<CustomSwitchPreference-->
-                    <!--android:id="@+id/indonesia_review_switch"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--app:layout_constraintEnd_toEndOf="parent"-->
-                    <!--app:layout_constraintRight_toRightOf="parent"-->
-                    <!--/>-->
+                <!--<CustomSwitchPreference-->
+                <!--android:id="@+id/indonesia_review_switch"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintRight_toRightOf="parent"-->
+                <!--/>-->
                 <!--</android.support.constraint.ConstraintLayout>-->
 
                 <!--<View-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="@dimen/dp_1"-->
-                    <!--android:background="@drawable/bg_line_separator" />-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="@dimen/dp_1"-->
+                <!--android:background="@drawable/bg_line_separator" />-->
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:background="@drawable/bg_line_separator" />
 
             </LinearLayout>
 
