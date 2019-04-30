@@ -2,6 +2,8 @@ package com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.hotel.hoteldetail.presentation.adapter.ReviewAdapterTypeFactory
 
 /**
  * @author by jessica on 29/04/19
@@ -43,16 +45,38 @@ data class HotelReview(
         @SerializedName("createTime")
         @Expose
         val createTime: String = ""
-) {
+
+): Visitable<ReviewAdapterTypeFactory> {
+
+        override fun type(typeFactory: ReviewAdapterTypeFactory?): Int {
+                return typeFactory?.type(this) ?: 0
+        }
+
     data class Response(
             @SerializedName("propertyReview")
             @Expose
-            val propertyReview: ReviewList
+            val propertyReview: ReviewData
     )
 
-    data class ReviewList(
+    data class ReviewData(
             @SerializedName("item")
             @Expose
-            val reviewList: List<HotelReview> = listOf()
+            val reviewList: List<HotelReview> = listOf(),
+
+            @SerializedName("totalReview")
+            @Expose
+            val totalReview: Int = 0,
+
+            @SerializedName("averageScoreReview")
+            @Expose
+            val averageScoreReview: Int = 0,
+
+            @SerializedName("totalReviewOri")
+            @Expose
+            val totalReviewOri: Int = 0,
+
+            @SerializedName("hasNext")
+            @Expose
+            val hasNext: Boolean = true
     )
 }
