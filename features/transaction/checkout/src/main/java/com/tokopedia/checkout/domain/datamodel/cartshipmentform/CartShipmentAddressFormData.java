@@ -30,6 +30,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private Donation donation;
     private CodModel cod;
     private boolean useCourierRecommendation;
+    private boolean isHidingCourier;
     private boolean isBlackbox;
     private CartPromoSuggestion cartPromoSuggestion;
     private AutoApplyData autoApplyData;
@@ -172,6 +173,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.egoldAttributes = egoldAttributes;
     }
 
+    public boolean isHidingCourier() {
+        return isHidingCourier;
+    }
+
+    public void setHidingCourier(boolean hidingCourier) {
+        isHidingCourier = hidingCourier;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -187,6 +196,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         keroUnixTime = in.readInt();
         donation = in.readParcelable(Donation.class.getClassLoader());
         useCourierRecommendation = in.readByte() != 0;
+        isHidingCourier = in.readByte() != 0;
         cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
         autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
         egoldAttributes = in.readParcelable(EgoldAttributeModel.class.getClassLoader());
@@ -206,6 +216,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeInt(keroUnixTime);
         dest.writeParcelable(donation, flags);
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
+        dest.writeByte((byte) (isHidingCourier ? 1 : 0));
         dest.writeParcelable(cartPromoSuggestion, flags);
         dest.writeParcelable(autoApplyData, flags);
         dest.writeParcelable(egoldAttributes, flags);

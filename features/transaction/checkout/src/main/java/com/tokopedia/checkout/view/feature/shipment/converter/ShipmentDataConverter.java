@@ -113,6 +113,7 @@ public class ShipmentDataConverter {
                     shipmentCartItemModel = new ShipmentCartItemModel();
                     shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData
                             .isUseCourierRecommendation());
+                    shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
                     shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
                     shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                             .get(addressIndex).getUserAddress().getAddressId());
@@ -145,6 +146,7 @@ public class ShipmentDataConverter {
                 shipmentCartItemModel = new ShipmentCartItemModel();
                 shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
                 shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
+                shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
                 shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                         .get(0).getUserAddress().getAddressId());
 

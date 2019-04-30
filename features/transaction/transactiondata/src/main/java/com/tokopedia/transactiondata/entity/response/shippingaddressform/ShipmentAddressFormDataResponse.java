@@ -49,6 +49,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_robinhood")
     @Expose
     private int isRobinhood;
+    @SerializedName("is_hide_courier_name")
+    @Expose
+    private boolean isHidingCourier;
     @SerializedName("is_blackbox")
     @Expose
     private int isBlackbox;
@@ -114,6 +117,10 @@ public class ShipmentAddressFormDataResponse {
 
     public int getIsRobinhood() {
         return isRobinhood;
+    }
+
+    public Boolean getHideCourier() {
+        return isHidingCourier;
     }
 
     public int getIsBlackbox() {
