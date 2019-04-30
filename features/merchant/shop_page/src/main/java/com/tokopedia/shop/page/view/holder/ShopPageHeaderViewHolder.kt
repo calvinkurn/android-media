@@ -29,11 +29,11 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
                                private val shopPageTracking: ShopPageTrackingBuyer,
                                private val context: Context){
     private var isShopFavourited = false
+    private var isShopRequestedModerate = false
 
     companion object {
         private const val MODERATE_OPTION_ONE = 0
         private const val MODERATE_OPTION_TWO = 1
-
     }
 
     fun bind(shopInfo: ShopInfo, isMyShop: Boolean) {
@@ -65,14 +65,11 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         } else {
             displayAsBuyer(shopInfo)
         }
-
-        updateViewShopStatus(shopInfo, isMyShop)
     }
 
-    fun updateViewModerateStatus(moderateStatus: Int){
-        if (moderateStatus == 1){
-            view.buttonActionAbnormal.visibility = View.GONE
-        }
+    fun updateViewModerateStatus(moderateStatus: Int, shopInfo: ShopInfo, isMyShop: Boolean) {
+        isShopRequestedModerate = moderateStatus == 1
+        updateViewShopStatus(shopInfo, isMyShop)
     }
 
     private fun updateViewShopStatus(shopInfo: ShopInfo, isMyShop: Boolean) {
@@ -159,6 +156,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
                     if (!moderateNotes.isEmpty()) {
                         listener.requestOpenShop(shopId, moderateNotes)
                     }
+                    view.buttonActionAbnormal.visibility = View.GONE
                     dialog.dismiss()
                 }
                 .setNegativeButton(R.string.button_cancel) { dialog, which ->

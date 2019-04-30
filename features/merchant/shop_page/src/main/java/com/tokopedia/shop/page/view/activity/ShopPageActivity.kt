@@ -211,7 +211,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         swipeToRefresh.setOnRefreshListener { refreshData() }
 
         mainLayout.requestFocus()
-
         getShopInfo()
     }
 
@@ -315,7 +314,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopId = info.shopId
             shopPageViewPagerAdapter.shopId = shopId
             shopDomain = info.shopDomain
-            presenter.getModerateShopInfo()
             shopPageViewHolder.bind(this, presenter.isMyShop(shopId!!))
             searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_2,
                     MethodChecker.fromHtml(info.shopName).toString()))
@@ -352,6 +350,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.sendScreenShopPage(this@ShopPageActivity, CustomDimensionShopPage.create(shopInfo))
 
             presenter.getFeedWhitelist(info.shopId)
+            presenter.getModerateShopInfo()
         }
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
         swipeToRefresh.isRefreshing = false
@@ -392,7 +391,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun onSuccessGetModerateInfo(shopModerateRequestData: ShopModerateRequestData) {
         val statusModerate = shopModerateRequestData.shopModerateRequestStatus.result.status
-        shopPageViewHolder.updateViewModerateStatus(statusModerate)
+        shopPageViewHolder.updateViewModerateStatus(statusModerate, shopInfo!!, presenter.isMyShop(shopId!!))
     }
 
     override fun onSuccessToggleFavourite(successValue: Boolean) {

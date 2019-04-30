@@ -34,6 +34,5 @@ public interface ShopPageView extends CustomerView {
 
     void onSuccessGetModerateInfo(ShopModerateRequestData shopModerateRequestData);
 
-
     Context getContext();
 }

@@ -139,6 +139,8 @@ constructor(private val getModerateShopUseCase: GetModerateShopUseCase,
 
     override fun detachView() {
         super.detachView()
+        getModerateShopUseCase.unsubscribe()
+        requestModerateShopUseCase.unsubscribe()
         getShopInfoUseCase.unsubscribe()
         getShopInfoByDomainUseCase.unsubscribe()
         toggleFavouriteShopAndDeleteCacheUseCase.unsubscribe()
