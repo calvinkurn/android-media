@@ -130,7 +130,6 @@
             android:id="@+id/filter_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/dp_4"
             android:gravity="top"
             android:paddingBottom="@dimen/dp_12"
             app:contentInsetLeft="0dp"

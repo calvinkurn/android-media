@@ -37,9 +37,9 @@ class HotelReviewFragment: BaseListFragment<HotelReview, ReviewAdapterTypeFactor
     lateinit var reviewViewModel: HotelReviewViewModel
 
     init {
-        param.rows = 5
-        param.sortBy = "create_time"
-        param.sortType = "asc"
+        param.rows = PARAM_ROWS
+        param.sortBy = PARAM_SORT_BY
+        param.sortType = PARAM_SORT_TYPE
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,17 +90,6 @@ class HotelReviewFragment: BaseListFragment<HotelReview, ReviewAdapterTypeFactor
         filter_recycler_view.setItem(arrayListOf(RECENT_REVIEW,
                 HIGHEST_RATING, LOWEST_RATING),
                 R.color.snackbar_border_normal)
-        filter_recycler_view.chip_recycler_view.addItemDecoration(object: RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                super.getItemOffsets(outRect, view, parent, state)
-
-                val itemPosition = parent.getChildLayoutPosition(view)
-                val itemCount = state.getItemCount()
-
-                outRect.left = if (itemPosition == 0) 20 else 0
-                outRect.right = if (itemCount > 0 && itemPosition == itemCount - 1) 20 else 0
-            }
-        })
     }
 
     private fun onErrorGetResult(throwable: Throwable) {
@@ -113,7 +102,7 @@ class HotelReviewFragment: BaseListFragment<HotelReview, ReviewAdapterTypeFactor
     override fun onItemClicked(t: HotelReview?) {
     }
 
-    override fun getScreenName(): String = "Ulasan"
+    override fun getScreenName(): String = getString(R.string.hotel_review_title)
 
     override fun initInjector() {
         getComponent(HotelDetailComponent::class.java).inject(this)
@@ -152,6 +141,10 @@ class HotelReviewFragment: BaseListFragment<HotelReview, ReviewAdapterTypeFactor
                 }
             }
         }
+
+        const val PARAM_ROWS = 5
+        const val PARAM_SORT_BY = "create_time"
+        const val PARAM_SORT_TYPE = "asc"
     }
 
 }
