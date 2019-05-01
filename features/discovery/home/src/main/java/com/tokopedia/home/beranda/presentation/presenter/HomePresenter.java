@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
