@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -104,6 +105,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_TRACE = "mp_shop"
+        const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
+        const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val VIEW_CONTENT = 1
@@ -297,10 +300,17 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     fun onShareShop() {
         shopInfo?.run {
             shopPageTracking.clickShareButton(presenter.isMyShop(shopId!!), CustomDimensionShopPage.create(shopInfo))
-
+            var shopShareMsg : String =  remoteConfig.getString(RemoteConfigKey.SHOP_SHARE_MSG)
+            if(!TextUtils.isEmpty(shopShareMsg)){
+                shopShareMsg = FindAndReplaceHelper.findAndReplacePlaceHolders(shopShareMsg, SHOP_NAME_PLACEHOLDER, MethodChecker.fromHtml(info.shopName).toString(),
+                        SHOP_LOCATION_PLACEHOLDER, info.shopLocation)
+            }
+            else{
+                shopShareMsg = getString(R.string.shop_label_share_formatted,
+                        MethodChecker.fromHtml(info.shopName).toString(), info.shopLocation)
+            }
             (application as ShopModuleRouter).goToShareShop(this@ShopPageActivity,
-                    shopId, info.shopUrl, getString(R.string.shop_label_share_formatted,
-                    MethodChecker.fromHtml(info.shopName).toString(), info.shopLocation))
+                    shopId, info.shopUrl, shopShareMsg)
         }
 
     }
