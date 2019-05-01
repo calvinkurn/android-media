@@ -262,7 +262,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         return R.layout.activity_instant_loan
     }
 
-    override fun renderUserList(banners: List<BannerEntity>?) {
+    override fun renderBannerList(banners: List<BannerEntity>?) {
         if (!banners!!.isEmpty()) {
             if (banners.size > 1) {
                 (findViewById<View>(R.id.button_next) as FloatingActionButton).show()

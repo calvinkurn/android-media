@@ -11,7 +11,7 @@ import com.tokopedia.instantloan.data.model.response.BannerEntity
 interface BannerContractor {
 
     interface View : CustomerView {
-        fun renderUserList(banners: List<BannerEntity>?)
+        fun renderBannerList(banners: List<BannerEntity>?)
 
         fun nextBanner()
 

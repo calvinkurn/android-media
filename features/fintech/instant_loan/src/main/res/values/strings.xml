@@ -79,7 +79,7 @@
     </string-array>
 
     <string-array name="values_description">
-        <item>Dana Instan sebagai alternatif sumber dana darurat untuk memenuhi kebutuhan mendesak, seperti biaya darurat rumah sakit atau modal usaha.\nProsesnya dijamin aman karena didukung oleh mitra yang resmi terdaftar dan diawasi oleh Otoritas Jasa Keuangan (OJK).</item>
+        <item>Alternatif sumber dana darurat untuk memenuhi kebutuhan mendesak, seperti biaya darurat rumah sakit atau modal usaha.</item>
         <item>Tanpa perlu jaminan, aplikasi pinjaman akan diproses dan dana segera cair jika disetujui.</item>
         <item>Dana pinjaman bervariasi sesuai nilai jaminan. Pinjaman diproses cepat dengan bunga ringan.</item>
     </string-array>
@@ -91,6 +91,7 @@
     <string name="payment_method_menu_item">Cara Pembayaran Dana Instan</string>
     <string name="help_menu_item">Bantuan</string>
     <string name="instant_loan_clickable_link">syarat dan ketentuan</string>
+    <string name="disclaimer_instant_fund">Pinjaman oleh mitra yang resmi terdaftar dan diawasi oleh Otoritas Jasa Keuangan (OJK).</string>
 
 
 </resources>
