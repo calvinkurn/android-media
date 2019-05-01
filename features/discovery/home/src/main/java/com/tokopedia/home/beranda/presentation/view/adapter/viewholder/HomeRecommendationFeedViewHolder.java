@@ -121,7 +121,7 @@ implements HomeTabFeedListener {
                 FeedTabModel selectedFeedTabModel =
                         feedTabModelList.get(tab.getPosition());
                 HomePageTracking.eventClickOnHomePageRecommendationTab(
-                        listener.getTrackingQueue(),
+                        context,
                         selectedFeedTabModel
                 );
             }
