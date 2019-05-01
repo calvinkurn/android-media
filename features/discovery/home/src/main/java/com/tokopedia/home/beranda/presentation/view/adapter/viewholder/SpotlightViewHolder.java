@@ -14,6 +14,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -172,6 +173,12 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
         private void eventClickSpotlight(Context context, SpotlightItemViewModel model, int position) {
             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(context, model.getEnhanceClickSpotlightHomePage(position));
         }
+    }
+
+    @Override
+    public void onViewRecycled() {
+        super.onViewRecycled();
+        Log.d("TokopediaDevara", "Spotlight "+getAdapterPosition()+" recycled");
     }
 }
 

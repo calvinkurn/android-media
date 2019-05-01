@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -23,5 +24,11 @@ public class InspirationHeaderViewHolder extends AbstractViewHolder<InspirationH
     @Override
     public void bind(InspirationHeaderViewModel element) {
         titleView.setText(element.getTitle());
+    }
+
+    @Override
+    public void onViewRecycled() {
+        super.onViewRecycled();
+        Log.d("TokopediaDevara", "Dynamic Channel "+getAdapterPosition()+" recycled");
     }
 }

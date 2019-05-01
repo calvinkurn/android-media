@@ -6,6 +6,7 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -151,5 +152,11 @@ public class DynamicIconSectionViewHolder extends AbstractViewHolder<DynamicIcon
         public Context getContext() {
             return view.getContext();
         }
+    }
+
+    @Override
+    public void onViewRecycled() {
+        super.onViewRecycled();
+        Log.d("TokopediaDevara", "Dynamic Icon "+getAdapterPosition()+" recycled");
     }
 }

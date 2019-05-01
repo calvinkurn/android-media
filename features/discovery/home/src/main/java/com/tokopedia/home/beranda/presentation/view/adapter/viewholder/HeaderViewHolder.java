@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 
 import android.support.annotation.LayoutRes;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -32,5 +33,11 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     public void bind(HeaderViewModel element) {
         mainContainer.removeAllViews();
         mainContainer.addView(new HeaderHomeView(itemView.getContext(), element, listener), 0);
+    }
+
+    @Override
+    public void onViewRecycled() {
+        super.onViewRecycled();
+        Log.d("TokopediaDevara", "Header ovo tp "+getAdapterPosition()+" recycled");
     }
 }
