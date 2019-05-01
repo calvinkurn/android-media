@@ -387,50 +387,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
     }
 
-    private void initHomeFeedsViewPager(List<FeedTabModel> feedTabModelList) {
-        enableExpandFeedSection();
-        homeFeedsTabLayout.setVisibility(View.VISIBLE);
-        homeFeedsViewPager.setVisibility(View.VISIBLE);
-        if (homeFeedPagerAdapter == null) {
-            homeFeedPagerAdapter = new HomeFeedPagerAdapter(
-                    this,
-                    this,
-                    getChildFragmentManager(),
-                    feedTabModelList,
-                    trackingQueue);
-        } else {
-            homeFeedPagerAdapter.updateData(feedTabModelList);
-        }
-        homeFeedsViewPager.setOffscreenPageLimit(DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT);
-        homeFeedsViewPager.setAdapter(homeFeedPagerAdapter);
-        homeFeedsTabLayout.setup(homeFeedsViewPager, convertToTabItemDataList(feedTabModelList));
-        homeFeedsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                FeedTabModel selectedFeedTabModel =
-                        feedTabModelList.get(tab.getPosition());
-                HomePageTracking.eventClickOnHomePageRecommendationTab(
-                        getActivity(),
-                        selectedFeedTabModel
-                );
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                HomeFeedFragment homeFeedFragment = homeFeedPagerAdapter.getRegisteredFragment(tab.getPosition());
-                if (homeFeedFragment != null) {
-                    homeFeedFragment.scrollToTop();
-                }
-                homeFeedsTabLayout.resetCollapseState();
-            }
-        });
-    }
-
     private List<CollapsingTabLayout.TabItemData> convertToTabItemDataList(List<FeedTabModel> feedTabModelList) {
         List<CollapsingTabLayout.TabItemData> tabItemDataList = new ArrayList<>();
         for (FeedTabModel feedTabModel : feedTabModelList) {
