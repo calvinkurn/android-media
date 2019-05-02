@@ -69,7 +69,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     private lateinit var flightBookingCartData: FlightBookingCartData
     private lateinit var passengerAdapter: FlightBookingPassengerAdapter
     private lateinit var userBirthdate: String
-    private lateinit var bookingCartId: String
+    private var bookingCartId: String = ""
     private var userGender: Int = 0
     private lateinit var expiredDate: Date
     private var flightInsuranceAdapter: FlightInsuranceAdapter? = null

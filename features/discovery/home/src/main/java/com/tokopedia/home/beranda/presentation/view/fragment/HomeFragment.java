@@ -188,7 +188,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         searchBarTransitionRange =
                 getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset =
-                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/2;
+                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/4;
     }
 
     @Override
