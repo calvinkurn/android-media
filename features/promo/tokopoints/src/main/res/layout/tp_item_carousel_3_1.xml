@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_12"
+    >
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="252dp"
@@ -40,7 +42,8 @@
             app:layout_constraintStart_toStartOf="@+id/iv_col_1"
             app:layout_constraintTop_toTopOf="@+id/iv_col_1"
             app:layout_constraintWidth_default="wrap"
-            tools:text="Title in banner" />
+            tools:text="Title in banner"
+            />
 
         <TextView
             android:id="@+id/text_sub_title_banner"

@@ -62,21 +62,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_sub_title" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@+id/img_banner"
+        app:layout_constraintStart_toStartOf="@+id/img_banner"
+        app:layout_constraintTop_toTopOf="@+id/img_banner"
+        android:background="@drawable/bg_tp_inbannner_text"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        >
+
     <TextView
         android:id="@+id/text_title_banner"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_8"
         android:textColor="@color/white"
         android:textSize="@dimen/dp_20"
         android:textStyle="bold"
-        app:layout_constraintHeight_default="wrap"
-        app:layout_constraintLeft_toLeftOf="@+id/img_banner"
-        app:layout_constraintStart_toStartOf="@+id/img_banner"
-        app:layout_constraintTop_toTopOf="@+id/img_banner"
-        app:layout_constraintWidth_default="wrap"
         tools:text="Title in banner" />
 
     <TextView
@@ -84,15 +90,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginLeft="@dimen/dp_12"
         android:textColor="@color/white"
         android:textSize="@dimen/dp_14"
         android:textStyle="bold"
-        app:layout_constraintHeight_default="wrap"
-        app:layout_constraintLeft_toLeftOf="@+id/text_title_banner"
-        app:layout_constraintStart_toStartOf="@+id/text_title_banner"
-        app:layout_constraintTop_toBottomOf="@+id/text_title_banner"
-        app:layout_constraintWidth_default="wrap"
         tools:text="Subtitle in banner" />
+    </LinearLayout>
+
+
 
     <TextView
         android:id="@+id/text_title_bottom"
