@@ -15,6 +15,7 @@ include "libraries:core_network"
 include 'libraries:date_picker_range'
 include "libraries:fingerprint"
 include "libraries:global_config"
+include "libraries:url"
 include "libraries:graphql"
 include "libraries:cache_manager"
 //include "libraries:cache_manager_no_op"

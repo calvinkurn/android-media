@@ -14,6 +14,7 @@ public class GlobalConfig {
 
     public static String VERSION_NAME = "1.0";
     public static int VERSION_CODE = 1;
+    public static String FLAVOR = "liveProd";
     public static int APPLICATION_TYPE = CONSUMER_APPLICATION;
     public static String PACKAGE_APPLICATION = PACKAGE_CONSUMER_APP;
     public static Boolean DEBUG = false;
@@ -23,9 +24,14 @@ public class GlobalConfig {
     public static String PREINSTALL_DESC = "";
     public static String PREINSTALL_SITE = "";
     public static String APPLICATION_ID = "";
+    public static String LIVE_FLAVOR = "live";
 
-    public static boolean isSellerApp(){
+    public static boolean isSellerApp() {
         return APPLICATION_TYPE == SELLER_APPLICATION;
+    }
+
+    public static boolean isLive() {
+        return FLAVOR.startsWith(LIVE_FLAVOR);
     }
 
     public static String getPackageApplicationName() {

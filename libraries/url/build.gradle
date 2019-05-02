@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -10,4 +10,9 @@ buildscript {
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
+}
+
+dependencies {
+    implementation project(rootProject.ext.libraries.config)
+
 }
