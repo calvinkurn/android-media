@@ -136,12 +136,12 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         }
     }
 
-    private fun initDialog(shopId:Int) {
+    private fun initDialog(shopId: Int) {
         val moderateOptionOne = context.getString(R.string.moderate_shop_option_1)
         val moderateOptionTwo = context.getString(R.string.moderate_shop_option_2)
         val arrayOption = arrayOf(moderateOptionOne, moderateOptionTwo)
         var moderateNotes = ""
-        val customThemeDialog = ContextThemeWrapper(listener.getActivity(), R.style.AlertDialogTheme)
+        val customThemeDialog = ContextThemeWrapper(context, R.style.AlertDialogTheme)
         val dialog = AlertDialog.Builder(customThemeDialog)
 
         dialog.setTitle(context.getString(R.string.moderate_shop_title))
@@ -292,7 +292,6 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         fun requestOpenShop(shopId: Int, moderateNotes: String)
         fun goToHowActivate()
         fun goToHelpCenter(url: String)
-        fun getActivity(): Activity
     }
 
 

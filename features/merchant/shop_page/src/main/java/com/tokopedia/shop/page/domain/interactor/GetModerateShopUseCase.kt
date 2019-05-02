@@ -34,9 +34,9 @@ class GetModerateShopUseCase @Inject constructor(@ApplicationContext private val
 
             if (data == null) {
                 throw RuntimeException()
-            } else if (!data.shopModerateRequestStatus.error.message.isEmpty()) {
+            } else if (data.shopModerateRequestStatus.error.message.isNotEmpty()) {
                 throw MessageErrorException(data.shopModerateRequestStatus.error.message)
-            } else if (error != null && !error[0].message.isEmpty()) {
+            } else if (error!!.isNotEmpty() && error[0].message.isNotEmpty()) {
                 throw MessageErrorException(error[0].message)
             }
             data

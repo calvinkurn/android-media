@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName
 
 data class ModerateSubmitInput (
 
-        @SerializedName("shopIDs")
+        @SerializedName("shopIds")
         @Expose
-        var shopIDs:ArrayList<Int> ? = ArrayList(),
+        var shopIds:ArrayList<Int> ? = ArrayList(),
 
         @SerializedName("status")
         @Expose

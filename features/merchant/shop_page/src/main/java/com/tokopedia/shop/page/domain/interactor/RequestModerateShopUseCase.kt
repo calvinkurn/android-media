@@ -22,7 +22,7 @@ class RequestModerateShopUseCase @Inject constructor(@ApplicationContext private
 
     companion object {
         private const val PARAM_INPUT = "input"
-        private const val SHOP_ID = "shopIDs"
+        private const val SHOP_ID = "shopIds"
         private const val PARAM_DESC = "responseDesc"
         private const val PARAM_STATUS = "status"
         private const val PARAM_NOTES = "notes"
@@ -48,7 +48,7 @@ class RequestModerateShopUseCase @Inject constructor(@ApplicationContext private
         )
 
         val variables = HashMap<String, Any>()
-        variables[PARAM_INPUT] = getContentSubmitInput(requestParams)
+        variables[PARAM_INPUT] = getModerateSubmitInput(requestParams)
 
         val graphqlRequest = GraphqlRequest(query, ShopModerateData::class.java, variables)
         graphqlUseCase.clearRequest()
@@ -60,16 +60,16 @@ class RequestModerateShopUseCase @Inject constructor(@ApplicationContext private
 
             if (data == null) {
                 throw RuntimeException()
-            } else if (error!=null && !error[0].message.isEmpty()) {
+            } else if (error!=null && error[0].message.isNotEmpty()) {
                 throw MessageErrorException(error[0].message)
             }
             data.moderateShop.success
         }
     }
 
-    fun getContentSubmitInput(requestParams: RequestParams): ModerateSubmitInput {
+    private fun getModerateSubmitInput(requestParams: RequestParams): ModerateSubmitInput {
         return ModerateSubmitInput(
-                shopIDs = arrayListOf(requestParams.getInt(SHOP_ID,0)),
+                shopIds = arrayListOf(requestParams.getInt(SHOP_ID,0)),
                 status = requestParams.getInt(PARAM_STATUS, 0),
                 notes = requestParams.getString(PARAM_NOTES,""),
                 responseDesc = requestParams.getString(PARAM_DESC,"")

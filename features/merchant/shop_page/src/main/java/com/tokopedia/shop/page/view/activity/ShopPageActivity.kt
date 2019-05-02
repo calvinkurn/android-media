@@ -538,7 +538,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 .show()
     }
 
-    override fun getActivity(): Activity {
+    override fun getContext(): Context {
         return this@ShopPageActivity
     }
 
