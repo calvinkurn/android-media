@@ -68,7 +68,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/img_banner"
         app:layout_constraintStart_toStartOf="@+id/img_banner"
         app:layout_constraintTop_toTopOf="@+id/img_banner"
-        android:background="@drawable/bg_tp_inbannner_text"
+        android:background="@drawable/bg_tp_inbannner"
         android:orientation="vertical"
         android:paddingBottom="8dp"
         >
