@@ -26,23 +26,27 @@ import org.json.JSONObject;
 
 public class SplashScreenActivity extends SplashScreen {
 
+    private boolean isApkTempered;
+
     @Override
-    public void finishSplashScreen() {
+    public void onCreate(Bundle savedInstanceState) {
+        isApkTempered = false;
         try {
             getResources().getDrawable(R.drawable.launch_screen);
-        } catch (Throwable e) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(getString(R.string.title_dialog_tokopedia_app_not_valid));
-            builder.setMessage(getString(R.string.title_message_install_from_playstore));
-            builder.setPositiveButton("OK", (DialogInterface dialogInterface, int i) -> {
-                startActivity(
-                        new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id="
-                                + getApplication().getPackageName()))
-                );
-                dialogInterface.dismiss();
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
+        } catch (Exception e) {
+            isApkTempered = true;
+            setTheme(R.style.Theme_Tokopedia3_PlainGreen);
+        }
+        super.onCreate(savedInstanceState);
+        if (isApkTempered) {
+            startActivity(new Intent(this, FallbackActivity.class));
+            finish();
+        }
+    }
+
+    @Override
+    public void finishSplashScreen() {
+        if (isApkTempered) {
             return;
         }
 
