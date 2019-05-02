@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.tokopedia.config.test", appContext.getPackageName());
+        assertEquals("com.tokopedia.url.test", appContext.getPackageName());
     }
 }
