@@ -7,6 +7,9 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 
+/**
+ * Created by devarafikry on 02/04/19.
+ */
 
 open class NestedRecyclerView : RecyclerView, NestedScrollingParent {
 
@@ -29,7 +32,9 @@ open class NestedRecyclerView : RecyclerView, NestedScrollingParent {
             super(context, attrs, defStyleAttr)
 
 
+    //dispatchTouchEvent() is called on every View layer to determine if a View is interested in an ongoing gesture.
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        //nested scroll target defined onNestedScrollAccepted(), this will check any interested nestedScroll for this gesture
         val temporarilySkipsInterception = nestedScrollTarget != null
         if (temporarilySkipsInterception) {
             // If a descendent view is scrolling we set a flag to temporarily skip our onInterceptTouchEvent implementation
@@ -103,6 +108,7 @@ open class NestedRecyclerView : RecyclerView, NestedScrollingParent {
         nestedScrollTargetWasUnableToScroll = false
     }
 
+    //we enabled nested scroll when recyclerview already reach bottom
     fun setNestedCanScroll(canScroll: Boolean) {
         this.nestedCanScroll = canScroll
     }
