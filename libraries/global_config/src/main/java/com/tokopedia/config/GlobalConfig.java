@@ -24,14 +24,9 @@ public class GlobalConfig {
     public static String PREINSTALL_DESC = "";
     public static String PREINSTALL_SITE = "";
     public static String APPLICATION_ID = "";
-    public static String LIVE_FLAVOR = "live";
 
     public static boolean isSellerApp() {
         return APPLICATION_TYPE == SELLER_APPLICATION;
-    }
-
-    public static boolean isLive() {
-        return FLAVOR.startsWith(LIVE_FLAVOR);
     }
 
     public static String getPackageApplicationName() {

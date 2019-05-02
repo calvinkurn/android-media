@@ -52,7 +52,6 @@ ext {
             datePickerRange   : ":libraries:date_picker_range",
             fingerprint       : ":libraries:fingerprint",
             config            : ":libraries:global_config",
-            url               : ":libraries:url",
             graphql           : ":libraries:graphql",
             imagePicker       : ":libraries:image_picker",
             imagePreview      : ":libraries:image_preview",

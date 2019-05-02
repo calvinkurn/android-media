@@ -138,7 +138,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
-        com.tokopedia.config.GlobalConfig.FLAVOR = BuildConfig.FLAVOR;
         setVersionCode();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
