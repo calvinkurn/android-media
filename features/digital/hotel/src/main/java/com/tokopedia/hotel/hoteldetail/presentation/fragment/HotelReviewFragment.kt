@@ -110,7 +110,6 @@ class HotelReviewFragment: BaseListFragment<HotelReview, ReviewAdapterTypeFactor
     }
 
     override fun loadData(page: Int) {
-        showHotelMetaReview(false)
         param.page = page-1
         reviewViewModel.getReview(GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review), param,
                 GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_review))
