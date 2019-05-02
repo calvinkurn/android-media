@@ -39,7 +39,7 @@ public class RouteManager {
             try {
                 context.startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                //no op
+                ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, uriString);
             }
         } else {
             ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, uriString);
