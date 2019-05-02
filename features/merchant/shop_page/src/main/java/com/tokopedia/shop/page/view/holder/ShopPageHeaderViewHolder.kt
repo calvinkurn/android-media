@@ -73,7 +73,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     }
 
     private fun updateViewShopStatus(shopInfo: ShopInfo, isMyShop: Boolean) {
-        view.buttonActionAbnormal.visibility = if (isMyShop) View.VISIBLE else View.GONE
+        view.buttonActionAbnormal.visibility = if (isMyShop && !isShopRequestedModerate) View.VISIBLE else View.GONE
         when (shopInfo.info.shopStatus){
             ShopStatusDef.CLOSED -> showShopClosed(shopInfo)
             ShopStatusDef.MODERATED -> showShopModerated(isMyShop,false,shopInfo)
@@ -156,7 +156,6 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
                     if (!moderateNotes.isEmpty()) {
                         listener.requestOpenShop(shopId, moderateNotes)
                     }
-                    view.buttonActionAbnormal.visibility = View.GONE
                     dialog.dismiss()
                 }
                 .setNegativeButton(R.string.button_cancel) { dialog, which ->

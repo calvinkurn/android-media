@@ -54,6 +54,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import kotlinx.android.synthetic.main.item_tablayout_new_badge.view.*
+import kotlinx.android.synthetic.main.partial_shop_page_header.*
 import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
@@ -519,25 +520,22 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
 
-    override fun onErrorModerateListener(message:String) {
-        ToasterError.make(window.decorView.rootView,message,BaseToaster.LENGTH_INDEFINITE)
-                .setAction(R.string.title_ok){
-                    v->
+    override fun onErrorModerateListener(e: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(this, e)
+        ToasterError.make(window.decorView.rootView, errorMessage, BaseToaster.LENGTH_INDEFINITE)
+                .setAction(R.string.title_ok) { v ->
+
                 }
                 .show()
     }
 
     override fun onSuccessModerateListener() {
-        ToasterNormal.make( window.decorView.rootView, getString(R.string.moderate_shop_success), BaseToaster.LENGTH_LONG)
+        buttonActionAbnormal.visibility = View.GONE
+        ToasterNormal.make(window.decorView.rootView, getString(R.string.moderate_shop_success), BaseToaster.LENGTH_LONG)
                 .setAction(R.string.title_ok) { v ->
 
                 }
                 .show()
-
-    }
-
-    override fun getContext(): Context {
-        return this@ShopPageActivity
     }
 
     override fun getActivity(): Activity {

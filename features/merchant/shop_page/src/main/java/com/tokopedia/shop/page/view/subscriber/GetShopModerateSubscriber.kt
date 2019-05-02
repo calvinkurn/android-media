@@ -1,6 +1,5 @@
 package com.tokopedia.shop.page.view.subscriber
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.page.view.listener.ShopPageView
 import rx.Subscriber
@@ -15,7 +14,7 @@ class GetShopModerateSubscriber(val view: ShopPageView) : Subscriber<ShopModerat
     }
 
     override fun onError(e: Throwable?) {
-        view.onErrorModerateListener(ErrorHandler.getErrorMessage(view.context, e))
+        view.onErrorModerateListener(e)
     }
 
 

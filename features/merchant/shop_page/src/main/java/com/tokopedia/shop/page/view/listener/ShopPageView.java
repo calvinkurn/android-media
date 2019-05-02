@@ -28,11 +28,10 @@ public interface ShopPageView extends CustomerView {
 
     void stopPerformanceMonitor();
 
-    void onErrorModerateListener(String message);
+    void onErrorModerateListener(Throwable e);
 
     void onSuccessModerateListener();
 
     void onSuccessGetModerateInfo(ShopModerateRequestData shopModerateRequestData);
 
-    Context getContext();
 }
