@@ -60,7 +60,7 @@ class RequestModerateShopUseCase @Inject constructor(@ApplicationContext private
 
             if (data == null) {
                 throw RuntimeException()
-            } else if (error!=null && error[0].message.isNotEmpty()) {
+            } else if (error!!.isNotEmpty() && error[0].message.isNotEmpty()) {
                 throw MessageErrorException(error[0].message)
             }
             data.moderateShop.success
