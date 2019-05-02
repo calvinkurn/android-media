@@ -748,7 +748,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         context?.run {
-            router = applicationContext as NormalCheckoutRouter
+            if (applicationContext is NormalCheckoutRouter) {
+                router = applicationContext as NormalCheckoutRouter
+            } else {
+                activity?.finish()
+            }
         }
     }
 
