@@ -35,11 +35,12 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
 
     companion object {
         //keys
-        private const val VIDEO_SOURCE = "video_uri"
+        private const val VIDEO_SOURCE      = "video_uri"
 
         //const variables
-        const val TAG = "VideoDetailPlayer"
-        private const val EXOPLAYER_AGENT = "exoplayer-codelab"
+        const val TAG                       = "VideoDetailPlayer"
+        private const val EXOPLAYER_AGENT   = "exoplayer-codelab"
+        private const val VIDEO_ROTATION_90 = 90f
 
         fun set(videoSource: String): BottomSheetDialogFragment {
             val videoPlayer = VideoDetailPlayer()
@@ -88,11 +89,11 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         if (videoSource == null || videoSource.isEmpty()) {
             dismiss()
         } else {
-            //check if it is file or not
+            //video source: file/uri
             if (File(videoSource).exists()) {
                 initPlayer(videoSource)
             } else {
-                //if a videosource is URL
+                //video source: URL
                 val url = Uri.parse(videoSource)
                 initPlayer(url)
             }
@@ -128,6 +129,11 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
             //auto play enabled
             playerOptions.playWhenReady = true
 
+            //fix bug: rotate on kitkat devices
+            if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.KITKAT) {
+                playerView.rotation = VIDEO_ROTATION_90
+            }
+
             playerOptions.prepare(mediaSource, true, false)
         } catch (e: Exception) {
             Log.e(TAG, e.message)
@@ -141,8 +147,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
             val fileDataSource = FileDataSource()
             fileDataSource.open(dataSpec)
             val dataFactory = DataSource.Factory { fileDataSource }
-            ExtractorMediaSource.Factory(
-                    dataFactory)
+            ExtractorMediaSource.Factory(dataFactory)
                     .setExtractorsFactory(DefaultExtractorsFactory())
                     .createMediaSource(uri)
         } else {
