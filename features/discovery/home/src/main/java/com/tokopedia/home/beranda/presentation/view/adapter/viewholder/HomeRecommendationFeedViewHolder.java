@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -171,5 +172,11 @@ implements HomeTabFeedListener {
         } else {
             homeFeedsTabShadow.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void onViewRecycled() {
+        super.onViewRecycled();
+        Log.d("TokopediaDevara", "Recom Feed Section "+getAdapterPosition()+" recycled");
     }
 }
