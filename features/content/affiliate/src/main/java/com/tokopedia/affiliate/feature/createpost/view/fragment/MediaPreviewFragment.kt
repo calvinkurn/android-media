@@ -99,8 +99,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
 
             btnPlay.setOnClickListener {
                 val filePath = viewModel.completeImageList.first().path
-                VideoDetailPlayer.set(filePath)
-                        .show(childFragmentManager, VideoDetailPlayer.TAG)
+                VideoDetailPlayer.show(filePath, childFragmentManager)
             }
         } else {
             imageAdapter.setList(imageList)
