@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.BottomSheetDialogFragment
-import android.util.Log
+import android.support.v4.app.FragmentManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +24,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.FileDataSource
 import com.tokopedia.videoplayer.R
 import com.tokopedia.videoplayer.utils.sendViewToBack
+import com.tokopedia.videoplayer.utils.showToast
 import kotlinx.android.synthetic.main.fragment_video_preview.*
 import java.io.File
 
@@ -38,7 +39,6 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         private const val VIDEO_SOURCE      = "video_uri"
 
         //const variables
-        const val TAG                       = "VideoDetailPlayer"
         private const val EXOPLAYER_AGENT   = "exoplayer-codelab"
         private const val VIDEO_ROTATION_90 = 90f
 
@@ -48,6 +48,11 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
             bundle.putString(VIDEO_SOURCE, videoSource)
             videoPlayer.arguments = bundle
             return videoPlayer
+        }
+
+        fun show(videoSource: String, fragmentManager: FragmentManager) {
+            val tag = "VideoDetailPlayer"
+            set(videoSource).show(fragmentManager, tag)
         }
     }
 
@@ -87,6 +92,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         //get video source path
         val videoSource = arguments?.getString(VIDEO_SOURCE, "")
         if (videoSource == null || videoSource.isEmpty()) {
+            showToast(R.string.videoplayer_file_not_found)
             dismiss()
         } else {
             //video source: file/uri
@@ -136,7 +142,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
 
             playerOptions.prepare(mediaSource, true, false)
         } catch (e: Exception) {
-            Log.e(TAG, e.message)
+            showToast(R.string.videoplayer_invalid_player)
             dismiss()
         }
     }
