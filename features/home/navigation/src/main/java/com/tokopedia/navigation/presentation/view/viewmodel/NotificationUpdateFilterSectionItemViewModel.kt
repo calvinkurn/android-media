@@ -8,10 +8,12 @@ import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpd
 class NotificationUpdateFilterSectionItemViewModel(
         var text: String = "",
         var id: String = "",
+        var key: String = "",
         var selected: Boolean = false
 ) : Visitable<NotificationUpdateFilterSectionTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel) : this(
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readInt() != 0
@@ -24,6 +26,7 @@ class NotificationUpdateFilterSectionItemViewModel(
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(text)
         parcel.writeString(id)
+        parcel.writeString(key)
         parcel.writeInt(if (selected) 1 else 0)
     }
 

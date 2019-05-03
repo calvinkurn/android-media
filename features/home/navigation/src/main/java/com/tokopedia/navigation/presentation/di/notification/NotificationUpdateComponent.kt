@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.di.notification
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.navigation.presentation.activity.NotificationActivity
 import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import dagger.Component
 
@@ -15,5 +16,6 @@ import dagger.Component
         dependencies = [(BaseAppComponent::class)]
 )
 interface NotificationUpdateComponent {
+    fun inject (fragment: NotificationActivity)
     fun inject (fragment: NotificationUpdateFragment)
 }

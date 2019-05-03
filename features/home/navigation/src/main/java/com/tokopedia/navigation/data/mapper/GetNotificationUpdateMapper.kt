@@ -28,8 +28,6 @@ class GetNotificationUpdateMapper @Inject constructor(){
             )
             list.add(datum)
         }
-        list.addAll(list)
-        list.addAll(list)
         return NotificationUpdateViewModel(item.paging, list, item.userInfo)
     }
 

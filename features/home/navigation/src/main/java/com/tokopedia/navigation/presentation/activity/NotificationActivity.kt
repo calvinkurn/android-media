@@ -10,19 +10,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.presentation.adapter.NotificationFragmentAdapter
+import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
 import com.tokopedia.navigation.presentation.fragment.NotificationFragment
 import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
+import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
+import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
+import javax.inject.Inject
 
 /**
  * Created by meta on 20/06/18.
  */
 @DeepLink(ApplinkConst.NOTIFICATION)
-class NotificationActivity : BaseTabActivity() {
+class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, NotificationActivityContract.View {
+
+    @Inject
+    lateinit var presenter: NotificationActivityPresenter
 
     private var fragmentAdapter: NotificationFragmentAdapter? = null
     private val tabList = ArrayList<NotificationFragmentAdapter.NotificationFragmentItem>()
@@ -32,6 +42,13 @@ class NotificationActivity : BaseTabActivity() {
         tabList.add(NotificationFragmentAdapter.NotificationFragmentItem("Update", NotificationUpdateFragment()))
         super.onCreate(savedInstanceState)
         initView()
+        initInjector()
+    }
+
+    fun initInjector() {
+        DaggerNotificationUpdateComponent.builder()
+                .baseAppComponent(component).build().inject(this)
+        presenter.attachView(this)
     }
 
     private fun initView() {
@@ -46,7 +63,7 @@ class NotificationActivity : BaseTabActivity() {
             val title = tabList[i].title
             val tab = tabLayout.getTabAt(i)
             tab?.customView = createCustomView(title)
-            if(i == viewPager.currentItem){
+            if (i == viewPager.currentItem) {
                 setTabSelectedView(tab?.customView)
             }
         }
@@ -57,7 +74,7 @@ class NotificationActivity : BaseTabActivity() {
         tabLayout.setBackgroundResource(R.color.white)
         tabLayout.tabMode = TabLayout.MODE_FIXED
 
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab) {
             }
 
@@ -68,8 +85,15 @@ class NotificationActivity : BaseTabActivity() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager.setCurrentItem(tab.position, true)
                 setTabSelectedView(tab.customView)
+                resetCircle(tab.customView)
+                presenter.clearNotifCounter()
             }
         })
+    }
+
+    private fun resetCircle(customView: View?) {
+        var notif = customView?.findViewById<View>(R.id.circle)
+        notif?.visibility = View.GONE
     }
 
     private fun setTabSelectedView(customView: View?) {
@@ -85,7 +109,6 @@ class NotificationActivity : BaseTabActivity() {
     private fun createCustomView(title: String): View? {
         var customView = LayoutInflater.from(this).inflate(R.layout.item_notification_tab_title, null);
         var titleView = customView.findViewById<TextView>(R.id.title)
-        var notif = customView.findViewById<View>(R.id.circle)
         titleView.text = title
         return customView
     }
@@ -102,7 +125,11 @@ class NotificationActivity : BaseTabActivity() {
     }
 
     override fun getPageLimit(): Int {
-        return tabList.size+1
+        return tabList.size + 1
+    }
+
+    override fun getComponent(): BaseAppComponent {
+        return (application as BaseMainApplication).baseAppComponent
     }
 
     companion object {

@@ -33,25 +33,4 @@ class GetNotificationUpdateUnreadUseCase @Inject constructor(
         graphqlUseCase.setCacheStrategy(cacheStrategy)
         graphqlUseCase.execute(subscriber)
     }
-
-    companion object {
-        const val PARAM_PAGE = "page"
-        const val PARAM_TYPE_ID = "typeId"
-        const val PARAM_TAG_ID = "tagId"
-        const val PARAM_LAST_ID = "lastNotifId"
-
-        fun getRequestParams(
-                page: Int,
-                typeId: Int,
-                tagId: Int,
-                lastNotifId: String
-        ): HashMap<String, Any> {
-            val variables: HashMap<String, Any> = HashMap()
-            variables[PARAM_PAGE] = page
-            variables[PARAM_TYPE_ID] = typeId
-            variables[PARAM_TAG_ID] = tagId
-            variables[PARAM_LAST_ID] = lastNotifId
-            return variables
-        }
-    }
 }

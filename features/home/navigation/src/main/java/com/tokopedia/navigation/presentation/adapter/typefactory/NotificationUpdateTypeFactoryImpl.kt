@@ -4,12 +4,13 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.navigation.presentation.adapter.viewholder.NotificationUpdateItemViewHolder
+import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 
 /**
  * @author : Steven 10/04/19
  */
-class NotificationUpdateTypeFactoryImpl : BaseAdapterTypeFactory(), NotificationUpdateTypeFactory {
+class NotificationUpdateTypeFactoryImpl(var notificationUpdateListener: NotificationUpdateItemListener) : BaseAdapterTypeFactory(), NotificationUpdateTypeFactory {
 
 
     override fun type(notificationUpdateDefaultViewModel: NotificationUpdateItemViewModel): Int {
@@ -20,7 +21,10 @@ class NotificationUpdateTypeFactoryImpl : BaseAdapterTypeFactory(), Notification
         val viewHolder: AbstractViewHolder<*>
 
         if(type == NotificationUpdateItemViewHolder.LAYOUT) {
-            viewHolder = NotificationUpdateItemViewHolder(itemView = parent)
+            viewHolder = NotificationUpdateItemViewHolder(
+                    itemView = parent,
+                    listener = notificationUpdateListener
+            )
         } else {
             viewHolder = super.createViewHolder(parent, type)
         }

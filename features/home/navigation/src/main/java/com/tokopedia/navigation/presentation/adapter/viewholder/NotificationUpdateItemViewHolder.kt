@@ -8,14 +8,16 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.navigation.R
+import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 
 
 /**
  * @author : Steven 10/04/19
  */
-class NotificationUpdateItemViewHolder(itemView: View)
+class NotificationUpdateItemViewHolder(itemView: View, var listener: NotificationUpdateItemListener)
     : AbstractViewHolder<NotificationUpdateItemViewModel>(itemView) {
 
     companion object {
@@ -52,5 +54,11 @@ class NotificationUpdateItemViewHolder(itemView: View)
         body.text = element.body
         time.text = element.time
         type.text = element.sectionTitle
+
+        container.setOnClickListener {
+            element.isRead = true
+            listener.itemClicked(element.notificationId, adapterPosition)
+            RouteManager.route(itemView.context, element.appLink)
+        }
     }
 }

@@ -55,6 +55,7 @@
         app:layout_constraintTop_toTopOf="@+id/type"
         tools:text="10.00" />
 
+
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/title"
         android:layout_width="@dimen/dp_0"

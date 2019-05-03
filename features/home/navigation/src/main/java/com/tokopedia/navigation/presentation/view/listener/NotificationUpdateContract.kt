@@ -10,12 +10,16 @@ import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateVi
 interface NotificationUpdateContract {
 
     interface View : BaseListViewListener<Visitable<*>>, CustomerView {
+        fun resetCounter()
 
     }
 
     interface Presenter: CustomerPresenter<View> {
         fun loadData(lastNotifId: String, onSuccessInitiateData: (NotificationUpdateViewModel) -> Unit, onErrorInitiateData: (Throwable) -> Unit)
         fun filterBy(selectedItemList: HashMap<Int, Int>, filterViewModel: ArrayList<NotificationUpdateFilterItemViewModel>)
-
+        fun getFilter(onSuccessGetFilter: (ArrayList<NotificationUpdateFilterItemViewModel>) -> Unit)
+        fun clearNotifCounter()
+        fun markReadNotif(notifId: String)
+        fun markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate: () -> Unit)
     }
 }
