@@ -220,7 +220,6 @@
                         android:layout_alignBottom="@+id/tv_hotel_rating_number"
                         android:layout_toEndOf="@+id/tv_hotel_rating_number"
                         android:layout_toRightOf="@+id/tv_hotel_rating_number"
-                        android:text="Mengesankan"
                         app:fontSize="micro"
                         app:textViewTheme="lightPrimary"
                         tools:text="Mengesankan" />
@@ -231,10 +230,9 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/iv_booking_logo"
                         android:layout_marginTop="@dimen/dp_2"
-                        android:text="Berdasarkan 8.230 ulasan"
                         app:fontSize="micro"
                         app:textViewTheme="lightSecondary"
-                        tools:text="Mengesankan" />
+                        tools:text="Berdasarkan 1.000 ulasan" />
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:id="@+id/tv_hotel_detail_all_promo"

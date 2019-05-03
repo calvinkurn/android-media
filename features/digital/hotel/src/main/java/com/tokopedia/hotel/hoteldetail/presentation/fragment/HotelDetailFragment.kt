@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
@@ -26,6 +27,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
+import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -88,6 +90,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
         detailViewModel.getHotelDetailData(
                 GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
                 GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
                 hotelHomepageModel.locId,
                 hotelHomepageModel)
 
@@ -115,6 +118,17 @@ class HotelDetailFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     // TODO Fail get Hotel Info
+                }
+            }
+        })
+
+        detailViewModel.hotelReviewResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    setupReviewLayout(it.data)
+                }
+                is Fail -> {
+                    // TODO Fail get Hotel Review
                 }
             }
         })
@@ -170,7 +184,6 @@ class HotelDetailFragment : BaseDaggerFragment() {
         setupPolicySwitcher(data.property)
         setupImportantInfo(data.property.importantInformation)
         setupDescription(data.property.description)
-        setupReviewItem(listOf("", "", "", "", ""))
         setupMainFacilityItem(listOf(FacilityItem(1, "Internet", ""),
                 FacilityItem(1, "Kamar Mandi", ""),
                 FacilityItem(1, "Air", ""),
@@ -233,7 +246,14 @@ class HotelDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupReviewItem(reviewList: List<String>) {
+    private fun setupReviewLayout(data: HotelReview.ReviewData) {
+        tv_hotel_rating_count.text = getString(R.string.hotel_detail_based_on_review_number,
+                CurrencyFormatUtil.convertPriceValue(data.totalReview.toDouble(), false))
+        tv_hotel_rating_number.text = data.averageScoreReview.toString()
+        setupReviewItem(data.reviewList)
+    }
+
+    private fun setupReviewItem(reviewList: List<HotelReview>) {
         if (!::detailReviewAdapter.isInitialized) {
             detailReviewAdapter = HotelDetailReviewAdapter(reviewList)
         }
