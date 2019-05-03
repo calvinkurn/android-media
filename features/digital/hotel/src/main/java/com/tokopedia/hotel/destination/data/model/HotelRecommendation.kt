@@ -5,6 +5,6 @@ package com.tokopedia.hotel.destination.data.model
  */
 
 data class HotelRecommendation(
-        val hotelPopularSearch: PopularSearch.Response = PopularSearch.Response(),
-        val hotelRecentSearch: RecentSearch.Response = RecentSearch.Response()
+        val hotelPopularSearch: List<PopularSearch> = listOf(),
+        val hotelRecentSearch: List<RecentSearch> = listOf()
 )

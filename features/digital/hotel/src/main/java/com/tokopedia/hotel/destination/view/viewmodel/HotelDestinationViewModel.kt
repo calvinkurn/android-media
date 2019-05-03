@@ -32,53 +32,40 @@ class HotelDestinationViewModel @Inject constructor(
         val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
-
-    val recentSearch = MutableLiveData<Result<MutableList<RecentSearch>>>()
-    val popularSearch = MutableLiveData<Result<MutableList<PopularSearch>>>()
+    val hotelRecommendation = MutableLiveData<Result<HotelRecommendation>>()
     val searchDestination = MutableLiveData<RecentSearchState<MutableList<SearchDestination>>>()
     val longLat = MutableLiveData<Result<Pair<Double, Double>>>()
     val deleteSuccess = MutableLiveData<Boolean>()
 
     fun getHotelRecommendation(popularRawQuery: String, recentSearchRawQuery: String) {
-
         launch {
-            getRecentSearch(popularRawQuery)
-            getPopularSearch(recentSearchRawQuery)
-        }
-    }
 
-    suspend fun getRecentSearch(popularRawQuery: String) {
-        try {
-            val hotelPopularSearchData = async {
-                val response = withContext(Dispatchers.Default) {
-                    val graphqlRequest = GraphqlRequest(popularRawQuery, TYPE_POPULAR_RESPONSE, false)
-                    graphqlRepository.getReseponse(listOf(graphqlRequest))
-                }.getSuccessData<PopularSearch.Response>()
-                response
-            }
-            popularSearch.value = Success(hotelPopularSearchData.await().popularSearchList.toMutableList())
-        } catch (it: Throwable){
-            popularSearch.value = Fail(it)
-        }
-    }
-
-    suspend fun getPopularSearch(recentSearchRawQuery: String) {
-        try {
-            val hotelRecentSearchData = async {
-                if (userSessionInterface.isLoggedIn) {
-                    val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt())
+            try {
+                val hotelPopularSearchData = async {
                     val response = withContext(Dispatchers.Default) {
-                        val graphqlRequest = GraphqlRequest(recentSearchRawQuery, RecentSearch.Response::class.java, params, false)
+                        val graphqlRequest = GraphqlRequest(popularRawQuery, TYPE_POPULAR_RESPONSE, false)
                         graphqlRepository.getReseponse(listOf(graphqlRequest))
-                    }.getSuccessData<RecentSearch.Response>()
+                    }.getSuccessData<PopularSearch.Response>()
                     response
-                } else {
-                    RecentSearch.Response()
                 }
+
+                val hotelRecentSearchData = async {
+                    if (userSessionInterface.isLoggedIn) {
+                        val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt())
+                        val response = withContext(Dispatchers.Default) {
+                            val graphqlRequest = GraphqlRequest(recentSearchRawQuery, RecentSearch.Response::class.java, params, false)
+                            graphqlRepository.getReseponse(listOf(graphqlRequest))
+                        }.getSuccessData<RecentSearch.Response>()
+                        response
+                    } else {
+                        RecentSearch.Response()
+                    }
+                }
+                hotelRecommendation.value = Success(HotelRecommendation(hotelPopularSearchData.await().popularSearchList,
+                        hotelRecentSearchData.await().recentSearch))
+            } catch (it: Throwable){
+                hotelRecommendation.value = Fail(it)
             }
-            recentSearch.value = Success(hotelRecentSearchData.await().recentSearch.toMutableList())
-        } catch (it: Throwable) {
-            recentSearch.value = Fail(it)
         }
     }
 
