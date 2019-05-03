@@ -4,12 +4,17 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.text.Spannable
+import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.text.style.WebViewURLSpan
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.di.MerchantReportComponent
@@ -64,6 +69,23 @@ class ProductReportFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recycler_view.adapter = adapter
+        footer.movementMethod = LinkMovementMethod.getInstance()
+        val spannable = MethodChecker.fromHtml(getString(R.string.product_report_see_all_types)) as Spannable
+        spannable.getSpans(0, spannable.length, URLSpan::class.java).forEach {
+            val start = spannable.getSpanStart(it)
+            val end = spannable.getSpanEnd(it)
+            spannable.removeSpan(it)
+            val urlSpan = WebViewURLSpan( it.url).apply {
+                listener = object : WebViewURLSpan.OnClickListener {
+                    override fun onClick(url: String) {}
+
+                    override fun showUnderline() = false
+
+                }
+            }
+            spannable.setSpan(urlSpan, start, end, 0)
+        }
+        footer.text = spannable
     }
 
     override fun onDestroy() {

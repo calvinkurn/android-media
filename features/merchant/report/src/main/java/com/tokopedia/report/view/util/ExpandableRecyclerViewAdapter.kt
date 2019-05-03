@@ -42,7 +42,7 @@ abstract class ExpandableRecyclerViewAdapter<P: ParentItem<C>, C: Any, PVH: Pare
         notifyParentDataSetChange()
     }
 
-    private fun isParentViewType(viewType: Int) = viewType == TYPE_PARENT
+    open fun isParentViewType(viewType: Int): Boolean = viewType == TYPE_PARENT
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (isParentViewType(viewType)){
@@ -85,12 +85,16 @@ abstract class ExpandableRecyclerViewAdapter<P: ParentItem<C>, C: Any, PVH: Pare
 
     abstract fun onBindChildViewHolder(holder: CVH, parentPosition: Int, childPosition: Int)
 
+    open fun getParentViewType(parentPosition: Int): Int = TYPE_PARENT
+
+    open fun getChildViewType(parentPosition: Int, childPosition: Int): Int = TYPE_CHILD
+
     override fun getItemCount(): Int = flatItemList.size
 
     override fun getItemViewType(position: Int): Int {
         val flatItem = flatItemList[position]
-        return if (flatItem.isWrappedParent) TYPE_PARENT
-        else TYPE_CHILD
+        return if (flatItem.isWrappedParent) getParentViewType(getNearestParentPosition(position))
+        else getChildViewType(getNearestParentPosition(position), getChildPosition(position))
     }
 
     fun getNearestParentPosition(flatPosition: Int): Int {
