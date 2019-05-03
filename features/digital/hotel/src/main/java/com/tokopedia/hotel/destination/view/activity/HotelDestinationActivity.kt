@@ -14,6 +14,7 @@ import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.hotel.destination.view.fragment.HotelSearchDestinationFragment
 import kotlinx.android.synthetic.main.activity_hotel_destination.*
 import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 
@@ -50,7 +51,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
     fun initView() {
         initEditText()
-        initHotelRecommendationFragment()
     }
 
     fun initEditText() {
@@ -62,11 +62,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
     fun initInjector() {
         component.inject(this)
-    }
-
-    fun initHotelRecommendationFragment() {
-        supportFragmentManager.beginTransaction().replace(R.id.parent_view,
-                HotelRecommendationFragment()).commit()
     }
 
     fun showSearchDestinationResult() {
@@ -87,8 +82,7 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
         if (text == searchTemp) return
         searchTemp = text
 
-        launch(Dispatchers.Main) {
-
+        GlobalScope.launch(Dispatchers.Main) {
             delay(300)
             if (text != searchTemp) return@launch
             if (text.isEmpty() && isSearching) {

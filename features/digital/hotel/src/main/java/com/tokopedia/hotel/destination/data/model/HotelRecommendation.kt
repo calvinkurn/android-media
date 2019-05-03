@@ -1,0 +1,10 @@
+package com.tokopedia.hotel.destination.data.model
+
+/**
+ * @author by jessica on 03/05/19
+ */
+
+data class HotelRecommendation(
+        val hotelPopularSearch: PopularSearch.Response = PopularSearch.Response(),
+        val hotelRecentSearch: RecentSearch.Response = RecentSearch.Response()
+)

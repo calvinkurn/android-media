@@ -55,7 +55,7 @@ data class HotelReview(
     data class Response(
             @SerializedName("propertyReview")
             @Expose
-            val propertyReview: ReviewData
+            val propertyReview: ReviewData = ReviewData()
     )
 
     data class ReviewData(
