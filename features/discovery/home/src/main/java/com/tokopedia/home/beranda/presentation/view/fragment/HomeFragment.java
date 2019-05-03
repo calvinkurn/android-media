@@ -64,6 +64,7 @@ import com.tokopedia.home.beranda.presentation.view.SectionContainer;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
+import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
@@ -409,7 +410,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 FeedTabModel selectedFeedTabModel =
                         feedTabModelList.get(tab.getPosition());
                 HomePageTracking.eventClickOnHomePageRecommendationTab(
-                        trackingQueue,
+                        getActivity(),
                         selectedFeedTabModel
                 );
             }
@@ -919,6 +920,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void addImpressionToTrackingQueue(List<TrackedVisitable> visitables) {
+        List<Object> combinedTracking = new ArrayList<>();
+        for (TrackedVisitable visitable : visitables) {
+            if (visitable.isTrackingCombined() && visitable.getTrackingDataForCombination() != null) {
+                combinedTracking.addAll(visitable.getTrackingDataForCombination());
+            } else if (!visitable.isTrackingCombined() && visitable.getTrackingData() != null) {
+                HomePageTracking.eventEnhancedImpressionWidgetHomePage(trackingQueue, visitable.getTrackingData());
+            }
+        }
+        if (!combinedTracking.isEmpty()) {
+            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, combinedTracking);
+        }
+    }
+
+    @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
         if (adapter.getItemCount() > 1 && adapter.getItem(1) instanceof HeaderViewModel) {
             adapter.getItems().set(1, headerViewModel);
@@ -1096,13 +1112,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         restartBanner(isVisibleToUser);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        HomePageTracking.sendScreen(getActivity(), getScreenName());
-        sendScreen();
-    }
-
     private void restartBanner(boolean isVisibleToUser) {
         if ((isVisibleToUser && getView() != null) && adapter != null) {
             adapter.notifyDataSetChanged();
@@ -1111,7 +1120,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            HomePageTracking.sendScreen(getActivity(), getScreenName());
             sendScreen();
         }
     }

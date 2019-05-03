@@ -16,7 +16,7 @@ public interface ItemClickListener {
 
     void onItemClicked(String applink, String webUrl);
 
-    void onItemSearchClicked(String keyword, String categoryId, boolean isOfficial);
+    void onItemSearchClicked(String applink);
 
     void setOnTabShop(boolean onTabShop);
 }

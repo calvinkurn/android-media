@@ -102,8 +102,6 @@ import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
-import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
-import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
 import com.tokopedia.product.manage.list.applink.ProductManageApplinkModule;
 import com.tokopedia.product.manage.list.applink.ProductManageApplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
@@ -116,6 +114,8 @@ import com.tokopedia.referral.deeplink.ReferralDeeplinkModule;
 import com.tokopedia.referral.deeplink.ReferralDeeplinkModuleLoader;
 import com.tokopedia.saldodetails.applink.SaldoDetailsAppLinkModule;
 import com.tokopedia.saldodetails.applink.SaldoDetailsAppLinkModuleLoader;
+import com.tokopedia.search.applink.SearchApplinkModule;
+import com.tokopedia.search.applink.SearchApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.settingbank.applink.SettingBankApplinkModule;
@@ -152,7 +152,6 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
-        ProductAddDeeplinkModule.class,
         CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
         ReferralDeeplinkModule.class,
@@ -163,6 +162,7 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         ProductDetailApplinkModule.class,
         HomeApplinkModule.class,
         DiscoveryApplinkModule.class,
+        SearchApplinkModule.class,
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
@@ -220,7 +220,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
                     new ConsumerDeeplinkModuleLoader(),
-                    new ProductAddDeeplinkModuleLoader(),
                     new CoreDeeplinkModuleLoader(),
                     new InboxDeeplinkModuleLoader(),
                     new ReferralDeeplinkModuleLoader(),
@@ -232,6 +231,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ProductDetailApplinkModuleLoader(),
                     new HomeApplinkModuleLoader(),
                     new DiscoveryApplinkModuleLoader(),
+                    new SearchApplinkModuleLoader(),
                     new SessionApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new FlightApplinkModuleLoader(),
@@ -381,7 +381,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     @DeepLink({Constants.Applinks.SellerApp.SELLER_APP_HOME,
             Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
-            Constants.Applinks.SellerApp.PRODUCT_ADD,
             Constants.Applinks.SellerApp.SALES,
             Constants.Applinks.SellerApp.TOPADS_CREDIT,
             Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
@@ -416,8 +415,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     @Override
     public void onDeeplinkSuccess(LinkerDeeplinkResult linkerDefferedDeeplinkData) {
-        PersistentCacheManager persistentCacheManager = new PersistentCacheManager(this, TkpdCache.CACHE_PROMO_CODE);
-        persistentCacheManager.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, linkerDefferedDeeplinkData.getPromoCode() != null ?
+        PersistentCacheManager.instance.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, linkerDefferedDeeplinkData.getPromoCode() != null ?
                 linkerDefferedDeeplinkData.getPromoCode() : "");
     }
 

@@ -294,4 +294,8 @@
         <key>nonb_5_dsc</key>
         <value>Buka toko gratis, nikmati transaksi mudah, aman, dan dikunjungi jutaan pembeli</value>
     </entry>
+    <entry>
+        <key>android_shop_etalase_toggle</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

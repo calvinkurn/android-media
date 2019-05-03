@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.FilterItem;
 import com.tokopedia.digital_deals.view.model.Page;
 import com.tokopedia.digital_deals.view.model.ProductItem;
@@ -24,6 +25,10 @@ public class SearchResponse {
     @SerializedName("count")
     @Expose
     private int count;
+
+    @SerializedName("brands")
+    @Expose
+    private List<Brand> brandList;
 
     public List<ProductItem> getDeals() {
         return deals;
@@ -55,5 +60,13 @@ public class SearchResponse {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public List<Brand> getBrandList() {
+        return brandList;
+    }
+
+    public void setBrandList(List<Brand> brandList) {
+        this.brandList = brandList;
     }
 }

@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.ScreenTrackingBuilder;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -27,7 +29,7 @@ public class IndexScreenTracking extends TrackingUtils {
     private static final String CI_DATA = "CI_DATA";
     private static final String APP_NAME_PREFIX = "app ";
     private static final String APP_LIST_SEPARATOR = "-";
-    private static final long EXPIRED_TIME = TimeUnit.DAYS.toSeconds(30);
+    private static final long EXPIRED_TIME = TimeUnit.DAYS.toMillis(30);
 
     public static void sendScreen(Context context,
                                   ScreenTracking.IOpenScreenAnalytics openScreenAnalytics) {
@@ -43,21 +45,17 @@ public class IndexScreenTracking extends TrackingUtils {
     }
 
     private static String getCIData(Context context) {
-        if(context instanceof Application && context instanceof AbstractionRouter){
-            CacheManager cache = ((AbstractionRouter)context).getGlobalCacheManager();
-            if (!cache.isExpired(CI_DATA)) {
-                return cache.get(CI_DATA);
-            } else {
-                String value = getCurrentInstalledList(context);
-                cache.save(
-                        CI_DATA,
-                        value,
-                        EXPIRED_TIME
-                );
-                return value;
-            }
-        }else{
-            return null;
+        String value = PersistentCacheManager.instance.getString(CI_DATA);
+        if (!TextUtils.isEmpty(value)) {
+            return value;
+        } else {
+            value = getCurrentInstalledList(context);
+            PersistentCacheManager.instance.put(
+                    CI_DATA,
+                    value,
+                    EXPIRED_TIME
+            );
+            return value;
         }
     }
 
