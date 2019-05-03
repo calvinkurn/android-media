@@ -24,6 +24,7 @@ public interface SearchEventTracking {
         String FILTER_JOURNEY = "filter journey";
         String SORT = "Sort";
         String FILTER = "Filter";
+        String SORT_BY = "sort by";
     }
 
     interface Action {
@@ -50,6 +51,7 @@ public interface SearchEventTracking {
         String CLICK_LIHAT_SEMUA = "click lihat semua ";
         String NO_SEARCH_RESULT = "no search result";
         String CLICK_FILTER = "click filter";
+        String SORT_BY = "sort by";
     }
 
     interface MOENGAGE {

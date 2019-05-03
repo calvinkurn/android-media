@@ -22,4 +22,17 @@ public interface SearchConstant {
     String TRANSITION = "transition";
 
     String GQL_INITIATE_SEARCH = "gql_initiate_search";
+
+    int LANDSCAPE_COLUMN_MAIN = 3;
+    int PORTRAIT_COLUMN_MAIN = 2;
+
+    interface RecyclerView {
+        int VIEW_PRODUCT = 3;
+        int VIEW_PRODUCT_GRID_1 = 12;
+        int VIEW_PRODUCT_GRID_2 = 13;
+    }
+
+    enum GridType {
+        GRID_1, GRID_2, GRID_3
+    }
 }

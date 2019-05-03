@@ -81,6 +81,23 @@ public class SearchTracking {
         TrackApp.getInstance().getGTM().sendGeneralEvent(eventTrackingMap);
     }
 
+    public void screenTrackSearchSectionFragment(String screen) {
+        if (TextUtils.isEmpty(screen)) {
+            return;
+        }
+
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screen);
+    }
+
+    public void eventSearchResultSort(String screenName, String sortByValue) {
+        sendGeneralEventWithUserId(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.SORT_BY,
+                SearchEventTracking.Action.SORT_BY + " - " + screenName,
+                sortByValue
+        );
+    }
+
     public static String getActionFieldString(int pageNumber) {
         return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
     }

@@ -74,7 +74,7 @@ public class SearchActivity extends BaseActivity
         RedirectionListener,
         BottomSheetListener,
         SearchNavigationListener,
-        HasComponent<SearchComponent> {
+        HasComponent<BaseAppComponent> {
 
     public static Intent newInstance(Context context) {
         return new Intent(context, SearchActivity.class);
@@ -591,7 +591,7 @@ public class SearchActivity extends BaseActivity
         searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
     }
 
-    public static String getRegistrationId(Context context) {
+    private String getRegistrationId(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         return cache.getString(GCM_ID, "");
     }
@@ -752,7 +752,7 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public SearchComponent getComponent() {
-        return searchComponent;
+    public BaseAppComponent getComponent() {
+        return getBaseAppComponent();
     }
 }
