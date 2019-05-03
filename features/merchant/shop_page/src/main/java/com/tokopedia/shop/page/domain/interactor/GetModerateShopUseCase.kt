@@ -1,42 +1,36 @@
 package com.tokopedia.shop.page.domain.interactor
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.shop.R
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
+import javax.inject.Named
 
-class GetModerateShopUseCase @Inject constructor(@ApplicationContext private val context: Context,
+class GetModerateShopUseCase @Inject constructor(@Named(ShopPageConstant.MODERATE_STATUS_QUERY) private val moderateQuery:String,
                                                  private val graphqlUseCase: GraphqlUseCase): UseCase<ShopModerateRequestData>() {
 
 
     override fun createObservable(requestParams: RequestParams?): Observable<ShopModerateRequestData> {
-        val query: String = GraphqlHelper.loadRawString(
-                context.resources,
-                R.raw.shop_moderate_request_status
-        )
 
-        val graphqlRequest = GraphqlRequest(query, ShopModerateRequestData::class.java)
+        val graphqlRequest = GraphqlRequest(moderateQuery, ShopModerateRequestData::class.java)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val data: ShopModerateRequestData? = it.getData(ShopModerateRequestData::class.java)
-            val error: MutableList<GraphqlError>? = it.getError(GraphqlError::class.java)
+            val error: MutableList<GraphqlError> = it.getError(GraphqlError::class.java) ?: mutableListOf()
 
             if (data == null) {
                 throw RuntimeException()
             } else if (data.shopModerateRequestStatus.error.message.isNotEmpty()) {
                 throw MessageErrorException(data.shopModerateRequestStatus.error.message)
-            } else if (error!!.isNotEmpty() && error[0].message.isNotEmpty()) {
+            } else if (error.isNotEmpty() && error[0].message.isNotEmpty()) {
                 throw MessageErrorException(error[0].message)
             }
             data

@@ -7,17 +7,17 @@ data class ModerateSubmitInput (
 
         @SerializedName("shopIds")
         @Expose
-        var shopIds:ArrayList<Int> ? = ArrayList(),
+        var shopIds:ArrayList<Int> = ArrayList(),
 
         @SerializedName("status")
         @Expose
-        var status:Int ? = null,
+        var status:Int,
 
         @SerializedName("notes")
         @Expose
-        var notes:String ? = "",
+        var notes:String = "",
 
         @SerializedName("responseDesc")
         @Expose
-        var responseDesc:String ? = ""
+        var responseDesc:String = ""
 )

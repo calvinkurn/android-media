@@ -351,7 +351,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.sendScreenShopPage(this@ShopPageActivity, CustomDimensionShopPage.create(shopInfo))
 
             presenter.getFeedWhitelist(info.shopId)
-            presenter.getModerateShopInfo()
+            if (shopInfo.info.shopStatus != 1) {
+                presenter.getModerateShopInfo()
+            }
         }
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
         swipeToRefresh.isRefreshing = false
@@ -392,7 +394,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun onSuccessGetModerateInfo(shopModerateRequestData: ShopModerateRequestData) {
         val statusModerate = shopModerateRequestData.shopModerateRequestStatus.result.status
-        shopPageViewHolder.updateViewModerateStatus(statusModerate, shopInfo!!, presenter.isMyShop(shopId!!))
+        shopInfo?.let { shopPageViewHolder.updateViewModerateStatus(statusModerate, it, presenter.isMyShop(shopId!!)) }
     }
 
     override fun onSuccessToggleFavourite(successValue: Boolean) {

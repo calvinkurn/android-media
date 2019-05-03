@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class ShopModerateRequestError(
         @SerializedName("message")
         @Expose
-        val message:String
+        val message: String = ""
 )

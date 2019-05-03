@@ -1,13 +1,10 @@
 package com.tokopedia.shop.page.domain.interactor
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.shop.R
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.data.source.cloud.model.ModerateSubmitInput
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateData
 import com.tokopedia.usecase.RequestParams
@@ -15,10 +12,10 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import java.util.HashMap
 import javax.inject.Inject
+import javax.inject.Named
 
-class RequestModerateShopUseCase @Inject constructor(@ApplicationContext private val context: Context,
+class RequestModerateShopUseCase @Inject constructor(@Named(ShopPageConstant.MODERATE_REQUEST_QUERY) private val moderateQuery:String,
                                                      private val graphqlUseCase: GraphqlUseCase) : UseCase<Boolean>() {
-
 
     companion object {
         private const val PARAM_INPUT = "input"
@@ -42,25 +39,20 @@ class RequestModerateShopUseCase @Inject constructor(@ApplicationContext private
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<Boolean> {
-        val query: String = GraphqlHelper.loadRawString(
-                context.resources,
-                R.raw.mutation_moderate_shop
-        )
-
         val variables = HashMap<String, Any>()
         variables[PARAM_INPUT] = getModerateSubmitInput(requestParams)
 
-        val graphqlRequest = GraphqlRequest(query, ShopModerateData::class.java, variables)
+        val graphqlRequest = GraphqlRequest(moderateQuery, ShopModerateData::class.java, variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
         return graphqlUseCase.createObservable(requestParams).map {
             val data: ShopModerateData? = it.getData(ShopModerateData::class.java)
-            val error: MutableList<GraphqlError>? = it.getError(GraphqlError::class.java)
+            val error: MutableList<GraphqlError> = it.getError(GraphqlError::class.java) ?: mutableListOf()
 
             if (data == null) {
                 throw RuntimeException()
-            } else if (error!!.isNotEmpty() && error[0].message.isNotEmpty()) {
+            } else if (error.isNotEmpty() && error[0].message.isNotEmpty()) {
                 throw MessageErrorException(error[0].message)
             }
             data.moderateShop.success
