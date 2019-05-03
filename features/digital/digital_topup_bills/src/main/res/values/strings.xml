@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">digital_topup_bills</string>
+    <string name="title_empty_stock">Stok Habis</string>
 </resources>
