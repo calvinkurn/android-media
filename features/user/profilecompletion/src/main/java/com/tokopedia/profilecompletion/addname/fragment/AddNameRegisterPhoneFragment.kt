@@ -22,12 +22,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.text.TkpdHintTextInputLayout
+import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneActivity
 import com.tokopedia.profilecompletion.addname.listener.AddNameListener
 import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
 import com.tokopedia.profilecompletion.addname.ProfileCompletionAnalytics
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import javax.inject.Inject
 
@@ -37,6 +40,7 @@ import javax.inject.Inject
 class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View {
 
     private var phoneNumber: String? = ""
+    private var uuid: String? = ""
 
     lateinit var etName: EditText
     lateinit var bottomInfo: TextView
@@ -76,6 +80,15 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
                     .build()
                     .inject(this)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        phoneNumber =  getParamString(ApplinkConstInternalGlobal.PARAM_PHONE, arguments,
+                savedInstanceState, "")
+        uuid =  getParamString(ApplinkConstInternalGlobal.PARAM_UUID, arguments,
+                savedInstanceState, "")
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -146,20 +159,21 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     private fun isValidate(name: String): Boolean {
-        if (name.length < MIN_NAME) {
-            showValidationError(view.getContext().getResources().getString(R.string.error_name_too_short))
-            return false
+        context?.let{
+            if (name.length < MIN_NAME) {
+                showValidationError(it.getResources().getString(R.string.error_name_too_short))
+                return false
+            }
+            if (name.length > MAX_NAME) {
+                showValidationError(it.getResources().getString(R.string.error_name_too_long))
+                return false
+            }
+            hideValidationError()
         }
-        if (name.length > MAX_NAME) {
-            showValidationError(view.getContext().getResources().getString(R.string.error_name_too_long))
-            return false
-        }
-        hideValidationError()
         return true
     }
 
     private fun setView() {
-        phoneNumber = arguments!!.getString(AddNameRegisterPhoneActivity.PARAM_PHONE)
         disableButton(btnContinue)
         btnContinue.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
 
@@ -167,7 +181,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
                 "<br>" + getString(R.string.link_term_condition) +
                 " serta " + getString(R.string.link_privacy_policy)
 
-        bottomInfo.setText(MethodChecker.fromHtml(joinString))
+        bottomInfo.text = MethodChecker.fromHtml(joinString)
         bottomInfo.movementMethod = LinkMovementMethod.getInstance()
         stripUnderlines(bottomInfo)
     }

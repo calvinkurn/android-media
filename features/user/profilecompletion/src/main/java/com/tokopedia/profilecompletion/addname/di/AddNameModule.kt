@@ -9,12 +9,13 @@ import dagger.Provides
 /**
  * @author by nisie on 23/04/19.
  */
+@AddNameScope
 @Module
 class AddNameModule {
 
     @AddNameScope
     @Provides
-    internal fun provideResources(@ApplicationContext context: Context): Resources {
+    internal fun provideResource(@ApplicationContext context: Context): Resources {
         return context.resources
     }
 
