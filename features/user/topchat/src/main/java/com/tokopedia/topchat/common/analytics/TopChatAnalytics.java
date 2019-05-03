@@ -306,6 +306,8 @@ public class TopChatAnalytics {
             return "chat";
         } else if (blastIdNum == -1) {
             return "drop price alert";
+        } else if (blastIdNum == -2) {
+            return "limited stock";
         } else if(blastIdNum > 0) {
             return "broadcast";
         } else {
