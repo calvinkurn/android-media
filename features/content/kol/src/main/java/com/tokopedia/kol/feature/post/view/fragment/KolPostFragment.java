@@ -282,7 +282,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     @Override
     public void onOpenKolTooltip(int rowNumber, String uniqueTrackingId, String url) {
-
+        onGoToLink(url);
     }
 
     @Override
@@ -492,5 +492,16 @@ public class KolPostFragment extends BaseDaggerFragment implements
         });
         dialog.setOnCancelClickListener(v -> dialog.dismiss());
         return dialog;
+    }
+
+    private void onGoToLink(String link) {
+        if (RouteManager.isSupportApplink(getActivity(), link)) {
+            RouteManager.route(getActivity(), link);
+        } else {
+            RouteManager.route(
+                    getActivity(),
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+            );
+        }
     }
 }
