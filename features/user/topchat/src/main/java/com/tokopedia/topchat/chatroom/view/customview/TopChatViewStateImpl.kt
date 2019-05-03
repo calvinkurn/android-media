@@ -168,16 +168,18 @@ class TopChatViewStateImpl(
         val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
         val onlineStats = toolbar.findViewById<View>(R.id.online_status)
 
-        val string = ChatTimeConverter.getRelativeDate(view.context, viewModel.headerModel.lastTimeOnline)
-        onlineDesc.text = string
-        onlineDesc.visibility = View.VISIBLE
-
-        if (viewModel.headerModel.label == ChatRoomHeaderViewModel.Companion.TAG_OFFICIAL) {
+        if (isOfficialStore(viewModel)) {
             onlineStats.visibility = View.GONE
+            onlineDesc.visibility = View.GONE
         } else {
+            val string = ChatTimeConverter.getRelativeDate(view.context, viewModel.headerModel.lastTimeOnline)
             onlineStats.visibility = View.VISIBLE
+            onlineDesc.visibility = View.VISIBLE
+            onlineDesc.text = string
         }
     }
+
+    private fun isOfficialStore(viewModel: ChatroomViewModel) = viewModel.headerModel.isOfficialStore()
 
     private fun setHeaderMenuButton(headerMenuListener: HeaderMenuListener, alertDialog: Dialog) {
         headerMenuButton.visibility = View.VISIBLE

@@ -42,6 +42,8 @@ data class ChatRoomHeaderViewModel(
         return 0
     }
 
+    fun isOfficialStore(): Boolean = label == Companion.TAG_OFFICIAL
+
     companion object CREATOR : Parcelable.Creator<ChatRoomHeaderViewModel> {
 
         override fun createFromParcel(parcel: Parcel): ChatRoomHeaderViewModel {
