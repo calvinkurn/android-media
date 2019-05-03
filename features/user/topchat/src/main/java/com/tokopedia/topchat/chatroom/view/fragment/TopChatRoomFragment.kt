@@ -698,7 +698,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun getChatReportUrl() = getString(R.string.chat_report_url, messageId)
+    private fun getChatReportUrl() = "https://m.tokopedia.com/chat/report/$messageId"
 
     override fun onDualAnnouncementClicked(redirectUrl: String, attachmentId: String, blastId: Int) {
         analytics.trackClickImageAnnouncement(blastId.toString(), attachmentId)
