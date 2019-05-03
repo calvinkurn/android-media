@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.customview
 
 import android.content.Context
-import android.support.v4.view.NestedScrollingParent
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -11,7 +10,7 @@ import android.view.View
  * Created by devarafikry on 02/04/19.
  */
 
-open class NestedRecyclerView : RecyclerView, NestedScrollingParent {
+open class NestedRecyclerView : RecyclerView {
 
     private var nestedScrollTarget: View? = null
     private var nestedScrollTargetIsBeingDragged = false
