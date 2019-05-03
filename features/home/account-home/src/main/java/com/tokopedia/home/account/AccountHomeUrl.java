@@ -21,6 +21,8 @@ public class AccountHomeUrl {
 
         public static final String TOKOCASH_IMG = "/img/wallet/ic_tokocash_circle.png";
         public static final String SALDO_IMG = "/img/wallet/ic_saldo_circle.png";
+
+        public static final String EMPTY_SELLER_IMG = "/img/android/seller_dashboard/seller_dashboard.png";
     }
 
     public static String MORE_SELLER = BASE_SELLER_URL + "mulai-berjualan/";

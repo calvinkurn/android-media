@@ -8,10 +8,9 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.gm.resource.GMConstant;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
-import com.tokopedia.home.account.presentation.view.InfoCardView;
 import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
 
 /**
@@ -21,8 +20,6 @@ import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
 public class SellerEmptyViewHolder extends AbstractViewHolder<SellerEmptyViewModel> {
     @LayoutRes
     public static int LAYOUT = R.layout.fragment_seller_account_empty;
-
-    private static String URL_EMPTY = "https://ecs7.tokopedia.net/img/android/seller_dashboard/seller_dashboard.png";
 
     private TextView btnLearnMore;
     private Button btnOpenShop;
@@ -39,7 +36,7 @@ public class SellerEmptyViewHolder extends AbstractViewHolder<SellerEmptyViewMod
 
     @Override
     public void bind(SellerEmptyViewModel element) {
-        ImageHandler.LoadImage(ivEmptyImage, URL_EMPTY);
+        ImageHandler.LoadImage(ivEmptyImage, AccountHomeUrl.CDN_URL + AccountHomeUrl.ImageUrl.EMPTY_SELLER_IMG);
         btnOpenShop.setOnClickListener(v -> listener.onOpenShopClicked());
         btnLearnMore.setOnClickListener(v -> listener.onLearnMoreSellerClicked());
     }
