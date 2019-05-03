@@ -91,7 +91,7 @@
     <string name="payment_method_menu_item">Cara Pembayaran Dana Instan</string>
     <string name="help_menu_item">Bantuan</string>
     <string name="instant_loan_clickable_link">syarat dan ketentuan</string>
-    <string name="disclaimer_instant_fund">Pinjaman oleh mitra yang resmi terdaftar dan diawasi oleh Otoritas Jasa Keuangan (OJK).</string>
+    <string name="disclaimer_instant_fund">Pinjaman oleh mitra yang resmi terdaftar dan diawasi oleh <b>Otoritas Jasa Keuangan (OJK)</b>.</string>
 
 
 </resources>

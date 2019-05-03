@@ -29,7 +29,7 @@ constructor(private val mGetBannersUserCase: GetBannersUserCase) : BaseDaggerPre
             override fun onNext(typeRestResponseMap: Map<Type, RestResponse>) {
                 val restResponse = typeRestResponseMap[ResponseBannerOffer::class.java]
                 val responseBannerOffer = restResponse!!.getData<ResponseBannerOffer>()
-                view.renderUserList(responseBannerOffer!!.banners)
+                view.renderBannerList(responseBannerOffer!!.banners)
             }
         })
     }
