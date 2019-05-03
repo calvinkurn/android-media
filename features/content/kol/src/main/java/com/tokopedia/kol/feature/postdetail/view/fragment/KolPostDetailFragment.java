@@ -671,12 +671,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         onGoToLink(redirectUrl);
     }
 
-    public void onGoToLink(String link) {
-        if (!TextUtils.isEmpty(link)) {
-            RouteManager.route(getActivity(), link);
-        }
-    }
-
     @Override
     public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type, boolean isFollow) {
 
@@ -883,5 +877,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId) {
         startActivityForResult(VideoDetailActivity.Companion.getInstance(getActivity(), postId), OPEN_VIDEO_DETAIL);
+    }
+
+    private void onGoToLink(String link) {
+        if (RouteManager.isSupportApplink(getActivity(), link)) {
+            RouteManager.route(getActivity(), link);
+        } else {
+            RouteManager.route(
+                    getActivity(),
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+            );
+        }
     }
 }
