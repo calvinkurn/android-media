@@ -197,7 +197,7 @@ class TopChatViewStateImpl(
             } else {
                 view.context.getString(R.string.follow_store)
             }
-            listMenu.add(Menus.ItemMenus(profileText, R.drawable.ic_plus_add))
+            listMenu.add(Menus.ItemMenus(profileText, R.drawable.ic_system_action_plus_normal_24))
         }
 
         listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_incoming_settings), R.drawable.ic_chat_settings))
