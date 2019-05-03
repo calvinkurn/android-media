@@ -1,10 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.customview
 
 import android.content.Context
-import android.os.Build
 import android.support.v4.view.NestedScrollingParent2
-import android.support.v4.view.ViewCompat
-import android.support.v4.view.ViewParentCompat
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -91,14 +88,6 @@ open class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
             nestedScrollTarget = target
             nestedScrollTargetIsBeingDragged = false
             nestedScrollTargetWasUnableToScroll = false
-        }
-
-        if(nestedCanScroll) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                super.onNestedScrollAccepted(child, target, axes)
-            } else {
-                ViewParentCompat.onNestedScrollAccepted(this, child, target, ViewCompat.SCROLL_AXIS_VERTICAL, type)
-            }
         }
     }
 
