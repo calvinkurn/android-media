@@ -495,13 +495,15 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     private void onGoToLink(String link) {
-        if (RouteManager.isSupportApplink(getActivity(), link)) {
-            RouteManager.route(getActivity(), link);
-        } else {
-            RouteManager.route(
-                    getActivity(),
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
-            );
+        if (getActivity() != null && !TextUtils.isEmpty(link)) {
+            if (RouteManager.isSupportApplink(getActivity(), link)) {
+                RouteManager.route(getActivity(), link);
+            } else {
+                RouteManager.route(
+                        getActivity(),
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                );
+            }
         }
     }
 }
