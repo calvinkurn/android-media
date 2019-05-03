@@ -179,4 +179,6 @@ implements HomeTabFeedListener {
         super.onViewRecycled();
         Log.d("TokopediaDevara", "Recom Feed Section "+getAdapterPosition()+" recycled");
     }
+
+
 }
