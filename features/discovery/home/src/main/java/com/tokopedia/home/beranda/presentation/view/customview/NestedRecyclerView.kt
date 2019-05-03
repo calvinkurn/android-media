@@ -12,9 +12,6 @@ import android.view.View
  */
 
 open class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
-    override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
-    }
-
     private var nestedScrollTarget: View? = null
     private var nestedScrollTargetIsBeingDragged = false
     private var nestedScrollTargetWasUnableToScroll = false
@@ -105,5 +102,16 @@ open class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
     //we enabled nested scroll when recyclerview already reach bottom
     fun setNestedCanScroll(canScroll: Boolean) {
         this.nestedCanScroll = canScroll
+    }
+
+    override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
+    }
+
+    override fun onNestedPreFling(target: View, velocityX: Float, velocityY: Float): Boolean {
+        return super.onNestedPreFling(target, velocityX, velocityY)
+    }
+
+    override fun onNestedFling(target: View, velocityX: Float, velocityY: Float, consumed: Boolean): Boolean {
+        return super.onNestedFling(target, velocityX, velocityY, consumed)
     }
 }
