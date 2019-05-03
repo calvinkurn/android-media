@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.customview
 
+import android.content.Context
 import android.os.Parcelable
 import android.support.annotation.NonNull
 import android.support.v7.widget.LinearLayoutManager
@@ -172,10 +173,19 @@ class TopChatViewStateImpl(
             onlineStats.visibility = View.GONE
             onlineDesc.visibility = View.GONE
         } else {
-            val string = ChatTimeConverter.getRelativeDate(view.context, viewModel.headerModel.lastTimeOnline)
             onlineStats.visibility = View.VISIBLE
             onlineDesc.visibility = View.VISIBLE
-            onlineDesc.text = string
+
+            val onlineDescStatus = getOnlineDescStatus(view.context, viewModel)
+            onlineDesc.text = onlineDescStatus
+        }
+    }
+
+    private fun getOnlineDescStatus(context: Context, viewModel: ChatroomViewModel): String {
+        return if (viewModel.headerModel.isOnline) {
+            context.getString(R.string.online)
+        } else {
+            ChatTimeConverter.getRelativeDate(view.context, viewModel.headerModel.lastTimeOnline)
         }
     }
 
