@@ -247,25 +247,50 @@ class HotelDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupReviewLayout(data: HotelReview.ReviewData) {
-        tv_hotel_rating_count.text = getString(R.string.hotel_detail_based_on_review_number,
-                CurrencyFormatUtil.convertPriceValue(data.totalReview.toDouble(), false))
-        tv_hotel_rating_number.text = data.averageScoreReview.toString()
+        setupReviewHeader(data)
         setupReviewItem(data.reviewList)
     }
 
-    private fun setupReviewItem(reviewList: List<HotelReview>) {
-        if (!::detailReviewAdapter.isInitialized) {
-            detailReviewAdapter = HotelDetailReviewAdapter(reviewList)
+    private fun setupReviewHeader(data: HotelReview.ReviewData) {
+        if (data.totalReview > 0 || data.averageScoreReview > 0) {
+            if (data.totalReview > 0) {
+                tv_hotel_rating_count.text = getString(R.string.hotel_detail_based_on_review_number,
+                        CurrencyFormatUtil.convertPriceValue(data.totalReview.toDouble(), false))
+            } else {
+                tv_hotel_rating_count.visibility = View.GONE
+            }
+
+            if (data.averageScoreReview > 0) {
+                tv_hotel_rating_number.text = data.averageScoreReview.toString()
+            } else {
+                tv_hotel_rating_number.visibility = View.GONE
+                tv_hotel_rating_detail.text = getString(R.string.hotel_detail_no_rating)
+            }
+        } else {
+            tv_hotel_rating_number.visibility = View.GONE
+            tv_hotel_rating_count.visibility = View.GONE
+            tv_hotel_detail_all_promo.visibility = View.GONE
+            tv_hotel_rating_detail.text = getString(R.string.hotel_detail_no_rating_review)
         }
+    }
 
-        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        rv_best_review.layoutManager = layoutManager
-        rv_best_review.setHasFixedSize(true)
-        rv_best_review.isNestedScrollingEnabled = false
-        rv_best_review.adapter = detailReviewAdapter
+    private fun setupReviewItem(reviewList: List<HotelReview>) {
+        if (reviewList.isNotEmpty()) {
+            if (!::detailReviewAdapter.isInitialized) {
+                detailReviewAdapter = HotelDetailReviewAdapter(reviewList)
+            }
 
-        tv_hotel_detail_all_promo.setOnClickListener {
-            startActivityForResult(HotelReviewActivity.getCallingIntent(context!!, hotelHomepageModel.locId), RESULT_REVIEW)
+            val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+            rv_best_review.layoutManager = layoutManager
+            rv_best_review.setHasFixedSize(true)
+            rv_best_review.isNestedScrollingEnabled = false
+            rv_best_review.adapter = detailReviewAdapter
+
+            tv_hotel_detail_all_promo.setOnClickListener {
+                startActivityForResult(HotelReviewActivity.getCallingIntent(context!!, hotelHomepageModel.locId), RESULT_REVIEW)
+            }
+        } else {
+            rv_best_review.visibility = View.GONE
         }
     }
 

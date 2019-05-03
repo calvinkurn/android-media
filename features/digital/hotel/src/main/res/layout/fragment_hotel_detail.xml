@@ -185,81 +185,91 @@
                     android:layout_height="@dimen/dp_1"
                     android:background="@color/grey_200" />
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16">
+                    android:id="@+id/container_hotel_review"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
-                    <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/iv_booking_logo"
-                        android:layout_width="@dimen/dp_20"
-                        android:layout_height="@dimen/dp_20"
-                        android:layout_marginEnd="@dimen/dp_4"
-                        android:layout_marginRight="@dimen/dp_4"
-                        app:srcCompat="@drawable/status_no_result" />
-
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/tv_hotel_rating_number"
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dp_4"
-                        android:layout_marginRight="@dimen/dp_4"
-                        android:layout_toEndOf="@+id/iv_booking_logo"
-                        android:layout_toRightOf="@+id/iv_booking_logo"
-                        android:textColor="@color/blue_booking"
-                        app:fontSize="title"
-                        app:weight="medium"
-                        tools:text="8,6" />
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16">
 
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/tv_hotel_rating_detail"
-                        android:layout_width="wrap_content"
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/iv_booking_logo"
+                            android:layout_width="@dimen/dp_20"
+                            android:layout_height="@dimen/dp_20"
+                            android:layout_marginEnd="@dimen/dp_4"
+                            android:layout_marginRight="@dimen/dp_4"
+                            app:srcCompat="@drawable/status_no_result" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/tv_hotel_rating_number"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/dp_4"
+                            android:layout_marginRight="@dimen/dp_4"
+                            android:layout_toEndOf="@+id/iv_booking_logo"
+                            android:layout_toRightOf="@+id/iv_booking_logo"
+                            android:textColor="@color/blue_booking"
+                            app:fontSize="title"
+                            app:weight="medium"
+                            tools:text="8,6" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/tv_hotel_rating_detail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/tv_hotel_rating_number"
+                            android:layout_toEndOf="@+id/tv_hotel_rating_number"
+                            android:layout_toRightOf="@+id/tv_hotel_rating_number"
+                            app:fontSize="micro"
+                            app:textViewTheme="lightPrimary"
+                            tools:text="Mengesankan" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/tv_hotel_rating_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/iv_booking_logo"
+                            android:layout_marginTop="@dimen/dp_2"
+                            app:fontSize="micro"
+                            app:textViewTheme="lightSecondary"
+                            tools:text="Berdasarkan 1.000 ulasan" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/tv_hotel_detail_all_promo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/hotel_show_all_text"
+                            android:textColor="@color/green_500"
+                            app:fontSize="micro" />
+
+                    </RelativeLayout>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_best_review"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/tv_hotel_rating_number"
-                        android:layout_toEndOf="@+id/tv_hotel_rating_number"
-                        android:layout_toRightOf="@+id/tv_hotel_rating_number"
-                        app:fontSize="micro"
-                        app:textViewTheme="lightPrimary"
-                        tools:text="Mengesankan" />
+                        android:background="@drawable/bg_hotel_review_gradient"
+                        android:clipToPadding="false"
+                        android:paddingStart="@dimen/dp_16"
+                        android:paddingLeft="@dimen/dp_16"
+                        android:paddingTop="@dimen/dp_8"
+                        android:paddingEnd="@dimen/dp_16"
+                        android:paddingRight="@dimen/dp_16"
+                        android:paddingBottom="@dimen/dp_16" />
 
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/tv_hotel_rating_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/iv_booking_logo"
-                        android:layout_marginTop="@dimen/dp_2"
-                        app:fontSize="micro"
-                        app:textViewTheme="lightSecondary"
-                        tools:text="Berdasarkan 1.000 ulasan" />
-
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/tv_hotel_detail_all_promo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/hotel_show_all_text"
-                        android:textColor="@color/green_500"
-                        app:fontSize="micro" />
-
-                </RelativeLayout>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_best_review"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_hotel_review_gradient"
-                    android:clipToPadding="false"
-                    android:paddingStart="@dimen/dp_16"
-                    android:paddingLeft="@dimen/dp_16"
-                    android:paddingTop="@dimen/dp_8"
-                    android:paddingEnd="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
-                    android:paddingBottom="@dimen/dp_16" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/container_hotel_address"
@@ -342,8 +352,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16"
                         android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
                         android:orientation="horizontal">
 
@@ -372,8 +382,8 @@
                         android:id="@+id/rv_hotel_facilities"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clipToPadding="false"
                         android:layout_marginTop="@dimen/dp_8"
+                        android:clipToPadding="false"
                         android:padding="@dimen/dp_16" />
 
                 </LinearLayout>

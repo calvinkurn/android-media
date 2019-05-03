@@ -85,6 +85,9 @@
     <string name="hotel_detail_show_room_text">Lihat Kamar</string>
     <string name="hotel_detail_room_price_from">Harga /kamar/malam dari</string>
     <!--<string name="hotel_detail_map_marker_title"><![CDATA[<strong>%1$s</strong> - %2$s]]></string>-->
+    <string name="hotel_detail_based_on_review_number">Berdasarkan %1$s ulasan</string>
+    <string name="hotel_detail_no_rating">Belum ada rating</string>
+    <string name="hotel_detail_no_rating_review">Belum ada rating dan ulasan</string>
 
     <string name="hotel_review_title">Ulasan</string>
 
@@ -106,5 +109,4 @@
     <string name="hotel_room_detail_breakfast">Makanan</string>
     <string name="hotel_room_detail_extra_bed">Extra bed</string>
     <string name="hotel_room_detail_price_info">Harga /kamar/malam</string>
-    <string name="hotel_detail_based_on_review_number">Berdasarkan %1$s ulasan</string>
 </resources>
