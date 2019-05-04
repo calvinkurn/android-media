@@ -251,7 +251,7 @@ public class FloatingTextButton extends FrameLayout {
     }
 
     private void hide(final int visibility) {
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) getLayoutParams();
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) getLayoutParams();
         int fab_bottomMargin = layoutParams.bottomMargin;
         animate().translationY(getHeight() + fab_bottomMargin).setInterpolator(new AccelerateInterpolator(2))
                 .setListener(new Animator.AnimatorListener() {
