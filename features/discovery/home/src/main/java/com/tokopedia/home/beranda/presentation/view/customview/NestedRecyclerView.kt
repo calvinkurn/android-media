@@ -108,10 +108,10 @@ open class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
     }
 
     override fun onNestedPreFling(target: View, velocityX: Float, velocityY: Float): Boolean {
-        return super.onNestedPreFling(target, velocityX, velocityY)
+        return false
     }
 
     override fun onNestedFling(target: View, velocityX: Float, velocityY: Float, consumed: Boolean): Boolean {
-        return super.onNestedFling(target, velocityX, velocityY, consumed)
+        return false
     }
 }
