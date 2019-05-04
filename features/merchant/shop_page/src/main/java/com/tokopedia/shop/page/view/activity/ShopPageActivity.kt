@@ -36,6 +36,7 @@ import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
@@ -351,7 +352,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.sendScreenShopPage(this@ShopPageActivity, CustomDimensionShopPage.create(shopInfo))
 
             presenter.getFeedWhitelist(info.shopId)
-            if (shopInfo.info.shopStatus != 1) {
+            if (shopInfo.info.shopStatus != ShopStatusDef.OPEN) {
                 presenter.getModerateShopInfo()
             }
         }
@@ -394,8 +395,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun onSuccessGetModerateInfo(shopModerateRequestData: ShopModerateRequestData) {
         val statusModerate = shopModerateRequestData.shopModerateRequestStatus.result.status
-        shopInfo?.let { shopPageViewHolder.updateViewModerateStatus(statusModerate, it, presenter.isMyShop(shopId!!)) }
+        if (shopInfo != null && shopId != null) {
+            shopPageViewHolder.updateViewModerateStatus(statusModerate, shopInfo!!, presenter.isMyShop(shopId!!))
+        }
     }
+
 
     override fun onSuccessToggleFavourite(successValue: Boolean) {
         if (successValue) {
@@ -522,8 +526,13 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
 
-    override fun onErrorModerateListener(e: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(this, e)
+    override fun onErrorModerateListener(e: Throwable?) {
+        val errorMessage = if (e == null) {
+            context.getString(R.string.moderate_shop_error)
+        } else {
+            ErrorHandler.getErrorMessage(this, e)
+        }
+
         ToasterError.make(window.decorView.rootView, errorMessage, BaseToaster.LENGTH_INDEFINITE)
                 .setAction(R.string.title_ok) { v ->
 
@@ -545,7 +554,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun requestOpenShop(shopId: Int, moderateNotes:String) {
-        if(!moderateNotes.isEmpty()){
+        if(moderateNotes.isNotEmpty()){
             presenter.moderateShopRequest(shopId, moderateNotes)
         }
     }

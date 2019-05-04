@@ -31,6 +31,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     private var isShopRequestedModerate = false
 
     companion object {
+        private const val IS_MODERATED = 1
         private const val MODERATE_OPTION_ONE = 0
         private const val MODERATE_OPTION_TWO = 1
     }
@@ -67,7 +68,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     }
 
     fun updateViewModerateStatus(moderateStatus: Int, shopInfo: ShopInfo, isMyShop: Boolean) {
-        isShopRequestedModerate = moderateStatus == 1
+        isShopRequestedModerate = moderateStatus == IS_MODERATED
         updateViewShopStatus(shopInfo, isMyShop)
     }
 
@@ -152,7 +153,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
                     } else if (selectedModerateOption == MODERATE_OPTION_TWO) {
                         moderateNotes = moderateOptionTwo
                     }
-                    if (!moderateNotes.isEmpty()) {
+                    if (moderateNotes.isNotEmpty()) {
                         listener.requestOpenShop(shopId, moderateNotes)
                     }
                     dialog.dismiss()

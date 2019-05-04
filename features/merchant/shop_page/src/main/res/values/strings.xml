@@ -107,8 +107,8 @@
     <string name="dashboard_x_points">%1$s poin</string>
     <string name="total_point_format">(%1$s)</string>
 
-    <string name="moderate_shop_error">Oops… Request Moderasi Gagal</string>
-    <string name="moderate_shop_success">Request Moderasi Toko Berhasil</string>
+    <string name="moderate_shop_error">Oops… Request moderasi gagal</string>
+    <string name="moderate_shop_success">Request moderasi toko berhasil</string>
     <string name="moderate_shop_title">Permintaan untuk membuka moderasi toko</string>
     <string name="moderate_shop_option_1">Saya sudah mematuhi syarat &amp; ketentuan yang ditetapkan oleh Tokopedia.</string>
     <string name="moderate_shop_option_2">Saya sudah memperbaiki konten yang ada di toko saya.</string>
