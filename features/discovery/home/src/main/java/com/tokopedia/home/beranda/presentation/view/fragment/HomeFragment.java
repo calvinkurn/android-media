@@ -280,6 +280,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     homeRecyclerView.setNestedCanScroll(true);
                 }
                 calculateSearchbarView(recyclerView.computeVerticalScrollOffset());
+
+                int position = layoutManager.findLastVisibleItemPosition();
+                if (position == adapter.getRecommendationFeedSectionPosition()) {
+                    floatingTextButton.hide();
+                } else {
+                    if (!floatingTextButton.isShown()) {
+                        floatingTextButton.show();
+                    }
+                }
             }
         });
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
@@ -870,14 +879,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if (currentVisitables.get(i) instanceof HomeRecommendationFeedViewModel) {
                 currentVisitables.set(i, feedRecommendationVisitable);
                 adapter.setItems(currentVisitables);
+                //set new data to false because visitable already passed to adapter
+                ((HomeRecommendationFeedViewModel) feedTabVisitable).setNewData(false);
                 return;
             }
         }
 
-        //set new data to false because visitable already passed to adapter
-        if (feedTabVisitable instanceof HomeRecommendationFeedViewModel) {
-            ((HomeRecommendationFeedViewModel) feedTabVisitable).setNewData(false);
-        }
+        //if looping not returning any home recommendation feed view model
+        //then add one
+        currentVisitables.add(feedRecommendationVisitable);
+        adapter.setItems(currentVisitables);
     }
 
     @Override
