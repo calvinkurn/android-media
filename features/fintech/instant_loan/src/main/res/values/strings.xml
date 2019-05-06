@@ -92,6 +92,9 @@
     <string name="help_menu_item">Bantuan</string>
     <string name="instant_loan_clickable_link">syarat dan ketentuan</string>
     <string name="disclaimer_instant_fund">Pinjaman oleh mitra yang resmi terdaftar dan diawasi oleh <b>Otoritas Jasa Keuangan (OJK)</b>.</string>
+    <string name="il_partners">Mitra Kami</string>
+    <string name="il_supervisors">Diawasi oleh</string>
+    <string name="il_learn_more">Pelajari Lebih Lanjut</string>
 
 
 </resources>

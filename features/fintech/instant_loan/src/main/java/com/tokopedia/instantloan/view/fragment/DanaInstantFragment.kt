@@ -85,6 +85,9 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
         text_form_description.text = resources.getStringArray(R.array.values_description)[mCurrentTab]
 
         button_search_pinjaman.setOnClickListener { view1 -> searchLoanOnline() }
+        il_learn_more.setOnClickListener{
+            //todo goto learn more page
+        }
     }
 
 
