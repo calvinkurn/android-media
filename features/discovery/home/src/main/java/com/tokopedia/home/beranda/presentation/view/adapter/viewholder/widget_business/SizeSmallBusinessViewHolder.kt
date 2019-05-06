@@ -113,8 +113,8 @@ open class SizeSmallBusinessViewHolder (
     open fun renderFooter(element: HomeWidget.ContentItemTab?) {
         if (hasPrice(element) || hasTagLabel(element)) {
             itemView.footer.visibility = View.VISIBLE
-            renderLabel(element)
-            renderPrice(element)
+            if(hasTagLabel(element))  renderLabel(element)
+            if(hasPrice(element)) renderPrice(element)
         } else {
             itemView.footer.visibility = View.GONE
         }
@@ -132,12 +132,12 @@ open class SizeSmallBusinessViewHolder (
 
     open fun renderPrice(element: HomeWidget.ContentItemTab?) {
         if (hasPrice(element)) {
-            itemView.priceLayout.visibility = View.VISIBLE
 
             if (element?.pricePrefix.isNullOrEmpty()) {
                 itemView.pricePrefix.visibility = View.GONE
             } else {
                 itemView.pricePrefix.visibility = View.VISIBLE
+                itemView.pricePrefix.text = element?.pricePrefix ?: ""
                 itemView.pricePrefix.text = MethodChecker.fromHtml(element?.pricePrefix)
             }
 
@@ -153,11 +153,13 @@ open class SizeSmallBusinessViewHolder (
                 itemView.price.visibility = View.GONE
             } else {
                 itemView.price.visibility = View.VISIBLE
-                itemView.price.text = MethodChecker.fromHtml(element?.price)
+                itemView.price.text = element?.price ?: ""
             }
 
         } else {
-            itemView.priceLayout.visibility = View.GONE
+            itemView.price.visibility = View.GONE
+            itemView.pricePrefix.visibility = View.GONE
+            itemView.strikeThroughPrice.visibility = View.GONE
         }
     }
 
