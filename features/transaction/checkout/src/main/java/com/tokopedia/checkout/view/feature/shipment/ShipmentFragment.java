@@ -1541,8 +1541,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onRemovePromoCode() {
-        shipmentPresenter.cancelAutoApplyCoupon("");
+    public void onRemovePromoCode(String promoCode) {
+        ArrayList<String> promoCodes = new ArrayList<>();
+        promoCodes.add(promoCode);
+        shipmentPresenter.cancelAutoApplyPromoStack(-1, promoCodes, false);
     }
 
     @Override
@@ -2118,11 +2120,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCourierPromoCanceled(String shipperName) {
+    public void onCourierPromoCanceled(String shipperName, String promoCode) {
         if (shipmentAdapter.isCourierPromoStillExist()) {
             shipmentAdapter.cancelAutoApplyCoupon("");
             shipmentAdapter.updatePromoStack(null);
-            onRemovePromoCode();
+            onRemovePromoCode(promoCode);
             showToastError(String.format(getString(R.string.message_cannot_apply_courier_promo), shipperName));
         }
     }
