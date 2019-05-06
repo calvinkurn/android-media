@@ -1,7 +1,6 @@
-package com.tokopedia.product.detail.view.util
+package com.tokopedia.discovery.newdiscovery.hotlist.view.listener
 
 import android.support.design.widget.AppBarLayout
-import com.tokopedia.discovery.newdiscovery.hotlist.view.listener.AppBarState
 
 abstract class AppBarStateChangeListener: AppBarLayout.OnOffsetChangedListener {
 

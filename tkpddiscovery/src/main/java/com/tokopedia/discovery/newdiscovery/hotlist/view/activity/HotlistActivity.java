@@ -21,7 +21,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.fragment.HotlistFragmen
 import com.tokopedia.discovery.newdiscovery.hotlist.view.listener.AppBarState;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistContract;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistPresenter;
-import com.tokopedia.product.detail.view.util.AppBarStateChangeListener;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.listener.AppBarStateChangeListener;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
