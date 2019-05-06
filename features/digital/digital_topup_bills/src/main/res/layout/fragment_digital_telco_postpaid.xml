@@ -7,11 +7,6 @@
     android:background="@color/font_white_primary_70"
     android:orientation="vertical">
 
-    <com.tokopedia.digital.topupbillsproduct.compoundview.DigitalProductHeaderView
-        android:id="@+id/header_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <com.tokopedia.digital.topupbillsproduct.compoundview.DigitalTelcoInputNumberView
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills
+package com.tokopedia.topupbills.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,20 +9,20 @@ import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalProductHeaderView
 import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalRecentNumbersView
+import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.model.DigitalProductSubMenu
 import com.tokopedia.topupbills.model.DigitalRecentNumber
 
 /**
  * Created by nabillasabbaha on 11/04/19.
  */
-class TelcoProductFragment : BaseDaggerFragment() {
+class DigitalTelcoPraFragment : BaseDaggerFragment() {
 
-    private lateinit var headerView: DigitalProductHeaderView
     private lateinit var recentNumbersView: DigitalRecentNumbersView
     private val recentNumbers = mutableListOf<DigitalRecentNumber>()
 
     override fun getScreenName(): String {
-        return TelcoProductFragment::class.java.simpleName
+        return DigitalTelcoPraFragment::class.java.simpleName
     }
 
     override fun initInjector() {
@@ -31,24 +31,12 @@ class TelcoProductFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_product_telco, container, false)
-        headerView = view.findViewById(R.id.header_view)
         recentNumbersView = view.findViewById(R.id.recent_numbers)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val list = mutableListOf<DigitalProductSubMenu>()
-        list.add(DigitalProductSubMenu("1", "Prabayar", "Prabayar", ""))
-        list.add(DigitalProductSubMenu("2", "Pascabayar", "Pascabayar", ""))
-        headerView.setListener(object: DigitalProductHeaderView.ActionListener {
-            override fun onClickSubMenu(subMenu: DigitalProductSubMenu) {
-                Toast.makeText(activity, subMenu.name, Toast.LENGTH_LONG).show()
-            }
-        })
-        headerView.setHeader(list)
-
 
         recentNumbersView.setListener(object : DigitalRecentNumbersView.ActionListener {
             override fun onClickRecentNumber(digitalRecentNumber : DigitalRecentNumber) {
@@ -67,7 +55,7 @@ class TelcoProductFragment : BaseDaggerFragment() {
     companion object {
 
         fun newInstance() : Fragment {
-            val fragment = TelcoProductFragment()
+            val fragment = DigitalTelcoPraFragment()
             return fragment
         }
     }
