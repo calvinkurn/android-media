@@ -37,8 +37,10 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
@@ -1066,10 +1068,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     public void openWebViewURL(String url, Context context) {
         if (!TextUtils.isEmpty(url) && context != null) {
-            ((IHomeRouter) getActivity().getApplication())
-                    .actionOpenGeneralWebView(
-                            getActivity(),
-                            url);
+            Intent intent = RouteManager.getIntent(context, ApplinkConst.PROMO);
+            intent.putExtra(BannerWebView.EXTRA_URL, url);
+            startActivity(intent);
+//            ((IHomeRouter) getActivity().getApplication())
+//                    .actionOpenGeneralWebView(
+//                            getActivity(),
+//                            url);
         }
     }
 
