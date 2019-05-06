@@ -11,7 +11,6 @@ import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
-import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
@@ -31,7 +30,6 @@ import javax.inject.Inject;
 
 import rx.functions.Func1;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_CHALLENGE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 
@@ -105,7 +103,67 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             }
         }
 
-        if (!((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("mainapp_android_enable_tokocard", false)
+        if ((accountModel.getSaldoModel() != null &&
+                accountModel.getSaldoModel().getSaldo() != null &&
+                accountModel.getSaldoModel().getSaldo().getDepositLong() > 10000) ||
+                (accountModel.getVccUserStatus() != null && accountModel.getVccUserStatus().getStatus() != null &&
+                        accountModel.getVccUserStatus().getStatus().equalsIgnoreCase((AccountConstants.VccStatus.REJECTED)))) {
+
+            tokopediaPayViewModel.setIconUrlRight(cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG);
+            tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
+            tokopediaPayViewModel.setRightSaldo(true);
+            tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
+                    (accountModel.getSaldoModel().getSaldo().getDepositLong(), false));
+
+            tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
+            items.add(tokopediaPayViewModel);
+
+        } else {
+            TokopediaPayBSModel bsDataRight = new TokopediaPayBSModel();
+            tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus().getTitle());
+            tokopediaPayViewModel.setRightSaldo(false);
+            tokopediaPayViewModel.setIconUrlRight(accountModel.getVccUserStatus().getIcon());
+            tokopediaPayViewModel.setVccUserStatus(accountModel.getVccUserStatus().getStatus());
+            if (accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.ACTIVE)) {
+                tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat(Long.parseLong(accountModel.getVccUserStatus().getBody()), true));
+            } else {
+                tokopediaPayViewModel.setAmountRight(accountModel.getVccUserStatus().getBody());
+            }
+
+            switch (accountModel.getVccUserStatus().getStatus()) {
+                case AccountConstants.VccStatus.BLOCKED:
+                case AccountConstants.VccStatus.ELIGIBLE:
+                case AccountConstants.VccStatus.DEACTIVATED:
+                    tokopediaPayViewModel.setRightImportant(true);
+                    break;
+            }
+
+            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getRedirectionUrl())) {
+                tokopediaPayViewModel.setApplinkRight(accountModel.getVccUserStatus().getRedirectionUrl());
+            }
+
+            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageHeader())) {
+                bsDataRight.setTitle(accountModel.getVccUserStatus().getMessageHeader());
+            }
+
+            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageBody())) {
+                bsDataRight.setBody(accountModel.getVccUserStatus().getMessageBody());
+            }
+
+            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageButtonName())) {
+                bsDataRight.setButtonText(accountModel.getVccUserStatus().getMessageButtonName());
+            }
+
+            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageUrl())) {
+                bsDataRight.setButtonRedirectionUrl(accountModel.getVccUserStatus().getMessageUrl());
+            }
+
+            tokopediaPayViewModel.setBsDataRight(bsDataRight);
+            items.add(tokopediaPayViewModel);
+        }
+
+
+        /*if (!((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("mainapp_android_enable_tokocard", false)
                 || accountModel.getVccUserStatus() == null
                 || accountModel.getVccUserStatus().getStatus() == null
                 || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_FOUND)
@@ -161,7 +219,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
             tokopediaPayViewModel.setBsDataRight(bsDataRight);
             items.add(tokopediaPayViewModel);
-        }
+        }*/
 
 
         MenuTitleViewModel menuTitle = new MenuTitleViewModel();
