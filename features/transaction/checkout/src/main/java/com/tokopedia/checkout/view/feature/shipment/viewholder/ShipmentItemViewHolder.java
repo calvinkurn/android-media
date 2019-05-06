@@ -428,7 +428,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderShippingType(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter, ArrayList<ShowCaseObject> showCaseObjectList) {
-        llLogPromo.setVisibility(View.GONE);
         renderRobinhoodV2(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
                 recipientAddressModel, shipmentCartItemModel.getShopShipmentList(), ratesDataConverter);
         if (showCaseObjectList.size() == 1) {
@@ -655,7 +654,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvChangeSelectedCourierRecommendation.setTextColor(
                     ContextCompat.getColor(context, R.color.button_change_courier_disabled));
             tvChangeSelectedCourierRecommendation.setOnClickListener(null);
-        }
+        } else llLogPromo.setVisibility(View.GONE);
 
         boolean isCourierSelected = shipmentDetailData != null
                 && shipmentDetailData.getSelectedCourier() != null;
