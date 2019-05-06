@@ -137,7 +137,6 @@ open class SizeSmallBusinessViewHolder (
                 itemView.pricePrefix.visibility = View.GONE
             } else {
                 itemView.pricePrefix.visibility = View.VISIBLE
-                itemView.pricePrefix.text = element?.pricePrefix ?: ""
                 itemView.pricePrefix.text = MethodChecker.fromHtml(element?.pricePrefix)
             }
 
@@ -153,7 +152,7 @@ open class SizeSmallBusinessViewHolder (
                 itemView.price.visibility = View.GONE
             } else {
                 itemView.price.visibility = View.VISIBLE
-                itemView.price.text = element?.price ?: ""
+                itemView.price.text = MethodChecker.fromHtml(element?.price)
             }
 
         } else {
