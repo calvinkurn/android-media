@@ -9,18 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.discovery.R;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ListHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
+import com.tokopedia.search.R;
+import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
+import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchModel> {
+public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.related_search_layout;
 
@@ -42,7 +42,7 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchMod
     }
 
     @Override
-    public void bind(RelatedSearchModel element) {
+    public void bind(RelatedSearchViewModel element) {
         if (ListHelper.isContainItems(element.getOtherRelated())) {
             recyclerView.setVisibility(View.VISIBLE);
             relatedSearchTitle.setVisibility(View.VISIBLE);
@@ -55,14 +55,14 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchMod
 
     public static class RelatedSearchAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-        List<RelatedSearchModel.OtherRelated> itemList = new ArrayList<>();
+        List<RelatedSearchViewModel.OtherRelated> itemList = new ArrayList<>();
         ProductListener itemClickListener;
 
         public RelatedSearchAdapter(ProductListener itemClickListener) {
             this.itemClickListener = itemClickListener;
         }
 
-        public void setItemList(List<RelatedSearchModel.OtherRelated> itemList) {
+        public void setItemList(List<RelatedSearchViewModel.OtherRelated> itemList) {
             this.itemList = itemList;
             notifyDataSetChanged();
         }
@@ -95,15 +95,12 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchMod
             this.itemClickListener = itemClickListener;
         }
 
-        public void bind(final RelatedSearchModel.OtherRelated item) {
+        public void bind(final RelatedSearchViewModel.OtherRelated item) {
             textView.setText(item.getKeyword());
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Uri uri = Uri.parse(item.getUrl());
-                    String query = uri.getQueryParameter(BrowseApi.Q);
-                    itemClickListener.onRelatedSearchClicked(query);
-                }
+            textView.setOnClickListener(view -> {
+                Uri uri = Uri.parse(item.getUrl());
+                String query = uri.getQueryParameter(SearchApiConst.Q);
+                itemClickListener.onRelatedSearchClicked(query);
             });
         }
     }

@@ -3,12 +3,17 @@ package com.tokopedia.discovery.newdiscovery.analytics;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.appsflyer.AFInAppEventParameterName;
+import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,6 +101,21 @@ public class SearchTracking {
                 SearchEventTracking.Action.SORT_BY + " - " + screenName,
                 sortByValue
         );
+    }
+
+    public void eventAppsFlyerViewListingSearch(Context context, JSONArray productsId, String keyword, ArrayList<String> prodIds) {
+        Map<String, Object> listViewEvent = new HashMap<>();
+        listViewEvent.put(AFInAppEventParameterName.CONTENT_ID, prodIds);
+        listViewEvent.put(AFInAppEventParameterName.CURRENCY, "IDR");
+        listViewEvent.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+        listViewEvent.put(AFInAppEventParameterName.SEARCH_STRING, keyword);
+        if (productsId.length() > 0) {
+            listViewEvent.put(AFInAppEventParameterName.SUCCESS, "success");
+        } else {
+            listViewEvent.put(AFInAppEventParameterName.SUCCESS, "fail");
+        }
+
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.SEARCH, listViewEvent);
     }
 
     public static String getActionFieldString(int pageNumber) {

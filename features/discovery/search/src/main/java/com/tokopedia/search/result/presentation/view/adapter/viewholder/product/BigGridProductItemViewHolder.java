@@ -3,21 +3,21 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.search.R;
+import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 
 public class BigGridProductItemViewHolder extends GridProductItemViewHolder {
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_item_big_grid;
 
-    public BigGridProductItemViewHolder(View itemView, ProductListener itemClickListener, String searchQuery) {
-        super(itemView, itemClickListener, searchQuery);
+    public BigGridProductItemViewHolder(View itemView, ProductListener itemClickListener) {
+        super(itemView, itemClickListener);
     }
 
     @Override
-    public void setImageProduct(ProductItem productItem) {
-        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl700());
+    public void setImageProduct(ProductItemViewModel productItem) {
+        ImageHandler.loadImageThumbs(context, productImage, productItem.getImageUrl700());
     }
 }

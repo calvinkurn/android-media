@@ -108,6 +108,7 @@ dependencies {
     }
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.libraries.unifyPrinciples)
+    implementation rootProject.ext.analyticsDependencies.appsflyer
 }
 
 apply from: '../publish_local.gradle'

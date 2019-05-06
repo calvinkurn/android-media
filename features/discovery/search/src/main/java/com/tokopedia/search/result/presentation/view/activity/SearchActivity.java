@@ -153,9 +153,9 @@ public class SearchActivity extends BaseActivity
     }
 
     protected void findViews() {
-        toolbar = findViewById(com.tokopedia.discovery.R.id.toolbar);
-        container = findViewById(com.tokopedia.discovery.R.id.container);
-        loadingView = findViewById(com.tokopedia.discovery.R.id.progressBar);
+        toolbar = findViewById(R.id.toolbar);
+        container = findViewById(R.id.container);
+        loadingView = findViewById(R.id.progressBar);
         tabLayout = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.pager);
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter);

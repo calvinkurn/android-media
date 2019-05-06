@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.presentation.view.listener;
 
 import com.tokopedia.discovery.common.data.Option;
-import com.tokopedia.discovery.newdiscovery.base.EmptyStateListener;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 

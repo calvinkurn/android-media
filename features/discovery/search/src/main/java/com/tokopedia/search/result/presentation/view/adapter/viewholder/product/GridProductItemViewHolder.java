@@ -1,22 +1,26 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.search.R;
+import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
+import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.tkpdpdp.customview.RatingView;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
@@ -26,7 +30,7 @@ import java.util.List;
  * Created by henrypriyono on 10/11/17.
  */
 
-public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
+public class GridProductItemViewHolder extends AbstractViewHolder<ProductItemViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_item_grid;
@@ -47,23 +51,21 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     private TextView topLabel;
     private TextView bottomLabel;
     private TextView newLabel;
-    private String searchQuery;
     private RelativeLayout topadsIcon;
 
-    public GridProductItemViewHolder(View itemView, ProductListener productListener, String searchQuery) {
+    public GridProductItemViewHolder(View itemView, ProductListener productListener) {
         super(itemView);
-        this.searchQuery = searchQuery;
         productImage = itemView.findViewById(R.id.product_image);
-        title = (TextView) itemView.findViewById(R.id.title);
-        price = (TextView) itemView.findViewById(R.id.price);
-        location = (TextView) itemView.findViewById(R.id.location);
-        badgesContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
-        wishlistButton = (ImageView) itemView.findViewById(R.id.wishlist_button);
-        wishlistButtonContainer = (RelativeLayout) itemView.findViewById(R.id.wishlist_button_container);
+        title = itemView.findViewById(R.id.title);
+        price = itemView.findViewById(R.id.price);
+        location = itemView.findViewById(R.id.location);
+        badgesContainer = itemView.findViewById(R.id.badges_container);
+        wishlistButton = itemView.findViewById(R.id.wishlist_button);
+        wishlistButtonContainer = itemView.findViewById(R.id.wishlist_button_container);
         container = itemView.findViewById(R.id.container);
-        rating = (ImageView) itemView.findViewById(R.id.rating);
-        reviewCount = (TextView) itemView.findViewById(R.id.review_count);
-        ratingReviewContainer = (LinearLayout) itemView.findViewById(R.id.rating_review_container);
+        rating = itemView.findViewById(R.id.rating);
+        reviewCount = itemView.findViewById(R.id.review_count);
+        ratingReviewContainer = itemView.findViewById(R.id.rating_review_container);
         topLabel = itemView.findViewById(R.id.topLabel);
         bottomLabel = itemView.findViewById(R.id.bottomLabel);
         newLabel = itemView.findViewById(R.id.new_label);
@@ -73,7 +75,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     }
 
     @Override
-    public void bind(final ProductItem productItem) {
+    public void bind(final ProductItemViewModel productItem) {
         if (!TextUtils.isEmpty(productItem.getTopLabel())) {
             topLabel.setText(productItem.getTopLabel());
             topLabel.setVisibility(View.VISIBLE);
@@ -124,29 +126,18 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
 
         wishlistButtonContainer.setEnabled(productItem.isWishlistButtonEnabled());
 
-        wishlistButtonContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (productItem.isWishlistButtonEnabled()) {
-                    productListener.onWishlistButtonClicked(productItem);
-                }
+        wishlistButtonContainer.setOnClickListener(v -> {
+            if (productItem.isWishlistButtonEnabled()) {
+                productListener.onWishlistButtonClicked(productItem);
             }
         });
 
-        container.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                productListener.onLongClick(productItem, getAdapterPosition());
-                return true;
-            }
+        container.setOnLongClickListener(v -> {
+            productListener.onLongClick(productItem, getAdapterPosition());
+            return true;
         });
 
-        container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                productListener.onItemClicked(productItem, getAdapterPosition());
-            }
-        });
+        container.setOnClickListener(v -> productListener.onItemClicked(productItem, getAdapterPosition()));
 
         if (productItem.getRating() != 0) {
             ratingReviewContainer.setVisibility(View.VISIBLE);
@@ -171,13 +162,13 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         return Math.round(rating / 20f);
     }
 
-    private boolean isBadgesExist(ProductItem productItem) {
-        List<BadgeItem> badgesList = productItem.getBadgesList();
+    private boolean isBadgesExist(ProductItemViewModel productItem) {
+        List<BadgeItemViewModel> badgesList = productItem.getBadgesList();
         if (badgesList == null || badgesList.isEmpty()) {
             return false;
         }
 
-        for (BadgeItem badgeItem : badgesList) {
+        for (BadgeItemViewModel badgeItem : badgesList) {
             if (badgeItem.isShown()) {
                 return true;
             }
@@ -185,17 +176,43 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         return false;
     }
 
-    protected void renderBadges(List<BadgeItem> badgesList) {
+    protected void renderBadges(List<BadgeItemViewModel> badgesList) {
         badgesContainer.removeAllViews();
-        for (BadgeItem badgeItem : badgesList) {
+        for (BadgeItemViewModel badgeItem : badgesList) {
             if (badgeItem.isShown()) {
-                LuckyShopImage.loadImage(context, badgeItem.getImageUrl(), badgesContainer);
+                loadLuckyShopImage(context, badgeItem.getImageUrl(), badgesContainer);
             }
         }
     }
 
-    public void setImageProduct(ProductItem productItem) {
-        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
+    public static void loadLuckyShopImage(Context context, String url, final LinearLayout container) {
+        if (url != null && !url.equals("")) {
+            final View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
+
+            ImageHandler.loadImageBitmap2(context, url, new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                    ImageView image = view.findViewById(R.id.badge);
+                    if (bitmap.getHeight() <= 1 && bitmap.getWidth() <= 1) {
+                        view.setVisibility(View.GONE);
+                    } else {
+                        image.setImageBitmap(bitmap);
+                        view.setVisibility(View.VISIBLE);
+                        container.addView(view);
+                    }
+                }
+
+                @Override
+                public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                    super.onLoadFailed(e, errorDrawable);
+                    view.setVisibility(View.GONE);
+                }
+            });
+        }
+    }
+
+    public void setImageProduct(ProductItemViewModel productItem) {
+        ImageHandler.loadImageThumbs(context, productImage, productItem.getImageUrl());
     }
 
 }

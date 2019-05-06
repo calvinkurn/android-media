@@ -17,27 +17,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.common.data.Option;
-import com.tokopedia.discovery.newdiscovery.base.EmptyStateListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.search.R;
+import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
+import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
@@ -45,14 +39,12 @@ import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
 /**
  * Created by henrypriyono on 10/31/17.
  */
 
-public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> implements TopAdsItemClickListener {
+public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewModel> implements TopAdsItemClickListener {
 
     public static final String SEARCH_NF_VALUE = "1";
     private final int MAX_TOPADS = 4;
@@ -67,7 +59,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private TopAdsBannerView topAdsBannerView;
     private RecyclerView selectedFilterRecyclerView;
     private SelectedFilterAdapter selectedFilterAdapter;
-    private EmptySearchModel boundedEmptySearchModel;
+    private EmptySearchViewModel boundedEmptySearchModel;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.list_empty_search_product;
@@ -103,7 +95,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
     private void loadProductAds() {
         Config productAdsConfig = new Config.Builder()
-                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setSessionId(emptyStateListener.getRegistrationId())
                 .setUserId(emptyStateListener.getUserId())
                 .withMerlinCategory()
                 .topAdsParams(topAdsParams)
@@ -118,19 +110,14 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
     private void loadBannerAds() {
         Config bannerAdsConfig = new Config.Builder()
-                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setSessionId(emptyStateListener.getRegistrationId())
                 .setUserId(emptyStateListener.getUserId())
                 .withMerlinCategory()
                 .topAdsParams(topAdsParams)
                 .setEndpoint(Endpoint.CPM)
                 .build();
         topAdsBannerView.setConfig(bannerAdsConfig);
-        topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
-            @Override
-            public void onBannerAdsClicked(int position, String appLink, CpmData data) {
-                emptyStateListener.onBannerAdsClicked(appLink);
-            }
-        });
+        topAdsBannerView.setTopAdsBannerClickListener((position, appLink, data) -> emptyStateListener.onBannerAdsClicked(appLink));
         topAdsBannerView.setAdsListener(new TopAdsListener() {
             @Override
             public void onTopAdsLoaded(List<Item> list) {
@@ -170,7 +157,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     }
 
     @Override
-    public void bind(EmptySearchModel model) {
+    public void bind(EmptySearchViewModel model) {
         boundedEmptySearchModel = model;
 
         bindNoResultImage();
@@ -219,8 +206,6 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
         if(selectedFilterFromEmptyStateListener != null && !selectedFilterFromEmptyStateListener.isEmpty()) {
             populateSelectedFilterToRecylerView(selectedFilterFromEmptyStateListener);
-        } else if (boundedEmptySearchModel.getFilterFlagSelectedModel() != null) {
-            populateSelectedFilterToRecylerView(convertToOptionList(boundedEmptySearchModel.getFilterFlagSelectedModel()));
         } else {
             selectedFilterRecyclerView.setVisibility(View.GONE);
         }
@@ -229,50 +214,6 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private void populateSelectedFilterToRecylerView(List<Option> selectedFilterOptionList) {
         selectedFilterRecyclerView.setVisibility(View.VISIBLE);
         selectedFilterAdapter.setOptionList(selectedFilterOptionList);
-    }
-
-    private List<Option> convertToOptionList(FilterFlagSelectedModel filterFlagSelectedModel) {
-        List<Option> optionList = new ArrayList<>();
-        if (filterFlagSelectedModel.getSavedTextInput() != null) {
-            if (!TextUtils.isEmpty(filterFlagSelectedModel.getSavedTextInput().get(Option.KEY_PRICE_MIN))
-                    || !TextUtils.isEmpty(filterFlagSelectedModel.getSavedTextInput().get(Option.KEY_PRICE_MAX))) {
-                optionList.add(generatePriceOption());
-            }
-        }
-
-        if (!TextUtils.isEmpty(filterFlagSelectedModel.getCategoryId())) {
-            optionList.add(generateCategoryOption(filterFlagSelectedModel));
-        }
-
-        if (filterFlagSelectedModel.getSavedCheckedState() != null) {
-            optionList.addAll(generateCheckedOptionList(filterFlagSelectedModel.getSavedCheckedState()));
-        }
-
-        return optionList;
-    }
-
-    private Option generatePriceOption() {
-        Option option = new Option();
-        option.setName(context.getResources().getString(R.string.empty_state_selected_filter_price_name));
-        option.setKey(Option.KEY_PRICE_MIN);
-        option.setValue("0");
-        return option;
-    }
-
-    private Option generateCategoryOption(FilterFlagSelectedModel filterFlagSelectedModel) {
-        Option option = new Option();
-        option.setName(filterFlagSelectedModel.getSelectedCategoryName());
-        option.setKey(Option.KEY_CATEGORY);
-        option.setValue(filterFlagSelectedModel.getCategoryId());
-        return option;
-    }
-
-    private List<Option> generateCheckedOptionList(HashMap<String, Boolean> savedCheckedState) {
-        List<Option> optionList = new ArrayList<>();
-        for (HashMap.Entry<String, Boolean> entry : savedCheckedState.entrySet()) {
-            optionList.add(OptionHelper.generateOptionFromUniqueId(entry.getKey()));
-        }
-        return optionList;
     }
 
     private void loadBannerAdsIfNotNull() {

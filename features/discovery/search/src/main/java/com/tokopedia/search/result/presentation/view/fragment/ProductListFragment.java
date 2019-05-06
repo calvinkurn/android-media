@@ -14,40 +14,40 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.discovery.DiscoveryRouter;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.DataValue;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
-import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
-import com.tokopedia.search.result.di.component.ProductListSectionComponent;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
+import com.tokopedia.search.result.presentation.SearchSectionContract;
+import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
+import com.tokopedia.search.result.presentation.view.listener.ProductListener;
+import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
+import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
+import com.tokopedia.search.similarsearch.SimilarSearchManager;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -157,10 +157,10 @@ public class ProductListFragment
 
     @Override
     protected void initInjector() {
-        ProductListSectionComponent component = DaggerProductListSectionComponent.builder()
-                .appComponent(getComponent(BaseAppComponent.class))
-                .build();
-        component.inject(this);
+//        ProductListSectionComponent component = DaggerProductListSectionComponent.builder()
+//                .appComponent(getComponent(BaseAppComponent.class))
+//                .build();
+//        component.inject(this);
     }
 
     @Nullable
@@ -206,15 +206,16 @@ public class ProductListFragment
         if(getActivity() == null || getActivity().getApplicationContext() == null) return;
 
         topAdsConfig = new Config.Builder()
-                .setSessionId(getRegistrationId(getActivity().getApplicationContext()))
+                .setSessionId(getRegistrationId())
                 .setUserId(userSession.getUserId())
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
     }
 
+    public String getRegistrationId() {
+        if(getActivity() == null || getActivity().getApplicationContext() == null) return "";
 
-    private String getRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), GCM_STORAGE);
         return cache.getString(GCM_ID, "");
     }
 
@@ -240,10 +241,10 @@ public class ProductListFragment
         recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
     }
 
-    private EndlessRecyclerviewListener getEndlessRecyclerViewListener(LinearLayoutManager linearLayoutManager) {
-        return new EndlessRecyclerviewListener(linearLayoutManager) {
+    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(LinearLayoutManager linearLayoutManager) {
+        return new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 if (isAllowLoadMore()) {
                     loadMoreProduct(adapter.getStartFrom());
                 } else {
@@ -316,8 +317,8 @@ public class ProductListFragment
         String userId = userSession.isLoggedIn() ? userSession.getUserId() : "0";
         List<Object> dataLayerList = new ArrayList<>();
         for (Visitable object : list) {
-            if (object instanceof ProductItem) {
-                ProductItem item = (ProductItem) object;
+            if (object instanceof ProductItemViewModel) {
+                ProductItemViewModel item = (ProductItemViewModel) object;
                 if (!item.isTopAds()) {
                     dataLayerList.add(item.getProductAsObjectDataLayer(userId));
                 }
@@ -362,7 +363,7 @@ public class ProductListFragment
     private String generateUniqueId() {
         return userSession.isLoggedIn() ?
                 AuthUtil.md5(userSession.getUserId()) :
-                AuthUtil.md5(gcmHandler.getRegistrationId());
+                AuthUtil.md5(getRegistrationId());
     }
 
     @Override
@@ -433,12 +434,9 @@ public class ProductListFragment
         if (requestCode == REQUEST_CODE_GOTO_PRODUCT_DETAIL
                 && data != null
                 && data.getExtras() != null
-                && data.getExtras().getInt(ProductDetailRouter
-                .WISHLIST_STATUS_UPDATED_POSITION, -1) != -1) {
-            int position = data.getExtras().getInt(ProductDetailRouter
-                    .WISHLIST_STATUS_UPDATED_POSITION, -1);
-            boolean isWishlist = data.getExtras().getBoolean(ProductDetailRouter
-                    .WIHSLIST_STATUS_IS_WISHLIST, false);
+                && data.getExtras().getInt(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, -1) != -1) {
+            int position = data.getExtras().getInt(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, -1);
+            boolean isWishlist = data.getExtras().getBoolean(SearchConstant.Wishlist.WIHSLIST_STATUS_IS_WISHLIST, false);
 
             updateWishlistFromPDP(position, isWishlist);
         }
@@ -458,7 +456,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onProductImpressed(ProductItem item, int adapterPosition) {
+    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
         if (item.isTopAds()) {
             new ImpresionTask().execute(item.getTopadsImpressionUrl());
             Product product = new Product();
@@ -491,11 +489,11 @@ public class ProductListFragment
     }
 
     @Override
-    public void onItemClicked(ProductItem item, int adapterPosition) {
+    public void onItemClicked(ProductItemViewModel item, int adapterPosition) {
         Intent intent = getProductIntent(item.getProductID());
 
         if(intent != null) {
-            intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
+            intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
             sendItemClickTrackingEvent(item, adapterPosition);
             startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
         }
@@ -510,13 +508,13 @@ public class ProductListFragment
     }
 
     @Override
-    public void onLongClick(ProductItem item, int adapterPosition) {
+    public void onLongClick(ProductItemViewModel item, int adapterPosition) {
         if(similarSearchManager == null || getSearchParameter() == null) return;
 
         similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getSearchQuery(), item);
     }
 
-    private void sendItemClickTrackingEvent(ProductItem item, int pos) {
+    private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {
         String userId = userSession.isLoggedIn() ? userSession.getUserId() : "0";
         if (item.isTopAds()) {
             sendItemClickTrackingEventForTopAdsItem(item, pos);
@@ -532,7 +530,7 @@ public class ProductListFragment
         }
     }
 
-    private void sendItemClickTrackingEventForTopAdsItem(ProductItem item, int pos) {
+    private void sendItemClickTrackingEventForTopAdsItem(ProductItemViewModel item, int pos) {
         new ImpresionTask().execute(item.getTopadsClickUrl());
 
         Product product = createTopAdsProductForTracking(item);
@@ -540,7 +538,7 @@ public class ProductListFragment
         TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, pos);
     }
 
-    private Product createTopAdsProductForTracking(ProductItem item) {
+    private Product createTopAdsProductForTracking(ProductItemViewModel item) {
         Product product  = new Product();
         product.setId(item.getProductID());
         product.setName(item.getProductName());
@@ -551,7 +549,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onWishlistButtonClicked(final ProductItem productItem) {
+    public void onWishlistButtonClicked(final ProductItemViewModel productItem) {
         presenter.handleWishlistButtonClicked(productItem);
     }
 
@@ -564,14 +562,12 @@ public class ProductListFragment
     public void onBannerAdsClicked(String appLink) {
         if(getActivity() == null) return;
 
-        TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
+        DiscoveryRouter router = ((DiscoveryRouter) getActivity().getApplicationContext());
 
-        if (router.isSupportedDelegateDeepLink(appLink)) {
-            router.actionApplink(getActivity(), appLink);
+        if (router.isSupportApplink(appLink)) {
+            router.goToApplinkActivity(getActivity(), appLink);
         } else if (!TextUtils.isEmpty(appLink)) {
-            Intent intent = new Intent(getContext(), BannerWebView.class);
-            intent.putExtra("url", appLink);
-            startActivity(intent);
+            router.actionOpenGeneralWebView(getActivity(), appLink);
         }
     }
 
@@ -698,10 +694,15 @@ public class ProductListFragment
 
     @Override
     public void launchLoginActivity(Bundle extras) {
-        Intent intent = ((DiscoveryRouter) MainApplication.getAppContext()).getLoginIntent
-                (getActivity());
-        intent.putExtras(extras);
-        startActivityForResult(intent, REQUEST_CODE_LOGIN);
+        if (getActivity() == null) return;
+
+        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
+
+        if (router != null) {
+            Intent intent = router.getLoginIntent(getActivity());
+            intent.putExtras(extras);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN);
+        }
     }
 
     @Override
@@ -732,14 +733,14 @@ public class ProductListFragment
     @Override
     public void setEmptyProduct() {
         isListEmpty = true;
-        adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), null, getString(com.tokopedia.discovery.R.string.product_tab_title).toLowerCase());
+        adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(com.tokopedia.discovery.R.string.product_tab_title).toLowerCase());
         SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
     }
 
     @Override
     protected void refreshAdapterForEmptySearch() {
         if (adapter != null) {
-            adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), null, getString(com.tokopedia.discovery.R.string.product_tab_title).toLowerCase());
+            adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(com.tokopedia.discovery.R.string.product_tab_title).toLowerCase());
         }
     }
 
@@ -783,12 +784,12 @@ public class ProductListFragment
     }
 
     @Override
-    protected com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter getAdapter() {
+    protected SearchSectionGeneralAdapter getAdapter() {
         return adapter;
     }
 
     @Override
-    protected SearchSectionFragmentPresenter getPresenter() {
+    protected SearchSectionContract.Presenter getPresenter() {
         return presenter;
     }
 
@@ -870,7 +871,7 @@ public class ProductListFragment
 
     @Override
     public void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray) {
-        TrackingUtils.eventAppsFlyerViewListingSearch(getActivity(), afProdIds, query, prodIdArray);
+        searchTracking.eventAppsFlyerViewListingSearch(getActivity(), afProdIds, query, prodIdArray);
     }
 
     @Override

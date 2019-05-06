@@ -25,10 +25,6 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by henrypriyono on 10/9/17.
- */
-
 public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     private static final int ADAPTER_POSITION_HEADER = 0;

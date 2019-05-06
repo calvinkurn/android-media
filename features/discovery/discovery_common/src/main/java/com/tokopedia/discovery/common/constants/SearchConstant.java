@@ -35,4 +35,9 @@ public interface SearchConstant {
     enum GridType {
         GRID_1, GRID_2, GRID_3
     }
+
+    interface Wishlist {
+        String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
+        String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
+    }
 }

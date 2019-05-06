@@ -3,19 +3,15 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
-
-/**
- * Created by henrypriyono on 10/17/17.
- */
+import com.tokopedia.search.R;
+import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 
 public class ListProductItemViewHolder extends GridProductItemViewHolder {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_item_list;
 
-    public ListProductItemViewHolder(View itemView, ProductListener itemClickListener, String searchQuery) {
-        super(itemView, itemClickListener, searchQuery);
+    public ListProductItemViewHolder(View itemView, ProductListener itemClickListener) {
+        super(itemView, itemClickListener);
     }
 }

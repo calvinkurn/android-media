@@ -3,6 +3,7 @@ package com.tokopedia.discovery.common.repository.gql
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.discovery.common.repository.Specification
+import java.lang.reflect.Type
 
 abstract class GqlSpecification(val context: Context) : Specification {
 
@@ -11,4 +12,6 @@ abstract class GqlSpecification(val context: Context) : Specification {
     }
 
     abstract fun getResources() : Int
+
+    abstract fun getType() : Type
 }

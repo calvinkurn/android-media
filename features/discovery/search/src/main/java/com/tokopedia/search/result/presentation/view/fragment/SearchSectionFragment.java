@@ -24,7 +24,6 @@ import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
@@ -389,7 +388,7 @@ abstract class SearchSectionFragment extends BaseDaggerFragment implements Searc
         startActivityForResult(intent, getFilterRequestCode());
 
         if (getActivity() != null) {
-            getActivity().overridePendingTransition(com.tokopedia.discovery.R.anim.pull_up, android.R.anim.fade_out);
+            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
         }
     }
 
@@ -518,7 +517,7 @@ abstract class SearchSectionFragment extends BaseDaggerFragment implements Searc
 
     protected abstract SearchSectionGeneralAdapter getAdapter();
 
-    protected abstract SearchSectionFragmentPresenter getPresenter();
+    protected abstract SearchSectionContract.Presenter getPresenter();
 
     protected abstract GridLayoutManager.SpanSizeLookup onSpanSizeLookup();
 
@@ -624,6 +623,6 @@ abstract class SearchSectionFragment extends BaseDaggerFragment implements Searc
         if(filterController == null) return new ArrayList<>();
 
         return OptionHelper.combinePriceFilterIfExists(filterController.getActiveFilterOptionList(),
-                getResources().getString(com.tokopedia.discovery.R.string.empty_state_selected_filter_price_name));
+                getResources().getString(R.string.empty_state_selected_filter_price_name));
     }
 }

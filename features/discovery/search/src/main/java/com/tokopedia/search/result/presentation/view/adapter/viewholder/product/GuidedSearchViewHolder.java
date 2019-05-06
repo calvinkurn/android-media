@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.net.Uri;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,12 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.discovery.R;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.search.R;
+import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
+import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,23 +49,24 @@ public class GuidedSearchViewHolder extends AbstractViewHolder<GuidedSearchViewM
         List<GuidedSearchViewModel.Item> itemList = new ArrayList<>();
         ProductListener itemClickListener;
 
-        public GuidedSearchAdapter(ProductListener itemClickListener) {
+        GuidedSearchAdapter(ProductListener itemClickListener) {
             this.itemClickListener = itemClickListener;
         }
 
-        public void setItemList(List<GuidedSearchViewModel.Item> itemList) {
+        void setItemList(List<GuidedSearchViewModel.Item> itemList) {
             this.itemList = itemList;
             notifyDataSetChanged();
         }
 
+        @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.guided_search_item, parent, false);
             return new ViewHolder(view, itemClickListener);
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             holder.bind(itemList.get(position));
         }
 
@@ -87,14 +89,11 @@ public class GuidedSearchViewHolder extends AbstractViewHolder<GuidedSearchViewM
 
         public void bind(final GuidedSearchViewModel.Item item) {
             textView.setText(item.getKeyword());
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Uri uri = Uri.parse(item.getUrl());
-                    String query = uri.getQueryParameter(BrowseApi.Q);
-                    SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
-                    itemClickListener.onSearchGuideClicked(query);
-                }
+            textView.setOnClickListener(view -> {
+                Uri uri = Uri.parse(item.getUrl());
+                String query = uri.getQueryParameter(SearchApiConst.Q);
+                SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
+                itemClickListener.onSearchGuideClicked(query);
             });
         }
     }

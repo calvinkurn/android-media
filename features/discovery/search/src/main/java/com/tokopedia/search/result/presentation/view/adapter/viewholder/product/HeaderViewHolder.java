@@ -1,9 +1,7 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,11 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
+import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
@@ -36,29 +34,22 @@ import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author by errysuprayogi on 11/7/17.
- */
-
 public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_header_layout;
-    public static final String DEFAULT_ITEM_VALUE = "1";
-    public static final String SHOP = "shop";
+    private static final String SHOP = "shop";
     private LinearLayout suggestionContainer;
     private RecyclerView quickFilterListView;
     private TopAdsBannerView adsBannerView;
     private Context context;
-    public static final String KEYWORD = "keyword";
-    public static final String ETALASE_NAME = "etalase_name";
     private ProductListener productListener;
     private QuickFilterAdapter quickFilterAdapter;
     private RecyclerView guidedSearchRecyclerView;
     private GuidedSearchAdapter guidedSearchAdapter;
     private GlobalNavWidget globalNavWidget;
 
-    public HeaderViewHolder(View itemView, ProductListener productListener, String searchQuery) {
+    public HeaderViewHolder(View itemView, ProductListener productListener) {
         super(itemView);
         context = itemView.getContext();
         this.productListener = productListener;

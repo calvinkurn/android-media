@@ -6,14 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
 import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactory;
 
 import java.util.List;
 
-abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private OnItemChangeView itemChangeView;
 
