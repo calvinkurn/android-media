@@ -559,6 +559,21 @@ public class WidgetTokenView extends FrameLayout {
         }
     }
 
+    public void releaseMediaPlayer(){
+        if (crackMediaPlayer != null) {
+            crackMediaPlayer.release();
+        }
+    }
+
+    /**
+     * This is method is clearing all Animation and releasing media player
+     *  called from onDestroyView of Fragment
+     * */
+    public void releaseResourcesOnDestroy() {
+        clearTokenAnimation();
+        releaseMediaPlayer();
+    }
+
     public void clearTokenAnimationAndCrack() {
         clearTokenAnimation();
         shakeHardAndCrackAnimation();

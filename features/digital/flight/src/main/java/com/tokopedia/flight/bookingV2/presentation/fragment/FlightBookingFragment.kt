@@ -69,7 +69,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     private lateinit var flightBookingCartData: FlightBookingCartData
     private lateinit var passengerAdapter: FlightBookingPassengerAdapter
     private lateinit var userBirthdate: String
-    private lateinit var bookingCartId: String
+    private var bookingCartId: String = ""
     private var userGender: Int = 0
     private lateinit var expiredDate: Date
     private var flightInsuranceAdapter: FlightInsuranceAdapter? = null
@@ -112,7 +112,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
             flightBookingCartData = savedInstanceState.getParcelable(KEY_CART_DATA)
             paramViewModel = savedInstanceState.getParcelable(KEY_PARAM_VIEW_MODEL_DATA)
             expiredDate = savedInstanceState.getSerializable(KEY_PARAM_EXPIRED_DATE) as Date
-            flightPriceViewModel = savedInstanceState.getParcelable(KEY_PARAM_EXTRA_PRICE)
+            flightPriceViewModel = savedInstanceState.getParcelable(EXTRA_PRICE)
             hideFullPageLoading()
             flightBookingPresenter.renderUi(flightBookingCartData, true)
         }
@@ -132,7 +132,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         outState.putParcelable(KEY_CART_DATA, flightBookingCartData)
         outState.putParcelable(KEY_PARAM_VIEW_MODEL_DATA, paramViewModel)
         outState.putSerializable(KEY_PARAM_EXPIRED_DATE, expiredDate)
-        outState.putParcelable(KEY_PARAM_EXTRA_PRICE, flightPriceViewModel)
+        outState.putParcelable(EXTRA_PRICE, flightPriceViewModel)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -164,7 +164,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
                     } else {
                         if (data.getBooleanExtra(FlightBookingReviewFragment.EXTRA_NEED_TO_REFRESH, false)) {
                             isCountdownRestarted = true
-                            flightBookingPresenter.onGetCart(true, flightBookingCartData)
+                            flightBookingPresenter.initialize()
                         }
 
                         if (data.getParcelableExtra<Parcelable>(FlightBookingReviewFragment.EXTRA_COUPON_CHANGED) != null) {
@@ -593,7 +593,6 @@ class FlightBookingFragment : BaseDaggerFragment(),
         private val KEY_CART_DATA = "KEY_CART_DATA"
         private val KEY_PARAM_VIEW_MODEL_DATA = "KEY_PARAM_VIEW_MODEL_DATA"
         private val KEY_PARAM_EXPIRED_DATE = "KEY_PARAM_EXPIRED_DATE"
-        private val KEY_PARAM_EXTRA_PRICE = "KEY_PARAM_EXTRA_PRICE"
 
         private val REQUEST_CODE_PASSENGER = 1
         private val REQUEST_CODEP_PHONE_CODE = 2
