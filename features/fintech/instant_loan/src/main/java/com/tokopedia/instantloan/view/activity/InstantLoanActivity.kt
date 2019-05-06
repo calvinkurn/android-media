@@ -25,6 +25,7 @@ import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.BannerEntity
+import com.tokopedia.instantloan.data.model.response.TestimonialEntity
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager
 import com.tokopedia.instantloan.ddcollector.PermissionResultCallback
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.HELP_URL
@@ -32,6 +33,7 @@ import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.PAYMENT_METHO
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.SUBMISSION_HISTORY_URL
 import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.adapter.BannerPagerAdapter
+import com.tokopedia.instantloan.view.adapter.DanaInstanTestimonialsPagerAdapter
 import com.tokopedia.instantloan.view.adapter.InstantLoanPagerAdapter
 import com.tokopedia.instantloan.view.contractor.BannerContractor
 import com.tokopedia.instantloan.view.contractor.OnGoingLoanContractor
@@ -43,6 +45,8 @@ import com.tokopedia.instantloan.view.presenter.OnGoingLoanPresenter
 import com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
 import com.tokopedia.instantloan.view.ui.InstantLoanItem
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.activity_instant_loan.*
+import kotlinx.android.synthetic.main.layout_il_testimonials.*
 import javax.inject.Inject
 
 class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, BannerContractor.View, OnGoingLoanContractor.View, DanaInstantFragment.ActivityInteractor, BannerPagerAdapter.BannerClick, View.OnClickListener {
@@ -109,10 +113,52 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         loadSection()
         mBannerPresenter.loadBanners()
 
+        loadTestimonials()
+
         if (userSession != null && userSession.isLoggedIn) {
             onGoingLoanPresenter.checkUserOnGoingLoanStatus()
         }
 
+    }
+
+    override fun renderBannerList(banners: List<BannerEntity>?) {
+        if (!banners!!.isEmpty()) {
+            if (banners.size > 1) {
+                (findViewById<View>(R.id.button_next) as FloatingActionButton).show()
+            }
+            findViewById<View>(R.id.container_banner).visibility = View.VISIBLE
+            mBannerPager = findViewById(R.id.view_pager_banner)
+            mBannerPager!!.offscreenPageLimit = 2
+            mBannerPager!!.adapter = BannerPagerAdapter(this, banners, this)
+            mBannerPager!!.setPadding(resources.getDimensionPixelOffset(R.dimen.il_margin_banner),
+                    0, resources.getDimensionPixelOffset(R.dimen.il_margin_banner), 0)
+            mBannerPager!!.clipToPadding = false
+            mBannerPager!!.pageMargin = resources.getDimensionPixelOffset(R.dimen.il_margin_medium)
+            mBannerPager!!.addOnPageChangeListener(mBannerPageChangeListener)
+            sendBannerImpressionEvent(0)
+        }
+    }
+
+
+    private fun loadTestimonials() {
+
+        var testimonialList : ArrayList<TestimonialEntity> = ArrayList<TestimonialEntity>()
+
+        var testimonialItem1: TestimonialEntity = TestimonialEntity(getString(R.string.il_testimonial_review_1), "Asty Afisha", "")
+
+        testimonialList.add(testimonialItem1)
+
+        il_view_pager_testimonials.adapter = DanaInstanTestimonialsPagerAdapter(this, testimonialList)
+
+    }
+
+
+    private fun hideTestimonials() {
+        dana_instan_testimonials.visibility = View.GONE
+    }
+
+    private fun showTestimonials() {
+        dana_instan_testimonials.visibility = View.VISIBLE
     }
 
     private fun loadSection() {
@@ -127,6 +173,24 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         heightWrappingViewPager!!.adapter = instantLoanPagerAdapter
         tabLayout!!.setupWithViewPager(heightWrappingViewPager)
         setActiveTab()
+
+        heightWrappingViewPager!!.addOnPageChangeListener(
+                object  : ViewPager.OnPageChangeListener {
+                    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                        if(position == 0) {
+                            showTestimonials()
+                        } else {
+                            hideTestimonials()
+                        }
+                    }
+
+                    override fun onPageScrollStateChanged(state: Int) {
+                    }
+
+                    override fun onPageSelected(position: Int) {
+                    }
+                }
+        )
     }
 
     private fun populateTwoTabItem() {
@@ -260,24 +324,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_instant_loan
-    }
-
-    override fun renderBannerList(banners: List<BannerEntity>?) {
-        if (!banners!!.isEmpty()) {
-            if (banners.size > 1) {
-                (findViewById<View>(R.id.button_next) as FloatingActionButton).show()
-            }
-            findViewById<View>(R.id.container_banner).visibility = View.VISIBLE
-            mBannerPager = findViewById(R.id.view_pager_banner)
-            mBannerPager!!.offscreenPageLimit = 2
-            mBannerPager!!.adapter = BannerPagerAdapter(this, banners, this)
-            mBannerPager!!.setPadding(resources.getDimensionPixelOffset(R.dimen.il_margin_banner),
-                    0, resources.getDimensionPixelOffset(R.dimen.il_margin_banner), 0)
-            mBannerPager!!.clipToPadding = false
-            mBannerPager!!.pageMargin = resources.getDimensionPixelOffset(R.dimen.il_margin_medium)
-            mBannerPager!!.addOnPageChangeListener(mBannerPageChangeListener)
-            sendBannerImpressionEvent(0)
-        }
     }
 
     override fun nextBanner() {

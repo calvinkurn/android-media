@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_banner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/text_label_testimonial"
+        style="@style/DefaultLabelText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:paddingEnd="@dimen/il_padding_medium"
+        android:paddingLeft="@dimen/il_padding_medium"
+        android:paddingRight="@dimen/il_padding_medium"
+        android:paddingStart="@dimen/il_padding_medium"
+        android:text="@string/il_label_testimonials"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textStyle="bold" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/il_view_pager_testimonials"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_view_pager_banner"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/text_label_testimonial" />
+
+
+</android.support.constraint.ConstraintLayout>
