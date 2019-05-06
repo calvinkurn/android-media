@@ -19,6 +19,7 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.navigation.R
+import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateFilterTypeFactoryImpl
@@ -40,6 +41,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         , NotificationUpdateContract.View, NotificationSectionFilterListener, NotificationUpdateItemListener {
 
     private var cursor = ""
+
     private lateinit var filterViewModel: ArrayList<NotificationUpdateFilterItemViewModel>
     private val selectedItemList = HashMap<Int, Int>()
     private lateinit var bottomSheetDialog: BottomSheetDialog
@@ -50,6 +52,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     @Inject
     lateinit var presenter: NotificationUpdatePresenter
+
+    @Inject
+    lateinit var analytics: NotificationUpdateAnalytics
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_notification_update, container, false)
@@ -70,6 +76,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
 
         bottomActionView.setButton2OnClickListener {
+            analytics.trackMarkAllAsRead()
             presenter.markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate())
         }
 
@@ -129,17 +136,34 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                         bottomSheetDialog?.findViewById(R.id.reset),
                         selectedItemList.size > 0
                 )
-                presenter.filterBy(selectedItemList, filterViewModel)
+                presenter.resetFilter()
             }
         }
 
         submit?.setOnClickListener {
             cursor = ""
             presenter.filterBy(selectedItemList, filterViewModel)
+            analytics.trackClickFilterRequest(getLabelFilterName())
             loadInitialData()
             bottomSheetDialog.dismiss()
         }
         return filterView
+    }
+
+    private fun getLabelFilterName(): String {
+        var typeName = ""
+        var tagName = ""
+        for ((key, value) in selectedItemList) {
+            if(filterViewModel[key].filterType == NotificationUpdateFilterItemViewModel.FilterType.TYPE_ID.type){
+                typeName = filterViewModel[key].list[value].text
+            }else if(filterViewModel[key].filterType == NotificationUpdateFilterItemViewModel.FilterType.TAG_ID.type){
+                tagName = filterViewModel[key].list[value].text
+            }
+        }
+        var labelFormat = String.format("%s - %s",
+                typeName,
+                tagName)
+        return labelFormat
     }
 
     override fun sectionPicked(sectionIndex: Int, sectionItemIndex: Int) {
@@ -169,9 +193,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    override fun onItemClicked(t: Visitable<*>?) {
-        if (t is NotificationUpdateItemViewModel) {
-            t.isRead
+    override fun onItemClicked(datum: Visitable<*>?) {
+        if (datum is NotificationUpdateItemViewModel) {
+            analytics.trackClickNotifList(datum.templateKey)
+            datum.isRead
         }
     }
 
@@ -241,6 +266,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 loadData(page)
+                analytics.trackScrollBottom()
             }
         }
     }
