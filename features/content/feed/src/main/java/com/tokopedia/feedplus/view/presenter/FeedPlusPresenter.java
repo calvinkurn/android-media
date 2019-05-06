@@ -403,16 +403,14 @@ public class FeedPlusPresenter
 
                         getView().hideAdapterLoading();
 
-                        if (model.getPostList().size() == 0) {
-                            getView().unsetEndlessScroll();
-                        } else {
+                        if (model.getPostList().size() != 0) {
                             getView().onSuccessGetFeed(new ArrayList<>(model.getPostList()));
+                        }
 
-                            if (model.getHasNext()) {
-                                getView().updateCursor(model.getCursor());
-                            } else {
-                                getView().unsetEndlessScroll();
-                            }
+                        if (model.getHasNext()) {
+                            getView().updateCursor(model.getCursor());
+                        } else {
+                            getView().unsetEndlessScroll();
                         }
                     }
                 }

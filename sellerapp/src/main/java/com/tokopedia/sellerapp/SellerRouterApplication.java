@@ -31,6 +31,7 @@ import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
@@ -190,8 +191,6 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoActivity;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementInternalRouter;
 import com.tokopedia.topads.TopAdsManagementRouter;
@@ -210,9 +209,11 @@ import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -234,8 +235,11 @@ import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
 
+import static com.tokopedia.core.analytics.AppEventTracking.Event.CLICK_PDP;
+import static com.tokopedia.core.analytics.AppEventTracking.Event.PRODUCT_DETAIL_PAGE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
+
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
 
 /**
@@ -251,7 +255,6 @@ public abstract class SellerRouterApplication extends MainApplication
         NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
         BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
         KolRouter, PaymentSettingRouter, TalkRouter, ChangePhoneNumberRouter, PhoneVerificationRouter,
-        com.tokopedia.tkpdpdp.ProductDetailRouter,
         TopAdsDashboardRouter,
         TopAdsManagementRouter,
         BroadcastMessageRouter,
@@ -264,8 +267,7 @@ public abstract class SellerRouterApplication extends MainApplication
         SaldoDetailsRouter,
         FlashSaleRouter,
         LinkerRouter,
-        CharacterPerMinuteInterface
-{
+        CharacterPerMinuteInterface {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -429,6 +431,10 @@ public abstract class SellerRouterApplication extends MainApplication
         goToDefaultRoute(context);
     }
 
+    /**
+     * User PersistentCacheManager Library directly
+     */
+    @Deprecated
     @Override
     public CacheManager getGlobalCacheManager() {
         return new GlobalCacheManager();
@@ -807,20 +813,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToOldProductDetailPage(@NotNull Context context, @Nullable String productId,
-                                         @Nullable String shopDomain, @Nullable String productKey,
-                                         @Nullable String trackerAttribution, @Nullable String trackerListName) {
-        ProductPass productPass = ProductPass.Builder.aProductPass()
-                .setProductId(productId)
-                .setShopDomain(shopDomain)
-                .setProductKey(productKey)
-                .setTrackerAttribution(trackerAttribution)
-                .setTrackerListName(trackerListName)
-                .build();
-        context.startActivity(ProductInfoActivity.createInstance(context, productPass));
-    }
-
-    @Override
     public void goToOrderHistory(Context context, String orderId, int userMode) {
         Intent intent = OrderHistoryActivity.createInstance(context, orderId, userMode);
         context.startActivity(intent);
@@ -1122,11 +1114,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void startAddProduct(Activity activity, String shopId) {
-        goToAddProduct(activity);
-    }
-
-    @Override
     public String getDesktopLinkGroupChat() {
         return "";
     }
@@ -1268,6 +1255,7 @@ public abstract class SellerRouterApplication extends MainApplication
         //From DialogLogoutFragment
         if (activity != null) {
             new GlobalCacheManager().deleteAll();
+            PersistentCacheManager.instance.delete();
             Router.clearEtalase(activity);
             DbManagerImpl.getInstance().removeAllEtalase();
             try {
@@ -1327,22 +1315,31 @@ public abstract class SellerRouterApplication extends MainApplication
     public void eventClickFilterReview(Context context,
                                        String filterName,
                                        String productId) {
-        ProductPageTracking.eventClickFilterReview(
-                context,
-                filterName,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                CLICK_PDP,
+                "product detail page",
+                String.format(
+                        "click - filter review by %s",
+                        filterName.toLowerCase()
+                ),
                 productId
-        );
+        ));
     }
 
     @Override
     public void eventImageClickOnReview(Context context,
                                         String productId,
                                         String reviewId) {
-        ProductPageTracking.eventClickImageOnReviewList(
-                context,
-                productId,
-                reviewId
-        );
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                CLICK_PDP,
+                "product detail page",
+                "click - review gallery on review list",
+                String.format(
+                        "product_id: %s - review_id : %s",
+                        productId,
+                        reviewId
+                )
+        ));
     }
 
     @Override
@@ -1655,8 +1652,25 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getCheckoutIntent(Context context) {
+    public Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest) {
         return null;
+    }
+
+    @Override
+    public Intent getCheckoutIntent(Context context, String deviceid) {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public String getDeviceId(@NotNull Context context) {
+        return "";
+    }
+
+    @Override
+    public boolean isMerchantCreditLineEnabled() {
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_MERCHANT_CREDIT_LINE,
+                true);
     }
 
     @Override
@@ -1709,12 +1723,9 @@ public abstract class SellerRouterApplication extends MainApplication
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
-    public void shareFeed(Activity activity, String detailId, String url, String title, String
-            imageUrl, String description) {
-    }
-
     @Override
-    public void saveCPM(@NonNull String cpm) {}
+    public void saveCPM(@NonNull String cpm) {
+    }
 
     @Override
     public String getCPM() {

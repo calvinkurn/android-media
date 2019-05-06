@@ -208,7 +208,7 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.discovery)
-    implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.productDetailRevamp)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.payment)

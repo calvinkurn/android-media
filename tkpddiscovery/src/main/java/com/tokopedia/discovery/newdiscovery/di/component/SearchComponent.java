@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchPresenter;
 import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductListFragment;
@@ -26,6 +27,8 @@ import dagger.Component;
 @Component(modules = SearchModule.class, dependencies = AppComponent.class)
 public interface SearchComponent {
     void inject(SearchActivity searchActivity);
+
+    void inject(AutoCompleteActivity autoCompleteActivity);
 
     void inject(ImageSearchActivity imageSearchActiviy);
 

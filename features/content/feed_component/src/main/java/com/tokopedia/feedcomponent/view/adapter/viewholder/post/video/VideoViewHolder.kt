@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.video
 
 import android.os.Build
+import android.view.View
 import android.view.ViewTreeObserver
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
@@ -16,14 +17,22 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
 
     override var layoutRes = R.layout.item_post_video
 
+    companion object {
+        const val STRING_DEFAULT_TRANSCODING = "customerTrans"
+    }
+
     override fun bind(element: VideoViewModel) {
-        itemView.image.setOnClickListener {
-            if (!element.url.isBlank()) {
-                listener.onVideoPlayerClicked(
-                        element.positionInFeed,
-                        pagerPosition,
-                        element.postId.toString())
+        if (!element.url.contains(STRING_DEFAULT_TRANSCODING)) {
+            itemView.image.setOnClickListener {
+                if (!element.url.isBlank()) {
+                    listener.onVideoPlayerClicked(
+                            element.positionInFeed,
+                            pagerPosition,
+                            element.postId.toString())
+                }
             }
+        } else {
+            itemView.ic_play.visibility = View.GONE
         }
         itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {

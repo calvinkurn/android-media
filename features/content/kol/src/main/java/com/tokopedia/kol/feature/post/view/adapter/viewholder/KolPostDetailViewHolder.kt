@@ -36,7 +36,8 @@ class KolPostDetailViewHolder(private val kolView: View,
     override fun bind(element: DynamicPostViewModel?) {
         super.bind(element)
         val footer = kolView.findViewById<View>(R.id.footer)
-        footer.visibility = View.GONE
+        val footerCta = footer.findViewById<View>(R.id.footerCta)
+        footerCta.visibility = View.GONE
     }
 
     override fun bindCaption(caption: Caption, template: TemplateBody) {

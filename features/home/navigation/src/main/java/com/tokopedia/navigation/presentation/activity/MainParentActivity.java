@@ -663,24 +663,26 @@ public class MainParentActivity extends BaseActivity implements
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
-                AppUpdateDialogBuilder appUpdateDialogBuilder =
-                        new AppUpdateDialogBuilder(
-                                MainParentActivity.this,
-                                detail,
-                                new AppUpdateDialogBuilder.Listener() {
-                                    @Override
-                                    public void onPositiveButtonClicked(DetailUpdate detail) {
-                                        globalNavAnalytics.eventClickAppUpdate(detail.isForceUpdate());
-                                    }
+                if (!isFinishing()) {
+                    AppUpdateDialogBuilder appUpdateDialogBuilder =
+                            new AppUpdateDialogBuilder(
+                                    MainParentActivity.this,
+                                    detail,
+                                    new AppUpdateDialogBuilder.Listener() {
+                                        @Override
+                                        public void onPositiveButtonClicked(DetailUpdate detail) {
+                                            globalNavAnalytics.eventClickAppUpdate(detail.isForceUpdate());
+                                        }
 
-                                    @Override
-                                    public void onNegativeButtonClicked(DetailUpdate detail) {
-                                        globalNavAnalytics.eventClickCancelAppUpdate(detail.isForceUpdate());
+                                        @Override
+                                        public void onNegativeButtonClicked(DetailUpdate detail) {
+                                            globalNavAnalytics.eventClickCancelAppUpdate(detail.isForceUpdate());
+                                        }
                                     }
-                                }
-                        );
-                appUpdateDialogBuilder.getAlertDialog().show();
-                globalNavAnalytics.eventImpressionAppUpdate(detail.isForceUpdate());
+                            );
+                    appUpdateDialogBuilder.getAlertDialog().show();
+                    globalNavAnalytics.eventImpressionAppUpdate(detail.isForceUpdate());
+                }
             }
 
             @Override
@@ -690,7 +692,9 @@ public class MainParentActivity extends BaseActivity implements
 
             @Override
             public void onNotNeedUpdate() {
-                checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
+                if (!isFinishing()) {
+                    checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
+                }
             }
         });
     }
@@ -769,10 +773,10 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc) {
+    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc, String promoCode) {
         if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
             if (emptyCartFragment == null) {
-                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc);
+                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc, promoCode);
             }
             fragmentList.set(CART_MENU, emptyCartFragment);
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
@@ -818,7 +822,7 @@ public class MainParentActivity extends BaseActivity implements
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intentHome.setAction(Intent.ACTION_VIEW);
 
-                    Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchPage(this);
+                    Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchAutoCompletePage(this);
                     productIntent.setAction(Intent.ACTION_VIEW);
                     productIntent.putExtras(args);
 
