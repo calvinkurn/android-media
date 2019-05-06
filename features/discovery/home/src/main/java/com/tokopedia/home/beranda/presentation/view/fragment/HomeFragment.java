@@ -1028,8 +1028,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void openApplink(String applink, String trackingAttribution) {
         if (!TextUtils.isEmpty(applink)) {
             applink = appendTrackerAttributionIfNeeded(applink, trackingAttribution);
-            ((IHomeRouter) getActivity().getApplicationContext())
-                    .goToApplinkActivity(getActivity(), applink);
+            Intent intent = RouteManager.getIntent(getActivity(), applink);
+            getActivity().startActivity(intent);
+//            ((IHomeRouter) getActivity().getApplicationContext())
+//                    .goToApplinkActivity(getActivity(), applink);
         }
     }
 
