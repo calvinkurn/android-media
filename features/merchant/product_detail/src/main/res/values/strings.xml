@@ -10,7 +10,7 @@
     <string name="label_choose_product_variant"><![CDATA[Pilih warna & ukuran]]></string>
     <string name="label_product_info">Informasi Produk</string>
     <string name="label_min_order">Pemesanan Min.</string>
-    <string name="label_min_order_new">Pemesanan Min.</string>
+    <string name="label_order_min">Pemesanan Min.</string>
     <string name="label_pre_order">Waktu Preorder</string>
     <string name="label_product_condition">Kondisi</string>
     <string name="label_read_detail">Baca Selengkapnya</string>
