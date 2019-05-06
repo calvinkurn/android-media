@@ -641,7 +641,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         shopShipmentList, getAdapterPosition());
             }
         });
-        tvChangeSelectedCourierRecommendation.setTextColor(Color.parseColor("#42b549"));
+        tvChangeSelectedCourierRecommendation.setTextColor(ContextCompat.getColor(context, R.color.button_change_courier));
         tvChangeSelectedCourierRecommendation.setOnClickListener(v -> mActionListener.onChangeShippingCourier(
                 shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
                 currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition()));
@@ -652,7 +652,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (!TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc())) {
                 tvLogPromoLabel.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
             } else tvLogPromoLabel.setVisibility(View.GONE);
-            tvChangeSelectedCourierRecommendation.setTextColor(Color.parseColor("#7031353b"));
+            tvChangeSelectedCourierRecommendation.setTextColor(
+                    ContextCompat.getColor(context, R.color.button_change_courier_disabled));
             tvChangeSelectedCourierRecommendation.setOnClickListener(null);
         }
 
