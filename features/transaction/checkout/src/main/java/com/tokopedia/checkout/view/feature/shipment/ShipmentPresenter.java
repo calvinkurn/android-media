@@ -39,6 +39,7 @@ import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddres
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
@@ -152,6 +153,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private ShipmentCostModel shipmentCostModel;
     private EgoldAttributeModel egoldAttributeModel;
     private ShipmentDonationModel shipmentDonationModel;
+    private ShipmentButtonPaymentModel shipmentButtonPaymentModel;
     private CodModel codData;
     private Token token;
 
@@ -355,6 +357,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel) {
         this.shipmentDonationModel = shipmentDonationModel;
+    }
+
+    @Override
+    public void setShipmentButtonPaymentModel(ShipmentButtonPaymentModel shipmentButtonPaymentModel) {
+        this.shipmentButtonPaymentModel = shipmentButtonPaymentModel;
+    }
+
+    @Override
+    public ShipmentButtonPaymentModel getShipmentButtonPaymentModel() {
+        if (shipmentButtonPaymentModel == null) {
+            shipmentButtonPaymentModel = new ShipmentButtonPaymentModel();
+        }
+        return shipmentButtonPaymentModel;
     }
 
     @Override
