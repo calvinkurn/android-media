@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -12,10 +14,23 @@ buildscript {
     }
 }
 
+project.ext {
+    artifactId = 'top_ads_autoads'
+    groupId = 'com.tokopedia.topads.auto'
+    versionName = "${tkpdTopAdsSDKVersion}"
+    artifactName = "top_ads_autoads-release"
+}
+
 dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation project(rootProject.ext.features.seller)
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
 }
 
 apply from: '../../../publish_local.gradle'

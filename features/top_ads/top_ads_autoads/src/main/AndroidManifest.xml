@@ -4,16 +4,28 @@
 
     <application
         android:allowBackup="true"
-        android:label="TopAdsAutoAds">
-        <activity android:name=".StartAutoAdsActivity">
+        android:label="@string/app_name">
+        <activity
+            android:name=".activity.StartAutoAdsActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/autoads_topads"
+            android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DailyBudgetActivity" />
-        <activity android:name=".AutoAdsActivatedActivity" />
+        <activity
+            android:name=".activity.DailyBudgetActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/autoads_pengaturan_iklan"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".activity.AutoAdsActivatedActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/autoads_iklan_otomatis"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>
