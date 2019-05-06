@@ -312,8 +312,8 @@ public class FeedPlusPresenter
         );
     }
 
-    public String getUserId() {
-        return userSession.getUserId();
+    private String getUserId() {
+        return userSession.isLoggedIn() ? userSession.getUserId() : "0";
     }
 
     private void getFirstPageFeed() {
@@ -321,14 +321,8 @@ public class FeedPlusPresenter
         viewListener.showRefresh();
         currentCursor = "";
 
-
-        if (userSession == null || !userSession.isLoggedIn()) {
-            viewListener.onUserNotLogin();
-            return;
-        }
-
         getDynamicFeedFirstPageUseCase.execute(
-                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId(), "", GetDynamicFeedUseCase.SOURCE_FEEDS),
+                GetDynamicFeedUseCase.Companion.createRequestParams(getUserId(), "", GetDynamicFeedUseCase.SOURCE_FEEDS),
                 new Subscriber<DynamicFeedFirstPageDomainModel>() {
                     @Override
                     public void onCompleted() {
@@ -412,7 +406,7 @@ public class FeedPlusPresenter
         }
 
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId(), currentCursor, GetDynamicFeedUseCase.SOURCE_FEEDS),
+                GetDynamicFeedUseCase.Companion.createRequestParams(getUserId(), currentCursor, GetDynamicFeedUseCase.SOURCE_FEEDS),
                 new Subscriber<DynamicFeedDomainModel>() {
                     @Override
                     public void onCompleted() {

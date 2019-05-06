@@ -1399,14 +1399,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onUserNotLogin() {
-        finishLoading();
-        adapter.clearData();
-        adapter.unsetEndlessScrollListener();
-        adapter.showUserNotLogin();
-    }
-
-    @Override
     public void onGoToLogin() {
         if (getActivity() != null) {
             Intent intent = feedModuleRouter.getLoginIntent(getActivity());

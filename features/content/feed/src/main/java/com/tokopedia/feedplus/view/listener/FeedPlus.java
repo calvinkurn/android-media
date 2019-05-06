@@ -174,8 +174,6 @@ public interface FeedPlus {
 
         void onContentProductLinkClicked(String url);
 
-        void onUserNotLogin();
-
         void onGoToLogin();
 
         void onSuccessSendVote(int rowNumber, String optionId,
