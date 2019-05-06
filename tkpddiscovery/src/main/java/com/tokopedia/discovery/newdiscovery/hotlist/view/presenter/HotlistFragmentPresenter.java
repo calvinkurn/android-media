@@ -165,6 +165,7 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
         if (getView().getQueryModel() != null) {
             requestParams.putString(BrowseApi.OB, getView().getQueryModel().getOrderBy());
             requestParams.putString(BrowseApi.Q, getView().getQueryModel().getQueryKey());
+            requestParams.putBoolean(BrowseApi.IS_CURATED, getView().getQueryModel().getQueryKey().isEmpty());
             requestParams.putString(BrowseApi.H, getView().getQueryModel().getHotlistID());
             requestParams.putString(BrowseApi.SHOP_ID, getView().getQueryModel().getShopID());
             requestParams.putString(BrowseApi.FSHOP, getView().getQueryModel().getFilterGoldMerchant());
