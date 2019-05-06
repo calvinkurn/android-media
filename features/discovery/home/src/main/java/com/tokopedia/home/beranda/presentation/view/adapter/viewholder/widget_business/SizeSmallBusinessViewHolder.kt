@@ -113,8 +113,8 @@ open class SizeSmallBusinessViewHolder (
     open fun renderFooter(element: HomeWidget.ContentItemTab?) {
         if (hasPrice(element) || hasTagLabel(element)) {
             itemView.footer.visibility = View.VISIBLE
-            if(hasTagLabel(element))  renderLabel(element)
-            if(hasPrice(element)) renderPrice(element)
+            renderLabel(element)
+            renderPrice(element)
         } else {
             itemView.footer.visibility = View.GONE
         }
