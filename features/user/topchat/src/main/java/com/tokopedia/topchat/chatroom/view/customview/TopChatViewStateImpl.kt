@@ -18,6 +18,7 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
@@ -168,16 +169,20 @@ class TopChatViewStateImpl(
     private fun showLastTimeOnline(viewModel: ChatroomViewModel) {
         val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
         val onlineStats = toolbar.findViewById<View>(R.id.online_status)
+        val lastOnlineTimeStamp = getShopLastTimeOnlineTimeStamp(viewModel)
 
         if (isOfficialStore(viewModel)) {
             onlineStats.visibility = View.GONE
             onlineDesc.visibility = View.GONE
         } else {
             onlineStats.visibility = View.VISIBLE
-            onlineDesc.visibility = View.VISIBLE
-
-            val onlineDescStatus = getOnlineDescStatus(view.context, viewModel)
-            onlineDesc.text = onlineDescStatus
+            if (lastOnlineTimeStamp != 0L) {
+                val onlineDescStatus = getOnlineDescStatus(view.context, viewModel)
+                onlineDesc.visibility = View.VISIBLE
+                onlineDesc.text = onlineDescStatus
+            } else {
+                onlineDesc.visibility = View.GONE
+            }
         }
     }
 
@@ -185,8 +190,12 @@ class TopChatViewStateImpl(
         return if (viewModel.headerModel.isOnline) {
             context.getString(R.string.online)
         } else {
-            ChatTimeConverter.getRelativeDate(view.context, viewModel.headerModel.lastTimeOnline)
+            ChatTimeConverter.getRelativeDate(view.context, getShopLastTimeOnlineTimeStamp(viewModel))
         }
+    }
+
+    private fun getShopLastTimeOnlineTimeStamp(viewModel: ChatroomViewModel): Long {
+        return viewModel.headerModel.lastTimeOnline.toLongOrZero()
     }
 
     private fun isOfficialStore(viewModel: ChatroomViewModel) = viewModel.headerModel.isOfficialStore()

@@ -14,7 +14,7 @@ data class ChatRoomHeaderViewModel(
         var mode: Int = 1,
         var keyword: String = "",
         var image: String = "",
-        var lastTimeOnline : Long = 0,
+        var lastTimeOnline : String = "",
         var isOnline : Boolean = false,
         var shopId : Int = 0) : Parcelable {
 
