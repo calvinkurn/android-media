@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">digital_topup_bills</string>
 
-    <string name="title_telco_page">Prabayar / Pascabayar></string>
+    <string name="digital_title_telco_page">Prabayar / Pascabayar</string>
     <string name="title_empty_stock">Stok Habis</string>
+    <string name="digital_hint_input_numbers">Contoh 081234567890</string>
 </resources>

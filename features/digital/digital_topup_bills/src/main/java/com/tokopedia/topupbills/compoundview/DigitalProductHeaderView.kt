@@ -23,6 +23,8 @@ class DigitalProductHeaderView @JvmOverloads constructor(@NotNull context: Conte
     private val layoutHeaderRight : RelativeLayout
     private lateinit var listener: ActionListener
 
+    private var headerSelected : Int = HEADER_LEFT
+
     init {
         val view = View.inflate(context, R.layout.view_digital_header_product, this)
         titleHeaderLeft = view.findViewById(R.id.header_left)
@@ -36,17 +38,27 @@ class DigitalProductHeaderView @JvmOverloads constructor(@NotNull context: Conte
     }
 
     fun setHeader(subMenus: List<DigitalProductSubMenu>) {
-        titleHeaderLeft.setText(subMenus.get(HEADER_LEFT).name)
-        titleHeaderRight.setText(subMenus.get(HEADER_RIGHT).name)
+        titleHeaderLeft.setText(subMenus.get(HEADER_LEFT).label)
+        titleHeaderRight.setText(subMenus.get(HEADER_RIGHT).label)
 
-        headerLeftActive(subMenus.get(HEADER_LEFT))
+        headerLeftActive(subMenus.get(headerSelected))
         layoutHeaderLeft.setOnClickListener {
-            headerLeftActive(subMenus.get(HEADER_LEFT))
+            if (headerSelected != HEADER_LEFT)
+                headerSelected = HEADER_LEFT
+                headerLeftActive(subMenus.get(HEADER_LEFT))
         }
 
         layoutHeaderRight.setOnClickListener {
-            headerRightActive(subMenus.get(HEADER_RIGHT))
+            if (headerSelected != HEADER_RIGHT)
+                headerSelected = HEADER_RIGHT
+                headerRightActive(subMenus.get(HEADER_RIGHT))
         }
+    }
+
+    fun setHeaderActive(type: Int) {
+        if(type == HEADER_LEFT)
+            headerSelected = HEADER_LEFT
+        else headerSelected = HEADER_RIGHT
     }
 
     fun headerLeftActive(submenu: DigitalProductSubMenu) {

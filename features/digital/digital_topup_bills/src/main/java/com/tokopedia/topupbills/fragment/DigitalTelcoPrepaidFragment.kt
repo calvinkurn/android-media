@@ -7,22 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalProductHeaderView
 import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalRecentNumbersView
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.model.DigitalProductSubMenu
 import com.tokopedia.topupbills.model.DigitalRecentNumber
 
 /**
  * Created by nabillasabbaha on 11/04/19.
  */
-class DigitalTelcoPraFragment : BaseDaggerFragment() {
+class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
 
     private lateinit var recentNumbersView: DigitalRecentNumbersView
     private val recentNumbers = mutableListOf<DigitalRecentNumber>()
 
     override fun getScreenName(): String {
-        return DigitalTelcoPraFragment::class.java.simpleName
+        return DigitalTelcoPrepaidFragment::class.java.simpleName
     }
 
     override fun initInjector() {
@@ -30,7 +28,7 @@ class DigitalTelcoPraFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_digital_product_telco, container, false)
+        val view = inflater.inflate(R.layout.fragment_digital_telco_prepaid, container, false)
         recentNumbersView = view.findViewById(R.id.recent_numbers)
         return view
     }
@@ -55,7 +53,7 @@ class DigitalTelcoPraFragment : BaseDaggerFragment() {
     companion object {
 
         fun newInstance() : Fragment {
-            val fragment = DigitalTelcoPraFragment()
+            val fragment = DigitalTelcoPrepaidFragment()
             return fragment
         }
     }
