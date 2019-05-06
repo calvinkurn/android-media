@@ -70,7 +70,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     public static final int ITEM_VIEW_SHIPMENT_ITEM = R.layout.item_shipment;
 
     private static final int FIRST_ELEMENT = 0;
-    private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
 
     private static final int IMAGE_ALPHA_DISABLED = 128;
     private static final int IMAGE_ALPHA_ENABLED = 255;
@@ -104,7 +103,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvNoteToSellerLabel;
     private TextView tvOptionalNoteToSeller;
     private LinearLayout llOptionalNoteToSellerLayout;
-    private LinearLayout llItemProductContainer;
     private RelativeLayout rlPurchaseProtection;
     private TextView tvPPPLinkText;
     private TextView tvPPPPrice;
@@ -112,22 +110,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private CheckBox cbPPP;
     private TextView tvAddressName;
     private TextView tvAddressStatus;
-    private LinearLayout llAddressName;
     private TextView tvRecipientName;
     private TextView tvRecipientAddress;
     private TextView tvRecipientPhone;
     private LinearLayout addressLayout;
-    private PickupPointLayout pickupPointLayout;
     private RecyclerView rvCartItem;
     private TextViewCompat tvExpandOtherProduct;
     private RelativeLayout rlExpandOtherProduct;
-    private TextView tvTextShipment;
     private TextView chooseCourierButton;
     private LinearLayout llShipmentOptionViewLayout;
-    private TextView tvCartSubTotal;
     private ImageView ivDetailOptionChevron;
     private TextView tvSubTotalPrice;
-    private TextView tvShipmentOption;
     private RelativeLayout rlCartSubTotal;
     private TextView tvTotalItem;
     private TextView tvTotalItemPrice;
@@ -137,8 +130,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvInsuranceFeePrice;
     private TextView tvProtectionLabel;
     private TextView tvProtectionFee;
-    private TextView tvPromoText;
-    private TextView tvPromoPrice;
     private RelativeLayout rlShipmentCost;
     private LinearLayout llSelectedCourier;
     private TextView tvCourierName;
@@ -173,10 +164,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout llSelectShipmentRecommendation;
     private TextView tvChooseDuration;
     private LinearLayout llSelectedShipmentRecommendation;
-    private LinearLayout llSelectedDurationRecommendationContainer;
     private TextView tvSelectedDurationRecommendation;
     private TextView tvChangeSelectedDuration;
-    private LinearLayout llSelectedCourierRecommendationContainer;
     private TextView tvSelectedCourierRecommendation;
     private TextView tvSelectedPriceRecommendation;
     private TextView tvChangeSelectedCourierRecommendation;
@@ -193,12 +182,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout llSelectShipmentBlackbox;
     private TextView tvChooseCourierBlackbox;
     private LinearLayout llSelectedShipmentBlackbox;
-    private LinearLayout llSelectedCourierBlackboxContainer;
     private TextView tvSelectedCourierBlackbox;
     private TextView tvSelectedPriceBlackbox;
     private TextView tvChangeSelectedCourierBlackbox;
-    private LinearLayout llShipmentBlackboxInfoTicker;
-    private ImageView imgYellowBulb;
     private TextView tvShipmentBlackboxTickerInfo;
 
     private TextView tvTradeInLabel;
@@ -256,27 +242,21 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvNoteToSellerLabel = itemView.findViewById(R.id.tv_note_to_seller_label);
         tvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
         llOptionalNoteToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
-        llItemProductContainer = itemView.findViewById(R.id.ll_item_product_container);
         tvAddressName = itemView.findViewById(R.id.tv_address_name);
         tvAddressStatus = itemView.findViewById(R.id.tv_address_status);
-        llAddressName = itemView.findViewById(R.id.ll_address_name);
         tvRecipientName = itemView.findViewById(R.id.tv_recipient_name);
         tvRecipientAddress = itemView.findViewById(R.id.tv_recipient_address);
         tvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
         tvProtectionLabel = itemView.findViewById(R.id.tv_purchase_protection_label);
         tvProtectionFee = itemView.findViewById(R.id.tv_purchase_protection_fee);
         addressLayout = itemView.findViewById(R.id.address_layout);
-        pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
         rvCartItem = itemView.findViewById(R.id.rv_cart_item);
         tvExpandOtherProduct = itemView.findViewById(R.id.tv_expand_other_product);
         rlExpandOtherProduct = itemView.findViewById(R.id.rl_expand_other_product);
-        tvTextShipment = itemView.findViewById(R.id.tv_text_shipment);
         chooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
         llShipmentOptionViewLayout = itemView.findViewById(R.id.ll_shipment_option_view_layout);
-        tvCartSubTotal = itemView.findViewById(R.id.tv_cart_sub_total);
         ivDetailOptionChevron = itemView.findViewById(R.id.iv_detail_option_chevron);
         tvSubTotalPrice = itemView.findViewById(R.id.tv_sub_total_price);
-        tvShipmentOption = itemView.findViewById(R.id.tv_shipment_option);
         rlCartSubTotal = itemView.findViewById(R.id.rl_cart_sub_total);
         tvTotalItem = itemView.findViewById(R.id.tv_total_item);
         tvTotalItemPrice = itemView.findViewById(R.id.tv_total_item_price);
@@ -284,8 +264,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvShippingFeePrice = itemView.findViewById(R.id.tv_shipping_fee_price);
         tvInsuranceFee = itemView.findViewById(R.id.tv_insurance_fee);
         tvInsuranceFeePrice = itemView.findViewById(R.id.tv_insurance_fee_price);
-        tvPromoText = itemView.findViewById(R.id.tv_promo_text);
-        tvPromoPrice = itemView.findViewById(R.id.tv_promo_price);
         rlShipmentCost = itemView.findViewById(R.id.rl_shipment_cost);
         llSelectedCourier = itemView.findViewById(R.id.ll_selected_courier);
         tvCourierName = itemView.findViewById(R.id.tv_courier_name);
@@ -320,10 +298,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llSelectShipmentRecommendation = itemView.findViewById(R.id.ll_select_shipment_recommendation);
         tvChooseDuration = itemView.findViewById(R.id.tv_choose_duration);
         llSelectedShipmentRecommendation = itemView.findViewById(R.id.ll_selected_shipment_recommendation);
-        llSelectedDurationRecommendationContainer = itemView.findViewById(R.id.ll_selected_duration_recommendation_container);
         tvSelectedDurationRecommendation = itemView.findViewById(R.id.tv_selected_duration_recommendation);
         tvChangeSelectedDuration = itemView.findViewById(R.id.tv_change_selected_duration);
-        llSelectedCourierRecommendationContainer = itemView.findViewById(R.id.ll_selected_courier_recommendation_container);
         tvSelectedCourierRecommendation = itemView.findViewById(R.id.tv_selected_courier_recommendation);
         tvSelectedPriceRecommendation = itemView.findViewById(R.id.tv_selected_price_recommendation);
         tvSelectedPriceOnly = itemView.findViewById(R.id.tv_selected_price_b);
@@ -341,12 +317,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llSelectShipmentBlackbox = itemView.findViewById(R.id.ll_select_shipment_blackbox);
         tvChooseCourierBlackbox = itemView.findViewById(R.id.tv_choose_courier_blackbox);
         llSelectedShipmentBlackbox = itemView.findViewById(R.id.ll_selected_shipment_blackbox);
-        llSelectedCourierBlackboxContainer = itemView.findViewById(R.id.ll_selected_courier_blackbox_container);
         tvSelectedCourierBlackbox = itemView.findViewById(R.id.tv_selected_courier_blackbox);
         tvSelectedPriceBlackbox = itemView.findViewById(R.id.tv_selected_price_blackbox);
         tvChangeSelectedCourierBlackbox = itemView.findViewById(R.id.tv_change_selected_courier_blackbox);
-        llShipmentBlackboxInfoTicker = itemView.findViewById(R.id.ll_shipment_blackbox_info_ticker);
-        imgYellowBulb = itemView.findViewById(R.id.img_bulb);
         tvShipmentBlackboxTickerInfo = itemView.findViewById(R.id.tv_shipment_blackbox_ticker_info);
         tvFulfillName = itemView.findViewById(R.id.tv_fulfill_district);
         imgFulfill = itemView.findViewById(R.id.img_shop_fulfill);
