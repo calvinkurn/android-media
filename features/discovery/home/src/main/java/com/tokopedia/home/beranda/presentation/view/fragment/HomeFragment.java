@@ -688,21 +688,26 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void onGoToLogin() {
-        Intent intent = ((IHomeRouter) getActivity().getApplication()).getLoginIntent(getContext());
-        Intent intentHome = ((IHomeRouter) getActivity().getApplication()).getHomeIntent(getContext());
+//        Intent intent = ((IHomeRouter) getActivity().getApplication()).getLoginIntent(getContext());
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
+//        Intent intentHome = ((IHomeRouter) getActivity().getApplication()).getHomeIntent(getContext());
+        Intent intentHome = RouteManager.getIntent(getContext(), ApplinkConst.HOME);
         intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         getActivity().startActivities(new Intent[]{intentHome, intent});
         getActivity().finish();
     }
 
     private void onGoToCreateShop() {
-        Intent intent = ((IHomeRouter) getActivity().getApplication()).getIntentCreateShop(getContext());
+//        Intent intent = ((IHomeRouter) getActivity().getApplication()).getIntentCreateShop(getContext());
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.CREATE_SHOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
 
     private void onGoToShop(String shopId) {
-        Intent intent = ((IHomeRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
+//        Intent intent = ((IHomeRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.SHOP);
+        intent.putExtra("EXTRA_SHOP_ID", shopId);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
@@ -802,9 +807,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onPromoClick(int position, BannerSlidesModel slidesModel, String attribution) {
-        if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof IHomeRouter
-                && ((IHomeRouter) getActivity().getApplicationContext()).isSupportApplink(slidesModel.getApplink())) {
+        if (getActivity() != null && RouteManager.isSupportApplink(getContext(), slidesModel.getApplink())) {
             openApplink(slidesModel.getApplink(), attribution);
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(), getContext());
@@ -829,13 +832,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     PromoListActivity.DEFAULT_AUTO_SELECTED_CATEGORY_ID
             ));
         } else {
-            if (getActivity() != null
-                    && getActivity().getApplicationContext() instanceof IHomeRouter) {
-                Intent intent = ((IHomeRouter) (getActivity()).getApplication())
-                        .getBannerWebViewOnAllPromoClickFromHomeIntent(
-                                getActivity(),
-                                BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP,
-                                getString(R.string.title_activity_promo));
+            if (getActivity() != null) {
+//                Intent intent = ((IHomeRouter) (getActivity()).getApplication())
+//                        .getBannerWebViewOnAllPromoClickFromHomeIntent(
+//                                getActivity(),
+//                                BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP,
+//                                getString(R.string.title_activity_promo));
+                Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.PROMO);
+                intent.putExtra(BannerWebView.EXTRA_URL, BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP);
+                intent.putExtra(BannerWebView.EXTRA_TITLE, getString(R.string.title_activity_promo));
                 getActivity().startActivity(intent);
             }
         }
@@ -1010,8 +1015,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
 
         if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof IHomeRouter
-                && ((IHomeRouter) getActivity().getApplicationContext()).isSupportApplink(actionLink)) {
+                && RouteManager.isSupportApplink(getContext(), actionLink)) {
             openApplink(actionLink, trackingAttribution);
         } else {
             openWebViewURL(actionLink, getContext());
@@ -1020,16 +1024,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void openApplink(String applink) {
         if (!TextUtils.isEmpty(applink)) {
-            ((IHomeRouter) getActivity().getApplicationContext())
-                    .goToApplinkActivity(getActivity(), applink);
+            Intent intent = RouteManager.getIntent(getContext(), applink);
+            startActivity(intent);
+//            ((IHomeRouter) getActivity().getApplicationContext())
+//                    .goToApplinkActivity(getActivity(), applink);
         }
     }
 
     private void openApplink(String applink, String trackingAttribution) {
         if (!TextUtils.isEmpty(applink)) {
             applink = appendTrackerAttributionIfNeeded(applink, trackingAttribution);
-            Intent intent = RouteManager.getIntent(getActivity(), applink);
-            getActivity().startActivity(intent);
+            RouteManager.route(getContext(), applink);
 //            ((IHomeRouter) getActivity().getApplicationContext())
 //                    .goToApplinkActivity(getActivity(), applink);
         }
@@ -1210,6 +1215,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public Observable<TokopointHomeDrawerData> getTokopoint() {
         if (getActivity() != null && getActivity().getApplication() instanceof IHomeRouter) {
+
             return ((IHomeRouter) getActivity().getApplication()).getTokopointUseCaseForHome();
         }
         return null;
@@ -1364,7 +1370,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void fetchTokopointsNotification(String type) {
-        TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
+        if(getActivity() != null) {
+            TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
+        }
     }
 
     @Override
@@ -1422,8 +1430,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
 
         if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof IHomeRouter
-                && ((IHomeRouter) getActivity().getApplicationContext()).isSupportApplink(applink)) {
+                && RouteManager.isSupportApplink(getContext(), applink)) {
             openApplink(applink);
         } else {
             openWebViewURL(applink, getContext());

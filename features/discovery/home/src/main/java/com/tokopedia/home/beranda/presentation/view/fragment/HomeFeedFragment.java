@@ -227,7 +227,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     }
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
-        getActivity().startActivity(getProductIntent(productId));
+        RouteManager.route(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
     }
 
     private Intent getProductIntent(String productId) {
