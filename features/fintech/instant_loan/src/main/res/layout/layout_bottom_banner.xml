@@ -4,21 +4,24 @@
     android:id="@+id/container_banner"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/il_margin_large"
+    android:layout_marginTop="@dimen/dp_16"
     android:background="@color/white">
 
     <TextView
         android:id="@+id/text_label_promo_banner"
-        style="@style/DefaultLabelText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:paddingEnd="@dimen/il_padding_medium"
-        android:paddingLeft="@dimen/il_padding_medium"
-        android:paddingRight="@dimen/il_padding_medium"
         android:paddingStart="@dimen/il_padding_medium"
+        android:paddingLeft="@dimen/il_padding_medium"
+        android:paddingEnd="@dimen/il_padding_medium"
+        android:paddingRight="@dimen/il_padding_medium"
         android:text="@string/label_online_promo"
-        android:textStyle="normal" />
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager_banner"
@@ -46,8 +49,8 @@
         android:id="@+id/button_previous"
         android:layout_width="@dimen/width_fab_banner_offer"
         android:layout_height="@dimen/height_fab_banner_offer"
-        android:layout_marginLeft="@dimen/il_margin_regular"
         android:layout_marginStart="@dimen/il_margin_regular"
+        android:layout_marginLeft="@dimen/il_margin_regular"
         android:scaleType="center"
         android:tint="@color/il_gray"
         android:visibility="invisible"
