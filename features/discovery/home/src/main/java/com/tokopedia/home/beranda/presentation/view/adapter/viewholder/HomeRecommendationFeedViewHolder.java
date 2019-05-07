@@ -72,10 +72,6 @@ implements HomeTabFeedListener {
         homeFeedsTabLayout = itemView.findViewById(R.id.tab_layout_home_feeds);
         homeFeedsTabShadow = itemView.findViewById(R.id.view_feed_shadow);
         container = itemView.findViewById(R.id.home_recommendation_feed_container);
-
-//        ViewGroup.LayoutParams layoutParams1 = homeFeedsViewPager.getLayoutParams();
-//        layoutParams1.height = listener.getWindowHeight();
-//        homeFeedsViewPager.setLayoutParams(layoutParams1);
     }
 
     @Override
@@ -88,21 +84,20 @@ implements HomeTabFeedListener {
         //add recyclerspacing 2 times because we want to remove spacing from dynamic channel above,
         //and there is no spacing for the last item in recyclerview (defined on HomeRecyclerDecoration.java)
         layoutParams.height =
-                listener.getWindowHeight()-listener.getHomeMainToolbarHeight()
+                listener.getWindowHeight()
+                        -listener.getHomeMainToolbarHeight()
                         -context.getResources().getDimensionPixelSize(R.dimen.tab_home_feed_max_height)
-                        +context.getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)
-                        +context.getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing);
+                        +ViewHelper.getStatusBarHeight(context)
+                        -context.getResources().getDimensionPixelSize(R.dimen.dp_8);
         container.setLayoutParams(layoutParams);
 
         feedTabModelList = homeRecommendationFeedViewModel.getFeedTabModel();
         homeFeedsTabLayout.setVisibility(View.VISIBLE);
         homeFeedsViewPager.setVisibility(View.VISIBLE);
+
         if (homeFeedPagerAdapter == null || homeRecommendationFeedViewModel.isNewData()) {
             initViewPagerAndTablayout();
         }
-//        else {
-//            homeFeedPagerAdapter.updateData(feedTabModelList);
-//        }
     }
 
     private void initViewPagerAndTablayout() {

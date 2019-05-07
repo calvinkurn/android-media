@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
@@ -156,11 +157,11 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .doOnNext(visitables ->
-                        compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber())))
+                        compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber(HomeDataSubscriber.FLAG_FROM_NETWORK))))
 //                .delay(5000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorResumeNext(getDataFromNetwork())
-                .subscribe(createHomeDataSubscriber());
+                .subscribe(createHomeDataSubscriber(HomeDataSubscriber.FLAG_FROM_CACHE));
         compositeSubscription.add(subscription);
     }
 
@@ -174,8 +175,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
 
-    private HomeDataSubscriber createHomeDataSubscriber() {
-        return new HomeDataSubscriber(this);
+    private HomeDataSubscriber createHomeDataSubscriber(int repositoryType) {
+        return new HomeDataSubscriber(this, repositoryType);
     }
 
     @Override
@@ -347,12 +348,16 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         getView().showNetworkError();
     }
 
-    private static class HomeDataSubscriber extends Subscriber<List<TrackedVisitable>> {
+    public static class HomeDataSubscriber extends Subscriber<List<TrackedVisitable>> {
+        public static int FLAG_FROM_NETWORK = 99;
+        public static int FLAG_FROM_CACHE = 98;
+        private final int repositoryFlag;
 
         HomePresenter homePresenter;
 
-        public HomeDataSubscriber(HomePresenter homePresenter) {
+        public HomeDataSubscriber(HomePresenter homePresenter, int flag) {
             this.homePresenter = homePresenter;
+            this.repositoryFlag = flag;
         }
 
         @Override
@@ -390,14 +395,13 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                         visitables.add(1, homePresenter.getHeaderViewModel());
                     }
                 }
-                homePresenter.getView().setItems(new ArrayList<>(visitables));
+                homePresenter.getView().setItems(new ArrayList<>(visitables), repositoryFlag);
                 homePresenter.getView().addImpressionToTrackingQueue(visitables);
                 if (visitables.size() > 0) {
                     homePresenter.getView().showRecomendationButton();
                 }
                 if (homePresenter.isDataValid(visitables)) {
                     homePresenter.getView().removeNetworkError();
-                    homePresenter.getView().onHomeDataLoadSuccess();
                 } else {
                     homePresenter.showNetworkError();
                 }

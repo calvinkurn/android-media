@@ -4,19 +4,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/home_swipe_refresh_layout"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:background="@color/white">
+    android:layout_width="match_parent">
 
     <FrameLayout
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
-        android:background="@color/white">
+        android:animateLayoutChanges="true">
 
         <com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
             android:id="@+id/list"
-            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:descendantFocusability="beforeDescendants"
@@ -44,8 +41,6 @@
 
         <View
             android:visibility="invisible"
-            app:layout_collapseMode="pin"
-            app:layout_anchor="@id/list"
             android:id="@+id/status_bar_bg"
             android:layout_gravity="top"
             android:background="@color/green_600"

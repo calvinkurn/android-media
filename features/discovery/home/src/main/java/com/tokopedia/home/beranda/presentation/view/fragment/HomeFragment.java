@@ -285,9 +285,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (position == adapter.getRecommendationFeedSectionPosition()) {
                     floatingTextButton.hide();
                 } else {
-                    if (!floatingTextButton.isShown()) {
-                        floatingTextButton.show();
-                    }
+                    floatingTextButton.show();
                 }
             }
         });
@@ -863,13 +861,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setItems(List<Visitable> items) {
-        if (feedTabVisitable != null) {
-            items.add(feedTabVisitable);
+    public void setItems(List<Visitable> items, int repositoryFlag) {
+        if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
+            adapter.setItems(items);
+            presenter.getFeedTabData();
+            adapter.showLoading();
+        } else {
+            adapter.setItems(items);
         }
-        adapter.setItems(items);
-//        startToMainToolbarShadowTransition = (appBarLayout.getTotalScrollRange()-
-//                getResources().getDimensionPixelSize(R.dimen.dp_36));
     }
 
     private void updateFeedRecommendationVisitable(Visitable feedRecommendationVisitable,
@@ -1293,8 +1292,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onHomeDataLoadSuccess() {
         if (!isFeedLoaded) {
-            presenter.getFeedTabData();
-            adapter.showLoading();
             isFeedLoaded = true;
         }
     }
