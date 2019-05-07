@@ -508,7 +508,6 @@ public class CartMapper implements ICartMapper {
             ShopGroupData shopGroupData = new ShopGroupData();
             List<CartItemData> itemDataList = new ArrayList<>();
             itemDataList.add(cartItemData);
-            // shopGroupData.setCartItemDataList(itemDataList, false);
             shopGroupData.setCartItemDataList(itemDataList);
             shopGroupDataList.add(shopGroupData);
         }

@@ -1544,7 +1544,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onRemovePromoCode(String promoCode) {
         ArrayList<String> promoCodes = new ArrayList<>();
         promoCodes.add(promoCode);
-        shipmentPresenter.cancelAutoApplyPromoStack(-1, promoCodes, false);
+        shipmentPresenter.cancelAutoApplyPromoStack(SHOP_INDEX_PROMO_GLOBAL, promoCodes, false);
     }
 
     @Override
