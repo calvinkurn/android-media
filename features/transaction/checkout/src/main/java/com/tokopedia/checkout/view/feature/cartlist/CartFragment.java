@@ -516,13 +516,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 renderInitialGetCartListDataSuccess(cartListData);
                 stopTrace();
             }
-
-//            if (cartListData == null) {
-//                refreshHandler.startRefresh();
-//            } else {
-//                renderInitialGetCartListDataSuccess(cartListData);
-//                stopTrace();
-//            }
         }
     }
 
