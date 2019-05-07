@@ -510,9 +510,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             if (savedInstanceState == null) {
                 refreshHandler.startRefresh();
             } else {
-                if (saveInstanceCacheManager != null) {
-                    cartListData = saveInstanceCacheManager.get(CartListData.class.getSimpleName(), CartListData.class);
-                }
+                cartListData = saveInstanceCacheManager.get(CartListData.class.getSimpleName(), CartListData.class);
                 renderInitialGetCartListDataSuccess(cartListData);
                 stopTrace();
             }
