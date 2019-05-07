@@ -1,9 +1,12 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -43,6 +46,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int ITEM_DEALS = 1;
     public static final int ITEM_DEALS_SHORT = 2;
     public static final int ITEM_EVENTS = 3;
+    private String Insurance_File_Name = "E-policy Asuransi";
     OrderListDetailPresenter presenter;
     private String categoryDeals = "deal";
     private String categoryEvents = "event";
@@ -126,8 +130,17 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    ((UnifiedOrderListRouter) context.getApplicationContext())
-                            .actionOpenGeneralWebView((Activity)context, uri);
+                    Uri Download_Uri = Uri.parse(uri);
+                    DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+                    DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
+                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+                    request.setAllowedOverRoaming(true);
+                    request.setTitle(Insurance_File_Name+".pdf");
+                    request.setDescription(Insurance_File_Name+".pdf");
+                    request.setVisibleInDownloadsUi(true);
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, Insurance_File_Name+".pdf");
+                    downloadManager.enqueue(request);
             }
         };
     }
