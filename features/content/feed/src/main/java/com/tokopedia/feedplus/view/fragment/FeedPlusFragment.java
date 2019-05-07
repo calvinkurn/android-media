@@ -1371,21 +1371,25 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type,
                                     boolean isFollow) {
-        if (type.equals(FollowCta.AUTHOR_USER)) {
-            int userIdInt = 0;
-            try {
-                userIdInt = Integer.valueOf(id);
-            } catch (NumberFormatException ignored) {
-            }
+        if (userSession.isLoggedIn()) {
+            if (type.equals(FollowCta.AUTHOR_USER)) {
+                int userIdInt = 0;
+                try {
+                    userIdInt = Integer.valueOf(id);
+                } catch (NumberFormatException ignored) {
+                }
 
-            if (isFollow) {
-                onUnfollowKolClicked(positionInFeed, userIdInt);
-            } else {
-                onFollowKolClicked(positionInFeed, userIdInt);
-            }
+                if (isFollow) {
+                    onUnfollowKolClicked(positionInFeed, userIdInt);
+                } else {
+                    onFollowKolClicked(positionInFeed, userIdInt);
+                }
 
-        } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
-            presenter.toggleFavoriteShop(positionInFeed, id);
+            } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
+                presenter.toggleFavoriteShop(positionInFeed, id);
+            }
+        } else {
+            onGoToLogin();
         }
 
         if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
@@ -1412,7 +1416,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
                 @Override
                 public void onReportClick() {
-                    goToContentReport(postId);
+                    if (userSession.isLoggedIn()) {
+                        goToContentReport(postId);
+                    } else {
+                        onGoToLogin();
+                    }
                 }
 
                 @Override
