@@ -589,40 +589,4 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private fun mappingToRecommendationModel(recomendationData: RecomendationEntity.RecomendationData): RecommendationModel {
-        val modelList = ArrayList<RecommendationItem>()
-        val datas = recomendationData.recommendation
-        datas?.run {
-            for (data in datas) {
-                modelList.add(
-                        RecommendationItem(
-                                data.id,
-                                data.name?:"",
-                                data.categoryBreadcrumbs?:"",
-                                data.url?:"",
-                                data.appUrl?:"",
-                                data.clickUrl?:"",
-                                data.wishlistUrl?:"",
-                                data.trackerImageUrl?:"",
-                                data.imageUrl?:"",
-                                data.price?:"",
-                                data.priceInt,
-                                data.departmentId,
-                                data.rating,
-                                data.countReview,
-                                data.stock,
-                                data.recommendationType?:"",
-                                data.isIsTopads
-                        )
-                )
-            }
-        }
-        return RecommendationModel(modelList,
-                recomendationData.title?:"",
-                recomendationData.foreignTitle?:"",
-                recomendationData.source?:"",
-                recomendationData.tid?:"",
-                recomendationData.widgetUrl?:"")
-    }
-
 }
