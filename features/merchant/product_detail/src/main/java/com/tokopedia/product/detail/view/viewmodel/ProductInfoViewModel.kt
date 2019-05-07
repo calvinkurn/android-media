@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.text.TextUtils
+import android.util.Log
 import android.util.SparseArray
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -334,7 +335,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     }
 
     private fun generateTopAdsParams(productInfo: ProductInfo): Map<String,Any> {
-
         return mapOf<String, Any>(
                 "userID" to userSessionInterface.userId,
                 "pageName" to "default",
@@ -584,6 +584,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
                     .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data ?: emptyList()))
         } catch (t: Throwable){
+            Log.e("errornya", "ini : $t")
             Loaded(Fail(t))
         }
     }
