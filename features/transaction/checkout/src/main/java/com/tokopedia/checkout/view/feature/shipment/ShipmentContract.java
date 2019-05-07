@@ -153,7 +153,7 @@ public interface ShipmentContract {
     interface AnalyticsActionListener {
         void sendAnalyticsChoosePaymentMethodSuccess();
 
-        void sendAnalyticsChoosePaymentMethodFailed();
+        void sendAnalyticsChoosePaymentMethodFailed(String errorMessage);
 
         @Deprecated
         void sendAnalyticsChoosePaymentMethodCourierNotComplete();

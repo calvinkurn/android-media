@@ -691,11 +691,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void sendAnalyticsChoosePaymentMethodFailed() {
+    public void sendAnalyticsChoosePaymentMethodFailed(String errorMessage) {
         if (isTradeIn()) {
             checkoutAnalyticsCourierSelection.eventClickBayarTradeInFailed();
         }
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess();
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(errorMessage);
     }
 
     @Override

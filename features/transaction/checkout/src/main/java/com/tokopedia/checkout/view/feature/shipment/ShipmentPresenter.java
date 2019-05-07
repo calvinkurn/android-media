@@ -791,8 +791,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
-                getView().showToastError(e.getMessage());
+                String errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), e);
+                analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage);
+                getView().showToastError(errorMessage);
                 processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn, deviceId);
             }
 
@@ -817,7 +818,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     }
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else {
-                    analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
+                    analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.getErrorMessage());
                     getView().renderCheckoutCartError(checkoutData.getErrorMessage());
                 }
             }
