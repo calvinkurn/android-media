@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalProductHeaderView
+import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalSubMenuWidget
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.model.DigitalProductSubMenu
 
@@ -15,7 +15,7 @@ import com.tokopedia.topupbills.model.DigitalProductSubMenu
  */
 class DigitalTelcoFragment : BaseDaggerFragment() {
 
-    private lateinit var headerView: DigitalProductHeaderView
+    private lateinit var headerView: DigitalSubMenuWidget
 
     override fun getScreenName(): String {
         return DigitalTelcoFragment::class.java.simpleName
@@ -37,8 +37,8 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
         val list = mutableListOf<DigitalProductSubMenu>()
         list.add(DigitalProductSubMenu("2", "telco-prepaid", "Prabayar", ""))
         list.add(DigitalProductSubMenu("3", "telco-postpaid", "Pascabayar", ""))
-        headerView.setHeaderActive(DigitalProductHeaderView.HEADER_LEFT)
-        headerView.setListener(object : DigitalProductHeaderView.ActionListener {
+        headerView.setHeaderActive(DigitalSubMenuWidget.HEADER_LEFT)
+        headerView.setListener(object : DigitalSubMenuWidget.ActionListener {
             override fun onClickSubMenu(subMenu: DigitalProductSubMenu) {
                 if (subMenu.name.equals("telco-prepaid")) {
                     replaceFragment(DigitalTelcoPrepaidFragment.newInstance())

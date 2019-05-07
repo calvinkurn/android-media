@@ -8,12 +8,12 @@
     android:paddingBottom="@dimen/dp_15"
     android:orientation="vertical">
 
-    <com.tokopedia.digital.topupbillsproduct.compoundview.DigitalTelcoInputNumberView
+    <com.tokopedia.digital.topupbillsproduct.compoundview.DigitalTelcoClientNumberWidget
         android:id="@+id/telco_input_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.tokopedia.digital.topupbillsproduct.compoundview.DigitalRecentNumbersView
+    <com.tokopedia.digital.topupbillsproduct.compoundview.DigitalRecentTransactionWidget
         android:id="@+id/recent_numbers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

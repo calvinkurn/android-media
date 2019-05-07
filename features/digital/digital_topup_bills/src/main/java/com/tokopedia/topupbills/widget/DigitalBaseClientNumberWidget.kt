@@ -14,8 +14,8 @@ import org.jetbrains.annotations.NotNull
 /**
  * Created by nabillasabbaha on 25/04/19.
  */
-open class DigitalBaseInputNumberView @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                                defStyleAttr: Int = 0)
+open class DigitalBaseClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
+                                                                   defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private val hintInputNumber: TextView

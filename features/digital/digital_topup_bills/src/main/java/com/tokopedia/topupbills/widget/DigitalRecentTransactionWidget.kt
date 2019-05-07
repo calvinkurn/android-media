@@ -15,8 +15,8 @@ import org.jetbrains.annotations.NotNull
 /**
  * Created by nabillasabbaha on 25/04/19.
  */
-class DigitalRecentNumbersView @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                         defStyleAttr: Int = 0)
+class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
+                                                               defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private val recyclerView: RecyclerView

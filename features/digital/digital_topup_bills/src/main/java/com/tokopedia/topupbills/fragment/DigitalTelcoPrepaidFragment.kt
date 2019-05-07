@@ -12,9 +12,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalBaseInputNumberView
-import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalRecentNumbersView
-import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalTelcoInputNumberView
+import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalBaseClientNumberWidget
+import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalRecentTransactionWidget
+import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalTelcoClientNumberWidget
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.covertContactUriToContactData
@@ -27,8 +27,8 @@ import javax.inject.Inject
  */
 class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
 
-    private lateinit var telcoInputNumberView: DigitalTelcoInputNumberView
-    private lateinit var recentNumbersView: DigitalRecentNumbersView
+    private lateinit var telcoClientNumberWidget: DigitalTelcoClientNumberWidget
+    private lateinit var recentNumbersView: DigitalRecentTransactionWidget
     private val recentNumbers = mutableListOf<DigitalRecentNumber>()
 
     @Inject
@@ -48,14 +48,14 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_prepaid, container, false)
         recentNumbersView = view.findViewById(R.id.recent_numbers)
-        telcoInputNumberView = view.findViewById(R.id.telco_input_number)
+        telcoClientNumberWidget = view.findViewById(R.id.telco_input_number)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        telcoInputNumberView.setListener(object : DigitalBaseInputNumberView.ActionListener {
+        telcoClientNumberWidget.setListener(object : DigitalBaseClientNumberWidget.ActionListener {
             override fun navigateToContact() {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                     activity?.let {
@@ -81,7 +81,7 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
             }
         })
 
-        recentNumbersView.setListener(object : DigitalRecentNumbersView.ActionListener {
+        recentNumbersView.setListener(object : DigitalRecentTransactionWidget.ActionListener {
             override fun onClickRecentNumber(digitalRecentNumber: DigitalRecentNumber) {
                 Toast.makeText(activity, digitalRecentNumber.clientNumber, Toast.LENGTH_LONG).show()
             }
@@ -114,7 +114,7 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
                     activity?.let {
                         val contactURI = data.data
                         val contact = contactURI.covertContactUriToContactData(it.contentResolver)
-                        telcoInputNumberView.setInputNumber(contact.contactNumber)
+                        telcoClientNumberWidget.setInputNumber(contact.contactNumber)
                     }
                 }
             }

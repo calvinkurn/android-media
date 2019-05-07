@@ -13,8 +13,8 @@ import com.tokopedia.topupbills.model.DigitalProductSubMenu
 /**
  * Created by nabillasabbaha on 24/04/19.
  */
-class DigitalProductHeaderView @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                         defStyleAttr: Int = 0)
+class DigitalSubMenuWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
+                                                     defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private val titleHeaderLeft : TextView

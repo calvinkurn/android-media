@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull
 /**
  * Created by nabillasabbaha on 26/04/19.
  */
-class DigitalTelcoInputNumberView @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                            defStyleAttr: Int = 0)
+class DigitalTelcoClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
+                                                               defStyleAttr: Int = 0)
     : DigitalBaseClientNumberWidget(context, attrs, defStyleAttr) {
 
     override fun getLayout(): Int {

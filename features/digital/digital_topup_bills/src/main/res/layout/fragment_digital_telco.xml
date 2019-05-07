@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/digital_bg_pdp"/>
 
-    <com.tokopedia.digital.topupbillsproduct.compoundview.DigitalProductHeaderView
+    <com.tokopedia.digital.topupbillsproduct.compoundview.DigitalSubMenuWidget
         android:id="@+id/header_view"
         android:paddingLeft="@dimen/dp_15"
         android:paddingRight="@dimen/dp_15"
