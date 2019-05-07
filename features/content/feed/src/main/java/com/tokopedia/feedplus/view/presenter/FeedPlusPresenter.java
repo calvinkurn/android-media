@@ -42,6 +42,8 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static com.tokopedia.feedplus.FeedPlusConstant.NON_LOGIN_USER_ID;
+
 /**
  * @author by nisie on 5/15/17.
  */
@@ -313,7 +315,7 @@ public class FeedPlusPresenter
     }
 
     private String getUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : "0";
+        return userSession.isLoggedIn() ? userSession.getUserId() : NON_LOGIN_USER_ID;
     }
 
     private void getFirstPageFeed() {
@@ -322,7 +324,7 @@ public class FeedPlusPresenter
         currentCursor = "";
 
         getDynamicFeedFirstPageUseCase.execute(
-                GetDynamicFeedUseCase.Companion.createRequestParams(getUserId(), "", GetDynamicFeedUseCase.SOURCE_FEEDS),
+                GetDynamicFeedFirstPageUseCase.Companion.createRequestParams(getUserId(), "", GetDynamicFeedUseCase.SOURCE_FEEDS, userSession.isLoggedIn()),
                 new Subscriber<DynamicFeedFirstPageDomainModel>() {
                     @Override
                     public void onCompleted() {

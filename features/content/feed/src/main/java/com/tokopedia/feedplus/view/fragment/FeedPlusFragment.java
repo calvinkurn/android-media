@@ -120,8 +120,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.feedplus.view.FeedPlusConstant.KEY_FEED;
-import static com.tokopedia.feedplus.view.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
+import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED;
+import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
 import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED;
