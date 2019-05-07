@@ -6,7 +6,6 @@ import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
-import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase.getWhitelistDomain
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kolcommon.data.pojo.WhitelistQuery
 import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
