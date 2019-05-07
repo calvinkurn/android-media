@@ -29,6 +29,7 @@ import com.tokopedia.logisticaddaddress.di.ManageAddressModule;
 import com.tokopedia.logisticaddaddress.domain.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressFragment;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressActivity;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 
@@ -196,16 +197,18 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     public void openFormAddressView(AddressModel data) {
         Token token = mPresenter.getToken();
         if (data == null) {
-            startActivityForResult(
+            /*startActivityForResult(
                     AddAddressActivity.createInstanceAddAddressFromManageAddressWhenDefaultAddressIsEmpty(
                             getActivity(), token
-                    ), REQUEST_CODE_PARAM_CREATE);
+                    ), REQUEST_CODE_PARAM_CREATE);*/
+            startActivity(new Intent(getActivity(), AddNewAddressActivity.class));
 
         } else {
-            startActivityForResult(
+            /*startActivityForResult(
                     AddAddressActivity.createInstanceEditAddressFromManageAddress(
                             getActivity(), data, token
-                    ), REQUEST_CODE_PARAM_EDIT);
+                    ), REQUEST_CODE_PARAM_EDIT);*/
+            startActivity(new Intent(getActivity(), AddNewAddressActivity.class));
         }
     }
 

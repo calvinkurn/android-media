@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressActivity;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
@@ -141,20 +142,25 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         Intent intent;
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                intent = AddAddressActivity
+                /*intent = AddAddressActivity
                         .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
                                 this, token);
                 startActivityForResult(intent,
-                        LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                        LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);*/
+
+                intent = new Intent(this, AddNewAddressActivity.class);
+                startActivity(intent);
                 break;
             case TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
-                RecipientAddressModel currentAddress = getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
+                /*RecipientAddressModel currentAddress = getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
                 AddressModelMapper mapper = new AddressModelMapper();
                 intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
                         this, mapper.transform(currentAddress), token
                 );
                 startActivityForResult(intent,
-                        LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+                        LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);*/
+                intent = new Intent(this, AddNewAddressActivity.class);
+                startActivity(intent);
                 break;
             default:
         }

@@ -34,6 +34,7 @@ import com.tokopedia.checkout.view.feature.addressoptions.addressadapter.Shipmen
 import com.tokopedia.checkout.view.feature.addressoptions.cornerbtmsheet.CornerBottomSheet;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressActivity;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -440,17 +441,21 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         AddressModelMapper mapper = new AddressModelMapper();
 
         if (getActivity() != null) {
-            Intent intent;
+            /*Intent intent;
             if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
                 intent = AddAddressActivity.createInstanceEditAddressFromCheckoutMultipleAddressForm(
                         getActivity(), mapper.transform(model), token
                 );
+                intent = new Intent(getActivity(), AddNewAddressActivity.class);
             } else {
                 intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
                         getActivity(), mapper.transform(model), token
                 );
             }
-            startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+            startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);*/
+
+            Intent intent = new Intent(getActivity(), AddNewAddressActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -496,18 +501,20 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (getActivity() != null) {
             if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickPlusFromMultiple();
-                startActivityForResult(
+                /*startActivityForResult(
                         AddAddressActivity.createInstanceAddAddressFromCheckoutMultipleAddressForm(
                                 getActivity(), token
-                        ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                        ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);*/
+                startActivity(new Intent(getActivity(), AddNewAddressActivity.class));
             } else {
                 checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
                 checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
-                startActivityForResult(
+                /*startActivityForResult(
                         AddAddressActivity.createInstanceAddAddressFromCheckoutSingleAddressForm(
                                 getActivity(), token
                         ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
-                );
+                );*/
+                startActivity(new Intent(getActivity(), AddNewAddressActivity.class));
             }
 
 

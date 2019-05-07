@@ -18,6 +18,12 @@
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".features.addnewaddress.AddNewAddressActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
         <service
             android:name=".service.ManagePeopleAddressService"
             android:exported="false" />
