@@ -1,7 +1,7 @@
 package com.tokopedia.hotel.roomdetail.di
 
 import com.tokopedia.hotel.common.di.component.HotelComponent
-import com.tokopedia.hotel.roomdetail.view.fragment.HotelRoomDetailFragment
+import com.tokopedia.hotel.roomdetail.presentation.fragment.HotelRoomDetailFragment
 import dagger.Component
 
 /**

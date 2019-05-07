@@ -1,4 +1,4 @@
-package com.tokopedia.hotel.roomdetail.view.activity
+package com.tokopedia.hotel.roomdetail.presentation.activity
 
 import android.content.Context
 import android.content.Intent
@@ -9,7 +9,7 @@ import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.roomdetail.di.DaggerHotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
-import com.tokopedia.hotel.roomdetail.view.fragment.HotelRoomDetailFragment
+import com.tokopedia.hotel.roomdetail.presentation.fragment.HotelRoomDetailFragment
 
 /**
  * @author by resakemal on 23/04/19

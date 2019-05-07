@@ -17,8 +17,8 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
-import com.tokopedia.hotel.roomdetail.view.activity.HotelRoomDetailActivity
-import com.tokopedia.hotel.roomdetail.view.fragment.HotelRoomDetailFragment
+import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
+import com.tokopedia.hotel.roomdetail.presentation.fragment.HotelRoomDetailFragment
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.di.HotelRoomListComponent
