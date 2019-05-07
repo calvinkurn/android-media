@@ -3,6 +3,7 @@ package com.tokopedia.navigation.presentation.fragment
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
+import android.support.design.widget.Snackbar
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -15,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.TextViewCompat
@@ -100,8 +102,13 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         var filterRecyclerView = filterView?.findViewById<RecyclerView>(R.id.section_filter_list)
         var reset = filterView?.findViewById<View>(R.id.reset)
         var submit = filterView?.findViewById<TextViewCompat>(R.id.submit)
+        var closeFilter = filterView?.findViewById<View>(R.id.close_cross)
 
         setActionViewProperties(submit, reset, false)
+
+        closeFilter?.setOnClickListener{
+            bottomSheetDialog.dismiss()
+        }
 
         filterRecyclerView?.let {
             for (i in 0 until it.itemDecorationCount) {
@@ -201,7 +208,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     private fun onErrorInitiateData(): (Throwable) -> Unit {
         return {
-
+            SnackbarManager.make(activity, it.toString(), Snackbar.LENGTH_LONG).show()
         }
     }
 

@@ -46,3 +46,4 @@ data class UserInfo(
         @SerializedName("fullname")
         val fullName: String = ""
 )
+

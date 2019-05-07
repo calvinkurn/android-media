@@ -20,6 +20,9 @@ data class NotificationUpdateItem(
         @SerializedName("section_id")
         @Expose
         var sectionId: String = "",
+        @SerializedName("section_icon")
+        @Expose
+        var sectionIcon: String? = "",
         @SerializedName("section_key")
         @Expose
         var sectionKey: String = "",
