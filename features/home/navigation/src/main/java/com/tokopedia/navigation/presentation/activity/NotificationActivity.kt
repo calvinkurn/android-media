@@ -64,7 +64,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
             var defaultTitle = getString(R.string.title_update_notification)
             var counter: String
             if (it.pojo.notifUnreadInt > 0) {
-                counter = getString(R.string.title_counter_update_notification, it.pojo.notifUnreadInt)
+                counter = getString(R.string.title_counter_update_notification, it.pojo.notifUnreadString)
                 var titleView: TextView? = tabLayout.getTabAt(1)?.customView?.findViewById(R.id.title)
                 titleView?.let {
                     it.text = String.format("%s %s", defaultTitle, counter)
@@ -156,6 +156,10 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
     override fun getComponent(): BaseAppComponent {
         return (application as BaseMainApplication).baseAppComponent
+    }
+
+    override fun updateTotalUnreadCounter() : () -> Unit {
+        return {presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter())}
     }
 
     companion object {

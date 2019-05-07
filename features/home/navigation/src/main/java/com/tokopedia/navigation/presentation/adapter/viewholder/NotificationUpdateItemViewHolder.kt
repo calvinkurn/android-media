@@ -63,8 +63,8 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
         convertTypeUser(element.label)
 
         container.setOnClickListener {
+            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead)
             element.isRead = true
-            listener.itemClicked(element.notificationId, adapterPosition)
             RouteManager.route(itemView.context, element.appLink)
         }
     }

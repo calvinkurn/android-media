@@ -31,8 +31,8 @@
 
     <com.tokopedia.design.image.SquareImageView
         android:id="@+id/dot"
-        android:layout_width="@dimen/dp_6"
-        android:layout_height="@dimen/dp_6"
+        android:layout_width="@dimen/dp_3"
+        android:layout_height="@dimen/dp_3"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
         android:src="@drawable/dot_grey"

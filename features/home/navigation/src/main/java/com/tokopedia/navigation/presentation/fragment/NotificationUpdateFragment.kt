@@ -31,7 +31,6 @@ import com.tokopedia.navigation.presentation.view.listener.NotificationSectionFi
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
-import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateViewModel
 import javax.inject.Inject
 
@@ -177,9 +176,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
-        if (t is NotificationUpdateItemViewModel) {
-            t.isRead
-        }
     }
 
     override fun getScreenName(): String {
@@ -252,9 +248,14 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    override fun itemClicked(notifId: String, adapterPosition: Int) {
+    override fun itemClicked(notifId: String, adapterPosition: Int, needToResetCounter: Boolean) {
         adapter.notifyItemChanged(adapterPosition)
         presenter.markReadNotif(notifId)
+        activity?.let {
+            if (it is NotificationUpdateContract.View && needToResetCounter) {
+                (it as NotificationUpdateContract.View).resetCounter()
+            }
+        }
     }
 
 
