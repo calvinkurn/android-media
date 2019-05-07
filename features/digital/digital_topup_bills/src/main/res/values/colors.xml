@@ -2,4 +2,5 @@
 <resources>
     <color name="digital_grey_bg_header">#f3f4f5</color>
     <color name="digital_title_header_non_active">#7031353b</color>
+    <color name="digital_text_black_regular">#f531353b</color>
 </resources>

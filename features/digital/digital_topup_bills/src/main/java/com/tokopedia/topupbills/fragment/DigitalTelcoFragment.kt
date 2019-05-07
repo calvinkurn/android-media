@@ -51,9 +51,11 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
     }
 
     fun replaceFragment(fragment: Fragment) {
-        val transaction = fragmentManager!!.beginTransaction().replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
+        fragmentManager?.let {
+            val transaction = it.beginTransaction().replace(R.id.fragment_container, fragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
     }
 
     companion object {

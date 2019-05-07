@@ -12,8 +12,9 @@ class DigitalTelcoInputNumberView @JvmOverloads constructor(@NotNull context: Co
                                                             defStyleAttr: Int = 0)
     : DigitalBaseInputNumberView(context, attrs, defStyleAttr) {
 
-
     override fun getLayout(): Int {
         return R.layout.view_digital_input_number_telco
     }
+
+
 }

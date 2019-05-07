@@ -1,43 +1,88 @@
 package com.tokopedia.topupbills.fragment
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalBaseInputNumberView
 import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalRecentNumbersView
+import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalTelcoInputNumberView
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.covertContactUriToContactData
+import com.tokopedia.topupbills.di.DigitalTopupInstance
 import com.tokopedia.topupbills.model.DigitalRecentNumber
+import javax.inject.Inject
 
 /**
  * Created by nabillasabbaha on 11/04/19.
  */
 class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
 
+    private lateinit var telcoInputNumberView: DigitalTelcoInputNumberView
     private lateinit var recentNumbersView: DigitalRecentNumbersView
     private val recentNumbers = mutableListOf<DigitalRecentNumber>()
+
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     override fun getScreenName(): String {
         return DigitalTelcoPrepaidFragment::class.java.simpleName
     }
 
     override fun initInjector() {
-
+        activity?.let {
+            val digitalTopupComponent = DigitalTopupInstance.getComponent(it.application)
+            digitalTopupComponent.inject(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_prepaid, container, false)
         recentNumbersView = view.findViewById(R.id.recent_numbers)
+        telcoInputNumberView = view.findViewById(R.id.telco_input_number)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        telcoInputNumberView.setListener(object : DigitalBaseInputNumberView.ActionListener {
+            override fun navigateToContact() {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    activity?.let {
+                        permissionCheckerHelper.checkPermission(it,
+                                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
+                                object : PermissionCheckerHelper.PermissionCheckListener {
+                                    override fun onPermissionDenied(permissionText: String) {
+                                        permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                                    }
+
+                                    override fun onNeverAskAgain(permissionText: String) {
+                                        permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                                    }
+
+                                    override fun onPermissionGranted() {
+                                        openContactPicker()
+                                    }
+                                }, "")
+                    }
+                } else {
+                    openContactPicker()
+                }
+            }
+        })
+
         recentNumbersView.setListener(object : DigitalRecentNumbersView.ActionListener {
-            override fun onClickRecentNumber(digitalRecentNumber : DigitalRecentNumber) {
+            override fun onClickRecentNumber(digitalRecentNumber: DigitalRecentNumber) {
                 Toast.makeText(activity, digitalRecentNumber.clientNumber, Toast.LENGTH_LONG).show()
             }
         })
@@ -50,9 +95,44 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         recentNumbersView.setRecentNumbers(recentNumbers)
     }
 
+    fun openContactPicker() {
+        val contactPickerIntent = Intent(
+                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+        try {
+            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
+        } catch (e: ActivityNotFoundException) {
+            NetworkErrorHelper.showSnackbar(activity,
+                    getString(R.string.error_message_contact_not_found))
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        data?.let {
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
+                    activity?.let {
+                        val contactURI = data.data
+                        val contact = contactURI.covertContactUriToContactData(it.contentResolver)
+                        telcoInputNumberView.setInputNumber(contact.contactNumber)
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        context?.run {
+            permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
+        }
+    }
+
     companion object {
 
-        fun newInstance() : Fragment {
+        val REQUEST_CODE_CONTACT_PICKER = 78;
+
+        fun newInstance(): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()
             return fragment
         }

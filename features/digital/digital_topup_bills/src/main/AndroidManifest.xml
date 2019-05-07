@@ -7,8 +7,8 @@
         android:supportsRtl="true">
 
         <activity
-            android:name="com.tokopedia.topupbills.TelcoProductActivity"
-            android:label="@string/title_telco_page"
+            android:name="com.tokopedia.topupbills.activity.TelcoProductActivity"
+            android:label="@string/digital_title_telco_page"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 

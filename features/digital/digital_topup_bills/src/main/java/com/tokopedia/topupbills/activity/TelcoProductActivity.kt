@@ -2,9 +2,10 @@ package com.tokopedia.topupbills.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.topupbills.TelcoProductFragment
+import com.tokopedia.topupbills.fragment.DigitalTelcoFragment
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -12,15 +13,25 @@ import com.tokopedia.topupbills.TelcoProductFragment
 class TelcoProductActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
-        return TelcoProductFragment.newInstance()
+        return DigitalTelcoFragment.newInstance()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        supportActionBar!!.elevation = 0f
     }
 
     companion object {
 
-        fun newInstance(context : Context): Intent {
+        fun newInstance(context: Context): Intent {
             val intent = Intent(context, TelcoProductActivity::class.java)
             return intent
         }
 
+    }
+
+    override fun onBackPressed() {
+        finish()
     }
 }
