@@ -10,7 +10,6 @@
 /feature/discovery/home/                @tokopedia/minion-dave
 /feature/discovery/recentview/          @tokopedia/minion-dave
 /feature/discovery/wishlist_common/     @tokopedia/minion-dave
-/tkpdpdp/           @tokopedia/minion-dave
 /tkpddesign/        @tokopedia/core-team
 /sellerapp/         @tokopedia/minion-stuart
 /tkpdseller/        @tokopedia/minion-stuart
@@ -152,3 +151,9 @@
 /libraries/graph_view/                  @tokopedia/minion-solo
 /libraries/iris                         @tokopedia/core-team
 /libraries/remote_config                @tokopedia/core-team
+
+/libraries/unify/unify_components                @tokopedia/core-team
+/libraries/unify/unify_compositions/banner       @tokopedia/core-team
+/libraries/unify/unify_compositions/coach_mark   @tokopedia/core-team
+/libraries/unify/unify_principles                @tokopedia/core-team
+/libraries/unify/unify_icon                      @tokopedia/core-team

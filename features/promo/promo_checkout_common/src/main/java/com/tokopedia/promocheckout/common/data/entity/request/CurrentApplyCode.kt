@@ -8,8 +8,8 @@ import com.google.gson.annotations.SerializedName
  * Created by fwidjaja on 16/04/19.
  */
 data class CurrentApplyCode (
-        @SerializedName("codes")
-        var codes: String? = "",
+        @SerializedName("code")
+        var code: String? = "",
 
         @SerializedName("type")
         var type: String? = ""
@@ -18,13 +18,13 @@ data class CurrentApplyCode (
             parcel.readString(),
             parcel.readString())
 
-    fun CurrentApplyCode(codes: String, type: String) {
-        this.codes = codes
+    fun CurrentApplyCode(code: String, type: String) {
+        this.code = code
         this.type = type
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(codes)
+        parcel.writeString(code)
         parcel.writeString(type)
     }
 

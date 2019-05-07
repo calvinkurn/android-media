@@ -96,7 +96,7 @@ class PartialHeaderView private constructor(private val view: View,
                 text_cashback.visibility = View.GONE
 
             val campaign = data.campaign
-            if (campaign.activeAndHasId){
+            if (campaign.isActive){
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
                         campaign.discountedPrice.getCurrencyFormatted())
                 text_original_price.text = context.getString(R.string.template_price, "",
@@ -107,12 +107,18 @@ class PartialHeaderView private constructor(private val view: View,
 
                 text_original_price.visibility = View.VISIBLE
                 text_discount.visibility = View.VISIBLE
-                discount_timer_holder.visibility = View.VISIBLE
-                showCountDownTimer(data.campaign)
                 sale_text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
                 text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
-                sale_text_stock_available.visible()
-                text_stock_available.gone()
+                if (campaign.activeAndHasId) {
+                    discount_timer_holder.visibility = View.VISIBLE
+                    showCountDownTimer(data.campaign)
+                    sale_text_stock_available.visible()
+                    text_stock_available.gone()
+                } else {
+                    discount_timer_holder.gone()
+                    sale_text_stock_available.gone()
+                    text_stock_available.visible()
+                }
             } else {
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
                         data.basic.price.getCurrencyFormatted())

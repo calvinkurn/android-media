@@ -3,10 +3,12 @@ package com.tokopedia.seller.product.category.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.product.manage.item.category.view.istener.CategoryPickerFragmentListener;
+import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
@@ -65,13 +67,20 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
 
     @Override
     protected Fragment getNewFragment() {
-        long selectedCategoryId = getIntent().getLongExtra(CATEGORY_ID_INIT_SELECTED, CategoryPickerFragment.INIT_UNSELECTED);
+        long selectedCategoryId;
+        Uri uri = getIntent().getData();
+        if (uri != null){
+            List<String> segments = uri.getPathSegments();
+            selectedCategoryId = Long.parseLong(segments.get(segments.size() - 1));
+        } else {
+            selectedCategoryId = getIntent().getLongExtra(CATEGORY_ID_INIT_SELECTED, CategoryPickerFragment.INIT_UNSELECTED);
+        }
         return CategoryPickerFragment.createInstance(selectedCategoryId);
     }
 
     @Override
     public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent();
+        return ProductEditItemComponentInstance.getComponent(getApplication());
     }
 
     @Override

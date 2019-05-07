@@ -1,10 +1,10 @@
 package com.tokopedia.discovery.newdynamicfilter.controller
 
 import android.text.TextUtils
-import com.tokopedia.core.discovery.model.Filter
-import com.tokopedia.core.discovery.model.LevelThreeCategory
-import com.tokopedia.core.discovery.model.LevelTwoCategory
-import com.tokopedia.core.discovery.model.Option
+import com.tokopedia.discovery.common.data.Filter
+import com.tokopedia.discovery.common.data.LevelThreeCategory
+import com.tokopedia.discovery.common.data.LevelTwoCategory
+import com.tokopedia.discovery.common.data.Option
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper

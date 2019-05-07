@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
@@ -15,7 +16,9 @@ import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.shop.common.util.CacheApiTKPDResponseValidator;
 import com.tokopedia.user.session.UserSession;
@@ -32,6 +35,16 @@ public class ShopCommonModule {
     @Provides
     public GetShopInfoUseCase provideGetShopInfoUseCase(ShopCommonRepository shopCommonRepository) {
         return new GetShopInfoUseCase(shopCommonRepository);
+    }
+
+    @Provides
+    public GetShopInfoByDomainUseCase provideGetShopInfoByDomainUseCase(ShopCommonRepository shopCommonRepository) {
+        return new GetShopInfoByDomainUseCase(shopCommonRepository);
+    }
+
+    @Provides
+    public ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(@ApplicationContext Context context) {
+        return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
     }
 
     @Provides
