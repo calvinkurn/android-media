@@ -48,6 +48,7 @@ import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
+import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
@@ -345,8 +346,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     }
 
-
-
     private suspend fun getProductInfoP3(productInfo: ProductInfo, shopDomain: String,
                                          forceRefresh: Boolean, needRequestCod: Boolean, origin: String?)
             : ProductInfoP3 = withContext(Dispatchers.IO) {
@@ -546,11 +545,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     (loadTopAdsProduct.value as? Loaded)?.data as? Success == null){
                 loadTopAdsProduct.value = Loading
                 doLoadTopAdsProduct(product.data.productInfo)
+
             } else null
 
             otherProductDef?.await()?.let { loadOtherProduct.value = it }
             topAdsProductDef?.await()?.let {
-                val recommendationModel = mappingToRecommendationModel((it.data as? Success)?.data ?: return@launch)
+                val recommendationModel = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data?.get(0) ?: return@launch)
                 loadTopAdsProduct.value = Loaded(Success(recommendationModel))
             }
             lazyNeedForceUpdate = false
@@ -582,7 +582,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
         try {
             Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
-                    .getSuccessData<RecomendationEntity.RecomendationData>()))
+                    .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data ?: emptyList()))
         } catch (t: Throwable){
             Loaded(Fail(t))
         }
