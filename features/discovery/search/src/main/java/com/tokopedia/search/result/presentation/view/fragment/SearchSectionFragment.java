@@ -46,7 +46,7 @@ import javax.inject.Inject;
 import static com.tokopedia.discovery.common.constants.SearchConstant.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_COLUMN_MAIN;
 
-abstract class SearchSectionFragment extends BaseDaggerFragment implements SearchSectionContract.View {
+public abstract class SearchSectionFragment extends BaseDaggerFragment implements SearchSectionContract.View {
 
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
 

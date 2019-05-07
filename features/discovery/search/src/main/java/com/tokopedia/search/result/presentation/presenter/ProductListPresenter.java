@@ -35,10 +35,10 @@ import javax.inject.Named;
 
 import rx.Subscriber;
 
-class ProductListPresenter
+final class ProductListPresenter
         extends SearchSectionPresenter<ProductListSectionContract.View>
-        implements ProductListSectionContract.Presenter
-{
+        implements ProductListSectionContract.Presenter {
+
     @Inject
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
     UseCase<SearchProductModel> searchProductFirstPageUseCase;

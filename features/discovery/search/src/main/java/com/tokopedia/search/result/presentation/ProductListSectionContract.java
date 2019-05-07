@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.discovery.common.data.DataValue;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -53,10 +52,6 @@ public interface ProductListSectionContract {
         String getQueryKey();
 
         void setEmptyProduct();
-
-        SearchParameter getSearchParameter();
-
-        void setSearchParameter(SearchParameter searchParameter);
 
         void backToTop();
 

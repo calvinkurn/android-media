@@ -817,12 +817,10 @@ public class ProductListFragment
         recyclerView.setLayoutManager(getGridLayoutManager());
     }
 
-    @Override
     public SearchParameter getSearchParameter() {
         return searchParameter;
     }
 
-    @Override
     public void setSearchParameter(SearchParameter searchParameter) {
         this.searchParameter = searchParameter;
     }

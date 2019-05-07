@@ -121,7 +121,6 @@
         <activity
             android:name=".autocomplete.presentation.activity.AutoCompleteActivity"
             android:theme="@style/Discovery.Transparent"
-            android:screenOrientation="portrait"
             android:label="@string/image_search_title"
             android:windowSoftInputMode="adjustNothing"
             android:launchMode="singleTask">

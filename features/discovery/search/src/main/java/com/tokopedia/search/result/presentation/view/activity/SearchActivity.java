@@ -37,9 +37,8 @@ import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
+import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
@@ -51,6 +50,7 @@ import com.tokopedia.search.R;
 import com.tokopedia.search.result.di.component.DaggerSearchComponent;
 import com.tokopedia.search.result.di.component.SearchComponent;
 import com.tokopedia.search.result.presentation.SearchContract;
+import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
