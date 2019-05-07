@@ -763,14 +763,14 @@ class ProductDetailFragment : BaseDaggerFragment() {
         initStatusBarLight()
         initToolbarLight()
         fab_detail?.hide()
-        label_cod.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
+        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
     }
 
     private fun expandedAppBar() {
         initStatusBarDark()
         initToolbarTransparent()
         showFabDetailAfterLoadData()
-        label_cod.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
+        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
     }
 
     private fun initToolbarLight() {
