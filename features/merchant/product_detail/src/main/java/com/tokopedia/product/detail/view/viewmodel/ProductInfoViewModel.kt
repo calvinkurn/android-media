@@ -336,12 +336,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     private fun generateTopAdsParams(productInfo: ProductInfo): Map<String,Any> {
 
         return mapOf<String, Any>(
-                "userId" to userSessionInterface.userId,
+                "userID" to userSessionInterface.userId,
                 "pageName" to "default",
                 "pageNumber" to 1,
                 "xDevice" to "android",
                 "xSource" to "recom_widget",
-                "productIds" to productInfo.basic.id.toString()
+                "productIDs" to productInfo.basic.id.toString()
         )
 
     }
