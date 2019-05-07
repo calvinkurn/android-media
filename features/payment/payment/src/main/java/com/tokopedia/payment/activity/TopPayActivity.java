@@ -215,6 +215,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.title_loading));
+        tvTitle.setText(getString(R.string.toppay_title));
     }
 
     private void setupURIPass(Uri data) {

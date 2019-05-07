@@ -64,6 +64,7 @@ import com.tokopedia.home.beranda.presentation.view.SectionContainer;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
+import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
@@ -187,7 +188,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         searchBarTransitionRange =
                 getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset =
-                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/2;
+                (getResources().getDimensionPixelSize(R.dimen.banner_background_height))/4;
     }
 
     @Override
@@ -409,7 +410,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 FeedTabModel selectedFeedTabModel =
                         feedTabModelList.get(tab.getPosition());
                 HomePageTracking.eventClickOnHomePageRecommendationTab(
-                        trackingQueue,
+                        getActivity(),
                         selectedFeedTabModel
                 );
             }
@@ -447,6 +448,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
+        sendScreen();
         presenter.onResume();
         if (activityStateListener != null) {
             activityStateListener.onResume();
@@ -916,6 +918,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void updateListOnResume(List<Visitable> visitables) {
         adapter.updateItems(visitables);
+    }
+
+    @Override
+    public void addImpressionToTrackingQueue(List<TrackedVisitable> visitables) {
+        List<Object> combinedTracking = new ArrayList<>();
+        for (TrackedVisitable visitable : visitables) {
+            if (visitable.isTrackingCombined() && visitable.getTrackingDataForCombination() != null) {
+                combinedTracking.addAll(visitable.getTrackingDataForCombination());
+            } else if (!visitable.isTrackingCombined() && visitable.getTrackingData() != null) {
+                HomePageTracking.eventEnhancedImpressionWidgetHomePage(trackingQueue, visitable.getTrackingData());
+            }
+        }
+        if (!combinedTracking.isEmpty()) {
+            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, combinedTracking);
+        }
     }
 
     @Override

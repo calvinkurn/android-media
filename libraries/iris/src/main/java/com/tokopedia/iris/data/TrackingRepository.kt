@@ -23,15 +23,27 @@ class TrackingRepository (
     private val trackingDao: TrackingDao = IrisDb.getInstance(context).trackingDao()
 
     suspend fun saveEvent(data: String, session: Session) = withContext(Dispatchers.IO) {
-        if (isSizeOver()) { // check if db over 2 MB
-            trackingDao.flush()
-        }
-        trackingDao.insert(Tracking(data, session.getUserId(), session.getDeviceId()))
+        try {
+            if (isSizeOver()) { // check if db over 2 MB
+                trackingDao.flush()
+            }
+            trackingDao.insert(Tracking(data, session.getUserId(), session.getDeviceId()))
+        } catch (e: Throwable) {}
     }
 
-    fun getFromOldest(maxRow: Int) = trackingDao.getFromOldest(maxRow)
+    fun getFromOldest(maxRow: Int) : List<Tracking> {
+        return try {
+            trackingDao.getFromOldest(maxRow)
+        } catch (e: Throwable) {
+            ArrayList()
+        }
+    }
 
-    fun delete(data: List<Tracking>) = trackingDao.delete(data)
+    fun delete(data: List<Tracking>) {
+        try {
+            trackingDao.delete(data)
+        } catch (e: Throwable) {}
+    }
 
     suspend fun sendSingleEvent(data: String, session: Session) : Boolean =
             withContext(Dispatchers.Default) {

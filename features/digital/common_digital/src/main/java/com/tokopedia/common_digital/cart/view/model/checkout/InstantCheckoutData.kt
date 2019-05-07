@@ -12,9 +12,11 @@ class InstantCheckoutData(
         var failedCallbackUrl: String? = null,
         var redirectUrl: String? = null,
         var transactionId: String? = null,
-        var stringQuery: String? = null
+        var stringQuery: String? = null,
+        var thanksUrl: String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -28,6 +30,7 @@ class InstantCheckoutData(
         parcel.writeString(redirectUrl)
         parcel.writeString(transactionId)
         parcel.writeString(stringQuery)
+        parcel.writeString(thanksUrl)
     }
 
     override fun describeContents(): Int {
@@ -43,5 +46,4 @@ class InstantCheckoutData(
             return arrayOfNulls(size)
         }
     }
-
 }

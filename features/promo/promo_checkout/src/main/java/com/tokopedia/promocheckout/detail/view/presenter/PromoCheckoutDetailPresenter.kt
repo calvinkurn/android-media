@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
@@ -12,6 +13,7 @@ import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMa
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
@@ -21,6 +23,9 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                                    private val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                                    private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailContract.Presenter {
+
+    private val paramGlobal = "global"
+    private val statusOK = "OK"
 
     override fun cancelPromo(codeCoupon: String) {
         view.showProgressLoading()
@@ -66,6 +71,15 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
         // Set promo global
         promo.codes = arrayListOf(promoCode)
 
+        var currentApplyCode: CurrentApplyCode? = null
+        if (promoCode.isNotEmpty()) {
+            currentApplyCode = CurrentApplyCode(
+                    promoCode,
+                    paramGlobal
+            )
+        }
+        promo.currentApplyCode = currentApplyCode
+
         if (isFromLoadDetail) {
             promo.skipApply = 1
         } else {
@@ -79,22 +93,26 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                 if (isViewAttached) {
                     view.hideProgressLoading()
                     val responseGetPromoStack = checkPromoStackingCodeMapper.call(t)
-                    if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerCheckoutView.State.FAILED) {
-                        if (!isFromLoadDetail) {
-                            view.onErrorValidatePromo(MessageErrorException(responseGetPromoStack.data.message.text))
-                        }
-                    } else {
+                    if (responseGetPromoStack.status.equals(statusOK, true) && responseGetPromoStack.data.success) {
                         if (!isFromLoadDetail) {
                             if (promo.skipApply == 0 && responseGetPromoStack.data.clashings.isClashedPromos) {
                                 view.onClashCheckPromo(responseGetPromoStack.data.clashings)
                             } else {
-                                if (responseGetPromoStack.data.message.state.equals("red")) {
-                                    view.onErrorValidatePromo(MessageErrorException(responseGetPromoStack.data.message.text))
-                                } else {
-                                    view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
+                                responseGetPromoStack.data.codes.forEach {
+                                    if (it.equals(promoCode, true)) {
+                                        if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+                                            view?.hideProgressLoading()
+                                            view.onErrorValidatePromoStacking(MessageErrorException(responseGetPromoStack.data.message.text))
+                                        } else {
+                                            view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
+                                        }
+                                    }
                                 }
                             }
                         }
+                    } else {
+                        val message = responseGetPromoStack.data.message.text
+                        view.onErrorValidatePromoStacking(MessageErrorException(message))
                     }
                 }
             }

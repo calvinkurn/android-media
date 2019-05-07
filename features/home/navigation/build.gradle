@@ -33,6 +33,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.features.recommendationWidgetCommon)
+
     implementation rootProject.ext.playServicesDependencies.analytics
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
