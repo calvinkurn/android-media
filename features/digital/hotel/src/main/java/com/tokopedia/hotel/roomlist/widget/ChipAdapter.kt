@@ -11,7 +11,12 @@ import com.tokopedia.hotel.R
  * @author by jessica on 18/04/19
  */
 
-class ChipAdapter(val list: List<String>, val listener: OnClickListener, val selectedColor: Int): RecyclerView.Adapter<ChipAdapter.ViewHolder>() {
+class ChipAdapter(val list: List<String>, val listener: OnClickListener,
+                  val onResetChipListener: ResetChipListener,
+                  val selectedColor: Int = com.tokopedia.design.R.color.black_56)
+    : RecyclerView.Adapter<ChipAdapter.ViewHolder>() {
+
+    var selectOnlyOneChip = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
             = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_chip, parent, false))
@@ -19,15 +24,18 @@ class ChipAdapter(val list: List<String>, val listener: OnClickListener, val sel
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.chips.text = list.get(position)
-        holder.chips.isSelected = false
-        holder.chips.setOnClickListener {
-            holder.chips.isSelected = !holder.chips.isSelected
-            if (selectedColor != 0) {
-                if (holder.chips.isSelected) holder.setTextColor(selectedColor)
-                else holder.setTextColor(com.tokopedia.design.R.color.black_56)
+        with(holder) {
+            chips.text = list.get(position)
+            chips.isSelected = false
+            chips.setOnClickListener {
+                if (selectOnlyOneChip) onResetChipListener.onResetChip()
+                chips.isSelected = !chips.isSelected
+                if (selectedColor != 0) {
+                    if (chips.isSelected) setTextColor(selectedColor)
+                    else setTextColor(com.tokopedia.design.R.color.black_56)
+                }
+                listener.onChipClickListener(chips.text.toString(), chips.isSelected)
             }
-            listener.onChipClickListener(holder.chips.text.toString())
         }
     }
 
@@ -44,6 +52,10 @@ class ChipAdapter(val list: List<String>, val listener: OnClickListener, val sel
     }
 
     interface OnClickListener{
-        fun onChipClickListener(string: String)
+        fun onChipClickListener(string: String, isSelected: Boolean)
+    }
+
+    interface ResetChipListener{
+        fun onResetChip()
     }
 }

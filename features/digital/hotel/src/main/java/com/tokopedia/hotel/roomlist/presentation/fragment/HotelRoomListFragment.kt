@@ -269,7 +269,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                 hotelRoomListPageModel, true)
     }
 
-    override fun onChipClickListener(string: String) {
+    override fun onChipClickListener(string: String, isSelected: Boolean) {
         when (string) {
             getString(FREE_BREAKFAST) -> {
                 roomListViewModel.clickFilter(clickFreeBreakfast = true)
@@ -318,7 +318,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onEmptyButtonClicked() {
         //DELETE FILTER
-        filter_recycler_view.resetChipSelected()
+        filter_recycler_view.onResetChip()
         roomListViewModel.clearFilter()
     }
 
