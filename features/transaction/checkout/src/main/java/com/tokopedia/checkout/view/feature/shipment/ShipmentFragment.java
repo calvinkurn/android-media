@@ -1749,7 +1749,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onNeedUpdateRequestData() {
-        shipmentAdapter.checkHasSelectAllCourier(false);
+        shipmentAdapter.checkHasSelectAllCourier(true);
     }
 
     @Override
