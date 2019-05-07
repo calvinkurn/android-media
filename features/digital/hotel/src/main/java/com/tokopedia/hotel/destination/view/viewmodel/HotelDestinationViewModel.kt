@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.hotel.destination.data.model.*
@@ -20,6 +21,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.experimental.*
+import okhttp3.Response
 import javax.inject.Inject
 
 /**
@@ -32,40 +34,33 @@ class HotelDestinationViewModel @Inject constructor(
         val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
-    val hotelRecommendation = MutableLiveData<Result<HotelRecommendation>>()
+    val popularSearch = MutableLiveData<Result<List<PopularSearch>>>()
+    val recentSearch = MutableLiveData<Result<List<RecentSearch>>>()
     val searchDestination = MutableLiveData<RecentSearchState<MutableList<SearchDestination>>>()
     val longLat = MutableLiveData<Result<Pair<Double, Double>>>()
     val deleteSuccess = MutableLiveData<Boolean>()
 
     fun getHotelRecommendation(popularRawQuery: String, recentSearchRawQuery: String) {
-        launch {
 
-            try {
-                val hotelPopularSearchData = async {
-                    val response = withContext(Dispatchers.Default) {
-                        val graphqlRequest = GraphqlRequest(popularRawQuery, TYPE_POPULAR_RESPONSE, false)
-                        graphqlRepository.getReseponse(listOf(graphqlRequest))
-                    }.getSuccessData<PopularSearch.Response>()
-                    response
-                }
+        launchCatchError(block = {
+            val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt())
 
-                val hotelRecentSearchData = async {
-                    if (userSessionInterface.isLoggedIn) {
-                        val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt())
-                        val response = withContext(Dispatchers.Default) {
-                            val graphqlRequest = GraphqlRequest(recentSearchRawQuery, RecentSearch.Response::class.java, params, false)
-                            graphqlRepository.getReseponse(listOf(graphqlRequest))
-                        }.getSuccessData<RecentSearch.Response>()
-                        response
-                    } else {
-                        RecentSearch.Response()
-                    }
-                }
-                hotelRecommendation.value = Success(HotelRecommendation(hotelPopularSearchData.await().popularSearchList,
-                        hotelRecentSearchData.await().recentSearch))
-            } catch (it: Throwable){
-                hotelRecommendation.value = Fail(it)
+            val popularSearchRequest = GraphqlRequest(popularRawQuery, TYPE_POPULAR_RESPONSE, false)
+            val recentSearchRequest = GraphqlRequest(recentSearchRawQuery, RecentSearch.Response::class.java, params, false)
+            val gqlResponse = graphqlRepository.getReseponse(listOf(popularSearchRequest, recentSearchRequest))
+
+            if (gqlResponse.getError(PopularSearch.Response::class.java)?.isNotEmpty() != true) {
+                val result = (gqlResponse.getData(PopularSearch.Response::class.java) as PopularSearch.Response).popularSearchList
+                if (result.isNotEmpty()) popularSearch.value = Success(result)
             }
+
+            if (gqlResponse.getError(RecentSearch.Response::class.java)?.isNotEmpty() != true) {
+                val result = (gqlResponse.getData(RecentSearch.Response::class.java) as RecentSearch.Response).recentSearch
+                if (result.isNotEmpty()) recentSearch.value = Success(result)
+            }
+        }) {
+            popularSearch.value = Fail(it)
+            recentSearch.value = Fail(it)
         }
     }
 

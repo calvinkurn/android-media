@@ -125,13 +125,25 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        destinationViewModel.hotelRecommendation.observe(this, android.arch.lifecycle.Observer {
+        destinationViewModel.popularSearch.observe(this, android.arch.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     showOnlyList(false)
-                    renderRecentSearch(it.data.hotelRecentSearch.toMutableList())
                     isLoadingInitialData = true
-                    renderList(it.data.hotelPopularSearch, false)
+                    renderList(it.data, false)
+                }
+                is Fail -> {
+                    //hide other element
+                    showGetListError(it.throwable)
+                    showOnlyList(true)
+                }
+            } })
+
+        destinationViewModel.recentSearch.observe(this, android.arch.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    showOnlyList(false)
+                    renderRecentSearch(it.data.toMutableList())
                 }
                 is Fail -> {
                     //hide other element
@@ -148,8 +160,8 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
         destinationViewModel.deleteSuccess.observe(this, android.arch.lifecycle.Observer {
             when (it) {
-                true -> {}
-                false -> {}
+                true -> { }
+                false -> { }
         }})
     }
 
