@@ -47,9 +47,10 @@ import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
+import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
-import com.tokopedia.topads.sdk.domain.Xparams
-import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -58,6 +59,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.experimental.*
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -75,7 +77,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val productVariantResp = MutableLiveData<Result<ProductVariant>>()
 
     val loadOtherProduct = MutableLiveData<RequestDataState<List<ProductOther>>>()
-    val loadTopAdsProduct = MutableLiveData<RequestDataState<TopAdsModel>>()
+    val loadTopAdsProduct = MutableLiveData<RequestDataState<RecommendationModel>>()
 
     var multiOrigin : WarehouseInfo = WarehouseInfo()
     val userId: String
@@ -330,23 +332,19 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private fun generateTopAdsParams(productInfo: ProductInfo): String {
-        val xparams = Xparams().apply {
-            product_id = productInfo.basic.id
-            product_name = productInfo.basic.name
-            source_shop_id = productInfo.basic.shopID
-            if (productInfo.category.detail.size > 2)
-                child_cat_id = productInfo.category.detail[2].id.toIntOrNull() ?: 0
-        }
+    private fun generateTopAdsParams(productInfo: ProductInfo): Map<String,Any> {
 
-        return mapOf(TopAdsDisplay.KEY_ITEM to TopAdsDisplay.DEFAULT_TOTAL_ITEM,
-                TopAdsDisplay.KEY_DEVICE to TopAdsDisplay.DEFAULT_DEVICE,
-                PARAM_PAGE to 1,
-                TopAdsDisplay.KEY_SRC to TopAdsDisplay.DEFAULT_SRC_PAGE,
-                TopAdsDisplay.KEY_EP to TopAdsDisplay.DEFAULT_EP,
-                TopAdsDisplay.KEY_XPARAMS to Gson().toJson(xparams),
-                PARAM_USER_ID to userSessionInterface.userId).map { "${it.key}=${it.value}" }.joinToString("&")
+        return mapOf<String, Any>(
+                "userId" to userSessionInterface.userId,
+                "pageName" to "default",
+                "pageNumber" to 1,
+                "xDevice" to "android",
+                "xSource" to "recom_widget",
+                "productIds" to productInfo.basic.id.toString()
+        )
+
     }
+
 
 
     private suspend fun getProductInfoP3(productInfo: ProductInfo, shopDomain: String,
@@ -551,7 +549,10 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             } else null
 
             otherProductDef?.await()?.let { loadOtherProduct.value = it }
-            topAdsProductDef?.await()?.let { loadTopAdsProduct.value = it }
+            topAdsProductDef?.await()?.let {
+                val recommendationModel = mappingToRecommendationModel((it.data as? Success)?.data ?: return@launch)
+                loadTopAdsProduct.value = Loaded(Success(recommendationModel))
+            }
             lazyNeedForceUpdate = false
         }
     }
@@ -573,18 +574,54 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     }
 
     private fun doLoadTopAdsProduct(productInfo: ProductInfo) = async(Dispatchers.IO) {
-        val topadsParams = mapOf(KEY_PARAM to generateTopAdsParams(productInfo))
-        val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISPLAY_ADS],
-                TopAdsDisplayResponse::class.java, topadsParams)
+        val topadsParams = generateTopAdsParams(productInfo)
+        val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT],
+                RecomendationEntity::class.java, topadsParams)
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (lazyNeedForceUpdate) CacheType.ALWAYS_CLOUD
                 else CacheType.CACHE_FIRST).build()
 
         try {
             Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
-                    .getSuccessData<TopAdsDisplayResponse>().result))
+                    .getSuccessData<RecomendationEntity.RecomendationData>()))
         } catch (t: Throwable){
             Loaded(Fail(t))
         }
+    }
+
+    private fun mappingToRecommendationModel(recomendationData: RecomendationEntity.RecomendationData): RecommendationModel {
+        val modelList = ArrayList<RecommendationItem>()
+        val datas = recomendationData.recommendation
+        datas?.run {
+            for (data in datas) {
+                modelList.add(
+                        RecommendationItem(
+                                data.id,
+                                data.name?:"",
+                                data.categoryBreadcrumbs?:"",
+                                data.url?:"",
+                                data.appUrl?:"",
+                                data.clickUrl?:"",
+                                data.wishlistUrl?:"",
+                                data.trackerImageUrl?:"",
+                                data.imageUrl?:"",
+                                data.price?:"",
+                                data.priceInt,
+                                data.departmentId,
+                                data.rating,
+                                data.countReview,
+                                data.stock,
+                                data.recommendationType?:"",
+                                data.isIsTopads
+                        )
+                )
+            }
+        }
+        return RecommendationModel(modelList,
+                recomendationData.title?:"",
+                recomendationData.foreignTitle?:"",
+                recomendationData.source?:"",
+                recomendationData.tid?:"",
+                recomendationData.widgetUrl?:"")
     }
 
 }
