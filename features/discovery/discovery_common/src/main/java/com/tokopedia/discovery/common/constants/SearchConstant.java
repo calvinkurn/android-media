@@ -21,8 +21,6 @@ public interface SearchConstant {
 
     String TRANSITION = "transition";
 
-    String GQL_INITIATE_SEARCH = "gql_initiate_search";
-
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
 
@@ -39,5 +37,27 @@ public interface SearchConstant {
     interface Wishlist {
         String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
         String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
+        String PRODUCT_WISHLIST_URL = "product_wishlist_url";
+        String PRODUCT_WISHLIST_URL_USE_CASE = "product_wishlist_url_use_case";
+    }
+
+    interface GQL {
+        String GQL_INITIATE_SEARCH = "gql_initiate_search";
+        String GQL_SEARCH_PRODUCT_FIRST_PAGE = "gql_search_product_first_page";
+        String GQL_SEARCH_PRODUCT_LOAD_MORE = "gql_search_product_load_more";
+    }
+
+    interface SearchProduct {
+        String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
+        String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_first_page_use_case";
+        String PARAMETER_ROWS = "8";
+    }
+
+    interface RemoteConfigKey {
+        String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
+    }
+
+    interface BaseUrl {
+        String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     }
 }

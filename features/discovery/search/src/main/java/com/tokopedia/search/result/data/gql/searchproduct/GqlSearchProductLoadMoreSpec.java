@@ -1,0 +1,19 @@
+package com.tokopedia.search.result.data.gql.searchproduct;
+
+import android.content.Context;
+
+import com.tokopedia.search.R;
+
+import org.jetbrains.annotations.NotNull;
+
+final class GqlSearchProductLoadMoreSpec extends GqlSearchProductSpec {
+
+    public GqlSearchProductLoadMoreSpec(@NotNull Context context) {
+        super(context);
+    }
+
+    @Override
+    public int getResources() {
+        return R.raw.gql_search_product_load_more;
+    }
+}

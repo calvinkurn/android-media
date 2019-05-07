@@ -3,12 +3,14 @@ package com.tokopedia.search.result.presentation.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.discovery.common.repository.gql.GqlSpecification;
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
-import com.tokopedia.discovery.newdiscovery.base.InitiateSearchSubscriber;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.newdiscovery.domain.model.InitiateSearchModel;
 import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.search.result.presentation.SearchContract;
+import com.tokopedia.search.result.presentation.presenter.subscriber.InitiateSearchSubscriber;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.Map;
 
@@ -16,20 +18,15 @@ import javax.inject.Inject;
 
 final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> implements SearchContract.Presenter {
 
-    @Inject
-    GraphqlUseCase graphqlUseCase;
+    UseCase<InitiateSearchModel> initiateSearchModelUseCase;
 
-    @Inject
-    GqlSpecification gqlInitiateSearchSpec;
-
-    SearchPresenter(GraphqlUseCase graphqlUseCase, GqlSpecification gqlInitiateSearchSpec) {
-        this.graphqlUseCase = graphqlUseCase;
-        this.gqlInitiateSearchSpec = gqlInitiateSearchSpec;
+    SearchPresenter(UseCase<InitiateSearchModel> initiateSearchModelUseCase) {
+        this.initiateSearchModelUseCase = initiateSearchModelUseCase;
     }
 
     @Override
     public void onPause() {
-        graphqlUseCase.unsubscribe();
+        initiateSearchModelUseCase.unsubscribe();
     }
 
     @Override
@@ -48,12 +45,7 @@ final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> imp
 
         RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, isForceSearch);
 
-        GqlSearchHelper.initiateSearch(
-                gqlInitiateSearchSpec.getQuery(),
-                requestParams,
-                graphqlUseCase,
-                new InitiateSearchSubscriber(initiateSearchListener)
-        );
+        initiateSearchModelUseCase.execute(requestParams, new InitiateSearchSubscriber(initiateSearchListener));
     }
 
     private RequestParams createInitiateSearchRequestParams(Map<String, Object> searchParameter, boolean isForceSearch) {

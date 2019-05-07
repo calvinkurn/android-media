@@ -1,8 +1,7 @@
 package com.tokopedia.search.result.presentation;
 
-import android.os.Bundle;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.discovery.common.data.DataValue;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
@@ -16,12 +15,14 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface ProductListSectionContract {
 
     interface View extends SearchSectionContract.View {
+        void logDebug(String tag, String message);
 
-        void launchLoginActivity(Bundle extras);
+        void launchLoginActivity(String productId);
 
         boolean isUserHasLogin();
 
@@ -84,18 +85,24 @@ public interface ProductListSectionContract {
         void setFirstTimeLoad(boolean isFirstTimeLoad);
 
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
+
+        BaseAppComponent getBaseAppComponent();
+
+        void clearLastProductItemPositionFromCache();
+
+        void saveLastProductItemPositionToCache(int lastProductItemPositionToCache);
+
+        int getLastProductItemPositionFromCache();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
 
         void attachView(View viewListener, WishListActionListener wishlistActionListener);
 
-        void loadMoreData(SearchParameter searchParameter, HashMap<String, String> additionalParams);
+        void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams);
 
-        void loadData(SearchParameter searchParameter, boolean isForceSearch, HashMap<String, String> additionalParams, boolean isFirstTimeLoad);
+        void loadData(Map<String, Object> searchParameter, boolean isForceSearch, Map<String, String> additionalParams, boolean isFirstTimeLoad);
 
         void handleWishlistButtonClicked(final ProductItemViewModel productItem);
-
-        void setIsUsingFilterV4(boolean isUsingFilterV4);
     }
 }

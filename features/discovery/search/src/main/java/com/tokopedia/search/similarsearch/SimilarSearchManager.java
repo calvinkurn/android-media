@@ -2,11 +2,14 @@ package com.tokopedia.search.similarsearch;
 
 import android.content.Context;
 
-import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
+import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchAppEventTracking;
 import com.tokopedia.discovery.similarsearch.view.SimilarSearchActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.track.TrackApp;
 
 public class SimilarSearchManager {
 
@@ -34,8 +37,16 @@ public class SimilarSearchManager {
 
     public void startSimilarSearchIfEnable(String queryKey, ProductItemViewModel item) {
         if (isSimilarSearchEnable()) {
-            SimilarSearchTracking.eventProductLongPress(context, queryKey, item.getProductID());
+            trackEventProductLongPress(queryKey, item.getProductID());
             context.startActivity(SimilarSearchActivity.getIntent(context, item.getProductID()));
         }
+    }
+
+    private void trackEventProductLongPress(String keyword, String productId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.EventSearchResult,
+                SearchEventTracking.Action.EventLongPressProduct,
+                String.format(SearchEventTracking.Label.LabelKeywordProduct, keyword, productId));
     }
 }

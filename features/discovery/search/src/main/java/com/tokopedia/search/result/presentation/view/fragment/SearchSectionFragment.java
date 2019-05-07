@@ -15,7 +15,8 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.discovery.activity.SortProductActivity;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
@@ -25,7 +26,6 @@ import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
@@ -60,6 +60,11 @@ abstract class SearchSectionFragment extends BaseDaggerFragment implements Searc
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     private static final String EXTRA_IS_GETTING_DYNNAMIC_FILTER = "EXTRA_IS_GETTING_DYNNAMIC_FILTER";
     protected static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
+    public static final String EXTRA_DATA = "EXTRA_DATA";
+    public static final String EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME";
+    public static final String EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST";
+    public static final String EXTRA_FILTER_PARAMETER = "EXTRA_FILTER_PARAMETER";
+    public static final String EXTRA_SELECTED_FILTERS = "EXTRA_SELECTED_FILTERS";
 
     private SearchNavigationListener searchNavigationListener;
     private BottomSheetListener bottomSheetListener;
@@ -249,8 +254,8 @@ abstract class SearchSectionFragment extends BaseDaggerFragment implements Searc
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == getSortRequestCode()) {
-                setSelectedSort(new HashMap<>(getMapFromIntent(data, SortProductActivity.EXTRA_SELECTED_SORT)));
-                String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
+                setSelectedSort(new HashMap<>(getMapFromIntent(data, EXTRA_SELECTED_SORT)));
+                String selectedSortName = data.getStringExtra(EXTRA_SELECTED_NAME);
                 searchTracking.eventSearchResultSort(getScreenName(), selectedSortName);
 
                 if(searchParameter != null) {
@@ -260,8 +265,8 @@ abstract class SearchSectionFragment extends BaseDaggerFragment implements Searc
                 clearDataFilterSort();
                 reloadData();
             } else if (requestCode == getFilterRequestCode()) {
-                Map<String, String> filterParameter = getMapFromIntent(data, RevampedDynamicFilterActivity.EXTRA_FILTER_PARAMETER);
-                Map<String, String> activeFilterParameter = getMapFromIntent(data, RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS);
+                Map<String, String> filterParameter = getMapFromIntent(data, EXTRA_FILTER_PARAMETER);
+                Map<String, String> activeFilterParameter = getMapFromIntent(data, EXTRA_SELECTED_FILTERS);
 
                 SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), activeFilterParameter);
 
@@ -382,9 +387,10 @@ abstract class SearchSectionFragment extends BaseDaggerFragment implements Searc
     protected void openFilterPage() {
         if (searchParameter == null) return;
 
-        Intent intent = RevampedDynamicFilterActivity.createInstance(
-                getActivity(), getScreenName(), searchParameter.getSearchParameterHashMap(), null
-        );
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalDiscovery.INSTANCE.getINTERNAL_FILTER(), (String[]) null);
+        intent.putExtra(EXTRA_FILTER_LIST, getScreenName());
+        intent.putExtra(EXTRA_FILTER_PARAMETER, searchParameter);
+
         startActivityForResult(intent, getFilterRequestCode());
 
         if (getActivity() != null) {
@@ -400,9 +406,12 @@ abstract class SearchSectionFragment extends BaseDaggerFragment implements Searc
         if(getActivity() == null) return;
 
         if (isSortDataAvailable()) {
-            Intent intent = SortProductActivity.createInstance(
-                    getActivity(), getSort(), getSelectedSort()
-            );
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalDiscovery.INSTANCE.getINTERNAL_SORT(), (String[]) null);
+            intent.putParcelableArrayListExtra(EXTRA_DATA, sort);
+            if (getSelectedSort() != null) {
+                intent.putExtra(EXTRA_SELECTED_SORT, getSelectedSort());
+            }
+
             startActivityForResult(intent, getSortRequestCode());
 
             if(getActivity() != null) {

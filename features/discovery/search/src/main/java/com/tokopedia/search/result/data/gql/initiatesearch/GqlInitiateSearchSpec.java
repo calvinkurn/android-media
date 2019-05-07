@@ -1,4 +1,4 @@
-package com.tokopedia.search.gql.initiatesearch;
+package com.tokopedia.search.result.data.gql.initiatesearch;
 
 import android.content.Context;
 

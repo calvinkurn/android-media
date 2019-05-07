@@ -341,7 +341,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                 SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
                 itemClickListener.onSearchGuideClicked(query);
             });
-            imageView.setImageResource(BACKGROUND[getAdapterPosition()]);
+            imageView.setImageResource(BACKGROUND[getAdapterPosition() % 5]);
         }
     }
 }

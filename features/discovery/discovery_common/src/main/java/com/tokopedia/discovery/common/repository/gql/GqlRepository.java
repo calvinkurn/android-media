@@ -8,13 +8,17 @@ import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 
-class GqlRepository<T> implements Repository<T> {
+public class GqlRepository<T> implements Repository<T> {
 
     private GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
+    private GqlSpecification gqlSpecification;
+
+    public GqlRepository(Specification gqlSpecification) {
+        this.gqlSpecification = (GqlSpecification) gqlSpecification;
+    }
 
     @Override
-    public Observable<T> query(Specification specification, RequestParams requestParams) {
-        final GqlSpecification gqlSpecification = (GqlSpecification)specification;
+    public Observable<T> query(RequestParams requestParams) {
         final GraphqlRequest gqlRequest = new GraphqlRequest(gqlSpecification.getQuery(), gqlSpecification.getType(), requestParams.getParameters());
 
         graphqlUseCase.addRequest(gqlRequest);

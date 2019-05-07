@@ -1,0 +1,65 @@
+package com.tokopedia.search.result.presentation.presenter;
+
+import com.tokopedia.search.result.domain.model.SearchProductModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import rx.Observable;
+import rx.Subscriber;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+
+public class ProductListPresenterTest {
+
+    private static class MockSearchProductModelUseCase extends UseCase<SearchProductModel> {
+        @Override
+        public Observable<SearchProductModel> createObservable(RequestParams requestParams) {
+            return null;
+        }
+    }
+
+    private static class MockSearchProductModelSubscriber extends Subscriber<SearchProductModel> {
+        @Override
+        public void onCompleted() { }
+
+        @Override
+        public void onError(Throwable e) { }
+
+        @Override
+        public void onNext(SearchProductModel searchProductModel) { }
+    }
+
+    private UseCase<SearchProductModel> searchProductFirstPageUseCase = mock(MockSearchProductModelUseCase.class);
+    private UseCase<SearchProductModel> searchProductLoadMoreUseCase = mock(MockSearchProductModelUseCase.class);
+    private ProductListPresenter productListPresenter;
+
+    @Before
+    public void setUp() {
+        productListPresenter = new ProductListPresenter();
+
+        productListPresenter.searchProductFirstPageUseCase = searchProductFirstPageUseCase;
+        productListPresenter.searchProductLoadMoreUseCase = searchProductLoadMoreUseCase;
+    }
+
+    @Test
+    public void loadMoreData_givenNulls_shouldNotExecuteUseCase() {
+        productListPresenter.loadMoreData(null, null);
+
+        verify(searchProductLoadMoreUseCase, never()).execute(any(RequestParams.class), any(MockSearchProductModelSubscriber.class));
+    }
+
+    @Test
+    public void loadData_givenNulls_shouldNotExecuteUseCase() {
+        productListPresenter.loadData(null, false, null, false);
+
+        verify(searchProductFirstPageUseCase, never()).execute(any(RequestParams.class), any(MockSearchProductModelSubscriber.class));
+    }
+}

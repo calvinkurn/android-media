@@ -6,6 +6,7 @@ import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
+import java.util.Map;
 
 abstract class SearchSectionPresenter<T extends SearchSectionContract.View>
         extends BaseDaggerPresenter<T>
@@ -29,7 +30,7 @@ abstract class SearchSectionPresenter<T extends SearchSectionContract.View>
     }
 
     protected RequestParams enrichWithAdditionalParams(RequestParams requestParams,
-                                                       HashMap<String, String> additionalParams) {
+                                                       Map<String, String> additionalParams) {
         requestParams.putAllString(additionalParams);
         return requestParams;
     }

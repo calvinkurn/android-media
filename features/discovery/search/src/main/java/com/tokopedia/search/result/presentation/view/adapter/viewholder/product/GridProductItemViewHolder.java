@@ -142,7 +142,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItemVie
         if (productItem.getRating() != 0) {
             ratingReviewContainer.setVisibility(View.VISIBLE);
             rating.setImageResource(
-                    RatingView.getRatingDrawable((productItem.isTopAds())
+                    getRatingDrawable((productItem.isTopAds())
                             ? getStarCount(productItem.getRating())
                             : Math.round(productItem.getRating())
                     ));
@@ -156,6 +156,25 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItemVie
             newLabel.setVisibility(View.GONE);
         }
         renderBadges(productItem.getBadgesList());
+    }
+
+    private int getRatingDrawable(int param) {
+        switch (param) {
+            case 0:
+                return R.drawable.ic_star_none;
+            case 1:
+                return R.drawable.ic_star_one;
+            case 2:
+                return R.drawable.ic_star_two;
+            case 3:
+                return R.drawable.ic_star_three;
+            case 4:
+                return R.drawable.ic_star_four;
+            case 5:
+                return R.drawable.ic_star_five;
+            default:
+                return R.drawable.ic_star_none;
+        }
     }
 
     private int getStarCount(int rating) {

@@ -9,13 +9,16 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -38,6 +41,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
+import com.tokopedia.search.result.di.component.DaggerProductListViewComponent;
+import com.tokopedia.search.result.di.component.ProductListViewComponent;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
@@ -89,6 +94,8 @@ public class ProductListFragment
     private static final int REQUEST_ACTIVITY_SORT_PRODUCT = 1233;
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
+    private static final String SEARCH_RESULT_ENHANCE_ANALYTIC = "SEARCH_RESULT_ENHANCE_ANALYTIC";
+    private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
 
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
     private static final String EXTRA_IS_FORCE_SEARCH = "EXTRA_IS_FORCE_SEARCH";
@@ -157,10 +164,10 @@ public class ProductListFragment
 
     @Override
     protected void initInjector() {
-//        ProductListSectionComponent component = DaggerProductListSectionComponent.builder()
-//                .appComponent(getComponent(BaseAppComponent.class))
-//                .build();
-//        component.inject(this);
+        ProductListViewComponent component = DaggerProductListViewComponent.builder()
+                .baseAppComponent(getComponent(BaseAppComponent.class))
+                .build();
+        component.inject(this);
     }
 
     @Nullable
@@ -168,7 +175,6 @@ public class ProductListFragment
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this, this);
-        presenter.setIsUsingFilterV4(isUsingBottomSheetFilter());
         return inflater.inflate(R.layout.fragment_base_discovery, null);
     }
 
@@ -333,7 +339,7 @@ public class ProductListFragment
         HashMap<String, String> additionalParamsMap
                 = NetworkParamHelper.getParamMap(additionalParams);
 
-        presenter.loadMoreData(getSearchParameter(), additionalParamsMap);
+        presenter.loadMoreData(searchParameter.getSearchParameterMap(), additionalParamsMap);
     }
 
     @Override
@@ -693,7 +699,10 @@ public class ProductListFragment
     }
 
     @Override
-    public void launchLoginActivity(Bundle extras) {
+    public void launchLoginActivity(String productId) {
+        Bundle extras = new Bundle();
+        extras.putString("product_id", productId);
+
         if (getActivity() == null) return;
 
         DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
@@ -756,7 +765,7 @@ public class ProductListFragment
         initTopAdsParams();
         generateLoadMoreParameter(0);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
-        presenter.loadData(getSearchParameter(), isForceSearch, getAdditionalParamsMap(), isFirstTimeLoad);
+        presenter.loadData(getSearchParameter().getSearchParameterMap(), isForceSearch, getAdditionalParamsMap(), isFirstTimeLoad);
         TopAdsGtmTracker.getInstance().clearDataLayerList();
     }
 
@@ -903,5 +912,40 @@ public class ProductListFragment
             value.put(SearchEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
         }
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
+    }
+
+    @Nullable
+    public BaseAppComponent getBaseAppComponent() {
+        if(getActivity() == null || getActivity().getApplication() == null) return null;
+
+        return ((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent();
+    }
+
+    @Override
+    public void clearLastProductItemPositionFromCache() {
+        if(getActivity() == null || getActivity().getApplicationContext() == null) return;
+        LocalCacheHandler.clearCache(getActivity().getApplicationContext(), SEARCH_RESULT_ENHANCE_ANALYTIC);
+    }
+
+    @Override
+    public void saveLastProductItemPositionToCache(int lastProductItemPositionToCache) {
+        if(getActivity() == null || getActivity().getApplicationContext() == null) return;
+
+        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), SEARCH_RESULT_ENHANCE_ANALYTIC);
+        cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, lastProductItemPositionToCache);
+        cache.applyEditor();
+    }
+
+    @Override
+    public int getLastProductItemPositionFromCache() {
+        if(getActivity() == null || getActivity().getApplicationContext() == null) return 0;
+
+        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), SEARCH_RESULT_ENHANCE_ANALYTIC);
+        return cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0);
+    }
+
+    @Override
+    public void logDebug(String tag, String message) {
+        Log.d(tag, message);
     }
 }
