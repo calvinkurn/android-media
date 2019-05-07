@@ -22,10 +22,12 @@ import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailMapActivity
+import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
+import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -44,6 +46,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
 
     private var hotelHomepageModel = HotelHomepageModel()
     private var isButtonEnabled: Boolean = true
+    private var hotelName: String = ""
 
     private lateinit var detailReviewAdapter: HotelDetailReviewAdapter
     private lateinit var mainFacilityAdapter: HotelDetailMainFacilityAdapter
@@ -108,6 +111,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     setupLayout(it.data)
+                    hotelName = it.data.property.name
                 }
                 is Fail -> {
                     // TODO Fail get Hotel Info
@@ -239,6 +243,10 @@ class HotelDetailFragment : BaseDaggerFragment() {
         rv_best_review.setHasFixedSize(true)
         rv_best_review.isNestedScrollingEnabled = false
         rv_best_review.adapter = detailReviewAdapter
+
+        tv_hotel_detail_all_promo.setOnClickListener {
+            startActivityForResult(HotelReviewActivity.getCallingIntent(context!!, hotelHomepageModel.locId), RESULT_REVIEW)
+        }
     }
 
     private fun setupMainFacilityItem(facilityList: List<FacilityItem>) {
@@ -284,8 +292,13 @@ class HotelDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupPriceButton(data: List<HotelRoom>) {
-        if (data.isNotEmpty()) {
+        if (data.isNotEmpty() && data[0].roomPrice.isNotEmpty()) {
             tv_hotel_price.text = data[0].roomPrice[0].roomPrice
+        }
+        btn_see_room.setOnClickListener {
+            startActivityForResult(HotelRoomListActivity.createInstance(context!!, hotelHomepageModel.locId, hotelName,
+                    hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
+                    hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
         }
     }
 
@@ -293,6 +306,9 @@ class HotelDetailFragment : BaseDaggerFragment() {
 
         const val SAVED_SEARCH_PARAMETER = "SAVED_SEARCH_PARAMETER"
         const val SAVED_ENABLE_BUTTON = "SAVED_ENABLE_BUTTON"
+
+        const val RESULT_ROOM_LIST = 101
+        const val RESULT_REVIEW = 102
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
                         adultCount: Int, enableButton: Boolean = true): HotelDetailFragment =

@@ -68,11 +68,15 @@ class HotelDetailMapFragment : Fragment(), OnMapReadyCallback {
             val latLng = LatLng(latitude, longitude)
 
             googleMap.uiSettings.isMapToolbarEnabled = false
-            googleMap.uiSettings.isZoomControlsEnabled = false
             googleMap.uiSettings.isMyLocationButtonEnabled = false
+            googleMap.uiSettings.isZoomGesturesEnabled = true
+            googleMap.uiSettings.isRotateGesturesEnabled = true
+            googleMap.uiSettings.isScrollGesturesEnabled = true
+
             googleMap.addMarker(MarkerOptions().position(latLng).icon(
                     BitmapDescriptorFactory.fromResource(R.drawable.ic_hotel_pin_location))
-                    .title(getString(R.string.hotel_detail_map_marker_title, propertyName, address))
+                    .title(getString(R.string.hotel_detail_map_marker_title, propertyName))
+                    .snippet(getString(R.string.hotel_detail_map_marker_snippet, address))
                     .draggable(false))
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
