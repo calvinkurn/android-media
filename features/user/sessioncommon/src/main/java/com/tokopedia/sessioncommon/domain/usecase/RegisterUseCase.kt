@@ -1,12 +1,18 @@
 package com.tokopedia.sessioncommon.domain.usecase
 
 import android.content.res.Resources
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.sessioncommon.R
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
+import com.tokopedia.sessioncommon.data.register.RegisterPojo
+import com.tokopedia.sessioncommon.network.BasicTokenGenerator
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import org.json.JSONObject
 import rx.Subscriber
 import javax.inject.Inject
@@ -14,15 +20,16 @@ import javax.inject.Inject
 /**
  * @author by nisie on 30/04/19.
  */
-class RegisterUseCase @Inject constructor(
-        val resources: Resources,
-        private val graphqlUseCase: GraphqlUseCase
+class RegisterUseCase @Inject constructor(val resources: Resources,
+                                          private val graphqlUseCase: GraphqlUseCase,
+                                          private val userSession: UserSessionInterface
 ) {
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(resources, R.raw.mutation_register)
         val graphqlRequest = GraphqlRequest(query,
-                RegisterInfo::class.java, requestParams)
+                RegisterPojo::class.java, requestParams)
 
+        userSession.setToken(BasicTokenGenerator().createToken(), BasicTokenGenerator.TOKEN_TYPE)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(subscriber)
@@ -46,11 +53,11 @@ class RegisterUseCase @Inject constructor(
                 Map<String, Any> {
             val requestParams = HashMap<String, Any>()
 
-            val input = JSONObject("")
-            input.put(PARAM_PHONE_NUMBER, phoneNumber)
-            input.put(PARAM_FULL_NAME, name)
-            input.put(PARAM_OS_TYPE, OS_TYPE_ANDROID)
-            input.put(PARAM_REG_TYPE, REG_TYPE_PHONE)
+            val input = JsonObject()
+            input.addProperty(PARAM_PHONE_NUMBER, phoneNumber)
+            input.addProperty(PARAM_FULL_NAME, name)
+            input.addProperty(PARAM_OS_TYPE, OS_TYPE_ANDROID)
+            input.addProperty(PARAM_REG_TYPE, REG_TYPE_PHONE)
 
             requestParams[PARAM_INPUT] = input
             return requestParams

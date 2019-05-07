@@ -6,6 +6,13 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by nisie on 30/04/19.
  */
+
+data class RegisterPojo(
+        @SerializedName("register")
+        @Expose
+        var register: RegisterInfo = RegisterInfo()
+){}
+
 data class RegisterInfo(
         @SerializedName("user_id")
         @Expose

@@ -31,7 +31,10 @@ import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
 import com.tokopedia.profilecompletion.addname.ProfileCompletionAnalytics
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
+import com.tokopedia.profilecompletion.addname.di.DependencyInjector
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -52,11 +55,14 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
 
     private var isError = false
 
-    @Inject
+//    @Inject
     lateinit var presenter: AddNamePresenter
 
     @Inject
     lateinit var analytics: ProfileCompletionAnalytics
+
+//    @Inject
+    lateinit var userSession: UserSessionInterface
 
     companion object {
         val MIN_NAME = 3
@@ -74,11 +80,17 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     override fun initInjector() {
-        if (activity != null && activity?.application != null) {
+        if (activity != null
+                && activity?.application != null) {
             DaggerAddNameComponent.builder().baseAppComponent(
                     ((activity as Activity).application as BaseMainApplication).baseAppComponent)
                     .build()
                     .inject(this)
+
+            activity?.applicationContext?.run{
+                presenter = DependencyInjector().injectPresenter(this)
+                userSession = UserSession(this)
+            }
         }
     }
 
@@ -245,11 +257,15 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     override fun onErrorRegister(throwable: Throwable) {
+        userSession.clearToken()
         dismissLoading()
         showValidationError(ErrorHandler.getErrorMessage(context, throwable))
     }
 
     override fun onSuccessRegister(registerInfo: RegisterInfo) {
+        userSession.clearToken()
+        userSession.setToken(registerInfo.accessToken, "Bearer", registerInfo.refreshToken)
+
         activity?.run {
             dismissLoading()
             analytics.trackSuccessRegisterPhoneNumber(registerInfo.userId)

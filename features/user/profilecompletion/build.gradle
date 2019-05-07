@@ -22,7 +22,6 @@ dependencies {
         transitive = true
     }
 
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.network)
@@ -38,6 +37,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

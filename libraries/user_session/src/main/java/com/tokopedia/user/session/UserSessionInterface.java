@@ -7,6 +7,8 @@ public interface UserSessionInterface {
 
     String getAccessToken();
 
+    String getTokenType();
+
     String getFreshToken();
 
     String getUserId();

@@ -68,6 +68,12 @@ public class UserSession implements UserSessionInterface {
         return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
     }
 
+    public String getTokenType() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TOKEN_TYPE, "Bearer").trim();
+    }
+
     public String getFreshToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
                 Context.MODE_PRIVATE);
