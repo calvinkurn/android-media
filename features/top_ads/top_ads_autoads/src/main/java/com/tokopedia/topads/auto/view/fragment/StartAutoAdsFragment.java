@@ -1,4 +1,4 @@
-package com.tokopedia.topads.auto.fragment;
+package com.tokopedia.topads.auto.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +11,9 @@ import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.topads.auto.R;
-import com.tokopedia.topads.auto.activity.DailyBudgetActivity;
-import com.tokopedia.topads.auto.activity.StartAutoAdsActivity;
+import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity;
+import com.tokopedia.topads.auto.view.activity.EmptyProductActivity;
+import com.tokopedia.topads.auto.view.activity.InsufficientBalanceActivity;
 
 /**
  * Author errysuprayogi on 07,May,2019
@@ -41,6 +42,19 @@ public class StartAutoAdsFragment extends BaseDaggerFragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), DailyBudgetActivity.class));
+            }
+        });
+
+        view.findViewById(R.id.tanpa_ribet_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), EmptyProductActivity.class));
+            }
+        });
+        view.findViewById(R.id.pasti_tayang_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), InsufficientBalanceActivity.class));
             }
         });
         return view;

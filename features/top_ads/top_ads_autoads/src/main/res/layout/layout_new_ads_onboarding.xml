@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/beriklan_dengan_topads"
-                    style="@style/TextView.TitleBig.Bold" />
+                    style="@style/TextView.SubHeadline.Bold" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -59,6 +59,7 @@
                         android:orientation="vertical">
 
                         <ImageView
+                            android:id="@+id/tanpa_ribet_btn"
                             android:layout_width="@dimen/dp_48"
                             android:layout_height="@dimen/dp_48"
                             android:src="@drawable/tanpa_ribet" />
@@ -68,9 +69,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center_horizontal"
-                            android:lineSpacingExtra="4sp"
+                            android:layout_weight="1"
                             style="@style/TextView.Micro.FontMedium.Bold"
-                            tools:text="@string/tanpa_ribet" />
+                            android:text="@string/tanpa_ribet" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -81,6 +82,7 @@
                         android:orientation="vertical">
 
                         <ImageView
+                            android:id="@+id/pasti_tayang_btn"
                             android:layout_width="@dimen/dp_48"
                             android:layout_height="@dimen/dp_48"
                             android:src="@drawable/pasti_tayang" />
@@ -90,9 +92,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center_horizontal"
-                            android:lineSpacingExtra="4sp"
+                            android:layout_weight="1"
                             style="@style/TextView.Micro.FontMedium.Bold"
-                            tools:text="@string/pasti_tayang" />
+                            android:text="@string/pasti_tayang" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -103,6 +105,7 @@
                         android:orientation="vertical">
 
                         <ImageView
+                            android:id="@+id/banyak_pengunjung_btn"
                             android:layout_width="@dimen/dp_48"
                             android:layout_height="@dimen/dp_48"
                             android:src="@drawable/banyak_pengunjung" />
@@ -112,9 +115,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center_horizontal"
-                            android:lineSpacingExtra="4sp"
+                            android:layout_weight="1"
                             style="@style/TextView.Micro.FontMedium.Bold"
-                            tools:text="@string/banyak_pengunjung" />
+                            android:text="@string/banyak_pengunjung" />
                     </LinearLayout>
                 </LinearLayout>
 

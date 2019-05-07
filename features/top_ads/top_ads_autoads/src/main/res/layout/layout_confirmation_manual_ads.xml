@@ -7,6 +7,7 @@
     android:background="@drawable/card_top_rounded_bg"
     android:gravity="center|top"
     android:orientation="vertical"
+    android:layout_marginTop="@dimen/dp_48"
     android:padding="@dimen/dp_16">
 
     <RelativeLayout
@@ -35,7 +36,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/yakin_mau_buat_iklan_manual"
-        style="@style/TextView.TitleBig.Bold" />
+        style="@style/TextView.SubHeadline.Bold" />
 
     <TextView
         android:layout_width="match_parent"

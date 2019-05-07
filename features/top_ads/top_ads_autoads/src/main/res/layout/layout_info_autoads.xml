@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageView
@@ -27,7 +28,7 @@
             android:layout_marginLeft="@dimen/dp_12"
             android:gravity="left"
             android:text="@string/buat_iklan_tanpa_ribet"
-            style="@style/TextView.Title.Bold" />
+            style="@style/TextView.TitleBig.Bold" />
 
     </LinearLayout>
 

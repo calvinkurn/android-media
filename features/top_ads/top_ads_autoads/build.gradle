@@ -14,6 +14,12 @@ buildscript {
     }
 }
 
+android {
+    dataBinding {
+        enabled = true
+    }
+}
+
 project.ext {
     artifactId = 'top_ads_autoads'
     groupId = 'com.tokopedia.topads.auto'
@@ -22,6 +28,9 @@ project.ext {
 }
 
 dependencies {
+
+    final ARCHITECTURE_COMPONENT_VERSION = '1.1.1'
+
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
@@ -31,6 +40,13 @@ dependencies {
     implementation project(rootProject.ext.features.seller)
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation project(rootProject.ext.features.topAdsManagementCommon)
+
+
+    implementation "android.arch.lifecycle:extensions:$ARCHITECTURE_COMPONENT_VERSION"
+    implementation "android.arch.lifecycle:common-java8:$ARCHITECTURE_COMPONENT_VERSION"
+    implementation "android.arch.lifecycle:reactivestreams:$ARCHITECTURE_COMPONENT_VERSION"
+    annotationProcessor "android.arch.lifecycle:compiler:$ARCHITECTURE_COMPONENT_VERSION"
 }
 
 apply from: '../../../publish_local.gradle'

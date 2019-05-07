@@ -22,8 +22,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_200"
+                android:layout_width="@dimen/dp_250"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_gravity="center|top"
                 android:src="@drawable/ilustration_insufficient_balance" />
@@ -45,6 +45,7 @@
 
 
             <Button
+                android:id="@+id/add_fund"
                 style="@style/Button.Submit.Green.Full"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

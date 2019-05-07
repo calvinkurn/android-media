@@ -45,7 +45,8 @@ import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
-import com.tokopedia.topads.auto.activity.StartAutoAdsActivity;
+import com.tokopedia.topads.auto.view.activity.StartAutoAdsActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.tracking.view.SimpleWebViewActivity;
 
 import java.util.ArrayList;
@@ -372,9 +373,8 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(mitraToppersIntent);
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
-//                    UnifyTracking.eventDrawerTopads(context);
-//                    intent = new Intent(context, TopAdsDashboardActivity.class);
-                    intent = new Intent(context, StartAutoAdsActivity.class);
+                    UnifyTracking.eventDrawerTopads(context);
+                    intent = new Intent(context, TopAdsDashboardActivity.class);
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.SELLER_FLASH_SALE:

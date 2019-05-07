@@ -22,8 +22,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center|top"
                     android:layout_weight="2"
                     android:src="@drawable/ilustration_empty_product" />
@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/oops_kamu_belum_npunya_produk"
-                    style="@style/TextView.TitleBig.Bold"/>
+                    style="@style/TextView.SubHeadline.Bold"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -45,6 +45,7 @@
 
 
                 <Button
+                    android:id="@+id/add_product"
                     style="@style/Button.Submit.Green.Full"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
