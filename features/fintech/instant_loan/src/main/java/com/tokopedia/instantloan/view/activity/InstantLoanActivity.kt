@@ -144,7 +144,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
         var testimonialList : ArrayList<TestimonialEntity> = ArrayList<TestimonialEntity>()
 
-        var testimonialItem1: TestimonialEntity = TestimonialEntity(getString(R.string.il_testimonial_review_1), "Asty Afisha", "")
+        var testimonialItem1 = TestimonialEntity(getString(R.string.il_testimonial_review_1), "Asty Afisha", "")
 
         testimonialList.add(testimonialItem1)
 

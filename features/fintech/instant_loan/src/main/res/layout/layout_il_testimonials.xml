@@ -12,21 +12,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
-        android:paddingEnd="@dimen/il_padding_medium"
-        android:paddingLeft="@dimen/il_padding_medium"
-        android:paddingRight="@dimen/il_padding_medium"
-        android:paddingStart="@dimen/il_padding_medium"
         android:text="@string/il_label_testimonials"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textStyle="bold" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v4.view.ViewPager
+    <com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
         android:id="@+id/il_view_pager_testimonials"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_view_pager_banner"
-        android:clipToPadding="false"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@id/text_label_testimonial" />
 
 

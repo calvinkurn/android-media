@@ -47,7 +47,7 @@
                 android:animateLayoutChanges="true"
                 android:orientation="vertical"
                 app:cardBackgroundColor="@color/white"
-                app:cardElevation="4dp"
+                app:cardElevation="@dimen/dp_4"
                 app:cardUseCompatPadding="true">
 
                 <LinearLayout
@@ -88,8 +88,7 @@
                 layout="@layout/layout_il_testimonials"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_20"
-                android:layout_marginBottom="@dimen/dp_20"/>
+                android:layout_margin="@dimen/dp_16"/>
 
             <include
                 layout="@layout/layout_bottom_banner"
