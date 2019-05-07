@@ -182,7 +182,7 @@ public class SeeAllView extends BottomSheets {
         list.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_insurance_bom,
+                R.drawable.ic_modal_toko_bom,
                 getContext().getString(R.string.title_menu_modal_toko),
                 ApplinkConst.MODAL_TOKO_ORDER,
                 0,
