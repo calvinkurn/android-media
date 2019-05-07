@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull
  */
 class DigitalTelcoInputNumberView @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                             defStyleAttr: Int = 0)
-    : DigitalBaseInputNumberView(context, attrs, defStyleAttr) {
+    : DigitalBaseClientNumberWidget(context, attrs, defStyleAttr) {
 
     override fun getLayout(): Int {
         return R.layout.view_digital_input_number_telco
