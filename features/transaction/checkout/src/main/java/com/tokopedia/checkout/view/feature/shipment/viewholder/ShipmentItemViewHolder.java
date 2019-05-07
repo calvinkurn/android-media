@@ -632,10 +632,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
         });
         tvChangeSelectedCourierRecommendation.setTextColor(ContextCompat.getColor(context, R.color.button_change_courier));
-        tvChangeSelectedCourierRecommendation.setOnClickListener(v ->
-        if (getAdapterPosition() != RecyclerView.NO_POSITION) mActionListener.onChangeShippingCourier(
-                shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
-                currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition()));
+        tvChangeSelectedCourierRecommendation.setOnClickListener(v -> {
+            if (getAdapterPosition() != RecyclerView.NO_POSITION)
+                mActionListener.onChangeShippingCourier(
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
+                        currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition());
+        });
 
         // Logistic Promo
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
@@ -646,7 +648,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvLogPromoMsg.setVisibility(isRed ? View.GONE : View.VISIBLE);
             if (!TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc()) &&
                     !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount())) {
-                tvLogPromoLabel.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
+                tvLogPromoTitle.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
                 String labelCouponAmount = "- Rp " + shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount();
                 tvLogPromoDiscAmount.setText(labelCouponAmount);
             } else tvLogPromoLabel.setVisibility(View.GONE);
