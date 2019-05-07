@@ -887,6 +887,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     .title(dataUiModel.getTitleDescription())
                     .build();
 
+            if (responseGetPromoStackUiModel.getData().getMessage().getState().equals("red")) {
+                rvShipment.scrollToPosition(0);
+            }
+
             shipmentAdapter.updateItemPromoGlobalStack(promoData);
         }
 
