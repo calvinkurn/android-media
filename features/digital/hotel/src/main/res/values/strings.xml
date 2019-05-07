@@ -12,6 +12,8 @@
     <string name="hotel_facility_title">Fasilitas</string>
     <string name="hotel_policy_title">Kebijakan</string>
 
+    <string name="hotel_google_map_intent_link">geo:%1$f,%2$f(%3$s)?z=20</string>
+
     <string name="hotel_bottomsheet_sort_title">Urutkan Berdasarkan</string>
     <string name="hotel_filter_reset">Reset</string>
     <string name="hotel_search_filter_star_title">Bintang</string>
@@ -109,4 +111,6 @@
     <string name="hotel_room_detail_breakfast">Makanan</string>
     <string name="hotel_room_detail_extra_bed">Extra bed</string>
     <string name="hotel_room_detail_price_info">Harga /kamar/malam</string>
+    <string name="hotel_detail_room_full_text">Kamar Penuh</string>
+    <string name="hotel_detail_change_search_text">Ganti Pencarian</string>
 </resources>

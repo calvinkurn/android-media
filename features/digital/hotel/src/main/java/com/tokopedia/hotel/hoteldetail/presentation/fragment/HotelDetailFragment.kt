@@ -5,23 +5,25 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
-import com.tokopedia.hotel.hoteldetail.data.entity.FacilityItem
-import com.tokopedia.hotel.hoteldetail.data.entity.PropertyData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
+import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailAllFacilityActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailMapActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
@@ -181,15 +183,10 @@ class HotelDetailFragment : BaseDaggerFragment() {
 
         iv_hotel_detail_location.loadImage(data.property.locationImageStatic)
 
-        setupPolicySwitcher(data.property)
-        setupImportantInfo(data.property.importantInformation)
-        setupDescription(data.property.description)
-        setupMainFacilityItem(listOf(FacilityItem(1, "Internet", ""),
-                FacilityItem(1, "Kamar Mandi", ""),
-                FacilityItem(1, "Air", ""),
-                FacilityItem(1, "Listrik", ""),
-                FacilityItem(1, "Restoran", ""),
-                FacilityItem(1, "Kolam Renang", "")))
+        setupPolicySwitcher(data)
+        setupImportantInfo(data)
+        setupDescription(data)
+        setupMainFacilityItem(data)
 
         btn_hotel_detail_show.setOnClickListener {
             startActivity(HotelDetailMapActivity.getCallingIntent(context!!, data.property.name,
@@ -247,6 +244,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupReviewLayout(data: HotelReview.ReviewData) {
+        container_hotel_review.visibility = View.VISIBLE
         setupReviewHeader(data)
         setupReviewItem(data.reviewList)
     }
@@ -294,9 +292,9 @@ class HotelDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupMainFacilityItem(facilityList: List<FacilityItem>) {
+    private fun setupMainFacilityItem(data: PropertyDetailData) {
         if (!::mainFacilityAdapter.isInitialized) {
-            mainFacilityAdapter = HotelDetailMainFacilityAdapter(facilityList)
+            mainFacilityAdapter = HotelDetailMainFacilityAdapter(data.mainFacility)
         }
 
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
@@ -304,46 +302,91 @@ class HotelDetailFragment : BaseDaggerFragment() {
         rv_hotel_facilities.setHasFixedSize(true)
         rv_hotel_facilities.isNestedScrollingEnabled = false
         rv_hotel_facilities.adapter = mainFacilityAdapter
+
+        tv_hotel_detail_all_facilities.setOnClickListener {
+            val objectId = System.currentTimeMillis().toString()
+            SaveInstanceCacheManager(context!!, objectId).apply {
+                put(HotelDetailAllFacilityFragment.EXTRA_PROPERTY_DETAIL, data)
+            }
+            startActivity(HotelDetailAllFacilityActivity.getCallingIntent(context!!, hotelName,
+                    objectId, HotelDetailAllFacilityFragment.FACILITY_TITLE))
+        }
     }
 
-    private fun setupImportantInfo(importantInfo: String) {
-        if (importantInfo.isNotEmpty()) {
-            tv_hotel_important_info.text = importantInfo
+    private fun setupImportantInfo(data: PropertyDetailData) {
+        if (data.property.importantInformation.isNotEmpty()) {
+            tv_hotel_important_info.text = data.property.importantInformation
+            tv_hotel_important_info_more.setOnClickListener {
+                val objectId = System.currentTimeMillis().toString()
+                SaveInstanceCacheManager(context!!, objectId).apply {
+                    put(HotelDetailAllFacilityFragment.EXTRA_PROPERTY_DETAIL, data)
+                }
+
+                startActivity(HotelDetailAllFacilityActivity.getCallingIntent(context!!, hotelName,
+                        objectId, HotelDetailAllFacilityFragment.IMPORTANT_INFO_TITLE))
+            }
         } else {
             container_important_info.visibility = View.GONE
         }
     }
 
-    private fun setupDescription(description: String) {
-        if (description.isNotEmpty()) {
-            tv_hotel_description.text = description
+    private fun setupDescription(data: PropertyDetailData) {
+        if (data.property.description.isNotEmpty()) {
+            tv_hotel_description.text = data.property.description
+            tv_hotel_description_more.setOnClickListener {
+                val objectId = System.currentTimeMillis().toString()
+                SaveInstanceCacheManager(context!!, objectId).apply {
+                    put(HotelDetailAllFacilityFragment.EXTRA_PROPERTY_DETAIL, data)
+                }
+
+                startActivity(HotelDetailAllFacilityActivity.getCallingIntent(context!!, hotelName,
+                        objectId, HotelDetailAllFacilityFragment.DESCRIPTION_TITLE))
+            }
         } else {
             container_hotel_description.visibility = View.GONE
         }
     }
 
-    private fun setupPolicySwitcher(property: PropertyData) {
-        if (property.checkinTo.isNotEmpty()) {
-            scv_hotel_date.setLeftTitleText(getString(R.string.hotel_detail_check_from_to, property.checkInFrom, property.checkinTo))
+    private fun setupPolicySwitcher(data: PropertyDetailData) {
+        if (data.property.checkinTo.isNotEmpty()) {
+            scv_hotel_date.setLeftTitleText(getString(R.string.hotel_detail_check_from_to, data.property.checkInFrom, data.property.checkinTo))
         } else {
-            scv_hotel_date.setLeftTitleText(getString(R.string.hotel_detail_check_start_from, property.checkInFrom))
+            scv_hotel_date.setLeftTitleText(getString(R.string.hotel_detail_check_start_from, data.property.checkInFrom))
         }
 
-        if (property.checkoutFrom.isNotEmpty()) {
-            scv_hotel_date.setRightTitleText(getString(R.string.hotel_detail_check_from_to, property.checkoutFrom, property.checkoutTo))
+        if (data.property.checkoutFrom.isNotEmpty()) {
+            scv_hotel_date.setRightTitleText(getString(R.string.hotel_detail_check_from_to, data.property.checkoutFrom, data.property.checkoutTo))
         } else {
-            scv_hotel_date.setRightTitleText(getString(R.string.hotel_detail_check_to, property.checkoutTo))
+            scv_hotel_date.setRightTitleText(getString(R.string.hotel_detail_check_to, data.property.checkoutTo))
+        }
+
+        tv_hotel_detail_all_policies.setOnClickListener {
+            val objectId = System.currentTimeMillis().toString()
+            SaveInstanceCacheManager(context!!, objectId).apply {
+                put(HotelDetailAllFacilityFragment.EXTRA_PROPERTY_DETAIL, data)
+            }
+            startActivity(HotelDetailAllFacilityActivity.getCallingIntent(context!!, hotelName,
+                    objectId, HotelDetailAllFacilityFragment.POLICY_TITLE))
         }
     }
 
     private fun setupPriceButton(data: List<HotelRoom>) {
         if (data.isNotEmpty() && data[0].roomPrice.isNotEmpty()) {
             tv_hotel_price.text = data[0].roomPrice[0].roomPrice
-        }
-        btn_see_room.setOnClickListener {
-            startActivityForResult(HotelRoomListActivity.createInstance(context!!, hotelHomepageModel.locId, hotelName,
-                    hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
-                    hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
+            btn_see_room.setOnClickListener {
+                startActivityForResult(HotelRoomListActivity.createInstance(context!!, hotelHomepageModel.locId, hotelName,
+                        hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
+                        hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
+            }
+        } else {
+            tv_hotel_price_subtitle.visibility = View.GONE
+            tv_hotel_price.text = getString(R.string.hotel_detail_room_full_text)
+            tv_hotel_price.setTextColor(ContextCompat.getColor(context!!, com.tokopedia.design.R.color.light_disabled))
+            btn_see_room.buttonCompatType = ButtonCompat.PRIMARY
+            btn_see_room.text = getString(R.string.hotel_detail_change_search_text)
+            btn_see_room.setOnClickListener {
+                activity!!.finish()
+            }
         }
     }
 
