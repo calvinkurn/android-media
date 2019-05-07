@@ -8,16 +8,22 @@ import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpd
 class NotificationUpdateItemViewModel(
         var notificationId: String = "",
         var isRead: Boolean = false,
-        var iconUrl: String = "",
+        var iconUrl: String? = "",
         var contentUrl: String = "",
         var time: String = "",
-        var label: String = "",
+        var label: Int = 1,
         var title: String = "",
         var sectionTitle: String = "",
         var body: String = "",
         var templateKey: String = "",
         var appLink: String = ""
 ) : Visitable<NotificationUpdateTypeFactory>, Parcelable {
+
+
+    enum class UserType {
+        Buyer,
+        Seller
+    }
 
     override fun type(typeFactory: NotificationUpdateTypeFactory): Int {
         return typeFactory.type(this)
@@ -29,7 +35,7 @@ class NotificationUpdateItemViewModel(
         iconUrl = `in`.readString()
         contentUrl = `in`.readString()
         time = `in`.readString()
-        label = `in`.readString()
+        label = `in`.readInt()
         title = `in`.readString()
         body = `in`.readString()
         templateKey = `in`.readString()
@@ -42,7 +48,7 @@ class NotificationUpdateItemViewModel(
         parcel.writeString(iconUrl)
         parcel.writeString(contentUrl)
         parcel.writeString(time)
-        parcel.writeString(label)
+        parcel.writeInt(label)
         parcel.writeString(title)
         parcel.writeString(body)
         parcel.writeString(templateKey)

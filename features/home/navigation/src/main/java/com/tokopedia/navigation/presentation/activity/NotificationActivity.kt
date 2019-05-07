@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.navigation.R
+import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
+import com.tokopedia.navigation.domain.pojo.NotificationUpdateUnread
 import com.tokopedia.navigation.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
 import com.tokopedia.navigation.presentation.fragment.NotificationFragment
@@ -41,8 +43,8 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         tabList.add(NotificationFragmentAdapter.NotificationFragmentItem("Transaksi", NotificationFragment()))
         tabList.add(NotificationFragmentAdapter.NotificationFragmentItem("Update", NotificationUpdateFragment()))
         super.onCreate(savedInstanceState)
-        initView()
         initInjector()
+        initView()
     }
 
     fun initInjector() {
@@ -53,6 +55,30 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
     private fun initView() {
         initTabLayout()
+        presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter())
+        presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
+    }
+
+    private fun onSuccessGetTotalUnreadCounter(): (NotificationUpdateTotalUnread) -> Unit {
+        return {
+            var defaultTitle = getString(R.string.title_update_notification)
+            var counter: String
+            if (it.pojo.notifUnreadInt > 0) {
+                counter = getString(R.string.title_counter_update_notification, it.pojo.notifUnreadInt)
+                var titleView: TextView? = tabLayout.getTabAt(1)?.customView?.findViewById(R.id.title)
+                titleView?.let {
+                    it.text = String.format("%s %s", defaultTitle, counter)
+                }
+            }
+        }
+    }
+    private fun onSuccessGetUpdateUnreadCounter(): (NotificationUpdateUnread) -> Unit {
+        return {
+            if (it.pojo.notifUnreadInt > 0) {
+                var notif = tabLayout.getTabAt(1)?.customView?.findViewById<View>(R.id.circle)
+                notif?.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun initTabLayout() {

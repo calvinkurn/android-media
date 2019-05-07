@@ -24,6 +24,8 @@
         android:layout_height="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
-        android:src="@drawable/circle_red"/>
+        android:src="@drawable/circle_red"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
 </LinearLayout>
