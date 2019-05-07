@@ -519,7 +519,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         if (isViewAttached()) {
             RequestParams requestParams = RequestParams.create();
             requestParams.putString(DealsHomePresenter.TAG, url);
-            getCategoryDetailRequestUseCase.setRequestParams(requestParams);
+            getCategoryDetailRequestUseCase.setRequestParams(url);
             getCategoryDetailRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
                 @Override
                 public void onCompleted() {

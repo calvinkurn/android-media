@@ -39,6 +39,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
     private SummaryPageActionListener interactionListener;
     private ImageView ivImageStar;
     private View parentView;
+    private Animation rotateAnimationCrackResult;
 
     public interface SummaryPageActionListener {
 
@@ -104,7 +105,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
     public void inflateReward(List<CrackResultEntity> rewards) {
         rewardsAdapter.updateList(rewards);
         runLayoutAnimation();
-        Animation rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
+        rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
         rotateAnimationCrackResult.setDuration(15000);
         imageSinar.startAnimation(rotateAnimationCrackResult);
 
@@ -150,10 +151,13 @@ public class WidgetSummaryTapTap extends FrameLayout {
 
     private void onRewardButtonClick(RewardButton rewardButton) {
         if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(rewardButton.getType())) {
-            interactionListener.playWithPoints();
+            if (interactionListener != null)
+                interactionListener.playWithPoints();
         } else {
-            interactionListener.dismissDialog();
-            interactionListener.navigateToActivity(rewardButton.getApplink(), rewardButton.getUrl());
+            if(interactionListener!= null) {
+                interactionListener.dismissDialog();
+                interactionListener.navigateToActivity(rewardButton.getApplink(), rewardButton.getUrl());
+            }
 
 
         }
@@ -222,6 +226,13 @@ public class WidgetSummaryTapTap extends FrameLayout {
                 }
             }
         }
+    }
+
+
+    public void onDestroView() {
+        if (rotateAnimationCrackResult != null)
+            rotateAnimationCrackResult.cancel();
+        imageSinar.clearAnimation();
     }
 
 

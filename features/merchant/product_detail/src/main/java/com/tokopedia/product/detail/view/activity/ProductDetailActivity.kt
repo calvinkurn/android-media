@@ -124,9 +124,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             }
             trackerAttribution = uri.getQueryParameter(PARAM_TRACKER_ATTRIBUTION)
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
-            if (PARAM_IS_SPECIAL_PRIZE in uri.queryParameterNames){
-                isSpecialPrize = uri.getBooleanQueryParameter(PARAM_IS_SPECIAL_PRIZE, false)
-            }
+//            if (PARAM_IS_SPECIAL_PRIZE in uri.queryParameterNames){
+//                isSpecialPrize = uri.getBooleanQueryParameter(PARAM_IS_SPECIAL_PRIZE, false)
+//            }
         }
         bundle?.let {
             if (productId.isNullOrEmpty()) {
@@ -144,9 +144,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             if (trackerListName.isNullOrEmpty()) {
                 trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
             }
-            if (it.containsKey(PARAM_IS_SPECIAL_PRIZE)){
-                isSpecialPrize = it.getString(PARAM_IS_SPECIAL_PRIZE, "").toLowerCase() == "true"
-            }
+//            if (it.containsKey(PARAM_IS_SPECIAL_PRIZE)){
+//                isSpecialPrize = it.getString(PARAM_IS_SPECIAL_PRIZE, "").toLowerCase() == "true"
+//            }
         }
         if (uri != null && uri.host == AFFILIATE_HOST) {
             isFromAffiliate = true
