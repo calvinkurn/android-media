@@ -6,6 +6,7 @@ import com.tokopedia.transactiondata.entity.response.cartlist.AutoApply;
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyStack;
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyV2;
 import com.tokopedia.transactiondata.entity.response.cartlist.EgoldAttributes;
+import com.tokopedia.transactiondata.entity.response.cartlist.GlobalCouponAttr;
 import com.tokopedia.transactiondata.entity.response.cartlist.PromoSuggestion;
 
 import java.util.ArrayList;
@@ -70,6 +71,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("autoapply_stack")
     @Expose
     private AutoapplyStack autoapplyStack;
+    @SerializedName("global_coupon_attr")
+    @Expose
+    private GlobalCouponAttr globalCouponAttr;
 
     public AutoapplyV2 getAutoapplyV2() {
         return autoapplyV2;
@@ -141,4 +145,6 @@ public class ShipmentAddressFormDataResponse {
         this.egoldAttributes = egoldAttributes;
     }
     public AutoapplyStack getAutoapplyStack() { return autoapplyStack; }
+
+    public GlobalCouponAttr getGlobalCouponAttr() { return globalCouponAttr; }
 }

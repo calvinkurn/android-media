@@ -140,11 +140,11 @@ public interface ShipmentContract {
 
         Promo generateCheckPromoFirstStepParam();
 
-        void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel);
+        void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);
 
         void onSuccessCheckPromoFirstStep(ResponseGetPromoStackUiModel promoData);
 
-        void onSuccessClearPromoStachAfterClash();
+        void onSuccessClearPromoStackAfterClash();
 
         void clearTotalBenefitPromoStacking();
     }
@@ -309,11 +309,11 @@ public interface ShipmentContract {
 
         void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList,
                                                  boolean isFromMultipleAddress, boolean isOneClickShipment, boolean isTradeIn,
-                                                 @Nullable String cornerId, String deviceId);
+                                                 @Nullable String cornerId, String deviceId, String type);
 
         void applyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList,
                                        boolean isFromMultipleAddress, boolean isOneClickShipment,
-                                       boolean isTradeIn, String cornerId, String deviceId);
+                                       boolean isTradeIn, String cornerId, String deviceId, String type);
 
         void changeShippingAddress(RecipientAddressModel recipientAddressModel, boolean isOneClickShipment);
 

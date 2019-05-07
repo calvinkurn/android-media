@@ -14,10 +14,14 @@ public class Schedule implements Parcelable {
     @SerializedName("category_label")
     @Expose
     private String categoryLabel;
+    @SerializedName("name")
+    @Expose
+    private String name;
 
     protected Schedule(Parcel in) {
         showData = in.readString();
         categoryLabel = in.readString();
+        name = in.readString();
     }
 
     public static final Creator<Schedule> CREATOR = new Creator<Schedule>() {
@@ -48,6 +52,14 @@ public class Schedule implements Parcelable {
         this.categoryLabel = categoryLabel;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -57,5 +69,6 @@ public class Schedule implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(showData);
         parcel.writeString(categoryLabel);
+        parcel.writeString(name);
     }
 }

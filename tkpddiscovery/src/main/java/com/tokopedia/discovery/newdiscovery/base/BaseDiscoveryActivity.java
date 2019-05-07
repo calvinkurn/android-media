@@ -1,25 +1,25 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.URLParser;
-import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.home.BrandsWebViewActivity;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.track.TrackApp;
 
@@ -29,6 +29,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_HAS_CATALOG;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 
 /**
  * Created by hangnadi on 9/26/17.
@@ -50,16 +54,29 @@ public class BaseDiscoveryActivity
     private int activeTabPosition;
 
     private Boolean isPause = false;
+    private boolean isStartingSearchActivityWithProductViewModel = false;
+    private ProductViewModel productViewModelForOnResume;
+
+    protected GCMHandler gcmHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        gcmHandler = new GCMHandler(this);
+
         if (savedInstanceState != null) {
             setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION, 0));
             setForceSwipeToShop(savedInstanceState.getBoolean(KEY_FORCE_SWIPE_TO_SHOP, false));
             setForceSearch(savedInstanceState.getBoolean(KEY_FORCE_SEARCH, false));
             setRequestOfficialStoreBanner(savedInstanceState.getBoolean(KEY_REQUEST_OS, false));
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        gcmHandler = null;
+
+        super.onDestroy();
     }
 
     public int getActiveTabPosition() {
@@ -106,9 +123,17 @@ public class BaseDiscoveryActivity
         return presenter;
     }
 
+    protected void onProductQuerySubmit() {
+
+    }
+
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    public AppComponent getApplicationComponent() {
+        return ((MainApplication) getApplication()).getAppComponent();
     }
 
     @Override
@@ -146,27 +171,48 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
+        handleMoveToSearchActivity(productViewModel);
+    }
 
-        JSONArray afProdIds = new JSONArray();
-        HashMap<String, String> category = new HashMap<String, String>();
-        ArrayList<String> prodIdArray = new ArrayList<>();
+    protected void handleMoveToSearchActivity(ProductViewModel productViewModel) {
+        if (!isPausing()) {
+            finishAndMoveToSearchActivity(productViewModel);
+        }
+        else {
+            prepareMoveToSearchActivityDuringOnResume(productViewModel);
+        }
+    }
 
-        if (productViewModel.getProductList().size() > 0) {
-            for (int i = 0; i < productViewModel.getProductList().size(); i++) {
-                if (i < 3) {
-                    prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
-                    afProdIds.put(productViewModel.getProductList().get(i).getProductID());
-                } else {
-                    break;
-                }
-                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
+    private void finishAndMoveToSearchActivity(ProductViewModel productViewModel) {
+        isStartingSearchActivityWithProductViewModel = false;
 
+        moveToSearchActivity(productViewModel);
+        finish();
+    }
+
+    private void moveToSearchActivity(ProductViewModel productViewModel) {
+        if(getApplication() instanceof DiscoveryRouter) {
+            DiscoveryRouter router = (DiscoveryRouter)getApplication();
+
+            if(router != null) {
+                Intent searchActivityIntent = getSearchActivityIntent(router, productViewModel);
+                startActivity(searchActivityIntent);
             }
         }
-        TrackingUtils.eventAppsFlyerViewListingSearch(this,afProdIds,productViewModel.getQuery(),prodIdArray);
-        sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
-        finish();
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
+    }
+
+    private Intent getSearchActivityIntent(@NonNull DiscoveryRouter router, ProductViewModel productViewModel) {
+        Intent searchActivityIntent = router.gotoSearchPage(this);
+        searchActivityIntent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, productViewModel.getSearchParameter());
+        searchActivityIntent.putExtra(EXTRA_HAS_CATALOG, productViewModel.isHasCatalog());
+        searchActivityIntent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
+
+        return searchActivityIntent;
+    }
+
+    private void prepareMoveToSearchActivityDuringOnResume(ProductViewModel productViewModel) {
+        isStartingSearchActivityWithProductViewModel = true;
+        productViewModelForOnResume = productViewModel;
     }
 
     @Override
@@ -194,17 +240,17 @@ public class BaseDiscoveryActivity
 
     public void sendMoEngageSearchAttempt(Context context, String keyword, boolean isResultFound, HashMap<String, String> category) {
         Map<String, Object> value = DataLayer.mapOf(
-                AppEventTracking.MOENGAGE.KEYWORD, keyword,
-                AppEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
+                SearchEventTracking.MOENGAGE.KEYWORD, keyword,
+                SearchEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
         );
         if (category != null) {
-            value.put(AppEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
-            value.put(AppEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
+            value.put(SearchEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
+            value.put(SearchEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
         }
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.SEARCH_ATTEMPT);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
     }
 
-        @Override
+    @Override
     public void onHandleImageSearchResponseError() {
     }
 
@@ -225,12 +271,6 @@ public class BaseDiscoveryActivity
     @Override
     public void onHandleResponseUnknown() {
         throw new RuntimeException("not yet handle unknown response");
-    }
-
-    @Override
-    public void onHandleOfficialStorePage() {
-        startActivity(BrandsWebViewActivity.newInstance(this, TkpdBaseURL.OfficialStore.URL_WEBVIEW));
-        finish();
     }
 
     @Override
@@ -291,6 +331,19 @@ public class BaseDiscoveryActivity
     protected void onResume() {
         super.onResume();
         isPause = false;
+
+        handleMoveToSearchActivityOnResume();
+    }
+
+    private void handleMoveToSearchActivityOnResume() {
+        if(isStartingSearchActivityWithProductViewModel) {
+            if(productViewModelForOnResume != null) {
+                finishAndMoveToSearchActivity(productViewModelForOnResume);
+            }
+            else {
+                onProductQuerySubmit();
+            }
+        }
     }
 
     public Boolean isPausing() {

@@ -38,6 +38,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
@@ -98,6 +99,8 @@ public class CartListPresenter implements ICartListPresenter {
     private static final String PARAM_PARAMS = "params";
     private static final String PARAM_LANG = "lang";
     private static final String PARAM_STEP = "step";
+    private static final String PARAM_GLOBAL = "global";
+    private static final String PARAM_MERCHANT = "merchant";
 
     public static final int ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0;
     public static final int ITEM_CHECKED_ALL_WITH_CHANGES = 1;
@@ -1085,14 +1088,14 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
+    public void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type) {
         view.showProgressLoading();
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
-        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplyAfterClashSubscriber(view, this, newPromoList));
+        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplyAfterClashSubscriber(view, this, newPromoList, type));
     }
 
     @Override
-    public void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
+    public void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type) {
         Promo promo = view.generateCheckPromoFirstStepParam();
         promo.setCodes(new ArrayList<>());
         if (promo.getOrders() != null) {
@@ -1109,14 +1112,28 @@ public class CartListPresenter implements ICartListPresenter {
                 ArrayList<String> codes = new ArrayList<>();
                 codes.add(model.getCode());
                 promo.setCodes(codes);
+
+                CurrentApplyCode currentApplyCode = new CurrentApplyCode();
+                if (!model.getCode().isEmpty()) {
+                    currentApplyCode.setCode(model.getCode());
+                    currentApplyCode.setType(PARAM_GLOBAL);
+                }
+                promo.setCurrentApplyCode(currentApplyCode);
             } else {
-                // This promo is merchant promo
+                // This promo is merchant/logistic promo
                 if (promo.getOrders() != null) {
                     for (Order order : promo.getOrders()) {
                         if (model.getUniqueId().equals(order.getUniqueId())) {
                             ArrayList<String> codes = new ArrayList<>();
                             codes.add(model.getCode());
                             order.setCodes(codes);
+
+                            CurrentApplyCode currentApplyCode = new CurrentApplyCode();
+                            if (!model.getCode().isEmpty()) {
+                                currentApplyCode.setCode(model.getCode());
+                                currentApplyCode.setType(type);
+                            }
+                            promo.setCurrentApplyCode(currentApplyCode);
                             break;
                         }
                     }
@@ -1125,7 +1142,7 @@ public class CartListPresenter implements ICartListPresenter {
             view.showProgressLoading();
             checkPromoStackingCodeUseCase.setParams(promo);
             checkPromoStackingCodeUseCase.execute(RequestParams.create(),
-                    new CheckPromoFirstStepAfterClashSubscriber(view, this, checkPromoStackingCodeMapper));
+                    new CheckPromoFirstStepAfterClashSubscriber(view, this, checkPromoStackingCodeMapper, type));
         }
     }
 

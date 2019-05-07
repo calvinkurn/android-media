@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.promostacking.GlobalCouponAttrData;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 
@@ -36,6 +37,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private AutoApplyData autoApplyData;
     private EgoldAttributeModel egoldAttributes;
     private AutoApplyStackData autoApplyStackData;
+    private GlobalCouponAttrData globalCouponAttrData;
 
     public boolean isHasError() {
         return hasError;
@@ -155,6 +157,14 @@ public class CartShipmentAddressFormData implements Parcelable {
 
     public void setAutoApplyStackData(AutoApplyStackData autoApplyStackData) {
         this.autoApplyStackData = autoApplyStackData;
+    }
+
+    public GlobalCouponAttrData getGlobalCouponAttrData() {
+        return globalCouponAttrData;
+    }
+
+    public void setGlobalCouponAttrData(GlobalCouponAttrData globalCouponAttrData) {
+        this.globalCouponAttrData = globalCouponAttrData;
     }
 
     public CodModel getCod() {

@@ -38,8 +38,6 @@ public interface TkpdCoreRouter {
 
     void clearEtalaseCache();
 
-    Intent goToEditProduct(Context context, boolean isEdit, String productId);
-
     void resetAddProductCache(Context context);
 
     void goToWallet(Context context, String url);
@@ -97,8 +95,6 @@ public interface TkpdCoreRouter {
     Intent getIntentDeepLinkHandlerActivity();
 
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
-
-    void goToAddProduct(Activity activity);
 
     boolean isInMyShop(Context context, String shopId);
 
