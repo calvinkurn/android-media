@@ -65,6 +65,13 @@ ext {
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
 
+    // Sort and categorize alphabetically by folder name
+    app = [
+        customerapp     : ":customerapp",
+        sellerapp       : ":sellerapp",
+        mitraapp        : ":kelontongapp"
+    ]
+
     gradlePlugin = [
         crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
         googleServices : "com.google.gms:google-services:${googleServiceGradleVersion}"

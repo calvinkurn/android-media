@@ -136,7 +136,6 @@ android {
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
-            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             if (allowProguard()) {
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
@@ -226,6 +225,7 @@ android {
             dimension "client"
         }
     }
+    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings]
 }
 
 repositories {
@@ -328,7 +328,6 @@ dependencies {
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
-    implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.paymentSetting)
 

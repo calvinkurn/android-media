@@ -4,6 +4,13 @@
     <string name="shop_settings_manage_etalase">Etalase</string>
     <string name="shop_settings_manage_notes">Catatan</string>
     <string name="shop_settings_basic_info">Informasi Dasar</string>
+
+    <string name="shop_settings_add_note">Tambah Catatan</string>
+    <string name="shop_settings_add_etalase">Tambah Etalase</string>
+    <string name="shop_settings_add_address">Tambah Lokasi</string>
+
+    <string name="shop_settings_shop_status">Status Toko</string>
+
     <string name="shop_slogan_hint">Tulis Slogan Toko</string>
     <string name="shop_desc_hint">Tulis Desckripsi Toko</string>
     <string name="shop_slogan_label">Slogan Toko</string>
@@ -21,7 +28,7 @@
     <string name="shop_slogan_must_be_filled">Slogan Toko harus diisi.</string>
     <string name="shop_desc_must_be_filled">Deskripsi Toko harus diisi.</string>
     <string name="shop_status_current_label">Status Toko Saat ini</string>
-    <string name="shop_settings_shop_status">Status Toko</string>
+
     <string name="label_close_shop_now">Tutup Toko Sekarang</string>
     <string name="schedule_your_shop_close">Jadwalkan Tutup Toko</string>
     <string name="schedule_shop_close">Jadwal Tutup Toko</string>
@@ -47,7 +54,7 @@
     <string name="shop_address_email_placeholder">Tulis email toko</string>
     <string name="shop_address_label_fax">Fax</string>
     <string name="shop_address_fax_placeholder">Tulis fax toko</string>
-    <string name="shop_settings_add_address">Tambah Lokasi</string>
+
     <string name="shop_address_name_required">Label Lokasi harus diisi</string>
     <string name="shop_address_name_max_length_error">Label Lokasi maks 128 kata</string>
     <string name="shop_address_required">Alamat Toko harus diisi</string>
@@ -95,13 +102,12 @@
     <string name="shop_notes_content_max_length_error">Maksimal panjang Isi Catatan adalah %1$d karakter</string>
     <string name="action_delete">Hapus</string>
     <string name="title_retry">Ulangi</string>
-    <string name="shop_settings_add_note">Tambah Catatan</string>
+
     <string name="shop_settings_edit_note">Ubah Catatan</string>
     <string name="shop_settings_edit_address">Ubah Lokasi</string>
     <string name="shop_etalase_label_name">Nama Etalase</string>
     <string name="shop_etalase_title_required">Nama Etalase harus diisi</string>
     <string name="shop_etalase_title_already_exist">Nama Etalase duplikat</string>
-    <string name="shop_settings_add_etalase">Tambah Etalase</string>
     <string name="shop_settings_edit_etalase">Ubah Etalase</string>
     <string name="note_success_reorder">Posisi catatan berhasil diubah</string>
     <string name="etalase_success_reorder">Posisi etalase berhasil diubah</string>

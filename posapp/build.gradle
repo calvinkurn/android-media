@@ -124,7 +124,6 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled true
             zipAlignEnabled true
-            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             if (allowProguard()) {
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'

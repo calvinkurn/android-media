@@ -1,0 +1,6 @@
+ext {
+
+    dynamicFeatures = [
+            shopSettings                    : ":dynamic-features:shop_settings"
+    ]
+}

@@ -166,6 +166,8 @@ include "features:user:user_identification_common"
 include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
 
+include "dynamic-features:shop_settings"
+
 include 'logisticanalytics'
 include 'tkpdfeed'
 include 'tkpdcore'
