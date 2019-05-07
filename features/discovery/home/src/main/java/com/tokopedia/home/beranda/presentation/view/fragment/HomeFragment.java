@@ -1421,16 +1421,27 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public int getWindowHeight() {
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int height = size.y;
-        return height;
+        if (getActivity() != null) {
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int height = size.y;
+            return height;
+        } else {
+            return 0;
+        }
     }
 
     @Override
     public int getHomeMainToolbarHeight() {
-        return homeMainToolbar.getHeight();
+        int height = 0;
+        if (homeMainToolbar != null) {
+            height = homeMainToolbar.getHeight();
+            if (!homeMainToolbar.isShadowApplied()) {
+                height+=getResources().getDimensionPixelSize(R.dimen.dp_8);
+            }
+        }
+        return height;
     }
 
     private void showFeedSectionViewHolderShadow(Boolean show) {

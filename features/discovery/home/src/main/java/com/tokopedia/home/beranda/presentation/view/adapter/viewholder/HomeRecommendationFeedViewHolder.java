@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -78,16 +79,22 @@ implements HomeTabFeedListener {
     public void bind(HomeRecommendationFeedViewModel homeRecommendationFeedViewModel) {
         ViewGroup.LayoutParams layoutParams = container.getLayoutParams();
 
-        //we must specify height for container, so it can't scroll up anymore and create
+        //we must specify height for viewpager, so it can't scroll up anymore and create
         //sticky effect
 
-        //add recyclerspacing 2 times because we want to remove spacing from dynamic channel above,
-        //and there is no spacing for the last item in recyclerview (defined on HomeRecyclerDecoration.java)
+        //we specify viewpager height to fill viewport below maintoolbar and tablayout, so then recyclerview reach its end scroll
+        //with tab showing below maintoolbar
+        //viewport - toolbar height - statusbar offset (android 19 and lower doesn't apply inset) - spacing
+
+        int statusBarOffset = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            statusBarOffset = ViewHelper.getStatusBarHeight(context);
+        }
         layoutParams.height =
                 listener.getWindowHeight()
                         -listener.getHomeMainToolbarHeight()
                         -context.getResources().getDimensionPixelSize(R.dimen.tab_home_feed_max_height)
-                        +ViewHelper.getStatusBarHeight(context)
+                        +statusBarOffset
                         -context.getResources().getDimensionPixelSize(R.dimen.dp_8);
         container.setLayoutParams(layoutParams);
 
