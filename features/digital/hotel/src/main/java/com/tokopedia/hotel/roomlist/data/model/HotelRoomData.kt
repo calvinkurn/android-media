@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
 data class HotelRoomData(
         @SerializedName("propertyID")
         @Expose
-        val propertyId: String = "",
+        val propertyId: Int = 0,
 
         @SerializedName("rooms")
         @Expose

@@ -89,31 +89,35 @@
                         app:layout_constraintTop_toTopOf="@id/booking_logo" />
                 </android.support.constraint.ConstraintLayout>
 
-                <!--<View-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="@dimen/dp_1"-->
-                <!--android:background="@drawable/bg_line_separator" />-->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:background="@drawable/bg_line_separator" />
 
-                <!--<android.support.constraint.ConstraintLayout
+                <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/dp_16">-->
+                    android:padding="@dimen/dp_16">
 
-                <!--<com.tokopedia.design.component.TextViewCompat
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Hanya ulasan dari Indonesia"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />-->
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Hanya ulasan dari Indonesia"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <!--<CustomSwitchPreference-->
-                <!--android:id="@+id/indonesia_review_switch"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--app:layout_constraintEnd_toEndOf="parent"-->
-                <!--app:layout_constraintRight_toRightOf="parent"-->
-                <!--/>-->
-                <!--</android.support.constraint.ConstraintLayout>-->
+                    <Switch
+                        android:id="@+id/indonesia_review_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:thumb="@drawable/bg_switch_thumb_selector"
+                        android:track="@drawable/bg_switch_track_selector"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+
+                </android.support.constraint.ConstraintLayout>
 
                 <!--<View-->
                 <!--android:layout_width="match_parent"-->
