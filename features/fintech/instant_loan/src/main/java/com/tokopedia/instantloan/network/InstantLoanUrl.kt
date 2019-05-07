@@ -25,6 +25,13 @@ object InstantLoanUrl {
         val SUBMISSION_HISTORY_URL = WEB_DOMAIN + "pinjaman-online/dana-instant/dashboard"
         val PAYMENT_METHODS_URL = WEB_DOMAIN + "pinjaman-online/dana-instant/payment-method/%s"
         val HELP_URL = WEB_DOMAIN + "contact-us?pid=162#step1"
+
+        val USER_TESTIMONIAL_IMAGE_URL_1 = "https://ecs7.tokopedia.net/assets-lending-platform-frontend/production/img/testimonial/testimonial-02.png"
+
+        val USER_TESTIMONIAL_IMAGE_URL_2 = "https://ecs7.tokopedia.net/assets-lending-platform-frontend/production/img/testimonial/testimonial-01.png"
+
+        val USER_TESTIMONIAL_IMAGE_URL_3 = "https://ecs7.tokopedia.net/assets-lending-platform-frontend/production/img/testimonial/testimonial-03.png"
+
     }
 
 }

@@ -24,8 +24,8 @@
 
         <ImageView
             android:id="@+id/il_person_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_56"
+            android:layout_height="@dimen/dp_56"
             android:layout_margin="@dimen/dp_16"
             android:background="@drawable/ic_person_testimonial"
             app:layout_constraintStart_toStartOf="parent"

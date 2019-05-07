@@ -1,283 +1,285 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/il_margin_medium"
+    android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:layout_gravity="bottom"
-        android:background="@drawable/combined_shape_combined_shape_mask" />
+
+    <TextView
+        android:id="@+id/text_form_description"
+        style="@style/DefaultLabelText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:text="@string/description_instant_fund"
+        android:textColor="@color/black_38"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/il_margin_medium"
-        android:layout_marginRight="@dimen/il_margin_medium"
-        android:animateLayoutChanges="true">
-
+        android:id="@+id/cl_info_one"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@+id/text_form_description"
+        app:layout_constraintRight_toRightOf="@+id/text_form_description"
+        app:layout_constraintTop_toBottomOf="@+id/text_form_description">
 
         <TextView
-            android:id="@+id/text_form_description"
-            style="@style/DefaultLabelText"
-            android:layout_width="0dp"
+            android:id="@+id/text_label_amount"
+            style="@style/LoanInfoLabelText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/description_instant_fund"
-            android:textColor="@color/black_38"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/il_margin_medium"
+            android:text="@string/label_amount"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/cl_info_one"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/text_value_amount"
+            style="@style/DefaultValueText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/text_form_description">
-
-            <TextView
-                android:id="@+id/text_label_amount"
-                style="@style/LoanInfoLabelText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/il_margin_medium"
-                android:text="@string/label_amount"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/text_value_amount"
-                style="@style/DefaultValueText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_8"
-                android:layout_marginBottom="8dp"
-                android:text="Rp600 Rb -  Rp1,2 Juta"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/text_label_amount"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/text_label_amount" />
-
-
-            <TextView
-                android:id="@+id/text_label_processing_time"
-                style="@style/LoanInfoLabelText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10"
-                android:text="@string/label_processing_time"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_label_amount" />
-
-            <TextView
-                android:id="@+id/text_value_processing_time"
-                style="@style/DefaultValueText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_10"
-                android:text="Kurang dari 24 Jam"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/text_label_processing_time"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/text_label_processing_time" />
-
-
-            <TextView
-                android:id="@+id/text__interest_rate"
-                style="@style/LoanInfoLabelText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/label_interest_rate"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_label_processing_time" />
-
-            <TextView
-                android:id="@+id/text_value_interest_rate"
-                style="@style/DefaultValueText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_10"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/text__interest_rate"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/text__interest_rate"
-                tools:text="Rp66.000 - Rp201.600" />
-
-
-        </android.support.constraint.ConstraintLayout>
-
-        <View
-            android:id="@+id/line_separator_vertical_two"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/il_margin_medium"
-            android:background="@color/white_four"
+            android:layout_margin="@dimen/dp_8"
+            android:layout_marginBottom="8dp"
+            android:text="Rp600 Rb -  Rp1,2 Juta"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/text_label_amount"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cl_info_one" />
+            app:layout_constraintTop_toTopOf="@+id/text_label_amount" />
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/ll_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:orientation="horizontal"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/line_separator_vertical_two">
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lineSpacingExtra="@dimen/sp_4"
-                android:text="@string/il_partners"
-                android:textColor="#7031353b"
-                android:textSize="@dimen/sp_10"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lineSpacingExtra="@dimen/sp_4"
-                android:text="@string/il_supervisors"
-                android:textColor="#7031353b"
-                android:textSize="@dimen/sp_10"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.967"
-                app:layout_constraintStart_toEndOf="@+id/textView2"
-                app:layout_constraintTop_toTopOf="parent" />
-        </android.support.constraint.ConstraintLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_image_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            app:layout_constraintTop_toBottomOf="@+id/ll_text_view">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_weight="1"
-                android:background="@drawable/il_card_background"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_gravity="center"
-                    android:padding="@dimen/dp_8"
-                    android:src="@drawable/il_koin_works_logo" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_weight="1"
-                android:background="@drawable/il_card_background"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_56"
-                    android:layout_gravity="center"
-                    android:padding="@dimen/dp_8"
-                    android:src="@drawable/il_kredit_pintar_logo" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_weight="1"
-                android:background="@drawable/il_card_background"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_56"
-                    android:layout_gravity="center"
-                    android:padding="@dimen/dp_8"
-                    android:src="@drawable/il_ojk_logo" />
-            </LinearLayout>
-
-        </LinearLayout>
 
         <TextView
-            android:id="@+id/text_form_disclaimer"
-            style="@style/DefaultLabelText"
-            android:layout_width="0dp"
+            android:id="@+id/text_label_processing_time"
+            style="@style/LoanInfoLabelText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
-            android:text="@string/disclaimer_instant_fund"
-            android:textColor="@color/black_38"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/label_processing_time"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_image_view" />
+            app:layout_constraintTop_toBottomOf="@+id/text_label_amount" />
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/il_continue_view"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/text_value_processing_time"
+            style="@style/DefaultValueText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            app:cardBackgroundColor="@color/orange_red"
-            app:cardCornerRadius="@dimen/dp_4"
+            android:layout_margin="@dimen/dp_10"
+            android:text="Kurang dari 24 Jam"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/text_label_processing_time"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_form_disclaimer">
-
-            <TextView
-                android:id="@+id/button_search_pinjaman"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:padding="@dimen/dp_12"
-                android:text="@string/label_search_loans"
-                android:textColor="@color/white"
-                android:textSize="@dimen/il_text_size_regular" />
-
-            <ProgressBar
-                android:id="@+id/progress_bar_status"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="right|center_vertical|end"
-                android:layout_marginEnd="@dimen/il_margin_medium"
-                android:layout_marginRight="@dimen/il_margin_medium"
-                android:visibility="invisible" />
-        </android.support.v7.widget.CardView>
+            app:layout_constraintTop_toTopOf="@+id/text_label_processing_time" />
 
 
         <TextView
-            android:id="@+id/il_learn_more"
-            android:layout_width="0dp"
+            android:id="@+id/text__interest_rate"
+            style="@style/LoanInfoLabelText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dp_20"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:gravity="center_horizontal"
-            android:lineSpacingExtra="@dimen/sp_4"
-            android:paddingBottom="@dimen/dp_20"
-            android:text="@string/il_learn_more"
-            android:textColor="#03ac0e"
-            android:textSize="@dimen/sp_14"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/il_continue_view"
-            tools:text="Pelajari Lebih Lanjut" />
+            android:layout_marginTop="10dp"
+            android:text="@string/label_interest_rate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_label_processing_time" />
+
+        <TextView
+            android:id="@+id/text_value_interest_rate"
+            style="@style/DefaultValueText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_10"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/text__interest_rate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text__interest_rate"
+            tools:text="Rp66.000 - Rp201.600" />
+
 
     </android.support.constraint.ConstraintLayout>
-</FrameLayout>
+
+    <View
+        android:id="@+id/line_separator_vertical_two"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/il_margin_medium"
+        android:background="@color/white_four"
+        app:layout_constraintLeft_toLeftOf="@+id/text_form_description"
+        app:layout_constraintRight_toRightOf="@+id/text_form_description"
+        app:layout_constraintTop_toBottomOf="@+id/cl_info_one" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/ll_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintLeft_toLeftOf="@+id/text_form_description"
+        app:layout_constraintRight_toRightOf="@+id/text_form_description"
+        app:layout_constraintTop_toBottomOf="@+id/line_separator_vertical_two">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="@dimen/sp_4"
+            android:text="@string/il_partners"
+            android:textColor="#7031353b"
+            android:textSize="@dimen/sp_10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="@dimen/sp_4"
+            android:text="@string/il_supervisors"
+            android:textColor="#7031353b"
+            android:textSize="@dimen/sp_10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.967"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_image_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        app:layout_constraintLeft_toLeftOf="@+id/text_form_description"
+        app:layout_constraintRight_toRightOf="@+id/text_form_description"
+        app:layout_constraintTop_toBottomOf="@+id/ll_text_view">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_weight="1"
+            android:background="@drawable/il_card_background"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:padding="@dimen/dp_8"
+                android:src="@drawable/il_koin_works_logo" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_weight="1"
+            android:background="@drawable/il_card_background"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_56"
+                android:layout_gravity="center"
+                android:padding="@dimen/dp_8"
+                android:src="@drawable/il_kredit_pintar_logo" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_weight="1"
+            android:background="@drawable/il_card_background"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_56"
+                android:layout_gravity="center"
+                android:padding="@dimen/dp_8"
+                android:src="@drawable/il_ojk_logo" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_form_disclaimer"
+        style="@style/DefaultLabelText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/disclaimer_instant_fund"
+        android:textColor="@color/black_38"
+        app:layout_constraintLeft_toLeftOf="@+id/text_form_description"
+        app:layout_constraintRight_toRightOf="@+id/text_form_description"
+        app:layout_constraintTop_toBottomOf="@+id/ll_image_view" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/il_continue_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_20"
+        app:cardBackgroundColor="@color/orange_red"
+        app:cardCornerRadius="@dimen/dp_4"
+        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintLeft_toLeftOf="@+id/text_form_description"
+        app:layout_constraintRight_toRightOf="@+id/text_form_description"
+        app:layout_constraintTop_toBottomOf="@+id/text_form_disclaimer">
+
+        <TextView
+            android:id="@+id/button_search_pinjaman"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:padding="@dimen/dp_12"
+            android:text="@string/label_search_loans"
+            android:textColor="@color/white"
+            android:textSize="@dimen/il_text_size_regular" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar_status"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="right|center_vertical|end"
+            android:layout_marginEnd="@dimen/il_margin_medium"
+            android:layout_marginRight="@dimen/il_margin_medium"
+            android:visibility="invisible" />
+    </android.support.v7.widget.CardView>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="42dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/combined_shape_combined_shape_mask"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/il_learn_more"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_60"
+        android:text="@string/il_learn_more"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/sp_16"
+        android:paddingBottom="@dimen/dp_20"
+        android:paddingTop="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@+id/il_continue_view"
+        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintLeft_toLeftOf="@+id/text_form_description"
+        app:layout_constraintRight_toRightOf="@+id/text_form_description"
+        app:layout_constraintWidth_default="wrap" />
+
+
+</android.support.constraint.ConstraintLayout>
 

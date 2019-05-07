@@ -76,7 +76,7 @@
                         android:id="@+id/pager"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/il_margin_medium"/>
+                        android:layout_marginTop="@dimen/il_margin_medium" />
 
                 </LinearLayout>
 
@@ -88,19 +88,18 @@
                 layout="@layout/layout_il_testimonials"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"/>
+                android:layout_margin="@dimen/dp_16" />
 
             <include
                 layout="@layout/layout_bottom_banner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp" />
+                android:layout_height="wrap_content" />
 
             <include
                 layout="@layout/il_other_financial_products"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"/>
+                android:layout_margin="@dimen/dp_16" />
         </LinearLayout>
 
 

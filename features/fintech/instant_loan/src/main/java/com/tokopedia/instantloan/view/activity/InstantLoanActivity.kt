@@ -27,7 +27,7 @@ import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.BannerEntity
 import com.tokopedia.instantloan.data.model.response.TestimonialEntity
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager
-import com.tokopedia.instantloan.ddcollector.PermissionResultCallback
+import com.tokopedia.instantloan.network.InstantLoanUrl
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.HELP_URL
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.PAYMENT_METHODS_URL
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.SUBMISSION_HISTORY_URL
@@ -142,13 +142,19 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     private fun loadTestimonials() {
 
-        var testimonialList : ArrayList<TestimonialEntity> = ArrayList<TestimonialEntity>()
+        val testimonialList: ArrayList<TestimonialEntity> = ArrayList()
 
-        var testimonialItem1 = TestimonialEntity(getString(R.string.il_testimonial_review_1), "Asty Afisha", "")
-
+        val testimonialItem1 = TestimonialEntity(getString(R.string.il_testimonial_review_1), getString(R.string.il_testimonial_name_1), InstantLoanUrl.COMMON_URL.USER_TESTIMONIAL_IMAGE_URL_1)
         testimonialList.add(testimonialItem1)
 
+        val testimonialItem2 = TestimonialEntity(getString(R.string.il_testimonial_review_2), getString(R.string.il_testimonial_name_2), InstantLoanUrl.COMMON_URL.USER_TESTIMONIAL_IMAGE_URL_2)
+        testimonialList.add(testimonialItem2)
+
+        val testimonialItem3 = TestimonialEntity(getString(R.string.il_testimonial_review_3), getString(R.string.il_testimonial_name_3), InstantLoanUrl.COMMON_URL.USER_TESTIMONIAL_IMAGE_URL_3)
+        testimonialList.add(testimonialItem3)
+
         il_view_pager_testimonials.adapter = DanaInstanTestimonialsPagerAdapter(this, testimonialList)
+        (il_view_pager_testimonials.adapter as DanaInstanTestimonialsPagerAdapter).notifyDataSetChanged()
 
     }
 
@@ -175,9 +181,9 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         setActiveTab()
 
         heightWrappingViewPager!!.addOnPageChangeListener(
-                object  : ViewPager.OnPageChangeListener {
+                object : ViewPager.OnPageChangeListener {
                     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                        if(position == 0) {
+                        if (position == 0) {
                             showTestimonials()
                         } else {
                             hideTestimonials()
