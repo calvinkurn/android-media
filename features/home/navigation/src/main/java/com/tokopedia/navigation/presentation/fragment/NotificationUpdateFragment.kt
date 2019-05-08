@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.fragment
 
+import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
@@ -273,7 +274,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 loadData(page)
-                analytics.trackScrollBottom()
             }
         }
     }
@@ -314,4 +314,25 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        sendAnalyticsScrollBottom()
+    }
+
+    override fun onDestroyView() {
+        sendAnalyticsScrollBottom()
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
+    }
+
+    private fun sendAnalyticsScrollBottom() {
+        val layoutManager = (getRecyclerView(view).layoutManager)
+        if(layoutManager != null && layoutManager is LinearLayoutManager) {
+            analytics.trackScrollBottom(layoutManager.findLastVisibleItemPosition().toString())
+        }
+    }
 }

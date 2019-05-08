@@ -158,6 +158,11 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         return (application as BaseMainApplication).baseAppComponent
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
+    }
+
     companion object {
 
         fun start(context: Context): Intent {

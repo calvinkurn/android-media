@@ -41,12 +41,12 @@ class NotificationUpdateAnalytics @Inject constructor() {
         ))
     }
     // #NC4
-    fun trackScrollBottom() {
+    fun trackScrollBottom(notifSize: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_CLICK_NOTIF_CENTER,
                 EVENT_CATEGORY_NOTIF_CENTER,
                 EVENT_ACTION_SCROLL_TO_BOTTOM,
-                ""
+                notifSize
         ))
     }
     // #NC5
