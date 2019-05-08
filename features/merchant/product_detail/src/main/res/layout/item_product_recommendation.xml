@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/productCardView"
     android:layout_width="153dp"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:clickable="true"
-    xmlns:android="http://schemas.android.com/apk/res/android"/>
+    android:minHeight="322dp" />
