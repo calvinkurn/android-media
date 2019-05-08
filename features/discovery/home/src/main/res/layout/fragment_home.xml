@@ -39,14 +39,6 @@
             app:draggable="true"
             app:margin_bottom="@dimen/new_margin_sm"/>
 
-        <View
-            android:visibility="invisible"
-            android:id="@+id/status_bar_bg"
-            android:layout_gravity="top"
-            android:background="@color/green_600"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"/>
-
         <com.tokopedia.searchbar.HomeMainToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -56,6 +48,14 @@
             app:contentInsetStart="0dp"
             app:contentInsetLeft="0dp"
             app:screenName="/"/>
+
+        <View
+            android:visibility="invisible"
+            android:id="@+id/status_bar_bg"
+            android:layout_gravity="top"
+            android:background="@color/green_600"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"/>
 
     </FrameLayout>
 

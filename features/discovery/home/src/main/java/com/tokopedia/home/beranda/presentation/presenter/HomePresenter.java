@@ -44,6 +44,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
@@ -153,15 +154,22 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void getHomeData() {
         initHeaderViewModelData();
+        HomeDataSubscriber homeDataSubscriber = createHomeDataSubscriber();
+        homeDataSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_CACHE);
         subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .doOnNext(visitables ->
-                        compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber(HomeDataSubscriber.FLAG_FROM_NETWORK))))
-//                .delay(5000, TimeUnit.MILLISECONDS)
+                {
+                    homeDataSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_NETWORK);
+                    compositeSubscription.add(getDataFromNetwork().subscribe(homeDataSubscriber));
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(getDataFromNetwork())
-                .subscribe(createHomeDataSubscriber(HomeDataSubscriber.FLAG_FROM_CACHE));
+                .onErrorResumeNext(throwable -> {
+                    homeDataSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_NETWORK);
+                    return getDataFromNetwork();
+                })
+                .subscribe(homeDataSubscriber);
         compositeSubscription.add(subscription);
     }
 
@@ -175,8 +183,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
 
-    private HomeDataSubscriber createHomeDataSubscriber(int repositoryType) {
-        return new HomeDataSubscriber(this, repositoryType);
+    private HomeDataSubscriber createHomeDataSubscriber() {
+        return new HomeDataSubscriber(this);
     }
 
     @Override
@@ -351,12 +359,15 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public static class HomeDataSubscriber extends Subscriber<List<TrackedVisitable>> {
         public static int FLAG_FROM_NETWORK = 99;
         public static int FLAG_FROM_CACHE = 98;
-        private final int repositoryFlag;
+        private int repositoryFlag;
 
         HomePresenter homePresenter;
 
-        public HomeDataSubscriber(HomePresenter homePresenter, int flag) {
+        public HomeDataSubscriber(HomePresenter homePresenter) {
             this.homePresenter = homePresenter;
+        }
+
+        public void setFlag(int flag) {
             this.repositoryFlag = flag;
         }
 
