@@ -18,5 +18,5 @@ import dagger.Component;
 }, dependencies = BaseAppComponent.class)
 public interface ProductListViewComponent {
 
-    void inject(ProductListSectionContract.View view);
+    void inject(ProductListFragment view);
 }
