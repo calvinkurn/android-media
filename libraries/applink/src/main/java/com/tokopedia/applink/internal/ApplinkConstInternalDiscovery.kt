@@ -4,9 +4,15 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalDiscovery {
 
-    const val HOST_FILTER = "filter"
-    const val HOST_SORT = "sort"
+    @JvmField
+    val HOST_DISCOVERY = "discovery"
 
-    val INTERNAL_FILTER = "${DeeplinkConstant.SCHEME_INTERNAL}://${ApplinkConstInternalDiscovery.HOST_FILTER}"
-    val INTERNAL_SORT = "${DeeplinkConstant.SCHEME_INTERNAL}://${ApplinkConstInternalDiscovery.HOST_SORT}"
+    @JvmField
+    val INTERNAL_DISCOVERY = "${DeeplinkConstant.SCHEME_INTERNAL}://${ApplinkConstInternalDiscovery.HOST_DISCOVERY}"
+
+    @JvmField
+    val FILTER = "$INTERNAL_DISCOVERY/filter/"
+
+    @JvmField
+    val SORT = "$INTERNAL_DISCOVERY/sort/"
 }

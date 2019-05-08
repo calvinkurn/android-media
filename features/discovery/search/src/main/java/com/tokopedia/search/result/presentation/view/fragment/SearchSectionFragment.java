@@ -387,7 +387,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment implement
     protected void openFilterPage() {
         if (searchParameter == null) return;
 
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalDiscovery.INSTANCE.getINTERNAL_FILTER(), (String[]) null);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalDiscovery.FILTER, (String[]) null);
         intent.putExtra(EXTRA_FILTER_LIST, getScreenName());
         intent.putExtra(EXTRA_FILTER_PARAMETER, searchParameter);
 
@@ -406,7 +406,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment implement
         if(getActivity() == null) return;
 
         if (isSortDataAvailable()) {
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalDiscovery.INSTANCE.getINTERNAL_SORT(), (String[]) null);
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalDiscovery.SORT, (String[]) null);
             intent.putParcelableArrayListExtra(EXTRA_DATA, sort);
             if (getSelectedSort() != null) {
                 intent.putExtra(EXTRA_SELECTED_SORT, getSelectedSort());
