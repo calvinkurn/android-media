@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -30,6 +31,7 @@ public class ProductCardView extends BaseCustomView {
     private View ratingReviewContainer;
     private ImageView ratingView;
     private TextView reviewCountView;
+    private CardView cardViewContainer;
 
     public ProductCardView(@NonNull Context context) {
         super(context);
@@ -48,6 +50,7 @@ public class ProductCardView extends BaseCustomView {
 
     private void init() {
         final View view = inflate(getContext(), R.layout.product_card_layout, this);
+        cardViewContainer = view.findViewById(R.id.cardViewContainer);
         textName = view.findViewById(R.id.textName);
         textPrice = view.findViewById(R.id.textPrice);
         textDiscount = view.findViewById(R.id.textDiscount);
@@ -58,6 +61,10 @@ public class ProductCardView extends BaseCustomView {
         ratingReviewContainer = view.findViewById(R.id.rating_review_container);
         ratingView = view.findViewById(R.id.rating);
         reviewCountView = view.findViewById(R.id.review_count);
+    }
+
+    public void setCardViewMinimumHeight(int minHeight){
+        cardViewContainer.setMinimumHeight(minHeight);
     }
 
     public void setTitle(String title) {

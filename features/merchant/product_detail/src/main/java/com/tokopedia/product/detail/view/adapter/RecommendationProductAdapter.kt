@@ -24,14 +24,16 @@ class RecommendationProductAdapter(private var product: RecommendationModel) : R
     }
 
     override fun onBindViewHolder(holder: RecommendationProductAdapter.RecommendationProductViewHolder, position: Int) {
-        holder.bind(product.recommendationItemList[position])
+        holder.bind(product.recommendationItemList[position],product.title)
     }
 
     class RecommendationProductViewHolder(itemView: View) : RecommendationCardView.TrackingListener, RecyclerView.ViewHolder(itemView) {
         private val productDetailTracking = ProductDetailTracking()
         private val recommendationCardView: RecommendationCardView? = itemView.findViewById(R.id.productCardView)
 
-        fun bind(product: RecommendationItem) {
+        fun bind(product: RecommendationItem, recommendationTitle:String) {
+            recommendationCardView?.setCardViewMinimumHeight(322)
+            recommendationCardView?.setTitle(recommendationTitle)
             recommendationCardView?.setRecommendationModel(product, this)
             recommendationCardView?.setWishlistButtonVisible(false)
         }
