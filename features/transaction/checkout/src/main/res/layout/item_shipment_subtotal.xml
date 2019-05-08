@@ -40,6 +40,7 @@
             android:id="@+id/tv_sub_total_price"
             android:textColor="@color/orange_red"
             android:textSize="@dimen/sp_14"
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

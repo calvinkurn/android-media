@@ -368,7 +368,8 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
             imageFullWhiteEgg.clearAnimation();
             imageSemiWhiteEgg.clearAnimation();
             imageViewFull.setEnabled(true);
-            listener.reShowFromLobby();
+            if (listener != null)
+                listener.reShowFromLobby();
         }
 
         @Override
@@ -706,7 +707,8 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
         @Override
         public void onAnimationEnd(Animator animation) {
-            listener.showCrackResult(crackResult);
+            if (listener != null)
+                listener.showCrackResult(crackResult);
         }
 
         @Override
@@ -750,7 +752,8 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
                 public void onAnimationEnd(Animator animation) {
                     imageFullWhiteEgg.setVisibility(View.INVISIBLE);
                     imageFullWhiteEgg.clearAnimation();
-                    listener.reShowEgg();
+                    if (listener != null)
+                        listener.reShowEgg();
 
                 }
 
@@ -851,10 +854,27 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         }
     }
 
+    public void releaseMediaPlayer() {
+        if (crackMediaPlayer != null) {
+            crackMediaPlayer.release();
+        }
+    }
+
+
+    /**
+     * This is method is clearing all Animation and releasing media player
+     *  called from onDestroyView of Fragment
+     * */
+    public void releaseResourcesOnDestroy() {
+        clearTokenAnimation();
+        releaseMediaPlayer();
+    }
+
     public void clearTokenAnimationAndCrack() {
         clearTokenAnimation();
         shakeHardAndCrackAnimation();
-        listener.onClick();
+        if (listener != null)
+            listener.onClick();
     }
 
 }

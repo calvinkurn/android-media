@@ -80,7 +80,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         buyerCardViewModel.setUserId(accountModel.getProfile().getUserId());
         buyerCardViewModel.setName(accountModel.getProfile().getFullName());
         buyerCardViewModel.setTokopoint(accountModel.getTokopoints().getStatus().getPoints().getRewardStr());
-        buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCoupon());
+        buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCouponStr());
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
         buyerCardViewModel.setProgress(accountModel.getProfile().getCompletion());
         items.add(buyerCardViewModel);
