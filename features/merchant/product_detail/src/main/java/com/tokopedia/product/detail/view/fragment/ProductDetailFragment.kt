@@ -725,41 +725,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
             }
         })
-//        topads_carousel.setAdsItemClickListener(adsItemsClickListener)
-//        topads_carousel.setAdsListener(adsListener)
-//        topads_carousel.setAdsItemImpressionListener(object : TopAdsItemImpressionListener() {
-//            override fun onImpressionProductAdsItem(position: Int, product: Product?) {
-//                product?.let {
-//                    productDetailTracking.eventTopAdsImpression(position, it)
-//                }
-//            }
-//        })
     }
-
-    private val adsItemsClickListener = object : TopAdsItemClickListener {
-        override fun onShopItemClicked(position: Int, shop: Shop?) {}
-
-        override fun onAddFavorite(position: Int, data: Data?) {}
-
-        override fun onProductItemClicked(position: Int, product: Product?) {
-            if (product == null) return
-            activity?.let {
-                productDetailTracking.eventTopAdsClicked(product, position)
-                startActivity(ProductDetailActivity.createIntent(it, product.id.toInt()))
-            }
-        }
-    }
-
-//    private val adsListener = object : TopAdsListener {
-//        override fun onTopAdsLoaded(list: MutableList<Item<Any>>?) {
-//            topads_carousel.visible()
-//        }
-//
-//        override fun onTopAdsFailToLoad(errorCode: Int, message: String?) {
-//            topads_carousel.gone()
-//        }
-//
-//    }
 
     private fun collapsedAppBar() {
         initStatusBarLight()

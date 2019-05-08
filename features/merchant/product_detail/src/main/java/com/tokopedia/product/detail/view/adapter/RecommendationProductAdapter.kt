@@ -6,9 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel
+import com.tokopedia.topads.sdk.domain.model.Category
+import com.tokopedia.topads.sdk.domain.model.Product
 
 class RecommendationProductAdapter(private var product:RecommendationModel): RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
 
@@ -27,6 +30,7 @@ class RecommendationProductAdapter(private var product:RecommendationModel): Rec
 
     class RecommendationProductViewHolder(itemView: View) :  RecommendationCardView.TrackingListener,RecyclerView.ViewHolder(itemView){
 
+        private val productDetailTracking = ProductDetailTracking()
         private val recommendationCardView: RecommendationCardView? = itemView.findViewById(R.id.productCardView)
         private val context: Context? = itemView.context
 
@@ -35,19 +39,39 @@ class RecommendationProductAdapter(private var product:RecommendationModel): Rec
         }
 
         override fun onImpressionTopAds(item: RecommendationItem) {
-
+            val product = Product()
+            product.id = item.productId.toString()
+            product.name = item.name
+            product.priceFormat = item.price
+            product.category = Category(item.departmentId)
+            productDetailTracking.eventRecommendationImpression(adapterPosition, product, item.recommendationType, item.isTopAds)
         }
 
         override fun onImpressionOrganic(item: RecommendationItem) {
-
+            val product = Product()
+            product.id = item.productId.toString()
+            product.name = item.name
+            product.priceFormat = item.price
+            product.category = Category(item.departmentId)
+            productDetailTracking.eventRecommendationImpression(adapterPosition, product, item.recommendationType, item.isTopAds)
         }
 
         override fun onClickTopAds(item: RecommendationItem) {
-
+            val product = Product()
+            product.id = item.productId.toString()
+            product.name = item.name
+            product.priceFormat = item.price
+            product.category = Category(item.departmentId)
+            productDetailTracking.eventRecommendationClick(product,adapterPosition,item.recommendationType,item.isTopAds)
         }
 
         override fun onClickOrganic(item: RecommendationItem) {
-
+            val product = Product()
+            product.id = item.productId.toString()
+            product.name = item.name
+            product.priceFormat = item.price
+            product.category = Category(item.departmentId)
+            productDetailTracking.eventRecommendationClick(product,adapterPosition,item.recommendationType,item.isTopAds)
         }
 
 
