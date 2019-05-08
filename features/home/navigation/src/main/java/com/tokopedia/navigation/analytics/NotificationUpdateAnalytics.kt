@@ -15,11 +15,22 @@ class NotificationUpdateAnalytics @Inject constructor() {
         val EVENT_CATEGORY_NOTIF_CENTER: String = "notif center"
         val EVENT_NAME_CLICK_NOTIF_CENTER: String = "clickNotifCenter"
 
+        val EVENT_ACTION_CLICK_NEWEST_INFO: String = "click on info terbaru"
         val EVENT_ACTION_CLICK_NOTIF_LIST: String = "click on notif list"
         val EVENT_ACTION_CLICK_FILTER_REQ: String = "click on filter request"
         val EVENT_ACTION_SCROLL_TO_BOTTOM: String = "scroll to bottom"
         val EVENT_ACTION_MARK_ALL_AS_READ: String = "mark all as read"
 
+    }
+
+    // #NC1
+    fun trackClickNewestInfo() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_NAME_CLICK_NOTIF_CENTER,
+                EVENT_CATEGORY_NOTIF_CENTER,
+                EVENT_ACTION_CLICK_NEWEST_INFO,
+                ""
+        ))
     }
 
     // #NC2

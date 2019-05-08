@@ -202,10 +202,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun onItemClicked(datum: Visitable<*>?) {
-        if (datum is NotificationUpdateItemViewModel) {
-            analytics.trackClickNotifList(datum.templateKey)
-            datum.isRead
-        }
+
     }
 
     override fun getScreenName(): String {
@@ -278,8 +275,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    override fun itemClicked(notifId: String, adapterPosition: Int) {
+    override fun itemClicked(notifId: String, adapterPosition: Int, templateKey: String) {
         adapter.notifyItemChanged(adapterPosition)
+        analytics.trackClickNotifList(templateKey)
         presenter.markReadNotif(notifId)
     }
 
