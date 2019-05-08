@@ -40,6 +40,7 @@ import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAda
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
@@ -61,7 +62,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_ACTIVE_TAB_POSITION;
-import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SEARCH;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_HAS_CATALOG;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
@@ -107,7 +107,6 @@ public class SearchActivity extends BaseActivity
     private String shopTabTitle;
     private String profileTabTitle;
     private boolean isForceSwipeToShop;
-    private boolean isForceSearch;
     private boolean isHasCatalog;
     private int activeTabPosition;
 
@@ -364,7 +363,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private ProductListFragment getProductFragment() {
-        return ProductListFragment.newInstance(searchParameter, isForceSearch);
+        return ProductListFragment.newInstance(searchParameter);
     }
 
     private ShopListFragment getShopFragment() {
@@ -510,7 +509,7 @@ public class SearchActivity extends BaseActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putBoolean(EXTRA_FORCE_SEARCH, isForceSearch);
+        outState.putParcelable(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
         outState.putBoolean(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop);
         outState.putInt(EXTRA_ACTIVE_TAB_POSITION, activeTabPosition);
     }
@@ -519,7 +518,7 @@ public class SearchActivity extends BaseActivity
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        isForceSearch = savedInstanceState.getBoolean(EXTRA_FORCE_SEARCH);
+        searchParameter = savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER_MODEL);
         isForceSwipeToShop = savedInstanceState.getBoolean(EXTRA_FORCE_SWIPE_TO_SHOP);
         activeTabPosition = savedInstanceState.getInt(EXTRA_ACTIVE_TAB_POSITION);
     }
@@ -555,32 +554,24 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public void performNewProductSearch(String query, boolean forceSearch) {
+    public void performNewProductSearch(String queryParams) {
         this.searchParameter = new SearchParameter();
         this.isForceSwipeToShop = false;
-        this.isForceSearch = forceSearch;
-
-        performProductSearch(query);
+        performProductSearch(queryParams);
     }
 
-    private void performProductSearch(String query) {
-        updateSearchParameterBeforeSearch(query);
+    private void performProductSearch(String queryParams) {
+        updateSearchParameterBeforeSearch(queryParams);
         onSearchingStart();
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
 
-        searchPresenter.initiateSearch(searchParameter.getSearchParameterMap(), isForceSearch, getInitiateSearchListener());
+        searchPresenter.initiateSearch(searchParameter.getSearchParameterMap(), getInitiateSearchListener());
     }
 
-    private void updateSearchParameterBeforeSearch(String searchQuery) {
-        setSearchParameterQueryIfNotEmpty(searchQuery);
+    private void updateSearchParameterBeforeSearch(String queryParams) {
+        searchParameter.getSearchParameterHashMap().putAll(NetworkParamHelper.getParamMap(queryParams));
         setSearchParameterUniqueId();
         setSearchParameterUserIdIfLoggedIn();
-    }
-
-    private void setSearchParameterQueryIfNotEmpty(String searchQuery) {
-        if(!TextUtils.isEmpty(searchQuery)) {
-            searchParameter.setSearchQuery(searchQuery);
-        }
     }
 
     private void setSearchParameterUniqueId() {
@@ -625,7 +616,7 @@ public class SearchActivity extends BaseActivity
             public void onHandleResponseError() {
                 NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
                     if(searchParameter == null) return;
-                    SearchActivity.this.performProductSearch(searchParameter.getSearchQuery());
+                    SearchActivity.this.performProductSearch("");
                 });
             }
 

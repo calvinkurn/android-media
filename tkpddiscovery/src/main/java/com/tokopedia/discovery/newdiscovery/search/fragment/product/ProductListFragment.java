@@ -93,7 +93,6 @@ public class ProductListFragment extends SearchSectionFragment
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
 
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
-    private static final String EXTRA_IS_FORCE_SEARCH = "EXTRA_IS_FORCE_SEARCH";
     private static final String EXTRA_ADDITIONAL_PARAMS = "EXTRA_ADDITIONAL_PARAMS";
     private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
     private static int PRODUCT_POSITION = 2;
@@ -113,7 +112,6 @@ public class ProductListFragment extends SearchSectionFragment
     private Config topAdsConfig;
     private ProductListAdapter adapter;
     private ProductListTypeFactory productListTypeFactory;
-    private boolean isForceSearch;
     private String additionalParams = "";
     private boolean isFirstTimeLoad;
 
@@ -123,10 +121,9 @@ public class ProductListFragment extends SearchSectionFragment
 
     private FilterController quickFilterController = new FilterController();
 
-    public static ProductListFragment newInstance(SearchParameter searchParameter, boolean isForceSearch) {
+    public static ProductListFragment newInstance(SearchParameter searchParameter) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        args.putBoolean(EXTRA_IS_FORCE_SEARCH, isForceSearch);
         ProductListFragment productListFragment = new ProductListFragment();
         productListFragment.setArguments(args);
         return productListFragment;
@@ -147,7 +144,6 @@ public class ProductListFragment extends SearchSectionFragment
     private void loadDataFromArguments() {
         if(getArguments() != null) {
             copySearchParameter(getArguments().getParcelable(EXTRA_SEARCH_PARAMETER));
-            isForceSearch = getArguments().getBoolean(EXTRA_IS_FORCE_SEARCH);
         }
     }
 
@@ -173,7 +169,6 @@ public class ProductListFragment extends SearchSectionFragment
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this, this);
-        presenter.setIsUsingFilterV4(isUsingBottomSheetFilter());
         return inflater.inflate(R.layout.fragment_base_discovery, null);
     }
 
@@ -319,10 +314,7 @@ public class ProductListFragment extends SearchSectionFragment
     private void loadMoreProduct(final int startRow) {
         generateLoadMoreParameter(startRow);
 
-        HashMap<String, String> additionalParamsMap
-                = NetworkParamHelper.getParamMap(additionalParams);
-
-        presenter.loadMoreData(getSearchParameter(), additionalParamsMap);
+        presenter.loadMoreData(getSearchParameter(), getAdditionalParamsMap());
     }
 
     @Override
@@ -410,11 +402,6 @@ public class ProductListFragment extends SearchSectionFragment
 
         isFirstTimeLoad = true;
         reloadData();
-    }
-
-    @Override
-    protected void requestDynamicFilter() {
-
     }
 
     @Override
@@ -546,8 +533,8 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onSuggestionClicked(String suggestedQuery) {
-        performNewProductSearch(suggestedQuery, true);
+    public void onSuggestionClicked(String queryParams) {
+        performNewProductSearch(queryParams);
     }
 
     @Override
@@ -566,14 +553,14 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onSearchGuideClicked(String keyword) {
-        performNewProductSearch(keyword, true);
+    public void onSearchGuideClicked(String queryParams) {
+        performNewProductSearch(queryParams);
     }
 
     @Override
-    public void onRelatedSearchClicked(String keyword) {
+    public void onRelatedSearchClicked(String queryParams, String keyword) {
         SearchTracking.eventClickRelatedSearch(getContext(), getQueryKey(), keyword);
-        performNewProductSearch(keyword, true);
+        performNewProductSearch(queryParams);
     }
 
     @Override
@@ -745,11 +732,12 @@ public class ProductListFragment extends SearchSectionFragment
         initTopAdsParams();
         generateLoadMoreParameter(0);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
-        presenter.loadData(getSearchParameter(), isForceSearch, getAdditionalParamsMap(), isFirstTimeLoad);
+        presenter.loadData(getSearchParameter(), getAdditionalParamsMap(), isFirstTimeLoad);
         TopAdsGtmTracker.getInstance().clearDataLayerList();
     }
 
-    private HashMap<String, String> getAdditionalParamsMap() {
+    @Override
+    public HashMap<String, String> getAdditionalParamsMap() {
         if (isFilterActive()) {
             return NetworkParamHelper.getParamMap(additionalParams);
         } else {
@@ -855,7 +843,9 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setAdditionalParams(String additionalParams) {
-        this.additionalParams = additionalParams;
+        if (!TextUtils.isEmpty(additionalParams)) {
+            this.additionalParams = additionalParams;
+        }
     }
 
     @Override
@@ -880,6 +870,11 @@ public class ProductListFragment extends SearchSectionFragment
             dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer());
         }
         SearchTracking.trackEventImpressionGlobalNavWidgetItem(trackingQueue, dataLayerList, globalNavViewModel.getKeyword());
+    }
+
+    @Override
+    public boolean isAnyFilterActive() {
+        return isFilterActive();
     }
 
     public void sendMoEngageSearchAttempt(Context context, String keyword, boolean isResultFound, HashMap<String, String> category) {
