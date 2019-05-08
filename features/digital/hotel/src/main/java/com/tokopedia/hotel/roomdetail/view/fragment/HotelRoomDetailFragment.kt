@@ -12,9 +12,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
@@ -29,19 +27,21 @@ import kotlinx.android.synthetic.main.widget_info_text_view.view.*
  * @author by resakemal on 23/04/19
  */
 
-class HotelRoomDetailFragment: BaseDaggerFragment(){
+class HotelRoomDetailFragment : BaseDaggerFragment() {
 
     lateinit var hotelRoom: HotelRoom
 
     lateinit var saveInstanceCacheManager: SaveInstanceCacheManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
         saveInstanceCacheManager = SaveInstanceCacheManager(activity!!, savedInstanceState)
+        val manager = if (savedInstanceState == null) SaveInstanceCacheManager(activity!!,
+                arguments!!.getString(HotelRoomDetailActivity.EXTRA_SAVED_INSTANCE_ID)) else saveInstanceCacheManager
 
-        hotelRoom = saveInstanceCacheManager.get(EXTRA_ROOM_DATA, HotelRoom::class.java, HotelRoom())!!
-        initDummyRoomDetail()
+        hotelRoom = manager.get(EXTRA_ROOM_DATA, HotelRoom::class.java, HotelRoom())!!
+
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -53,12 +53,7 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
         initView()
     }
 
-    fun initDummyRoomDetail() {
-        val dummyRoomDetail = GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_room_detail)
-        hotelRoom = Gson().fromJson(dummyRoomDetail, HotelRoom::class.java)
-    }
-
-    fun initView() {
+    private fun initView() {
         setupCollapsingToolbar()
         setupRoomImages()
         setupRoomHeader()
@@ -73,7 +68,7 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
         setupRoomPrice()
     }
 
-    fun setupCollapsingToolbar() {
+    private fun setupCollapsingToolbar() {
         (activity as HotelRoomDetailActivity).setSupportActionBar(detail_toolbar)
         (activity as HotelRoomDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -97,7 +92,7 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
         })
     }
 
-    fun setupRoomImages() {
+    private fun setupRoomImages() {
         if (!hotelRoom.roomInfo.roomImages.isEmpty()) {
             val roomDetailImages = hotelRoom.roomInfo.roomImages.map { it.url300 }
             room_detail_images.setImages(roomDetailImages)
@@ -105,11 +100,11 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
         room_detail_images.buildView()
     }
 
-    fun setupRoomHeader() {
-        tv_room_detail_title.setText(hotelRoom.roomInfo.name)
-        tv_room_detail_occupancy.setText(getString(R.string.hotel_room_detail_header_occupancy,
-                hotelRoom.occupancyInfo.occupancyText))
-        tv_room_detail_size.setText(hotelRoom.bedInfo)
+    private fun setupRoomHeader() {
+        tv_room_detail_title.text = hotelRoom.roomInfo.name
+        tv_room_detail_occupancy.text = getString(R.string.hotel_room_detail_header_occupancy,
+                hotelRoom.occupancyInfo.occupancyText)
+        tv_room_detail_size.text = hotelRoom.bedInfo
 
         val breakfastTextView = FacilityTextView(context!!)
         breakfastTextView.setIconAndText("",
@@ -120,12 +115,12 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
         val refundableTextView = FacilityTextView(context!!)
         refundableTextView.setIconAndText("",
                 if (hotelRoom.refundInfo.isRefundable) getString(R.string.hotel_room_list_refundable_with_condition)
-                else getString(R.string.hotel_room_list_not_refundable) )
+                else getString(R.string.hotel_room_list_not_refundable))
         room_detail_header_facilities.addView(refundableTextView)
 
         if (hotelRoom.numberRoomLeft <= MINIMUM_ROOM_COUNT) {
-            tv_room_detail_count.setText(getString(R.string.hotel_room_room_left_text,
-                    Integer.toString(hotelRoom.numberRoomLeft)))
+            tv_room_detail_count.text = getString(R.string.hotel_room_room_left_text,
+                    Integer.toString(hotelRoom.numberRoomLeft))
             tv_room_detail_count.visibility = View.VISIBLE
         }
     }
@@ -136,7 +131,7 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
         spannableString.setSpan(StyleSpan(Typeface.BOLD), 2, 28, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(ImageSpan(icon, ImageSpan.ALIGN_BASELINE), 0, 1,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        tv_room_detail_pay_at_hotel_desc.setText(spannableString)
+        tv_room_detail_pay_at_hotel_desc.text = spannableString
     }
 
     fun setupRoomCancellation() {
@@ -179,9 +174,9 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
             val facilityList = hotelRoom.roomInfo.facility
             val stringBuilder = StringBuffer()
             var previewFacilitiesString = ""
-            var fullFacilitiesString = ""
+            var fullFacilitiesString: String
 
-            for (i in 0..facilityList.size - 1) {
+            for (i in 0 until facilityList.size) {
                 stringBuilder.append(getString(R.string.hotel_room_detail_facility_item, facilityList[i].name))
                 stringBuilder.append("\n")
                 if (i == ROOM_FACILITY_DEFAULT_COUNT - 1) {
@@ -234,8 +229,8 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
     }
 
     fun setupRoomPrice() {
-        tv_room_detail_price.setText(hotelRoom.roomPrice[0].roomPrice)
-        room_detail_button.setText(getString(R.string.hotel_room_list_choose_room_button, ""))
+        tv_room_detail_price.text = hotelRoom.roomPrice[0].roomPrice
+        room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button, "")
     }
 
     override fun getScreenName(): String = ""
@@ -247,9 +242,14 @@ class HotelRoomDetailFragment: BaseDaggerFragment(){
     companion object {
         const val EXTRA_ROOM_DATA = "extra_room_data"
 
-        val MINIMUM_ROOM_COUNT = 3
-        val ROOM_FACILITY_DEFAULT_COUNT = 6
+        const val MINIMUM_ROOM_COUNT = 3
+        const val ROOM_FACILITY_DEFAULT_COUNT = 6
 
-        fun getInstance(): HotelRoomDetailFragment = HotelRoomDetailFragment()
+        fun getInstance(savedInstanceId: String): HotelRoomDetailFragment =
+                HotelRoomDetailFragment().also {
+                    it.arguments = Bundle().apply {
+                        putString(HotelRoomDetailActivity.EXTRA_SAVED_INSTANCE_ID, savedInstanceId)
+                    }
+                }
     }
 }
