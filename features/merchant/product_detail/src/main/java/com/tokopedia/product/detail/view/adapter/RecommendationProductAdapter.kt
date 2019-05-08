@@ -13,8 +13,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.topads.sdk.domain.model.Category
 import com.tokopedia.topads.sdk.domain.model.Product
 
-class RecommendationProductAdapter(private var product:RecommendationModel): RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
-
+class RecommendationProductAdapter(private var product: RecommendationModel) : RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationProductAdapter.RecommendationProductViewHolder {
         return RecommendationProductViewHolder(parent.inflateLayout(R.layout.item_product_recommendation))
@@ -28,14 +27,13 @@ class RecommendationProductAdapter(private var product:RecommendationModel): Rec
         holder.bind(product.recommendationItemList[position])
     }
 
-    class RecommendationProductViewHolder(itemView: View) :  RecommendationCardView.TrackingListener,RecyclerView.ViewHolder(itemView){
-
+    class RecommendationProductViewHolder(itemView: View) : RecommendationCardView.TrackingListener, RecyclerView.ViewHolder(itemView) {
         private val productDetailTracking = ProductDetailTracking()
         private val recommendationCardView: RecommendationCardView? = itemView.findViewById(R.id.productCardView)
-        private val context: Context? = itemView.context
 
-        fun bind(product: RecommendationItem){
-            recommendationCardView?.setRecommendationModel(product,this)
+        fun bind(product: RecommendationItem) {
+            recommendationCardView?.setRecommendationModel(product, this)
+            recommendationCardView?.setWishlistButtonVisible(false)
         }
 
         override fun onImpressionTopAds(item: RecommendationItem) {
@@ -62,7 +60,7 @@ class RecommendationProductAdapter(private var product:RecommendationModel): Rec
             product.name = item.name
             product.priceFormat = item.price
             product.category = Category(item.departmentId)
-            productDetailTracking.eventRecommendationClick(product,adapterPosition,item.recommendationType,item.isTopAds)
+            productDetailTracking.eventRecommendationClick(product, adapterPosition, item.recommendationType, item.isTopAds)
         }
 
         override fun onClickOrganic(item: RecommendationItem) {
@@ -71,7 +69,7 @@ class RecommendationProductAdapter(private var product:RecommendationModel): Rec
             product.name = item.name
             product.priceFormat = item.price
             product.category = Category(item.departmentId)
-            productDetailTracking.eventRecommendationClick(product,adapterPosition,item.recommendationType,item.isTopAds)
+            productDetailTracking.eventRecommendationClick(product, adapterPosition, item.recommendationType, item.isTopAds)
         }
 
 

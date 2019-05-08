@@ -200,31 +200,31 @@ class ProductDetailTracking() {
     }
 
     fun eventRecommendationClick(product: Product, position: Int, recommendationType: String, isTopAds: Boolean) {
-        val listValue = LIST_DEFAULT.plus(recommendationType)
-        if (isTopAds) listValue.plus(" product top ads")
+        var listValue = LIST_DEFAULT.plus(recommendationType)
+        if (isTopAds) listValue = "$listValue - product top ads"
 
         TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
-            DataLayer.mapOf(KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
-                KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
-                KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK,
-                KEY_LABEL, "",
-                KEY_ECOMMERCE, DataLayer.mapOf(ProductTrackingConstant.Action.CLICK,
-                DataLayer.mapOf(ACTION_FIELD, DataLayer.mapOf(LIST, listValue),
-                    PRODUCTS, DataLayer.listOf(
-                    DataLayer.mapOf(PROMO_NAME, product.name,
-                        ID, product.id, PRICE, product.priceFormat,
-                        BRAND, DEFAULT_VALUE,
-                        CATEGORY, product.category.id,
-                        VARIANT, DEFAULT_VALUE,
-                        PROMO_POSITION, position + 1)
+                DataLayer.mapOf(KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
+                        KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
+                        KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK,
+                        KEY_LABEL, "",
+                        KEY_ECOMMERCE, DataLayer.mapOf(ProductTrackingConstant.Action.CLICK,
+                        DataLayer.mapOf(ACTION_FIELD, DataLayer.mapOf(LIST, listValue),
+                                PRODUCTS, DataLayer.listOf(
+                                DataLayer.mapOf(PROMO_NAME, product.name,
+                                        ID, product.id, PRICE, product.priceFormat,
+                                        BRAND, DEFAULT_VALUE,
+                                        CATEGORY, product.category.id,
+                                        VARIANT, DEFAULT_VALUE,
+                                        PROMO_POSITION, position + 1)
+                        ))
                 ))
-            ))
         )
     }
 
     fun eventRecommendationImpression(position: Int, product: Product, recommendationType: String, isTopAds: Boolean) {
-        val listValue = LIST_DEFAULT.plus(recommendationType)
-        if (isTopAds) listValue.plus(recommendationType).plus(" product top ads")
+        var listValue = LIST_DEFAULT.plus(recommendationType)
+        if (isTopAds) listValue = "$listValue - product top ads"
 
         TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(KEY_EVENT, "productView",

@@ -16,12 +16,12 @@ class PartialRecommendationProductView private constructor(private val view: Vie
     }
 
     init {
-        with(view){
+        with(view) {
             recommendation_product.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
     }
 
-    fun renderData(products: RecommendationModel){
+    fun renderData(products: RecommendationModel) {
         with(view) {
             loading_recommen_product.gone()
             if (products.recommendationItemList.isEmpty())
@@ -35,14 +35,14 @@ class PartialRecommendationProductView private constructor(private val view: Vie
 
     }
 
-    fun hideView(){
-        with(view){
+    fun hideView() {
+        with(view) {
             gone()
         }
     }
 
     fun startLoading() {
-        with(view){
+        with(view) {
             visible()
             loading_recommen_product.visible()
             recommendation_product.gone()
