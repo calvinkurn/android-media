@@ -85,17 +85,17 @@ constructor(private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
         return if (query == null) {
             null
         } else {
-            val domain = WhitelistDomain()
-            domain.error = query.whitelist.error ?: ""
-            domain.url = query.whitelist.url ?: ""
-            domain.isWhitelist = query.whitelist.isWhitelist
-            domain.title = query.whitelist.title ?: ""
-            domain.desc = query.whitelist.description ?: ""
-            domain.titleIdentifier = query.whitelist.titleIdentifier ?: ""
-            domain.postSuccessMessage = query.whitelist.postSuccessMessage ?: ""
-            domain.image = query.whitelist.imageUrl ?: ""
-            domain.authors = query.whitelist.authors ?: arrayListOf()
-            domain
+            WhitelistDomain().apply {
+                error = query.whitelist.error ?: ""
+                url = query.whitelist.url ?: ""
+                isWhitelist = query.whitelist.isWhitelist
+                title = query.whitelist.title ?: ""
+                desc = query.whitelist.description ?: ""
+                titleIdentifier = query.whitelist.titleIdentifier ?: ""
+                postSuccessMessage = query.whitelist.postSuccessMessage ?: ""
+                image = query.whitelist.imageUrl ?: ""
+                authors = query.whitelist.authors ?: arrayListOf()
+            }
         }
     }
 
