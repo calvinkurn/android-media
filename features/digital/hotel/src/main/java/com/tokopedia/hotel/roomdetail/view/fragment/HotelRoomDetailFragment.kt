@@ -20,6 +20,8 @@ import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.view.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
+import com.tokopedia.hotel.roomlist.widget.ImageViewPager
+import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import kotlinx.android.synthetic.main.fragment_hotel_room_detail.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 
@@ -51,6 +53,12 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        saveInstanceCacheManager.onSave(outState)
+        saveInstanceCacheManager.put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, hotelRoom)
     }
 
     private fun initView() {
@@ -94,8 +102,18 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
 
     private fun setupRoomImages() {
         if (!hotelRoom.roomInfo.roomImages.isEmpty()) {
-            val roomDetailImages = hotelRoom.roomInfo.roomImages.map { it.url300 }
-            room_detail_images.setImages(roomDetailImages)
+            val roomImageUrls300 = hotelRoom.roomInfo.roomImages.map { it.url300 }
+            val roomImageUrls = hotelRoom.roomInfo.roomImages.map { it.urlOriginal }
+            val roomImageUrlsSquare = hotelRoom.roomInfo.roomImages.map { it.urlSquare }
+            room_detail_images.setImages(roomImageUrls300)
+
+            room_detail_images.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener{
+                override fun onImageClicked(position: Int) {
+                    startActivity(ImagePreviewSliderActivity.getCallingIntent(
+                            context!!, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position
+                    ))
+                }
+            }
         }
         room_detail_images.buildView()
     }
