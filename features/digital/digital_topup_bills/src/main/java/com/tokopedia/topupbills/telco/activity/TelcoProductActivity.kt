@@ -1,11 +1,11 @@
-package com.tokopedia.topupbills.activity
+package com.tokopedia.topupbills.telco.activity
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.topupbills.fragment.DigitalTelcoFragment
+import com.tokopedia.topupbills.telco.fragment.DigitalTelcoFragment
 
 /**
  * Created by nabillasabbaha on 11/04/19.

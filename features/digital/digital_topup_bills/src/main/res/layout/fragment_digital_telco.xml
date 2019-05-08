@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/digital_bg_pdp" />
 
-    <com.tokopedia.topupbills.widget.DigitalSubMenuWidget
+    <com.tokopedia.topupbills.telco.widget.DigitalSubMenuWidget
         android:id="@+id/header_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

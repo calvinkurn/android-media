@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.fragment
+package com.tokopedia.topupbills.telco.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.component.ticker.TickerView
-import com.tokopedia.topupbills.widget.DigitalSubMenuWidget
+import com.tokopedia.topupbills.telco.widget.DigitalSubMenuWidget
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.model.DigitalProductSubMenu
+import com.tokopedia.topupbills.telco.model.DigitalProductSubMenu
 
 /**
  * Created by nabillasabbaha on 06/05/19.

@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.di
+package com.tokopedia.topupbills.telco.di
 
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import dagger.Module

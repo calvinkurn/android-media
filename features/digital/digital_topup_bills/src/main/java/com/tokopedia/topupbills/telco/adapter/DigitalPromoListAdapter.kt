@@ -9,7 +9,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.getColorText
-import com.tokopedia.topupbills.model.DigitalPromo
+import com.tokopedia.topupbills.telco.model.DigitalPromo
 
 /**
  * Created by nabillasabbaha on 23/04/19.

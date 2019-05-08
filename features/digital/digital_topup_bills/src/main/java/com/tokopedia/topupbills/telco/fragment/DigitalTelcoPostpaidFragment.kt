@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.fragment
+package com.tokopedia.topupbills.telco.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.topupbills.R
-import  com.tokopedia.topupbills.model.DigitalRecentNumber
+import  com.tokopedia.topupbills.telco.model.DigitalRecentNumber
 
 /**
  * Created by nabillasabbaha on 23/04/19.

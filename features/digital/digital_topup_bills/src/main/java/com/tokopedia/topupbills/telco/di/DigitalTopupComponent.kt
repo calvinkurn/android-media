@@ -1,7 +1,7 @@
-package com.tokopedia.topupbills.di
+package com.tokopedia.topupbills.telco.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.topupbills.fragment.DigitalTelcoPrepaidFragment
+import com.tokopedia.topupbills.telco.fragment.DigitalTelcoPrepaidFragment
 import dagger.Component
 
 /**

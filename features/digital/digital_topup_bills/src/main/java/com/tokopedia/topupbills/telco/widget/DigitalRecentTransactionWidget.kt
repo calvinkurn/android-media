@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.widget
+package com.tokopedia.topupbills.telco.widget
 
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.digital.topupbillsproduct.adapter.DigitalRecentNumbersAdapter
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.model.DigitalRecentNumber
+import com.tokopedia.topupbills.telco.model.DigitalRecentNumber
 import org.jetbrains.annotations.NotNull
 
 /**

@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.model
+package com.tokopedia.topupbills.telco.model
 
 /**
  * Created by nabillasabbaha on 07/05/19.

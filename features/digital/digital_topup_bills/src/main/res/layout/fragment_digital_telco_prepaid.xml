@@ -3,23 +3,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/dp_15"
+    android:layout_marginTop="@dimen/dp_5"
     android:layout_marginRight="@dimen/dp_15"
     android:layout_marginLeft="@dimen/dp_15"
     android:layout_marginBottom="@dimen/dp_15"
     android:orientation="vertical">
 
-    <com.tokopedia.topupbills.widget.DigitalTelcoClientNumberWidget
+    <com.tokopedia.topupbills.telco.widget.DigitalTelcoClientNumberWidget
         android:id="@+id/telco_input_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.tokopedia.topupbills.widget.DigitalRecentTransactionWidget
+    <com.tokopedia.topupbills.telco.widget.DigitalRecentTransactionWidget
         android:id="@+id/recent_numbers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.tokopedia.topupbills.widget.DigitalPromoListWidget
+    <com.tokopedia.topupbills.telco.widget.DigitalPromoListWidget
         android:id="@+id/promo_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

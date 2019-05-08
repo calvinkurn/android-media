@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.fragment
+package com.tokopedia.topupbills.telco.fragment
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -15,13 +15,13 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.covertContactUriToContactData
-import com.tokopedia.topupbills.di.DigitalTopupInstance
-import com.tokopedia.topupbills.model.DigitalPromo
-import com.tokopedia.topupbills.model.DigitalRecentNumber
-import com.tokopedia.topupbills.widget.DigitalBaseClientNumberWidget
-import com.tokopedia.topupbills.widget.DigitalPromoListWidget
-import com.tokopedia.topupbills.widget.DigitalRecentTransactionWidget
-import com.tokopedia.topupbills.widget.DigitalTelcoClientNumberWidget
+import com.tokopedia.topupbills.telco.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.model.DigitalPromo
+import com.tokopedia.topupbills.telco.model.DigitalRecentNumber
+import com.tokopedia.topupbills.telco.widget.DigitalBaseClientNumberWidget
+import com.tokopedia.topupbills.telco.widget.DigitalPromoListWidget
+import com.tokopedia.topupbills.telco.widget.DigitalRecentTransactionWidget
+import com.tokopedia.topupbills.telco.widget.DigitalTelcoClientNumberWidget
 import javax.inject.Inject
 
 /**

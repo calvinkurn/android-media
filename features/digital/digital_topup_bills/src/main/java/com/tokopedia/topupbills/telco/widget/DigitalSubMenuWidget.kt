@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.widget
+package com.tokopedia.topupbills.telco.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -8,7 +8,7 @@ import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.getColorText
-import com.tokopedia.topupbills.model.DigitalProductSubMenu
+import com.tokopedia.topupbills.telco.model.DigitalProductSubMenu
 import org.jetbrains.annotations.NotNull
 
 /**
