@@ -30,9 +30,7 @@ class RecommendationEntityMapper : Func1<RecomendationEntity.RecomendationData, 
         return mappingToRecommendationModel(recomendationData)
     }
 
-
     companion object {
-
         fun mappingToRecommendationModel(recomendationData: RecomendationEntity.RecomendationData): RecommendationModel {
             val modelList = ArrayList<RecommendationItem>()
             val datas = recomendationData.recommendation

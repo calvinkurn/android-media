@@ -2,9 +2,7 @@ package com.tokopedia.product.detail.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.text.TextUtils
-import android.util.Log
 import android.util.SparseArray
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -50,7 +48,6 @@ import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.usecase.coroutines.Fail
@@ -335,13 +332,13 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     }
 
     private fun generateTopAdsParams(productInfo: ProductInfo): Map<String,Any> {
-        return mapOf<String, Any>(
-                "userID" to userSessionInterface.userId,
-                "pageName" to "default",
-                "pageNumber" to 1,
-                "xDevice" to "android",
-                "xSource" to "recom_widget",
-                "productIDs" to productInfo.basic.id.toString()
+        return mapOf(
+                TopAdsDisplay.KEY_USER_ID to userSessionInterface.userId.toInt(),
+                TopAdsDisplay.KEY_PAGE_NAME to TopAdsDisplay.DEFAULT_PAGE_NAME,
+                TopAdsDisplay.KEY_PAGE_NUMBER to TopAdsDisplay.DEFAULT_PAGE_NUMBER,
+                TopAdsDisplay.KEY_XDEVICE to TopAdsDisplay.DEFAULT_DEVICE,
+                TopAdsDisplay.KEY_XSOURCE to TopAdsDisplay.DEFAULT_SRC_PAGE,
+                TopAdsDisplay.KEY_PRODUCT_ID to productInfo.basic.id.toString()
         )
 
     }
@@ -492,7 +489,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         private const val PARAM_RATE_EST_WEIGHT = "weight"
 
         private const val PARAM_PAGE = "page"
-        private const val PARAM_USER_ID = "user_id"
         private const val PARAM_TOTAL = "total"
         private const val PARAM_CONDITION = "condition"
         private const val PARAM_PRODUCT_TITLE = "productTitle"
@@ -509,15 +505,16 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         private const val PARAMS_OTHER_PRODUCT_TEMPLATE = "device=android&source=other_product&shop_id=%d&-id=%d"
 
         object TopAdsDisplay {
-            const val DEFAULT_TOTAL_ITEM = 5
+            const val KEY_USER_ID = "userID"
+            const val KEY_PAGE_NAME = "pageName"
+            const val KEY_XDEVICE = "xDevice"
             const val DEFAULT_DEVICE = "android"
-            const val DEFAULT_SRC_PAGE = "pdp"
-            const val DEFAULT_EP = "product"
-            const val KEY_ITEM = "item"
-            const val KEY_DEVICE = "device"
-            const val KEY_SRC = "src"
-            const val KEY_EP = "ep"
-            const val KEY_XPARAMS = "xparams"
+            const val DEFAULT_SRC_PAGE = "recommen_pdp"
+            const val KEY_PRODUCT_ID = "productIDs"
+            const val KEY_XSOURCE = "xSource"
+            const val KEY_PAGE_NUMBER = "pageNumber"
+            const val DEFAULT_PAGE_NUMBER = 1
+            const val DEFAULT_PAGE_NAME = "default"
         }
 
         private object ParamAffiliate {
@@ -584,7 +581,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
                     .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data ?: emptyList()))
         } catch (t: Throwable){
-            Log.e("errornya", "ini : $t")
             Loaded(Fail(t))
         }
     }
