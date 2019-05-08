@@ -17,7 +17,7 @@ public class SearchProductUseCaseModule {
 
     @SearchScope
     @Provides
-    @Named(SearchConstant.GQL.GQL_SEARCH_PRODUCT_FIRST_PAGE)
+    @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
     UseCase<SearchProductModel> provideSearchProductFirstPageUseCase(
             @Named(SearchConstant.GQL.GQL_SEARCH_PRODUCT_FIRST_PAGE) Repository<SearchProductModel> searchProductFirstPageRepository
     ) {
@@ -26,7 +26,7 @@ public class SearchProductUseCaseModule {
 
     @SearchScope
     @Provides
-    @Named(SearchConstant.GQL.GQL_SEARCH_PRODUCT_LOAD_MORE)
+    @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
     UseCase<SearchProductModel> provideSearchProductLoadMoreUseCase(
             @Named(SearchConstant.GQL.GQL_SEARCH_PRODUCT_LOAD_MORE) Repository<SearchProductModel> searchProductLoadMoreRepository
     ) {

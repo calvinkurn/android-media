@@ -16,6 +16,7 @@ import dagger.Component;
         RemoteConfigModule.class,
         AddWishListUseCaseModule.class,
         RemoveWishListUseCaseModule.class,
+        TopAdsServiceModule.class,
         ProductWishlistUrlUseCaseModule.class,
         GqlSearchProductSpecModule.class,
         SearchProductUseCaseModule.class

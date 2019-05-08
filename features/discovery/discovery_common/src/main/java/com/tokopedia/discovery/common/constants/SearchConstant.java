@@ -49,7 +49,7 @@ public interface SearchConstant {
 
     interface SearchProduct {
         String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
-        String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_first_page_use_case";
+        String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
         String PARAMETER_ROWS = "8";
     }
 
