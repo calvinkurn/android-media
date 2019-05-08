@@ -8,6 +8,7 @@ import com.tokopedia.search.result.di.module.AddWishListUseCaseModule;
 import com.tokopedia.search.result.di.module.RemoveWishListUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.ProductWishlistUrlUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.SearchProductUseCaseModule;
+import com.tokopedia.search.result.di.module.TopAdsServiceModule;
 
 import dagger.Component;
 
