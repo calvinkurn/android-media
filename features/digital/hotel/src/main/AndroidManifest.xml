@@ -40,7 +40,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
-        <activity android:name=".roomdetail.view.activity.HotelRoomDetailActivity"
+        <activity android:name=".roomdetail.presentation.activity.HotelRoomDetailActivity"
             android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.NoActionBar"/>
