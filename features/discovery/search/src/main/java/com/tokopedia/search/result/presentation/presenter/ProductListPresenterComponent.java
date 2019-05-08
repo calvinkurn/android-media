@@ -22,7 +22,8 @@ import dagger.Component;
         TopAdsServiceModule.class,
         ProductWishlistUrlUseCaseModule.class,
         GqlSearchProductSpecModule.class,
-        SearchProductUseCaseModule.class
+        SearchProductUseCaseModule.class,
+        RemoteConfigModule.class
 }, dependencies = BaseAppComponent.class)
 public interface ProductListPresenterComponent {
 

@@ -8,11 +8,14 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 
 import dagger.Module;
+import dagger.Provides;
 
 @SearchScope
 @Module
 public class RemoteConfigModule {
 
+    @SearchScope
+    @Provides
     RemoteConfig provideRemoteConfig(@ApplicationContext Context context) {
         return new FirebaseRemoteConfigImpl(context);
     }

@@ -1,8 +1,8 @@
 package com.tokopedia.search.result.network.validator;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
-import com.tokopedia.network.data.model.response.BaseResponseError;
 
 import okhttp3.Response;
 import okhttp3.ResponseBody;

@@ -45,6 +45,20 @@ public class TopAdsServiceModule {
     @TopAdsQualifier
     @SearchScope
     @Provides
+    public ErrorResponseInterceptor provideErrorResponseInterceptor() {
+        return new ErrorResponseInterceptor(TopAdsResponseError.class);
+    }
+
+    @TopAdsQualifier
+    @SearchScope
+    @Provides
+    public CacheApiInterceptor provideCacheApiInterceptor() {
+        return new CacheApiInterceptor();
+    }
+
+    @TopAdsQualifier
+    @SearchScope
+    @Provides
     public OkHttpClient provideOkHttpClientTopAdsAuth(@ApplicationContext Context context,
                                                       @TopAdsQualifier FingerprintInterceptor fingerprintInterceptor,
                                                       @TopAdsQualifier TopAdsAuthInterceptor topAdsAuthInterceptor,
