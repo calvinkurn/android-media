@@ -1708,12 +1708,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return BannerWebView.getCallingIntent(activity, url);
     }
 
-    @Override
-    public Intent getBannerWebViewOnAllPromoClickFromHomeIntent(Activity activity,
-                                                                String url,
-                                                                String title) {
-        return BannerWebView.getCallingIntentWithTitle(activity, url, title);
-    }
+//    @Override
+//    public Intent getBannerWebViewOnAllPromoClickFromHomeIntent(Activity activity,
+//                                                                String url,
+//                                                                String title) {
+//        return BannerWebView.getCallingIntentWithTitle(activity, url, title);
+//    }
 
     @Override
     public boolean isTrainNativeEnable() {
@@ -2128,32 +2128,32 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return ContactUsHomeActivity.getContactUsHomeIntent(context, new Bundle());
     }
 
-    @Override
-    public void openIntermediaryActivity(Activity activity, String depID, String title) {
-        IntermediaryActivity.moveTo(activity, depID, title);
-    }
+//    @Override
+//    public void openIntermediaryActivity(Activity activity, String depID, String title) {
+//        IntermediaryActivity.moveTo(activity, depID, title);
+//    }
 
-    @Override
-    public void onDigitalItemClickFromExploreHome(
-            Activity activity, String appLink, String categoryId, String name, String url) {
-        DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
-                .appLinks(appLink)
-                .categoryId(categoryId)
-                .categoryName(name)
-                .url(url)
-                .build();
+//    @Override
+//    public void onDigitalItemClickFromExploreHome(
+//            Activity activity, String appLink, String categoryId, String name, String url) {
+//        DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+//                .appLinks(appLink)
+//                .categoryId(categoryId)
+//                .categoryName(name)
+//                .url(url)
+//                .build();
+//
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+//        goToApplinkActivity(activity, appLink, bundle);
+//    }
 
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
-        goToApplinkActivity(activity, appLink, bundle);
-    }
-
-    @Override
-    public Intent getActivityShopCreateEdit(Context context) {
-        Intent intent = SellerRouter.getActivityShopCreateEdit(context);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        return intent;
-    }
+//    @Override
+//    public Intent getActivityShopCreateEdit(Context context) {
+//        Intent intent = SellerRouter.getActivityShopCreateEdit(context);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//        return intent;
+//    }
 
     @Override
     public Fragment getKolPostShopFragment(String shopId, String createPostUrl) {
@@ -2271,10 +2271,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return ShopPageInternalRouter.getShoProductListIntent(context, shopId, keyword, etalaseId);
     }
 
-    @Override
-    public Intent getInstantLoanIntent(Context context) {
-        return InstantLoanActivity.Companion.createIntent(context);
-    }
+//    @Override
+//    public Intent getInstantLoanIntent(Context context) {
+//        return InstantLoanActivity.Companion.createIntent(context);
+//    }
 
     public Intent getOpenShopIntent(Context context) {
         return ShopOpenInternalRouter.getOpenShopIntent(context);
@@ -3030,10 +3030,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return FragmentFavorite.newInstance();
     }
 
-    @Override
-    public void sendIndexScreen(Activity activity, String screenName) {
-        IndexScreenTracking.sendScreen(activity, () -> screenName);
-    }
+//    @Override
+//    public void sendIndexScreen(Activity activity, String screenName) {
+//        IndexScreenTracking.sendScreen(activity, () -> screenName);
+//    }
 
     public void doLogoutAccount(Activity activity) {
         new GlobalCacheManager().deleteAll();
