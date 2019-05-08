@@ -8,7 +8,7 @@ import java.util.ArrayList
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
-class Operator : Parcelable, BaseWidgetItem {
+class Operator() : Parcelable, BaseWidgetItem {
 
     var operatorId: String? = null
         private set
@@ -35,7 +35,7 @@ class Operator : Parcelable, BaseWidgetItem {
 
     constructor(operatorId: String, operatorType: String, name: String, image: String, lastorderUrl: String,
                 defaultProductId: Int, rule: Rule, prefixList: List<String>, clientNumberList: List<ClientNumber>,
-                productList: List<Product>, ussdCode: String) {
+                productList: List<Product>, ussdCode: String): this() {
         this.operatorId = operatorId
         this.operatorType = operatorType
         this.name = name
@@ -67,7 +67,7 @@ class Operator : Parcelable, BaseWidgetItem {
         dest.writeString(this.ussdCode)
     }
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel): this() {
         this.operatorId = `in`.readString()
         this.operatorType = `in`.readString()
         this.name = `in`.readString()

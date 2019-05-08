@@ -57,7 +57,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Named
 

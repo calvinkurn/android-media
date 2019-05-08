@@ -42,12 +42,6 @@ android {
     }
 }
 
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
-}
-
 dependencies {
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
@@ -63,8 +57,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.rxJavaMath
-    api rootProject.ext.miscDependencies.coroutineCore
-    api rootProject.ext.miscDependencies.coroutineAndroid
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
 
     implementation rootProject.ext.miscDependencies.gson
 
