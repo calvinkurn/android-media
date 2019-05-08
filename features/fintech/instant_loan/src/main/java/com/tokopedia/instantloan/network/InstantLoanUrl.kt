@@ -32,6 +32,10 @@ object InstantLoanUrl {
 
         val USER_TESTIMONIAL_IMAGE_URL_3 = "https://ecs7.tokopedia.net/assets-lending-platform-frontend/production/img/testimonial/testimonial-03.png"
 
+        val CREDIT_CARD_WEBVIEW_URL = "https://www.tokopedia.com/kartu-kredit/"
+
+        val INSURANCE_WEBVIEW_URL = "https://www.tokopedia.com/asuransi/"
+
     }
 
 }

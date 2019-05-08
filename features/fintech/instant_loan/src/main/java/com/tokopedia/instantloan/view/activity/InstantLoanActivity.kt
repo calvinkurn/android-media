@@ -46,6 +46,7 @@ import com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
 import com.tokopedia.instantloan.view.ui.InstantLoanItem
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_instant_loan.*
+import kotlinx.android.synthetic.main.il_other_financial_products.*
 import kotlinx.android.synthetic.main.layout_il_testimonials.*
 import javax.inject.Inject
 
@@ -376,6 +377,16 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     private fun attachViewListener() {
         mBtnNextBanner!!.setOnClickListener(this)
         mBtnPreviousBanner!!.setOnClickListener(this)
+
+        financial_product_one.setOnClickListener {
+            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                    InstantLoanUrl.COMMON_URL.CREDIT_CARD_WEBVIEW_URL))
+        }
+
+        financial_product_two.setOnClickListener {
+            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                    InstantLoanUrl.COMMON_URL.INSURANCE_WEBVIEW_URL))
+        }
     }
 
     private fun setupToolbar() {
