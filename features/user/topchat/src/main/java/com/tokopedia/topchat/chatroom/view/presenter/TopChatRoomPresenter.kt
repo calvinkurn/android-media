@@ -73,6 +73,9 @@ class TopChatRoomPresenter @Inject constructor(
         private var getShopFollowingUseCase: GetShopFollowingUseCase,
         private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
+    override fun clearText() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private var mSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
