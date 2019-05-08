@@ -3,7 +3,6 @@ package com.tokopedia.hotel.destination.view.viewmodel
 import android.app.Activity
 import android.arch.lifecycle.MutableLiveData
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -11,7 +10,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.hotel.destination.data.model.*
-import com.tokopedia.hotel.search.data.model.PropertySearch
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
@@ -21,7 +19,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.experimental.*
-import okhttp3.Response
 import javax.inject.Inject
 
 /**
@@ -43,21 +40,28 @@ class HotelDestinationViewModel @Inject constructor(
     fun getHotelRecommendation(popularRawQuery: String, recentSearchRawQuery: String) {
 
         launchCatchError(block = {
-            val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt())
+            lateinit var gqlResponse: GraphqlResponse
 
             val popularSearchRequest = GraphqlRequest(popularRawQuery, TYPE_POPULAR_RESPONSE, false)
-            val recentSearchRequest = GraphqlRequest(recentSearchRawQuery, RecentSearch.Response::class.java, params, false)
-            val gqlResponse = graphqlRepository.getReseponse(listOf(popularSearchRequest, recentSearchRequest))
+
+            if (userSessionInterface.isLoggedIn) {
+                val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt())
+                val recentSearchRequest = GraphqlRequest(recentSearchRawQuery, RecentSearch.Response::class.java, params, false)
+                gqlResponse = graphqlRepository.getReseponse(listOf(popularSearchRequest, recentSearchRequest))
+
+                if (gqlResponse.getError(RecentSearch.Response::class.java)?.isNotEmpty() != true) {
+                    val result = (gqlResponse.getData(RecentSearch.Response::class.java) as RecentSearch.Response).recentSearch
+                    if (result.isNotEmpty()) recentSearch.value = Success(result)
+                }
+            } else {
+                gqlResponse = graphqlRepository.getReseponse(listOf(popularSearchRequest))
+            }
 
             if (gqlResponse.getError(PopularSearch.Response::class.java)?.isNotEmpty() != true) {
                 val result = (gqlResponse.getData(PopularSearch.Response::class.java) as PopularSearch.Response).popularSearchList
                 if (result.isNotEmpty()) popularSearch.value = Success(result)
             }
 
-            if (gqlResponse.getError(RecentSearch.Response::class.java)?.isNotEmpty() != true) {
-                val result = (gqlResponse.getData(RecentSearch.Response::class.java) as RecentSearch.Response).recentSearch
-                if (result.isNotEmpty()) recentSearch.value = Success(result)
-            }
         }) {
             popularSearch.value = Fail(it)
             recentSearch.value = Fail(it)
