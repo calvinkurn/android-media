@@ -310,7 +310,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
                     presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData.getServiceName(),
                     flagNeedToSetPinpoint, hasCourierPromo, true);
         }
-        dismiss();
+
+        try {
+            dismiss();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
