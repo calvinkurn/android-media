@@ -349,6 +349,8 @@ final class ProductListPresenter
         int j = 0;
         for (int i = 0; i < productViewModel.getTotalItem(); i++) {
             try {
+                if(productViewModel.getAdsModel().getTemplates().size() <= 0) continue;
+
                 if (productViewModel.getAdsModel().getTemplates().get(i).isIsAd()) {
                     Data topAds = productViewModel.getAdsModel().getData().get(j);
                     ProductItemViewModel item = new ProductItemViewModel();

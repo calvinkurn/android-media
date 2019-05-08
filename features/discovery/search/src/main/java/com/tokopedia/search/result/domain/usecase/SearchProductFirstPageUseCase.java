@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.domain.usecase;
 
+import android.text.TextUtils;
+
 import com.tokopedia.discovery.common.domain.Repository;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
@@ -9,7 +11,11 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
@@ -18,6 +24,9 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_QU
 import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_SOURCE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_HEADLINE_PARAMS;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.HEADLINE;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.HEADLINE_ITEM_VALUE;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.HEADLINE_TEMPLATE_VALUE;
 
 class SearchProductFirstPageUseCase extends UseCase<SearchProductModel> {
 
@@ -35,7 +44,7 @@ class SearchProductFirstPageUseCase extends UseCase<SearchProductModel> {
     private Map<String, Object> createParametersForQuery(RequestParams requestParams) {
         Map<String, Object> variables = new HashMap<>();
         variables.put(KEY_QUERY, requestParams.getString(SearchApiConst.Q, ""));
-        variables.put(KEY_PARAMS, UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
+        variables.put(KEY_PARAMS, generateUrlParamString(requestParams.getParameters()));
         variables.put(KEY_SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_PRODUCT);
         variables.put(KEY_HEADLINE_PARAMS, createHeadlineParams(requestParams));
 
@@ -43,11 +52,30 @@ class SearchProductFirstPageUseCase extends UseCase<SearchProductModel> {
     }
 
     private String createHeadlineParams(RequestParams requestParams) {
-        Map<String, String> headlineParams = requestParams.getParamsAllValueInString();
-        headlineParams.put(TopAdsParams.KEY_EP, DiscoveryPresenter.HEADLINE);
-        headlineParams.put(TopAdsParams.KEY_TEMPLATE_ID, DiscoveryPresenter.TEMPLATE_VALUE);
-        headlineParams.put(TopAdsParams.KEY_ITEM, DiscoveryPresenter.ITEM_VALUE);
+        Map<String, Object> headlineParams = requestParams.getParameters();
+        headlineParams.put(TopAdsParams.KEY_EP, HEADLINE);
+        headlineParams.put(TopAdsParams.KEY_TEMPLATE_ID, HEADLINE_TEMPLATE_VALUE);
+        headlineParams.put(TopAdsParams.KEY_ITEM, HEADLINE_ITEM_VALUE);
 
-        return UrlParamHelper.generateUrlParamString(headlineParams);
+        return generateUrlParamString(headlineParams);
+    }
+
+    private String generateUrlParamString(Map<String, Object> paramMap) {
+        if (paramMap == null) {
+            return "";
+        }
+
+        List<String> paramList = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : paramMap.entrySet()) {
+            if(entry.getValue() == null) continue;
+
+            try {
+                paramList.add(entry.getKey() + "=" + URLEncoder.encode(entry.getValue().toString(), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return TextUtils.join("&", paramList);
     }
 }

@@ -56,6 +56,9 @@ public interface SearchConstant {
         String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
         String PARAMETER_ROWS = "8";
+        String HEADLINE = "headline";
+        String HEADLINE_TEMPLATE_VALUE = "3,4";
+        String HEADLINE_ITEM_VALUE = "1";
     }
 
     interface RemoteConfigKey {
