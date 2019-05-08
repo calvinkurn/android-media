@@ -829,7 +829,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     @Override
     public void sendAuthenticatedEvent(Uri uriData, String screenName) {
         try {
-            URL obtainedURL = new URL(uriData.getScheme(), uriData.getHost(), uriData.getPath());
+            URL obtainedURL = new URL(uriData.toString());
             if (obtainedURL != null)
                 ScreenTracking.sendScreen(context, screenName, obtainedURL.toString());
         } catch (MalformedURLException e) {

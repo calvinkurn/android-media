@@ -10,23 +10,12 @@ import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupC
  * @author by steven on 5/3/18.
  */
 
-class PinnedMessageViewModel : Visitable<GroupChatTypeFactory>, Parcelable {
-
-    var message: String = ""
-    var title: String = ""
-    var imageUrl: String = ""
-    var thumbnail: String = ""
-
-    constructor(){
-
-    }
-
-    constructor(message: String, title: String, imageUrl: String, thumbnail: String) {
-        this.message = message
-        this.title = title
-        this.imageUrl = imageUrl
-        this.thumbnail = thumbnail
-    }
+class PinnedMessageViewModel(
+        var message: String = "",
+        var title: String = "",
+        var imageUrl: String = "",
+        var thumbnail: String = ""
+) : Visitable<GroupChatTypeFactory>, Parcelable {
 
     override fun type(typeFactory: GroupChatTypeFactory): Int {
         return 0
@@ -43,12 +32,12 @@ class PinnedMessageViewModel : Visitable<GroupChatTypeFactory>, Parcelable {
         dest.writeString(this.thumbnail)
     }
 
-    protected constructor(`in`: Parcel) {
-        this.message = `in`.readString()
-        this.title = `in`.readString()
-        this.imageUrl = `in`.readString()
-        this.thumbnail = `in`.readString()
-    }
+    protected constructor(`in`: Parcel): this(
+        message = `in`.readString() ?: "",
+        title = `in`.readString() ?: "",
+        imageUrl = `in`.readString() ?: "",
+        thumbnail = `in`.readString() ?: ""
+    )
 
     companion object {
 
