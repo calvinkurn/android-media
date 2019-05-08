@@ -416,7 +416,10 @@ public class KolCommentFragment extends BaseDaggerFragment
         if (RouteManager.isSupportApplink(getActivity(), url)) {
             RouteManager.route(getActivity(), url);
         } else {
-
+            RouteManager.route(
+                    getActivity(),
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+            );
         }
     }
 

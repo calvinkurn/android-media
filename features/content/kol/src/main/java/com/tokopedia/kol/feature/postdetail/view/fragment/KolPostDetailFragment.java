@@ -864,8 +864,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 presenter.sendVote(0, pollId, optionId);
             }
         } else {
-
-            RouteManager.route(getActivity(), ApplinkConst.LOGIN);        }
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
+        }
 
     }
 
