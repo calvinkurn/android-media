@@ -307,6 +307,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void askPermission() {
+
+    }
+
+    @Override
     public void setPaymentData(PaymentData paymentData) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());

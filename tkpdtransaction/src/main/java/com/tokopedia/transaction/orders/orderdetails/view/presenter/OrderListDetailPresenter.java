@@ -1,6 +1,13 @@
 package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
+import android.Manifest;
+import android.app.DownloadManager;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +23,7 @@ import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
@@ -68,6 +76,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     OrderListDetailContract.ActionInterface view;
     String orderCategory;
     OrderDetails orderDetails;
+
+    private String Insurance_File_Name = "E-policy Asuransi";
+    public String pdfUri = " ";
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -469,5 +480,28 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             buyAgainUseCase.unsubscribe();
         }
         super.detachView();
+    }
+
+    public void downloadPdf(String uri) {
+        pdfUri = uri;
+        getView().askPermission();
+    }
+
+    public void permissionGrantedContinueDownload(){
+        download(pdfUri);
+    }
+
+    private void download(String uri) {
+        Uri Download_Uri = Uri.parse(uri);
+        DownloadManager downloadManager = (DownloadManager) getView().getAppContext().getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+        request.setAllowedOverRoaming(true);
+        request.setTitle(Insurance_File_Name+".pdf");
+        request.setDescription(Insurance_File_Name+".pdf");
+        request.setVisibleInDownloadsUi(true);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, Insurance_File_Name+".pdf");
+        downloadManager.enqueue(request);
     }
 }

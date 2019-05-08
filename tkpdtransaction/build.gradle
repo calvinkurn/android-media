@@ -57,6 +57,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.coreNetwork)
 
+    implementation project(rootProject.ext.libraries.permissionchecker)
+
+
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.miscDependencies.dagger

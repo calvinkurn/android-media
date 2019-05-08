@@ -130,20 +130,26 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    Uri Download_Uri = Uri.parse(uri);
-                    DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-                    DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
-                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-                    request.setAllowedOverRoaming(true);
-                    request.setTitle(Insurance_File_Name+".pdf");
-                    request.setDescription(Insurance_File_Name+".pdf");
-                    request.setVisibleInDownloadsUi(true);
-                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, Insurance_File_Name+".pdf");
-                    downloadManager.enqueue(request);
+                    presenter.downloadPdf(uri);
             }
         };
     }
+
+   /* private void downloadPdf(String uri) {
+        Uri Download_Uri = Uri.parse(uri);
+        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+        request.setAllowedOverRoaming(true);
+        request.setTitle(Insurance_File_Name+".pdf");
+        request.setDescription(Insurance_File_Name+".pdf");
+        request.setVisibleInDownloadsUi(true);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, Insurance_File_Name+".pdf");
+        downloadManager.enqueue(request);
+    }*/
+
+
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private View itemView;
