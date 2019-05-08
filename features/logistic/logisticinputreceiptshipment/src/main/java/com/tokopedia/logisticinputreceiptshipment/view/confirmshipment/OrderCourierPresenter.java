@@ -14,6 +14,8 @@ public interface OrderCourierPresenter {
 
     void setView(ConfirmShippingView view);
 
+    void detachView();
+
     void onGetCourierList(Context context, OrderDetailData data);
 
     void onProcessCourier(Context context,
