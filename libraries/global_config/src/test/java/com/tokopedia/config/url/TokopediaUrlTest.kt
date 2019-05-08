@@ -29,22 +29,39 @@ class TokopediaUrlTest {
 
     @Test
     fun init_multiThread_consistentInstance() {
-        Mockito.`when`(sharedPrefs.getString(KEY_ENV, Env.LIVE.value)).thenReturn("STAGING")
-        val initThread = Thread {
-            TokopediaUrl.init(context)
-            Assert.assertNotNull(TokopediaUrl.url)
-            Assert.assertEquals(Env.STAGING, TokopediaUrl.url.TYPE)
+//        Mockito.`when`(sharedPrefs.getString(KEY_ENV, Env.LIVE.value)).thenReturn("STAGING")
+        val threadOne = Thread {
+            val url = TokopediaUrl.getInstance(context)
+            Assert.assertNotNull(url)
+            Assert.assertEquals(Env.LIVE, url.TYPE)
+//            TokopediaUrl.init(context)
+//            Assert.assertNotNull(TokopediaUrl.url)
+//            Assert.assertEquals(Env.STAGING, TokopediaUrl.url.TYPE)
         }
 
-        val execThread = Thread {
-            Assert.assertEquals(Env.STAGING, TokopediaUrl.url.TYPE)
+        val threadTwo = Thread {
+            TokopediaUrl.setEnvironment(context, Env.STAGING)
+            TokopediaUrl.deleteInstance()
+            Assert.assertNotNull(TokopediaUrl.getInstance(context))
+            Assert.assertEquals(Env.STAGING, TokopediaUrl.getInstance(context).TYPE)
+            println(TokopediaUrl.getInstance(context).TYPE.value)
+//            Assert.assertEquals(Env.STAGING, TokopediaUrl.url.TYPE)
         }
 
-        initThread.start().run { execThread.start() }
+        val threadThree = Thread {
+            TokopediaUrl.deleteInstance()
+            Assert.assertNull(TokopediaUrl.getInstance(context))
+        }
+
+        threadOne.start().run {
+            threadTwo.start().run {
+                threadThree.start()
+            }
+        }
     }
 
-    @Test
-    fun selectInstanceTest_inputStaging_equalsStaging() {
-        Assert.assertEquals(TokopediaUrl.selectInstance("STAGING").TYPE, Env.STAGING)
-    }
+//    @Test
+//    fun selectInstanceTest_inputStaging_equalsStaging() {
+//        Assert.assertEquals(TokopediaUrl.selectInstance("STAGING").TYPE, Env.STAGING)
+//    }
 }
