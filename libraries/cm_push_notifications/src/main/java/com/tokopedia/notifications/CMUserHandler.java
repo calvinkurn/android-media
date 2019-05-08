@@ -9,15 +9,17 @@ import android.util.Log;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
-import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.notifications.common.CMNotificationUtils;
-import com.tokopedia.notifications.domain.UpdateFcmTokenUseCase;
-import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.notifications.data.model.TokenResponse;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -31,15 +33,24 @@ import rx.schedulers.Schedulers;
  */
 public class CMUserHandler {
 
+    private static final String USER_ID = "userId";
+    private static final String SOURCE = "deviceOS";
+    private static final String FCM_TOKEN = "notificationToken";
+    private static final String APP_ID = "appId";
+    private static final String SDK_VERSION = "sdkVersion";
+    private static final String APP_VERSION = "appVersion";
+    private static final String REQUEST_TIMESTAMP = "requestTimestamp";
+
+    private static final String SOURCE_ANDROID = "android";
+    private static final String USER_STATE = "loggedStatus";
+    private static final String APP_NAME = "appName";
+
     static String TAG = CMUserHandler.class.getSimpleName();
 
-    Context mContext;
-
-    private UpdateFcmTokenUseCase updateFcmTokenUseCase;
-
-    String token;
-
-    Handler handler = new Handler(Looper.getMainLooper());
+    private Context mContext;
+    private String token;
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private GraphqlUseCase graphqlUseCase;
 
     public CMUserHandler(Context context) {
         mContext = context;
@@ -60,7 +71,7 @@ public class CMUserHandler {
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            Completable.fromAction(() -> sendFcmTokenToServer(token))
+            Completable.fromAction(() -> sendFcmTokenToServerGQL(token))
                     .subscribeOn(Schedulers.io()).subscribe();
         }
     };
@@ -70,20 +81,18 @@ public class CMUserHandler {
             if (handler != null) {
                 handler.removeCallbacks(runnable);
             }
-            if (updateFcmTokenUseCase != null)
-                updateFcmTokenUseCase.unsubscribe();
+            if (graphqlUseCase != null)
+                graphqlUseCase.unsubscribe();
         } catch (Exception e) {
         }
     }
 
-
-    private void sendFcmTokenToServer(String token) {
+    private void sendFcmTokenToServerGQL(String token) {
         try {
             if (getTempFcmId().equalsIgnoreCase(token)) {
                 //ignore temporary fcm token
                 return;
             }
-            String userId = getUserId();
             String gAdId = getGoogleAdId();
             String appVersionName = CMNotificationUtils.getCurrentAppVersionName(mContext);
 
@@ -92,18 +101,29 @@ public class CMUserHandler {
                     CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, gAdId) ||
                     CMNotificationUtils.mapTokenWithAppVersionRequired(mContext, appVersionName)) {
 
-                updateFcmTokenUseCase = new UpdateFcmTokenUseCase();
-                RequestParams requestParams = updateFcmTokenUseCase.createRequestParams(
-                        userId,
-                        token,
-                        CMNotificationUtils.getSdkVersion(),
-                        CMNotificationUtils.getUniqueAppId(mContext),
-                        appVersionName,
-                        CMNotificationUtils.getUserStatus(mContext, userId), CMNotificationUtils.getCurrentLocalTimeStamp());
+                Map<String, Object> requestParams = new HashMap<>();
 
-                updateFcmTokenUseCase.execute(requestParams, new Subscriber<Map<Type, RestResponse>>() {
+                requestParams.put("macAddress", "");
+                requestParams.put(USER_ID, getUserIdAsInt());
+                requestParams.put(SOURCE, SOURCE_ANDROID);
+                requestParams.put(FCM_TOKEN, token);
+                requestParams.put(APP_ID, CMNotificationUtils.getUniqueAppId(mContext));
+                requestParams.put(SDK_VERSION, String.valueOf(CMNotificationUtils.getSdkVersion()));
+                requestParams.put(APP_VERSION, appVersionName);
+                requestParams.put(USER_STATE, CMNotificationUtils.getUserStatus(mContext, getUserId()));
+                requestParams.put(REQUEST_TIMESTAMP, CMNotificationUtils.getCurrentLocalTimeStamp() + "");
+                requestParams.put(APP_NAME, CMNotificationUtils.getApplicationName(mContext));
+
+                graphqlUseCase = new GraphqlUseCase();
+
+                GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(mContext.getResources(), R.raw.query_send_token_to_server),
+                        TokenResponse.class, requestParams, "AddToken");
+                graphqlUseCase.clearRequest();
+                graphqlUseCase.addRequest(request);
+                graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
                     @Override
                     public void onCompleted() {
+
                     }
 
                     @Override
@@ -112,19 +132,23 @@ public class CMUserHandler {
                     }
 
                     @Override
-                    public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                        RestResponse restResponse = typeRestResponseMap.get(String.class);
-                        if (restResponse.getCode() == 200) {
+                    public void onNext(GraphqlResponse gqlResponse) {
+                        TokenResponse tokenResponse = gqlResponse.getData(TokenResponse.class);
+                        if (tokenResponse.getCmAddToken() != null) {
                             CMNotificationUtils.saveToken(mContext, token);
-                            CMNotificationUtils.saveUserId(mContext, userId);
+                            CMNotificationUtils.saveUserId(mContext, getUserId());
                             CMNotificationUtils.saveGAdsIdId(mContext, gAdId);
                             CMNotificationUtils.saveAppVersion(mContext, appVersionName);
                         }
                     }
                 });
+
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
+
+
     }
 
     private String getGoogleAdId() {
@@ -170,5 +194,17 @@ public class CMUserHandler {
         return (seconds * 1000 + millis);
     }
 
-}
+    private int getUserIdAsInt() {
+        String useridStr = getUserId();
+        int userIdInt = 0;
+        if (!TextUtils.isEmpty(useridStr)) {
+            try {
+                userIdInt = Integer.parseInt(useridStr.trim());
+            } catch (NumberFormatException e) {
 
+            }
+        }
+        return userIdInt;
+    }
+
+}

@@ -54,7 +54,7 @@ public class CMNotificationFactory {
                 case CMConstant.NotificationType.BIG_IMAGE:
                     return (new ImageNotification(context.getApplicationContext(), baseNotificationModel));
                 case CMConstant.NotificationType.PERSISTENT:
-                    CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT_VIEW_NOTIFICATION, CMEvents.PersistentEvent.EVENT_CATEGORY,
+                    CmEventPost.INSTANCE.postEvent(context, CMEvents.PersistentEvent.EVENT_VIEW_NOTIFICATION, CMEvents.PersistentEvent.EVENT_CATEGORY,
                             CMEvents.PersistentEvent.EVENT_ACTION_PUSH_RECEIVED, CMEvents.PersistentEvent.EVENT_LABEL);
                     return (new PersistentNotification(context.getApplicationContext(), baseNotificationModel));
                 case CMConstant.NotificationType.DELETE_NOTIFICATION:

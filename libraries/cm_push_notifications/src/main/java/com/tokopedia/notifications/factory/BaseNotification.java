@@ -81,6 +81,7 @@ public abstract class BaseNotification {
                 builder.setNumber(1);
             } else {
                 setNotificationSound(builder);
+                setNotificationPriorityPreOreo(builder);
             }
         }
         if (baseNotificationModel.getIcon().isEmpty()) {
@@ -112,8 +113,13 @@ public abstract class BaseNotification {
             builder.setNumber(1);
         } else {
             setNotificationSound(builder);
+            setNotificationPriorityPreOreo(builder);
         }
         return builder;
+    }
+
+    private void setNotificationPriorityPreOreo(NotificationCompat.Builder builder) {
+        builder.setPriority(baseNotificationModel.getPriorityPreOreo());
     }
 
 

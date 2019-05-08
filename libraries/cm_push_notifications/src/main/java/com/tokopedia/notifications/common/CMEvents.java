@@ -18,6 +18,17 @@ public interface CMEvents {
         String EVENT_CATEGORY = "cm_persistent_push";
         String EVENT_ACTION_CANCELED = "click close button";
 
+        String EVENT_ACTION_PERISTENT_CLICK = "Click_Action_Persistent";
+
+    }
+
+
+    interface PersistentMoengageEventAttribute {
+        String ICON_NAME = "icon_name";
+        String DEEPLINK = "deeplink";
+        String ICON_URL = "icon_url";
+        String CAMPAIGN_ID = "campaign_id";
+        String CAMPAIGN_NAME = "campaign_name";
     }
 
 }

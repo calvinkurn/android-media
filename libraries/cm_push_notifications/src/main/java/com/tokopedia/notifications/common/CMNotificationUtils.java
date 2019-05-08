@@ -30,6 +30,10 @@ public class CMNotificationUtils {
     static final String STATE_LOGGED_OUT = "LOGGED_OUT";
     static final String STATE_LOGGED_IN = "LOGGED_IN";
 
+    public static final String CUSTOMER_APP_PAKAGE = "com.tokopedia.tkpd";
+    public static final String SELLER_APP_PAKAGE = "com.tokopedia.sellerapp";
+    public static final String MITRA_APP_PAKAGE = "com.tokopedia.kelontongapp";
+
 
     public static boolean tokenUpdateRequired(Context context, String newToken) {
         CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler(context);
@@ -186,5 +190,20 @@ public class CMNotificationUtils {
         } catch (Exception e) {
             return new SpannableStringBuilder(str);
         }
+    }
+
+    public static String getApplicationName(Context context){
+        String appName="";
+        if(context !=null){
+            String packageName = context.getPackageName();
+            if(CUSTOMER_APP_PAKAGE.equalsIgnoreCase(packageName)){
+                appName = "Tokopedia";
+            }else if(SELLER_APP_PAKAGE.equalsIgnoreCase(packageName)){
+                appName = "seller";
+            } if(MITRA_APP_PAKAGE.equalsIgnoreCase(packageName)){
+                appName = "mitra";
+            }
+        }
+        return appName;
     }
 }

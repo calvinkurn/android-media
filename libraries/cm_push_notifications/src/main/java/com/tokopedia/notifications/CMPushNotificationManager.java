@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.notifications.common.CMConstant;
 
 import java.util.Map;
@@ -41,6 +42,7 @@ public class CMPushNotificationManager {
             throw new IllegalArgumentException("Context can not be null");
         }
         this.mContext = context.getApplicationContext();
+        GraphqlClient.init(mContext);
     }
 
     public Context getApplicationContext() {
@@ -128,7 +130,7 @@ public class CMPushNotificationManager {
         try {
             if (isFromCMNotificationPlatform(remoteMessage.getData())) {
                 Bundle bundle = convertMapToBundle(remoteMessage.getData());
-                CMJobIntentService.enqueueWork(mContext, bundle);
+                CMJobIntentService.Companion.enqueueWork(mContext, bundle);
             }
         } catch (Exception e) {
             Log.e(TAG, "CMPushNotificationManager: handlePushPayload ", e);

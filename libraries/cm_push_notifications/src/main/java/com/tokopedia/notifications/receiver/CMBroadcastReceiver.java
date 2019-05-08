@@ -72,6 +72,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
+
     private void handleGridNotificationClick(Context context, Intent intent, int notificationId) {
         String appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK);
         Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
@@ -83,7 +84,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
     }
 
     private void cancelPersistentNotification(Context context, int notificationId) {
-        CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
+        CmEventPost.INSTANCE.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
                 CMEvents.PersistentEvent.EVENT_ACTION_CANCELED, CMEvents.PersistentEvent.EVENT_LABEL);
         context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
         NotificationManagerCompat.from(context).cancel(notificationId);
@@ -96,10 +97,10 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
             if (null == persistentButton)
                 return;
             if (persistentButton.isAppLogo()) {
-                CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
+                CmEventPost.INSTANCE.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
                         CMEvents.PersistentEvent.EVENT_ACTION_LOGO_CLICK, persistentButton.getAppLink());
             } else {
-                CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
+                CmEventPost.INSTANCE.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
                         persistentButton.getText(), persistentButton.getAppLink());
             }
 
@@ -172,7 +173,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
             context.startActivity(appLinkIntent);
             NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
             context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
-            CarousalUtilities.deleteCarousalImageDirectory(context);
+            CarousalUtilities.INSTANCE.deleteCarousalImageDirectory(context);
         } catch (Exception e) {
         }
 

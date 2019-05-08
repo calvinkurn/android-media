@@ -16,8 +16,6 @@ public interface CMConstant {
     String APP_VERSION_CACHE_KEY = "app_version_cache_key";
     String EXTRA_CAMPAIGN_ID = "extra_campaign_id";
 
-
-
     interface NotificationType {
         String GENERAL = "General";
         String GRID_NOTIFICATION = "Grid";

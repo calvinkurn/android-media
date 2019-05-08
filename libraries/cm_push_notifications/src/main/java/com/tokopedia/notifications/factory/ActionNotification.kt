@@ -33,16 +33,22 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         builder.setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandedView)
-        if (baseNotificationModel.media != null && !TextUtils.isEmpty(baseNotificationModel.media.mediumQuality)) {
-            expandedView.setImageViewBitmap(R.id.img_big,
-                    CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media.mediumQuality))
-            baseNotificationModel.actionButton?.let {
-                if (it.size > 0) {
-                    expandedView.setViewVisibility(R.id.layout_collapsed, View.GONE)
+
+        baseNotificationModel.media?.let {
+            it.mediumQuality.isBlank().let { isBlank ->
+                if (isBlank) {
+                    expandedView.setImageViewBitmap(R.id.img_big,
+                            CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality))
+                    baseNotificationModel.actionButton.let { buttonList ->
+                        if (buttonList.isNotEmpty()) {
+                            expandedView.setViewVisibility(R.id.layout_collapsed, View.GONE)
+                        }
+                    }
                 }
             }
-
         }
+
+
         if (CMNotificationUtils.hasActionButton(baseNotificationModel)) {
             addActionButton(baseNotificationModel.actionButton, expandedView)
         }
@@ -61,11 +67,13 @@ internal class ActionNotification internal constructor(context: Context, baseNot
                     remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, bitmapLargeIcon)
                 }
             } else if (baseNotificationModel.media != null) {
-                val iconBitmap = getBitmap(baseNotificationModel.media.mediumQuality)
-                if (null != iconBitmap) {
-                    remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, iconBitmap)
-                } else {
-                    remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, bitmapLargeIcon)
+                baseNotificationModel.media?.mediumQuality?.let { imageUrl ->
+                    val iconBitmap = getBitmap(imageUrl)
+                    if (null != iconBitmap) {
+                        remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, iconBitmap)
+                    } else {
+                        remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, bitmapLargeIcon)
+                    }
                 }
             } else {
                 remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, bitmapLargeIcon)
