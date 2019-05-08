@@ -4,7 +4,6 @@ import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.RecyclerView
@@ -24,7 +23,6 @@ import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
-import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_CURRENT_LOCATION_LANG
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_CURRENT_LOCATION_LAT
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_ID
@@ -34,7 +32,6 @@ import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchAdapter
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchListener
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_recommendation.*
@@ -49,7 +46,6 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var destinationViewModel: HotelDestinationViewModel
-    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     lateinit var currentLocationTextView: TextViewCompat
     lateinit var currentLocationLayout: View
@@ -73,8 +69,6 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
             destinationViewModel = viewModelProvider.get(HotelDestinationViewModel::class.java)
         }
 
-        permissionCheckerHelper = PermissionCheckerHelper()
-        destinationViewModel.setPermissionChecker(permissionCheckerHelper)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context!!)
     }
 
@@ -200,15 +194,6 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
         current_location_layout.visibility = if (showListOnly) View.GONE else View.VISIBLE
         recent_search_layout.visibility = if (showListOnly) View.GONE else View.VISIBLE
         popular_search_title.visibility = if (showListOnly) View.GONE else View.VISIBLE
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheckerHelper.onRequestPermissionsResult(activity as HotelDestinationActivity,
-                    requestCode, permissions,
-                    grantResults)
-        }
     }
 
     override fun onDeleteRecentSearchItem(uuid: String) {

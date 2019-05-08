@@ -110,9 +110,10 @@ class HotelDestinationViewModel @Inject constructor(
                 activity.getString(R.string.hotel_destination_need_permission))
     }
 
-    private fun onGetLocation(): Function1<DeviceLocation, Unit> {
+    fun onGetLocation(): Function1<DeviceLocation, Unit> {
         return { (latitude, longitude) ->
-            longLat.value = Success(Pair(longitude, latitude))
+            if (latitude == 0.0 && latitude == 0.0) longLat.value = Fail(Throwable())
+            else longLat.value = Success(Pair(longitude, latitude))
             null
         }
     }
