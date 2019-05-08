@@ -168,6 +168,7 @@ data class HotelRoom(
     )
 
     data class AdditionalPropertyInfo(
+
             val propertyId: Int = 0,
 
             val isAddressRequired: Boolean = false,
