@@ -17,7 +17,7 @@ class ProductWishlistUrlUseCase extends UseCase<Boolean> {
 
     private final TopAdsService topAdsService;
 
-    public ProductWishlistUrlUseCase(TopAdsService topAdsService) {
+    ProductWishlistUrlUseCase(TopAdsService topAdsService) {
         this.topAdsService = topAdsService;
     }
 

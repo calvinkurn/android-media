@@ -1,8 +1,8 @@
 package com.tokopedia.search.result.domain.usecase;
 
 import com.tokopedia.discovery.common.domain.Repository;
-import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
+import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -28,7 +28,7 @@ class SearchProductLoadMoreUseCase extends UseCase<SearchProductModel> {
 
     private Map<String, Object> createParametersForQuery(RequestParams requestParams) {
         Map<String, Object> variables = new HashMap<>();
-        variables.put(KEY_PARAMS, UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
+        variables.put(KEY_PARAMS, UrlParamUtils.generateUrlParamString(requestParams.getParameters()));
 
         return variables;
     }
