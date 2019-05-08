@@ -462,8 +462,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void askPermission() {
-       // requestPermissions(new String[]{ Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_WRITE_STORAGE_CODE);
-
         permissionCheckerHelper = new PermissionCheckerHelper();
         permissionCheckerHelper.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, new PermissionCheckerHelper.PermissionCheckListener() {
             @Override
