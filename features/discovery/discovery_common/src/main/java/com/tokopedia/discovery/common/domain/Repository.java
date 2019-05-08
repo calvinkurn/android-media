@@ -1,10 +1,10 @@
 package com.tokopedia.discovery.common.domain;
 
-import com.tokopedia.usecase.RequestParams;
+import java.util.Map;
 
 import rx.Observable;
 
 public interface Repository<T> {
 
-    Observable<T> query(RequestParams requestParams);
+    Observable<T> query(Map<String, Object> parameters);
 }

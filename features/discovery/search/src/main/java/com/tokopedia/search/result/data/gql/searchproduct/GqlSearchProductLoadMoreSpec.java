@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 final class GqlSearchProductLoadMoreSpec extends GqlSearchProductSpec {
 
-    public GqlSearchProductLoadMoreSpec(@NotNull Context context) {
+    GqlSearchProductLoadMoreSpec(@NotNull Context context) {
         super(context);
     }
 

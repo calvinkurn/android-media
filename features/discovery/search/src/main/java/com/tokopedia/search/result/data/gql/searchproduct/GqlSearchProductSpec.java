@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 
 abstract class GqlSearchProductSpec extends GqlSpecification {
 
-    public GqlSearchProductSpec(@NotNull Context context) {
+    GqlSearchProductSpec(@NotNull Context context) {
         super(context);
     }
 

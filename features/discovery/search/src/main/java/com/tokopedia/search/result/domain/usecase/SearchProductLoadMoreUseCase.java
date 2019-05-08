@@ -1,8 +1,8 @@
 package com.tokopedia.search.result.domain.usecase;
 
 import com.tokopedia.discovery.common.domain.Repository;
-import com.tokopedia.discovery.newdiscovery.domain.model.InitiateSearchModel;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
+import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -13,16 +13,16 @@ import rx.Observable;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS;
 
-class InitiateSearchUseCase extends UseCase<InitiateSearchModel> {
+class SearchProductLoadMoreUseCase extends UseCase<SearchProductModel> {
 
-    private Repository<InitiateSearchModel> repository;
+    private Repository<SearchProductModel> repository;
 
-    InitiateSearchUseCase(Repository<InitiateSearchModel> repository) {
+    SearchProductLoadMoreUseCase(Repository<SearchProductModel> repository) {
         this.repository = repository;
     }
 
     @Override
-    public Observable<InitiateSearchModel> createObservable(RequestParams requestParams) {
+    public Observable<SearchProductModel> createObservable(RequestParams requestParams) {
         return repository.query(createParametersForQuery(requestParams));
     }
 

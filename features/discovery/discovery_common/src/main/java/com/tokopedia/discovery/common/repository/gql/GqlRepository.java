@@ -6,6 +6,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.Map;
+
 import rx.Observable;
 
 public class GqlRepository<T> implements Repository<T> {
@@ -18,12 +20,12 @@ public class GqlRepository<T> implements Repository<T> {
     }
 
     @Override
-    public Observable<T> query(RequestParams requestParams) {
-        final GraphqlRequest gqlRequest = new GraphqlRequest(gqlSpecification.getQuery(), gqlSpecification.getType(), requestParams.getParameters());
+    public Observable<T> query(Map<String, Object> parameters) {
+        final GraphqlRequest gqlRequest = new GraphqlRequest(gqlSpecification.getQuery(), gqlSpecification.getType(), parameters);
 
         graphqlUseCase.addRequest(gqlRequest);
 
-        return graphqlUseCase.getExecuteObservable(requestParams).map(
+        return graphqlUseCase.getExecuteObservable(RequestParams.EMPTY).map(
                 graphqlResponse -> graphqlResponse.getData(gqlSpecification.getType())
         );
     }

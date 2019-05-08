@@ -42,6 +42,11 @@ public interface SearchConstant {
     }
 
     interface GQL {
+        String KEY_QUERY = "query";
+        String KEY_PARAMS = "params";
+        String KEY_SOURCE = "source";
+        String KEY_HEADLINE_PARAMS = "headline_params";
+
         String GQL_INITIATE_SEARCH = "gql_initiate_search";
         String GQL_SEARCH_PRODUCT_FIRST_PAGE = "gql_search_product_first_page";
         String GQL_SEARCH_PRODUCT_LOAD_MORE = "gql_search_product_load_more";
