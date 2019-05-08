@@ -3,7 +3,6 @@ package com.tokopedia.search.result.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
@@ -25,26 +24,26 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
-@ApplicationScope
+@SearchScope
 @Module
 public class TopAdsServiceModule {
 
     @TopAdsQualifier
-    @ApplicationScope
+    @SearchScope
     @Provides
     public FingerprintInterceptor provideFingerprintInterceptor(@ApplicationContext Context context, UserSessionInterface userSession) {
         return new FingerprintInterceptor((NetworkRouter) context, userSession);
     }
 
     @TopAdsQualifier
-    @ApplicationScope
+    @SearchScope
     @Provides
     public TopAdsAuthInterceptor provideTopAdsAuthInterceptor(@ApplicationContext Context context, UserSessionInterface userSessionInterface) {
         return new TopAdsAuthInterceptor(context, (NetworkRouter)context, userSessionInterface);
     }
 
     @TopAdsQualifier
-    @ApplicationScope
+    @SearchScope
     @Provides
     public OkHttpClient provideOkHttpClientTopAdsAuth(@ApplicationContext Context context,
                                                       @TopAdsQualifier FingerprintInterceptor fingerprintInterceptor,
@@ -76,7 +75,7 @@ public class TopAdsServiceModule {
     }
 
     @TopAdsQualifier
-    @ApplicationScope
+    @SearchScope
     @Provides
     public Retrofit provideTopAdsRetrofit(@TopAdsQualifier OkHttpClient okHttpClient,
                                           Retrofit.Builder retrofitBuilder) {
