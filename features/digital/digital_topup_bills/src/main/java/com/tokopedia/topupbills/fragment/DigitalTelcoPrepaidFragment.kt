@@ -12,16 +12,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.topupbills.widget.DigitalBaseClientNumberWidget
-import com.tokopedia.topupbills.widget.DigitalRecentTransactionWidget
-import com.tokopedia.topupbills.widget.DigitalTelcoClientNumberWidget
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.di.DigitalTopupInstance
 import com.tokopedia.topupbills.model.DigitalPromo
 import com.tokopedia.topupbills.model.DigitalRecentNumber
+import com.tokopedia.topupbills.widget.DigitalBaseClientNumberWidget
 import com.tokopedia.topupbills.widget.DigitalPromoListWidget
+import com.tokopedia.topupbills.widget.DigitalRecentTransactionWidget
+import com.tokopedia.topupbills.widget.DigitalTelcoClientNumberWidget
 import javax.inject.Inject
 
 /**
@@ -60,6 +60,12 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        renderInputNumber()
+        renderRecentTransactions()
+        renderPromoList()
+    }
+
+    fun renderInputNumber() {
         telcoClientNumberWidget.setListener(object : DigitalBaseClientNumberWidget.ActionListener {
             override fun navigateToContact() {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -85,7 +91,20 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
                 }
             }
         })
+    }
 
+    fun openContactPicker() {
+        val contactPickerIntent = Intent(
+                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+        try {
+            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
+        } catch (e: ActivityNotFoundException) {
+            NetworkErrorHelper.showSnackbar(activity,
+                    getString(R.string.error_message_contact_not_found))
+        }
+    }
+
+    fun renderRecentTransactions() {
         recentNumbersView.setListener(object : DigitalRecentTransactionWidget.ActionListener {
             override fun onClickRecentNumber(digitalRecentNumber: DigitalRecentNumber) {
                 Toast.makeText(activity, digitalRecentNumber.clientNumber, Toast.LENGTH_LONG).show()
@@ -98,8 +117,9 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 5", "082343432423", "", "", 316, "Simpati"))
         recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 6", "081231313233", "", "", 316, "Simpati"))
         recentNumbersView.setRecentNumbers(recentNumbers)
+    }
 
-
+    fun renderPromoList() {
         promoListView.setListener(object : DigitalPromoListWidget.ActionListener {
             override fun onCopiedPromoCode(voucherCode: String) {
                 Toast.makeText(activity, "Kode voucher telah di copy ke clipboard", Toast.LENGTH_LONG).show()
@@ -111,17 +131,6 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         promoList.add(DigitalPromo("4", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLULU", false, ""))
         promoList.add(DigitalPromo("5", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLOLO", false, ""))
         promoListView.setPromoList(promoList)
-    }
-
-    fun openContactPicker() {
-        val contactPickerIntent = Intent(
-                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
-        try {
-            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
-        } catch (e: ActivityNotFoundException) {
-            NetworkErrorHelper.showSnackbar(activity,
-                    getString(R.string.error_message_contact_not_found))
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
