@@ -99,7 +99,7 @@
         android:visibility="visible">
 
         <Button
-            android:id="@+id/btn_contact_picker"
+            android:id="@+id/btn_copy_promo"
             android:layout_width="@dimen/dp_25"
             android:layout_height="@dimen/dp_25"
             android:background="@drawable/digital_topup_ic_contact" />

@@ -1,4 +1,4 @@
-package com.tokopedia.digital.topupbillsproduct.compoundview
+package com.tokopedia.topupbills.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,9 +6,10 @@ import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
-import org.jetbrains.annotations.NotNull
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.getColorText
 import com.tokopedia.topupbills.model.DigitalProductSubMenu
+import org.jetbrains.annotations.NotNull
 
 /**
  * Created by nabillasabbaha on 24/04/19.
@@ -17,13 +18,13 @@ class DigitalSubMenuWidget @JvmOverloads constructor(@NotNull context: Context, 
                                                      defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private val titleHeaderLeft : TextView
-    private val titleHeaderRight : TextView
-    private val layoutHeaderLeft : RelativeLayout
-    private val layoutHeaderRight : RelativeLayout
+    private val titleHeaderLeft: TextView
+    private val titleHeaderRight: TextView
+    private val layoutHeaderLeft: RelativeLayout
+    private val layoutHeaderRight: RelativeLayout
     private lateinit var listener: ActionListener
 
-    private var headerSelected : Int = HEADER_LEFT
+    private var headerSelected: Int = HEADER_LEFT
 
     init {
         val view = View.inflate(context, R.layout.view_digital_header_product, this)
@@ -45,34 +46,34 @@ class DigitalSubMenuWidget @JvmOverloads constructor(@NotNull context: Context, 
         layoutHeaderLeft.setOnClickListener {
             if (headerSelected != HEADER_LEFT)
                 headerSelected = HEADER_LEFT
-                headerLeftActive(subMenus.get(HEADER_LEFT))
+            headerLeftActive(subMenus.get(HEADER_LEFT))
         }
 
         layoutHeaderRight.setOnClickListener {
             if (headerSelected != HEADER_RIGHT)
                 headerSelected = HEADER_RIGHT
-                headerRightActive(subMenus.get(HEADER_RIGHT))
+            headerRightActive(subMenus.get(HEADER_RIGHT))
         }
     }
 
     fun setHeaderActive(type: Int) {
-        if(type == HEADER_LEFT)
+        if (type == HEADER_LEFT)
             headerSelected = HEADER_LEFT
         else headerSelected = HEADER_RIGHT
     }
 
     fun headerLeftActive(submenu: DigitalProductSubMenu) {
         listener.onClickSubMenu(submenu)
-        titleHeaderLeft.setTextColor(resources.getColor(R.color.font_white_primary_70))
-        titleHeaderRight.setTextColor(resources.getColor( R.color.digital_title_header_non_active))
+        titleHeaderLeft.setTextColor(resources.getColorText(context, R.color.font_white_primary_70))
+        titleHeaderRight.setTextColor(resources.getColorText(context, R.color.digital_title_header_non_active))
         layoutHeaderLeft.setBackgroundResource(R.drawable.bg_round_corner_solid_green)
         layoutHeaderRight.setBackgroundResource(R.color.digital_grey_bg_header)
     }
 
     fun headerRightActive(submenu: DigitalProductSubMenu) {
         listener.onClickSubMenu(submenu)
-        titleHeaderLeft.setTextColor(resources.getColor( R.color.digital_title_header_non_active))
-        titleHeaderRight.setTextColor(resources.getColor( R.color.font_white_primary_70))
+        titleHeaderLeft.setTextColor(resources.getColorText(context, R.color.digital_title_header_non_active))
+        titleHeaderRight.setTextColor(resources.getColorText(context, R.color.font_white_primary_70))
         layoutHeaderLeft.setBackgroundResource(R.color.digital_grey_bg_header)
         layoutHeaderRight.setBackgroundResource(R.drawable.bg_round_corner_solid_green)
     }

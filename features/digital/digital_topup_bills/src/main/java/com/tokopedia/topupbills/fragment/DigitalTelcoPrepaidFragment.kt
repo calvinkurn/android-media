@@ -12,14 +12,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalBaseClientNumberWidget
-import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalRecentTransactionWidget
-import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalTelcoClientNumberWidget
+import com.tokopedia.topupbills.widget.DigitalBaseClientNumberWidget
+import com.tokopedia.topupbills.widget.DigitalRecentTransactionWidget
+import com.tokopedia.topupbills.widget.DigitalTelcoClientNumberWidget
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.di.DigitalTopupInstance
+import com.tokopedia.topupbills.model.DigitalPromo
 import com.tokopedia.topupbills.model.DigitalRecentNumber
+import com.tokopedia.topupbills.widget.DigitalPromoListWidget
 import javax.inject.Inject
 
 /**
@@ -29,7 +31,9 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
 
     private lateinit var telcoClientNumberWidget: DigitalTelcoClientNumberWidget
     private lateinit var recentNumbersView: DigitalRecentTransactionWidget
+    private lateinit var promoListView: DigitalPromoListWidget
     private val recentNumbers = mutableListOf<DigitalRecentNumber>()
+    private val promoList = mutableListOf<DigitalPromo>()
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -49,6 +53,7 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         val view = inflater.inflate(R.layout.fragment_digital_telco_prepaid, container, false)
         recentNumbersView = view.findViewById(R.id.recent_numbers)
         telcoClientNumberWidget = view.findViewById(R.id.telco_input_number)
+        promoListView = view.findViewById(R.id.promo_widget)
         return view
     }
 
@@ -93,6 +98,19 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 5", "082343432423", "", "", 316, "Simpati"))
         recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 6", "081231313233", "", "", 316, "Simpati"))
         recentNumbersView.setRecentNumbers(recentNumbers)
+
+
+        promoListView.setListener(object : DigitalPromoListWidget.ActionListener {
+            override fun onCopiedPromoCode(voucherCode: String) {
+                Toast.makeText(activity, "Kode voucher telah di copy ke clipboard", Toast.LENGTH_LONG).show()
+            }
+        })
+        promoList.add(DigitalPromo("1", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLALA", false, ""))
+        promoList.add(DigitalPromo("2", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLELE", false, ""))
+        promoList.add(DigitalPromo("3", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLILI", false, ""))
+        promoList.add(DigitalPromo("4", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLULU", false, ""))
+        promoList.add(DigitalPromo("5", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLOLO", false, ""))
+        promoListView.setPromoList(promoList)
     }
 
     fun openContactPicker() {

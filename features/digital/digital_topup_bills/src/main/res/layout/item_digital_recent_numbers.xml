@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="100dp"
     android:layout_height="wrap_content"
@@ -11,11 +12,10 @@
     android:paddingTop="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_4"
     android:paddingRight="@dimen/dp_4"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingBottom="@dimen/dp_16"
+    android:background="@color/white">
 
     <RelativeLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -30,9 +30,9 @@
             android:id="@+id/icon_operator"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
-            android:layout_margin="@dimen/dp_4"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:layout_margin="@dimen/dp_4"
             app:srcCompat="@drawable/digital_ic_emoney"
             tools:ignore="VectorDrawableCompat" />
 
@@ -41,22 +41,17 @@
     <TextView
         android:id="@+id/text_product_name"
         style="@style/TextView.Micro.Bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:gravity="center_horizontal"
         android:layout_marginBottom="@dimen/dp_4"
+        android:gravity="center_horizontal"
         android:lines="1"
+        android:textAlignment="center"
         android:textStyle="bold"
         tools:text="Rp 1.000.000" />
 
     <TextView
         android:id="@+id/text_client_number"
         style="@style/TextView.Micro.BlackSecondary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:lines="1"
-        android:baselineAligned="false"
         tools:text="081322867354" />
 
 </LinearLayout>

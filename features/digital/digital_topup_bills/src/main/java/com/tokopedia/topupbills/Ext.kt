@@ -1,8 +1,12 @@
 package com.tokopedia.topupbills
 
 import android.content.ContentResolver
+import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
+import android.os.Build
 import android.provider.ContactsContract
+import android.support.annotation.ColorRes
 import com.tokopedia.topupbills.model.DigitalContactData
 
 /**
@@ -58,4 +62,12 @@ fun Uri.covertContactUriToContactData(contentResolver: ContentResolver): Digital
     contactNumber.replace("[^0-9]+".toRegex(), "")
     contactNumber.replace("\\D+".toRegex(), "")
     return DigitalContactData(givenName, contactNumber, contactType)
+}
+
+fun Resources.getColorText(context: Context, @ColorRes resId: Int): Int {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        this.getColor(resId, context.theme)
+    } else {
+        this.getColor(resId)
+    }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.digital.topupbillsproduct.compoundview
+package com.tokopedia.topupbills.widget
 
 import android.content.Context
 import android.util.AttributeSet

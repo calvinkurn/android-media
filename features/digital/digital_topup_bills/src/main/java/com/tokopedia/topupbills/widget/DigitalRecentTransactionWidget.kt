@@ -1,14 +1,14 @@
-package com.tokopedia.digital.topupbillsproduct.compoundview
+package com.tokopedia.topupbills.widget
 
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Toast
+import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.topupbills.R
 import com.tokopedia.digital.topupbillsproduct.adapter.DigitalRecentNumbersAdapter
+import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.model.DigitalRecentNumber
 import org.jetbrains.annotations.NotNull
 
@@ -20,13 +20,15 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private val recyclerView: RecyclerView
-    private val digitalRecentNumbersAdapter : DigitalRecentNumbersAdapter
+    private val titleWidget: TextView
+    private val digitalRecentNumbersAdapter: DigitalRecentNumbersAdapter
     private val recentNumbers = mutableListOf<DigitalRecentNumber>()
     private lateinit var listener: ActionListener
 
     init {
-        val view = View.inflate(context, R.layout.view_digital_product_recent_numbers, this)
-        recyclerView = view.findViewById(R.id.recycler_view_recent_numbers)
+        val view = View.inflate(context, R.layout.view_digital_component_list, this)
+        recyclerView = view.findViewById(R.id.recycler_view)
+        titleWidget = view.findViewById(R.id.title_component)
 
         digitalRecentNumbersAdapter = DigitalRecentNumbersAdapter(recentNumbers)
         recyclerView.adapter = digitalRecentNumbersAdapter
@@ -38,8 +40,9 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun setRecentNumbers(recentNumbers: List<DigitalRecentNumber>) {
+        titleWidget.setText(context.getString(R.string.title_reccent_transaction_widget))
         digitalRecentNumbersAdapter.setListener(object : DigitalRecentNumbersAdapter.ActionListener {
-            override fun onClickRecentNumber(digitalRecentNumber : DigitalRecentNumber, position: Int) {
+            override fun onClickRecentNumber(digitalRecentNumber: DigitalRecentNumber, position: Int) {
                 listener.onClickRecentNumber(digitalRecentNumber)
             }
         })
@@ -48,6 +51,6 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
     }
 
     interface ActionListener {
-        fun onClickRecentNumber(digitalRecentNumber : DigitalRecentNumber)
+        fun onClickRecentNumber(digitalRecentNumber: DigitalRecentNumber)
     }
 }

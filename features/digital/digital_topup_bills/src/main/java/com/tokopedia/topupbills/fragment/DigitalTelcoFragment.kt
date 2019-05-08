@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.digital.topupbillsproduct.compoundview.DigitalSubMenuWidget
+import com.tokopedia.topupbills.widget.DigitalSubMenuWidget
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.model.DigitalProductSubMenu
 

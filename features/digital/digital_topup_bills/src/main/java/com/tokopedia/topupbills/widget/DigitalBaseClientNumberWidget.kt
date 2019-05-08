@@ -1,4 +1,4 @@
-package com.tokopedia.digital.topupbillsproduct.compoundview
+package com.tokopedia.topupbills.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -32,7 +32,7 @@ open class DigitalBaseClientNumberWidget @JvmOverloads constructor(@NotNull cont
         imgOperator = view.findViewById(R.id.img_operator)
         btnClear = view.findViewById(R.id.btn_clear_input_number)
         autoCompleteInputNumber = view.findViewById(R.id.ac_input_number)
-        btnContactPicker = view.findViewById(R.id.btn_contact_picker)
+        btnContactPicker = view.findViewById(R.id.btn_copy_promo)
         errorInputNumber = view.findViewById(R.id.error_input_number)
 
         autoCompleteInputNumber.clearFocus()

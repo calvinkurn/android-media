@@ -5,4 +5,9 @@
     <string name="title_empty_stock">Stok Habis</string>
     <string name="digital_hint_input_numbers">Contoh 081234567890</string>
     <string name="error_message_contact_not_found">Aplikasi kontak tidak ditemukan</string>
+    <string name="title_reccent_transaction_widget">Transaksi Terakhir</string>
+    <string name="title_promo_code">Kode Promo: </string>
+    <string name="text_copy_promo_code">Salin</string>
+    <string name="text_has_copied_promo_code">Disalin</string>
+    <string name="title_promo">Promo</string>
 </resources>
