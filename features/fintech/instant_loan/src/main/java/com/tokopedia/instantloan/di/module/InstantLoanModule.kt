@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.instantloan.di.scope.InstantLoanScope
 import com.tokopedia.instantloan.domain.interactor.GetBannersUserCase
+import com.tokopedia.instantloan.domain.interactor.GetLendingDataUseCase
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase
 import com.tokopedia.instantloan.network.InstantLoanAuthInterceptor
@@ -23,6 +24,11 @@ class InstantLoanModule {
     @Provides
     fun provideGetBannersUseCase(instantLoanAuthInterceptor: InstantLoanAuthInterceptor, @ApplicationContext context: Context): GetBannersUserCase {
         return GetBannersUserCase(instantLoanAuthInterceptor, context)
+    }
+
+    @Provides
+    fun provideGetLendingDataUseCase(@ApplicationContext context: Context) : GetLendingDataUseCase {
+        return GetLendingDataUseCase(context)
     }
 
     @Provides

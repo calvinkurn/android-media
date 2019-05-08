@@ -91,12 +91,27 @@
                 android:layout_margin="@dimen/dp_16" />
 
             <include
+                android:id="@+id/il_banner_layout"
                 layout="@layout/layout_bottom_banner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <include
+                android:id="@+id/il_category_layout"
+                layout="@layout/layout_lending_category"
+                android:layout_width="match_parent"
+                android:layout_margin="@dimen/dp_16"
+                android:layout_height="wrap_content" />
+
+            <include
                 layout="@layout/il_other_financial_products"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16" />
+
+            <include
+                android:id="@+id/seo_layout"
+                layout="@layout/il_seo_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16" />

@@ -107,6 +107,7 @@
     <string name="il_testimonial_name_3">Adam Bachtiar</string>
     <string name="label_financial_product_heading_two">Asuransi</string>
     <string name="label_financial_product_desc_two">Ajukan Asuransi yang sesuai</string>
+    <string name="il_lending_category">Kategori Pinjaman</string>
 
 
 </resources>

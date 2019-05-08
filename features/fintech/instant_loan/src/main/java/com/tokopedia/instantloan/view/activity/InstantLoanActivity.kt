@@ -9,6 +9,8 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.*
@@ -24,7 +26,8 @@ import com.tokopedia.instantloan.InstantLoanComponentInstance
 import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
-import com.tokopedia.instantloan.data.model.response.BannerEntity
+import com.tokopedia.instantloan.data.model.response.GqlLendingBannerData
+import com.tokopedia.instantloan.data.model.response.GqlLendingDataResponse
 import com.tokopedia.instantloan.data.model.response.TestimonialEntity
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager
 import com.tokopedia.instantloan.network.InstantLoanUrl
@@ -32,9 +35,7 @@ import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.HELP_URL
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.PAYMENT_METHODS_URL
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.SUBMISSION_HISTORY_URL
 import com.tokopedia.instantloan.router.InstantLoanRouter
-import com.tokopedia.instantloan.view.adapter.BannerPagerAdapter
-import com.tokopedia.instantloan.view.adapter.DanaInstanTestimonialsPagerAdapter
-import com.tokopedia.instantloan.view.adapter.InstantLoanPagerAdapter
+import com.tokopedia.instantloan.view.adapter.*
 import com.tokopedia.instantloan.view.contractor.BannerContractor
 import com.tokopedia.instantloan.view.contractor.OnGoingLoanContractor
 import com.tokopedia.instantloan.view.fragment.DanaInstantFragment
@@ -47,7 +48,9 @@ import com.tokopedia.instantloan.view.ui.InstantLoanItem
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_instant_loan.*
 import kotlinx.android.synthetic.main.il_other_financial_products.*
+import kotlinx.android.synthetic.main.il_seo_layout.*
 import kotlinx.android.synthetic.main.layout_il_testimonials.*
+import kotlinx.android.synthetic.main.layout_lending_category.*
 import javax.inject.Inject
 
 class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, BannerContractor.View, OnGoingLoanContractor.View, DanaInstantFragment.ActivityInteractor, BannerPagerAdapter.BannerClick, View.OnClickListener {
@@ -75,6 +78,9 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     private var onGoingLoanStatus = false
     private var onGoingLoanId: Int = 0
     private var menushown = false
+
+    private lateinit var lendingCategoryAdpater: LendingCategoryAdapter
+    private lateinit var lendingSeoAdapter: LendingSeoAdapter
 
     internal var instantLoanItemList: MutableList<InstantLoanItem> = ArrayList()
 
@@ -112,32 +118,95 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         attachViewListener()
         setupToolbar()
         loadSection()
-        mBannerPresenter.loadBanners()
-
+        mBannerPresenter.getLendingData()
         loadTestimonials()
-
         if (userSession != null && userSession.isLoggedIn) {
             onGoingLoanPresenter.checkUserOnGoingLoanStatus()
         }
 
     }
 
-    override fun renderBannerList(banners: List<BannerEntity>?) {
-        if (!banners!!.isEmpty()) {
-            if (banners.size > 1) {
-                (findViewById<View>(R.id.button_next) as FloatingActionButton).show()
-            }
-            findViewById<View>(R.id.container_banner).visibility = View.VISIBLE
-            mBannerPager = findViewById(R.id.view_pager_banner)
-            mBannerPager!!.offscreenPageLimit = 2
-            mBannerPager!!.adapter = BannerPagerAdapter(this, banners, this)
-            mBannerPager!!.setPadding(resources.getDimensionPixelOffset(R.dimen.il_margin_banner),
-                    0, resources.getDimensionPixelOffset(R.dimen.il_margin_banner), 0)
-            mBannerPager!!.clipToPadding = false
-            mBannerPager!!.pageMargin = resources.getDimensionPixelOffset(R.dimen.il_margin_medium)
-            mBannerPager!!.addOnPageChangeListener(mBannerPageChangeListener)
-            sendBannerImpressionEvent(0)
+    private lateinit var layoutManager: GridLayoutManager
+    private lateinit var linearLayoutManager: LinearLayoutManager
+
+    private fun setupCategoryLayout() {
+        layoutManager = GridLayoutManager(this, COLUMN_COUNT_FOR_LOAN_CATEGORY)
+        rv_lending_category.layoutManager = layoutManager
+        rv_lending_category.adapter = lendingCategoryAdpater
+    }
+
+    private fun setupSeoLayout() {
+
+        linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        rv_lending_seo.layoutManager = linearLayoutManager
+        rv_lending_seo.adapter = lendingSeoAdapter
+    }
+
+    fun renderBannerList(banners: ArrayList<GqlLendingBannerData>) {
+        if (banners.size > 1) {
+            (findViewById<View>(R.id.button_next) as FloatingActionButton).show()
         }
+        mBannerPager = findViewById(R.id.view_pager_banner)
+        mBannerPager!!.offscreenPageLimit = 2
+        mBannerPager!!.adapter = BannerPagerAdapter(this, banners, this)
+        mBannerPager!!.setPadding(resources.getDimensionPixelOffset(R.dimen.il_margin_banner), 0, resources.getDimensionPixelOffset(R.dimen.il_margin_banner), 0)
+        mBannerPager!!.clipToPadding = false
+        mBannerPager!!.pageMargin = resources.getDimensionPixelOffset(R.dimen.il_margin_medium)
+        mBannerPager!!.addOnPageChangeListener(mBannerPageChangeListener)
+        sendBannerImpressionEvent(0)
+    }
+
+    override fun renderLendingData(gqlLendingDataResponse: GqlLendingDataResponse) {
+
+        if (gqlLendingDataResponse != null) {
+
+            if (gqlLendingDataResponse.leBanner != null &&
+                    gqlLendingDataResponse.leBanner.bannerData != null &&
+                    gqlLendingDataResponse.leBanner.bannerData.isNotEmpty()) {
+                showBannerLayout()
+                renderBannerList(gqlLendingDataResponse.leBanner.bannerData)
+            } else {
+                hideBannerLayout()
+            }
+
+            if (gqlLendingDataResponse != null && gqlLendingDataResponse.leCategory != null && gqlLendingDataResponse.leCategory.categoryData.isNotEmpty()) {
+                showCategoryLayout()
+                lendingCategoryAdpater = LendingCategoryAdapter(gqlLendingDataResponse.leCategory.categoryData)
+                setupCategoryLayout()
+            } else {
+                hideCategoryLayout()
+            }
+
+            if (gqlLendingDataResponse.leSeo != null && gqlLendingDataResponse.leSeo?.seoData != null &&
+                    gqlLendingDataResponse.leSeo?.seoData?.isNotEmpty()!!) {
+                showSeoLayout()
+                lendingSeoAdapter = LendingSeoAdapter(gqlLendingDataResponse.leSeo!!.seoData!!)
+                setupSeoLayout()
+            } else {
+                hideSeoLayout()
+            }
+
+        } else {
+            hideBannerLayout()
+            hideCategoryLayout()
+            hideSeoLayout()
+        }
+    }
+
+    private fun hideSeoLayout() {
+        seo_layout.visibility = View.GONE
+    }
+
+    private fun showSeoLayout() {
+        seo_layout.visibility = View.VISIBLE
+    }
+
+    private fun hideBannerLayout() {
+        il_banner_layout.visibility = View.GONE
+    }
+
+    private fun showBannerLayout() {
+        il_banner_layout.visibility = View.VISIBLE
     }
 
 
@@ -159,6 +228,13 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     }
 
+    private fun showCategoryLayout() {
+        il_category_layout.visibility = View.VISIBLE
+    }
+
+    private fun hideCategoryLayout() {
+        il_category_layout.visibility = View.GONE
+    }
 
     private fun hideTestimonials() {
         dana_instan_testimonials.visibility = View.GONE
@@ -423,7 +499,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         if (bannerPagerAdapter != null &&
                 bannerPagerAdapter.bannerEntityList != null &&
                 bannerPagerAdapter.bannerEntityList[position] != null) {
-            val eventLabel = (bannerPagerAdapter.bannerEntityList[position].link
+            val eventLabel = (bannerPagerAdapter.bannerEntityList[position].bannerLink
                     + " - " + position.toString())
 
             instantLoanAnalytics.eventLoanBannerImpression(eventLabel)
@@ -467,7 +543,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     companion object {
 
         val PINJAMAN_TITLE = "Pinjaman Online"
-
+        val COLUMN_COUNT_FOR_LOAN_CATEGORY = 4
         val TAB_NAME = "tab_name"
         private val TAB_INSTAN = "instan"
         private val TAB_TANPA_AGUNAN = "tanpaagunan"

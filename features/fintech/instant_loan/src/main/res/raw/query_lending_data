@@ -1,0 +1,35 @@
+query LE {
+    category: le_getcategory {
+      data {
+        ID
+        Name
+        NameSlug
+        Icon
+      }
+    }
+    banner: le_getbanner(bannerType: "pinjaman-online") {
+      data {
+        ID
+        Name
+        Link
+        Alt
+        UrlImage
+      }
+    }
+    partner: le_getpartner {
+      data {
+        ID
+        Logo
+        Name
+        NameSlug
+        Alt
+      }
+    }
+    seo: le_getseo(seoType: "home") {
+      data {
+        ID
+        Head
+        Body
+      }
+    }
+  }

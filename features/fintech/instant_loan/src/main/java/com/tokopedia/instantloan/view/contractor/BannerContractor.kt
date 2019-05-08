@@ -2,16 +2,13 @@ package com.tokopedia.instantloan.view.contractor
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.instantloan.data.model.response.BannerEntity
-
-/**
- * Created by lavekush on 22/03/18.
- */
+import com.tokopedia.instantloan.data.model.response.GqlLendingDataResponse
 
 interface BannerContractor {
 
     interface View : CustomerView {
-        fun renderBannerList(banners: List<BannerEntity>?)
+
+        fun renderLendingData(gqlLendingDataResponse: GqlLendingDataResponse)
 
         fun nextBanner()
 
@@ -20,5 +17,7 @@ interface BannerContractor {
 
     interface Presenter : CustomerPresenter<View> {
         fun loadBanners()
+
+        fun getLendingData()
     }
 }

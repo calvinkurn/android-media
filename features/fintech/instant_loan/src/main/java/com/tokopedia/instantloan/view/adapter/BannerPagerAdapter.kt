@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.instantloan.R
-import com.tokopedia.instantloan.data.model.response.BannerEntity
+import com.tokopedia.instantloan.data.model.response.GqlLendingBannerData
 
-class BannerPagerAdapter(private val context: Context, val bannerEntities: List<BannerEntity>, private val bannerClick: BannerClick) : PagerAdapter() {
+class BannerPagerAdapter(private val context: Context, val bannerEntities: ArrayList<GqlLendingBannerData>, private val bannerClick: BannerClick) : PagerAdapter() {
 
-    var bannerEntityList: List<BannerEntity> = bannerEntities
+    var bannerEntityList: ArrayList<GqlLendingBannerData> = bannerEntities
     private val mInflater: LayoutInflater = LayoutInflater.from(context)
 
     override fun destroyItem(container: View, position: Int, any: Any) {
@@ -30,10 +30,10 @@ class BannerPagerAdapter(private val context: Context, val bannerEntities: List<
 
     override fun instantiateItem(view: ViewGroup, position: Int): Any {
         val banner = mInflater.inflate(R.layout.item_pager_banner, view, false) as ImageView
-        ImageHandler.LoadImage(banner, bannerEntityList[position].image)
+        ImageHandler.LoadImage(banner, bannerEntityList[position].bannerImageUrl)
         view.addView(banner)
 
-        banner.tag = bannerEntityList[position].link
+        banner.tag = bannerEntityList[position].bannerLink
         banner.setOnClickListener { view1 -> bannerClick.onBannerClick(view1, position) }
 
         return banner
