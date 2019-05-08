@@ -97,7 +97,9 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     }
 
     public void setLabel(String label) {
-        this.label = label;
+        if (label != null) {
+            this.label = label;
+        }
     }
 
     public int getReadStatus() {
