@@ -100,8 +100,8 @@
                 android:id="@+id/il_category_layout"
                 layout="@layout/layout_lending_category"
                 android:layout_width="match_parent"
-                android:layout_margin="@dimen/dp_16"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16" />
 
             <include
                 layout="@layout/il_other_financial_products"
@@ -109,12 +109,16 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16" />
 
-            <include
-                android:id="@+id/seo_layout"
-                layout="@layout/il_seo_layout"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_lending_seo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16" />
+                android:layout_marginStart="@dimen/dp_18"
+                android:layout_marginLeft="@dimen/dp_18"
+                android:layout_marginEnd="@dimen/dp_18"
+                android:layout_marginRight="@dimen/dp_18"
+                android:layout_marginBottom="@dimen/dp_18"
+                android:nestedScrollingEnabled="false" />
         </LinearLayout>
 
 

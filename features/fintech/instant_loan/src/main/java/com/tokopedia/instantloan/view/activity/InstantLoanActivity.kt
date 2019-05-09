@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.*
@@ -48,12 +49,12 @@ import com.tokopedia.instantloan.view.ui.InstantLoanItem
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_instant_loan.*
 import kotlinx.android.synthetic.main.il_other_financial_products.*
-import kotlinx.android.synthetic.main.il_seo_layout.*
 import kotlinx.android.synthetic.main.layout_il_testimonials.*
 import kotlinx.android.synthetic.main.layout_lending_category.*
 import javax.inject.Inject
 
-class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, BannerContractor.View, OnGoingLoanContractor.View, DanaInstantFragment.ActivityInteractor, BannerPagerAdapter.BannerClick, View.OnClickListener {
+class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, BannerContractor.View, OnGoingLoanContractor.View,
+        DanaInstantFragment.ActivityInteractor, BannerPagerAdapter.BannerClick, View.OnClickListener {
     @Inject
     lateinit var mBannerPresenter: BannerListPresenter
 
@@ -78,6 +79,8 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     private var onGoingLoanStatus = false
     private var onGoingLoanId: Int = 0
     private var menushown = false
+
+    private lateinit var rvSeoLayout: RecyclerView
 
     private lateinit var lendingCategoryAdpater: LendingCategoryAdapter
     private lateinit var lendingSeoAdapter: LendingSeoAdapter
@@ -138,8 +141,8 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     private fun setupSeoLayout() {
 
         linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        rv_lending_seo.layoutManager = linearLayoutManager
-        rv_lending_seo.adapter = lendingSeoAdapter
+        rvSeoLayout.layoutManager = linearLayoutManager
+        rvSeoLayout.adapter = lendingSeoAdapter
     }
 
     fun renderBannerList(banners: ArrayList<GqlLendingBannerData>) {
@@ -194,11 +197,11 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun hideSeoLayout() {
-        seo_layout.visibility = View.GONE
+        rvSeoLayout.visibility = View.GONE
     }
 
     private fun showSeoLayout() {
-        seo_layout.visibility = View.VISIBLE
+        rvSeoLayout.visibility = View.VISIBLE
     }
 
     private fun hideBannerLayout() {
@@ -390,10 +393,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         return null
     }
 
-    override fun onPointerCaptureChanged(hasCapture: Boolean) {
-
-    }
-
     override fun getComponent(): BaseAppComponent {
         return (application as BaseMainApplication).baseAppComponent
     }
@@ -448,6 +447,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         heightWrappingViewPager = findViewById(R.id.pager)
         mBtnNextBanner = findViewById(R.id.button_next)
         mBtnPreviousBanner = findViewById(R.id.button_previous)
+        rvSeoLayout = findViewById(R.id.rv_lending_seo)
     }
 
     private fun attachViewListener() {
@@ -455,19 +455,17 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         mBtnPreviousBanner!!.setOnClickListener(this)
 
         financial_product_one.setOnClickListener {
-            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                    InstantLoanUrl.COMMON_URL.CREDIT_CARD_WEBVIEW_URL))
+            openWebView(InstantLoanUrl.COMMON_URL.CREDIT_CARD_WEBVIEW_URL)
         }
 
         financial_product_two.setOnClickListener {
-            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                    InstantLoanUrl.COMMON_URL.INSURANCE_WEBVIEW_URL))
+            openWebView(InstantLoanUrl.COMMON_URL.INSURANCE_WEBVIEW_URL)
         }
     }
 
     private fun setupToolbar() {
         toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.setNavigationIcon(R.drawable.ic_icon_back_black)
+        toolbar.setNavigationIcon(R.drawable.ic_webview_back_button)
         setSupportActionBar(toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)

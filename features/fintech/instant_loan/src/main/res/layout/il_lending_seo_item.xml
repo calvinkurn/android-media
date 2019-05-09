@@ -3,12 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/dp_16">
 
     <TextView
         android:id="@+id/il_seo_heading"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/dp_7"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_15"
