@@ -212,4 +212,13 @@ public class BottomActionView extends BaseCustomView {
         showAnimator.start();
     }
 
+    public void hideBav2(){
+        linearLayoutButton2.setVisibility(GONE);
+        findViewById(R.id.view_separator).setVisibility(GONE);
+    }
+
+    public void showBav2(){
+        linearLayoutButton2.setVisibility(VISIBLE);
+        findViewById(R.id.view_separator).setVisibility(VISIBLE);
+    }
 }

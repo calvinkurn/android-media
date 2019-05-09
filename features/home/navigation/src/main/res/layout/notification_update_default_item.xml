@@ -11,28 +11,30 @@
         android:id="@+id/icon"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
-        app:layout_constraintBottom_toBottomOf="@+id/type"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/type"
+        app:layout_constraintBottom_toBottomOf="@+id/type"
         tools:src="@drawable/dot_grey" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minHeight="@dimen/dp_20"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
         android:textColor="@color/charcoal_grey_50"
         app:layout_constraintLeft_toRightOf="@id/icon"
         android:textSize="@dimen/sp_12"
         android:includeFontPadding="false"
-        tools:text="TextView" />
+        tools:text="TextView"
+        android:gravity="center"/>
 
 
     <com.tokopedia.design.image.SquareImageView
         android:id="@+id/dot"
-        android:layout_width="@dimen/dp_6"
-        android:layout_height="@dimen/dp_6"
+        android:layout_width="@dimen/dp_3"
+        android:layout_height="@dimen/dp_3"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
         android:src="@drawable/dot_grey"
@@ -68,6 +70,8 @@
         android:textStyle="bold"
         android:text="@string/seller_label"
         android:includeFontPadding="false"
+        android:minHeight="@dimen/dp_20"
+        android:gravity="center"
         app:layout_constraintLeft_toRightOf="@id/time"
         app:layout_constraintBottom_toBottomOf="@+id/type"
         app:layout_constraintTop_toTopOf="@+id/type" />

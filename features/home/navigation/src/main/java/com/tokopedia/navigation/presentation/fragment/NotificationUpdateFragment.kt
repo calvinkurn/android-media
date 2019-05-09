@@ -1,7 +1,9 @@
 package com.tokopedia.navigation.presentation.fragment
 
 import android.content.Context
+import android.animation.LayoutTransition
 import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.Snackbar
@@ -29,11 +31,11 @@ import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpd
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateTypeFactoryImpl
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
 import com.tokopedia.navigation.presentation.presenter.NotificationUpdatePresenter
+import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
 import com.tokopedia.navigation.presentation.view.listener.NotificationSectionFilterListener
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
-import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateViewModel
 import javax.inject.Inject
 
@@ -48,6 +50,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private lateinit var filterViewModel: ArrayList<NotificationUpdateFilterItemViewModel>
     private val selectedItemList = HashMap<Int, Int>()
     private lateinit var bottomSheetDialog: BottomSheetDialog
+    private lateinit var bottomActionView: BottomActionView
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return NotificationUpdateTypeFactoryImpl(this)
@@ -69,8 +72,12 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
         presenter.getFilter(onSuccessGetFilter())
 
-        val bottomActionView: BottomActionView = view.findViewById(R.id.filterBtn)
+        bottomActionView = view.findViewById(R.id.filterBtn)
         val recyclerView = super.getRecyclerView(view)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            bottomActionView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        }
 
         bottomActionView.setButton1OnClickListener {
             if (::bottomSheetDialog.isInitialized) {
@@ -80,6 +87,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
         bottomActionView.setButton2OnClickListener {
             analytics.trackMarkAllAsRead()
+            updateCounterTitle()
+            bottomActionView.hideBav2()
             presenter.markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate())
         }
 
@@ -158,6 +167,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         return filterView
     }
 
+
     private fun getLabelFilterName(): String {
         var typeName = ""
         var tagName = ""
@@ -172,6 +182,16 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                 typeName,
                 tagName)
         return labelFormat
+    }
+
+    override fun notifyBottomActionView(updateCounter: Long) {
+        bottomActionView?.let {
+            if(updateCounter == 0L){
+                it.hideBav2()
+            } else {
+                it.showBav2()
+            }
+        }
     }
 
     override fun sectionPicked(sectionIndex: Int, sectionItemIndex: Int) {
@@ -245,17 +265,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    private fun onSuccessFilter(): (NotificationUpdateViewModel) -> Unit {
-        return {
-            var canLoadMore = it.paging.hasNext
-            if (canLoadMore && !it.list.isEmpty()) {
-                cursor = (it.list.last().notificationId)
-            }
-            isLoadingInitialData = true
-            renderList(it.list, canLoadMore)
-        }
-    }
-
     private fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterItemViewModel>) -> Unit {
         return {
             filterViewModel = it
@@ -275,21 +284,35 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    override fun itemClicked(notifId: String, adapterPosition: Int, templateKey: String) {
+    override fun itemClicked(notifId: String, adapterPosition: Int, needToResetCounter: Boolean, templateKey: String) {
         adapter.notifyItemChanged(adapterPosition)
         analytics.trackClickNotifList(templateKey)
         presenter.markReadNotif(notifId)
+        if(needToResetCounter) {
+            updateCounterTitleManual()
+        }
     }
 
-
-    override fun resetCounter() {
-        presenter.clearNotifCounter()
+    private fun updateCounterTitle() {
+        activity?.let {
+            if (it is NotificationActivityContract.View) {
+                (it as NotificationActivityContract.View).updateTotalUnreadCounter().invoke()
+            }
+        }
     }
 
+    private fun updateCounterTitleManual() {
+        activity?.let {
+            if (it is NotificationActivityContract.View) {
+                (it as NotificationActivityContract.View).updateTotalUnreadCounterManual()
+            }
+        }
+    }
 
     override fun onSwipeRefresh() {
         cursor = ""
         super.onSwipeRefresh()
+        updateCounterTitle()
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {

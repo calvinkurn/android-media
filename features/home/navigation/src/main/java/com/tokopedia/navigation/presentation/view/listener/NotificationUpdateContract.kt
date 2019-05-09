@@ -10,8 +10,7 @@ import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateVi
 interface NotificationUpdateContract {
 
     interface View : BaseListViewListener<Visitable<*>>, CustomerView {
-        fun resetCounter()
-
+        fun notifyBottomActionView(updateCounter: Long)
     }
 
     interface Presenter: CustomerPresenter<View> {
