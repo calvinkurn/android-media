@@ -11,7 +11,6 @@ public class TkpdBaseURL {
     public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
     public static final String FLAG_APP = "?flag_app=1";
     public static final String URL_TOPPICKS = "https://m.tokopedia.com/toppicks/";
-    public static String DEFAULT_TOKOPEDIA_WEBSITE_URL = "https://www.tokopedia.com/";
     public static String LIVE_DOMAIN = "https://ws.tokopedia.com/";
     public static String STAGE_DOMAIN = "https://ws-staging.tokopedia.com/";
     public static String ALPHA_DOMAIN = "https://ws-alpha.tokopedia.com/";

@@ -30,6 +30,7 @@ import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -407,7 +408,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     @DeepLink(Constants.Applinks.BROWSER)
     public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
         String webUrl = extras.getString(
-                Constants.ARG_NOTIFICATION_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
+                Constants.ARG_NOTIFICATION_URL, TokopediaUrl.Companion.getInstance().getWEB()
         );
         Intent destination = new Intent(Intent.ACTION_VIEW);
         destination.setData(Uri.parse(webUrl));

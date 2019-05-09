@@ -60,7 +60,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     private ToggleButton toggleReactDeveloperMode;
     private ToggleButton toggleReactEnableDeveloperOptions;
     private SharedPreferences sharedPreferences;
-    private Spinner spinnerEnvironmentChooser;
 
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
@@ -73,8 +72,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     private ToggleButton groupChatLogToggle;
 
     private static TkpdCoreRouter tkpdCoreRouter;
-    private ArrayAdapter<Env> envSpinnerAdapter;
-    private boolean isEnvSpinnerUserAction = true;
 
     @Override
     public String getScreenName() {
@@ -123,18 +120,31 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     }
 
     private void setupEnvSpinner() {
-        spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
-        envSpinnerAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, Env.values());
+        Spinner spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
+        ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Env.values());
         envSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
-        Env currentEnv = TokopediaUrl.Companion.getUrl().getTYPE();
+
+        Env currentEnv = TokopediaUrl.Companion.getInstance().getTYPE();
         for(int i = 0; i < Env.values().length; i++) {
             if(currentEnv == Env.values()[i]) {
-                isEnvSpinnerUserAction = false;
                 spinnerEnvironmentChooser.setSelection(i);
                 break;
             }
         }
+
+        spinnerEnvironmentChooser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TokopediaUrl.Companion.setEnvironment(DeveloperOptions.this, Env.values()[position]);
+                TokopediaUrl.Companion.deleteInstance();
+                TokopediaUrl.Companion.init(DeveloperOptions.this);
+                Toast.makeText(DeveloperOptions.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
     }
 
     private void initListener() {
@@ -291,21 +301,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         ipGroupChat.setText(groupChatPreference.getString(IP_GROUPCHAT,""));
         groupChatLogToggle.setChecked(groupChatPreference.getBoolean(LOG_GROUPCHAT, false));
 
-        spinnerEnvironmentChooser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(isEnvSpinnerUserAction) {
-                    TokopediaUrl.Companion.setEnvironment(DeveloperOptions.this, Env.values()[position]);
-                    Toast.makeText(DeveloperOptions.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
-                }
-                isEnvSpinnerUserAction = true;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
     }
 
     private void actionLogGroupChat(boolean check) {
