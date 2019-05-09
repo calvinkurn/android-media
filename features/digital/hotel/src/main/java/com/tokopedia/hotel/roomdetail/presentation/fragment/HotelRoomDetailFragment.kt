@@ -54,6 +54,7 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
     lateinit var saveInstanceCacheManager: SaveInstanceCacheManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -67,8 +68,6 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
         val hotelRoomDetailModel = manager.get(EXTRA_ROOM_DATA, HotelRoom::class.java, HotelRoomDetailModel())!!
         hotelRoom = hotelRoomDetailModel.hotelRoom
         addToCartParam = hotelRoomDetailModel.addToCartParam
-
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
