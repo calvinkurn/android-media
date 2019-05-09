@@ -615,7 +615,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         Option option = OptionHelper.generateOptionFromUniqueId(uniqueId);
 
         removeFilterFromFilterController(option);
-        applyFilterToSearchParameter(filterController.getFilterParameter());
+        applyFilterToSearchParameter(filterController.getParameter());
         clearDataFilterSort();
         reloadData();
     }

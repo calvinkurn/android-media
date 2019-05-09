@@ -1671,6 +1671,24 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             Bundle bundle = data.getExtras();
             if (bundle != null) {
                 PromoStackingData promoStackingData = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
+
+                if (cartListData != null && promoStackingData != null) {
+                    if (cartListData.getGlobalCouponAttr() != null) {
+                        if (cartListData.getGlobalCouponAttr().getDescription() != null) {
+                            if (!cartListData.getGlobalCouponAttr().getDescription().isEmpty()) {
+                                promoStackingData.setTitleDefault(cartListData.getGlobalCouponAttr().getDescription());
+                            }
+                        }
+
+                        if (cartListData.getGlobalCouponAttr().getQuantityLabel() != null) {
+                            if (!cartListData.getGlobalCouponAttr().getQuantityLabel().isEmpty()) {
+                                promoStackingData.setCounterLabelDefault(cartListData.getGlobalCouponAttr().getQuantityLabel());
+                            }
+                        }
+                    }
+                }
+
+
                 if (promoStackingData != null) {
                     cartAdapter.updateItemPromoStackVoucher(promoStackingData);
                     if (promoStackingData.getTypePromo() == PromoStackingData.CREATOR.getTYPE_VOUCHER()) {

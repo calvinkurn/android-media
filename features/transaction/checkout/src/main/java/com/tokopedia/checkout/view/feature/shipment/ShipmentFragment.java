@@ -1541,8 +1541,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onRemovePromoCode() {
-        shipmentPresenter.cancelAutoApplyCoupon("");
+    public void onRemovePromoCode(String promoCode) {
+        ArrayList<String> promoCodes = new ArrayList<>();
+        promoCodes.add(promoCode);
+        shipmentPresenter.cancelAutoApplyPromoStack(SHOP_INDEX_PROMO_GLOBAL, promoCodes, false);
     }
 
     @Override
@@ -2118,11 +2120,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCourierPromoCanceled(String shipperName) {
+    public void onCourierPromoCanceled(String shipperName, String promoCode) {
         if (shipmentAdapter.isCourierPromoStillExist()) {
             shipmentAdapter.cancelAutoApplyCoupon("");
             shipmentAdapter.updatePromoStack(null);
-            onRemovePromoCode();
+            onRemovePromoCode(promoCode);
             showToastError(String.format(getString(R.string.message_cannot_apply_courier_promo), shipperName));
         }
     }
@@ -2209,10 +2211,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 Order order = new Order();
                 ArrayList<ProductDetail> productDetails = new ArrayList<>();
                 for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                    ProductDetail productDetail = new ProductDetail();
-                    productDetail.setProductId(cartItemModel.getProductId());
-                    productDetail.setQuantity(cartItemModel.getQuantity());
-                    productDetails.add(productDetail);
+                    if (!cartItemModel.isError()) {
+                        ProductDetail productDetail = new ProductDetail();
+                        productDetail.setProductId(cartItemModel.getProductId());
+                        productDetail.setQuantity(cartItemModel.getQuantity());
+                        productDetails.add(productDetail);
+                    }
                 }
                 order.setProductDetails(productDetails);
 

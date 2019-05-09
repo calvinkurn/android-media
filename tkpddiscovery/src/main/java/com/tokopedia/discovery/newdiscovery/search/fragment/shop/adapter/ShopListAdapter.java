@@ -66,13 +66,19 @@ public class ShopListAdapter extends SearchSectionGeneralAdapter {
     }
 
     public void addLoading() {
+        int loadingModelPosition = this.list.size();
+
         this.list.add(loadingModel);
-        notifyDataSetChanged();
+        notifyItemInserted(loadingModelPosition);
     }
 
     public void removeLoading() {
+        int loadingModelPosition = this.list.indexOf(loadingModel);
+
         this.list.remove(loadingModel);
-        notifyDataSetChanged();
+
+        notifyItemRemoved(loadingModelPosition);
+        notifyItemRangeChanged(loadingModelPosition, 1);
     }
 
     public void setFavoriteButtonEnabled(int adapterPosition, boolean isEnabled) {
