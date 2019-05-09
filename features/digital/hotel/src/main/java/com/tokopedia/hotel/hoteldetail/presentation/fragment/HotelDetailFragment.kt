@@ -33,6 +33,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailV
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
+import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -53,6 +54,9 @@ class HotelDetailFragment : BaseDaggerFragment() {
     private var hotelHomepageModel = HotelHomepageModel()
     private var isButtonEnabled: Boolean = true
     private var hotelName: String = ""
+
+    private val thumbnailImageList = mutableListOf<String>()
+    private val imageList = mutableListOf<String>()
 
     private lateinit var detailReviewAdapter: HotelDetailReviewAdapter
     private lateinit var mainFacilityAdapter: HotelDetailMainFacilityAdapter
@@ -217,33 +221,43 @@ class HotelDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupMainImage(images: List<PropertyImageItem>) {
-        // TODO add action to open preview
-
         var imageCounter = 0
 
-        loop@ for ((imageIndex, item) in images.withIndex()) {
+        for ((imageIndex, item) in images.withIndex()) {
+            imageList.add(item.urlOriginal)
+            thumbnailImageList.add(item.urlSquare6)
+
             when (imageCounter) {
                 0 -> {
                     // do nothing, preventing break if mainPhoto not in the first item
                 }
                 1 -> {
                     iv_first_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    iv_first_photo_preview.setOnClickListener {
+                        openImagePreview(imageIndex)
+                    }
                     imageCounter++
                 }
                 2 -> {
                     iv_second_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    iv_second_photo_preview.setOnClickListener {
+                        openImagePreview(imageIndex)
+                    }
                     imageCounter++
                 }
                 3 -> {
                     iv_third_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    iv_third_photo_preview.setOnClickListener {
+                        openImagePreview(imageIndex)
+                    }
                     imageCounter++
-                }
-                else -> {
-                    break@loop
                 }
             }
             if (item.mainPhoto) {
                 iv_main_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                iv_main_photo_preview.setOnClickListener {
+                    openImagePreview(imageIndex)
+                }
                 imageCounter++
             }
         }
@@ -264,12 +278,14 @@ class HotelDetailFragment : BaseDaggerFragment() {
             if (data.totalReview > 0) {
                 tv_hotel_rating_count.text = getString(R.string.hotel_detail_based_on_review_number,
                         CurrencyFormatUtil.convertPriceValue(data.totalReview.toDouble(), false))
+                tv_hotel_rating_detail.text = data.headline
             } else {
                 tv_hotel_rating_count.visibility = View.GONE
             }
 
             if (data.averageScoreReview > 0) {
                 tv_hotel_rating_number.text = data.averageScoreReview.toString()
+                tv_hotel_rating_detail.text = data.headline
             } else {
                 tv_hotel_rating_number.visibility = View.GONE
                 tv_hotel_rating_detail.text = getString(R.string.hotel_detail_no_rating)
@@ -380,6 +396,10 @@ class HotelDetailFragment : BaseDaggerFragment() {
                 activity!!.finish()
             }
         }
+    }
+
+    private fun openImagePreview(index: Int) {
+        startActivity(ImagePreviewSliderActivity.getCallingIntent(context!!, hotelName, imageList, thumbnailImageList, index))
     }
 
     companion object {
