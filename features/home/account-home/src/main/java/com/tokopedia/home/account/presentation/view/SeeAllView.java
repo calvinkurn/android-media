@@ -160,10 +160,7 @@ public class SeeAllView extends BottomSheets {
             gridItem = new MenuGridItemViewModel(
                     R.drawable.ic_giftcard,
                     getContext().getString(R.string.title_menu_gift_card),
-                    ApplinkConst.GIFT_CARDS_ORDER
-                    /*String.format("%s?url=%s",
-                            ApplinkConst.WEBVIEW,
-                            AccountHomeUrl.GIFT_CARD_URL)*/,
+                    ApplinkConst.GIFT_CARDS_ORDER,
                     0,
                     PEMBELI,
                     getContext().getString(R.string.title_menu_transaction)
