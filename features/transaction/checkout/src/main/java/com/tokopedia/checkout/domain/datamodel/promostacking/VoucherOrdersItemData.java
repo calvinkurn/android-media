@@ -61,6 +61,7 @@ public class VoucherOrdersItemData implements Parcelable {
         dest.writeString(variant);
         dest.writeString(titleDescription);
         dest.writeParcelable(messageData, flags);
+        dest.writeByte((byte) (isAutoapply ? 1 : 0));
     }
 
     @Override
