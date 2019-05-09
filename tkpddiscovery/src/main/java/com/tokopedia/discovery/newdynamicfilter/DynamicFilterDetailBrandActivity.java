@@ -1,17 +1,13 @@
 package com.tokopedia.discovery.newdynamicfilter;
 
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.list.widget.AlphabeticalSideBar;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterBrandAdapter;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
