@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.DisplayCutout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1261,11 +1262,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public int getWindowHeight() {
         if (getActivity() != null) {
-            Display display = getActivity().getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int height = size.y;
-            return height;
+            int hRoot = root.getHeight();
+            return hRoot;
         } else {
             return 0;
         }

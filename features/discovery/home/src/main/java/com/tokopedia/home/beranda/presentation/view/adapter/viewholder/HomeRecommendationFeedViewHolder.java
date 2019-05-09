@@ -5,10 +5,14 @@ import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.WindowInsetsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.DisplayCutout;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout;
 import com.tokopedia.home.R;
@@ -61,20 +65,10 @@ implements HomeTabFeedListener {
         //we must specify height for viewpager, so it can't scroll up anymore and create
         //sticky effect
 
-        //we specify viewpager height to fill viewport below maintoolbar and tablayout, so then recyclerview reach its end scroll
-        //with tab showing below maintoolbar
-        //viewport - toolbar height - statusbar offset (android 19 and lower doesn't apply inset) - spacing
-
-        int statusBarOffset = 0;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            statusBarOffset = ViewHelper.getStatusBarHeight(context);
-        }
         layoutParams.height =
                 listener.getWindowHeight()
                         -listener.getHomeMainToolbarHeight()
-                        -context.getResources().getDimensionPixelSize(R.dimen.tab_home_feed_max_height)
-                        +statusBarOffset
-                        -context.getResources().getDimensionPixelSize(R.dimen.dp_8);
+                        +context.getResources().getDimensionPixelSize(R.dimen.dp_8);
         container.setLayoutParams(layoutParams);
 
         feedTabModelList = homeRecommendationFeedViewModel.getFeedTabModel();
