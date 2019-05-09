@@ -197,7 +197,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             menu.add(Menu.NONE, ID_ACTION_DEVOPS, 1, "Developer Options");
-            menu.findItem(ID_ACTION_DEVOPS).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            menu.findItem(ID_ACTION_DEVOPS).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
