@@ -15,13 +15,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.tradeInCommon)
-//    implementation (rootProject.ext.miscDependencies.laku6Sdk){
-//        exclude group: 'com.android.support'
-//        exclude group: 'com.squareup.retrofit2'
-//        exclude group: 'com.google.firebase'
-//        exclude group: 'com.google.android.gms'
-//        exclude group: 'com.android.support.constraint'
-//    }
+    implementation (rootProject.ext.miscDependencies.laku6Sdk){
+        exclude group: 'com.android.support'
+        exclude group: 'com.squareup.retrofit2'
+        exclude group: 'com.google.firebase'
+        exclude group: 'com.google.android.gms'
+        exclude group: 'com.android.support.constraint'
+    }
     implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
