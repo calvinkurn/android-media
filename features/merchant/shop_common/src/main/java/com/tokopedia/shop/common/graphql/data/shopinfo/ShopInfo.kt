@@ -4,6 +4,14 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ShopInfo(
+        @SerializedName("closedInfo")
+        @Expose
+        val closedInfo: ClosedInfo = ClosedInfo(),
+
+        @SerializedName("createdInfo")
+        @Expose
+        val createdInfo: CreatedInfo = CreatedInfo(),
+
         @SerializedName("favoriteData")
         @Expose
         val favoriteData: FavoriteData = FavoriteData(),
@@ -15,6 +23,10 @@ data class ShopInfo(
         @SerializedName("isAllowManage")
         @Expose
         val isAllowManage: Int = 0,
+
+        @SerializedName("isOpen")
+        @Expose
+        val isOpen: Int = 0,
 
         @SerializedName("isOwner")
         @Expose
@@ -123,4 +135,28 @@ data class ShopInfo(
     }
 
     var allowManage: Boolean = (isAllowManage == 1)
+
+    data class ClosedInfo(
+            @SerializedName("closedNote")
+            @Expose
+            val note: String = "",
+
+            @SerializedName("reason")
+            @Expose
+            val reason: String = "",
+
+            @SerializedName("until")
+            @Expose
+            val closeUntil: String = ""
+    )
+
+    data class CreatedInfo(
+            @SerializedName("shopCreated")
+            @Expose
+            val created: String = "",
+
+            @SerializedName("openSince")
+            @Expose
+            val openSince: String = ""
+    )
 }

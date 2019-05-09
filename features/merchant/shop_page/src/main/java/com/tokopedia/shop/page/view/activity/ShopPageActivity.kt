@@ -1,6 +1,7 @@
 package com.tokopedia.shop.page.view.activity
 
 import android.app.Activity
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
@@ -40,8 +41,8 @@ import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopUrl
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
 import com.tokopedia.shop.page.di.component.DaggerShopPageComponent
@@ -49,31 +50,27 @@ import com.tokopedia.shop.page.di.module.ShopPageModule
 import com.tokopedia.shop.page.view.ShopPageViewModel
 import com.tokopedia.shop.page.view.adapter.ShopPageViewPagerAdapter
 import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
-import com.tokopedia.shop.page.view.listener.ShopPageView
-import com.tokopedia.shop.page.view.presenter.ShopPagePresenter
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import kotlinx.android.synthetic.main.item_tablayout_new_badge.view.*
 import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
-        ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener, ShopProductListFragment.OnShopProductListFragmentListener {
+        ShopPageHeaderViewHolder.ShopPageHeaderListener, ShopProductListFragment.OnShopProductListFragmentListener {
 
 
     var shopId: String? = null
     var shopDomain: String? = null
     var shopAttribution: String? = null
-    var shopInfo: ShopInfo? = null
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
     private var performanceMonitoring: PerformanceMonitoring? = null
-
-    @Inject
-    lateinit var presenter: ShopPagePresenter
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -210,16 +207,17 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
             override fun onTabSelected(tab: TabLayout.Tab) {
-                shopInfo?.run {
-                    shopPageTracking.clickTab(presenter.isMyShop(shopId!!),
-                            titles[tab.getPosition()], CustomDimensionShopPage.create(shopInfo))
+                (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+                    shopPageTracking.clickTab(shopViewModel.isMyShop(it.shopCore.shopID),
+                            titles[tab.position],
+                            CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
+                                    it.goldOS.isGold == 1))
 
                     val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(tab.position)
                     if (shopInfoFragment != null && shopInfoFragment is ShopInfoFragment) {
-                        shopInfoFragment.updateShopInfo(this)
+                        shopInfoFragment.updateShopInfo(it)
                     }
                 }
-
 
                 isShowFeed.run {
                     val tabNameColor: Int = if (tab.position == TAB_POSITION_FEED)
@@ -236,19 +234,19 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         mainLayout.requestFocus()
 
         shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
+        shopViewModel.shopInfoResp.observe(this, Observer {
+            when(it){
+                is Success -> onSuccessGetShopInfo(it.data)
+                is Fail -> onErrorGetShopInfo(it.throwable)
+            }
+        })
 
         getShopInfo()
     }
 
-    private fun getShopInfo() {
+    private fun getShopInfo(isRefresh: Boolean = false) {
         setViewState(VIEW_LOADING)
-        /*if (!TextUtils.isEmpty(shopId)) {
-            presenter.getShopInfo(shopId!!)
-        } else {
-            if (shopDomain != null)
-                presenter.getShopInfoByDomain(shopDomain!!)
-        }*/
-        shopViewModel.getShop(shopId, shopDomain)
+        shopViewModel.getShop(shopId, shopDomain, isRefresh)
     }
 
     private fun setViewState(viewState: Int) {
@@ -281,12 +279,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private fun initInjector() {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
                 .shopComponent(component).build().inject(this)
-        presenter.attachView(this)
     }
 
     override fun getNewFragment(): Fragment? = null
 
-    fun initAdapter() {
+    private fun initAdapter() {
         shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager, titles,
                 shopId, shopAttribution, (application as ShopModuleRouter), this)
     }
@@ -303,13 +300,16 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         return super.onOptionsItemSelected(item)
     }
 
-    fun onShareShop() {
-        shopInfo?.run {
-            shopPageTracking.clickShareButton(presenter.isMyShop(shopId!!), CustomDimensionShopPage.create(shopInfo))
+    private fun onShareShop() {
+        (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+            shopPageTracking.clickShareButton(shopViewModel.isMyShop(it.shopCore.shopID),
+                    CustomDimensionShopPage.create(it.shopCore.shopID,
+                            it.goldOS.isOfficial == 1,
+                            it.goldOS.isGold == 1))
 
             (application as ShopModuleRouter).goToShareShop(this@ShopPageActivity,
-                    shopId, info.shopUrl, getString(R.string.shop_label_share_formatted,
-                    MethodChecker.fromHtml(info.shopName).toString(), info.shopLocation))
+                    shopId, it.shopCore.url, getString(R.string.shop_label_share_formatted,
+                    MethodChecker.fromHtml(it.shopCore.name).toString(), it.location))
         }
 
     }
@@ -330,19 +330,16 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
     }
 
-    override fun stopPerformanceMonitor(){
+    fun stopPerformanceMonitor(){
         performanceMonitoring?.stopTrace()
     }
 
-    override fun onSuccessGetShopInfo(shopInfo: ShopInfo?) {
+    fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         setViewState(VIEW_CONTENT)
-        shopInfo?.run {
-            this@ShopPageActivity.shopInfo = this
-            shopId = info.shopId
-            shopPageViewPagerAdapter.shopId = shopId
-            shopDomain = info.shopDomain
-            shopPageViewHolder.bind(this, presenter.isMyShop(shopId!!))
-            updateUIByShopName(info.shopName)
+        with(shopInfo){
+            shopPageViewPagerAdapter.shopId = shopCore.shopID
+            shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID))
+            updateUIByShopName(shopCore.name)
             searchInputView.setListener(object : SearchInputView.Listener {
                 override fun onSearchSubmitted(text: String?) {
                     if (TextUtils.isEmpty(text)) {
@@ -357,8 +354,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                         (fragment as ShopProductListLimitedFragment).selectedEtalaseId
                     }
 
-                    startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity, info.shopId,
-                            text, etalaseId, shopAttribution))
+                    startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity,
+                            shopCore.shopID, text, etalaseId, shopAttribution))
                     //reset the search, since the result will go to another activity.
                     searchInputView.searchTextView.text = null
 
@@ -379,10 +376,13 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 shopInfoFragment.updateShopInfo(this)
             }
 
-            shopPageTracking.sendScreenShopPage(this@ShopPageActivity, CustomDimensionShopPage.create(shopInfo))
+            shopPageTracking.sendScreenShopPage(this@ShopPageActivity,
+                    CustomDimensionShopPage.create(shopCore.shopID, goldOS.isOfficial == 1,
+                            goldOS.isGold == 1))
 
-            presenter.getFeedWhitelist(info.shopId)
+            //presenter.getFeedWhitelist(info.shopId)
         }
+
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
         swipeToRefresh.isRefreshing = false
     }
@@ -405,22 +405,22 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         tabLayout.getTabAt(TAB_POSITION_FEED)?.setCustomView(tabCustomView)
     }
 
-    override fun onErrorGetShopInfo(e: Throwable?) {
+    fun onErrorGetShopInfo(e: Throwable?) {
         setViewState(VIEW_ERROR)
         errorTextView.text = ErrorHandler.getErrorMessage(this, e)
         errorButton.setOnClickListener { getShopInfo() }
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun onSuccessGetReputation(reputationSpeed: ReputationSpeed?) {
+    fun onSuccessGetReputation(reputationSpeed: ReputationSpeed?) {
 
     }
 
-    override fun onErrorGetReputation(e: Throwable?) {
+    fun onErrorGetReputation(e: Throwable?) {
 
     }
 
-    override fun onSuccessToggleFavourite(successValue: Boolean) {
+    fun onSuccessToggleFavourite(successValue: Boolean) {
         if (successValue) {
             shopPageViewHolder.toggleFavourite()
             updateFavouriteResult()
@@ -434,7 +434,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         })
     }
 
-    override fun onErrorToggleFavourite(e: Throwable) {
+    fun onErrorToggleFavourite(e: Throwable) {
         shopPageViewHolder.updateFavoriteButton()
         if (e is UserNotLoginException) {
             val intent = (application as ShopModuleRouter).getLoginIntent(this)
@@ -444,7 +444,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e))
     }
 
-    override fun onSuccessGetFeedWhitelist(isWhitelist: Boolean, createPostUrl: String) {
+    fun onSuccessGetFeedWhitelist(isWhitelist: Boolean, createPostUrl: String) {
         this.isShowFeed = isWhitelist
         this.createPostUrl = createPostUrl
         if (isShowFeed && (application as ShopModuleRouter).isFeedShopPageEnabled()) {
@@ -466,55 +466,60 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun refreshData() {
-        presenter.clearCache()
         val f: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(0)
         if (f != null && f is ShopProductListLimitedFragment) {
             f.clearCache()
         }
-        getShopInfo()
+        getShopInfo(true)
         swipeToRefresh.isRefreshing = true
     }
 
     override fun getComponent() = ShopComponentInstance.getComponent(application)
 
     override fun onFollowerTextClicked() {
-        shopInfo?.run {
-            shopPageTracking.clickFollowerList(presenter.isMyShop(shopId!!), CustomDimensionShopPage.create(shopInfo))
+        (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+            shopPageTracking.clickFollowerList(shopViewModel.isMyShop(it.shopCore.shopID),
+                    CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
+                            it.goldOS.isGold == 1))
+            startActivityForResult(ShopFavouriteListActivity.createIntent(this, it.shopCore.shopID),
+                    REQUEST_CODE_FOLLOW)
         }
-        startActivityForResult(ShopFavouriteListActivity.createIntent(this, shopId), REQUEST_CODE_FOLLOW)
+
     }
 
     override fun goToChatSeller() {
-        shopInfo?.run {
-            shopPageTracking.clickMessageSeller(CustomDimensionShopPage.create(shopInfo))
+        (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+            shopPageTracking.clickMessageSeller(CustomDimensionShopPage.create(it.shopCore.shopID,
+                    it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
 
-            (application as ShopModuleRouter).goToChatSeller(this@ShopPageActivity, shopId,
-                    MethodChecker.fromHtml(info.shopName).toString(), info.shopAvatar)
+            (application as ShopModuleRouter).goToChatSeller(this@ShopPageActivity, it.shopCore.shopID,
+                    MethodChecker.fromHtml(it.shopCore.name).toString(), it.shopAssets.avatar)
         }
     }
 
     override fun goToManageShop() {
-        shopInfo?.run {
-            shopPageTracking.clickManageShop(CustomDimensionShopPage.create(shopInfo))
+        (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+            shopPageTracking.clickManageShop(CustomDimensionShopPage.create(it.shopCore.shopID,
+                    it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
         }
         (application as ShopModuleRouter).goToManageShop(this)
     }
 
     override fun toggleFavorite(isFavourite: Boolean) {
-        shopInfo?.run {
+        (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
             shopPageTracking.clickFollowUnfollowShop(isFavourite,
-                    CustomDimensionShopPage.create(shopInfo))
-        }
-        shopInfo?.info?.isShopOfficial?.let {
-            sendMoEngageFavoriteEvent(shopInfo?.info?.shopName?: "",
-                shopInfo?.info?.shopId?: "",
-                shopInfo?.info?.shopDomain?: "",
-                shopInfo?.info?.shopLocation?: "",
-                it,
-                isFavourite)
-        }
-        shopId?.run { presenter.toggleFavouriteShop(this) }
+                    CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
+                            it.goldOS.isGold == 1))
 
+            sendMoEngageFavoriteEvent(it.shopCore.name,
+                    it.shopCore.shopID,
+                    it.shopCore.domain,
+                    it.location,
+                    it.goldOS.isOfficial == 1,
+                    isFavourite)
+
+            //presenter.toggleFavouriteShop(it.shopCore.shopID)
+        }
     }
 
     fun sendMoEngageFavoriteEvent(shopName: String, shopID: String, shopDomain: String, shopLocation: String,
@@ -532,8 +537,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun goToAddProduct() {
-        shopInfo?.run {
-            shopPageTracking.clickAddProduct(CustomDimensionShopPage.create(shopInfo))
+        (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+            shopPageTracking.clickAddProduct(CustomDimensionShopPage.create(it.shopCore.shopID,
+                    it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
         }
         RouteManager.route(this, ApplinkConst.PRODUCT_ADD)
     }
@@ -559,4 +565,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     fun getShopInfoPosition(): Int {
         return shopPageViewPagerAdapter.count - 1
     }
+
+    fun getShopInfoData() = (shopViewModel.shopInfoResp.value as? Success)?.data
 }

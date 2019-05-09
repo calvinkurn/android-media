@@ -20,7 +20,7 @@ class GQLGetShopInfoUseCase (private val gqlQuery: String,
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(gqlRequest)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.NONE).build())
+                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ShopInfo.Response::class.java)

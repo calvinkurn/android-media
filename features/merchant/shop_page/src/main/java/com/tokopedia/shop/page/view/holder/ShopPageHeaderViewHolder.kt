@@ -18,7 +18,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.constant.ShopUrl
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.extension.formatToSimpleNumber
 import kotlinx.android.synthetic.main.partial_shop_page_header.view.*
 
@@ -28,20 +28,20 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     private var isShopFavourited = false
 
     fun bind(shopInfo: ShopInfo, isMyShop: Boolean) {
-        isShopFavourited = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited())
-        view.shopName.text = MethodChecker.fromHtml(shopInfo.info.shopName).toString()
-        if (shopInfo.info.shopTotalFavorit > 1) {
+        isShopFavourited = TextApiUtils.isValueTrue(shopInfo.favoriteData.alreadyFavorited.toString())
+        view.shopName.text = MethodChecker.fromHtml(shopInfo.shopCore.name).toString()
+        if (shopInfo.favoriteData.totalFavorite > 1) {
             view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_followers,
-                    shopInfo.info.shopTotalFavorit.toDouble().formatToSimpleNumber()))
+                    shopInfo.favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
         } else { // if 0 or 1, only print as follower (without s)
             view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_follower,
-                    shopInfo.info.shopTotalFavorit.toDouble().formatToSimpleNumber()))
+                    shopInfo.favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
         }
         view.shopFollower.setOnClickListener { listener.onFollowerTextClicked() }
-        ImageHandler.loadImageCircle2(view.context, view.shopImageView, shopInfo.info.shopAvatar)
+        ImageHandler.loadImageCircle2(view.context, view.shopImageView, shopInfo.shopAssets.avatar)
         when {
-            TextApiUtils.isValueTrue(shopInfo.info.shopIsOfficial) -> displayOfficial()
-            shopInfo.info.isShopIsGoldBadge -> {
+            TextApiUtils.isValueTrue(shopInfo.goldOS.isOfficial.toString()) -> displayOfficial()
+            shopInfo.goldOS.isGoldBadge == 1 -> {
                 displayGoldenShop()
                 displayGeneral(shopInfo)
             }
@@ -62,7 +62,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
 
     private fun updateViewShopStatus(shopInfo: ShopInfo, isMyShop: Boolean) {
         view.buttonActionAbnormal.visibility = if (isMyShop) View.VISIBLE else View.GONE
-        when (shopInfo.info.shopStatus){
+        when (shopInfo.statusInfo.shopStatus){
             ShopStatusDef.CLOSED -> showShopClosed(shopInfo)
             ShopStatusDef.MODERATED -> showShopModerated(isMyShop,false)
             ShopStatusDef.MODERATED_PERMANENTLY -> showShopModerated(isMyShop,true)
@@ -87,11 +87,15 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         view.buttonActionAbnormal.apply {
             text = view.context.getString(R.string.shop_info_label_see_how_to_open)
             setOnClickListener {
-                shopPageTracking.clickHowToActivateShop(CustomDimensionShopPage.create(shopInfo))
+                shopPageTracking.clickHowToActivateShop(CustomDimensionShopPage
+                        .create(shopInfo.shopCore.shopID, shopInfo.goldOS.isOfficial == 1,
+                                shopInfo.goldOS.isGold == 1))
                 listener.goToHowActivate()
             }
         }
-        shopPageTracking.impressionHowToActivateShop(CustomDimensionShopPage.create(shopInfo))
+        shopPageTracking.impressionHowToActivateShop(CustomDimensionShopPage
+                .create(shopInfo.shopCore.shopID, shopInfo.goldOS.isOfficial == 1,
+                        shopInfo.goldOS.isGold == 1))
     }
 
     private fun showShopModerated(isMyShop: Boolean, isPermanent: Boolean) {
@@ -117,7 +121,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
 
     private fun showShopClosed(shopInfo: ShopInfo) {
         val shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
-                DateFormatUtils.FORMAT_D_MMMM_YYYY, shopInfo.closedInfo.until)
+                DateFormatUtils.FORMAT_D_MMMM_YYYY, shopInfo.closedInfo.closeUntil)
         showShopStatusTicker(R.drawable.ic_shop_close_v3,
                 view.context.getString(R.string.shop_page_header_shop_closed_info, shopCloseUntilString),
                 shopInfo.closedInfo.note, R.color.green_ticker, R.color.green_overlay_closed)
@@ -125,10 +129,16 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             text = view.context.getString(R.string.shop_info_label_open_action)
             setOnClickListener {
                 listener.openShop()
-                shopPageTracking.clickOpenOperationalShop(CustomDimensionShopPage.create(shopInfo))
+                shopPageTracking.clickOpenOperationalShop(CustomDimensionShopPage
+                        .create(shopInfo.shopCore.shopID,
+                                shopInfo.goldOS.isOfficial == 1,
+                                shopInfo.goldOS.isGold == 1))
             }
         }
-        shopPageTracking.impressionOpenOperationalShop(CustomDimensionShopPage.create(shopInfo))
+        shopPageTracking.impressionOpenOperationalShop(CustomDimensionShopPage
+                .create(shopInfo.shopCore.shopID,
+                shopInfo.goldOS.isOfficial == 1,
+                shopInfo.goldOS.isGold == 1))
     }
 
     private fun showShopStatusTicker(@DrawableRes iconRes: Int, title: String, description: String,
@@ -211,11 +221,12 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         view.shopLabel.visibility = View.GONE
         view.shopReputationView.visibility = View.VISIBLE
 
-        val reputaionMedalType = shopInfo.stats.shopBadgeLevel.set.toInt()
+        //TODO SHOPREPUTATION
+        /*val reputaionMedalType = shopInfo.stats.shopBadgeLevel.set.toInt()
         val reputationLevel = shopInfo.stats.shopBadgeLevel.level.toInt()
         val reputationScore = shopInfo.stats.shopReputationScore
 
-        view.shopReputationView.setValue(reputaionMedalType, reputationLevel, reputationScore)
+        view.shopReputationView.setValue(reputaionMedalType, reputationLevel, reputationScore)*/
     }
 
     private fun displayGoldenShop() {

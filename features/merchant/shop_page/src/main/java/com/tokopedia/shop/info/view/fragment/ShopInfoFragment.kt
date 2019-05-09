@@ -5,7 +5,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
@@ -16,8 +15,8 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.util.TextHtmlUtils
 import com.tokopedia.shop.extension.transformToVisitable
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
@@ -55,8 +54,6 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
     private val noteAdapter by lazy {
         BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>(ShopNoteAdapterTypeFactory(this))
     }
-    private var shopId: String = "0"
-    private var shopDomain: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,8 +81,6 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
     }
 
     fun updateShopInfo(shopInfo: ShopInfo) {
-        shopId = shopInfo.info.shopId
-        shopDomain = shopInfo.info.shopDomain
         this.shopInfo = shopInfo
         refreshUIFirstTime()
     }
@@ -109,9 +104,11 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
     }
 
     private fun displayShopNote() {
-        recyclerViewNote.adapter = noteAdapter
-        showLoading()
-        presenter.getShopNoteList(shopId)
+        shopInfo?.let {
+            recyclerViewNote.adapter = noteAdapter
+            showLoading()
+            presenter.getShopNoteList(it.shopCore.shopID)
+        }
     }
 
     private fun showLoading() {
@@ -127,9 +124,9 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
 
     private fun displayShopLogistic(shopInfo: ShopInfo) {
         recyclerViewLogistic.adapter = ShopInfoLogisticAdapter(ShopInfoLogisticAdapterTypeFactory(),
-                shopInfo.shipment.map { it.transformToVisitable() })
+                shopInfo.shipments.map { it.transformToVisitable() })
 
-        if (!presenter.isMyshop(shopId)) {
+        if (!presenter.isMyshop(shopInfo.shopCore.shopID)) {
             labelViewLogisticTitle.setContent("")
             labelViewLogisticTitle.setOnClickListener { }
         } else {
@@ -146,7 +143,7 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
     }
 
     private fun displayShopStatistics(shopInfo: ShopInfo) {
-        presenter.getShopReputationSpeed(shopId)
+        /*presenter.getShopReputationSpeed(shopId)
         productQualityValue.text = shopInfo.ratings.quality.average
         productRating.rating = try {
             shopInfo.ratings.quality.average.toFloat()
@@ -155,27 +152,32 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
         }
         totalReview.text = getString(R.string.shop_info_content_total_review, shopInfo.ratings.quality.countTotal)
         labelViewReview.setOnClickListener { goToReviewQualityDetail() }
-        labelViewDiscussion.setOnClickListener { gotoShopDiscussion() }
+        labelViewDiscussion.setOnClickListener { gotoShopDiscussion() }*/
     }
 
     private fun gotoShopDiscussion() {
         if (activity?.application is ShopModuleRouter) {
             shopInfo?.run {
+                val shopId = shopCore.shopID
                 shopPageTracking.clickDiscussion(
-                        presenter.isMyshop(shopId), CustomDimensionShopPage.create(shopInfo))
+                        presenter.isMyshop(shopId),
+                        CustomDimensionShopPage.create(shopId, goldOS.isOfficial == 1, goldOS.isGold == 1))
+
+                (activity?.application as? ShopModuleRouter)?.goToShopDiscussion(activity, shopId)
             }
-            (activity?.application as ShopModuleRouter).goToShopDiscussion(activity, shopId)
         }
     }
 
     private fun displayShopDescription(shopInfo: ShopInfo) {
         shopInfoDescription.text = TextHtmlUtils
-                .getTextFromHtml("${shopInfo.info.shopTagline}<br/><br/>${shopInfo.info.shopDescription}")
+                .getTextFromHtml("${shopInfo.shopCore.tagLine}<br/><br/>${shopInfo.shopCore.description}")
 
-        shopInfoLocation.text = shopInfo.info.shopLocation
-        shopInfoOpenSince.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.info.shopOpenSince)
+        shopInfoLocation.text = shopInfo.location
+        shopInfoOpenSince.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.createdInfo.openSince)
 
-        val reputaionMedalType = shopInfo.stats.shopBadgeLevel.set.toInt()
+
+        //TODO REQUEST SHOPBADGE ?
+        /*val reputaionMedalType = shopInfo.stats.shopBadgeLevel.set.toInt()
         val reputationLevel = shopInfo.stats.shopBadgeLevel.level.toInt()
         val reputationScore = shopInfo.stats.shopReputationScore
 
@@ -184,13 +186,13 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
 
         textViewScoreGood.text = shopInfo.stats.shopLastTwelveMonths.countScoreGood
         textViewScoreNeutral.text = shopInfo.stats.shopLastTwelveMonths.countScoreNeutral
-        textViewScoreBad.text = shopInfo.stats.shopLastTwelveMonths.countScoreBad
+        textViewScoreBad.text = shopInfo.stats.shopLastTwelveMonths.countScoreBad*/
     }
 
     private fun displayImageBackground(shopInfo: ShopInfo) {
-        if (shopInfo.info.isShopOfficial || shopInfo.info.isGoldMerchant) {
+        if (shopInfo.goldOS.isOfficial == 1 || shopInfo.goldOS.isGold == 1) {
             shopBackgroundImageView.visibility = View.VISIBLE
-            ImageHandler.LoadImage(shopBackgroundImageView, shopInfo.info.shopCover)
+            ImageHandler.LoadImage(shopBackgroundImageView, shopInfo.shopAssets.cover)
         } else {
             shopBackgroundImageView.visibility = View.GONE
         }
@@ -198,10 +200,14 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
 
     private fun goToReviewQualityDetail() {
         shopInfo?.run {
-            shopPageTracking.clickReview(presenter.isMyshop(shopId), CustomDimensionShopPage.create(shopInfo))
-        }
-        if (activity?.application is ShopModuleRouter) {
-            (activity?.application as ShopModuleRouter).goToShopReview(activity, shopId, shopDomain)
+            val shopId = shopCore.shopID
+            shopPageTracking.clickReview(presenter.isMyshop(shopId),
+                    CustomDimensionShopPage.create(shopId, goldOS.isOfficial == 1,
+                            goldOS.isGold == 1))
+
+            if (activity?.application is ShopModuleRouter) {
+                (activity?.application as? ShopModuleRouter)?.goToShopReview(activity, shopId, shopCore.domain)
+            }
         }
     }
 
@@ -215,6 +221,7 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
     }
 
     override fun renderListNote(notes: List<ShopNoteViewModel>) {
+        val shopId = shopInfo?.shopCore?.shopID ?: "0"
         hideLoading()
         noteAdapter.clearAllElements()
         noteAdapter.addElement(notes)
@@ -245,7 +252,8 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
         val app = activity?.application
         if (app is ShopModuleRouter) {
             shopInfo?.run {
-                shopPageTracking.clickAddNote(CustomDimensionShopPage.create(shopInfo))
+                shopPageTracking.clickAddNote(CustomDimensionShopPage
+                        .create(shopCore.shopID, goldOS.isOfficial == 1, goldOS.isGold == 1))
             }
             app.goToEditShopNote(activity)
         }
@@ -253,8 +261,11 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
 
     override fun onNoteClicked(position: Long, shopNoteViewModel: ShopNoteViewModel) {
         shopInfo?.run {
+            val shopId = shopCore.shopID
             shopPageTracking.clickReadNotes(
-                    presenter.isMyshop(shopId), position.toInt(), CustomDimensionShopPage.create(shopInfo))
+                    presenter.isMyshop(shopId), position.toInt(),
+                    CustomDimensionShopPage.create(shopId, goldOS.isOfficial == 1,
+                            goldOS.isGold == 1))
         }
 
         startActivity(ShopNoteDetailActivity.createIntent(activity, shopNoteViewModel.getShopNoteId().toString()))

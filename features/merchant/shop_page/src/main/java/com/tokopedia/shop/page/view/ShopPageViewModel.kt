@@ -22,12 +22,13 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
 
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
 
-    fun getShop(shopId: String? = null, shopDomain: String? = null){
+    fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false){
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
             getshopInfoUseCase.params = GQLGetShopInfoUseCase
                     .createParams(if (id == 0)listOf() else listOf(id), shopDomain)
+            getshopInfoUseCase.isFromCacheFirst = !isRefresh
             shopInfoResp.value = Success(withContext(Dispatchers.IO){getshopInfoUseCase.executeOnBackground()})
         }){
             shopInfoResp.value = Fail(it)
