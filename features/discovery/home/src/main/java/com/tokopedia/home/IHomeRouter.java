@@ -37,9 +37,10 @@ public interface IHomeRouter {
 
 //    void goToApplinkActivity(Context context, String applink);
 
+    /* Can't remove because WalletActivity doesn't have Deeplink */
     void goToWallet(Context context, String url);
 
-    void goToTokoCash(String appLinkBalance, Activity activity);
+//    void goToTokoCash(String appLinkBalance, Activity activity);
 
 //    void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 

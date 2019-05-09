@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -33,7 +32,6 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -42,6 +40,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
@@ -63,7 +62,6 @@ import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
-import com.tokopedia.home.beranda.presentation.view.SectionContainer;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
@@ -735,20 +733,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void actionAppLinkWalletHeader(String appLinkBalance) {
-        if ((getActivity()).getApplication() instanceof IHomeRouter) {
-            ((IHomeRouter) (getActivity()).getApplication())
-                    .goToTokoCash(appLinkBalance,
-                            getActivity());
-        }
-//        openApplink(appLinkBalance);
+//        if ((getActivity()).getApplication() instanceof IHomeRouter) {
+//            ((IHomeRouter) (getActivity()).getApplication())
+//                    .goToTokoCash(appLinkBalance,
+//                            getActivity());
+//        }
+        goToTokoCash(appLinkBalance);
     }
 
-    private void goToApplink(String appLinkScheme){
-//        Intent intent = appLinkScheme == null || appLinkScheme.isEmpty() ?
-//                (getContext(), "");
-//                : RouteManager.isSupportApplink(getContext(), appLinkScheme)
-//                ? RouteManager.getIntent(getContext(), appLinkScheme).setData(Uri.parse(appLinkScheme))
-//                : getWebviewActivityWithIntent(getContext(), appLinkScheme);
+    private void goToTokoCash(String appLinkScheme){
+        Intent intent = appLinkScheme == null || appLinkScheme.isEmpty() ?
+                RouteManager.getIntent(getContext(), ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme)
+                : RouteManager.isSupportApplink(getContext(), appLinkScheme)
+                ? RouteManager.getIntent(getContext(), appLinkScheme).setData(Uri.parse(appLinkScheme))
+                : RouteManager.getIntent(getContext(), ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme);
+        startActivityForResult(intent, IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE);
     }
 
     @Override
@@ -776,11 +775,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         }
                     }
                 } else {
-                    if ((getActivity()).getApplication() instanceof IHomeRouter) {
-                        ((IHomeRouter) (getActivity()).getApplication())
-                                .goToTokoCash(appLink,
-                                        getActivity());
-                    }
+                    goToTokoCash(appLink);
+//                    if ((getActivity()).getApplication() instanceof IHomeRouter) {
+//                        ((IHomeRouter) (getActivity()).getApplication())
+//                                .goToTokoCash(appLink,
+//                                        getActivity());
+//                    }
                 }
 
             }
