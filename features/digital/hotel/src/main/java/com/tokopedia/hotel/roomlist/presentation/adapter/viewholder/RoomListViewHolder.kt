@@ -31,7 +31,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
                 max_occupancy_text_view.text = roomListModel.occupancyText
                 bed_info_text_view.text = roomListModel.bedInfo
                 room_price_text_view.text = roomListModel.price
-                pay_hotel_text_view.visibility = if (roomListModel.payInHotel) View.VISIBLE else View.GONE
+                pay_hotel_layout.visibility = if (roomListModel.payInHotel) View.VISIBLE else View.GONE
                 room_left_text_view.visibility = if (roomListModel.roomLeft <= 2) View.VISIBLE else View.GONE
                 room_left_text_view.text = getString(R.string.hotel_room_room_left_text, roomListModel.roomLeft.toString())
                 cc_not_required_text_view.visibility = if (roomListModel.isCcRequired) View.GONE else View.VISIBLE
