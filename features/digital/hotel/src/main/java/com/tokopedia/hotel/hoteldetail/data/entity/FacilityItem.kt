@@ -17,6 +17,9 @@ class FacilityItem(@SerializedName("id")
                    @SerializedName("icon")
                    @Expose
                    val icon: String = "",
+                   @SerializedName("iconUrl")
+                   @Expose
+                   val iconUrl: String = "",
                    @SerializedName("availability")
                    @Expose
                    val availability: Int = 0) : Parcelable {
@@ -25,12 +28,14 @@ class FacilityItem(@SerializedName("id")
             parcel.readInt(),
             parcel.readString(),
             parcel.readString(),
+            parcel.readString(),
             parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
         parcel.writeString(name)
         parcel.writeString(icon)
+        parcel.writeString(iconUrl)
         parcel.writeInt(availability)
     }
 
@@ -47,4 +52,5 @@ class FacilityItem(@SerializedName("id")
             return arrayOfNulls(size)
         }
     }
+
 }

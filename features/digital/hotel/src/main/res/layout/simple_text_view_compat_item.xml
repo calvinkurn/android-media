@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.design.component.TextViewCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/text_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:fontSize="small">
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:clipToPadding="false"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
 
-</com.tokopedia.design.component.TextViewCompat>
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:fontSize="small" />
+
+</android.support.v4.widget.NestedScrollView>

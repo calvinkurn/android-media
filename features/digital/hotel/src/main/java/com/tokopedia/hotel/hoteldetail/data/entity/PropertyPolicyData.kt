@@ -4,6 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailFacilityAdapterTypeFactory
 
 /**
  * @author by furqan on 26/04/19
@@ -16,7 +18,8 @@ class PropertyPolicyData(@SerializedName("name")
                          val content: String = "",
                          @SerializedName("propertyPolicyId")
                          @Expose
-                         val propertyPolicyId: String = "") : Parcelable {
+                         val propertyPolicyId: String = "")
+    : Parcelable, Visitable<HotelDetailFacilityAdapterTypeFactory> {
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),
@@ -42,4 +45,7 @@ class PropertyPolicyData(@SerializedName("name")
             return arrayOfNulls(size)
         }
     }
+
+    override fun type(typeFactory: HotelDetailFacilityAdapterTypeFactory?): Int =
+        typeFactory!!.type(this)
 }

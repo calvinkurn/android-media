@@ -3,6 +3,7 @@ package com.tokopedia.hotel.hoteldetail.presentation.fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.content.ContextCompat
@@ -12,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -28,6 +28,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailMapActiv
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
+import com.tokopedia.hotel.hoteldetail.presentation.model.HotelDetailAllFacilityModel
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
@@ -38,6 +39,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import java.util.*
 import javax.inject.Inject
+
 
 /**
  * @author by furqan on 22/04/19
@@ -153,6 +155,10 @@ class HotelDetailFragment : BaseDaggerFragment() {
         (activity as HotelDetailActivity).setSupportActionBar(detail_toolbar)
         (activity as HotelDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val navIcon = detail_toolbar.navigationIcon
+        navIcon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
+        (activity as HotelDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
+
         collapsing_toolbar.title = ""
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
@@ -164,11 +170,15 @@ class HotelDetailFragment : BaseDaggerFragment() {
                 }
                 if (scrollRange + verticalOffset == 0) {
                     collapsing_toolbar.title = data.property.name
+                    navIcon?.setColorFilter(resources.getColor(R.color.black), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
                     collapsing_toolbar.title = " "
+                    navIcon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
+
+                (activity as HotelDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
             }
         })
 
@@ -304,12 +314,8 @@ class HotelDetailFragment : BaseDaggerFragment() {
         rv_hotel_facilities.adapter = mainFacilityAdapter
 
         tv_hotel_detail_all_facilities.setOnClickListener {
-            val objectId = System.currentTimeMillis().toString()
-            SaveInstanceCacheManager(context!!, objectId).apply {
-                put(HotelDetailAllFacilityFragment.EXTRA_PROPERTY_DETAIL, data)
-            }
             startActivity(HotelDetailAllFacilityActivity.getCallingIntent(context!!, hotelName,
-                    objectId, HotelDetailAllFacilityFragment.FACILITY_TITLE))
+                    HotelDetailAllFacilityModel.transform(data), HotelDetailAllFacilityFragment.FACILITY_TITLE))
         }
     }
 
@@ -317,13 +323,8 @@ class HotelDetailFragment : BaseDaggerFragment() {
         if (data.property.importantInformation.isNotEmpty()) {
             tv_hotel_important_info.text = data.property.importantInformation
             tv_hotel_important_info_more.setOnClickListener {
-                val objectId = System.currentTimeMillis().toString()
-                SaveInstanceCacheManager(context!!, objectId).apply {
-                    put(HotelDetailAllFacilityFragment.EXTRA_PROPERTY_DETAIL, data)
-                }
-
                 startActivity(HotelDetailAllFacilityActivity.getCallingIntent(context!!, hotelName,
-                        objectId, HotelDetailAllFacilityFragment.IMPORTANT_INFO_TITLE))
+                        HotelDetailAllFacilityModel.transform(data), HotelDetailAllFacilityFragment.IMPORTANT_INFO_TITLE))
             }
         } else {
             container_important_info.visibility = View.GONE
@@ -334,13 +335,8 @@ class HotelDetailFragment : BaseDaggerFragment() {
         if (data.property.description.isNotEmpty()) {
             tv_hotel_description.text = data.property.description
             tv_hotel_description_more.setOnClickListener {
-                val objectId = System.currentTimeMillis().toString()
-                SaveInstanceCacheManager(context!!, objectId).apply {
-                    put(HotelDetailAllFacilityFragment.EXTRA_PROPERTY_DETAIL, data)
-                }
-
                 startActivity(HotelDetailAllFacilityActivity.getCallingIntent(context!!, hotelName,
-                        objectId, HotelDetailAllFacilityFragment.DESCRIPTION_TITLE))
+                        HotelDetailAllFacilityModel.transform(data), HotelDetailAllFacilityFragment.DESCRIPTION_TITLE))
             }
         } else {
             container_hotel_description.visibility = View.GONE
@@ -361,12 +357,8 @@ class HotelDetailFragment : BaseDaggerFragment() {
         }
 
         tv_hotel_detail_all_policies.setOnClickListener {
-            val objectId = System.currentTimeMillis().toString()
-            SaveInstanceCacheManager(context!!, objectId).apply {
-                put(HotelDetailAllFacilityFragment.EXTRA_PROPERTY_DETAIL, data)
-            }
             startActivity(HotelDetailAllFacilityActivity.getCallingIntent(context!!, hotelName,
-                    objectId, HotelDetailAllFacilityFragment.POLICY_TITLE))
+                    HotelDetailAllFacilityModel.transform(data), HotelDetailAllFacilityFragment.POLICY_TITLE))
         }
     }
 

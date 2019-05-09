@@ -1,6 +1,9 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
+import android.os.Bundle
+import android.view.View
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityData
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailFacilityAdapterTypeFactory
 
@@ -9,7 +12,13 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailFacilityA
  */
 class HotelDetailFacilityFragment : BaseListFragment<FacilityData, HotelDetailFacilityAdapterTypeFactory>() {
 
-    lateinit var facilityListData: List<FacilityData>
+    lateinit var connector: Connector
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
+    }
 
     override fun getAdapterTypeFactory(): HotelDetailFacilityAdapterTypeFactory = HotelDetailFacilityAdapterTypeFactory()
 
@@ -26,12 +35,13 @@ class HotelDetailFacilityFragment : BaseListFragment<FacilityData, HotelDetailFa
     }
 
     override fun loadData(page: Int) {
-        // do nothing
+        if (::connector.isInitialized) {
+            renderList(connector.getFacilityData())
+        }
     }
 
-    fun initData(facilityListData: List<FacilityData>) {
-        this.facilityListData = facilityListData
-        renderList(facilityListData)
+    interface Connector {
+        fun getFacilityData(): List<FacilityData>
     }
 
 }

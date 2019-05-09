@@ -12,21 +12,26 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailFacilityA
  */
 class FacilityData(@SerializedName("groupName")
                    @Expose
-                   val groupName: String,
+                   val groupName: String = "",
+                   @SerializedName("groupIconUrl")
+                   @Expose
+                   val groupIconUrl: String = "",
                    @SerializedName("item")
                    @Expose
                    val item: List<FacilityItem> = listOf())
     : Parcelable, Visitable<HotelDetailFacilityAdapterTypeFactory> {
 
-    override fun type(typeFactory: HotelDetailFacilityAdapterTypeFactory): Int =
-            typeFactory.type(this)
-
     constructor(parcel: Parcel) : this(
+            parcel.readString(),
             parcel.readString(),
             parcel.createTypedArrayList(FacilityItem))
 
+    override fun type(typeFactory: HotelDetailFacilityAdapterTypeFactory): Int =
+            typeFactory.type(this)
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(groupName)
+        parcel.writeString(groupIconUrl)
         parcel.writeTypedList(item)
     }
 
@@ -43,4 +48,5 @@ class FacilityData(@SerializedName("groupName")
             return arrayOfNulls(size)
         }
     }
+
 }

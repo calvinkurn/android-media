@@ -262,8 +262,6 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_hotel_review_gradient"
                         android:clipToPadding="false"
-                        android:paddingStart="@dimen/dp_16"
-                        android:paddingLeft="@dimen/dp_16"
                         android:paddingTop="@dimen/dp_8"
                         android:paddingEnd="@dimen/dp_16"
                         android:paddingRight="@dimen/dp_16"
@@ -383,8 +381,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_8"
-                        android:clipToPadding="false"
-                        android:padding="@dimen/dp_16" />
+                        android:clipToPadding="false" />
 
                 </LinearLayout>
 
