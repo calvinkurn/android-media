@@ -185,20 +185,17 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public boolean onQueryTextSubmit(SearchParameter searchParameter) {
-        SearchParameter copySearchParameter = new SearchParameter(searchParameter);
+        this.searchParameter = new SearchParameter(searchParameter);
 
-        String query = copySearchParameter.getSearchQuery();
-
+        String query = searchParameter.getSearchQuery();
         AutoCompleteTracking.eventClickSubmit(this, query);
 
-        handleQueryTextSubmitBasedOnCurrentTab(copySearchParameter);
+        handleQueryTextSubmitBasedOnCurrentTab();
 
         return false;
     }
 
-    private void handleQueryTextSubmitBasedOnCurrentTab(SearchParameter searchParameter) throws RuntimeException {
-        this.searchParameter = searchParameter;
-
+    private void handleQueryTextSubmitBasedOnCurrentTab() throws RuntimeException {
         String query = searchParameter.getSearchQuery();
 
         switch (searchView.getSuggestionFragment().getCurrentTab()) {
