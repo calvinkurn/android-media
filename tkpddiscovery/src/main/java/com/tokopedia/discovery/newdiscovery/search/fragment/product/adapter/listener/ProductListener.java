@@ -1,7 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener;
 
-import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.base.EmptyStateListener;
+import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 
 /**
@@ -13,7 +15,6 @@ public interface ProductListener extends EmptyStateListener {
 
     void onLongClick(ProductItem item, int adapterPosition);
 
-
     void onWishlistButtonClicked(final ProductItem productItem);
 
     void onSuggestionClicked(String suggestedQuery);
@@ -24,5 +25,11 @@ public interface ProductListener extends EmptyStateListener {
 
     void onQuickFilterSelected(Option option);
 
+    boolean isQuickFilterSelected(Option option);
+
     void onProductImpressed(ProductItem item, int adapterPosition);
+
+    void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword);
+
+    void onGlobalNavWidgetClickSeeAll(String applink, String url);
 }

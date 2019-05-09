@@ -38,6 +38,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
@@ -366,8 +367,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             strings.add(imageUrl)
             val topChatRouter = (it.applicationContext as TopChatRouter)
 
-            topChatRouter.openImagePreviewFromChat(it, strings, ArrayList(),
-                    opponentName, replyTime)
+            it.startActivity(ImagePreviewActivity.getCallingIntent(it,
+                    strings,
+                    null, 0))
         }
 
     }
@@ -610,7 +612,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         activity?.let {
             val router = (it.application as TopChatRouter)
             presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(),
-                    element.shopId)
+                    shopId)
         }
     }
 
@@ -618,7 +620,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         activity?.let {
             val router = (it.application as TopChatRouter)
             presenter.addProductToCart(router, element, onError(), onSuccessAddToCart(),
-                    element.shopId)
+                    shopId)
         }
     }
 
@@ -648,6 +650,24 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         val intent = RouteManager.getIntent(activity, ApplinkConst.SHOP.replace("{shop_id}", shopId
                 .toString()))
         startActivityForResult(intent, REQUEST_GO_TO_SHOP)
+    }
+
+    override fun followUnfollowShop(actionFollow: Boolean) {
+        analytics.eventFollowUnfollowShop(actionFollow, shopId.toString())
+        presenter.followUnfollowShop(shopId.toString(), onErrorFollowUnfollowShop(), onSuccessFollowUnfollowShop())
+    }
+
+    private fun onErrorFollowUnfollowShop(): (Throwable) -> Unit {
+        return {
+            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
+        }
+    }
+    private fun onSuccessFollowUnfollowShop(): (Boolean) -> Unit {
+        return {
+            if(it) {
+                getViewState().isShopFollowed = !getViewState().isShopFollowed
+            }
+        }
     }
 
     override fun onDeleteConversation() {
