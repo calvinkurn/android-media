@@ -50,7 +50,6 @@ public class ProductCardView extends BaseCustomView {
 
     private void init() {
         final View view = inflate(getContext(), R.layout.product_card_layout, this);
-        cardViewContainer = view.findViewById(R.id.cardViewContainer);
         textName = view.findViewById(R.id.textName);
         textPrice = view.findViewById(R.id.textPrice);
         textDiscount = view.findViewById(R.id.textDiscount);
@@ -63,12 +62,12 @@ public class ProductCardView extends BaseCustomView {
         reviewCountView = view.findViewById(R.id.review_count);
     }
 
-    public void setCardViewMinimumHeight(int minHeight){
-        cardViewContainer.setMinimumHeight(minHeight);
-    }
-
     public void setTitle(String title) {
         textName.setText(MethodChecker.fromHtml(title));
+    }
+
+    public void hideRatingView(){
+        ratingReviewContainer.setVisibility(View.INVISIBLE);
     }
 
     public void setDiscount(int discount) {

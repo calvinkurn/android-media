@@ -32,9 +32,9 @@ class RecommendationProductAdapter(private var product: RecommendationModel) : R
         private val recommendationCardView: RecommendationCardView? = itemView.findViewById(R.id.productCardView)
 
         fun bind(product: RecommendationItem, recommendationTitle:String) {
-            recommendationCardView?.setCardViewMinimumHeight(322)
             recommendationCardView?.setTitle(recommendationTitle)
             recommendationCardView?.setRecommendationModel(product, this)
+            recommendationCardView?.hideRatingView()
             recommendationCardView?.setWishlistButtonVisible(false)
         }
 
