@@ -1,56 +1,56 @@
-package com.tokopedia.product.detail.data.model.shop
+package com.tokopedia.shop.common.graphql.data.shopinfo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ShopInfo(
-    @SerializedName("favoriteData")
-    @Expose
-    val favoriteData: FavoriteData = FavoriteData(),
+        @SerializedName("favoriteData")
+        @Expose
+        val favoriteData: FavoriteData = FavoriteData(),
 
-    @SerializedName("goldOS")
-    @Expose
-    val goldOS: GoldOS = GoldOS(),
+        @SerializedName("goldOS")
+        @Expose
+        val goldOS: GoldOS = GoldOS(),
 
-    @SerializedName("isAllowManage")
-    @Expose
-    val isAllowManage: Int = 0,
+        @SerializedName("isAllowManage")
+        @Expose
+        val isAllowManage: Int = 0,
 
-    @SerializedName("isOwner")
-    @Expose
-    val isOwner: Int = 0,
+        @SerializedName("isOwner")
+        @Expose
+        val isOwner: Int = 0,
 
-    @SerializedName("location")
-    @Expose
-    val location: String = "",
+        @SerializedName("location")
+        @Expose
+        val location: String = "",
 
-    @SerializedName("shipmentInfo")
-    @Expose
-    val shipments: List<ShopShipment> = listOf(),
+        @SerializedName("shipmentInfo")
+        @Expose
+        val shipments: List<ShopShipment> = listOf(),
 
-    @SerializedName("shopAssets")
-    @Expose
-    val shopAssets: ShopAssets = ShopAssets(),
+        @SerializedName("shopAssets")
+        @Expose
+        val shopAssets: ShopAssets = ShopAssets(),
 
-    @SerializedName("shopCore")
-    @Expose
-    val shopCore: ShopCore = ShopCore(),
+        @SerializedName("shopCore")
+        @Expose
+        val shopCore: ShopCore = ShopCore(),
 
-    @SerializedName("shopLastActive")
-    @Expose
-    val shopLastActive: String = "",
+        @SerializedName("shopLastActive")
+        @Expose
+        val shopLastActive: String = "",
 
-    @SerializedName("shopTerms")
-    @Expose
-    val shopTerms: Int = 0,
+        @SerializedName("shopTerms")
+        @Expose
+        val shopTerms: Int = 0,
 
-    @SerializedName("statusInfo")
-    @Expose
-    val statusInfo: StatusInfo = StatusInfo(),
+        @SerializedName("statusInfo")
+        @Expose
+        val statusInfo: StatusInfo = StatusInfo(),
 
-    @SerializedName("bbInfo")
-    @Expose
-    val bbInfo: List<BBInfo> = listOf()
+        @SerializedName("bbInfo")
+        @Expose
+        val bbInfo: List<BBInfo> = listOf()
 ) {
     data class Response(
         @SerializedName("shopInfoByID")

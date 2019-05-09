@@ -1,10 +1,9 @@
-package com.tokopedia.product.detail.data.model.shop
+package com.tokopedia.shop.common.graphql.data.shopinfo
 
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.view.adapter.CourierTypeFactory
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 data class ShopShipment(
@@ -43,7 +42,7 @@ data class ShopShipment(
         @SerializedName("product")
         @Expose
         val product: List<ShipmentProduct> = listOf()
-        ): BlackBoxShipmentHolder(), Parcelable{
+        ): Parcelable{
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
@@ -55,8 +54,6 @@ data class ShopShipment(
             parcel.readInt(),
             parcel.readInt(),
             parcel.createTypedArrayList(ShipmentProduct))
-
-    override fun type(typeFactory: CourierTypeFactory): Int = typeFactory.type(this)
 
     data class ShipmentProduct(
             @SerializedName("isAvailable")

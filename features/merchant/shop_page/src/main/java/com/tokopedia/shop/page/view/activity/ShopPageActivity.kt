@@ -1,6 +1,7 @@
 package com.tokopedia.shop.page.view.activity
 
 import android.app.Activity
+import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -26,7 +27,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -45,6 +45,7 @@ import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
 import com.tokopedia.shop.page.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.page.di.module.ShopPageModule
+import com.tokopedia.shop.page.view.ShopPageViewModel
 import com.tokopedia.shop.page.view.adapter.ShopPageViewPagerAdapter
 import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
 import com.tokopedia.shop.page.view.listener.ShopPageView
@@ -72,6 +73,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     @Inject
     lateinit var presenter: ShopPagePresenter
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var shopViewModel: ShopPageViewModel
 
     lateinit var shopPageTracking: ShopPageTrackingBuyer
     lateinit var shopPageViewHolder: ShopPageHeaderViewHolder
@@ -229,6 +234,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         mainLayout.requestFocus()
 
+        shopViewModel = ViewModelProviders.of(this, viewModelFactory)
+
         getShopInfo()
     }
 
@@ -340,15 +347,12 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                         return
                     }
                     val fragment = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
-                    if (fragment == null)
-                        return
+                            ?: return
 
-                    val etalaseId:String?
-
-                    if (remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)) {
-                        etalaseId = null
+                    val etalaseId:String? = if (remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)) {
+                        null
                     } else {
-                        etalaseId = (fragment as ShopProductListLimitedFragment).selectedEtalaseId
+                        (fragment as ShopProductListLimitedFragment).selectedEtalaseId
                     }
 
                     startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity, info.shopId,

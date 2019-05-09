@@ -10,14 +10,12 @@ import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.reputation.common.domain.interactor.DeleteReputationSpeedDailyCacheUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.note.domain.interactor.DeleteShopNoteUseCase
 import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase
 import com.tokopedia.shop.page.view.listener.ShopPageView
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject

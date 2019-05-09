@@ -7,7 +7,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
-import com.tokopedia.product.detail.data.model.shop.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp
 import java.util.*

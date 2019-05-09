@@ -15,7 +15,7 @@ import retrofit2.Retrofit;
  * @author sebastianuskh on 4/13/17.
  */
 @ShopScope
-@Module(includes = ShopCommonModule.class)
+@Module(includes = {ShopCommonModule.class, ShopViewModelModule.class})
 public class ShopModule {
 
     @ShopScope
