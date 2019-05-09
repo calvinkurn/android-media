@@ -313,7 +313,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         }
 
         if (accountModel.getTokopointsSumCoupon() != null) {
-            buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCoupon());
+            buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCouponStr());
         }
 
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());

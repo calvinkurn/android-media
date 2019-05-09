@@ -145,6 +145,16 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location != null && !tvLocationName.getText().equals(location.getName())) {
+            tvLocationName.setText(location.getName());
+            mPresenter.getDealsList(true);
+        }
+    }
+
     private void checkLocationStatus() {
 
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
@@ -306,27 +316,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
-            case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
-                if (resultCode == RESULT_OK) {
-                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (!tvLocationName.getText().equals(location1.getName())) {
-                        tvLocationName.setText(location1.getName());
-                        mPresenter.getDealsList(true);
-                    }
-                }
-                break;
-            case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
-                if (resultCode == RESULT_OK) {
-                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (!tvLocationName.getText().equals(location1.getName())) {
-                        tvLocationName.setText(location1.getName());
-                        mPresenter.getDealsList(true);
-                    } else {
-                        mPresenter.getDealsList(false);
-                    }
-
-                }
-                break;
             case DealsHomeActivity.REQUEST_CODE_LOGIN:
                 if (resultCode == RESULT_OK) {
                     if (getActivity() != null && getActivity().getApplication() != null) {
