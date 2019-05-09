@@ -2,6 +2,7 @@ package com.tokopedia.shop.page.view.activity
 
 import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -234,19 +235,20 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         mainLayout.requestFocus()
 
-        shopViewModel = ViewModelProviders.of(this, viewModelFactory)
+        shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
 
         getShopInfo()
     }
 
     private fun getShopInfo() {
         setViewState(VIEW_LOADING)
-        if (!TextUtils.isEmpty(shopId)) {
+        /*if (!TextUtils.isEmpty(shopId)) {
             presenter.getShopInfo(shopId!!)
         } else {
             if (shopDomain != null)
                 presenter.getShopInfoByDomain(shopDomain!!)
-        }
+        }*/
+        shopViewModel.getShop(shopId, shopDomain)
     }
 
     private fun setViewState(viewState: Int) {

@@ -8,8 +8,6 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.shop.common.R;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
@@ -21,7 +19,6 @@ import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
@@ -31,7 +28,6 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -58,21 +54,11 @@ public class ShopCommonModule {
         return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
     }
 
-    @Provides
-    public MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase(){
-        return GraphqlInteractor.getInstance().getMultiRequestGraphqlUseCase();
-    }
 
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO)
     public String provideGqlQueryShopInfo(@ApplicationContext Context context){
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_info);
-    }
-
-    @Provides
-    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCase(MultiRequestGraphqlUseCase graphqlUseCase,
-                                                              @Named(GQLQueryNamedConstant.SHOP_INFO) String gqlQuery){
-        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
     }
 
     /** NON-GQL, Plan to be removed **/
