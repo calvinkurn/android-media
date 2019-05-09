@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.presenter;
+package com.tokopedia.search.result.presentation.presenter.shop;
 
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetShopUseCase;

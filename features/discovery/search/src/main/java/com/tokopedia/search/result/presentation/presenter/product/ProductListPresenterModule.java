@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.presenter;
+package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;

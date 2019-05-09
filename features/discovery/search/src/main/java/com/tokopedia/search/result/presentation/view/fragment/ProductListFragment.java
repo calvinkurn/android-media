@@ -174,7 +174,9 @@ public class ProductListFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        presenter.attachView(this, this);
+        presenter.attachView(this);
+        presenter.setWishlistActionListener(this);
+
         return inflater.inflate(R.layout.fragment_base_discovery, null);
     }
 

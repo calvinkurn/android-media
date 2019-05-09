@@ -1,12 +1,10 @@
-package com.tokopedia.search.result.presentation.presenter;
+package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.search.result.presentation.presenter.DaggerProductListPresenterComponent;
-import com.tokopedia.search.result.presentation.presenter.ProductListPresenterComponent;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
@@ -14,6 +12,7 @@ import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
+import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -60,20 +59,25 @@ final class ProductListPresenter
     private boolean changeParamRow;
 
     @Override
-    public void attachView(ProductListSectionContract.View viewListener,
-                           WishListActionListener wishlistActionListener) {
+    public void attachView(ProductListSectionContract.View viewListener) {
         super.attachView(viewListener);
-        this.wishlistActionListener = wishlistActionListener;
-
-
-        ProductListPresenterComponent component = DaggerProductListPresenterComponent.builder()
-                .baseAppComponent(getView().getBaseAppComponent())
-                .build();
-
-        component.inject(this);
+        initInjector(viewListener);
 
         enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET,false);
         changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
+    }
+
+    private void initInjector(ProductListSectionContract.View view) {
+        ProductListPresenterComponent component = DaggerProductListPresenterComponent.builder()
+                .baseAppComponent(view.getBaseAppComponent())
+                .build();
+
+        component.inject(this);
+    }
+
+    @Override
+    public void setWishlistActionListener(WishListActionListener wishlistActionListener) {
+        this.wishlistActionListener = wishlistActionListener;
     }
 
     /**

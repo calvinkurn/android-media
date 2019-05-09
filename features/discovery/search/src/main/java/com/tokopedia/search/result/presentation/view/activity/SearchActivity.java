@@ -143,7 +143,7 @@ public class SearchActivity extends BaseActivity
         searchComponent.inject(this);
     }
 
-    private BaseAppComponent getBaseAppComponent() {
+    public BaseAppComponent getBaseAppComponent() {
         return ((BaseMainApplication)getApplication()).getBaseAppComponent();
     }
 
@@ -314,6 +314,85 @@ public class SearchActivity extends BaseActivity
 
     private void initPresenter() {
         searchPresenter.attachView(this);
+        searchPresenter.initInjector(this);
+        searchPresenter.setInitiateSearchListener(getInitiateSearchListener());
+    }
+
+    private InitiateSearchListener getInitiateSearchListener() {
+        return new InitiateSearchListener() {
+            @Override
+            public void onHandleResponseSearch(boolean isHasCatalog) {
+                stopPerformanceMonitoring();
+                moveToSearchActivity(isHasCatalog);
+            }
+
+            @Override
+            public void onHandleApplink(@NonNull String applink) {
+                moveWithApplink(applink);
+            }
+
+            @Override
+            public void onHandleResponseError() {
+                NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
+                    if(searchParameter == null) return;
+                    SearchActivity.this.performProductSearch(searchParameter.getSearchQuery());
+                });
+            }
+
+            @Override
+            public void onHandleResponseUnknown() {
+                throw new RuntimeException("Not yet handle unknown response");
+            }
+        };
+    }
+
+    protected void stopPerformanceMonitoring() {
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+        }
+    }
+
+    private void moveToSearchActivity(boolean isHasCatalog) {
+        if(getApplication() instanceof DiscoveryRouter) {
+            DiscoveryRouter router = (DiscoveryRouter)getApplication();
+            Intent searchActivityIntent = getSearchActivityIntent(router, isHasCatalog);
+            startActivity(searchActivityIntent);
+        }
+    }
+
+    private Intent getSearchActivityIntent(DiscoveryRouter router, boolean isHasCatalog) {
+        Intent searchActivityIntent = router.gotoSearchPage(this);
+        searchActivityIntent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
+        searchActivityIntent.putExtra(EXTRA_HAS_CATALOG, isHasCatalog);
+        searchActivityIntent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop);
+
+        return searchActivityIntent;
+    }
+
+    public void moveWithApplink(String applink) {
+        if(getApplication() instanceof DiscoveryRouter) {
+            DiscoveryRouter router = (DiscoveryRouter)getApplication();
+
+            if (router.isSupportApplink(applink)) {
+                openApplink(router, applink);
+            } else {
+                openWebViewURL(router, applink, this);
+            }
+        }
+
+        finish();
+    }
+
+    public void openApplink(DiscoveryRouter router, String applink) {
+        if (!TextUtils.isEmpty(applink)) {
+            router.goToApplinkActivity(this, applink);
+        }
+    }
+
+    public void openWebViewURL(DiscoveryRouter router, String url, Context context) {
+        if (!TextUtils.isEmpty(url) && context != null) {
+            router.actionOpenGeneralWebView(this, url);
+        }
     }
 
     private void initResources() {
@@ -568,7 +647,7 @@ public class SearchActivity extends BaseActivity
         onSearchingStart();
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
 
-        searchPresenter.initiateSearch(searchParameter.getSearchParameterMap(), isForceSearch, getInitiateSearchListener());
+        searchPresenter.initiateSearch(searchParameter.getSearchParameterMap(), isForceSearch);
     }
 
     private void updateSearchParameterBeforeSearch(String searchQuery) {
@@ -606,83 +685,6 @@ public class SearchActivity extends BaseActivity
         showLoadingView(true);
         showContainer(false);
         hideBottomNavigation();
-    }
-
-    private InitiateSearchListener getInitiateSearchListener() {
-        return new InitiateSearchListener() {
-            @Override
-            public void onHandleResponseSearch(boolean isHasCatalog) {
-                stopPerformanceMonitoring();
-                moveToSearchActivity(isHasCatalog);
-            }
-
-            @Override
-            public void onHandleApplink(@NonNull String applink) {
-                moveWithApplink(applink);
-            }
-
-            @Override
-            public void onHandleResponseError() {
-                NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
-                    if(searchParameter == null) return;
-                    SearchActivity.this.performProductSearch(searchParameter.getSearchQuery());
-                });
-            }
-
-            @Override
-            public void onHandleResponseUnknown() {
-                throw new RuntimeException("Not yet handle unknown response");
-            }
-        };
-    }
-
-    private void moveToSearchActivity(boolean isHasCatalog) {
-        if(getApplication() instanceof DiscoveryRouter) {
-            DiscoveryRouter router = (DiscoveryRouter)getApplication();
-            Intent searchActivityIntent = getSearchActivityIntent(router, isHasCatalog);
-            startActivity(searchActivityIntent);
-        }
-    }
-
-    private Intent getSearchActivityIntent(DiscoveryRouter router, boolean isHasCatalog) {
-        Intent searchActivityIntent = router.gotoSearchPage(this);
-        searchActivityIntent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
-        searchActivityIntent.putExtra(EXTRA_HAS_CATALOG, isHasCatalog);
-        searchActivityIntent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop);
-
-        return searchActivityIntent;
-    }
-
-    public void moveWithApplink(String applink) {
-        if(getApplication() instanceof DiscoveryRouter) {
-            DiscoveryRouter router = (DiscoveryRouter)getApplication();
-
-            if (router.isSupportApplink(applink)) {
-                openApplink(router, applink);
-            } else {
-                openWebViewURL(router, applink, this);
-            }
-        }
-
-        finish();
-    }
-
-    public void openApplink(DiscoveryRouter router, String applink) {
-        if (!TextUtils.isEmpty(applink)) {
-            router.goToApplinkActivity(this, applink);
-        }
-    }
-
-    public void openWebViewURL(DiscoveryRouter router, String url, Context context) {
-        if (!TextUtils.isEmpty(url) && context != null) {
-            router.actionOpenGeneralWebView(this, url);
-        }
-    }
-
-    protected void stopPerformanceMonitoring() {
-        if (performanceMonitoring != null) {
-            performanceMonitoring.stopTrace();
-        }
     }
 
     private void showContainer(boolean visible) {

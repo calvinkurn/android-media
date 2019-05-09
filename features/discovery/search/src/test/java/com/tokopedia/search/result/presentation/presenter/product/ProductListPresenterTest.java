@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.presenter;
+package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.usecase.RequestParams;
@@ -7,7 +7,6 @@ import com.tokopedia.usecase.UseCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -54,14 +53,14 @@ public class ProductListPresenterTest {
     public void loadMoreData_givenNulls_shouldNotExecuteUseCase() {
         productListPresenter.loadMoreData(null, null);
 
-        verify(searchProductLoadMoreUseCase, never()).execute(any(RequestParams.class), any(MockSearchProductModelSubscriber.class));
+        verify(searchProductLoadMoreUseCase, never()).execute(any(RequestParams.class), any(ProductListPresenterTest.MockSearchProductModelSubscriber.class));
     }
 
     @Test
     public void loadData_givenNulls_shouldNotExecuteUseCase() {
         productListPresenter.loadData(null, false, null, false);
 
-        verify(searchProductFirstPageUseCase, never()).execute(any(RequestParams.class), any(MockSearchProductModelSubscriber.class));
+        verify(searchProductFirstPageUseCase, never()).execute(any(RequestParams.class), any(ProductListPresenterTest.MockSearchProductModelSubscriber.class));
     }
 
     @After

@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.presenter;
+package com.tokopedia.search.result.presentation.presenter.abstraction;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
@@ -8,7 +8,7 @@ import com.tokopedia.usecase.RequestParams;
 import java.util.HashMap;
 import java.util.Map;
 
-abstract class SearchSectionPresenter<T extends SearchSectionContract.View>
+public abstract class SearchSectionPresenter<T extends SearchSectionContract.View>
         extends BaseDaggerPresenter<T>
         implements SearchSectionContract.Presenter<T> {
 

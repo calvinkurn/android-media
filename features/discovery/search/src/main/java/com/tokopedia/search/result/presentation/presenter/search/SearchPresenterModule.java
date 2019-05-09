@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.presenter;
+package com.tokopedia.search.result.presentation.presenter.search;
 
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.model.InitiateSearchModel;
@@ -14,7 +14,7 @@ public class SearchPresenterModule {
 
     @SearchScope
     @Provides
-    SearchContract.Presenter getSearchPresenter(UseCase<InitiateSearchModel> initiateSearchModelUseCase) {
-        return new SearchPresenter(initiateSearchModelUseCase);
+    SearchContract.Presenter getSearchPresenter() {
+        return new SearchPresenter();
     }
 }

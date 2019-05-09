@@ -91,8 +91,7 @@ public interface ProductListSectionContract {
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
-
-        void attachView(View viewListener, WishListActionListener wishlistActionListener);
+        void setWishlistActionListener(WishListActionListener wishlistActionListener);
 
         void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams);
 

@@ -1,12 +1,9 @@
-package com.tokopedia.search.result.presentation.presenter;
+package com.tokopedia.search.result.presentation.presenter.search;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.discovery.common.repository.gql.GqlSpecification;
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.model.InitiateSearchModel;
-import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.search.result.presentation.presenter.subscriber.InitiateSearchSubscriber;
 import com.tokopedia.usecase.RequestParams;
@@ -16,17 +13,32 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> implements SearchContract.Presenter {
+class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> implements SearchContract.Presenter {
 
+    @Inject
     UseCase<InitiateSearchModel> initiateSearchModelUseCase;
 
-    SearchPresenter(UseCase<InitiateSearchModel> initiateSearchModelUseCase) {
-        this.initiateSearchModelUseCase = initiateSearchModelUseCase;
+    private InitiateSearchListener initiateSearchListener;
+
+    SearchPresenter() { }
+
+    @Override
+    public void initInjector(SearchContract.View view) {
+        SearchPresenterComponent component = DaggerSearchPresenterComponent.builder()
+                .baseAppComponent(view.getBaseAppComponent())
+                .build();
+
+        component.inject(this);
+    }
+
+    @Override
+    public void setInitiateSearchListener(InitiateSearchListener initiateSearchListener) {
+        this.initiateSearchListener = initiateSearchListener;
     }
 
     @Override
     public void onPause() {
-        initiateSearchModelUseCase.unsubscribe();
+        if(initiateSearchModelUseCase != null) initiateSearchModelUseCase.unsubscribe();
     }
 
     @Override
@@ -40,12 +52,18 @@ final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> imp
     }
 
     @Override
-    public void initiateSearch(Map<String, Object> searchParameter, boolean isForceSearch, InitiateSearchListener initiateSearchListener) {
-        if(searchParameter == null || initiateSearchListener == null) return;
+    public void initiateSearch(Map<String, Object> searchParameter, boolean isForceSearch) {
+        initiateSearchCheckForNulls();
+        if(searchParameter == null) return;
 
         RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, isForceSearch);
 
         initiateSearchModelUseCase.execute(requestParams, new InitiateSearchSubscriber(initiateSearchListener));
+    }
+
+    private void initiateSearchCheckForNulls() {
+        if(initiateSearchModelUseCase == null) throw new RuntimeException("UseCase<InitiateSearchModel> is not injected.");
+        if(initiateSearchListener == null) throw new RuntimeException("InitiateSearchListener is not set.");
     }
 
     private RequestParams createInitiateSearchRequestParams(Map<String, Object> searchParameter, boolean isForceSearch) {
