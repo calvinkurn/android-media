@@ -5,7 +5,7 @@ import com.tokopedia.cachemanager.db.CacheDeletion
 import com.tokopedia.cachemanager.db.SaveInstanceCacheDatabase
 import com.tokopedia.cachemanager.db.dao.SaveInstanceCacheDatabaseDao
 import com.tokopedia.cachemanager.db.model.SaveInstanceCacheDbModel
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.*
 
 class SaveInstanceCacheDataSource(context: Context) :
         CacheDataSource<SaveInstanceCacheDbModel, SaveInstanceCacheDatabaseDao>(context) {

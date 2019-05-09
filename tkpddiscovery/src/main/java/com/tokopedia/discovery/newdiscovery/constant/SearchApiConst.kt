@@ -49,5 +49,22 @@ class SearchApiConst {
         const val PAGE_SIZE = "page_size"
         const val OFFICIAL = "official"
         const val KEYWORD = "keyword"
+
+        const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
+        const val DEFAULT_VALUE_OF_PARAMETER_ROWS = "8"
+        const val DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE = "200"
+        const val DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE = "true"
+        const val DEFAULT_VALUE_OF_PARAMETER_SORT = "23"
+        const val DEFAULT_VALUE_SOURCE_HOTLIST = "hot_product"
+        const val DEFAULT_VALUE_SOURCE_SEARCH = "search"
+        const val DEFAULT_VALUE_SOURCE_DIRECTORY = "directory"
+        const val DEFAULT_VALUE_SOURCE_PRODUCT = "search_product"
+        const val DEFAULT_VALUE_SOURCE_CATALOG = "search_catalog"
+        const val DEFAULT_VALUE_SOURCE_SHOP = "search_shop"
+        const val DEFAULT_VALUE_SOURCE_QUICK_FILTER = "quick_filter"
+        const val DEFAULT_VALUE_OF_PARAMETER_TERM = "true"
+        const val DEFAULT_VALUE_OF_PARAMETER_BREADCRUMB = "false"
+        const val DEFAULT_VALUE_OF_PARAMETER_START = "0"
+        const val DEFAULT_VALUE_OF_PARAMETER_SC = "0"
     }
 }

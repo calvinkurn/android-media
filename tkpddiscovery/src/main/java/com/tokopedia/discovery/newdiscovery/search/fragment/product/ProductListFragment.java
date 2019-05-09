@@ -18,31 +18,23 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.DataValue;
+import com.tokopedia.discovery.common.data.Filter;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
@@ -54,11 +46,12 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -68,16 +61,18 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.json.JSONArray;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -95,6 +90,7 @@ public class ProductListFragment extends SearchSectionFragment
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
     private static final int REQUEST_ACTIVITY_SORT_PRODUCT = 1233;
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
+    public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
 
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
     private static final String EXTRA_IS_FORCE_SEARCH = "EXTRA_IS_FORCE_SEARCH";
@@ -102,13 +98,17 @@ public class ProductListFragment extends SearchSectionFragment
     private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
     private static int PRODUCT_POSITION = 2;
     protected RecyclerView recyclerView;
+
     @Inject
     ProductListPresenter presenter;
+    @Inject
+    SearchTracking searchTracking;
+    @Inject
+    UserSessionInterface userSession;
 
     private EndlessRecyclerviewListener linearLayoutLoadMoreTriggerListener;
     private EndlessRecyclerviewListener gridLayoutLoadMoreTriggerListener;
 
-    private UserSessionInterface userSession;
     private GCMHandler gcmHandler;
     private Config topAdsConfig;
     private ProductListAdapter adapter;
@@ -140,7 +140,6 @@ public class ProductListFragment extends SearchSectionFragment
         if(getContext() == null) return;
 
         similarSearchManager = SimilarSearchManager.getInstance(getContext());
-        userSession = new UserSession(getContext());
         gcmHandler = new GCMHandler(getContext());
         trackingQueue = new TrackingQueue(getContext());
     }
@@ -163,7 +162,8 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected void initInjector() {
         SearchComponent component = DaggerSearchComponent.builder()
-                .appComponent(getComponent(AppComponent.class))
+                // getAppComponent from tkpdcore. Temporary solution until this Fragment moved to search module
+                .appComponent(getAppComponent())
                 .build();
         component.inject(this);
     }
@@ -251,7 +251,7 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void initTopAdsParams() {
         TopAdsParams adsParams = new TopAdsParams();
-        adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
+        adsParams.getParam().put(TopAdsParams.KEY_SRC, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
         adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
 
@@ -461,6 +461,26 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
+        if (!TextUtils.isEmpty(item.getApplink())) {
+            RouteManager.route(getActivity(), item.getApplink());
+        } else {
+            RouteManager.route(getActivity(), item.getUrl());
+        }
+        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(), keyword);
+    }
+
+    @Override
+    public void onGlobalNavWidgetClickSeeAll(String applink, String url) {
+        if (!TextUtils.isEmpty(applink)) {
+            RouteManager.route(getActivity(), applink);
+        } else {
+            RouteManager.route(getActivity(), url);
+        }
+        SearchTracking.eventUserClickSeeAllGlobalNavWidget();
+    }
+
+    @Override
     public void onItemClicked(ProductItem item, int adapterPosition) {
         Intent intent = getProductIntent(item.getProductID());
 
@@ -590,12 +610,12 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     public void eventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.FILTER_PRODUCT,
-                AppEventTracking.Action.QUICK_FILTER,
+        searchTracking.sendGeneralEventWithUserId(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.FILTER_PRODUCT,
+                SearchEventTracking.Action.QUICK_FILTER,
                 filterName + " - " + filterValue + " - " + Boolean.toString(isSelected)
-        ).setUserId(userSession.getUserId()).getEvent());
+        );
     }
 
     @Override
@@ -622,10 +642,18 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        UnifyTracking.eventSearchResultProductWishlistClick(getActivity(),true, getQueryKey());
+        searchTracking.sendGeneralEventWithUserId(SearchEventTracking.Event.PRODUCT_VIEW,
+                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                SearchEventTracking.Action.CLICK_WISHLIST,
+                generateWishlistClickEventLabel(true));
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+    }
+
+    private String generateWishlistClickEventLabel(boolean isWishlisted) {
+        String action = isWishlisted ? "add" : "remove";
+        return action + " - " + getQueryKey() + " - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULT_LOCALE).format(new Date());
     }
 
     @Override
@@ -636,7 +664,11 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        UnifyTracking.eventSearchResultProductWishlistClick(getActivity(),false, getQueryKey());
+        searchTracking.sendGeneralEventWithUserId(
+                SearchEventTracking.Event.PRODUCT_VIEW,
+                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                SearchEventTracking.Action.CLICK_WISHLIST,
+                generateWishlistClickEventLabel(false));
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
@@ -841,15 +873,24 @@ public class ProductListFragment extends SearchSectionFragment
         this.isFirstTimeLoad = isFirstTimeLoad;
     }
 
+    @Override
+    public void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel) {
+        List<Object> dataLayerList = new ArrayList<>();
+        for (GlobalNavViewModel.Item item : globalNavViewModel.getItemList()) {
+            dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer());
+        }
+        SearchTracking.trackEventImpressionGlobalNavWidgetItem(trackingQueue, dataLayerList, globalNavViewModel.getKeyword());
+    }
+
     public void sendMoEngageSearchAttempt(Context context, String keyword, boolean isResultFound, HashMap<String, String> category) {
         Map<String, Object> value = DataLayer.mapOf(
-                AppEventTracking.MOENGAGE.KEYWORD, keyword,
-                AppEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
+                SearchEventTracking.MOENGAGE.KEYWORD, keyword,
+                SearchEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
         );
         if (category != null) {
-            value.put(AppEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
-            value.put(AppEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
+            value.put(SearchEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
+            value.put(SearchEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
         }
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.SEARCH_ATTEMPT);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
     }
 }

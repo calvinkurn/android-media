@@ -8,19 +8,17 @@ import com.google.gson.annotations.Expose
 /**
  * Author errysuprayogi on 29,January,2019
  */
-open class ImpressHolder : Parcelable {
+open class ImpressHolder(): Parcelable {
 
     @Expose(serialize = false, deserialize = false)
     var isInvoke: Boolean = false
         private set
 
-    constructor() {}
-
     operator fun invoke() {
         this.isInvoke = true
     }
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel):this() {
         isInvoke = `in`.readByte().toInt() != 0
     }
 
