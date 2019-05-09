@@ -117,7 +117,6 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     public static final String IS_FROM_REGISTER = "is_from_register";
 
     private static final int ID_ACTION_REGISTER = 111;
-    private static final int ID_ACTION_DEVOPS = 112;
 
     AutoCompleteTextView emailEditText;
     TextInputEditText passwordEditText;
@@ -194,11 +193,6 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
         if (getDraw() != null) {
             menuItem.setIcon(getDraw());
         }
-
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            menu.add(Menu.NONE, ID_ACTION_DEVOPS, 1, "Developer Options");
-            menu.findItem(ID_ACTION_DEVOPS).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -218,12 +212,6 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             goToRegisterInitial();
             return true;
         }
-        if (id == ID_ACTION_DEVOPS) {
-            if (GlobalConfig.isAllowDebuggingTools()) {
-                RouteManager.route(getActivity(), ApplinkConst.DEVELOPER_OPTIONS);
-            }
-        }
-
         return super.onOptionsItemSelected(item);
     }
 

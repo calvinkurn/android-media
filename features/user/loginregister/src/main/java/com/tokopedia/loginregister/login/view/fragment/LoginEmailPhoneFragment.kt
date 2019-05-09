@@ -30,6 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -37,6 +38,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.loginregister.LoginRegisterPhoneRouter
@@ -81,6 +83,7 @@ import javax.inject.Named
 class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View {
 
     private val ID_ACTION_REGISTER = 111
+    private val ID_ACTION_DEVOPS = 112
     val RC_SIGN_IN_GOOGLE = 7777
 
     private val REQUEST_SMART_LOCK = 101
@@ -195,6 +198,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         if (getDraw() != null) {
             menuItem.icon = getDraw()
         }
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            menu.add(Menu.NONE, ID_ACTION_DEVOPS, 1, "Developer Options")
+            menu.findItem(ID_ACTION_DEVOPS).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -215,6 +222,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
             goToRegisterInitial()
             return true
+        }
+        if (id == ID_ACTION_DEVOPS) {
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
