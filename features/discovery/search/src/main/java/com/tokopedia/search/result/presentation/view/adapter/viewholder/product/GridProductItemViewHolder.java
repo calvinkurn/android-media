@@ -21,7 +21,6 @@ import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
-import com.tokopedia.tkpdpdp.customview.RatingView;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
 import java.util.List;
