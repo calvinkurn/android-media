@@ -22,16 +22,15 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.DataValue;
+import com.tokopedia.discovery.common.data.Filter;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
@@ -46,6 +45,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
@@ -161,7 +161,8 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected void initInjector() {
         SearchComponent component = DaggerSearchComponent.builder()
-                .appComponent(getComponent(AppComponent.class))
+                // getAppComponent from tkpdcore. Temporary solution until this Fragment moved to search module
+                .appComponent(getAppComponent())
                 .build();
         component.inject(this);
     }
@@ -459,6 +460,26 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
+        if (!TextUtils.isEmpty(item.getApplink())) {
+            RouteManager.route(getActivity(), item.getApplink());
+        } else {
+            RouteManager.route(getActivity(), item.getUrl());
+        }
+        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(), keyword);
+    }
+
+    @Override
+    public void onGlobalNavWidgetClickSeeAll(String applink, String url) {
+        if (!TextUtils.isEmpty(applink)) {
+            RouteManager.route(getActivity(), applink);
+        } else {
+            RouteManager.route(getActivity(), url);
+        }
+        SearchTracking.eventUserClickSeeAllGlobalNavWidget();
+    }
+
+    @Override
     public void onItemClicked(ProductItem item, int adapterPosition) {
         Intent intent = getProductIntent(item.getProductID());
 
@@ -568,8 +589,10 @@ public class ProductListFragment extends SearchSectionFragment
         boolean isQuickFilterSelectedReversed = !isQuickFilterSelected(option);
 
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed);
-        applyFilterToSearchParameter(quickFilterController.getFilterParameter());
-        setSelectedFilter(new HashMap<>(quickFilterController.getFilterParameter()));
+
+        Map<String, String> parameterFromFilter = quickFilterController.getParameter();
+        applyFilterToSearchParameter(parameterFromFilter);
+        setSelectedFilter(new HashMap<>(parameterFromFilter));
 
         clearDataFilterSort();
         reloadData();
@@ -849,6 +872,15 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void setFirstTimeLoad(boolean isFirstTimeLoad) {
         this.isFirstTimeLoad = isFirstTimeLoad;
+    }
+
+    @Override
+    public void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel) {
+        List<Object> dataLayerList = new ArrayList<>();
+        for (GlobalNavViewModel.Item item : globalNavViewModel.getItemList()) {
+            dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer());
+        }
+        SearchTracking.trackEventImpressionGlobalNavWidgetItem(trackingQueue, dataLayerList, globalNavViewModel.getKeyword());
     }
 
     public void sendMoEngageSearchAttempt(Context context, String keyword, boolean isResultFound, HashMap<String, String> category) {

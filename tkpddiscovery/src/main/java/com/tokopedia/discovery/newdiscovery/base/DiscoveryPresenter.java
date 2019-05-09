@@ -2,8 +2,10 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
@@ -41,17 +43,21 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     }
 
     @Override
-    public void initiateSearch(SearchParameter searchParameter, boolean forceSearch) {
-        super.initiateSearch(searchParameter, forceSearch);
+    public void initiateSearch(SearchParameter searchParameter, boolean forceSearch, InitiateSearchListener initiateSearchListener) {
+        super.initiateSearch(searchParameter, forceSearch, initiateSearchListener);
 
-        RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, forceSearch);
+        com.tokopedia.usecase.RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, forceSearch);
 
-        GqlSearchHelper.initiateSearch(context, requestParams, graphqlUseCase,
-                new InitiateSearchSubscriber(getBaseDiscoveryView(), searchParameter, forceSearch));
+        GqlSearchHelper.initiateSearch(
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_initiate_search),
+                requestParams,
+                graphqlUseCase,
+                new InitiateSearchSubscriber(initiateSearchListener)
+        );
     }
 
-    private RequestParams createInitiateSearchRequestParams(SearchParameter searchParameter, boolean isForceSearch) {
-        RequestParams requestParams = RequestParams.create();
+    private com.tokopedia.usecase.RequestParams createInitiateSearchRequestParams(SearchParameter searchParameter, boolean isForceSearch) {
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
 
         requestParams.putAll(searchParameter.getSearchParameterMap());
 

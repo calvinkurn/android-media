@@ -33,7 +33,7 @@ data class ProfileViewModel (
                     KEY_ID, id,
                     KEY_NAME, VAL_NAME,
                     KEY_CREATIVE, name.toLowerCase(),
-                    KEY_POSITION, position
+                    KEY_POSITION, position.toString()
             )
         }
 }

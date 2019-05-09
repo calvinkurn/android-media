@@ -1,22 +1,25 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.track.TrackApp;
 
@@ -26,6 +29,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_HAS_CATALOG;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 
 /**
  * Created by hangnadi on 9/26/17.
@@ -50,15 +57,26 @@ public class BaseDiscoveryActivity
     private boolean isStartingSearchActivityWithProductViewModel = false;
     private ProductViewModel productViewModelForOnResume;
 
+    protected GCMHandler gcmHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        gcmHandler = new GCMHandler(this);
+
         if (savedInstanceState != null) {
             setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION, 0));
             setForceSwipeToShop(savedInstanceState.getBoolean(KEY_FORCE_SWIPE_TO_SHOP, false));
             setForceSearch(savedInstanceState.getBoolean(KEY_FORCE_SEARCH, false));
             setRequestOfficialStoreBanner(savedInstanceState.getBoolean(KEY_REQUEST_OS, false));
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        gcmHandler = null;
+
+        super.onDestroy();
     }
 
     public int getActiveTabPosition() {
@@ -114,6 +132,10 @@ public class BaseDiscoveryActivity
         return getApplicationComponent();
     }
 
+    public AppComponent getApplicationComponent() {
+        return ((MainApplication) getApplication()).getAppComponent();
+    }
+
     @Override
     public void onHandleResponseHotlist(String url, String query) {
         startActivity(HotlistActivity.createInstanceUsingURL(this, url, query, isPausing()));
@@ -164,8 +186,28 @@ public class BaseDiscoveryActivity
     private void finishAndMoveToSearchActivity(ProductViewModel productViewModel) {
         isStartingSearchActivityWithProductViewModel = false;
 
+        moveToSearchActivity(productViewModel);
         finish();
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
+    }
+
+    private void moveToSearchActivity(ProductViewModel productViewModel) {
+        if(getApplication() instanceof DiscoveryRouter) {
+            DiscoveryRouter router = (DiscoveryRouter)getApplication();
+
+            if(router != null) {
+                Intent searchActivityIntent = getSearchActivityIntent(router, productViewModel);
+                startActivity(searchActivityIntent);
+            }
+        }
+    }
+
+    private Intent getSearchActivityIntent(@NonNull DiscoveryRouter router, ProductViewModel productViewModel) {
+        Intent searchActivityIntent = router.gotoSearchPage(this);
+        searchActivityIntent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, productViewModel.getSearchParameter());
+        searchActivityIntent.putExtra(EXTRA_HAS_CATALOG, productViewModel.isHasCatalog());
+        searchActivityIntent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
+
+        return searchActivityIntent;
     }
 
     private void prepareMoveToSearchActivityDuringOnResume(ProductViewModel productViewModel) {
@@ -208,7 +250,7 @@ public class BaseDiscoveryActivity
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
     }
 
-        @Override
+    @Override
     public void onHandleImageSearchResponseError() {
     }
 

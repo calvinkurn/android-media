@@ -76,7 +76,9 @@ public class GetShopInfoRetrofit {
     }
 
     public void cancelGetShopInfo() {
-//        onGetShopInfoSubs.unsubscribe(); TODO Update neh kelak
+        if(onGetShopInfoSubs != null && !onGetShopInfoSubs.isUnsubscribed()) {
+            onGetShopInfoSubs.unsubscribe();
+        }
     }
 
     private Subscriber<Response<TkpdResponse>> onGetShopInfoSubscriber() {
