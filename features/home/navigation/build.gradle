@@ -42,6 +42,8 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"

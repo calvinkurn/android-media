@@ -30,9 +30,9 @@ public class GetDynamicFeedFirstPageUseCase extends UseCase<DynamicFeedFirstPage
     private GetWhitelistUseCase getWhitelistInterestUseCase;
 
     @Inject
-    public GetDynamicFeedFirstPageUseCase(GetDynamicFeedUseCase getDynamicFeedUseCase,
-                                          GetWhitelistUseCase getWhitelistUseCase,
-                                          GetWhitelistUseCase getWhitelistInterestUseCase) {
+    GetDynamicFeedFirstPageUseCase(GetDynamicFeedUseCase getDynamicFeedUseCase,
+                                   GetWhitelistUseCase getWhitelistUseCase,
+                                   GetWhitelistUseCase getWhitelistInterestUseCase) {
         this.getDynamicFeedUseCase = getDynamicFeedUseCase;
         this.getWhitelistUseCase = getWhitelistUseCase;
         this.getWhitelistInterestUseCase = getWhitelistInterestUseCase;

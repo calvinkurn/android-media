@@ -381,40 +381,9 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
                     .getHeight(), new CameraUtils.BitmapCallback() {
                 @Override
                 public void onBitmapReady(Bitmap bitmap) {
-                    Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<File>>() {
-                        @Override
-                        public Observable<File> call(Bitmap bitmap) {
-                            File tempFile = ImageUtils.writeImageToTkpdPath(ImageUtils
-                                    .DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
-                            File cameraResultFile = ImageUtils.resizeBitmapToFile(tempFile.getAbsolutePath(), 640, 640, false,
-                                    ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
-                            if (cameraResultFile == null) {
-                                cameraResultFile = tempFile;
-                            } else {
-                                tempFile.delete();
-                            }
-                            return Observable.just(cameraResultFile);
-                        }
-                    }).subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Subscriber<File>() {
-                                @Override
-                                public void onCompleted() {
-
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
-                                            .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
-                                    onSuccessImageTakenFromCamera(cameraResultFile);
-                                }
-
-                                @Override
-                                public void onNext(File cameraResultFile) {
-                                    onSuccessImageTakenFromCamera(cameraResultFile);
-                                }
-                            });
+                    File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils
+                            .DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
+                    onSuccessImageTakenFromCamera(cameraResultFile);
                 }
             });
         } catch (Throwable error) {

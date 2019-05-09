@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ProductDetailRouteManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -125,9 +124,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             }
             trackerAttribution = uri.getQueryParameter(PARAM_TRACKER_ATTRIBUTION)
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
-            if (PARAM_IS_SPECIAL_PRIZE in uri.queryParameterNames){
-                isSpecialPrize = uri.getBooleanQueryParameter(PARAM_IS_SPECIAL_PRIZE, false)
-            }
+//            if (PARAM_IS_SPECIAL_PRIZE in uri.queryParameterNames){
+//                isSpecialPrize = uri.getBooleanQueryParameter(PARAM_IS_SPECIAL_PRIZE, false)
+//            }
         }
         bundle?.let {
             if (productId.isNullOrEmpty()) {
@@ -145,9 +144,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             if (trackerListName.isNullOrEmpty()) {
                 trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
             }
-            if (it.containsKey(PARAM_IS_SPECIAL_PRIZE)){
-                isSpecialPrize = it.getString(PARAM_IS_SPECIAL_PRIZE, "").toLowerCase() == "true"
-            }
+//            if (it.containsKey(PARAM_IS_SPECIAL_PRIZE)){
+//                isSpecialPrize = it.getString(PARAM_IS_SPECIAL_PRIZE, "").toLowerCase() == "true"
+//            }
         }
         if (uri != null && uri.host == AFFILIATE_HOST) {
             isFromAffiliate = true
@@ -156,22 +155,5 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         }
 
         super.onCreate(savedInstanceState)
-
-        //Last resort to route to old pdp, if some link is missing in route manager.
-        if (ProductDetailRouteManager.isGoToOldProductDetail(this) ){
-            val intent = Intent()
-            intent.setClassName(packageName, "com.tokopedia.tkpdpdp.ProductInfoActivity")
-            if (intent.resolveActivity(packageManager) != null) {
-                intent.putExtra(PARAM_PRODUCT_ID, productId)
-                intent.putExtra(PARAM_SHOP_DOMAIN, shopDomain)
-                intent.putExtra(PARAM_PRODUCT_KEY, productKey)
-                intent.putExtra(PARAM_TRACKER_ATTRIBUTION, trackerAttribution)
-                intent.putExtra(PARAM_TRACKER_LIST_NAME, trackerListName)
-                intent.putExtra(PARAM_IS_FROM_DEEPLINK, isFromDeeplink)
-                intent.putExtra(IS_FROM_EXPLORE_AFFILIATE, isFromAffiliate)
-                startActivity(intent)
-                finish()
-            }
-        }
     }
 }
