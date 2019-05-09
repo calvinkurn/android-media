@@ -123,7 +123,7 @@ public class ShipmentAddressFormDataResponse {
         return isRobinhood;
     }
 
-    public Boolean getHideCourier() {
+    public boolean getHideCourier() {
         return isHidingCourier;
     }
 
