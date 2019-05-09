@@ -31,9 +31,9 @@ interface FeedShopContract {
     interface Presenter : CustomerPresenter<View> {
         var cursor: String
 
-        fun getFeedFirstPage()
+        fun getFeedFirstPage(shopId: String)
 
-        fun getProfilePost()
+        fun getFeed(shopId: String)
 
         fun followKol(id: Int)
 

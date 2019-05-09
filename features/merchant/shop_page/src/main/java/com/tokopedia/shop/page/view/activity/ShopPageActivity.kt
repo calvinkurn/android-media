@@ -42,6 +42,7 @@ import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
+import com.tokopedia.shop.feed.fragment.FeedShopFragment
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
 import com.tokopedia.shop.page.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.page.di.module.ShopPageModule
@@ -215,13 +216,19 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 }
 
 
-                isShowFeed.run {
+                isShowFeed.let {
                     val tabNameColor: Int = if (tab.position == TAB_POSITION_FEED)
                         R.color.tkpd_main_green else
                         R.color.font_black_disabled_38
                     tabItemFeed.tabName.setTextColor(
                             MethodChecker.getColor(this@ShopPageActivity, tabNameColor)
                     )
+                    shopInfo?.run {
+                        val feedShopFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_FEED)
+                        if (feedShopFragment != null && feedShopFragment is FeedShopFragment) {
+                            feedShopFragment.updateShopInfo(this)
+                        }
+                    }
                 }
             }
         })
@@ -371,6 +378,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             if (shopInfoFragment != null && shopInfoFragment is ShopInfoFragment) {
                 shopInfoFragment.reset()
                 shopInfoFragment.updateShopInfo(this)
+            }
+
+            val feedShopFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_FEED)
+            if (feedShopFragment != null && feedShopFragment is FeedShopFragment) {
+                feedShopFragment.updateShopInfo(this)
             }
 
             shopPageTracking.sendScreenShopPage(this@ShopPageActivity, CustomDimensionShopPage.create(shopInfo))

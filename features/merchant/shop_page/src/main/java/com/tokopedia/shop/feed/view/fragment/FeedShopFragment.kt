@@ -31,6 +31,7 @@ import com.tokopedia.kol.analytics.PostTagAnalytics
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.user.session.UserSession
@@ -56,6 +57,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private lateinit var createPostUrl: String
     private lateinit var emptyResultViewModel: EmptyResultViewModel
 
+    private lateinit var shopId: String
+
     @Inject
     lateinit var presenter: FeedShopContract.Presenter
 
@@ -65,9 +68,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     companion object {
         private val CREATE_POST = 888
         val PARAM_CREATE_POST_URL: String= "PARAM_CREATE_POST_URL"
-        fun createInstance(createPostUrl: String): FeedShopFragment {
+        val PARAM_SHOP_ID: String= "PARAM_SHOP_ID"
+        fun createInstance(shopId: String, createPostUrl: String): FeedShopFragment {
             val fragment = FeedShopFragment()
             val bundle:Bundle = Bundle.EMPTY
+            bundle.putString(PARAM_SHOP_ID, shopId)
             bundle.putString(PARAM_CREATE_POST_URL, createPostUrl)
             fragment.arguments = bundle
             return fragment
@@ -87,7 +92,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.attachView(this)
+        initVar()
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun initVar() {
+        arguments?.let {
+            shopId = it.getString(PARAM_SHOP_ID) ?: ""
+        }
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
@@ -117,7 +129,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun loadData(page: Int) {
-        presenter.getProfilePost()
+        if (shopId.isNotEmpty()) {
+            presenter.getFeedFirstPage(shopId)
+        }
     }
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>) {
@@ -296,6 +310,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun updateShopInfo(shopInfo: ShopInfo) {
+        shopId = shopInfo.info.shopId
+        loadInitialData()
     }
 
     private fun goToCreatePost() {
