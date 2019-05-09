@@ -12,9 +12,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
@@ -22,6 +20,8 @@ import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
+import com.tokopedia.hotel.roomlist.widget.ImageViewPager
+import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import kotlinx.android.synthetic.main.fragment_hotel_room_detail.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 
@@ -40,8 +40,7 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
         val manager = if (savedInstanceState == null) SaveInstanceCacheManager(activity!!,
                 arguments!!.getString(HotelRoomDetailActivity.EXTRA_SAVED_INSTANCE_ID)) else saveInstanceCacheManager
 
-//        hotelRoom = manager.get(EXTRA_ROOM_DATA, HotelRoom::class.java, HotelRoom())!!
-        hotelRoom =  Gson().fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_room_detail), HotelRoom::class.java)
+        hotelRoom = manager.get(EXTRA_ROOM_DATA, HotelRoom::class.java, HotelRoom())!!
 
         super.onCreate(savedInstanceState)
     }
@@ -103,7 +102,17 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
     private fun setupRoomImages() {
         if (hotelRoom.roomInfo.roomImages.isNotEmpty()) {
             val roomImageUrls300 = hotelRoom.roomInfo.roomImages.map { it.url300 }
+            val roomImageUrls = hotelRoom.roomInfo.roomImages.map { it.urlOriginal }
+            val roomImageUrlsSquare = hotelRoom.roomInfo.roomImages.map { it.urlSquare }
             room_detail_images.setImages(roomImageUrls300)
+
+            room_detail_images.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener{
+                override fun onImageClicked(position: Int) {
+                    startActivity(ImagePreviewSliderActivity.getCallingIntent(
+                            context!!, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position
+                    ))
+                }
+            }
         }
         room_detail_images.buildView()
     }

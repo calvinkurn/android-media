@@ -16,10 +16,10 @@ data class RoomListModel(
         var breakfastIncluded: Boolean = false,
         var isRefundable: Boolean = false,
         var roomFacility: List<HotelRoomInfo.Facility> = listOf(),
-        var payInHotel: Boolean = true,
+        var payInHotel: Boolean = false,
         var isCcRequired: Boolean = false,
+        var creditCardInfo: String = "",
         var price: String = "",
-        var actualPrice: String = "",
         var images: List<String> = listOf(),
         var roomLeft: Int = 0
 )

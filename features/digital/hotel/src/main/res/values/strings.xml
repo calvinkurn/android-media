@@ -87,6 +87,9 @@
     <!--<string name="hotel_detail_map_marker_title"><![CDATA[<strong>%1$s</strong> - %2$s]]></string>-->
 
     <string name="hotel_review_title">Ulasan</string>
+    <string name="hotel_review_indonesia_not_found_title">Belum ada ulasan dari Indonesia</string>
+    <string name="hotel_review_indonesia_not_found_subtitle">Kamu bisa jadi yang pertama ngasih ulasan kalau nginep di sini. Pesan kamarnya, yuk!</string>
+    <string name="hotel_review_total_review">%1$s Ulasan</string>
 
     <string name="hotel_room_detail_header_occupancy">Maksimum: %1$s</string>
     <string name="hotel_room_detail_header_breakfast">Sarapan Gratis</string>
