@@ -317,10 +317,8 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     override fun onHandleProfileClick(profileModel: ProfileViewModel) {
         SearchTracking.eventUserClickProfileResultInTabProfile(
-                context,
-                listOf(profileModel.getTrackingObject()),
-                query
-                )
+                profileModel.getTrackingObject(),
+                query)
 
         launchProfilePage(profileModel.id)
     }

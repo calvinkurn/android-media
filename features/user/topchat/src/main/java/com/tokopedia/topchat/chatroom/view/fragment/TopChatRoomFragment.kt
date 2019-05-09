@@ -610,7 +610,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         activity?.let {
             val router = (it.application as TopChatRouter)
             presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(),
-                    element.shopId)
+                    shopId)
         }
     }
 
@@ -618,7 +618,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         activity?.let {
             val router = (it.application as TopChatRouter)
             presenter.addProductToCart(router, element, onError(), onSuccessAddToCart(),
-                    element.shopId)
+                    shopId)
         }
     }
 
