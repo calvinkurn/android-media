@@ -64,6 +64,7 @@
     <string name="seller_label">Untuk Penjual</string>
     <string name="buyer_label">Untuk Pembeli</string>
 
-    <string name="title_update_notification">Update</string>
-    <string name="title_counter_update_notification">(%1$s)</string>
+    <string name="title_counter_update_notification">" (%1$s)"</string>
+    <string name="title_notification_update">Update</string>
+    <string name="title_notification_activity">Transaksi</string>
 </resources>

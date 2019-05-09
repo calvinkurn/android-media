@@ -25,6 +25,7 @@ import com.tokopedia.navigation.presentation.fragment.NotificationFragment
 import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
+import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
 import javax.inject.Inject
 
 /**
@@ -38,10 +39,11 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
     private var fragmentAdapter: NotificationFragmentAdapter? = null
     private val tabList = ArrayList<NotificationFragmentAdapter.NotificationFragmentItem>()
+    private var updateCounter = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem("Transaksi", NotificationFragment()))
-        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem("Update", NotificationUpdateFragment()))
+        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_activity), NotificationFragment()))
+        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_update), NotificationUpdateFragment()))
         super.onCreate(savedInstanceState)
         initInjector()
         initView()
@@ -59,19 +61,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
     }
 
-    private fun onSuccessGetTotalUnreadCounter(): (NotificationUpdateTotalUnread) -> Unit {
-        return {
-            var defaultTitle = getString(R.string.title_update_notification)
-            var counter: String
-            if (it.pojo.notifUnreadInt > 0) {
-                counter = getString(R.string.title_counter_update_notification, it.pojo.notifUnreadString)
-                var titleView: TextView? = tabLayout.getTabAt(1)?.customView?.findViewById(R.id.title)
-                titleView?.let {
-                    it.text = String.format("%s %s", defaultTitle, counter)
-                }
-            }
-        }
-    }
+
     private fun onSuccessGetUpdateUnreadCounter(): (NotificationUpdateUnread) -> Unit {
         return {
             if (it.pojo.notifUnreadInt > 0) {
@@ -113,8 +103,20 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
                 setTabSelectedView(tab.customView)
                 resetCircle(tab.customView)
                 presenter.clearNotifCounter()
+                if(tab.position == 1){
+                    notifyNotificationUpdateBottomAction(updateCounter)
+                }
             }
         })
+    }
+
+    private fun notifyNotificationUpdateBottomAction(updateCounter: Long) {
+        val notifUpdateFragment = fragmentAdapter?.getItem(1)
+        notifUpdateFragment?.let {
+            if(it is NotificationUpdateContract.View) {
+                it.notifyBottomActionView(updateCounter)
+            }
+        }
     }
 
     private fun resetCircle(customView: View?) {
@@ -160,6 +162,33 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
     override fun updateTotalUnreadCounter() : () -> Unit {
         return {presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter())}
+    }
+
+    override fun updateTotalUnreadCounterManual() {
+        updateCounter -= 1
+        setTotalCounterNotificationUpdate()
+        notifyNotificationUpdateBottomAction(updateCounter)
+    }
+
+    private fun onSuccessGetTotalUnreadCounter(): (NotificationUpdateTotalUnread) -> Unit {
+        return {
+            updateCounter = it.pojo.notifUnreadInt
+            setTotalCounterNotificationUpdate()
+            notifyNotificationUpdateBottomAction(updateCounter)
+        }
+    }
+
+    private fun setTotalCounterNotificationUpdate() {
+        val defaultTitle = getString(R.string.title_notification_update)
+        var counter: String = ""
+
+        if (updateCounter > 0) {
+            counter = getString(R.string.title_counter_update_notification, updateCounter.toString())
+        }
+        val titleView: TextView? = tabLayout.getTabAt(1)?.customView?.findViewById(R.id.title)
+        titleView?.let {
+            it.text = String.format("%s%s", defaultTitle, counter)
+        }
     }
 
     companion object {

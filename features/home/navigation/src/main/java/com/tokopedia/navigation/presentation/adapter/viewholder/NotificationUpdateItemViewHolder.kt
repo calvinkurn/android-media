@@ -52,7 +52,9 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
             else MethodChecker.getColor(container.context, R.color.read_yet)
 
         container.setBackgroundColor(color)
-        ImageHandler.loadImage2(contentImage, element.contentUrl, R.drawable.ic_loading_toped_new)
+        if(element.contentUrl.isNotBlank()){
+            ImageHandler.loadImage2(contentImage, element.contentUrl, R.drawable.ic_loading_toped_new)
+        }
         ImageHandler.loadImage2(icon, element.iconUrl, R.drawable.ic_loading_toped_new)
         title.text = element.title
         body.text = element.body

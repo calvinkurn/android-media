@@ -9,6 +9,7 @@ interface NotificationActivityContract {
 
     interface View: CustomerView {
         fun updateTotalUnreadCounter(): () -> Unit
+        fun updateTotalUnreadCounterManual()
     }
 
     interface Presenter: CustomerPresenter<View> {
