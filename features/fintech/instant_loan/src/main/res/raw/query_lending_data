@@ -10,9 +10,7 @@ query LE {
     banner: le_getbanner(bannerType: "pinjaman-online") {
       data {
         ID
-        Name
         Link
-        Alt
         UrlImage
       }
     }
@@ -22,7 +20,6 @@ query LE {
         Logo
         Name
         NameSlug
-        Alt
       }
     }
     seo: le_getseo(seoType: "home") {

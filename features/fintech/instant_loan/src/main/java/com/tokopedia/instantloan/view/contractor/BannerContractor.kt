@@ -16,8 +16,8 @@ interface BannerContractor {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun loadBanners()
-
         fun getLendingData()
+
+        fun deAttachView()
     }
 }

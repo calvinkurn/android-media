@@ -13,7 +13,6 @@ object InstantLoanUrl {
         val PATH_USER_STATUS = "dana-instant/api/user/ismobiledevice"
         val PATH_USER_PROFILE_STATUS = WEB_DOMAIN + "dana-instant/api/user/mobile/status"
         val PATH_POST_PHONEDATA = WEB_DOMAIN + "dana-instant/api/user/mobiledevice"
-        val PATH_BANNER_OFFER = WEB_DOMAIN + "microfinance/banner/personal-loan"
         val WEB_LINK_NO_COLLATERAL = WEB_DOMAIN + "pinjaman-online/criteria"
         val WEB_LINK_COLLATERAL_FUND = WEB_DOMAIN + "pinjaman-online/criteria"
         val WEB_LINK_DASHBOARD = WEB_DOMAIN + "pinjaman-online/dashboard"
