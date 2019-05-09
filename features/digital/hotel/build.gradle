@@ -32,6 +32,7 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.features.commonTravel)
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.imagePreviewSlider)
 
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.useCase)
