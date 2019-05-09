@@ -104,7 +104,7 @@ buildscript {
         jcenter()
         maven { url 'https://hansel.io/maven' }
         flatDir {
-            dirs project(rootProject.ext.libraries.inappupdate).file('libs')
+            dirs project(':libraries:inappupdate').file('libs')
         }
     }
     dependencies {
