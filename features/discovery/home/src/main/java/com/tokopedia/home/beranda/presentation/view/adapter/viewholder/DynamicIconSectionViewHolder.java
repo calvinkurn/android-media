@@ -153,10 +153,4 @@ public class DynamicIconSectionViewHolder extends AbstractViewHolder<DynamicIcon
             return view.getContext();
         }
     }
-
-    @Override
-    public void onViewRecycled() {
-        super.onViewRecycled();
-        Log.d("TokopediaDevara", "Dynamic Icon "+getAdapterPosition()+" recycled");
-    }
 }

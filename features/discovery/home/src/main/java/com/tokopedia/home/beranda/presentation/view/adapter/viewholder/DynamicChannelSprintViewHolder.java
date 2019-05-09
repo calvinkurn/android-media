@@ -231,10 +231,4 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             return view.getContext();
         }
     }
-
-    @Override
-    public void onViewRecycled() {
-        super.onViewRecycled();
-        Log.d("TokopediaDevara", "Dynamic Channel "+getAdapterPosition()+" recycled");
-    }
 }

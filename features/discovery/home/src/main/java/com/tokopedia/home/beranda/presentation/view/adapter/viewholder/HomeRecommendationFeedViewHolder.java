@@ -1,48 +1,27 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
-import android.graphics.Point;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout;
-import com.tokopedia.design.countdown.CountDownView;
-import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
-import com.tokopedia.home.beranda.helper.DateHelper;
-import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter;
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
-import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFeedFragment;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
-import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -175,12 +154,4 @@ implements HomeTabFeedListener {
             homeFeedsTabShadow.setVisibility(View.INVISIBLE);
         }
     }
-
-    @Override
-    public void onViewRecycled() {
-        super.onViewRecycled();
-        Log.d("TokopediaDevara", "Recom Feed Section "+getAdapterPosition()+" recycled");
-    }
-
-
 }

@@ -127,10 +127,4 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     public void onResume() {
         bannerView.startAutoScrollBanner();
     }
-
-    @Override
-    public void onViewRecycled() {
-        super.onViewRecycled();
-        Log.d("TokopediaDevara", "Banner "+getAdapterPosition()+" recycled");
-    }
 }

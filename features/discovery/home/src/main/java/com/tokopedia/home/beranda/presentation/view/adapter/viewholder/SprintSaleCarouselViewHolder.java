@@ -263,10 +263,4 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             return view.getContext();
         }
     }
-
-    @Override
-    public void onViewRecycled() {
-        super.onViewRecycled();
-        Log.d("TokopediaDevara", "Dynamic Channel "+getAdapterPosition()+" recycled");
-    }
 }

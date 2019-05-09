@@ -34,10 +34,4 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         mainContainer.removeAllViews();
         mainContainer.addView(new HeaderHomeView(itemView.getContext(), element, listener), 0);
     }
-
-    @Override
-    public void onViewRecycled() {
-        super.onViewRecycled();
-        Log.d("TokopediaDevara", "Header ovo tp "+getAdapterPosition()+" recycled");
-    }
 }

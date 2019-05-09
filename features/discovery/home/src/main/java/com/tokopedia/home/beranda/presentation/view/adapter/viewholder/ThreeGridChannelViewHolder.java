@@ -200,10 +200,4 @@ public class ThreeGridChannelViewHolder extends AbstractViewHolder<DynamicChanne
             return itemView.getContext();
         }
     }
-
-    @Override
-    public void onViewRecycled() {
-        super.onViewRecycled();
-        Log.d("TokopediaDevara", "Dynamic Channel "+getAdapterPosition()+" recycled");
-    }
 }

@@ -60,10 +60,4 @@ public class TopAdsDynamicChannelViewHolder extends AbstractViewHolder<TopAdsDyn
 
     @Override
     public void onAddFavorite(int position, Data data) { }
-
-    @Override
-    public void onViewRecycled() {
-        super.onViewRecycled();
-        Log.d("TokopediaDevara", "Topads "+getAdapterPosition()+" recycled");
-    }
 }

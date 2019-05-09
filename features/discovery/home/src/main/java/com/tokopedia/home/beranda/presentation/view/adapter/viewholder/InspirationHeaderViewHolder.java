@@ -25,10 +25,4 @@ public class InspirationHeaderViewHolder extends AbstractViewHolder<InspirationH
     public void bind(InspirationHeaderViewModel element) {
         titleView.setText(element.getTitle());
     }
-
-    @Override
-    public void onViewRecycled() {
-        super.onViewRecycled();
-        Log.d("TokopediaDevara", "Dynamic Channel "+getAdapterPosition()+" recycled");
-    }
 }

@@ -174,11 +174,5 @@ public class SpotlightViewHolder extends AbstractViewHolder<SpotlightViewModel> 
             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(context, model.getEnhanceClickSpotlightHomePage(position));
         }
     }
-
-    @Override
-    public void onViewRecycled() {
-        super.onViewRecycled();
-        Log.d("TokopediaDevara", "Spotlight "+getAdapterPosition()+" recycled");
-    }
 }
 

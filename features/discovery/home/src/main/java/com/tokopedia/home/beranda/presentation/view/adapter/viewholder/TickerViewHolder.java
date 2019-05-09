@@ -126,10 +126,4 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
             return super.onTouchEvent(widget, buffer, event);
         }
     }
-
-    @Override
-    public void onViewRecycled() {
-        super.onViewRecycled();
-        Log.d("TokopediaDevara", "Ticker "+getAdapterPosition()+" recycled");
-    }
 }

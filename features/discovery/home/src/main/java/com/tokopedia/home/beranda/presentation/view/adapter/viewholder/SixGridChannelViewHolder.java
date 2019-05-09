@@ -205,10 +205,4 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
             return itemView.getContext();
         }
     }
-
-    @Override
-    public void onViewRecycled() {
-        super.onViewRecycled();
-        Log.d("TokopediaDevara", "Dynamic Channel "+getAdapterPosition()+" recycled");
-    }
 }
