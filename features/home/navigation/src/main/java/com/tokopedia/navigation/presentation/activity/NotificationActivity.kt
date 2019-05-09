@@ -65,7 +65,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     private fun onSuccessGetUpdateUnreadCounter(): (NotificationUpdateUnread) -> Unit {
         return {
             if (it.pojo.notifUnreadInt > 0) {
-                var notif = tabLayout.getTabAt(1)?.customView?.findViewById<View>(R.id.circle)
+                var notif = tabLayout.getTabAt(INDEX_NOTIFICATION_UPDATE)?.customView?.findViewById<View>(R.id.circle)
                 notif?.visibility = View.VISIBLE
             }
         }
@@ -103,7 +103,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
                 setTabSelectedView(tab.customView)
                 resetCircle(tab.customView)
                 presenter.clearNotifCounter()
-                if(tab.position == 1){
+                if (tab.position == INDEX_NOTIFICATION_UPDATE) {
                     notifyNotificationUpdateBottomAction(updateCounter)
                 }
             }
@@ -111,9 +111,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     }
 
     private fun notifyNotificationUpdateBottomAction(updateCounter: Long) {
-        val notifUpdateFragment = fragmentAdapter?.getItem(1)
+        val notifUpdateFragment = fragmentAdapter?.getItem(INDEX_NOTIFICATION_UPDATE)
         notifUpdateFragment?.let {
-            if(it is NotificationUpdateContract.View) {
+            if (it is NotificationUpdateContract.View) {
                 it.notifyBottomActionView(updateCounter)
             }
         }
@@ -160,8 +160,8 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         return (application as BaseMainApplication).baseAppComponent
     }
 
-    override fun updateTotalUnreadCounter() : () -> Unit {
-        return {presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter())}
+    override fun updateTotalUnreadCounter(): () -> Unit {
+        return { presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter()) }
     }
 
     override fun updateTotalUnreadCounterManual() {
@@ -185,13 +185,16 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         if (updateCounter > 0) {
             counter = getString(R.string.title_counter_update_notification, updateCounter.toString())
         }
-        val titleView: TextView? = tabLayout.getTabAt(1)?.customView?.findViewById(R.id.title)
+        val titleView: TextView? = tabLayout.getTabAt(INDEX_NOTIFICATION_UPDATE)?.customView?.findViewById(R.id.title)
         titleView?.let {
             it.text = String.format("%s%s", defaultTitle, counter)
         }
     }
 
     companion object {
+
+        var INDEX_NOTIFICATION_ACTIVITY = 0
+        var INDEX_NOTIFICATION_UPDATE = 1
 
         fun start(context: Context): Intent {
             return Intent(context, NotificationActivity::class.java)
