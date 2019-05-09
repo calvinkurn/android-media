@@ -11,7 +11,7 @@ public class PersistentStore {
     public static PersistentStore getInstance(Context context){
         if(persistentStore == null){
             persistentStore = new PersistentStore();
-            persistentStore.cacheManager = new PersistentCacheManager(context,"");
+            persistentStore.cacheManager = new PersistentCacheManager(context);
         }
         return persistentStore;
     }

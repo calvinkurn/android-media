@@ -431,12 +431,16 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     }
 
     private int getDeviceWidth() {
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
-        return width;
+        if (getActivity() != null) {
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int width = size.x;
+            int height = size.y;
+            return width;
+        } else {
+            return 0;
+        }
     }
 
     @Override

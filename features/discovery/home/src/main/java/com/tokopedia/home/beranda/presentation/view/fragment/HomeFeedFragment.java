@@ -195,7 +195,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     @Override
     public void onItemClicked(HomeFeedViewModel homeFeedViewModel) {
         if (userSession.isLoggedIn()) {
-            if(!homeFeedViewModel.isTopAds()){
+            if (!homeFeedViewModel.isTopAds()) {
                 HomePageTracking.eventClickOnHomeProductFeedForLoggedInUser(
                         getActivity(),
                         homeFeedViewModel,
@@ -203,7 +203,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
                 );
             }
         } else {
-            if(!homeFeedViewModel.isTopAds()){
+            if (!homeFeedViewModel.isTopAds()) {
                 HomePageTracking.eventClickOnHomeProductFeedForNonLoginUser(
                         getActivity(),
                         homeFeedViewModel,
@@ -211,7 +211,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
                 );
             }
         }
-        if(homeFeedViewModel.isTopAds()) {
+        if (homeFeedViewModel.isTopAds()) {
             new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
             Product p = new Product();
             p.setId(homeFeedViewModel.getProductId());
@@ -232,9 +232,9 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         getActivity().startActivity(getProductIntent(productId));
     }
 
-    private Intent getProductIntent(String productId){
+    private Intent getProductIntent(String productId) {
         if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }
@@ -288,7 +288,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @Override
     public void onProductImpression(HomeFeedViewModel model, int position) {
-        if(model.isTopAds()) {
+        if (model.isTopAds()) {
             Product p = new Product();
             p.setId(model.getProductId());
             p.setName(model.getProductName());
