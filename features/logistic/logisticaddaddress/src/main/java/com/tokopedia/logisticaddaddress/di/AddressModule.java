@@ -1,10 +1,14 @@
 package com.tokopedia.logisticaddaddress.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.logisticaddaddress.data.AddAddressRetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressContract;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressPresenterImpl;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressPresenter;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.module.LogisticNetworkModule;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
@@ -36,6 +40,13 @@ public class AddressModule {
             @LogisticUserSessionQualifier UserSessionInterface userSessionInterface,
             AddressRepository addressRepository) {
         return new AddAddressPresenterImpl(userSessionInterface, addressRepository);
+    }
+
+    @Provides
+    @AddressScope
+    AddNewAddressPresenter provideAddNewAddressPresenter(
+            @ApplicationContext Context context) {
+        return new AddNewAddressPresenter(context);
     }
 
     @Provides
