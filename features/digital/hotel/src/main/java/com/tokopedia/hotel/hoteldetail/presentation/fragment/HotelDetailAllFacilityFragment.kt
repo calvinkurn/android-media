@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.fragment_hotel_detail_all_facility.*
  */
 class HotelDetailAllFacilityFragment : TkpdBaseV4Fragment() {
 
-    var propertyName: String = ""
+    private var propertyName: String = ""
     private lateinit var propertyData: HotelDetailAllFacilityModel
 
     lateinit var hotelDetailPagerAdapter: HotelDetailPagerAdapter
@@ -45,6 +45,13 @@ class HotelDetailAllFacilityFragment : TkpdBaseV4Fragment() {
         tab_layout.setupWithViewPager(view_pager)
         view_pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
         view_pager.adapter = getViewPagerAdapter()
+
+        for (i in 0 until hotelDetailPagerAdapter.count) {
+            if (tab_layout.getTabAt(i)!!.text!! == arguments!!.getString(EXTRA_TAB_TITLE, FACILITY_TITLE)) {
+                tab_layout.getTabAt(i)!!.select()
+                break
+            }
+        }
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {
