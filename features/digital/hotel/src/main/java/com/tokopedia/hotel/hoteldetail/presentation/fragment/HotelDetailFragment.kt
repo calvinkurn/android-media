@@ -379,6 +379,9 @@ class HotelDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupPriceButton(data: List<HotelRoom>) {
+        container_shimmering_bottom.visibility = View.GONE
+        container_bottom.visibility = View.VISIBLE
+
         if (data.isNotEmpty() && data[0].roomPrice.isNotEmpty()) {
             tv_hotel_price.text = data[0].roomPrice[0].roomPrice
             btn_see_room.setOnClickListener {
