@@ -742,13 +742,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private void updateFeedRecommendationVisitable(Visitable feedRecommendationVisitable,
-                                            List<Visitable> currentVisitables){
+    private void updateFeedRecommendationVisitable(Visitable feedRecommendationVisitable){
         this.feedTabVisitable = feedRecommendationVisitable;
+        List<Visitable> currentVisitables = adapter.getItems();
+
         for (int i = 0 ; i<currentVisitables.size() ; i++) {
             if (currentVisitables.get(i) instanceof HomeRecommendationFeedViewModel) {
                 currentVisitables.set(i, feedRecommendationVisitable);
-                adapter.setItems(currentVisitables);
+                adapter.setElement(i, feedRecommendationVisitable);
                 //set new data to false because visitable already passed to adapter
                 ((HomeRecommendationFeedViewModel) feedTabVisitable).setNewData(false);
                 return;
@@ -757,8 +758,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         //if looping not returning any home recommendation feed view model
         //then add one
-        currentVisitables.add(feedRecommendationVisitable);
-        adapter.setItems(currentVisitables);
+        adapter.addElement(feedRecommendationVisitable);
     }
 
     @Override
@@ -1123,8 +1123,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onTabFeedLoadSuccess(List<FeedTabModel> feedTabModelList) {
         adapter.hideLoading();
-        updateFeedRecommendationVisitable(mappingHomeFeedModel(feedTabModelList),
-                adapter.getItems());
+        updateFeedRecommendationVisitable(mappingHomeFeedModel(feedTabModelList));
     }
 
     private Visitable mappingHomeFeedModel(List<FeedTabModel> feedTabModelList) {

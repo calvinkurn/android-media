@@ -154,22 +154,23 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void getHomeData() {
         initHeaderViewModelData();
-        HomeDataSubscriber homeDataSubscriber = createHomeDataSubscriber();
-        homeDataSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_CACHE);
+        HomeDataSubscriber homeLocalSubscriber = createHomeDataSubscriber();
+        homeLocalSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_CACHE);
         subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .doOnNext(visitables ->
                 {
-                    homeDataSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_NETWORK);
-                    compositeSubscription.add(getDataFromNetwork().subscribe(homeDataSubscriber));
+                    HomeDataSubscriber homeNetworkSubscriber = createHomeDataSubscriber();
+                    homeNetworkSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_NETWORK);
+                    compositeSubscription.add(getDataFromNetwork().subscribe(homeNetworkSubscriber));
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorResumeNext(throwable -> {
-                    homeDataSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_NETWORK);
+                    homeLocalSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_NETWORK);
                     return getDataFromNetwork();
                 })
-                .subscribe(homeDataSubscriber);
+                .subscribe(homeLocalSubscriber);
         compositeSubscription.add(subscription);
     }
 

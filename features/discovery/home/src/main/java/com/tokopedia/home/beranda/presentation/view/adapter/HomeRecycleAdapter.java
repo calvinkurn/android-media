@@ -116,6 +116,9 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     }
 
     public void showRetry() {
+        if (this.visitables.contains(retryModel)) {
+            return;
+        }
         int positionStart = getItemCount();
         this.visitables.add(retryModel);
         notifyItemRangeInserted(positionStart, 1);
