@@ -1,6 +1,6 @@
 package com.tokopedia.common.network.data.source.cloud.api
 
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.Deferred
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response

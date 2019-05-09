@@ -19,12 +19,6 @@ class NotificationUpdateItemViewModel(
         var appLink: String = ""
 ) : Visitable<NotificationUpdateTypeFactory>, Parcelable {
 
-
-    enum class UserType {
-        Buyer,
-        Seller
-    }
-
     override fun type(typeFactory: NotificationUpdateTypeFactory): Int {
         return typeFactory.type(this)
     }
@@ -60,6 +54,10 @@ class NotificationUpdateItemViewModel(
     }
 
     companion object {
+
+        var BUYER_TYPE = 1
+        var SELLER_TYPE = 2
+
         @JvmField
         val CREATOR: Parcelable.Creator<NotificationUpdateItemViewModel> = object : Parcelable.Creator<NotificationUpdateItemViewModel> {
             override fun createFromParcel(`in`: Parcel): NotificationUpdateItemViewModel {

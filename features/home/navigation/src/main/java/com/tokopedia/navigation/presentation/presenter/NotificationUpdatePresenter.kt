@@ -52,17 +52,17 @@ class NotificationUpdatePresenter @Inject constructor(
     }
 
     override fun clearNotifCounter() {
-        clearCounterNotificationUpdateUseCase.execute(NotificationUpdateActionSubscriber(null, null))
+        clearCounterNotificationUpdateUseCase.execute(NotificationUpdateActionSubscriber())
     }
 
     override fun markReadNotif(notifId: String) {
         markReadNotificationUpdateItemUseCase.execute(
                 MarkReadNotificationUpdateItemUseCase.getRequestParams(notifId),
-                NotificationUpdateActionSubscriber(null,  null))
+                NotificationUpdateActionSubscriber())
     }
 
     override fun markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate: () -> Unit) {
         markAllReadNotificationUpdateUseCase.execute(
-                NotificationUpdateActionSubscriber(onSuccessMarkAllReadNotificationUpdate,  null))
+                NotificationUpdateActionSubscriber(onSuccessMarkAllReadNotificationUpdate))
     }
 }

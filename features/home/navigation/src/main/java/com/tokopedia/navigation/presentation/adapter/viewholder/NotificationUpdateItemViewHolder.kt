@@ -13,6 +13,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
+import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel.Companion.BUYER_TYPE
+import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel.Companion.SELLER_TYPE
 
 
 /**
@@ -48,11 +50,11 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
 
     override fun bind(element: NotificationUpdateItemViewModel) {
         var color: Int =
-            if (element.isRead) MethodChecker.getColor(container.context, R.color.white)
-            else MethodChecker.getColor(container.context, R.color.read_yet)
+                if (element.isRead) MethodChecker.getColor(container.context, R.color.white)
+                else MethodChecker.getColor(container.context, R.color.read_yet)
 
         container.setBackgroundColor(color)
-        if(element.contentUrl.isNotBlank()){
+        if (element.contentUrl.isNotBlank()) {
             ImageHandler.loadImage2(contentImage, element.contentUrl, R.drawable.ic_loading_toped_new)
         }
         ImageHandler.loadImage2(icon, element.iconUrl, R.drawable.ic_loading_toped_new)
@@ -74,11 +76,7 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
     private fun convertTypeUser(labelIndex: Int) {
         label.visibility = View.GONE
 
-        if(labelIndex-1 >= NotificationUpdateItemViewModel.UserType.values().size) {
-            return
-        }
-
-        if(NotificationUpdateItemViewModel.UserType.values()[labelIndex-1] == NotificationUpdateItemViewModel.UserType.Buyer) {
+        if (labelIndex == BUYER_TYPE) {
             getStringResource(R.string.buyer_label)?.apply {
                 label.text = this
                 label.setTextColor(getColorResource(R.color.text_buyer_color))
@@ -86,11 +84,11 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
             }
 
             label.background.let {
-                if(it is GradientDrawable) {
+                if (it is GradientDrawable) {
                     it.setColor(getColorResource(R.color.bg_buyer_color))
                 }
             }
-        }else if(NotificationUpdateItemViewModel.UserType.values()[labelIndex-1] == NotificationUpdateItemViewModel.UserType.Seller) {
+        } else if (labelIndex == SELLER_TYPE) {
             getStringResource(R.string.seller_label)?.apply {
                 label.text = this
                 label.setTextColor(getColorResource(R.color.text_seller_color))
@@ -98,18 +96,18 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
             }
 
             label.background.let {
-                if(it is GradientDrawable) {
+                if (it is GradientDrawable) {
                     it.setColor(getColorResource(R.color.bg_seller_color))
                 }
             }
         }
     }
 
-    private fun getStringResource(stringId: Int): String?{
+    private fun getStringResource(stringId: Int): String? {
         return itemView.context?.getString(stringId)
     }
 
-    private fun getColorResource(colorId: Int): Int{
+    private fun getColorResource(colorId: Int): Int {
         return MethodChecker.getColor(itemView.context, colorId)
     }
 

@@ -1,7 +1,7 @@
 package com.tokopedia.iris.data.network
 
 import android.content.Context
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.iris.*
 import okhttp3.OkHttpClient

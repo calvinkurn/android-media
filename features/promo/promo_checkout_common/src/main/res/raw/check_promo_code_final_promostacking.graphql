@@ -53,6 +53,7 @@ mutation get_promo_stack_use($params: PromoStackRequest) {
         type
         cashback_wallet_amount
         discount_amount
+        title_description
         invoice_description
         message {
           state

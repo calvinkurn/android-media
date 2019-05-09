@@ -8,8 +8,8 @@ import rx.Subscriber
 import java.lang.reflect.Type
 
 class NotificationUpdateActionSubscriber(
-        private val onSuccessDoAction: (() -> Unit)?,
-        private val onErrorDoAction: ((String) -> Unit)?
+        private val onSuccessDoAction: (() -> Unit)? = {},
+        private val onErrorDoAction: ((String) -> Unit)? ={}
 ) : Subscriber<GraphqlResponse>() {
 
     override fun onCompleted() {

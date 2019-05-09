@@ -39,7 +39,7 @@ class FlashSaleTracking() {
 
     fun sendFlashSaleEvent(action: String, label: String, shopId: String? = null) {
         val eventMap = createFlashSaleMap(action, label, shopId)
-        TrackApp.getInstance().gtm.sendEnhanceECommerceEvent(eventMap)
+        //TrackApp.getInstance().gtm.sendEnhanceECommerceEvent(eventMap)
     }
 
     fun createFlashSaleMap(action: String, label: String, shopId: String? = null): MutableMap<String, Any> {

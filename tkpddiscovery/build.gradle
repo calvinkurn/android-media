@@ -35,7 +35,6 @@ dependencies {
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.shopCommon)
