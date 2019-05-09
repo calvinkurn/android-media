@@ -10,6 +10,6 @@ data class ShopModerateRequestResult(
 
         @SerializedName("status")
         @Expose
-        val status: Int
+        val status: Int = 0
 
 )

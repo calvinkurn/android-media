@@ -31,7 +31,7 @@ class GetShopFollowingUseCase @Inject constructor(
 
     companion object {
 
-        private val PARAM_SHOP_IDS: String = "shopIds"
+        private val PARAM_SHOP_IDS: String = "shopIDs"
         private val PARAM_INPUT_FIELDS: String = "inputFields"
         private val DEFAULT_FAVORITE: String = "favorite"
 

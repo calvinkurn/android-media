@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName
 data class ShopModerateRequestStatus(
         @SerializedName("result")
         @Expose
-        val result: ShopModerateRequestResult,
+        val result: ShopModerateRequestResult = ShopModerateRequestResult(),
 
         @SerializedName("error")
         @Expose
-        val error: ShopModerateRequestError
+        val error: ShopModerateRequestError = ShopModerateRequestError()
 )

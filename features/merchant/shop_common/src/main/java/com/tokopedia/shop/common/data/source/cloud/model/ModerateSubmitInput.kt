@@ -11,7 +11,7 @@ data class ModerateSubmitInput (
 
         @SerializedName("status")
         @Expose
-        var status:Int ? = null,
+        var status:Int = 0,
 
         @SerializedName("notes")
         @Expose
