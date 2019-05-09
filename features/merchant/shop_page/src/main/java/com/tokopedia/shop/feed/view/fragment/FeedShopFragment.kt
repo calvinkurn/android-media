@@ -1,5 +1,7 @@
 package com.tokopedia.shop.feed.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
@@ -7,6 +9,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
@@ -14,6 +17,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.component.Dialog
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
@@ -25,13 +31,24 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.analytics.PostTagAnalytics
+import com.tokopedia.kol.common.util.PostMenuListener
+import com.tokopedia.kol.common.util.createBottomMenu
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
+import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
+import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity
+import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
+import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
 import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.user.session.UserSession
@@ -56,8 +73,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private lateinit var createPostUrl: String
     private lateinit var emptyResultViewModel: EmptyResultViewModel
-
     private lateinit var shopId: String
+    private var isLoading = false
 
     @Inject
     lateinit var presenter: FeedShopContract.Presenter
@@ -66,12 +83,18 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     lateinit var postTagAnalytics: PostTagAnalytics
 
     companion object {
+        private const val YOUTUBE_URL = "{youtube_url}"
+        private const val TEXT_PLAIN = "text/plain"
         private val CREATE_POST = 888
+        private const val LOGIN_CODE = 1383
+        private const val LOGIN_FOLLOW_CODE = 1384
+        private const val OPEN_CONTENT_REPORT = 1130
+        private const val KOL_COMMENT_CODE = 13
         val PARAM_CREATE_POST_URL: String= "PARAM_CREATE_POST_URL"
         val PARAM_SHOP_ID: String= "PARAM_SHOP_ID"
         fun createInstance(shopId: String, createPostUrl: String): FeedShopFragment {
             val fragment = FeedShopFragment()
-            val bundle:Bundle = Bundle.EMPTY
+            val bundle = Bundle()
             bundle.putString(PARAM_SHOP_ID, shopId)
             bundle.putString(PARAM_CREATE_POST_URL, createPostUrl)
             fragment.arguments = bundle
@@ -94,6 +117,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         presenter.attachView(this)
         initVar()
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onDestroy() {
+        presenter.detachView()
+        super.onDestroy()
     }
 
     private fun initVar() {
@@ -125,25 +153,43 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        DaggerFeedShopComponent.builder()
+                .kolComponent(KolComponentInstance.getKolComponent(activity!!.application))
+                .build()
+                .inject(this)
     }
 
     override fun loadData(page: Int) {
-        if (shopId.isNotEmpty()) {
-            presenter.getFeedFirstPage(shopId)
+        if (shopId.isNotEmpty() && !isLoading) {
+            isLoading = true
+            if (isLoadingInitialData) {
+                presenter.getFeedFirstPage(shopId)
+            } else {
+                presenter.getFeed(shopId)
+            }
         }
     }
 
-    override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String) {
+        val dataList = ArrayList<Visitable<*>>()
+        isLoading = false
+        if (element.isNotEmpty()) {
+            //todo : add create post widget if shop is self shop
+            renderList(element, lastCursor.isNotEmpty())
+        } else {
+            dataList.add(getEmptyResultViewModel())
+            renderList(dataList)
+        }
     }
 
     override fun onSuccessGetFeed(visitables: List<Visitable<*>>, lastCursor: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        isLoading = false
+        updateCursor(lastCursor)
+        renderList(visitables, lastCursor.isNotEmpty())
     }
 
     override fun updateCursor(cursor: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        presenter.cursor = cursor
     }
 
     override fun onSuccessFollowKol() {
@@ -163,129 +209,257 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onLikeKolSuccess(rowNumber: Int, action: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (adapter.data.size > rowNumber
+                && adapter.data[rowNumber] != null
+                && adapter.data[rowNumber] is DynamicPostViewModel) {
+            val model = adapter.data[rowNumber] as DynamicPostViewModel
+            val like = model.footer.like
+            like.isChecked = !model.footer.like.isChecked
+            if (like.isChecked) {
+                try {
+                    val likeValue = Integer.valueOf(like.fmt) + 1
+                    like.fmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
+
+                like.value = like.value + 1
+            } else {
+                try {
+                    val likeValue = Integer.valueOf(like.fmt) - 1
+                    like.fmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
+
+                like.value = like.value - 1
+            }
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE)
+        }
     }
 
-    override fun onLikeKolError(message: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun onLikeKolError(message: String) = showError(message)
 
     override fun getUserSession(): UserSession = UserSession(activity)
 
     override fun onGoToKolProfile(rowNumber: Int, userId: String?, postId: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onGoToKolProfileUsingApplink(rowNumber: Int, applink: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onOpenKolTooltip(rowNumber: Int, uniqueTrackingId: String?, url: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onGoToLink(url ?: "")
     }
 
     override fun trackContentClick(hasMultipleContent: Boolean, activityId: String?, activityType: String?, position: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun trackTooltipClick(hasMultipleContent: Boolean, activityId: String?, activityType: String?, position: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onFollowKolClicked(rowNumber: Int, id: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (userSession.isLoggedIn) {
+            presenter.likeKol(id, rowNumber, this)
+        } else {
+            goToLogin()
+        }
     }
 
     override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (userSession.isLoggedIn) {
+            presenter.unlikeKol(id, rowNumber, this)
+        } else {
+            goToLogin()
+        }
     }
 
     override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val intent = KolCommentActivity.getCallingIntent(
+                context, id, rowNumber
+        )
+        startActivityForResult(intent, KOL_COMMENT_CODE)
     }
 
     override fun onEditClicked(hasMultipleContent: Boolean, activityId: String?, activityType: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
+        context?.let {
+            val menus = createBottomMenu(it, element, object : PostMenuListener {
+                override fun onDeleteClicked() {
+                    createDeleteDialog(rowNumber, element.contentId).show()
+                }
+
+                override fun onReportClick() {
+                    goToContentReport(element.contentId)
+                }
+
+                override fun onEditClick() {
+
+                }
+            })
+            menus.show()
+        }
     }
 
     override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onGoToLink(redirectUrl)
+//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
+//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
+//            trackCardPostClick(
+//                    positionInFeed,
+//                    model.trackingPostModel,
+//                    ProfileAnalytics.Element.AVATAR,
+//                    redirectUrl
+//            )
+//        }
     }
 
     override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (type == FollowCta.AUTHOR_USER) {
+            var userIdInt = 0
+            try {
+                userIdInt = Integer.valueOf(id)
+            } catch (ignored: NumberFormatException) {
+            }
+            if (isFollow) {
+                onUnfollowKolClicked(positionInFeed, userIdInt)
+            } else {
+                onFollowKolClicked(positionInFeed, userIdInt)
+            }
+//            if (adapter.list[positionInFeed] is DynamicPostViewModel) {
+//                val model = adapter.list[positionInFeed] as DynamicPostViewModel
+//                trackCardPostClick(
+//                        positionInFeed,
+//                        model.trackingPostModel,
+//                        ProfileAnalytics.Element.FOLLOW,
+//                        ""
+//                )
+//            }
+        }
     }
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        context?.let {
+            val menus = createBottomMenu(it, deletable, reportable, false, object : PostMenuListener {
+                override fun onDeleteClicked() {
+                    createDeleteDialog(positionInFeed, postId).show()
+                }
+
+                override fun onReportClick() {
+                    goToContentReport(postId)
+                }
+
+                override fun onEditClick() {
+
+                }
+            })
+            menus.show()
+        }
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onGoToLink(redirectUrl)
     }
 
     override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (isLiked) {
+            onUnlikeKolClicked(positionInFeed, id, false, "")
+        } else {
+            onLikeKolClicked(positionInFeed, id, false, "")
+        }
     }
 
     override fun onCommentClick(positionInFeed: Int, id: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onGoToKolComment(positionInFeed, id, false, "")
     }
 
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        activity?.let {
+            doShare(url, String.format("%s %s", description, "%s"), title)
+        }
+//        profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onGoToLink(redirectUrl)
+//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
+//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
+//            trackCardPostClick(
+//                    positionInFeed,
+//                    model.trackingPostModel,
+//                    ProfileAnalytics.Element.TAG,
+//                    redirectUrl
+//            )
+//        }
     }
 
     override fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onGoToLink(redirectUrl)
+//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
+//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
+//            if (isOwner) {
+//                postTagAnalytics.trackClickPostTagProfileSelf(
+//                        model.id,
+//                        postTagItem,
+//                        itemPosition,
+//                        model.trackingPostModel
+//                )
+//            } else {
+//                postTagAnalytics.trackClickPostTagProfileOther(
+//                        model.id,
+//                        postTagItem,
+//                        itemPosition,
+//                        model.trackingPostModel
+//                )
+//            }
+//        }
     }
 
     override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        for (tracking in trackList) {
+            presenter.trackPostClickUrl(tracking.clickURL)
+        }
     }
 
     override fun onActionPopup() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onTitleCtaClick(redirectUrl: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onGoToLink(redirectUrl)
     }
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onGoToLink(redirectLink)
+//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
+//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
+//            trackCardPostClick(
+//                    positionInFeed,
+//                    contentPosition,
+//                    model.trackingPostModel,
+//                    ProfileAnalytics.Element.IMAGE,
+//                    redirectLink
+//            )
+//        }
     }
 
     override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onGoToLink(redirectUrl)
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onGoToLink(redirectLink)
     }
 
     override fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int, id: String, type: String, isFollow: Boolean) {
@@ -293,23 +467,64 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onActionRedirect(redirectUrl: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onGoToLink(redirectUrl)
     }
 
     override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int, youtubeId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
+
+        if (context != null) {
+            RouteManager.route(
+                    context!!,
+                    redirectUrl
+            )
+        }
+//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
+//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
+//            trackCardPostClick(
+//                    positionInFeed,
+//                    contentPosition,
+//                    model.trackingPostModel,
+//                    ProfileAnalytics.Element.VIDEO,
+//                    redirectUrl
+//            )
+//        }
     }
 
     override fun onPollOptionClick(positionInFeed: Int, contentPosition: Int, option: Int, pollId: String, optionId: String, isVoted: Boolean, redirectLink: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (isVoted) {
+            onGoToLink(redirectLink)
+        }
+//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
+//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
+//            trackCardPostClick(
+//                    positionInFeed,
+//                    contentPosition,
+//                    model.trackingPostModel,
+//                    ProfileAnalytics.Element.OPTION + option,
+//                    redirectLink
+//            )
+//        }
     }
 
     override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onGoToLink(redirectLink)
+//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
+//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
+//            trackCardPostClick(
+//                    positionInFeed,
+//                    contentPosition,
+//                    model.trackingPostModel,
+//                    ProfileAnalytics.Element.PRODUCT,
+//                    redirectLink
+//            )
+//        }
     }
 
     override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        startActivity(VideoDetailActivity.getInstance(
+                activity!!,
+                postId))
     }
 
     fun updateShopInfo(shopInfo: ShopInfo) {
@@ -324,6 +539,49 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     CREATE_POST
             )
         }
+    }
+
+    private fun onGoToLink(url: String) {
+        if (RouteManager.isSupportApplink(activity, url)) {
+            RouteManager.route(activity, url)
+        } else {
+            RouteManager.route(
+                    activity,
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+            )
+        }
+    }
+
+    private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
+        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        dialog.setTitle(getString(R.string.kol_delete_post))
+        dialog.setDesc(getString(R.string.kol_delete_post_desc))
+        dialog.setBtnOk(getString(R.string.kol_title_delete))
+        dialog.setBtnCancel(getString(R.string.kol_title_cancel))
+        dialog.setOnOkClickListener {
+            presenter.deletePost(id, rowNumber)
+            dialog.dismiss()
+        }
+        dialog.setOnCancelClickListener { dialog.dismiss() }
+        return dialog
+    }
+
+    private fun goToContentReport(contentId: Int) {
+        if (context != null) {
+            if (userSession.isLoggedIn) {
+                val intent = ContentReportActivity.createIntent(
+                        context!!,
+                        contentId
+                )
+                startActivityForResult(intent, OPEN_CONTENT_REPORT)
+            } else {
+                goToLogin()
+            }
+        }
+    }
+
+    private fun goToLogin() {
+        RouteManager.route(getActivity(), ApplinkConst.LOGIN);
     }
 
     private fun getEmptyResultViewModel(): EmptyResultViewModel {
@@ -347,6 +605,30 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             }
         }
         return emptyResultViewModel
+    }
+
+    private fun doShare(link: String, formatString: String, shareTitle: String) {
+        val shareBody = String.format(formatString, link)
+        val sharingIntent = Intent(Intent.ACTION_SEND)
+        sharingIntent.type = TEXT_PLAIN
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
+        startActivity(
+                Intent.createChooser(sharingIntent, shareTitle)
+        )
+    }
+
+    private fun showError(message: String) {
+        showError(message, null)
+    }
+
+    private fun showError(message: String, listener: View.OnClickListener?) {
+        ToasterError.make(view, message, ToasterError.LENGTH_LONG)
+                .setAction(R.string.title_try_again, listener)
+                .show()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
 }

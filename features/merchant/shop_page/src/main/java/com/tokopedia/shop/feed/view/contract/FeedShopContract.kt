@@ -11,7 +11,7 @@ import com.tokopedia.user.session.UserSession
  */
 interface FeedShopContract {
     interface View : BaseListViewListener<Visitable<*>> {
-        fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>)
+        fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String)
 
         fun onSuccessGetFeed(visitables: List<Visitable<*>>, lastCursor: String)
 

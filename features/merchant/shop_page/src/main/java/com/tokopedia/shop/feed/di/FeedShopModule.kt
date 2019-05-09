@@ -10,6 +10,7 @@ import dagger.Provides
  */
 @Module(includes = [(FeedShopNetworkModule::class)])
 class FeedShopModule {
+
     @FeedShopScope
     @Provides
     fun provideFeedShopPresenter(feedShopPresenter: FeedShopPresenter): FeedShopContract.Presenter {
