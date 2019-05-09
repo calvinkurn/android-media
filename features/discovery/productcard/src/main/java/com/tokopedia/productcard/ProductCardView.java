@@ -71,7 +71,6 @@ public class ProductCardView extends BaseCustomView {
 
     public void setViewPdpRecommendation(){
         textName.setMinLines(2);
-        textPrice.setMinLines(2);
     }
 
     public void setDiscount(int discount) {

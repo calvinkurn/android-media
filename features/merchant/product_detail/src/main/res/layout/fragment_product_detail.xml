@@ -104,11 +104,11 @@
                     android:visibility="gone" />
                 <include layout="@layout/partial_product_full_descr"/>
                 <include layout="@layout/partial_product_shop_info"/>
+                <include layout="@layout/partial_product_recommendation"/>
                 <include layout="@layout/partial_product_image_review"/>
                 <include layout="@layout/partial_most_helpful_review_view"/>
                 <include layout="@layout/partial_product_latest_talk"/>
                 <include layout="@layout/partial_other_product"/>
-                <include layout="@layout/partial_product_recommendation"/>
 
                 <FrameLayout android:id="@+id/open_shop"
                     android:layout_width="match_parent"
