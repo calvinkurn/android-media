@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.tokopedia.discovery.newdiscovery.search.fragment.product.widget.GlobalNavWidget
+    <com.tokopedia.search.result.presentation.view.widget.GlobalNavWidget
         android:id="@+id/globalNavWidget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
