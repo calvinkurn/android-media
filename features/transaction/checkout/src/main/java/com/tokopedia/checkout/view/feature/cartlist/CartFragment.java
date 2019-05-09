@@ -562,11 +562,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onCartItemQuantityFormEdited(int position, int parentPosition, boolean needRefreshItemView) {
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
-    }
-
-    @Override
     public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         sendAnalyticsOnClickProductNameCartItem(cartItemHolderData.getCartItemData().getOriginData().getProductName());
         navigateToActivity(getProductIntent(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
@@ -627,11 +622,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         data.setVisible(false);
         cartAdapter.notifyItemChanged(position);
         cartAdapter.checkForShipmentForm();
-    }
-
-    @Override
-    public void onCartItemListIsEmpty(int shopPosition) {
-        renderEmptyCartData(null);
     }
 
     @Override
@@ -834,11 +824,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartItemLabelInputRemarkClicked() {
         sendAnalyticsOnClickCreateNoteCartItem();
-    }
-
-    @Override
-    public void onQuantityChanged() {
-
     }
 
     @Override
