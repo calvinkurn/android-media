@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -16,10 +17,7 @@ import android.text.TextUtils
 import android.text.style.ClickableSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import com.crashlytics.android.Crashlytics
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -57,6 +55,7 @@ import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
+import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
@@ -141,6 +140,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private lateinit var emailPhoneEditText: EditText
     private lateinit var partialActionButton: TextView
     private lateinit var passwordEditText: TextInputEditText
+    private lateinit var textViewTicker: TextView
 
     companion object {
         fun createInstance(bundle: Bundle): Fragment {
@@ -247,6 +247,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
         partialActionButton = partialRegisterInputView.findViewById(R.id.register_btn)
         passwordEditText = partialRegisterInputView.findViewById(R.id.password)
+        textViewTicker = view.findViewById(R.id.textview_ticker)
         return view
     }
 
@@ -290,6 +291,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         } else {
             showSmartLock()
         }
+
+        presenter.getTickerInfo()
     }
 
     private fun showSmartLock() {
@@ -976,6 +979,21 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         } else if (activity != null) {
             activity?.finish()
         }
+    }
+
+    override fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
+        if(listTickerInfo.isNotEmpty()){
+            listTickerInfo.first().apply {
+                textViewTicker.setText(this.title)
+                textViewTicker.setBackgroundColor(Color.parseColor(this.color))
+            }
+        }else{
+            onErrorGetTickerInfo("Empty")
+        }
+    }
+
+    override fun onErrorGetTickerInfo(error: String) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
 }

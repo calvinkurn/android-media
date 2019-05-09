@@ -1,0 +1,10 @@
+query tickerLoginRegister(){
+  ticker {
+    tickers {
+      id
+      title
+      message
+      color
+    }
+  }
+}
