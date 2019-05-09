@@ -104,6 +104,12 @@
                 android:layout_margin="@dimen/dp_16" />
 
             <include
+                android:id="@+id/il_partner_layout"
+                layout="@layout/layout_lending_partner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <include
                 layout="@layout/il_other_financial_products"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

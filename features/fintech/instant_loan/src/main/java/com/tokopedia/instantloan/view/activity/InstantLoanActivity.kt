@@ -51,6 +51,7 @@ import kotlinx.android.synthetic.main.activity_instant_loan.*
 import kotlinx.android.synthetic.main.il_other_financial_products.*
 import kotlinx.android.synthetic.main.layout_il_testimonials.*
 import kotlinx.android.synthetic.main.layout_lending_category.*
+import kotlinx.android.synthetic.main.layout_lending_partner.*
 import javax.inject.Inject
 
 class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, BannerContractor.View, OnGoingLoanContractor.View,
@@ -83,6 +84,8 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     private lateinit var rvSeoLayout: RecyclerView
 
     private lateinit var lendingCategoryAdpater: LendingCategoryAdapter
+    private lateinit var lendingPartnerAdpater: LendingPartnerAdapter
+
     private lateinit var lendingSeoAdapter: LendingSeoAdapter
 
     internal var instantLoanItemList: MutableList<InstantLoanItem> = ArrayList()
@@ -138,8 +141,13 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         rv_lending_category.adapter = lendingCategoryAdpater
     }
 
-    private fun setupSeoLayout() {
+    private fun setupPartnerLayout() {
+        layoutManager = GridLayoutManager(this, COLUMN_COUNT_FOR_LOAN_PARTNER, RecyclerView.HORIZONTAL, false)
+        rv_lending_partner.layoutManager = layoutManager
+        rv_lending_partner.adapter = lendingPartnerAdpater
+    }
 
+    private fun setupSeoLayout() {
         linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rvSeoLayout.layoutManager = linearLayoutManager
         rvSeoLayout.adapter = lendingSeoAdapter
@@ -180,6 +188,14 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
                 hideCategoryLayout()
             }
 
+            if (gqlLendingDataResponse != null && gqlLendingDataResponse.lePartner != null && gqlLendingDataResponse.lePartner.partnerData.isNotEmpty()) {
+                showPartnerLayout()
+                lendingPartnerAdpater = LendingPartnerAdapter(gqlLendingDataResponse.lePartner.partnerData)
+                setupPartnerLayout()
+            } else {
+                hidePartnerLayout()
+            }
+
             if (gqlLendingDataResponse.leSeo != null && gqlLendingDataResponse.leSeo?.seoData != null &&
                     gqlLendingDataResponse.leSeo?.seoData?.isNotEmpty()!!) {
                 showSeoLayout()
@@ -192,6 +208,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         } else {
             hideBannerLayout()
             hideCategoryLayout()
+            hidePartnerLayout()
             hideSeoLayout()
         }
     }
@@ -237,6 +254,14 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     private fun hideCategoryLayout() {
         il_category_layout.visibility = View.GONE
+    }
+
+    private fun hidePartnerLayout() {
+
+    }
+
+    private fun showPartnerLayout() {
+
     }
 
     private fun hideTestimonials() {
@@ -542,6 +567,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
         val PINJAMAN_TITLE = "Pinjaman Online"
         val COLUMN_COUNT_FOR_LOAN_CATEGORY = 4
+        val COLUMN_COUNT_FOR_LOAN_PARTNER = 2
         val TAB_NAME = "tab_name"
         private val TAB_INSTAN = "instan"
         private val TAB_TANPA_AGUNAN = "tanpaagunan"

@@ -35,6 +35,7 @@ object InstantLoanUrl {
 
         val INSURANCE_WEBVIEW_URL = "https://www.tokopedia.com/asuransi/"
         val IL_CATEGORY_URL = "https://www.tokopedia.com/pinjaman-online/c/%s"
+        val IL_PARTNER_URL = "https://www.tokopedia.com/pinjaman-online/%s"
 
     }
 
