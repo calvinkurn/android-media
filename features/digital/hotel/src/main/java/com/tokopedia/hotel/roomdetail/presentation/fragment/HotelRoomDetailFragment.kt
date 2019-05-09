@@ -1,5 +1,7 @@
 package com.tokopedia.hotel.roomdetail.presentation.fragment
 
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
@@ -13,17 +15,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
+import com.tokopedia.hotel.roomdetail.presentation.viewmodel.HotelRoomDetailViewModel
+import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
+import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_detail.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
+import javax.inject.Inject
 
 /**
  * @author by resakemal on 23/04/19
@@ -31,16 +41,32 @@ import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 
 class HotelRoomDetailFragment : BaseDaggerFragment() {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var roomDetailViewModel: HotelRoomDetailViewModel
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     lateinit var hotelRoom: HotelRoom
+    lateinit var addToCartParam: HotelAddCartParam
 
     lateinit var saveInstanceCacheManager: SaveInstanceCacheManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            roomDetailViewModel = viewModelProvider.get(HotelRoomDetailViewModel::class.java)
+        }
+
         saveInstanceCacheManager = SaveInstanceCacheManager(activity!!, savedInstanceState)
         val manager = if (savedInstanceState == null) SaveInstanceCacheManager(activity!!,
                 arguments!!.getString(HotelRoomDetailActivity.EXTRA_SAVED_INSTANCE_ID)) else saveInstanceCacheManager
 
-        hotelRoom = manager.get(EXTRA_ROOM_DATA, HotelRoom::class.java, HotelRoom())!!
+        val hotelRoomDetailModel = manager.get(EXTRA_ROOM_DATA, HotelRoom::class.java, HotelRoomDetailModel())!!
+        hotelRoom = hotelRoomDetailModel.hotelRoom
+        addToCartParam = hotelRoomDetailModel.addToCartParam
 
         super.onCreate(savedInstanceState)
     }
@@ -50,14 +76,13 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         saveInstanceCacheManager.onSave(outState)
-        saveInstanceCacheManager.put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, hotelRoom)
+        saveInstanceCacheManager.put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(hotelRoom, addToCartParam))
     }
 
     private fun initView() {
@@ -124,15 +149,19 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
         tv_room_detail_size.text = hotelRoom.bedInfo
 
         val breakfastTextView = FacilityTextView(context!!)
-        breakfastTextView.setIconAndText("",
-                if (hotelRoom.breakfastInfo.isBreakfastIncluded) getString(R.string.hotel_room_list_free_breakfast)
-                else getString(R.string.hotel_room_list_breakfast_not_included))
+        if (hotelRoom.breakfastInfo.isBreakfastIncluded) {
+                breakfastTextView.setIconAndText(R.drawable.ic_hotel_free_breakfast, getString(R.string.hotel_room_list_free_breakfast))
+            } else {
+                breakfastTextView.setIconAndText(R.drawable.ic_hotel_no_breakfast, getString(R.string.hotel_room_list_breakfast_not_included))
+            }
         room_detail_header_facilities.addView(breakfastTextView)
 
         val refundableTextView = FacilityTextView(context!!)
-        refundableTextView.setIconAndText("",
-                if (hotelRoom.refundInfo.isRefundable) getString(R.string.hotel_room_list_refundable_with_condition)
-                else getString(R.string.hotel_room_list_not_refundable))
+        if (hotelRoom.refundInfo.isRefundable) {
+            refundableTextView.setIconAndText(R.drawable.ic_hotel_refundable, getString(R.string.hotel_room_list_refundable_with_condition))
+        } else {
+            refundableTextView.setIconAndText(R.drawable.ic_hotel_not_refundable, getString(R.string.hotel_room_list_not_refundable))
+        }
         room_detail_header_facilities.addView(refundableTextView)
 
         if (hotelRoom.numberRoomLeft <= MINIMUM_ROOM_COUNT) {
@@ -252,6 +281,24 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
         if (hotelRoom.roomPrice.isNotEmpty())
         tv_room_detail_price.text = hotelRoom.roomPrice[0].roomPrice
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
+        room_detail_button.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                if (userSessionInterface.isLoggedIn) {
+                    roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
+                            HotelAddCartParam("", addToCartParam.checkIn,
+                                    addToCartParam.checkOut, addToCartParam.propertyId,
+                                    hotelRoom.roomId, addToCartParam.room, addToCartParam.adult))
+                } else {
+                    goToLoginPage()
+                }
+            }
+        })
+    }
+
+    fun goToLoginPage() {
+        if (activity != null) {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
     }
 
     override fun getScreenName(): String = ""

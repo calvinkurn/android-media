@@ -27,8 +27,6 @@ class HotelRoomDetailActivity : HotelBaseActivity(), HasComponent<HotelRoomDetai
                     .hotelComponent(HotelComponentInstance.getHotelComponent(application))
                     .build()
 
-    override fun getScreenName(): String = ""
-
     override fun getNewFragment(): Fragment =
         HotelRoomDetailFragment.getInstance(
                 intent.getStringExtra(EXTRA_SAVED_INSTANCE_ID)
