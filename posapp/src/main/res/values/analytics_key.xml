@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- TODO need to change the keys, because we still use the same keys as main app -->
-    <string name="key_localytics">e5ce78bb486192da7790186-01e0f208-0058-11e5-9b02-00739d24cb30</string>
-    <string name="key_localytics_testmessage">ampe5ce78bb486192da7790186-01e0f208-0058-11e5-9b02-00739d24cb30</string>
-
-    <string name="key_appsflyer">SdSopxGtYr9yK8QEjFVHXL</string>
-</resources>
