@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +47,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         , NotificationUpdateContract.View, NotificationSectionFilterListener, NotificationUpdateItemListener {
 
     private var cursor = ""
+    private var lastItem = 0
 
     private lateinit var filterViewModel: ArrayList<NotificationUpdateFilterItemViewModel>
     private val selectedItemList = HashMap<Int, Int>()
@@ -104,6 +106,19 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                     bottomActionView.hide()
                 }
             }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == SCROLL_STATE_IDLE) {
+                    val layoutManager = (recyclerView?.layoutManager)
+                    if (layoutManager != null && layoutManager is LinearLayoutManager) {
+                        val temp = layoutManager.findLastVisibleItemPosition()
+                        if(temp > lastItem){
+                            lastItem = temp
+                        }
+                    }
+                }
+            }
         })
     }
 
@@ -123,7 +138,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
         setActionViewProperties(submit, reset, false)
 
-        closeFilter?.setOnClickListener{
+        closeFilter?.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
 
@@ -172,9 +187,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         var typeName = ""
         var tagName = ""
         for ((key, value) in selectedItemList) {
-            if(filterViewModel[key].filterType == NotificationUpdateFilterItemViewModel.FilterType.TYPE_ID.type){
+            if (filterViewModel[key].filterType == NotificationUpdateFilterItemViewModel.FilterType.TYPE_ID.type) {
                 typeName = filterViewModel[key].list[value].text
-            }else if(filterViewModel[key].filterType == NotificationUpdateFilterItemViewModel.FilterType.TAG_ID.type){
+            } else if (filterViewModel[key].filterType == NotificationUpdateFilterItemViewModel.FilterType.TAG_ID.type) {
                 tagName = filterViewModel[key].list[value].text
             }
         }
@@ -186,7 +201,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     override fun notifyBottomActionView(updateCounter: Long) {
         bottomActionView?.let {
-            if(updateCounter == 0L){
+            if (updateCounter == 0L) {
                 it.hideBav2()
             } else {
                 it.showBav2()
@@ -288,7 +303,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         adapter.notifyItemChanged(adapterPosition)
         analytics.trackClickNotifList(templateKey)
         presenter.markReadNotif(notifId)
-        if(needToResetCounter) {
+        if (needToResetCounter) {
             updateCounterTitleManual()
         }
     }
@@ -351,9 +366,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     private fun sendAnalyticsScrollBottom() {
-        val layoutManager = (getRecyclerView(view).layoutManager)
-        if(layoutManager != null && layoutManager is LinearLayoutManager) {
-            analytics.trackScrollBottom(layoutManager.findLastVisibleItemPosition().toString())
-        }
+        analytics.trackScrollBottom(lastItem.toString())
     }
 }
