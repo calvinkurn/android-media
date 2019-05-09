@@ -1,8 +1,6 @@
 package com.tokopedia.checkout.view.feature.cartlist;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.IntentService;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -1080,55 +1078,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void renderErrorHttpInitialGetCartListData(String message) {
-        if (cartAdapter.getItemCount() > 0) {
-            showSnackbarRetry(message);
-        } else {
-            showErrorLayout(message);
-        }
-    }
-
-    @Override
-    public void renderErrorNoConnectionInitialGetCartListData(String message) {
-        if (cartAdapter.getItemCount() > 0) {
-            showSnackbarRetry(message);
-        } else {
-            showErrorLayout(message);
-        }
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionInitialGetCartListData(String message) {
-        if (cartAdapter.getItemCount() > 0) {
-            showSnackbarRetry(message);
-        } else {
-            showErrorLayout(message);
-        }
-    }
-
-    @Override
     public void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList) {
 
-    }
-
-    @Override
-    public void renderErrorActionDeleteCartData(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorHttpActionDeleteCartData(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionActionDeleteCartData(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionActionDeleteCartData(String message) {
-        showToastMessageRed(message);
     }
 
     @Override
@@ -1214,41 +1165,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void renderErrorHttpToShipmentForm(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionToShipmentForm(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionToShipmentForm(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorToShipmentMultipleAddress(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorHttpToShipmentMultipleAddress(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionToShipmentMultipleAddress(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
     public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
         PromoStackingData promoStackingData = new PromoStackingData.Builder()
                 .typePromo(PromoStackingData.CREATOR.getTYPE_VOUCHER())
@@ -1272,26 +1188,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 .title(responseFirstStep.getData().getTitleDescription())
                 .build();
         cartAdapter.updateItemPromoStackVoucher(promoStackingData);
-    }
-
-    @Override
-    public void renderErrorCheckPromoCodeFromSuggestedPromo(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorHttpCheckPromoCodeFromSuggestedPromo(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionCheckPromoCodeFromSuggestedPromo(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionCheckPromoCodeFromSuggestedPromo(String message) {
-        showToastMessageRed(message);
     }
 
     @Override

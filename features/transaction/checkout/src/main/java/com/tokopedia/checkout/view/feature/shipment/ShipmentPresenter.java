@@ -81,6 +81,7 @@ import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
+import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
@@ -777,7 +778,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
-                getView().showToastError(e.getMessage());
+                String errorMessage = e.getMessage();
+                if (!(e instanceof CartResponseErrorException)) {
+                    errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), e);
+                }
+                getView().showToastError(errorMessage);
                 processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn, deviceId);
             }
 

@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.BuildConfig;
@@ -34,14 +33,12 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
@@ -54,12 +51,9 @@ import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
-import com.tokopedia.transactiondata.apiservice.CartHttpErrorException;
-import com.tokopedia.transactiondata.apiservice.CartResponseDataNullException;
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
-import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -70,9 +64,6 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -448,7 +439,11 @@ public class CartListPresenter implements ICartListPresenter {
                 e.printStackTrace();
                 if (view != null) {
                     view.hideProgressLoading();
-                    view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivity(), e));
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.showToastMessageRed(errorMessage);
                     processInitialGetCartData(cartListData == null);
                 }
             }
@@ -479,9 +474,11 @@ public class CartListPresenter implements ICartListPresenter {
                 e.printStackTrace();
                 if (view != null) {
                     view.hideProgressLoading();
-                    view.showToastMessageRed(
-                            ErrorHandler.getErrorMessage(view.getActivity(), e)
-                    );
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.showToastMessageRed(errorMessage);
                     processInitialGetCartData(cartListData == null);
                 }
             }
@@ -541,8 +538,11 @@ public class CartListPresenter implements ICartListPresenter {
                             public void onError(Throwable e) {
                                 if (view != null) {
                                     view.hideProgressLoading();
-                                    String message = ErrorHandler.getErrorMessage(view.getActivity(), e);
-                                    view.showToastMessageRed(message);
+                                    String errorMessage = e.getMessage();
+                                    if (!(e instanceof CartResponseErrorException)) {
+                                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                                    }
+                                    view.showToastMessageRed(errorMessage);
                                 }
                             }
 
@@ -793,7 +793,11 @@ public class CartListPresenter implements ICartListPresenter {
                 e.printStackTrace();
                 if (view != null) {
                     view.renderLoadGetCartDataFinish();
-                    handleErrorinitCartList(e);
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.renderErrorInitialGetCartListData(errorMessage);
                     view.stopTrace();
                 }
             }
@@ -815,50 +819,6 @@ public class CartListPresenter implements ICartListPresenter {
         };
     }
 
-    private void handleErrorinitCartList(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            view.renderErrorNoConnectionInitialGetCartListData(
-                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-            );
-        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-            view.renderErrorTimeoutConnectionInitialGetCartListData(
-                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-            );
-        } else if (e instanceof CartResponseErrorException) {
-            view.renderErrorInitialGetCartListData(e.getMessage());
-        } else if (e instanceof CartResponseDataNullException) {
-            view.renderErrorInitialGetCartListData(e.getMessage());
-        } else if (e instanceof CartHttpErrorException) {
-            view.renderErrorHttpInitialGetCartListData(e.getMessage());
-        } else if (e instanceof ResponseCartApiErrorException) {
-            view.renderErrorInitialGetCartListData(e.getMessage());
-        } else {
-            view.renderErrorHttpInitialGetCartListData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-        }
-    }
-
-    private void handleErrorCartList(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            view.renderErrorNoConnectionActionDeleteCartData(
-                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-            );
-        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-            view.renderErrorTimeoutConnectionActionDeleteCartData(
-                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-            );
-        } else if (e instanceof CartResponseErrorException) {
-            view.renderErrorActionDeleteCartData(e.getMessage());
-        } else if (e instanceof CartResponseDataNullException) {
-            view.renderErrorActionDeleteCartData(e.getMessage());
-        } else if (e instanceof CartHttpErrorException) {
-            view.renderErrorHttpActionDeleteCartData(e.getMessage());
-        } else if (e instanceof ResponseCartApiErrorException) {
-            view.renderErrorActionDeleteCartData(e.getMessage());
-        } else {
-            view.renderErrorHttpActionDeleteCartData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-        }
-    }
-
     @NonNull
     private Subscriber<DeleteCartData> getSubscriberDeleteCart(final CartItemData cartItemData, final boolean addWishList) {
         return new Subscriber<DeleteCartData>() {
@@ -872,7 +832,11 @@ public class CartListPresenter implements ICartListPresenter {
                 if (view != null) {
                     e.printStackTrace();
                     view.hideProgressLoading();
-                    handleErrorCartList(e);
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.showToastMessageRed(errorMessage);
                 }
             }
 
@@ -885,7 +849,7 @@ public class CartListPresenter implements ICartListPresenter {
                                 cartItemData, deleteCartData.getMessage(), addWishList
                         );
                     else
-                        view.renderErrorActionDeleteCartData(deleteCartData.getMessage());
+                        view.showToastMessageRed(deleteCartData.getMessage());
                 }
             }
         };
@@ -905,7 +869,11 @@ public class CartListPresenter implements ICartListPresenter {
                     view.hideProgressLoading();
                     e.printStackTrace();
                     if (!removeAllItem) {
-                        handleErrorCartList(e);
+                        String errorMessage = e.getMessage();
+                        if (!(e instanceof CartResponseErrorException)) {
+                            errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                        }
+                        view.showToastMessageRed(errorMessage);
                     } else {
                         processInitialGetCartData(cartListData == null);
                     }
@@ -928,7 +896,7 @@ public class CartListPresenter implements ICartListPresenter {
                                 view.onDeleteCartDataSuccess();
                             }
                         } else {
-                            view.renderErrorActionDeleteCartData(
+                            view.showToastMessageRed(
                                     deleteAndRefreshCartListData.getDeleteCartData().getMessage()
                             );
                         }
@@ -953,9 +921,11 @@ public class CartListPresenter implements ICartListPresenter {
                 if (view != null) {
                     e.printStackTrace();
                     view.hideProgressLoading();
-                    view.showToastMessageRed(
-                            ErrorHandler.getErrorMessage(view.getActivity(), e)
-                    );
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.showToastMessageRed(errorMessage);
                     processInitialGetCartData(cartListData == null);
                 }
             }
@@ -1047,7 +1017,11 @@ public class CartListPresenter implements ICartListPresenter {
                     view.hideProgressLoading();
                     e.printStackTrace();
                     view.renderLoadGetCartDataFinish();
-                    handleErrorinitCartList(e);
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.renderErrorInitialGetCartListData(errorMessage);
                     view.stopTrace();
                 }
             }
@@ -1087,9 +1061,11 @@ public class CartListPresenter implements ICartListPresenter {
                 e.printStackTrace();
                 if (view != null) {
                     view.hideProgressLoading();
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                            ErrorHandler.getErrorMessage(view.getActivity(), e)
-                    );
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.showToastMessageRed(errorMessage);
                 }
             }
 
@@ -1101,7 +1077,7 @@ public class CartListPresenter implements ICartListPresenter {
                     if (!promoCodeCartListData.isError())
                         view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
                     else if (!isAutoApply)
-                        view.renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
+                        view.showToastMessageRed(promoCodeCartListData.getErrorMessage());
                 }
             }
         };
