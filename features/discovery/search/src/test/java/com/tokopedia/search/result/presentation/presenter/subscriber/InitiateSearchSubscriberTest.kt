@@ -3,8 +3,7 @@ package com.tokopedia.search.result.presentation.presenter.subscriber
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import rx.Observable
 
 class InitiateSearchSubscriberTest {
@@ -17,18 +16,22 @@ class InitiateSearchSubscriberTest {
 
     }
 
+    private fun verifyInitiateSearchListener(wantedNumberOfInvocations: Int) : InitiateSearchListener {
+        return verify(initiateSearchListener, times(wantedNumberOfInvocations))
+    }
+
     @Test
     fun onNext_GotNulls_CallListenerHandleResponseError() {
         Observable.just(null).subscribe(initiateSearchSubscriber)
 
-        verify(initiateSearchListener).onHandleResponseError()
-    }
-
-    @Test
-    fun onCompleted() {
+        verifyInitiateSearchListener(0).onHandleResponseSearch(anyBoolean())
+        verifyInitiateSearchListener(0).onHandleApplink(anyString())
+        verifyInitiateSearchListener(0).onHandleResponseUnknown()
+        verifyInitiateSearchListener(1).onHandleResponseError()
     }
 
     @Test
     fun onError() {
+
     }
 }
