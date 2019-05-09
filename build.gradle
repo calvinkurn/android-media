@@ -55,7 +55,6 @@ allprojects {
         maven { url "https://maven.google.com" }
         jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://www.jitpack.io" }
         maven {
             url "https://jitpack.io"
             credentials { username "${authToken}" }
@@ -70,6 +69,7 @@ allprojects {
                 password = "${artifactory_password}"
             }
         }
+        maven { url "https://www.jitpack.io" }
         maven { url "$rootDir/node_modules/react-native/android" }
         flatDir {
             dirs '../aars'
