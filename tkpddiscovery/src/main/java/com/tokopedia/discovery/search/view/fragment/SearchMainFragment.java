@@ -208,18 +208,13 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     @Override
     public void onItemClicked(String applink, String webUrl) {
-        onItemClicked(applink, webUrl, true);
-    }
-
-    @Override
-    public void onItemClicked(String applink, String webUrl, boolean shouldFinishActivity) {
         dropKeyBoard();
 
         if (isActivityAnApplinkRouter()) {
-            handleItemClickedIfActivityAnApplinkRouter(applink, webUrl, shouldFinishActivity);
+            handleItemClickedIfActivityAnApplinkRouter(applink, webUrl);
         } else {
             openWebViewURL(webUrl, getActivity());
-            finishActivityIfRequired(shouldFinishActivity);
+            getActivity().finish();
         }
     }
 
@@ -227,24 +222,19 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         return getActivity() != null && getActivity().getApplicationContext() instanceof ApplinkRouter;
     }
 
-    private void handleItemClickedIfActivityAnApplinkRouter(String applink, String webUrl, boolean shouldFinishActivity) {
+    private void handleItemClickedIfActivityAnApplinkRouter(String applink, String webUrl) {
         ApplinkRouter router = ((ApplinkRouter) getActivity().getApplicationContext());
         if (router.isSupportApplink(applink)) {
-            handleRouterSupportApplink(router, applink, shouldFinishActivity);
+            handleRouterSupportApplink(router, applink);
         } else {
             openWebViewURL(webUrl, getActivity());
-            finishActivityIfRequired(shouldFinishActivity);
+            getActivity().finish();
         }
     }
 
-    private void handleRouterSupportApplink(ApplinkRouter router, String applink, boolean shouldFinishActivity) {
-        finishActivityIfRequired(shouldFinishActivity);
+    private void handleRouterSupportApplink(ApplinkRouter router, String applink) {
+        getActivity().finish();
         router.goToApplinkActivity(getActivity(), applink);
-    }
-
-    private void finishActivityIfRequired(boolean shouldFinishActivity) {
-        if(shouldFinishActivity)
-            getActivity().finish();
     }
 
     public void openWebViewURL(String url, Context context) {

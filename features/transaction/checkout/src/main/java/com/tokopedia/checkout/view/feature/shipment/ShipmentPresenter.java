@@ -903,7 +903,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_LOGISTIC);
                         } else {
                             for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStack.getData().getVoucherOrders()) {
-                                if (voucherOrdersItemUiModel.getType().equalsIgnoreCase(PARAM_LOGISTIC) && voucherOrdersItemUiModel.getCode().equalsIgnoreCase(code)) {
+                                if (voucherOrdersItemUiModel.getCode().equalsIgnoreCase(code)) {
                                     if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
                                         mTrackerShipment.eventClickLanjutkanTerapkanPromoError(voucherOrdersItemUiModel.getMessage().getText());
                                         getView().showToastError(errMessage);

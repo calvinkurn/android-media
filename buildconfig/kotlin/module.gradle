@@ -5,6 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 
 kapt {
     correctErrorTypes = true
+    useBuildCache = true
 }
 
 android {
@@ -21,7 +22,7 @@ android {
     }
     buildTypes {
         debug{
-            testCoverageEnabled true
+            testCoverageEnabled (project.hasProperty('coverage')? true : false)
         }
         release {
             minifyEnabled false
