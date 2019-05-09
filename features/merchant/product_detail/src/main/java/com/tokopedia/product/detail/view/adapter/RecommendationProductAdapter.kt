@@ -1,8 +1,6 @@
 package com.tokopedia.product.detail.view.adapter
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.inflateLayout
@@ -34,7 +32,9 @@ class RecommendationProductAdapter(private var product: RecommendationModel) : R
 
         fun bind(product: RecommendationItem) {
             recommendationCardView?.setRecommendationModel(product, this)
-            if (product.rating < 1) recommendationCardView?.hideRatingView()
+            if (product.isTopAds) recommendationCardView?.hideRatingView()
+            else
+                if (product.rating < 1) recommendationCardView?.hideRatingView()
             recommendationCardView?.setWishlistButtonVisible(false)
             recommendationCardView?.setViewPdpRecommendation()
         }
