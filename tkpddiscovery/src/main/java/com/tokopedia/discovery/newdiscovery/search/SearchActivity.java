@@ -21,18 +21,15 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
+import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
@@ -45,7 +42,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragmen
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -125,12 +121,12 @@ public class SearchActivity extends DiscoveryActivity
         return searchComponent;
     }
 
-    @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
+    //@DeepLink(ApplinkConst.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
         return createIntentToSearchActivityFromBundle(context, bundle);
     }
 
-    @DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+    //@DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
     public static Intent getCallingApplinkAutoCompleteSearchIntent(Context context, Bundle bundle) {
         Intent intent = createIntentToSearchActivityFromBundle(context, bundle);
 
@@ -351,7 +347,17 @@ public class SearchActivity extends DiscoveryActivity
 
     @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onShowRationale(this, new RequestPermissionUtil.PermissionRequestListener() {
+            @Override
+            public void onProceed() {
+                request.proceed();
+            }
+
+            @Override
+            public void onCancel() {
+                request.cancel();
+            }
+        }, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -378,9 +384,9 @@ public class SearchActivity extends DiscoveryActivity
 
     public void eventDiscoveryExternalImageSearch(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
-                AppEventTracking.Category.IMAGE_SEARCH,
-                AppEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
+                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
+                SearchEventTracking.Category.IMAGE_SEARCH,
+                SearchEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
                 "");
     }
 
@@ -634,16 +640,8 @@ public class SearchActivity extends DiscoveryActivity
             }
 
             @Override
-            public void launchFilterCategoryPage(Filter filter, String selectedCategoryRootId, String selectedCategoryId) {
-                SearchTracking.eventSearchResultNavigateToFilterDetail(getActivityContext(), getResources().getString(R.string.title_category));
-                FilterDetailActivityRouter.launchCategoryActivity(SearchActivity.this,
-                        filter, selectedCategoryRootId, selectedCategoryId, true);
-            }
-
-            @Override
-            public void launchFilterDetailPage(Filter filter) {
-                SearchTracking.eventSearchResultNavigateToFilterDetail(getActivityContext(), filter.getTitle());
-                FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter, true);
+            public AppCompatActivity getActivity() {
+                return SearchActivity.this;
             }
         });
     }

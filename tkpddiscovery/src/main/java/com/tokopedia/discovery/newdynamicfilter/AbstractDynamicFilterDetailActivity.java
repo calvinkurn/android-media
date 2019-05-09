@@ -15,9 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.search.EmptySearchResultView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;

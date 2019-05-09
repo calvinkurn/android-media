@@ -529,6 +529,9 @@ public class HomePageTracking {
             TrackingQueue trackingQueue,
             HomeFeedViewModel feedViewModel,
             String tabName) {
+        if (trackingQueue == null) {
+            return;
+        }
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
@@ -548,6 +551,10 @@ public class HomePageTracking {
             TrackingQueue trackingQueue,
             HomeFeedViewModel feedViewModel,
             String tabName) {
+
+        if (trackingQueue == null) {
+            return;
+        }
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,

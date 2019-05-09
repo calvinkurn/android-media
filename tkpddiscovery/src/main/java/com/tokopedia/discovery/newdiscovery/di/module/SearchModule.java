@@ -2,8 +2,8 @@ package com.tokopedia.discovery.newdiscovery.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.discovery.autocomplete.presentation.presenter.AutoCompletePresenter;
 import com.tokopedia.discovery.imagesearch.di.module.ImageSearchModule;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenter;
@@ -16,7 +16,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListP
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListPresenterImpl;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -61,6 +60,12 @@ public class SearchModule {
     @Provides
     SearchPresenter provideSearchPresenter(@ApplicationContext Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
         return new SearchPresenter(context, getProductUseCase, getImageSearchUseCase);
+    }
+
+    @SearchScope
+    @Provides
+    AutoCompletePresenter provideAutoCompletePresenter(@ApplicationContext Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
+        return new AutoCompletePresenter(context, getProductUseCase, getImageSearchUseCase);
     }
 
     @SearchScope

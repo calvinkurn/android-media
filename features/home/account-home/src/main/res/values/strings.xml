@@ -186,7 +186,7 @@
     <string name="message_success_change_password">Kata sandi berhasil diubah</string>
     <string name="verified_account">Verified Account</string>
     <string name="error_no_internet_connection">Tidak ada koneksi internet</string>
-    <string name="label_total_coupon">%1$d Kupon</string>
+    <string name="label_total_coupon">%1$s Kupon</string>
 
     <string name="title_menu_challenge">Tokopedia Challenge</string>
     <string name="label_menu_challenge">Ikuti tantangan dan dapatkan hadiah!</string>
