@@ -738,10 +738,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 //                    .goToTokoCash(appLinkBalance,
 //                            getActivity());
 //        }
-        goToTokoCash(appLinkBalance);
+        goToOvo(appLinkBalance);
     }
 
-    private void goToTokoCash(String appLinkScheme){
+    private void goToOvo(String appLinkScheme){
         Intent intent = appLinkScheme == null || appLinkScheme.isEmpty() ?
                 RouteManager.getIntent(getContext(), ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme)
                 : RouteManager.isSupportApplink(getContext(), appLinkScheme)
@@ -767,21 +767,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
             @Override
             public void clickOnButton(String url, String appLink) {
-                if (TextUtils.isEmpty(appLink)) {
-                    if (getActivity() != null) {
-                        if ((getActivity()).getApplication() instanceof IHomeRouter) {
-                            ((IHomeRouter) (getActivity()).getApplication())
-                                    .goToWallet(getActivity(), url);
-                        }
-                    }
-                } else {
-                    goToTokoCash(appLink);
+                goToOvo(appLink);
+//                if (TextUtils.isEmpty(appLink)) {
+//                    if (getActivity() != null) {
+//                        if ((getActivity()).getApplication() instanceof IHomeRouter) {
+//                            ((IHomeRouter) (getActivity()).getApplication())
+//                                    .goToWallet(getActivity(), url);
+//                        }
+//                    }
+//                } else {
+
 //                    if ((getActivity()).getApplication() instanceof IHomeRouter) {
 //                        ((IHomeRouter) (getActivity()).getApplication())
 //                                .goToTokoCash(appLink,
 //                                        getActivity());
 //                    }
-                }
+//                }
 
             }
         });

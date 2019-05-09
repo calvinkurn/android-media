@@ -1524,12 +1524,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
     }
 
-    @Override
-    public Intent openWebViewGimicURLIntentFromExploreHome(Context context, String url, String title) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, url);
-        intent.putExtra(BannerWebView.EXTRA_TITLE, title);
-        return intent;
-    }
+//    @Override
+//    public Intent openWebViewGimicURLIntentFromExploreHome(Context context, String url, String title) {
+//        Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, url);
+//        intent.putExtra(BannerWebView.EXTRA_TITLE, title);
+//        return intent;
+//    }
 
     @Override
     public String getUserEmailProfil() {

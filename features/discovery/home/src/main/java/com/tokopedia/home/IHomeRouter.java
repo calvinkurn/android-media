@@ -30,15 +30,13 @@ public interface IHomeRouter {
 //            String name,
 //            String url);
 
-    /* Can't remove because StoreSettingActivity doesn't have Deeplink */
-    void goToManageShop(Context context);
+//    void goToManageShop(Context context);
 
 //    void sendIndexScreen(Activity activity, String screeName);
 
 //    void goToApplinkActivity(Context context, String applink);
 
-    /* Can't remove because WalletActivity doesn't have Deeplink */
-    void goToWallet(Context context, String url);
+//    void goToWallet(Context context, String url);
 
 //    void goToTokoCash(String appLinkBalance, Activity activity);
 
@@ -51,7 +49,7 @@ public interface IHomeRouter {
 //    Intent getBannerWebViewIntent(Activity activity, String url);
 
     /* Can't remove because SimpleWebViewWithFilePickerActivity doesn't have Deeplink */
-    Intent openWebViewGimicURLIntentFromExploreHome(Context context, String url, String title);
+//    Intent openWebViewGimicURLIntentFromExploreHome(Context context, String url, String title);
 
 //    Intent getActivityShopCreateEdit(Context context);
 
@@ -68,5 +66,5 @@ public interface IHomeRouter {
 //    Intent getIntentCreateShop(Context context);
 
     /* Can't remove because QrScannerActivity doesn't have Deeplink */
-    Intent gotoQrScannerPage(boolean needResult);
+//    Intent gotoQrScannerPage(boolean needResult);
 }

@@ -291,11 +291,14 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         if (!url.equals("")) {
             if (getActivity() != null
                     && getActivity().getApplicationContext() instanceof IHomeRouter) {
-                Intent intent = ((IHomeRouter) (getActivity()).getApplication())
-                        .openWebViewGimicURLIntentFromExploreHome(
-                                getActivity(),
-                                url,
-                                title);
+//                Intent intent = ((IHomeRouter) (getActivity()).getApplication())
+//                        .openWebViewGimicURLIntentFromExploreHome(
+//                                getActivity(),
+//                                url,
+//                                title);
+                Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.WEBVIEW);
+                intent.putExtra(BannerWebView.EXTRA_TITLE, title);
+                intent.putExtra("EXTRA_URL", url);
                 getActivity().startActivity(intent);
                 HomePageTracking.eventHomeGimmick(getActivity(), label);
             }
@@ -346,7 +349,8 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     private void onGoToShopSetting() {
-        ((IHomeRouter) getActivity().getApplicationContext()).goToManageShop(getActivity());
+//        ((IHomeRouter) getActivity().getApplicationContext()).goToManageShop(getActivity());
+        RouteManager.route(getContext(), ApplinkConstInternalMarketplace.STORE_SETTING);
     }
 
     @Override
