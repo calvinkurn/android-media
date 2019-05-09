@@ -3050,7 +3050,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendOpenHomeEvent() {
-        Toast.makeText(this, TokopediaUrl.Companion.getUrl().getTYPE().getValue(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, TokopediaUrl.Companion.getInstance().getTYPE().getValue(), Toast.LENGTH_SHORT).show();
         Map<String, Object> value = DataLayer.mapOf(
                 AppEventTracking.MOENGAGE.LOGIN_STATUS, legacySessionHandler().isV4Login()
         );
