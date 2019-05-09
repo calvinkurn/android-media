@@ -22,7 +22,7 @@ class TokopediaUrl {
         }
 
         fun getInstance() : Url {
-            return tokopediaUrl?: live
+            return tokopediaUrl?: staging
         }
 
         fun deleteInstance() {

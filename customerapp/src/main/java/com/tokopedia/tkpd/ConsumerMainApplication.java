@@ -199,6 +199,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         super.onTerminate();
         TrackApp.getInstance().delete();
         TrackApp.deleteInstance();
+        TokopediaUrl.Companion.deleteInstance();
         unregisterActivityLifecycleCallbacks(callback);
     }
 
