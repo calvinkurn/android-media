@@ -34,7 +34,7 @@ class RecommendationProductAdapter(private var product: RecommendationModel) : R
 
         fun bind(product: RecommendationItem) {
             recommendationCardView?.setRecommendationModel(product, this)
-            if (product.rating <= 0 && product.rating > 5) recommendationCardView?.hideRatingView()
+            if (product.rating < 1) recommendationCardView?.hideRatingView()
             recommendationCardView?.setWishlistButtonVisible(false)
             recommendationCardView?.setViewPdpRecommendation()
         }
