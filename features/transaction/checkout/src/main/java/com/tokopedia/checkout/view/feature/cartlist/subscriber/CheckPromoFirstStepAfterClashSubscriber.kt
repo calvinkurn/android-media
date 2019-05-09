@@ -15,7 +15,8 @@ import rx.Subscriber
 
 class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
                                               val presenter: ICartListPresenter,
-                                              val checkPromoCodeStackingCodeMapper: CheckPromoStackingCodeMapper)
+                                              val checkPromoCodeStackingCodeMapper: CheckPromoStackingCodeMapper,
+                                              val type: String)
     : Subscriber<GraphqlResponse>() {
 
     private val statusOK = "OK"
@@ -36,7 +37,7 @@ class CheckPromoFirstStepAfterClashSubscriber(val view: ICartListView?,
 
         if (responseGetPromoStack.status.equals(statusOK, true)) {
             if (responseGetPromoStack.data.clashings.isClashedPromos) {
-                view?.onClashCheckPromo(responseGetPromoStack.data.clashings)
+                view?.onClashCheckPromo(responseGetPromoStack.data.clashings, type)
             } else {
                 var isRed = false
                 var message = ""

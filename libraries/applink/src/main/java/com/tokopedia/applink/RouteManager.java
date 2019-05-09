@@ -8,8 +8,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.applink.constant.DeeplinkConstant;
 
-import static com.tokopedia.applink.ProductDetailRouteManager.getProductIntent;
-
 /**
  * @author ricoharisin .
  * Central class for routing to activity
@@ -33,6 +31,9 @@ public class RouteManager {
     }
 
     public static void route(Context context, String applinkPattern, String... parameter) {
+        if (context == null) {
+            return;
+        }
         String uriString = UriUtil.buildUri(applinkPattern, parameter);
         Intent intent = getIntent(context, uriString);
         if (intent != null) {
@@ -54,25 +55,13 @@ public class RouteManager {
             return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applink);
         }
 
-        // Solution to redirect based on internal-scheme, or deeplink registered in manifest
-        Intent intent;
-        if (applink.startsWith(DeeplinkConstant.SCHEME_INTERNAL) &&
-                ProductDetailRouteManager.isProductApplink(applink)){
-            intent = getProductIntent(context, applink);
-        } else {
-            intent = buildInternalUri(context, applink);
-        }
-        return intent;
+        return  buildInternalUri(context, applink);
     }
 
     public static boolean isSupportApplink(Context context, String applink) {
         if (applink.startsWith(DeeplinkConstant.SCHEME_INTERNAL)) {
-            Intent intent;
-            if (ProductDetailRouteManager.isProductApplink(applink)){
-                intent = getProductIntent(context, applink);
-            } else {
-                intent = buildInternalUri(context, applink);
-            }
+            Intent intent = buildInternalUri(context, applink);
+
             if (intent.resolveActivity(context.getPackageManager()) != null) {
                 return true;
             } else {

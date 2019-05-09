@@ -49,6 +49,8 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.libraries.design)
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+    implementation rootProject.ext.supportLibDependencies.kotlinReflection
 
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7

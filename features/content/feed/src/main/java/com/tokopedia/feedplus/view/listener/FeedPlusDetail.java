@@ -53,8 +53,6 @@ public interface FeedPlusDetail {
 
         void onBackPressed();
 
-        void onGoToBuyProduct(String productId, String price, String imageSource);
-
         void setHasNextPage(boolean hasNextPage);
     }
 

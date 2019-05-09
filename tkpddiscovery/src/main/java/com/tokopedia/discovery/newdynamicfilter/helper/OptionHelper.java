@@ -4,11 +4,10 @@ import android.text.TextUtils;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.tokopedia.core.discovery.model.LevelThreeCategory;
-import com.tokopedia.core.discovery.model.LevelTwoCategory;
-import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.domain.model.Category;
+import com.tokopedia.discovery.common.data.LevelThreeCategory;
+import com.tokopedia.discovery.common.data.LevelTwoCategory;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
@@ -26,7 +25,7 @@ public class OptionHelper {
     public static final String VALUE_SEPARATOR = ",";
 
     public static void saveOptionShownInMainState(Option option,
-                                                     HashMap<String, Boolean> shownInMainState) {
+                                                  HashMap<String, Boolean> shownInMainState) {
 
         if (!TextUtils.isEmpty(option.getInputState()) && Boolean.parseBoolean(option.getInputState())) {
             shownInMainState.put(option.getUniqueId(), true);

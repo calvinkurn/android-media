@@ -144,7 +144,10 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
                 val clashingInfoDetailUiModel: ClashingInfoDetailUiModel? = bundle?.getParcelable(EXTRA_CLASHING_DATA);
                 intent.putExtra(EXTRA_CLASHING_DATA, clashingInfoDetailUiModel)
                 activity?.setResult(RESULT_CLASHING, intent)
-                activity?.finish()
+
+                if (clashingInfoDetailUiModel != null) {
+                    activity?.finish()
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

@@ -34,12 +34,7 @@ public class EmptyFeedBeforeLoginViewHolder extends AbstractViewHolder<EmptyFeed
         );
 
         Button button = itemView.findViewById(R.id.btn_login);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewListener.onGoToLogin();
-            }
-        });
+        button.setOnClickListener(view -> viewListener.onGoToLogin());
         ImageView imageView = itemView.findViewById(R.id.iv_image);
         ImageHandler.loadImage2(imageView, imageUrl, R.drawable.ic_loading_image);
     }

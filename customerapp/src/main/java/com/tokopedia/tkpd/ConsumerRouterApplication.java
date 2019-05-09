@@ -90,6 +90,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
+import com.tokopedia.product.detail.ProductDetailRouter;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -126,7 +128,6 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.share.DefaultShare;
@@ -155,7 +156,6 @@ import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
@@ -220,7 +220,6 @@ import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.model.Configuration;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.kyc.KYCRouter;
@@ -317,6 +316,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
+import com.tokopedia.search.result.presentation.view.activity.SearchActivity;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -383,8 +383,6 @@ import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.train.TrainGetBuyerProfileInfoMapper;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
@@ -407,6 +405,7 @@ import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainUrl;
@@ -468,6 +467,8 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory.PRODUCT_DETAIL_PAGE;
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName.CLICK_PDP;
 
 
 /**
@@ -527,7 +528,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         WithdrawRouter,
         EventModuleRouter,
         ChallengesModuleRouter,
-        com.tokopedia.tkpdpdp.ProductDetailRouter,
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
@@ -555,7 +555,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ResolutionRouter,
         NormalCheckoutRouter,
         TradeInRouter,
-        com.tokopedia.product.detail.ProductDetailRouter,
+        ProductDetailRouter,
         OvoPayWithQrRouter,
         KYCRouter{
 
@@ -1965,22 +1965,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return intent;
     }
 
-    @Override
-    public Intent getAddToCartIntent(Context context, String productId, String price, String
-            imageSource) {
-        String EXTRA_PRODUCT_CART = "EXTRA_PRODUCT_CART";
-
-        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                .setProductId(productId)
-                .setPrice(price)
-                .setImageUri(imageSource)
-                .build();
-
-        Intent intent = new Intent(context, CartActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return intent;
-    }
-
     public Observable<String> getAtcObsr() {
         FlightAddToCartUseCase useCase = new FlightAddToCartUseCase(null, null);
         return useCase.createObservable(null)
@@ -2302,20 +2286,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         CartComponentInjector.newInstance(this)
                 .getGetMarketPlaceCartCounterUseCase()
                 .executeWithSubscriber(this, listener);
-    }
-
-    @Override
-    public void goToOldProductDetailPage(@NotNull Context context, @Nullable String productId,
-                                         @Nullable String shopDomain, @Nullable String productKey,
-                                         @Nullable String trackerAttribution, @Nullable String trackerListName) {
-        ProductPass productPass = ProductPass.Builder.aProductPass()
-                .setProductId(productId)
-                .setShopDomain(shopDomain)
-                .setProductKey(productKey)
-                .setTrackerAttribution(trackerAttribution)
-                .setTrackerListName(trackerListName)
-                .build();
-        context.startActivity(ProductInfoActivity.createInstance(context, productPass));
     }
 
     @Override
@@ -2752,11 +2722,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent gotoSearchPage(Context context) {
-        Intent intent = new Intent(context, SearchActivity.class);
-        intent.putExtra(SearchActivity.EXTRA_IS_AUTOCOMPLETE, true);
+    public Intent gotoSearchAutoCompletePage(Context context) {
+        return AutoCompleteActivity.newInstance(context);
+    }
 
-        return intent;
+    @Override
+    public Intent gotoSearchPage(Context context) {
+        return SearchActivity.newInstance(context);
     }
 
     @Override
@@ -3133,22 +3105,31 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void eventClickFilterReview(Context context,
                                        String filterName,
                                        String productId) {
-        ProductPageTracking.eventClickFilterReview(
-                context,
-                filterName,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                String.format(
+                        "click - filter review by %s",
+                        filterName.toLowerCase()
+                ),
                 productId
-        );
+        ));
     }
 
     @Override
     public void eventImageClickOnReview(Context context,
                                         String productId,
                                         String reviewId) {
-        ProductPageTracking.eventClickImageOnReviewList(
-                context,
-                productId,
-                reviewId
-        );
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                "click - review gallery on review list",
+                String.format(
+                        "product_id: %s - review_id : %s",
+                        productId,
+                        reviewId
+                )
+        ));
     }
 
     @Override
