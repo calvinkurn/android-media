@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/room_booking_hotel_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:padding="@dimen/dp_16">
+
+                <LinearLayout
+                    android:id="@+id/room_booking_hotel_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@id/roundedCornerImageView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_hotel_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:fontSize="titleBig"
+                        app:textViewTheme="lightPrimary"
+                        app:weight="medium"
+                        tools:text="Avissa Suites" />
+
+                    <LinearLayout
+                        android:id="@+id/hotel_rating_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:orientation="horizontal">
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/hotel_property_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/dp_4"
+                            android:layout_marginRight="@dimen/dp_4"
+                            android:background="@drawable/bg_search_destination_tag"
+                            android:paddingLeft="@dimen/dp_6"
+                            android:paddingTop="@dimen/dp_2"
+                            android:paddingRight="@dimen/dp_6"
+                            android:paddingBottom="@dimen/dp_2"
+                            android:textColor="#9e9fa3"
+                            android:textStyle="bold"
+                            app:fontSize="micro"
+                            tools:text="Hotel" />
+
+                    </LinearLayout>
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_hotel_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        app:fontSize="micro"
+                        app:textViewTheme="lightSecondary"
+                        tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas" />
+                </LinearLayout>
+
+                <com.tokopedia.design.image.RoundedCornerImageView
+                    android:id="@+id/roundedCornerImageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_loading_image" />
+
+            </android.support.constraint.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>
