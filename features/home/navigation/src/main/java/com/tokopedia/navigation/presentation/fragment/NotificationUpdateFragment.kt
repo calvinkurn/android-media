@@ -71,6 +71,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
 
         bottomActionView.setButton2OnClickListener {
+            resetViewCounter()
             presenter.markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate())
         }
 
@@ -251,6 +252,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     override fun itemClicked(notifId: String, adapterPosition: Int, needToResetCounter: Boolean) {
         adapter.notifyItemChanged(adapterPosition)
         presenter.markReadNotif(notifId)
+        resetViewCounter()
+    }
+
+    private fun resetViewCounter() {
         activity?.let {
             if (it is NotificationUpdateContract.View && needToResetCounter) {
                 (it as NotificationUpdateContract.View).resetCounter()
