@@ -71,7 +71,9 @@ data class HotelRoom(
 
         @SerializedName("extraBedInfo")
         @Expose
-        val extraBedInfo: ExtraBedInfo = ExtraBedInfo()
+        val extraBedInfo: ExtraBedInfo = ExtraBedInfo(),
+
+        var additionalPropertyInfo: AdditionalPropertyInfo = AdditionalPropertyInfo()
 
         ): Visitable<RoomListTypeFactory> {
 
@@ -163,6 +165,17 @@ data class HotelRoom(
             @SerializedName("Content")
             @Expose
             val content: String = ""
+    )
+
+    data class AdditionalPropertyInfo(
+
+            val propertyId: Int = 0,
+
+            val isAddressRequired: Boolean = false,
+
+            val isCvCRequired: Boolean = false,
+
+            val isDirectPayment: Boolean = false
     )
 }
 

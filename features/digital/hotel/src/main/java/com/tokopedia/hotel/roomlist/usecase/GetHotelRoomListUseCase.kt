@@ -58,10 +58,20 @@ class GetHotelRoomListUseCase @Inject constructor(val useCase: MultiRequestGraph
                 }
                 response
             }
-            return Success(hotelRoomData.await().rooms.toMutableList())
+            return Success(mappingObjects(hotelRoomData.await()))
         } catch (throwable: Throwable) {
             return Fail(throwable)
         }
+    }
+
+    fun mappingObjects(hotelRoomData: HotelRoomData): MutableList<HotelRoom> {
+        val propertyInfo: HotelRoom.AdditionalPropertyInfo =
+                HotelRoom.AdditionalPropertyInfo(hotelRoomData.propertyId, hotelRoomData.isAddressRequired,
+                        hotelRoomData.isCvCRequired, hotelRoomData.isDirectPayment)
+        for (room in hotelRoomData.rooms) {
+            room.additionalPropertyInfo = propertyInfo
+        }
+        return hotelRoomData.rooms.toMutableList()
     }
 
     companion object {
