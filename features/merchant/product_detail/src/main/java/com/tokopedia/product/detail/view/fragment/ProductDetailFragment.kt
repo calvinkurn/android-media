@@ -330,7 +330,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
                 is Loaded -> {
                     recommendationProductView.renderData((it.data as? Success)?.data ?: return@Observer)
-                    (it.data as? Success)?.data?.let { result -> recommendationProductView.renderData(result) }
+                    (it.data as? Success)?.data?.let { result ->
+                        recommendationProductView.renderData(result) }
                 }
             }
         })

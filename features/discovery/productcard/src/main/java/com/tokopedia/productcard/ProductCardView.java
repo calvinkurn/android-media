@@ -31,7 +31,6 @@ public class ProductCardView extends BaseCustomView {
     private View ratingReviewContainer;
     private ImageView ratingView;
     private TextView reviewCountView;
-    private CardView cardViewContainer;
 
     public ProductCardView(@NonNull Context context) {
         super(context);
@@ -68,6 +67,11 @@ public class ProductCardView extends BaseCustomView {
 
     public void hideRatingView(){
         ratingReviewContainer.setVisibility(View.INVISIBLE);
+    }
+
+    public void setViewPdpRecommendation(){
+        textName.setMinLines(2);
+        textPrice.setMinLines(2);
     }
 
     public void setDiscount(int discount) {

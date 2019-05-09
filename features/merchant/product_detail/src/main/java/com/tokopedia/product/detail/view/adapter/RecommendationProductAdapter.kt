@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.inflateLayout
@@ -24,18 +25,18 @@ class RecommendationProductAdapter(private var product: RecommendationModel) : R
     }
 
     override fun onBindViewHolder(holder: RecommendationProductAdapter.RecommendationProductViewHolder, position: Int) {
-        holder.bind(product.recommendationItemList[position],product.title)
+        holder.bind(product.recommendationItemList[position])
     }
 
     class RecommendationProductViewHolder(itemView: View) : RecommendationCardView.TrackingListener, RecyclerView.ViewHolder(itemView) {
         private val productDetailTracking = ProductDetailTracking()
         private val recommendationCardView: RecommendationCardView? = itemView.findViewById(R.id.productCardView)
 
-        fun bind(product: RecommendationItem, recommendationTitle:String) {
-            recommendationCardView?.setTitle(recommendationTitle)
+        fun bind(product: RecommendationItem) {
             recommendationCardView?.setRecommendationModel(product, this)
-            recommendationCardView?.hideRatingView()
+            if (product.rating <= 0 && product.rating > 5) recommendationCardView?.hideRatingView()
             recommendationCardView?.setWishlistButtonVisible(false)
+            recommendationCardView?.setViewPdpRecommendation()
         }
 
         override fun onImpressionTopAds(item: RecommendationItem) {

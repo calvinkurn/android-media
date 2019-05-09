@@ -27,6 +27,7 @@ class PartialRecommendationProductView private constructor(private val view: Vie
             if (products.recommendationItemList.isEmpty())
                 gone()
             else {
+                title_recommen_product.text = products.title
                 recommendation_product.adapter = RecommendationProductAdapter(products)
                 recommendation_product.visible()
                 visible()
