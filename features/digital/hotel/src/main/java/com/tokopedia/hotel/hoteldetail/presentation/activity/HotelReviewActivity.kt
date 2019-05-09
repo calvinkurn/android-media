@@ -2,6 +2,7 @@ package com.tokopedia.hotel.hoteldetail.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.HotelComponentInstance
@@ -18,6 +19,11 @@ import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelReviewFragment
 class HotelReviewActivity: HotelBaseActivity(), HasComponent<HotelDetailComponent> {
 
     override fun shouldShowOptionMenu(): Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        supportActionBar?.elevation = 0.0f
+    }
 
     override fun getNewFragment(): Fragment =
             HotelReviewFragment.createInstance(intent.getIntExtra(HotelReviewFragment.ARG_PROPERTY_ID, 0))
