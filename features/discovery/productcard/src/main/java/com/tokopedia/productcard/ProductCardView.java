@@ -17,16 +17,17 @@ import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
 public class ProductCardView extends BaseCustomView {
 
-    private TextView textName;
-    private TextView textPrice;
-    private TextView textDiscount;
-    private TextView textSlashedPrice;
-    private ImpressedImageView imageView;
-    private View topAdsIcon;
-    private View wishlistButton;
-    private View ratingReviewContainer;
-    private ImageView ratingView;
-    private TextView reviewCountView;
+    protected TextView textName;
+    protected TextView textPrice;
+    protected TextView textDiscount;
+    protected TextView textSlashedPrice;
+    protected ImpressedImageView imageView;
+    protected View topAdsIcon;
+    protected View wishlistButton;
+    protected View ratingReviewContainer;
+    protected ImageView ratingView;
+    protected TextView reviewCountView;
+    protected int layout;
 
     public ProductCardView(@NonNull Context context) {
         super(context);
@@ -43,8 +44,8 @@ public class ProductCardView extends BaseCustomView {
         init();
     }
 
-    private void init() {
-        final View view = inflate(getContext(), R.layout.product_card_layout, this);
+    protected void init() {
+        final View view = inflate(getContext(), getLayout(), this);
         textName = view.findViewById(R.id.textName);
         textPrice = view.findViewById(R.id.textPrice);
         textDiscount = view.findViewById(R.id.textDiscount);
@@ -118,7 +119,7 @@ public class ProductCardView extends BaseCustomView {
         return imageView;
     }
 
-    private int getRatingDrawable(int param) {
+    protected int getRatingDrawable(int param) {
         switch (param) {
             case 0:
                 return R.drawable.ic_star_none;
@@ -135,5 +136,13 @@ public class ProductCardView extends BaseCustomView {
             default:
                 return R.drawable.ic_star_none;
         }
+    }
+
+    protected int getLayout() {
+        return R.layout.product_card_layout;
+    }
+
+    public void setLayout(int layout) {
+        this.layout = layout;
     }
 }
