@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/dp_3">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_16">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/transaction_status_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hotel_order_detail_status"
+                    app:fontSize="micro"
+                    tools:textSize="@dimen/dp_12" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/transaction_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/tkpd_main_green"
+                    app:fontSize="title"
+                    app:layout_constraintTop_toBottomOf="@id/transaction_status_hint"
+                    app:weight="medium"
+                    tools:text="Transaksi Berhasil"
+                    tools:textSize="@dimen/sp_17"
+                    tools:textStyle="bold" />
+
+                <View
+                    android:id="@+id/transaction_seperator"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@color/grey_300"
+                    app:layout_constraintTop_toBottomOf="@id/transaction_status" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/transaction_date_hint"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="@string/hotel_order_detail_transaction_date"
+                    app:fontSize="micro"
+                    app:layout_constraintEnd_toStartOf="@id/transaction_date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/transaction_seperator"
+                    tools:textSize="@dimen/sp_12" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/transaction_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fontSize="micro"
+                    app:layout_constraintBottom_toBottomOf="@id/transaction_date_hint"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/transaction_date_hint"
+                    app:weight="medium"
+                    tools:text="1 Sep 2017, 05:00 WIB"
+                    tools:textSize="@dimen/sp_12"
+                    tools:textStyle="bold" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/transaction_product_category_hint"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/hotel_order_detail_product_category"
+                    app:fontSize="micro"
+                    app:layout_constraintEnd_toStartOf="@id/transaction_date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/transaction_date_hint"
+                    tools:textSize="@dimen/sp_12" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/transaction_product_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fontSize="micro"
+                    app:layout_constraintBottom_toBottomOf="@id/transaction_product_category_hint"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/transaction_product_category_hint"
+                    app:weight="medium"
+                    tools:text="Hotel"
+                    tools:textSize="@dimen/sp_12"
+                    tools:textStyle="bold" />
+            </android.support.constraint.ConstraintLayout>
+
+            <View
+                android:id="@+id/transaction_seperator_2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/grey_300"
+                app:layout_constraintTop_toBottomOf="@id/transaction_product_category_hint" />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_16">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/invoice_number"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="IVR/20170713/XVII/VII/16205811"
+                    app:fontSize="micro"
+                    app:layout_constraintEnd_toStartOf="@id/invoice_see_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:textSize="@dimen/sp_12"
+                    app:textViewTheme="lightPrimary"
+                    tools:textColor="@color/light_primary"/>
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/invoice_see_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hotel_order_detail_see_invoice_text"
+                    android:textColor="@color/tkpd_main_green"
+                    app:fontSize="micro"
+                    app:layout_constraintBottom_toBottomOf="@id/invoice_number"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/invoice_number"
+                    app:weight="medium"
+                    tools:textSize="@dimen/sp_12"
+                    tools:textStyle="bold" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        app:cardElevation="@dimen/dp_3">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_16">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/see_evoucher_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/hotel_order_detail_see_evoucher_text"
+                android:textColor="@color/tkpd_main_green"
+                app:fontSize="small"
+                app:layout_constraintEnd_toStartOf="@id/see_evoucher_next_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:weight="medium"
+                tools:textSize="@dimen/sp_14"
+                tools:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/see_evoucher_next_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_6"
+                android:src="@drawable/ic_arrow_right_default"
+                android:text="@string/hotel_order_detail_see_invoice_text"
+                android:textColor="@color/tkpd_main_green"
+                app:layout_constraintBottom_toBottomOf="@id/see_evoucher_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/see_evoucher_text"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+
+
+</LinearLayout>
