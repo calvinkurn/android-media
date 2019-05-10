@@ -6,10 +6,8 @@ import android.app.IntentService;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -35,10 +33,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
@@ -88,7 +85,6 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiMod
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -182,6 +178,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
 
+    private SaveInstanceCacheManager saveInstanceCacheManager;
+
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
             bundle = new Bundle();
@@ -204,6 +202,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
         userSession = new UserSession(getActivity());
         performanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
+
+        if (getActivity() != null) {
+            saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
+        }
+
+        if (savedInstanceState != null && saveInstanceCacheManager != null) {
+            cartListData = saveInstanceCacheManager.get(CartListData.class.getSimpleName(), CartListData.class);
+        }
     }
 
     @Override
@@ -501,12 +507,22 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (getActivity() != null) {
             setHasOptionsMenu(true);
             getActivity().setTitle(getActivity().getString(R.string.title_activity_cart));
-            if (cartListData == null) {
+            if (savedInstanceState == null) {
                 refreshHandler.startRefresh();
             } else {
+                cartListData = saveInstanceCacheManager.get(CartListData.class.getSimpleName(), CartListData.class);
                 renderInitialGetCartListDataSuccess(cartListData);
                 stopTrace();
             }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (saveInstanceCacheManager != null) {
+            saveInstanceCacheManager.onSave(outState);
+            saveInstanceCacheManager.put(CartListData.class.getSimpleName(), cartListData);
         }
     }
 
@@ -953,94 +969,96 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
-        sendAnalyticsScreenName(getScreenName());
-        if (refreshHandler != null) {
-            refreshHandler.finishRefresh();
-        }
-        this.cartListData = cartListData;
-        cartAdapter.resetData();
+        if (cartListData != null) {
+            sendAnalyticsScreenName(getScreenName());
+            if (refreshHandler != null) {
+                refreshHandler.finishRefresh();
+            }
+            this.cartListData = cartListData;
+            cartAdapter.resetData();
 
-        boolean flagAutoApplyStack = false;
-        PromoStackingData.Builder builderGlobal = new PromoStackingData.Builder();
-        if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()
-                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getCode())) {
-            AutoApplyStackData autoApplyStackData = cartListData.getAutoApplyStackData();
-            if (autoApplyStackData != null) {
-                if (autoApplyStackData.getMessageSuccess() != null && autoApplyStackData.getCode() != null
-                        && autoApplyStackData.getState() != null && autoApplyStackData.getTitleDescription() != null) {
-                    builderGlobal.typePromo(autoApplyStackData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
-                            PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
-                            .description(autoApplyStackData.getMessageSuccess())
-                            .amount(autoApplyStackData.getDiscountAmount())
-                            .promoCode(autoApplyStackData.getCode())
-                            .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()))
-                            .title(autoApplyStackData.getTitleDescription())
-                            .build();
-                    sendAnalyticsOnViewPromoAutoApply();
-                    flagAutoApplyStack = true;
+            boolean flagAutoApplyStack = false;
+            PromoStackingData.Builder builderGlobal = new PromoStackingData.Builder();
+            if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()
+                    && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getCode())) {
+                AutoApplyStackData autoApplyStackData = cartListData.getAutoApplyStackData();
+                if (autoApplyStackData != null) {
+                    if (autoApplyStackData.getMessageSuccess() != null && autoApplyStackData.getCode() != null
+                            && autoApplyStackData.getState() != null && autoApplyStackData.getTitleDescription() != null) {
+                        builderGlobal.typePromo(autoApplyStackData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
+                                PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
+                                .description(autoApplyStackData.getMessageSuccess())
+                                .amount(autoApplyStackData.getDiscountAmount())
+                                .promoCode(autoApplyStackData.getCode())
+                                .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()))
+                                .title(autoApplyStackData.getTitleDescription())
+                                .build();
+                        sendAnalyticsOnViewPromoAutoApply();
+                        flagAutoApplyStack = true;
+                    }
+                } else {
+                    builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
                 }
             } else {
+
                 builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
             }
-        } else {
 
-            builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
-        }
-
-        if (!flagAutoApplyStack) {
-            if (cartListData.getGlobalCouponAttr() != null) {
-                if (cartListData.getGlobalCouponAttr().getDescription() != null) {
-                    if (!cartListData.getGlobalCouponAttr().getDescription().isEmpty()) {
-                        builderGlobal.title(cartListData.getGlobalCouponAttr().getDescription());
-                        builderGlobal.titleDefault(cartListData.getGlobalCouponAttr().getDescription());
+            if (!flagAutoApplyStack) {
+                if (cartListData.getGlobalCouponAttr() != null) {
+                    if (cartListData.getGlobalCouponAttr().getDescription() != null) {
+                        if (!cartListData.getGlobalCouponAttr().getDescription().isEmpty()) {
+                            builderGlobal.title(cartListData.getGlobalCouponAttr().getDescription());
+                            builderGlobal.titleDefault(cartListData.getGlobalCouponAttr().getDescription());
+                        }
                     }
-                }
 
-                if (cartListData.getGlobalCouponAttr().getQuantityLabel() != null) {
-                    if (!cartListData.getGlobalCouponAttr().getQuantityLabel().isEmpty()) {
-                        builderGlobal.counterLabel(cartListData.getGlobalCouponAttr().getQuantityLabel());
-                        builderGlobal.counterLabelDefault(cartListData.getGlobalCouponAttr().getQuantityLabel());
+                    if (cartListData.getGlobalCouponAttr().getQuantityLabel() != null) {
+                        if (!cartListData.getGlobalCouponAttr().getQuantityLabel().isEmpty()) {
+                            builderGlobal.counterLabel(cartListData.getGlobalCouponAttr().getQuantityLabel());
+                            builderGlobal.counterLabelDefault(cartListData.getGlobalCouponAttr().getQuantityLabel());
+                        }
                     }
                 }
             }
-        }
 
-        cartAdapter.addPromoStackingVoucherData(builderGlobal.build());
+            cartAdapter.addPromoStackingVoucherData(builderGlobal.build());
 
-        if (cartListData.getCartPromoSuggestion().isVisible()) {
-            cartAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
-        }
-
-        if (cartListData.isError()) {
-            cartAdapter.addCartTickerError(
-                    new CartItemTickerErrorHolderData.Builder()
-                            .cartTickerErrorData(cartListData.getCartTickerErrorData())
-                            .build()
-            );
-        }
-
-        cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
-        cartAdapter.addDataList(cartListData.getShopGroupDataList());
-        if (cartListData.getAdsModel() != null) {
-            cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
-        }
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
-        if (cbSelectAll != null) {
-            cbSelectAll.setChecked(cartListData.isAllSelected());
-        }
-
-        cartAdapter.checkForShipmentForm();
-
-        if (toolbar != null) {
-            setVisibilityRemoveButton(true);
-        } else {
-            if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
-                mIsMenuVisible = true;
-                getActivity().invalidateOptionsMenu();
+            if (cartListData.getCartPromoSuggestion().isVisible()) {
+                cartAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
             }
-        }
 
-        cartPageAnalytics.eventViewCartListFinishRender();
+            if (cartListData.isError()) {
+                cartAdapter.addCartTickerError(
+                        new CartItemTickerErrorHolderData.Builder()
+                                .cartTickerErrorData(cartListData.getCartTickerErrorData())
+                                .build()
+                );
+            }
+
+            cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
+            cartAdapter.addDataList(cartListData.getShopGroupDataList());
+            if (cartListData.getAdsModel() != null) {
+                cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
+            }
+            dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
+            if (cbSelectAll != null) {
+                cbSelectAll.setChecked(cartListData.isAllSelected());
+            }
+
+            cartAdapter.checkForShipmentForm();
+
+            if (toolbar != null) {
+                setVisibilityRemoveButton(true);
+            } else {
+                if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
+                    mIsMenuVisible = true;
+                    getActivity().invalidateOptionsMenu();
+                }
+            }
+
+            cartPageAnalytics.eventViewCartListFinishRender();
+        }
     }
 
     @Override
