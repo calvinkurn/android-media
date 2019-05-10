@@ -1011,8 +1011,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void openApplink(String applink) {
         if (!TextUtils.isEmpty(applink)) {
-            Intent intent = RouteManager.getIntent(getActivity(), applink);
-            startActivity(intent);
+            RouteManager.route(getActivity(), applink);
         }
     }
 
