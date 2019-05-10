@@ -86,6 +86,17 @@
                     app:srcCompat="@drawable/ic_loading_image" />
 
             </android.support.constraint.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_8"
+                android:background="@color/divider_color"/>
+
+            <include
+                android:id="@+id/room_booking_duration_info"
+                layout="@layout/widget_hotel_room_duration"
+                android:visibility="visible" />
+
         </LinearLayout>
     </ScrollView>
 
