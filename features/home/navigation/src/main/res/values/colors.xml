@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="text_buyer_color">#03ac0e</color>
-    <color name="bg_buyer_color">#d6ffde</color>
-    <color name="text_seller_color">#009bff</color>
-    <color name="bg_seller_color">#ccebff</color>
-    <color name="charcoal_grey_50">#ae31353b</color>
-    <color name="charcoal_grey_42">#7031353b</color>
-</resources>

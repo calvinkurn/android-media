@@ -51,7 +51,7 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
     override fun bind(element: NotificationUpdateItemViewModel) {
         var color: Int =
                 if (element.isRead) MethodChecker.getColor(container.context, R.color.white)
-                else MethodChecker.getColor(container.context, R.color.read_yet)
+                else MethodChecker.getColor(container.context, R.color.Green_G100)
 
         container.setBackgroundColor(color)
         if (element.contentUrl.isNotBlank()) {
@@ -79,25 +79,25 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
         if (labelIndex == BUYER_TYPE) {
             getStringResource(R.string.buyer_label)?.apply {
                 label.text = this
-                label.setTextColor(getColorResource(R.color.text_buyer_color))
+                label.setTextColor(getColorResource(R.color.Green_G500))
                 label.visibility = View.VISIBLE
             }
 
             label.background.let {
                 if (it is GradientDrawable) {
-                    it.setColor(getColorResource(R.color.bg_buyer_color))
+                    it.setColor(getColorResource(R.color.Green_G200))
                 }
             }
         } else if (labelIndex == SELLER_TYPE) {
             getStringResource(R.string.seller_label)?.apply {
                 label.text = this
-                label.setTextColor(getColorResource(R.color.text_seller_color))
+                label.setTextColor(getColorResource(R.color.Blue_B500))
                 label.visibility = View.VISIBLE
             }
 
             label.background.let {
                 if (it is GradientDrawable) {
-                    it.setColor(getColorResource(R.color.bg_seller_color))
+                    it.setColor(getColorResource(R.color.Blue_B200))
                 }
             }
         }

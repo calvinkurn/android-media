@@ -136,12 +136,12 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
     private fun setTabSelectedView(customView: View?) {
         val titleView = customView?.findViewById<TextView>(R.id.title)
-        titleView?.setTextColor(MethodChecker.getColor(this, R.color.label_green))
+        titleView?.setTextColor(MethodChecker.getColor(this, R.color.Green_G500))
     }
 
     private fun setTabUnSelectedView(customView: View?) {
         val titleView = customView?.findViewById<TextView>(R.id.title)
-        titleView?.setTextColor(MethodChecker.getColor(this, R.color.label_grey))
+        titleView?.setTextColor(MethodChecker.getColor(this, R.color.Neutral_N200))
     }
 
     private fun createCustomView(title: String): View? {
