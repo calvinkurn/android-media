@@ -578,17 +578,13 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment implement
         SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
     }
 
-    protected boolean isUsingBottomSheetFilter() {
-        return isUsingBottomSheetFilter;
-    }
-
     protected void removeSelectedFilter(String uniqueId) {
         if(filterController == null) return;
 
         Option option = OptionHelper.generateOptionFromUniqueId(uniqueId);
 
         removeFilterFromFilterController(option);
-        applyFilterToSearchParameter(filterController.getFilterParameter());
+        applyFilterToSearchParameter(filterController.getParameter());
         clearDataFilterSort();
         reloadData();
     }

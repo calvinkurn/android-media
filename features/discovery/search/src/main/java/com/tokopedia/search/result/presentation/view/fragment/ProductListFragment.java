@@ -175,6 +175,7 @@ public class ProductListFragment
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
+        presenter.initInjector(this);
         presenter.setWishlistActionListener(this);
 
         return inflater.inflate(R.layout.fragment_base_discovery, null);
@@ -604,8 +605,10 @@ public class ProductListFragment
         boolean isQuickFilterSelectedReversed = !isQuickFilterSelected(option);
 
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed);
-        applyFilterToSearchParameter(quickFilterController.getFilterParameter());
-        setSelectedFilter(new HashMap<>(quickFilterController.getFilterParameter()));
+
+        Map<String, String> parameterFromFilter = quickFilterController.getParameter();
+        applyFilterToSearchParameter(parameterFromFilter);
+        setSelectedFilter(new HashMap<>(parameterFromFilter));
 
         clearDataFilterSort();
         reloadData();

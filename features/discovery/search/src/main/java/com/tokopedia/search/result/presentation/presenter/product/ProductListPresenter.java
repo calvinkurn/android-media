@@ -59,20 +59,15 @@ final class ProductListPresenter
     private boolean changeParamRow;
 
     @Override
-    public void attachView(ProductListSectionContract.View viewListener) {
-        super.attachView(viewListener);
-        initInjector(viewListener);
-
-        enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET,false);
-        changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
-    }
-
-    private void initInjector(ProductListSectionContract.View view) {
+    public void initInjector(ProductListSectionContract.View view) {
         ProductListPresenterComponent component = DaggerProductListPresenterComponent.builder()
                 .baseAppComponent(view.getBaseAppComponent())
                 .build();
 
         component.inject(this);
+
+        enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET,false);
+        changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
     }
 
     @Override
@@ -95,6 +90,7 @@ final class ProductListPresenter
      * This method will be removed When other implementations of SearchSectionPresenter already use GraphQL
      * */
     @Override
+    @Deprecated
     protected RequestParams getDynamicFilterParam() { return null; }
 
     @Override

@@ -35,7 +35,10 @@ public interface SearchSectionContract {
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T> {
+        void initInjector(T view);
+
         void requestDynamicFilter();
+
         void requestDynamicFilter(HashMap<String, String> additionalParams);
     }
 }
