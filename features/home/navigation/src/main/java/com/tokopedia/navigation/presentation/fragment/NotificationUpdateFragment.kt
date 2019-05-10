@@ -368,6 +368,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     private fun sendAnalyticsScrollBottom() {
-        analytics.trackScrollBottom(lastItem.toString())
+        if(lastItem > 0) analytics.trackScrollBottom(lastItem.toString())
     }
 }
