@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.presenter.search;
 
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
 import com.tokopedia.discovery.newdiscovery.domain.model.InitiateSearchModel;
-import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.search.result.presentation.presenter.subscriber.InitiateSearchSubscriber;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -14,7 +13,6 @@ import org.junit.Test;
 import java.util.HashMap;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -24,7 +22,6 @@ public class SearchPresenterTest {
 
     private static abstract class MockInitiateSearchUseCase extends UseCase<InitiateSearchModel> { }
 
-    private SearchContract.View searchContractView;
     private UseCase<InitiateSearchModel> initiateSearchModelUseCase;
 
     private SearchPresenter searchPresenter;
@@ -32,17 +29,7 @@ public class SearchPresenterTest {
     @Before
     public void setUp() {
         searchPresenter = new SearchPresenter();
-        searchContractView = mock(SearchContract.View.class);
         initiateSearchModelUseCase = mock(MockInitiateSearchUseCase.class);
-
-//        mockDependencyInjection();
-    }
-
-    private void mockDependencyInjection() {
-        doAnswer(invocation -> {
-            searchPresenter.initiateSearchModelUseCase = initiateSearchModelUseCase;
-            return null;
-        }).when(searchPresenter).initInjector(searchContractView);
     }
 
     @Test(expected = RuntimeException.class)
@@ -95,7 +82,6 @@ public class SearchPresenterTest {
 
     @After
     public void tearDown() {
-        searchContractView = null;
         initiateSearchModelUseCase = null;
         searchPresenter = null;
     }

@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
@@ -17,9 +17,9 @@ import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactory;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 
 import java.util.ArrayList;
@@ -34,14 +34,14 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
     private int startFrom;
     private int totalData;
     private Context context;
-    private LoadingModel loadingModel;
+    private LoadingMoreModel loadingMoreModel;
     private TopAdsSwitcher topAdsSwitcher;
 
     public ProductListAdapter(Context context, OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         super(itemChangeView);
         this.context = context;
         this.typeFactory = typeFactory;
-        loadingModel = new LoadingModel();
+        loadingMoreModel = new LoadingMoreModel();
     }
 
     @Override
@@ -236,14 +236,14 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
     public void addLoading() {
         int loadingModelPosition = this.list.size();
 
-        this.list.add(loadingModel);
+        this.list.add(loadingMoreModel);
         notifyItemInserted(loadingModelPosition);
     }
 
     public void removeLoading() {
-        int loadingModelPosition = this.list.indexOf(loadingModel);
+        int loadingModelPosition = this.list.indexOf(loadingMoreModel);
 
-        this.list.remove(loadingModel);
+        this.list.remove(loadingMoreModel);
 
         notifyItemRemoved(loadingModelPosition);
         notifyItemRangeChanged(loadingModelPosition, 1);
