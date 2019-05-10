@@ -38,7 +38,7 @@ class GQLGetShopInfoUseCase (private val gqlQuery: String,
 
         private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
                 "last_active", "location", "terms", "allow_manage",
-                "is_owner", "other-goldos", "status")
+                "is_owner", "other-goldos", "status","is_open","closed_info","create_info")
 
         @JvmStatic
         fun createParams(shopIds: List<Int>, shopDomain: String? = null, fields: List<String> = DEFAULT_SHOP_FIELDS): RequestParams

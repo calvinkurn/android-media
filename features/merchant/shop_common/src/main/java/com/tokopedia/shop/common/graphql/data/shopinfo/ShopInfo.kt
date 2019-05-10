@@ -8,7 +8,7 @@ data class ShopInfo(
         @Expose
         val closedInfo: ClosedInfo = ClosedInfo(),
 
-        @SerializedName("createdInfo")
+        @SerializedName("createInfo")
         @Expose
         val createdInfo: CreatedInfo = CreatedInfo(),
 

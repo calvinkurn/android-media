@@ -18,7 +18,7 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
                 reason
                 until
             }
-            createdInfo{
+            createInfo{
                 shopCreated
                 openSince
             }
