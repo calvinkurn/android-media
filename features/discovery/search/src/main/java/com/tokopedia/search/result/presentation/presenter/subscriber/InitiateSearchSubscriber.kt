@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation.presenter.subscriber
 
-import android.text.TextUtils
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener
 import com.tokopedia.discovery.newdiscovery.domain.model.InitiateSearchModel
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ListHelper
@@ -12,7 +11,10 @@ private const val DISCOVERY_APPLINK = 2
 open class InitiateSearchSubscriber(private val initiateSearchListener: InitiateSearchListener) : Subscriber<InitiateSearchModel>() {
 
     override fun onNext(initiateSearchModel: InitiateSearchModel?) {
-        if(initiateSearchModel == null) initiateSearchListener.onHandleResponseError()
+        if(initiateSearchModel == null) {
+            initiateSearchListener.onHandleResponseError()
+            return
+        }
 
         val redirectApplink = getRedirectApplink(initiateSearchModel)
 
@@ -28,7 +30,7 @@ open class InitiateSearchSubscriber(private val initiateSearchListener: Initiate
     }
 
     private fun defineRedirectApplink(applink: String): Int {
-        return if (TextUtils.isEmpty(applink)) {
+        return if (applink == "") {
             DISCOVERY_URL_SEARCH
         } else {
             DISCOVERY_APPLINK
