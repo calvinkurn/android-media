@@ -1,7 +1,6 @@
 query SearchProduct(
  $params: String,
  $query: String!,
- $source: String,
  $headline_params: String
 ) {
 searchProduct(params: $params) {
