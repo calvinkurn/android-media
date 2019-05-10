@@ -94,6 +94,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
     private RatesDataConverter ratesDataConverter;
 
+    private boolean isShowOnboarding;
     private boolean hasShownShowCase;
     private int lastChooseCourierItemPosition;
     private String cartIds;
@@ -113,6 +114,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setCartIds(String cartIds) {
         this.cartIds = cartIds;
+    }
+
+    public void setShowOnboarding(boolean showOnboarding) {
+        this.isShowOnboarding = showOnboarding;
     }
 
     @Override
@@ -224,7 +229,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void setShowCase(Context context) {
-        if (!hasShownShowCase && !ShowCasePreference.hasShown(context, ShipmentFragment.class.getName())) {
+        if (!hasShownShowCase && isShowOnboarding) {
             hasShownShowCase = true;
             createShowCaseDialog().show((Activity) context,
                     ShipmentFragment.class.getName(),

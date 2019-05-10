@@ -167,6 +167,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private boolean hasDeletePromoAfterChecKPromoCodeFinal;
     private Map<Integer, List<ShippingCourierViewModel>> shippingCourierViewModelsState;
     private boolean isPurchaseProtectionPage = false;
+    private boolean isShowOnboarding;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
     private CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
@@ -374,7 +375,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment, boolean isTradeIn,
+    public boolean isShowOnboarding() {
+        return isShowOnboarding;
+    }
+
+    @Override
+    public void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
+                                               boolean isTradeIn, boolean isSkipUpdateOnboardingState,
                                                @Nullable String cornerId, String deviceId) {
         if (isReloadData) {
             getView().showLoading();
@@ -387,6 +394,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         RequestParams requestParams = RequestParams.create();
         Map<String, String> params = getGeneratedAuthParamNetwork(paramGetShipmentForm);
+        params.put(GetShipmentAddressFormUseCase.PARAM_SKIP_ONBOARDING_UPDATE_STATE, String.valueOf(isSkipUpdateOnboardingState ? 1 : 0));
 
         if (isOneClickShipment) {
             if (isTradeIn) {
@@ -456,6 +464,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         token = new Token();
         token.setUt(cartShipmentAddressFormData.getKeroUnixTime());
         token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
+
+        isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
     }
 
     private boolean checkHaveSameCurrentCodAddress(String cornerId) {
