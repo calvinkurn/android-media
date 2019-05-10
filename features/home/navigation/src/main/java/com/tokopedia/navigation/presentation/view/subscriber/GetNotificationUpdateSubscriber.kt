@@ -18,7 +18,6 @@ class GetNotificationUpdateSubscriber(
     }
 
     override fun onError(e: Throwable) {
-        ErrorHandler.getErrorMessage()
         onErrorInitiateData(e)
     }
 
