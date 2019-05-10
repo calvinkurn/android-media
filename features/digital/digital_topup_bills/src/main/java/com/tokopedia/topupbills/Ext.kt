@@ -7,7 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.ContactsContract
 import android.support.annotation.ColorRes
-import com.tokopedia.topupbills.telco.model.DigitalContactData
+import com.tokopedia.topupbills.telco.view.model.DigitalContactData
 
 /**
  * Created by nabillasabbaha on 07/05/19.

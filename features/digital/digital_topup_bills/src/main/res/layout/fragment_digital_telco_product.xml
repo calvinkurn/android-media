@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tokopedia.topupbills.telco.widget.DigitalProductGridWidget
+    <com.tokopedia.topupbills.telco.view.widget.DigitalProductGridWidget
         android:id="@+id/telco_product_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
