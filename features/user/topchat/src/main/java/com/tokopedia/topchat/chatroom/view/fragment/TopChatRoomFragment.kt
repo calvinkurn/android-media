@@ -42,6 +42,7 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
+import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -61,6 +62,7 @@ import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.BaseSimpleWebViewActivity
 import javax.inject.Inject
 
 /**
@@ -729,6 +731,16 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         analytics.trackOpenChatSetting()
 
     }
+
+    override fun onGoToReportUser() {
+        context?.let {
+            val reportUrl = getChatReportUrl()
+            val intent = BaseSimpleWebViewActivity.getStartIntent(it, reportUrl)
+            startActivity(intent)
+        }
+    }
+
+    private fun getChatReportUrl() = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"
 
     override fun onDualAnnouncementClicked(redirectUrl: String, attachmentId: String, blastId: Int) {
         analytics.trackClickImageAnnouncement(blastId.toString(), attachmentId)
