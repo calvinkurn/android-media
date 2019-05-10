@@ -9,7 +9,7 @@
             android:label="@string/react_native_logger_title" />
         <activity
             android:name=".presentation.activity.DeveloperOptionActivity"
-            android:label="@string/title_activity_developer_options"
+            android:label="@string/app_name"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
     </application>
