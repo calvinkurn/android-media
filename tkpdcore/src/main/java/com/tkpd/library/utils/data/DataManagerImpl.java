@@ -574,7 +574,7 @@ public class DataManagerImpl implements DataManager {
 
             dataReceiver.getSubscription().add(
                     RetrofitUtils
-                            .createRetrofit(TkpdBaseURL.BASE_DOMAIN)// DeveloperOptions.getUrlWsV4(context)
+                            .createRetrofit(TkpdBaseURL.BASE_DOMAIN)
                             .create(AddressApi.class)
                             .getShippingCity(
                                     NetworkCalculator.getContentMd5(networkCalculator),
