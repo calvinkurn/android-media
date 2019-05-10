@@ -97,6 +97,10 @@ public class RouteManager {
         }
     }
 
+    /**
+     * route to the activity corresponds to the given applink.
+     * Will do nothing if applink is not supported.
+     */
     public static void route(Context context, String applinkPattern, String... parameter) {
         if (context == null) {
             return;
@@ -145,7 +149,6 @@ public class RouteManager {
             // Found internal deeplink, redirect
             return buildInternalExplicitIntent(context, internalDeeplink);
         }
-
         // Check airbnb first.
         // Temporary solution. will be removed after all airbnb converted to manifest registration.
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(deeplink)) {
