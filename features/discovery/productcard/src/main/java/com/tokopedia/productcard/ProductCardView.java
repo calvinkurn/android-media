@@ -81,10 +81,6 @@ public class ProductCardView extends BaseCustomView {
         textName.setText(MethodChecker.fromHtml(title));
     }
 
-    public void hideRatingView(){
-        ratingReviewContainer.setVisibility(View.INVISIBLE);
-    }
-
     public void setDiscount(int discount) {
         if (discount > 0) {
             String discountText = Integer.toString(discount) + "%";
@@ -96,8 +92,8 @@ public class ProductCardView extends BaseCustomView {
                 textDiscount.setVisibility(View.INVISIBLE);
                 textSlashedPrice.setVisibility(View.INVISIBLE);
             } else {
-                textDiscount.setVisibility(View.VISIBLE);
-                textSlashedPrice.setVisibility(View.VISIBLE);
+                textDiscount.setVisibility(View.GONE);
+                textSlashedPrice.setVisibility(View.GONE);
             }
         }
     }
