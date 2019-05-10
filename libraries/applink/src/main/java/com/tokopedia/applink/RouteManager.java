@@ -113,13 +113,22 @@ public class RouteManager {
     }
 
     /**
-     * return the intent for the deeplink
+     * route to the activity corresponds to the given applink.
+     * Will route to Home if applink is not supported.
+     */
+    public static void routeWithFallback(Context context, String applinkPattern, String... parameter) {
+        if (context == null) {
+            return;
+        }
+        String uriString = UriUtil.buildUri(applinkPattern, parameter);
+        context.startActivity(getIntent(context, uriString));
+    }
+
+    /**
+     * return the intent for the given deeplink
      * If no activity found will return to home
-     * <p>
-     * return airbnb intent if supported.
-     * http:// and https:// will return implicit intent to open webview
-     * Manifest registration will return explicit intent.
-     * else will return implicit intent
+     *
+     * See getIntentNoFallback if want to return null when no activity is found.
      */
     public static Intent getIntent(Context context, String deeplinkPattern, String... parameter) {
         String deeplink = UriUtil.buildUri(deeplinkPattern, parameter);
@@ -136,11 +145,8 @@ public class RouteManager {
     /**
      * return the intent for the deeplink
      * If no activity found will return null
-     * <p>
-     * return airbnb intent if supported.
-     * http:// and https:// will return implicit intent to open webview
-     * Manifest registration will return explicit intent.
-     * else will return implicit intent
+     *
+     * See getIntent
      */
     private static @Nullable
     Intent getIntentNoFallback(Context context, String deeplink) {
