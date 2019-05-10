@@ -231,7 +231,8 @@ public interface ShipmentContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment, boolean isTradeIn,
+        void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
+                                            boolean isTradeIn, boolean skipUpdateOnboardingState,
                                             String cornerId, String deviceId);
 
         void processReloadCheckoutPageFromMultipleAddress(PromoStackingData promoStackingData,
@@ -346,6 +347,8 @@ public interface ShipmentContract {
         void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
         Token getKeroToken();
+
+        boolean isShowOnboarding();
     }
 
 }
