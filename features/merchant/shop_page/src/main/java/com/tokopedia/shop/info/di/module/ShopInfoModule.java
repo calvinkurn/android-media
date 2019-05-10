@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.reputation.common.data.interceptor.ReputationAuthInterceptor;
 import com.tokopedia.reputation.common.data.repository.ReputationCommonRepositoryImpl;
@@ -16,6 +18,9 @@ import com.tokopedia.reputation.common.data.source.cloud.api.ReputationCommonApi
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedDailyUseCase;
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase;
 import com.tokopedia.reputation.common.domain.repository.ReputationCommonRepository;
+import com.tokopedia.shop.R;
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase;
 import com.tokopedia.shop.info.di.scope.ShopInfoScope;
 import com.tokopedia.shop.note.data.repository.ShopNoteRepositoryImpl;
 import com.tokopedia.shop.note.data.source.ShopNoteDataSource;
@@ -25,6 +30,8 @@ import com.tokopedia.shop.page.di.ShopInfoReputationSpeedQualifier;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -32,7 +39,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 @ShopInfoScope
-@Module
+@Module(includes = ShopInfoViewModelModule.class)
 public class ShopInfoModule {
     @Provides
     public ReputationAuthInterceptor provideReputationAuthInterceptor(@ApplicationContext Context context,
@@ -114,6 +121,21 @@ public class ShopInfoModule {
     @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @ShopInfoScope
+    @Named(GQLQueryNamedConstant.SHOP_NOTES_BY_SHOP_ID)
+    @Provides
+    public String getGqlQueryShopNotesByShopId(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_notes_by_shop_id);
+    }
+
+    @ShopInfoScope
+    @Provides
+    public GetShopNotesByShopIdUseCase provideGetShopNotesByShopIdUseCase(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                                          @Named(GQLQueryNamedConstant.SHOP_NOTES_BY_SHOP_ID)
+                                                                          String gqlQuery){
+        return new GetShopNotesByShopIdUseCase(gqlQuery, graphqlUseCase);
     }
 }
 

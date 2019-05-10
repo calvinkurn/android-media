@@ -1,5 +1,7 @@
 package com.tokopedia.shop.info.view.fragment
 
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -25,6 +27,7 @@ import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapterTypeFactory
 import com.tokopedia.shop.info.view.listener.ShopInfoView
 import com.tokopedia.shop.info.view.presenter.ShopInfoPresenter
+import com.tokopedia.shop.info.view.viewmodel.ShopInfoViewModel
 import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory
 import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
@@ -46,6 +49,10 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
     }
 
     @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var shopViewModel: ShopInfoViewModel
+
+    @Inject
     lateinit var presenter: ShopInfoPresenter
     lateinit var shopPageTracking: ShopPageTrackingBuyer
     var shopInfo: ShopInfo? = null
@@ -59,6 +66,10 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
         super.onCreate(savedInstanceState)
         shopPageTracking = ShopPageTrackingBuyer(
                 TrackingQueue(context!!))
+
+        activity?.run {
+            shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopInfoViewModel::class.java)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
