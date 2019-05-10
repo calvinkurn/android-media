@@ -85,8 +85,8 @@ public class CustomPushListener extends PushMessageListener {
             String url3 = extras.getString(KEY_ICON_URL3);
             String url4 = extras.getString(KEY_ICON_URL4);
             String campaign_id = "";
-            if (extras.containsKey(EXTRA_CAMPAIGN_ID)) {
-                campaign_id = extras.getString(EXTRA_CAMPAIGN_ID);
+            if (extras.containsKey(KEY_CAMPAIGN_ID)) {
+                campaign_id = extras.getString(KEY_CAMPAIGN_ID);
             }
 
             if (!TextUtils.isEmpty(title1) && !TextUtils.isEmpty(deeplink1) && !TextUtils.isEmpty(url1)) {
@@ -122,7 +122,7 @@ public class CustomPushListener extends PushMessageListener {
                 remoteView.setImageViewBitmap(R.id.image_icon4, MoEHelperUtils.downloadImageBitmap(url4));
                 //Intent intent4 = RouteManager.getIntent(context, deeplink4);
                 PendingIntent pIntent4 = getPersistentClickPendingIntent(
-                        context, url4, title4, deeplink4, campaign_id, 101);
+                        context, url4, title4, deeplink4, campaign_id, 104);
                 remoteView.setOnClickPendingIntent(R.id.lin_container_4, pIntent4);
             }
 
