@@ -156,6 +156,11 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     }
 
     @Override
+    public Context getViewContext() {
+        return this;
+    }
+
+    @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
         root = findViewById(R.id.root);
