@@ -1,5 +1,7 @@
 package com.tokopedia.core.network.constants;
 
+import com.tokopedia.config.url.TokopediaUrl;
+
 /**
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
@@ -462,7 +464,7 @@ public class TkpdBaseURL {
         public static final String URL_HOT_LIST = BASE_DOMAIN + "v4/hotlist/";
         public static final String URL_SEARCH = BASE_DOMAIN + "v4/search/";
 
-        public static final String URL_SEARCH_SUGGESTION = ACE_DOMAIN;
+        public static final String URL_SEARCH_SUGGESTION = TokopediaUrl.Companion.getInstance().getACE();
 
         public static final String PATH_GET_CATALOG = "get_catalog.pl";
         public static final String PATH_GET_CATALOG_DETAIL = "get_catalog_detail.pl";
@@ -493,7 +495,7 @@ public class TkpdBaseURL {
         public static final String URL_TX_PAYMENT_EMONEY = BASE_DOMAIN + "v4/";
         public static final String URL_TX_PAYMENT_SPRINT_ASIA = BASE_DOMAIN + "v4/";
         public static final String URL_TX_PAYMENT_VOUCHER = BASE_DOMAIN + "v4/tx-voucher/";
-        public static final String URL_PICKUP_POINT = BASE_API_DOMAIN + "v4/action/tx-cart/";
+        public static final String URL_PICKUP_POINT = TokopediaUrl.Companion.getInstance().getAPI() + "v4/action/tx-cart/";
 
         public static final String PATH_DO_WITHDRAW = "do_withdraw.pl";
         public static final String PATH_SEND_OTP_VERIFY_BANK_ACCOUNT = "send_otp_verify_bank_account.pl";
@@ -595,7 +597,7 @@ public class TkpdBaseURL {
 
     public static class Ace {
         public static final String PATH_SEARCH = "search/";
-        public static final String URL_SEARCH = ACE_DOMAIN + PATH_SEARCH;
+        public static final String URL_SEARCH = TokopediaUrl.Companion.getInstance().getACE() + PATH_SEARCH;
 
         public static final String PATH_CATALOG_SHOP_LIST = "catalog/product";
         public static final String PATH_SEARCH_SHOP = "shop";
@@ -819,7 +821,7 @@ public class TkpdBaseURL {
     }
 
     public static class ResCenterV2 {
-        public static final String BASE_RESOLUTION = BASE_API_DOMAIN + "resolution/";
+        public static final String BASE_RESOLUTION = TokopediaUrl.Companion.getInstance().getAPI() + "resolution/";
         public static final String BASE_RESOLUTION_VERSION_1 = "v1/";
         public static final String BASE_RESOLUTION_VERSION_2 = "v2/";
         public static final String BASE_INBOX_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "inbox";

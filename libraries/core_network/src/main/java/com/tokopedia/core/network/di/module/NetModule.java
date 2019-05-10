@@ -64,7 +64,7 @@ public class NetModule {
     @Provides
     public Retrofit provideAceRetrofit(@NoAuth OkHttpClient okHttpClient,
                                        Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.ACE_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getACE()).client(okHttpClient).build();
     }
 
     @MojitoQualifier

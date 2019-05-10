@@ -34,7 +34,7 @@ public class ProductCacheApiWhiteList {
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOME_DOMAIN,
                 ProductUrl.GET_VARIANT_BY_CAT_PATH, ONE_DAY));
         // Product catalog
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.ACE_DOMAIN,
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TokopediaUrl.Companion.getInstance().getACE(),
                 TkpdBaseURL.Ace.PATH_SEARCH + TkpdBaseURL.Ace.PATH_CATALOG, ONE_DAY));
         // image catalog on picker image add product
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(CatalogConstant.URL_HADES, CatalogConstant.URL_GET_CATALOG_IMAGE, ONE_HOUR));
