@@ -64,4 +64,6 @@ dependencies {
 
     testImplementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     testAnnotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation project(rootProject.ext.libraries.unifyPrinciples)
 }

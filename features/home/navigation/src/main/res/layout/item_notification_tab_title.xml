@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_14"
-        android:textColor="@color/label_grey"
+        android:textColor="@color/Neutral_N300"
         android:lineSpacingExtra="@dimen/sp_4"
         android:gravity="center_horizontal"
         tools:text="Update (99+)"

@@ -14,7 +14,7 @@
         android:id="@+id/close_cross"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
-        android:tint="@color/text_disabled"
+        android:tint="@color/Neutral_N200"
         android:src="@drawable/ucrop_ic_cross"
         app:layout_constraintTop_toTopOf="@+id/title"
         app:layout_constraintBottom_toBottomOf="@+id/title"
