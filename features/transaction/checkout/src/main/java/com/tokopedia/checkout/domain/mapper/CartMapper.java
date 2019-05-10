@@ -547,6 +547,8 @@ public class CartMapper implements ICartMapper {
             cartListData.setAutoApplyStackData(autoApplyStackData);
         }
 
+        cartListData.setShowOnboarding(cartDataListResponse.isShowOnboarding());
+
         return cartListData;
 
     }
