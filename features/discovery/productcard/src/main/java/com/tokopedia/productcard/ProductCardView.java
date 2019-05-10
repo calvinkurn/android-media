@@ -1,6 +1,7 @@
 package com.tokopedia.productcard;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,28 +29,41 @@ public class ProductCardView extends BaseCustomView {
     protected ImageView ratingView;
     protected TextView reviewCountView;
     protected int layout;
-    protected boolean fixedHeight;
+    protected boolean fixedHeight = false;
 
     public ProductCardView(@NonNull Context context) {
         super(context);
-        init();
+        init(null);
     }
 
     public ProductCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(attrs);
     }
 
     public ProductCardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(attrs);
     }
 
     public void setFixedHeight(boolean fixedHeight) {
         this.fixedHeight = fixedHeight;
     }
 
-    protected void init() {
+    protected void init(@Nullable AttributeSet attrs) {
+        if (attrs != null) {
+            TypedArray a = getContext().obtainStyledAttributes(
+                    attrs,
+                    R.styleable.ProductCardView,
+                    0, 0);
+
+            try {
+                fixedHeight = a.getBoolean(R.styleable.ProductCardView_fixedHeight, false);
+            } finally {
+                a.recycle();
+            }
+        }
+
         final View view = inflate(getContext(), getLayout(), this);
         textName = view.findViewById(R.id.textName);
         textPrice = view.findViewById(R.id.textPrice);
