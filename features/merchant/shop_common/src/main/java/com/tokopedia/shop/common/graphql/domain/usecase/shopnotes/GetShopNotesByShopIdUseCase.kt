@@ -42,11 +42,16 @@ class GetShopNotesByShopIdUseCase (private val gqlQuery: String,
     companion object {
         private const val SHOP_ID = "shopId"
         private const val NOTE_ID = "id"
+        private const val IS_TERM = "isTerm"
+        private const val SLUG = "slug"
 
         @JvmStatic
-        fun createParams(shopId: String, noteId: String? = null) = RequestParams.create().apply {
-            putString(SHOP_ID, shopId)
-            putString(NOTE_ID, noteId)
-        }
+        fun createParams(shopId: String, noteId: String? = null, isTerm: Boolean? = null, slug: String? = null) =
+                RequestParams.create().apply {
+                    putString(SHOP_ID, shopId)
+                    putString(NOTE_ID, noteId)
+                    putObject(IS_TERM, isTerm)
+                    putString(SLUG, slug)
+                }
     }
 }

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -181,7 +182,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
         shopStatisticsResp.shopReputation?.let {
             totalPoin.text = getString(R.string.dashboard_x_points, it.score)
-            context?.run { ImageHandler.loadImage(this, shopReputationView, it.badgeHD, -1) }
+            context?.run { ImageHandler.loadImage(this, shopReputationView, it.badge, -1) }
         }
 
         shopStatisticsResp.shopPackSpeed?.let {
@@ -206,8 +207,8 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun displayShopDescription(shopInfo: ShopInfo) {
-        shopInfoDescription.text = TextHtmlUtils
-                .getTextFromHtml("${shopInfo.shopCore.tagLine}<br/><br/>${shopInfo.shopCore.description}")
+        shopInfoDescription.text = MethodChecker
+                .fromHtmlPreserveLineBreak("${shopInfo.shopCore.tagLine}<br/><br/>${shopInfo.shopCore.description}")
 
         shopInfoLocation.text = shopInfo.location
         shopInfoOpenSince.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.createdInfo.openSince)
