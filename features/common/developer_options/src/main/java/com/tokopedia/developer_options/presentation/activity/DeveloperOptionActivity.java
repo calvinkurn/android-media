@@ -92,7 +92,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private void setupView() {
         vForceCrash = findViewById(R.id.force_crash);
         vDevOptionRN = findViewById(R.id.rn_dev_options);
-        vMaintenance = findViewById(R.id.maintenance);
 
         resetOnBoarding = findViewById(R.id.reset_onboarding);
         testOnBoarding = findViewById(R.id.test_onboarding);
@@ -116,7 +115,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
         groupChatLogToggle = findViewById(R.id.groupchat_log);
 
-        Spinner spinnerEnvironmentChooser = findViewById(com.tokopedia.core2.R.id.spinner_env_chooser);
+        Spinner spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
         ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Env.values());
         envSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
