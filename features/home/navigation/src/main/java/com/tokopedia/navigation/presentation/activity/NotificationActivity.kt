@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.navigation.R
+import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateUnread
 import com.tokopedia.navigation.presentation.adapter.NotificationFragmentAdapter
@@ -36,6 +37,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
     @Inject
     lateinit var presenter: NotificationActivityPresenter
+
+    @Inject
+    lateinit var analytics: NotificationUpdateAnalytics
 
     private var fragmentAdapter: NotificationFragmentAdapter? = null
     private val tabList = ArrayList<NotificationFragmentAdapter.NotificationFragmentItem>()
@@ -100,6 +104,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager.setCurrentItem(tab.position, true)
+                sendAnalytics(tab.position)
                 setTabSelectedView(tab.customView)
                 resetCircle(tab.customView)
                 presenter.clearNotifCounter()
@@ -116,6 +121,12 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
             if (it is NotificationUpdateContract.View) {
                 it.notifyBottomActionView(updateCounter)
             }
+        }
+    }
+
+    private fun sendAnalytics(position: Int) {
+        if(position == 1) {
+            analytics.trackClickNewestInfo()
         }
     }
 
@@ -189,6 +200,11 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         titleView?.let {
             it.text = String.format("%s%s", defaultTitle, counter)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 
     companion object {
