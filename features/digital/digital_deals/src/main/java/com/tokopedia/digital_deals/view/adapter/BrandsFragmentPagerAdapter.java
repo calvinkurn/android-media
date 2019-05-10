@@ -45,4 +45,8 @@ public class BrandsFragmentPagerAdapter extends FragmentPagerAdapter {
     public int getItemPosition(Object object) {
         return PagerAdapter.POSITION_UNCHANGED;
     }
+
+    public Fragment getSelectedFragment(int position){
+        return fragmentArrayList.get(position);
+    }
 }

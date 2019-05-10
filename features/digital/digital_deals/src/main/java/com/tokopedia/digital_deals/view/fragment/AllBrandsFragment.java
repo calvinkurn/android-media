@@ -44,7 +44,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     private FrameLayout progressBarLayout;
     private GridLayoutManager layoutManager;
     private RecyclerView recyclerview;
-    private SearchInputView searchInputView;
+//    private SearchInputView searchInputView;
     @Inject
     AllBrandsPresenter mPresenter;
     private CategoriesModel categoriesModel;
@@ -83,18 +83,18 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     private void setUpVariables(View view) {
         recyclerview = view.findViewById(R.id.rv_brand_items);
-        searchInputView = view.findViewById(R.id.search_input_view);
+//        searchInputView = view.findViewById(R.id.search_input_view);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         noContent = view.findViewById(R.id.no_content);
         baseMainContent = view.findViewById(R.id.base_main_content);
-        searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_brand));
-        searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_17));
-        searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_24), getResources().getDimensionPixelSize(R.dimen.dp_24));
-        layoutManager = new GridLayoutManager(getContext(), SPAN_COUNT_3, GridLayoutManager.VERTICAL, false);
+//        searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_brand));
+//        searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_17));
+//        searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_24), getResources().getDimensionPixelSize(R.dimen.dp_24));
+        layoutManager = new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false);
         recyclerview.setLayoutManager(layoutManager);
-        recyclerview.setAdapter(new DealsBrandAdapter(null, DealsBrandAdapter.ITEM_BRAND_NORMAL));
-        searchInputView.setListener(this);
-        KeyboardHandler.DropKeyboard(getContext(), searchInputView);
+        recyclerview.setAdapter(new DealsBrandAdapter(null, DealsBrandAdapter.ITEM_BRAND_HOME));
+//        searchInputView.setListener(this);
+//        KeyboardHandler.DropKeyboard(getContext(), searchInputView);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
             recyclerview.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
             if (isSearchSubmitted) {
-                KeyboardHandler.DropKeyboard(getContext(), searchInputView);
+//                KeyboardHandler.DropKeyboard(getContext(), searchInputView);
             }
         } else {
             mPresenter.sendEventView(DealsAnalytics.EVENT_NO_BRAND_FOUND,
