@@ -263,7 +263,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.track)
-    
+    implementation project(rootProject.ext.libraries.cacheManager)
 
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.core)
@@ -278,7 +278,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsManagement)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.session)
-    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.inbox)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.reputationCommon)
@@ -381,6 +380,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJavaMath
 
     implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.cpm)
 
     implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"

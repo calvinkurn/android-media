@@ -43,14 +43,12 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
             view.hideInitialLoading();
         }
 
-        String errorMessage;
-        if (e instanceof CartResponseErrorException) {
-            errorMessage = e.getMessage();
-        } else {
+        String errorMessage = e.getMessage();
+        if (!(e instanceof CartResponseErrorException)) {
             errorMessage = ErrorHandler.getErrorMessage(view.getActivityContext(), e);
         }
-
         view.showToastError(errorMessage);
+
         view.stopTrace();
     }
 

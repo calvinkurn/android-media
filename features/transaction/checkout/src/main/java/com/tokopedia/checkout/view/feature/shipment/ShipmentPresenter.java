@@ -792,10 +792,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                String errorMessage;
-                if (e instanceof CartResponseErrorException) {
-                    errorMessage = e.getMessage();
-                } else {
+                String errorMessage = e.getMessage();
+                if (!(e instanceof CartResponseErrorException)) {
                     errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), e);
                 }
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage);
@@ -925,7 +923,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             getView().onClashCheckPromo(responseGetPromoStack.getData().getClashings(), PARAM_LOGISTIC);
                         } else {
                             for (VoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStack.getData().getVoucherOrders()) {
-                                if (voucherOrdersItemUiModel.getType().equalsIgnoreCase(PARAM_LOGISTIC) && voucherOrdersItemUiModel.getCode().equalsIgnoreCase(code)) {
+                                if (voucherOrdersItemUiModel.getCode().equalsIgnoreCase(code)) {
                                     if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(voucherOrdersItemUiModel.getMessage().getState()) == TickerPromoStackingCheckoutView.State.FAILED) {
                                         mTrackerShipment.eventClickLanjutkanTerapkanPromoError(voucherOrdersItemUiModel.getMessage().getText());
                                         getView().showToastError(errMessage);
@@ -1266,19 +1264,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                            String addressLatitude, String addressLongitude) {
         Map<String, String> params = getGeneratedAuthParamNetwork(null);
 
-        String addressId = null;
-        String addressName = null;
-        String addressStreet = null;
-        String postalCode = null;
-        String districtId = null;
-        String cityId = null;
-        String provinceId = null;
-        String latitude = null;
-        String longitude = null;
-        String receiverName = null;
-        String receiverPhone = null;
+        String addressId = "";
+        String addressName = "";
+        String addressStreet = "";
+        String postalCode = "";
+        String districtId = "";
+        String cityId = "";
+        String provinceId = "";
+        String latitude = "";
+        String longitude = "";
+        String receiverName = "";
+        String receiverPhone = "";
 
-        if (recipientAddressModel == null && shipmentCartItemModel != null) {
+        if (recipientAddressModel == null && shipmentCartItemModel != null && shipmentCartItemModel.getRecipientAddressModel() != null) {
             addressId = shipmentCartItemModel.getRecipientAddressModel().getId();
             addressName = shipmentCartItemModel.getRecipientAddressModel().getAddressName();
             addressStreet = shipmentCartItemModel.getRecipientAddressModel().getStreet();
@@ -1288,7 +1286,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             provinceId = shipmentCartItemModel.getRecipientAddressModel().getProvinceId();
             receiverName = shipmentCartItemModel.getRecipientAddressModel().getRecipientName();
             receiverPhone = shipmentCartItemModel.getRecipientAddressModel().getRecipientPhoneNumber();
-        } else {
+        } else if (recipientAddressModel != null) {
             addressId = recipientAddressModel.getId();
             addressName = recipientAddressModel.getAddressName();
             addressStreet = recipientAddressModel.getStreet();
