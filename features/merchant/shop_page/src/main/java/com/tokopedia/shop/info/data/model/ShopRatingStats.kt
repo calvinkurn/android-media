@@ -18,7 +18,7 @@ data class ShopRatingStats(
         val totalReview: Int = 0
 ){
         data class Response(
-                @SerializedName("ShopRatingStats")
+                @SerializedName("ShopRatingQuery")
                 @Expose
                 val shopRatingStats: ShopRatingStats = ShopRatingStats()
         )
