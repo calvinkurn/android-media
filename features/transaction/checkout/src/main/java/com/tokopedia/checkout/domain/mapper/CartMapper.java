@@ -157,6 +157,7 @@ public class CartMapper implements ICartMapper {
                         voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
                         voucherOrdersItemData.setVariant(voucherOrdersItem.getType());
                         voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
+                        voucherOrdersItemData.setIsAutoapply(true);
                         shopGroupData.setVoucherOrdersItemData(voucherOrdersItemData);
                         break;
                     }
@@ -352,6 +353,7 @@ public class CartMapper implements ICartMapper {
                             voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
                             voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
                             voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
+                            voucherOrdersItemData.setIsAutoapply(true);
                             voucherOrdersItemDataList.add(voucherOrdersItemData);
                         }
                         autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
@@ -541,6 +543,7 @@ public class CartMapper implements ICartMapper {
                 voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
                 voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
                 voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
+                voucherOrdersItemData.setIsAutoapply(true);
                 voucherOrdersItemDataList.add(voucherOrdersItemData);
             }
             autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);

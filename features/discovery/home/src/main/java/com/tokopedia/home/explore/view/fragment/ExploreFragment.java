@@ -15,6 +15,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
+import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.home.IHomeRouter;
@@ -123,35 +130,44 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onMarketPlaceItemClicked(LayoutRows data) {
         TrackingUtils.sendMoEngageClickMainCategoryIcon(getActivity(), data.getName());
-        ((IHomeRouter) getActivity().getApplication()).openIntermediaryActivity(
-                getActivity(),
-                String.valueOf(data.getCategoryId()),
-                data.getName()
-        );
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.DISCOVERY_CATEGORY_DETAIL);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, String.valueOf(data.getCategoryId()));
+        bundle.putString(BrowseProductRouter.DEPARTMENT_NAME, data.getName());
+        intent.putExtras(bundle);
     }
 
     @Override
     public void onDigitalItemClicked(LayoutRows data) {
         if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof IHomeRouter
-                && ((IHomeRouter) getActivity().getApplicationContext()).isSupportApplink(data.getApplinks())) {
-            ((IHomeRouter) getActivity().getApplication()).onDigitalItemClickFromExploreHome(
-                    getActivity(),
-                    data.getApplinks(),
-                    String.valueOf(data.getCategoryId()),
-                    data.getName(),
-                    data.getUrl());
+                && RouteManager.isSupportApplink(getActivity(), data.getApplinks())) {
+            onDigitalItemClickFromExploreHome(data);
         } else {
             onGimickItemClicked(data);
         }
         TrackingUtils.sendMoEngageClickMainCategoryIcon(getActivity(), data.getName());
     }
 
+    private void onDigitalItemClickFromExploreHome(LayoutRows data){
+        DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                .appLinks(data.getApplinks())
+                .categoryId(String.valueOf(data.getCategoryId()))
+                .categoryName(data.getName())
+                .url(data.getUrl())
+                .build();
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+        Intent intent = RouteManager.getIntent(getActivity(), data.getApplinks());
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
     @Override
     public void onGimickItemClicked(LayoutRows data) {
 
         if (NAME_PINJAMAN_ONLINE.equalsIgnoreCase(data.getName())) {
-            getActivity().startActivity(((IHomeRouter) getActivity().getApplication()).getInstantLoanIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.INSTANT_LOAN);
             return;
         }
 
@@ -228,8 +244,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onApplinkClicked(LayoutRows data) {
         if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof IHomeRouter
-                && ((IHomeRouter) getActivity().getApplicationContext()).isSupportApplink(data.getApplinks())){
+                && RouteManager.isSupportApplink(getActivity(), data.getApplinks())){
             openApplink(data.getApplinks());
         } else {
             openWebViewURL(data.getUrl(), getActivity());
@@ -237,35 +252,27 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     private void openApplink(String applink) {
-        if (!TextUtils.isEmpty(applink)) {
-            ((IHomeRouter) getActivity().getApplicationContext())
-                    .goToApplinkActivity(getActivity(), applink);
+        if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(getActivity(), applink)) {
+            RouteManager.route(getActivity(), applink);
         }
     }
 
     public void openWebViewURL(String url, Context context) {
-        if (url != "" && context != null) {
-            if (getActivity() != null
-                    && getActivity().getApplicationContext() instanceof IHomeRouter) {
-                Intent intent = ((IHomeRouter) (getActivity()).getApplication())
-                        .getBannerWebViewIntent(
-                                getActivity(),
-                                url);
-                getActivity().startActivity(intent);
-                context.startActivity(intent);
+        if (!url.equals("") && context != null) {
+            if (getActivity() != null) {
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PROMO);
+                intent.putExtra(BannerWebView.EXTRA_URL, url);
+                startActivity(intent);
             }
         }
     }
 
     private void openWebViewGimicURL(String url, String label, String title) {
         if (!url.equals("")) {
-            if (getActivity() != null
-                    && getActivity().getApplicationContext() instanceof IHomeRouter) {
-                Intent intent = ((IHomeRouter) (getActivity()).getApplication())
-                        .openWebViewGimicURLIntentFromExploreHome(
-                                getActivity(),
-                                url,
-                                title);
+            if (getActivity() != null) {
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.WEBVIEW);
+                intent.putExtra(BannerWebView.EXTRA_TITLE, title);
+                intent.putExtra("EXTRA_URL", url);
                 getActivity().startActivity(intent);
                 HomePageTracking.eventHomeGimmick(getActivity(), label);
             }
@@ -289,10 +296,9 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     private void onGoToLogin() {
-        if(getActivity() != null &&
-                getActivity().getApplication() instanceof IHomeRouter){
-            Intent intent = ((IHomeRouter) getActivity().getApplication()).getLoginIntent(getContext());
-            Intent intentHome = ((IHomeRouter) getActivity().getApplication()).getHomeIntent(getContext());
+        if(getActivity() != null){
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+            Intent intentHome = RouteManager.getIntent(getActivity(), ApplinkConst.HOME);
             intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             getActivity().startActivities(new Intent[]{intentHome, intent});
             getActivity().finish();
@@ -300,22 +306,18 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     private void onGoToCreateShop() {
-        if(getActivity() != null &&
-                getActivity().getApplication() instanceof IHomeRouter){
-            Intent intent = ((IHomeRouter) getActivity().getApplication())
-                    .getActivityShopCreateEdit(getContext());
+        if(getActivity() != null){
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.OPEN_SHOP);
             getActivity().startActivity(intent);
         }
     }
 
     private void onGoToShop(String shopId) {
-        Intent intent = ((IHomeRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        getActivity().startActivity(intent);
+        RouteManager.route(getActivity(), ApplinkConst.SHOP, shopId);
     }
 
     private void onGoToShopSetting() {
-        ((IHomeRouter) getActivity().getApplicationContext()).goToManageShop(getActivity());
+        RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.STORE_SETTING);
     }
 
     @Override

@@ -5,12 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
-import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,9 +19,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.TypedValue;
-import android.view.Display;
-import android.view.DisplayCutout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +30,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.screen.IndexScreenTracking;
+import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
@@ -68,7 +67,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackDa
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
-import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
@@ -117,6 +115,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final String BERANDA_TRACE = "gl_beranda";
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
+    private static final int DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10;
+    public static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
+    public static final String KEY_NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
+    public static final String KEY_DIMEN = "dimen";
+    public static final String KEY_DEF_PACKAGE = "android";
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
 
@@ -516,21 +519,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void onGoToLogin() {
-        Intent intent = ((IHomeRouter) getActivity().getApplication()).getLoginIntent(getContext());
-        Intent intentHome = ((IHomeRouter) getActivity().getApplication()).getHomeIntent(getContext());
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+        Intent intentHome = RouteManager.getIntent(getActivity(), ApplinkConst.HOME);
         intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         getActivity().startActivities(new Intent[]{intentHome, intent});
         getActivity().finish();
     }
 
     private void onGoToCreateShop() {
-        Intent intent = ((IHomeRouter) getActivity().getApplication()).getIntentCreateShop(getContext());
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.CREATE_SHOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
 
     private void onGoToShop(String shopId) {
-        Intent intent = ((IHomeRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP);
+        intent.putExtra(EXTRA_SHOP_ID, shopId);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
@@ -556,11 +560,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void actionAppLinkWalletHeader(String appLinkBalance) {
-        if ((getActivity()).getApplication() instanceof IHomeRouter) {
-            ((IHomeRouter) (getActivity()).getApplication())
-                    .goToTokoCash(appLinkBalance,
-                            getActivity());
-        }
+        goToOvo(appLinkBalance);
+    }
+
+    private void goToOvo(String appLinkScheme){
+        Intent intent = appLinkScheme == null || appLinkScheme.isEmpty() ?
+                RouteManager.getIntent(getActivity(), ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme)
+                : RouteManager.isSupportApplink(getActivity(), appLinkScheme)
+                ? RouteManager.getIntent(getActivity(), appLinkScheme).setData(Uri.parse(appLinkScheme))
+                : RouteManager.getIntent(getActivity(), ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme);
+        startActivityForResult(intent, IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE);
     }
 
     @Override
@@ -580,21 +589,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
             @Override
             public void clickOnButton(String url, String appLink) {
-                if (TextUtils.isEmpty(appLink)) {
-                    if (getActivity() != null) {
-                        if ((getActivity()).getApplication() instanceof IHomeRouter) {
-                            ((IHomeRouter) (getActivity()).getApplication())
-                                    .goToWallet(getActivity(), url);
-                        }
-                    }
-                } else {
-                    if ((getActivity()).getApplication() instanceof IHomeRouter) {
-                        ((IHomeRouter) (getActivity()).getApplication())
-                                .goToTokoCash(appLink,
-                                        getActivity());
-                    }
-                }
-
+                goToOvo(appLink);
             }
         });
         bottomSheetDialogTokoCash.renderBottomSheet(new BottomSheetView
@@ -621,7 +616,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
         }
 
-        AnalyticsTrackerUtil.sendEvent(getContext(),
+        AnalyticsTrackerUtil.sendEvent(getActivity(),
                 AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                 AnalyticsTrackerUtil.CategoryKeys.HOMEPAGE,
                 AnalyticsTrackerUtil.ActionKeys.CLICK_POINT,
@@ -630,12 +625,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onPromoClick(int position, BannerSlidesModel slidesModel, String attribution) {
-        if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof IHomeRouter
-                && ((IHomeRouter) getActivity().getApplicationContext()).isSupportApplink(slidesModel.getApplink())) {
+        if (getActivity() != null && RouteManager.isSupportApplink(getActivity(), slidesModel.getApplink())) {
             openApplink(slidesModel.getApplink(), attribution);
         } else {
-            openWebViewURL(slidesModel.getRedirectUrl(), getContext());
+            openWebViewURL(slidesModel.getRedirectUrl(), getActivity());
         }
         presenter.onBannerClicked(slidesModel);
     }
@@ -657,16 +650,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     PromoListActivity.DEFAULT_AUTO_SELECTED_CATEGORY_ID
             ));
         } else {
-            if (getActivity() != null
-                    && getActivity().getApplicationContext() instanceof IHomeRouter) {
-                Intent intent = ((IHomeRouter) (getActivity()).getApplication())
-                        .getBannerWebViewOnAllPromoClickFromHomeIntent(
-                                getActivity(),
-                                BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP,
-                                getString(R.string.title_activity_promo));
-                getActivity().startActivity(intent);
+            if (getActivity() != null) {
+                showBannerWebViewOnAllPromoClickFromHomeIntent(BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP, getString(R.string.title_activity_promo));
             }
         }
+    }
+
+    private void showBannerWebViewOnAllPromoClickFromHomeIntent(String url, String title){
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PROMO);
+        intent.putExtra(BannerWebView.EXTRA_URL, url);
+        intent.putExtra(BannerWebView.EXTRA_TITLE, title);
+        startActivity(intent);
     }
 
     @Override
@@ -859,26 +853,23 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
 
         if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof IHomeRouter
-                && ((IHomeRouter) getActivity().getApplicationContext()).isSupportApplink(actionLink)) {
+                && RouteManager.isSupportApplink(getActivity(), actionLink)) {
             openApplink(actionLink, trackingAttribution);
         } else {
-            openWebViewURL(actionLink, getContext());
+            openWebViewURL(actionLink, getActivity());
         }
     }
 
     private void openApplink(String applink) {
         if (!TextUtils.isEmpty(applink)) {
-            ((IHomeRouter) getActivity().getApplicationContext())
-                    .goToApplinkActivity(getActivity(), applink);
+            RouteManager.route(getActivity(), applink);
         }
     }
 
     private void openApplink(String applink, String trackingAttribution) {
         if (!TextUtils.isEmpty(applink)) {
             applink = appendTrackerAttributionIfNeeded(applink, trackingAttribution);
-            ((IHomeRouter) getActivity().getApplicationContext())
-                    .goToApplinkActivity(getActivity(), applink);
+            RouteManager.route(getActivity(), applink);
         }
     }
 
@@ -917,10 +908,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     public void openWebViewURL(String url, Context context) {
         if (!TextUtils.isEmpty(url) && context != null) {
-            ((IHomeRouter) getActivity().getApplication())
-                    .actionOpenGeneralWebView(
-                            getActivity(),
-                            url);
+            Intent intent = RouteManager.getIntent(context, ApplinkConst.PROMO);
+            intent.putExtra(BannerWebView.EXTRA_URL, url);
+            startActivity(intent);
         }
     }
 
@@ -976,8 +966,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void sendScreen() {
-        if (getActivity() != null && getActivity().getApplication() instanceof IHomeRouter) {
-            ((IHomeRouter) getActivity().getApplication()).sendIndexScreen(getActivity(), getScreenName());
+        if (getActivity() != null) {
+            IndexScreenTracking.sendScreen(getActivity(), this::getScreenName);
         }
     }
 
@@ -1038,13 +1028,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getActivity() == null)
             return;
 
-        if (getActivity().getApplication() instanceof IHomeRouter) {
-            IHomeRouter homeRouter = (IHomeRouter) getActivity().getApplication();
-            getActivity().registerReceiver(
-                    tokoCashBroadcaseReceiver,
-                    new IntentFilter(homeRouter.getExtraBroadcastReceiverWallet())
-            );
-        }
+        getActivity().registerReceiver(
+                tokoCashBroadcaseReceiver,
+                new IntentFilter(getActivity().getString(R.string.broadcast_wallet))
+        );
     }
 
     protected void unRegisterBroadcastReceiverTokoCash() {
@@ -1057,22 +1044,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private BroadcastReceiver tokoCashBroadcaseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Bundle extras = intent.getExtras();
-            if (extras != null && getActivity().getApplication() instanceof IHomeRouter) {
-                IHomeRouter homeRouter = (IHomeRouter) getActivity().getApplication();
-                String data = extras.getString(homeRouter.getExtraBroadcastReceiverWallet());
-                if (data != null && !data.isEmpty())
-                    presenter.getHeaderData(false); // update header data
-            }
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            String data = extras.getString(getActivity().getString(R.string.broadcast_wallet));
+            if (data != null && !data.isEmpty())
+                presenter.getHeaderData(false); // update header data
+        }
         }
     };
 
     public void startShopInfo(String shopId) {
         if (getActivity() != null
-                && getActivity().getApplication() != null
-                && getActivity().getApplication() instanceof IHomeRouter) {
-            IHomeRouter homeRouter = (IHomeRouter) getActivity().getApplication();
-            startActivity(homeRouter.getShopPageIntent(getActivity(), shopId));
+                && getActivity().getApplication() != null) {
+            RouteManager.route(getActivity(), ApplinkConst.SHOP, shopId);
         }
     }
 
@@ -1085,7 +1069,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if (pathSegmentList.size() > 1) {
                 String shopDomain = pathSegmentList.get(pathSegmentList.size() - 2);
                 String productKey = pathSegmentList.get(pathSegmentList.size() - 1);
-                Intent intent = RouteManager.getIntent(context,ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
+                Intent intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
                                 shopDomain, productKey);
                 if (intent != null) {
                     startActivity(intent);
@@ -1187,7 +1171,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void fetchTokopointsNotification(String type) {
-        TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
+        if(getActivity() != null) {
+            TokoPointsNotificationManager.fetchNotification(getActivity(), type, getChildFragmentManager());
+        }
     }
 
     @Override
@@ -1219,8 +1205,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private Intent getProductIntent(String productId) {
-        if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        if (getActivity() != null) {
+            return RouteManager.getIntent(getActivity(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }
@@ -1241,11 +1227,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
 
         if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof IHomeRouter
-                && ((IHomeRouter) getActivity().getApplicationContext()).isSupportApplink(applink)) {
+                && RouteManager.isSupportApplink(getActivity(), applink)) {
             openApplink(applink);
         } else {
-            openWebViewURL(applink, getContext());
+            openWebViewURL(applink, getActivity());
         }
     }
 
