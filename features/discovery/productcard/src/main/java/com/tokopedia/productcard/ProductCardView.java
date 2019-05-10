@@ -82,7 +82,7 @@ public class ProductCardView extends BaseCustomView {
                 textDiscount.setVisibility(View.INVISIBLE);
                 textSlashedPrice.setVisibility(View.INVISIBLE);
             } else {
-                extDiscount.setVisibility(View.VISIBLE);
+                textDiscount.setVisibility(View.VISIBLE);
                 textSlashedPrice.setVisibility(View.VISIBLE);
             }
         }
@@ -152,7 +152,7 @@ public class ProductCardView extends BaseCustomView {
         if(fixedHeight) {
             return R.layout.product_card_layout_fixed_height;
         } else {
-            return R.layout.product_card_layout_;
+            return R.layout.product_card_layout;
         }
     }
 
