@@ -6,14 +6,10 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.webkit.URLUtil;
 
-import com.tokopedia.applink.constant.DeeplinkConstant;
 import com.tokopedia.config.GlobalConfig;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +26,7 @@ import java.util.Set;
 public class RouteManager {
 
     /**
-     * will create implicit Intent ACTION_VIEW correspond to deeplink
+     * will create implicit internal Intent ACTION_VIEW correspond to deeplink
      */
     private static Intent buildInternalImplicitIntent(@NonNull Context context, @NonNull String deeplink) {
         Uri uri = Uri.parse(deeplink);
@@ -85,12 +81,12 @@ public class RouteManager {
                 Uri uri = Uri.parse(deeplink);
                 Intent activityIntent = new Intent();
                 activityIntent.setClassName(context.getPackageName(), resolveInfos.get(0).activityInfo.name);
-                intent.setData(uri);
+                activityIntent.setData(uri);
 
                 // copy the query Parameter to bundle
                 Set<String> queryParameterNames = uri.getQueryParameterNames();
                 for (String queryParameterName : queryParameterNames) {
-                    intent.putExtra(queryParameterName, uri.getQueryParameter(queryParameterName));
+                    activityIntent.putExtra(queryParameterName, uri.getQueryParameter(queryParameterName));
                 }
                 return activityIntent;
             } else {
@@ -118,9 +114,10 @@ public class RouteManager {
      * <p>
      * return airbnb intent if supported.
      * http:// and https:// will return implicit intent to open webview
-     * else will return explicit intent.
+     * Manifest registration will return explicit intent.
+     * else will return implicit intent
      */
-    public static @Nullable Intent getIntent(Context context, String deeplinkPattern, String... parameter) {
+    public static Intent getIntent(Context context, String deeplinkPattern, String... parameter) {
         String deeplink = UriUtil.buildUri(deeplinkPattern, parameter);
 
         // Check airbnb first.
@@ -128,26 +125,29 @@ public class RouteManager {
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(deeplink)) {
             return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, deeplink);
         }
-        if (URLUtil.isNetworkUrl(deeplink) ){
+        if (URLUtil.isNetworkUrl(deeplink)) {
             return buildInternalImplicitIntent(context, deeplink);
         }
-        return buildInternalExplicitIntent(context, deeplink);
+        Intent intent = buildInternalExplicitIntent(context, deeplink);
+        if (intent != null) {
+            return intent;
+        }
+        return buildInternalImplicitIntent(context, deeplink);
     }
 
     /**
-     * return true if deeplink is supported, either by airbnb or registered in manifest
+     * return true if applink is supported, either by airbnb or registered in manifest
      * <p>
      * http:// and https:// will always return true (because it will open webview)
      * tokopedia://wrongpath will return false.
      * <p>
-     *
      */
     public static boolean isSupportApplink(Context context, String applink) {
         // check with airbnb
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink)) {
             return true;
         }
-        if (URLUtil.isNetworkUrl(applink) ){
+        if (URLUtil.isNetworkUrl(applink)) {
             return true;
         }
         return buildInternalExplicitIntent(context, applink) != null;
