@@ -3,6 +3,8 @@ package com.tokopedia.shop.info.view.viewmodel
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
 import com.tokopedia.shop.info.data.model.ShopStatisticsResp
 import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
@@ -19,6 +21,7 @@ import javax.inject.Inject
 class ShopInfoViewModel @Inject constructor(private val userSessionInterface: UserSessionInterface,
                                             private val getShopNoteUseCase: GetShopNotesByShopIdUseCase,
                                             private val getShopStatisticUseCase: GetShopStatisticUseCase,
+                                            private val getShopReputationUseCase: GetShopReputationUseCase,
                                             dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
@@ -53,7 +56,21 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     fun getShopInfo(shopId: String, isRefresh: Boolean = false){
         launchCatchError(block = {
             shopNotesResp.value = getShopNotesAsync(shopId, isRefresh).await()
-            shopStatisticsResp.value = getShopStatisticsAsync(shopId, isRefresh).await()
+            shopStatisticsResp.value = concatResp(getShopStatisticsAsync(shopId, isRefresh).await(),
+                    getShopReputationAsync(shopId).await())
         }){}
+    }
+
+    private fun concatResp(shopStatisticsResp: ShopStatisticsResp, shopBadge: ShopBadge?): ShopStatisticsResp {
+        return shopStatisticsResp.copy(shopReputation = shopBadge)
+    }
+
+    private fun getShopReputationAsync(shopId: String) = async (Dispatchers.IO){
+        getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId.toInt())
+        try {
+            getShopReputationUseCase.executeOnBackground()
+        } catch (t: Throwable){
+            null
+        }
     }
 }

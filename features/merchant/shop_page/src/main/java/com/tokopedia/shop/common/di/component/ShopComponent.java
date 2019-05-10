@@ -20,6 +20,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase;
 
 import dagger.Component;
 import kotlinx.coroutines.CoroutineDispatcher;
@@ -61,6 +62,8 @@ public interface ShopComponent {
     ToggleFavouriteShopUseCase toggleFavouriteShopUseCase();
 
     GQLGetShopInfoUseCase getGqlShopInfoUseCase();
+
+    GetShopReputationUseCase getShopReputationUseCase();
 
     CoroutineDispatcher getCoroutineDispatcher();
 

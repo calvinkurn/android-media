@@ -11,6 +11,7 @@ import com.tokopedia.shop.common.di.ShopQualifier;
 import com.tokopedia.shop.common.di.ShopWSQualifier;
 import com.tokopedia.shop.common.di.scope.ShopScope;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase;
 
 import javax.inject.Named;
 
@@ -49,7 +50,15 @@ public class ShopModule {
 
     @Provides
     public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCase(MultiRequestGraphqlUseCase graphqlUseCase,
-                                                              @Named(GQLQueryNamedConstant.SHOP_INFO) String gqlQuery){
+                                                              @Named(GQLQueryNamedConstant.SHOP_INFO)
+                                                              String gqlQuery){
         return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
+    }
+
+    @Provides
+    public GetShopReputationUseCase provideGetShopReputationUseCase(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                                    @Named(GQLQueryNamedConstant.SHOP_REPUTATION)
+                                                                    String gqlQuery){
+        return new GetShopReputationUseCase(gqlQuery, graphqlUseCase);
     }
 }

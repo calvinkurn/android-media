@@ -14,7 +14,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -28,6 +30,7 @@ import javax.inject.Inject
 class ShopPageViewModel @Inject constructor(private val userSessionInterface: UserSessionInterface,
                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
                                             private val getWhitelistUseCase: GetWhitelistUseCase,
+                                            private val getShopReputationUseCase: GetShopReputationUseCase,
                                             private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
                                             dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
 
@@ -35,6 +38,7 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
 
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
     val whiteListResp =  MutableLiveData<Pair<Boolean, String>>()
+    val shopBadgeResp = MutableLiveData<Pair<Boolean, ShopBadge>>()
 
     fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false){
         val id = shopId?.toIntOrNull() ?: 0
@@ -43,7 +47,11 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
             getShopInfoUseCase.params = GQLGetShopInfoUseCase
                     .createParams(if (id == 0)listOf() else listOf(id), shopDomain)
             getShopInfoUseCase.isFromCacheFirst = !isRefresh
-            shopInfoResp.value = Success(withContext(Dispatchers.IO){getShopInfoUseCase.executeOnBackground()})
+            val shopInfo = withContext(Dispatchers.IO){getShopInfoUseCase.executeOnBackground()}
+            shopInfoResp.value = Success(shopInfo)
+            withContext(Dispatchers.IO){getShopReputation(shopInfo.shopCore.shopID, isRefresh)}?.let {
+                badge -> shopBadgeResp.value = (shopInfo.goldOS.isOfficial != 1) to badge
+            }
         }){
             shopInfoResp.value = Fail(it)
         }
@@ -86,6 +94,16 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
 
                     override fun onNext(success: Boolean) { onSuccess(success) }
         })
+    }
+
+    private suspend fun getShopReputation(shopId: String, isRefresh: Boolean): ShopBadge?{
+        getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId.toInt())
+        getShopReputationUseCase.isFromCacheFirst = !isRefresh
+        return try {
+             getShopReputationUseCase.executeOnBackground()
+        } catch (t: Throwable){
+            null
+        }
     }
 
     override fun clear() {

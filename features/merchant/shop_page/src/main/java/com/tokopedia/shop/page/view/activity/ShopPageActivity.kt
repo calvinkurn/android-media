@@ -245,6 +245,12 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             response?.let { (isWhiteList, url) -> onSuccessGetFeedWhitelist(isWhiteList, url)}
         })
 
+        shopViewModel.shopBadgeResp.observe(this, Observer { reputation ->
+            reputation?.let {
+                shopPageViewHolder.displayGeneral(it.second, it.first)
+            }
+        })
+
         getShopInfo()
     }
 

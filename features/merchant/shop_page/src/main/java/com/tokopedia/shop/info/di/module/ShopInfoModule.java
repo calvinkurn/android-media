@@ -161,14 +161,6 @@ public class ShopInfoModule {
     }
 
     @ShopInfoScope
-    @IntoMap
-    @StringKey(GQLQueryNamedConstant.SHOP_REPUTATION)
-    @Provides
-    public String getStringQueryShopReputation(@ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_badge);
-    }
-
-    @ShopInfoScope
     @Provides
     public GetShopNotesByShopIdUseCase provideGetShopNotesByShopIdUseCase(MultiRequestGraphqlUseCase graphqlUseCase,
                                                                           @Named(GQLQueryNamedConstant.SHOP_NOTES_BY_SHOP_ID)

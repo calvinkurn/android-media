@@ -61,6 +61,12 @@ public class ShopCommonModule {
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_info);
     }
 
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_REPUTATION)
+    public String provideGqlQueryShopReputation(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_badge);
+    }
+
     /** NON-GQL, Plan to be removed **/
     @Provides
     public GetShopInfoUseCase provideGetShopInfoUseCase(ShopCommonRepository shopCommonRepository) {

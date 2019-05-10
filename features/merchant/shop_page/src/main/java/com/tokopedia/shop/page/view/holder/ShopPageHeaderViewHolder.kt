@@ -18,6 +18,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.constant.ShopUrl
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.extension.formatToSimpleNumber
 import kotlinx.android.synthetic.main.partial_shop_page_header.view.*
@@ -43,18 +44,16 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             TextApiUtils.isValueTrue(shopInfo.goldOS.isOfficial.toString()) -> displayOfficial()
             shopInfo.goldOS.isGoldBadge == 1 -> {
                 displayGoldenShop()
-                displayGeneral(shopInfo)
             }
             else -> {
                 view.shopLabelIcon.visibility = View.GONE
-                displayGeneral(shopInfo)
             }
         }
 
         if (isMyShop){
-            displayAsSeller(shopInfo)
+            displayAsSeller()
         } else {
-            displayAsBuyer(shopInfo)
+            displayAsBuyer()
         }
 
         updateViewShopStatus(shopInfo, isMyShop)
@@ -179,7 +178,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         view.shopStatusImageView.setImageDrawable(null)
     }
 
-    private fun displayAsBuyer(shopInfo: ShopInfo) {
+    private fun displayAsBuyer() {
         view.buttonManageShop.visibility = View.GONE
         view.buttonChat.visibility = View.VISIBLE
         view.buttonChat.setOnClickListener { listener.goToChatSeller() }
@@ -207,7 +206,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         }
     }
 
-    private fun displayAsSeller(shopInfo: ShopInfo) {
+    private fun displayAsSeller() {
         view.buttonChat.visibility = View.GONE
         view.buttonManageShop.visibility = View.VISIBLE
         view.buttonManageShop.setOnClickListener { listener.goToManageShop() }
@@ -217,16 +216,16 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         view.buttonFollow.setOnClickListener { listener.goToAddProduct() }
     }
 
-    private fun displayGeneral(shopInfo: ShopInfo) {
-        view.shopLabel.visibility = View.GONE
-        view.shopReputationView.visibility = View.VISIBLE
+    fun displayGeneral(shopBadge: ShopBadge, isNonOfficial: Boolean) {
+        if (isNonOfficial) {
+            view.shopLabel.visibility = View.GONE
+            view.shopReputationView.visibility = View.VISIBLE
 
-        //TODO SHOPREPUTATION
-        /*val reputaionMedalType = shopInfo.stats.shopBadgeLevel.set.toInt()
-        val reputationLevel = shopInfo.stats.shopBadgeLevel.level.toInt()
-        val reputationScore = shopInfo.stats.shopReputationScore
-
-        view.shopReputationView.setValue(reputaionMedalType, reputationLevel, reputationScore)*/
+            ImageHandler.loadImage(view.context, view.shopReputationView, shopBadge.badgeHD, -1)
+        } else {
+            view.shopLabel.visibility = View.VISIBLE
+            view.shopReputationView.visibility = View.GONE
+        }
     }
 
     private fun displayGoldenShop() {

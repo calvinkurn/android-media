@@ -4,8 +4,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.info.data.GQLQueryStringConst
 import com.tokopedia.shop.info.data.model.ProductShopPackSpeed
 import com.tokopedia.shop.info.data.model.ShopRatingStats
@@ -25,8 +23,6 @@ class GetShopStatisticUseCase (private val gqlQueries: Map<String, String>,
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
                 .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
 
-        val gqlRequestShopReputation = GraphqlRequest(gqlQueries[GQLQueryNamedConstant.SHOP_REPUTATION],
-                ShopBadge.Response::class.java, mapOf(PARAM_SHOP_IDS to listOf(params[PARAM_SHOP_ID])))
         val gqlRequestShopPackSpeed = GraphqlRequest(gqlQueries[GQLQueryStringConst.GET_SHOP_PACK_SPEED],
                 ProductShopPackSpeed.Response::class.java, params)
         val gqlRequestShopRating = GraphqlRequest(gqlQueries[GQLQueryStringConst.GET_SHOP_RATING],
@@ -34,16 +30,11 @@ class GetShopStatisticUseCase (private val gqlQueries: Map<String, String>,
         val gqlRequestShopSatisfaction = GraphqlRequest(gqlQueries[GQLQueryStringConst.GET_SHOP_SATISFACTION],
                 ShopSatisfaction.Response::class.java, params)
 
-        gqlUseCase.addRequests(listOf(gqlRequestShopReputation, gqlRequestShopPackSpeed,
+        gqlUseCase.addRequests(listOf(gqlRequestShopPackSpeed,
                 gqlRequestShopRating, gqlRequestShopSatisfaction))
 
 
         val gqlResponse = gqlUseCase.executeOnBackground()
-
-        val shopBadge = if (gqlResponse.getError(ShopBadge.Response::class.java)?.isNotEmpty() != true){
-            gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java)
-                    .result.firstOrNull()
-        } else null
 
         val shopPackSpeed = if (gqlResponse.getError(ProductShopPackSpeed.Response::class.java)?.isNotEmpty() != true){
             gqlResponse.getData<ProductShopPackSpeed.Response>(ProductShopPackSpeed.Response::class.java).productShopPackSpeed
@@ -57,11 +48,10 @@ class GetShopStatisticUseCase (private val gqlQueries: Map<String, String>,
             gqlResponse.getData<ShopSatisfaction.Response>(ShopSatisfaction.Response::class.java).shopSatisfaction
         } else null
 
-        return ShopStatisticsResp(shopBadge, shopPackSpeed, shopRating, shopSatisfaction)
+        return ShopStatisticsResp(null, shopPackSpeed, shopRating, shopSatisfaction)
     }
 
     companion object {
-        private const val PARAM_SHOP_IDS = "shopIds"
         private const val PARAM_SHOP_ID = "shopId"
 
         @JvmStatic

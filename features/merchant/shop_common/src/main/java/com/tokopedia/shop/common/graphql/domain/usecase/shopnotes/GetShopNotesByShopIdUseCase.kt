@@ -30,9 +30,9 @@ class GetShopNotesByShopIdUseCase (private val gqlQuery: String,
                 throw MessageErrorException()
 
             if (shopNoteQueryResult.graphQLDataError != null && !shopNoteQueryResult.graphQLDataError.message.isNullOrEmpty()){
-                return shopNoteQueryResult.result?.toList() ?: listOf()
+                throw MessageErrorException(shopNoteQueryResult.graphQLDataError.message)
             } else {
-                throw MessageErrorException(shopNoteQueryResult.graphQLDataError?.message)
+                return shopNoteQueryResult.result?.toList() ?: listOf()
             }
         } else {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
