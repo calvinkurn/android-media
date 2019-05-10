@@ -156,6 +156,8 @@ public class AddAddressFragment extends BaseDaggerFragment
             this.instanceType = arguments.getInt(EXTRA_INSTANCE_TYPE, INSTANCE_TYPE_DEFAULT);
         }
 
+        checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress();
+
         if (token == null && getActivity() != null) {
             getActivity().setResult(ERROR_RESULT_CODE);
             getActivity().finish();
@@ -732,7 +734,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     protected void initialVar() {
 
-        checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress();
         checkoutAnalyticsMultipleAddress = new CheckoutAnalyticsMultipleAddress();
         if (isEdit() && address != null) {
             receiverNameEditText.setText(address.getReceiverName());
