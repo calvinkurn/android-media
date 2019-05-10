@@ -8,7 +8,7 @@ import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceViewModel
 /**
  * Created by Hendri on 27/03/18.
  */
-class SelectedInvoice : Parcelable {
+class SelectedInvoice() : Parcelable {
     var invoiceId: Long? = null
     var invoiceNo: String? = null
     var invoiceTypeStr: String? = null
@@ -25,7 +25,7 @@ class SelectedInvoice : Parcelable {
     constructor(invoiceId: Long?, invoiceNo: String, invoiceTypeStr: String,
                 invoiceType: Int?, topProductName: String, topProductImage: String,
                 description: String, amount: String, date: String,
-                invoiceUrl: String, status: String, statusId: Int) {
+                invoiceUrl: String, status: String, statusId: Int): this() {
         this.invoiceId = invoiceId
         this.invoiceNo = invoiceNo
         this.invoiceTypeStr = invoiceTypeStr
@@ -40,7 +40,7 @@ class SelectedInvoice : Parcelable {
         this.statusId = statusId
     }
 
-    constructor(viewModel: InvoiceViewModel) {
+    constructor(viewModel: InvoiceViewModel): this() {
         this.invoiceId = viewModel.invoiceId
         this.invoiceNo = viewModel.invoiceNumber
         this.invoiceTypeStr = viewModel.invoiceTypeStr
@@ -74,7 +74,7 @@ class SelectedInvoice : Parcelable {
         dest.writeInt(this.statusId)
     }
 
-    constructor(parcel: Parcel) {
+    constructor(parcel: Parcel): this() {
         this.invoiceId = parcel.readLong()
         this.invoiceNo = parcel.readString()
         this.invoiceTypeStr = parcel.readString()

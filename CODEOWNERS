@@ -94,15 +94,15 @@
 /features/user/user_identification_common/      @tokopedia/minion-kevin
 /features/user/user_identification_no_op/       @tokopedia/minion-kevin
 
-/features/content/affiliate/            @tokopedia/minion-kevin
-/features/content/affiliate_common/     @tokopedia/minion-kevin
-/features/content/explore/              @tokopedia/minion-kevin
-/features/content/feed/                 @tokopedia/minion-kevin
-/features/content/feed_component/       @tokopedia/minion-kevin
-/features/content/interest_pick/        @tokopedia/minion-kevin
-/features/content/kol/                  @tokopedia/minion-kevin
-/features/content/kol_common/           @tokopedia/minion-kevin
-/features/content/profile/              @tokopedia/minion-kevin
+/features/content/affiliate/            @tokopedia/minion-stuart
+/features/content/affiliate_common/     @tokopedia/minion-stuart
+/features/content/explore/              @tokopedia/minion-stuart
+/features/content/feed/                 @tokopedia/minion-stuart
+/features/content/feed_component/       @tokopedia/minion-stuart
+/features/content/interest_pick/        @tokopedia/minion-stuart
+/features/content/kol/                  @tokopedia/minion-stuart
+/features/content/kol_common/           @tokopedia/minion-stuart
+/features/content/profile/              @tokopedia/minion-stuart
 
 
 /libraries/applink/                     @tokopedia/core-team
@@ -119,7 +119,7 @@
 /libraries/applink/                     @tokopedia/core-team
 /libraries/push_notification/           @tokopedia/core-team
 /libraries/user_session/                @tokopedia/minion-kevin
-/libraries/youtubeutils/                @tokopedia/minion-kevin
+/libraries/youtubeutils/                @tokopedia/minion-stuart
 
 /features/user/updateinactivephone      @tokopedia/india-android-team
 /libraries/common_network/              @tokopedia/core-team
