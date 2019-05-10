@@ -81,6 +81,7 @@ import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
+import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
@@ -777,7 +778,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
-                getView().showToastError(e.getMessage());
+                String errorMessage = e.getMessage();
+                if (!(e instanceof CartResponseErrorException)) {
+                    errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), e);
+                }
+                getView().showToastError(errorMessage);
                 processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn, deviceId);
             }
 
@@ -1244,19 +1249,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                            String addressLatitude, String addressLongitude) {
         Map<String, String> params = getGeneratedAuthParamNetwork(null);
 
-        String addressId = null;
-        String addressName = null;
-        String addressStreet = null;
-        String postalCode = null;
-        String districtId = null;
-        String cityId = null;
-        String provinceId = null;
-        String latitude = null;
-        String longitude = null;
-        String receiverName = null;
-        String receiverPhone = null;
+        String addressId = "";
+        String addressName = "";
+        String addressStreet = "";
+        String postalCode = "";
+        String districtId = "";
+        String cityId = "";
+        String provinceId = "";
+        String latitude = "";
+        String longitude = "";
+        String receiverName = "";
+        String receiverPhone = "";
 
-        if (recipientAddressModel == null && shipmentCartItemModel != null) {
+        if (recipientAddressModel == null && shipmentCartItemModel != null && shipmentCartItemModel.getRecipientAddressModel() != null) {
             addressId = shipmentCartItemModel.getRecipientAddressModel().getId();
             addressName = shipmentCartItemModel.getRecipientAddressModel().getAddressName();
             addressStreet = shipmentCartItemModel.getRecipientAddressModel().getStreet();
@@ -1266,7 +1271,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             provinceId = shipmentCartItemModel.getRecipientAddressModel().getProvinceId();
             receiverName = shipmentCartItemModel.getRecipientAddressModel().getRecipientName();
             receiverPhone = shipmentCartItemModel.getRecipientAddressModel().getRecipientPhoneNumber();
-        } else {
+        } else if (recipientAddressModel != null) {
             addressId = recipientAddressModel.getId();
             addressName = recipientAddressModel.getAddressName();
             addressStreet = recipientAddressModel.getStreet();
