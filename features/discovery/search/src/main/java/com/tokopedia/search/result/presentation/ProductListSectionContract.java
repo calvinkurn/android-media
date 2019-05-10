@@ -88,6 +88,8 @@ public interface ProductListSectionContract {
         void saveLastProductItemPositionToCache(int lastProductItemPositionToCache);
 
         int getLastProductItemPositionFromCache();
+
+        void updateScrollListener();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {

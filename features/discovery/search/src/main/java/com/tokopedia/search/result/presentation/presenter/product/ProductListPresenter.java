@@ -342,6 +342,7 @@ final class ProductListPresenter
         getView().removeLoading();
         getView().addProductList(list);
         getView().addLoading();
+        getView().updateScrollListener();
     }
 
     private List<Visitable> convertToListOfVisitable(ProductViewModel productViewModel) {

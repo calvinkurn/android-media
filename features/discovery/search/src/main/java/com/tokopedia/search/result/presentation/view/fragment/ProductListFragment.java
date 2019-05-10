@@ -235,7 +235,7 @@ public class ProductListFragment
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new ProductItemDecoration(
                 getContext().getResources().getDimensionPixelSize(com.tokopedia.discovery.R.dimen.dp_16),
-                getContext().getResources().getColor(com.tokopedia.discovery.R.color.white)
+                getContext().getResources().getColor(R.color.white)
         ));
         setHeaderTopAds(true);
     }
@@ -950,5 +950,11 @@ public class ProductListFragment
     @Override
     public void logDebug(String tag, String message) {
         Log.d(tag, message);
+    }
+
+    @Override
+    public void updateScrollListener() {
+        gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+        linearLayoutLoadMoreTriggerListener.updateStateAfterGetData();
     }
 }
