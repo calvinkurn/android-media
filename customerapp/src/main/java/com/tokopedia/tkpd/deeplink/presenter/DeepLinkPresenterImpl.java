@@ -581,13 +581,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (shopInfo != null && shopInfo.getInfo() != null) {
                     Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopInfo.getInfo().getShopId());
                     context.startActivity(intent);
+                    context.finish();
                 } else {
                     if (!GlobalConfig.DEBUG) {
                         Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
                     }
                     prepareOpenWebView(uriData);
                 }
-                context.finish();
             }
         });
     }

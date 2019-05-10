@@ -12,10 +12,16 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
-                    android:path="@string/path_product_add_item"/>
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_product"
+                    android:path="@string/path_add"/>
+
+                <data
+                    android:scheme="@string/sellerapp_scheme"
+                    android:host="@string/host_product"
+                    android:path="@string/path_add"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
