@@ -241,6 +241,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             }
         })
 
+        shopViewModel.whiteListResp.observe(this, Observer { response ->
+            response?.let { (isWhiteList, url) -> onSuccessGetFeedWhitelist(isWhiteList, url)}
+        })
+
         getShopInfo()
     }
 
@@ -380,7 +384,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     CustomDimensionShopPage.create(shopCore.shopID, goldOS.isOfficial == 1,
                             goldOS.isGold == 1))
 
-            //presenter.getFeedWhitelist(info.shopId)
+            shopViewModel.getFeedWhiteList(shopCore.shopID)
         }
 
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
@@ -405,22 +409,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         tabLayout.getTabAt(TAB_POSITION_FEED)?.setCustomView(tabCustomView)
     }
 
-    fun onErrorGetShopInfo(e: Throwable?) {
+    private fun onErrorGetShopInfo(e: Throwable?) {
         setViewState(VIEW_ERROR)
         errorTextView.text = ErrorHandler.getErrorMessage(this, e)
         errorButton.setOnClickListener { getShopInfo() }
         swipeToRefresh.isRefreshing = false
     }
 
-    fun onSuccessGetReputation(reputationSpeed: ReputationSpeed?) {
-
-    }
-
-    fun onErrorGetReputation(e: Throwable?) {
-
-    }
-
-    fun onSuccessToggleFavourite(successValue: Boolean) {
+    private fun onSuccessToggleFavourite(successValue: Boolean) {
         if (successValue) {
             shopPageViewHolder.toggleFavourite()
             updateFavouriteResult()
@@ -434,7 +430,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         })
     }
 
-    fun onErrorToggleFavourite(e: Throwable) {
+    private fun onErrorToggleFavourite(e: Throwable) {
         shopPageViewHolder.updateFavoriteButton()
         if (e is UserNotLoginException) {
             val intent = (application as ShopModuleRouter).getLoginIntent(this)
@@ -444,7 +440,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e))
     }
 
-    fun onSuccessGetFeedWhitelist(isWhitelist: Boolean, createPostUrl: String) {
+    private fun onSuccessGetFeedWhitelist(isWhitelist: Boolean, createPostUrl: String) {
         this.isShowFeed = isWhitelist
         this.createPostUrl = createPostUrl
         if (isShowFeed && (application as ShopModuleRouter).isFeedShopPageEnabled()) {
@@ -518,12 +514,13 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     it.goldOS.isOfficial == 1,
                     isFavourite)
 
-            //presenter.toggleFavouriteShop(it.shopCore.shopID)
+            shopViewModel.toggleFavorite(it.shopCore.shopID, this::onSuccessToggleFavourite,
+                    this::onErrorToggleFavourite)
         }
     }
 
-    fun sendMoEngageFavoriteEvent(shopName: String, shopID: String, shopDomain: String, shopLocation: String,
-                                  isShopOfficaial: Boolean, isFollowed: Boolean) {
+    private fun sendMoEngageFavoriteEvent(shopName: String, shopID: String, shopDomain: String, shopLocation: String,
+                                          isShopOfficaial: Boolean, isFollowed: Boolean) {
         TrackApp.getInstance().moEngage.sendTrackEvent(mapOf(
             "shop_name" to shopName,
             "shop_id" to shopID,
@@ -562,9 +559,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         ShopWebViewActivity.startIntent(this, url)
     }
 
-    fun getShopInfoPosition(): Int {
-        return shopPageViewPagerAdapter.count - 1
-    }
+    private fun getShopInfoPosition(): Int = shopPageViewPagerAdapter.count - 1
 
     fun getShopInfoData() = (shopViewModel.shopInfoResp.value as? Success)?.data
 }
