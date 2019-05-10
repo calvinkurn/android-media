@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -59,5 +60,4 @@ public class TopAdsDynamicChannelViewHolder extends AbstractViewHolder<TopAdsDyn
 
     @Override
     public void onAddFavorite(int position, Data data) { }
-
 }

@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -262,5 +263,4 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             return view.getContext();
         }
     }
-
 }
