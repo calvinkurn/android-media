@@ -603,4 +603,9 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
         }
     }
+
+    public void reloadPage(){
+        WebViewGeneral.loadAuthUrl(!url.contains(SEAMLESS)
+                ? URLGenerator.generateURLSessionLogin(url, getActivity()) : url);
+    }
 }

@@ -3317,6 +3317,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return userSession.getUserId();
     }
 
+    @Override
+    public Intent getRefreshWebPageIntent(Context context, boolean refreshPage){
+        return AppLinkWebsiteActivity.refreshIntent(context, refreshPage);
+    }
+
     public void onAppsFlyerInit() {
         TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
     }

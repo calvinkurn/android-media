@@ -30,6 +30,9 @@ public class FragmentErrorKyc extends BaseDaggerFragment implements
         if(i == R.id.try_again){
             executeTryAgain();
         }
+        else if(i == R.id.cancel_btn){
+            executeBackToApp();
+        }
     }
 
     private void executeTryAgain(){
@@ -86,4 +89,15 @@ public class FragmentErrorKyc extends BaseDaggerFragment implements
         tryAgain.setOnClickListener(this::onClick);
         return view;
     }
+
+    private void executeBackToApp(){
+        getActivity().finish();
+        AnalyticsUtil.sendEvent(getContext(),
+                AnalyticsUtil.EventName.CLICK_OVO,
+                AnalyticsUtil.EventCategory.OVO_KYC,
+                "",
+                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                AnalyticsUtil.EventAction.CLK_BATALKAN_TKPD);
+    }
+
 }

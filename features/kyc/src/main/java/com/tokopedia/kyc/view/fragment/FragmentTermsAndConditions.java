@@ -283,7 +283,8 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     @Override
     public void failure(ConfirmSubmitResponse data) {
         if(activityListener != null) {
-            activityListener.addReplaceFragment(ErrorKycConfirmation.newInstance(), true, ErrorKycConfirmation.TAG);
+            activityListener.addReplaceFragmentWithCustAnim(ErrorKycConfirmation.newInstance(),
+                    true, ErrorKycConfirmation.TAG, R.anim.enter_from_bottom_to_top, R.anim.exit_from_top_to_bottom);
         }
     }
 

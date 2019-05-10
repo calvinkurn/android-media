@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.kyc.Constants;
+import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.DaggerKYCComponent;
 import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.model.ConfirmRequestDataContainer;
@@ -37,6 +38,7 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
 
     @Override
     protected Fragment getNewFragment() {
+        showHideActionbar(false);
         status = getIntent().getExtras().getString(Constants.Keys.STATUS);
         BaseDaggerFragment baseDaggerFragment = null;
         if(TextUtils.isEmpty(status)){
@@ -73,6 +75,11 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
     }
 
     @Override
+    public void addReplaceFragmentWithCustAnim(BaseDaggerFragment baseDaggerFragment, boolean replace, String tag, int entryAnimId, int exitAnimId) {
+
+    }
+
+    @Override
     public void showHideActionbar(boolean show){
         if(show) getSupportActionBar().show();
         else getSupportActionBar().hide();
@@ -92,4 +99,17 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
     public boolean isRetryValid() {
         return false;
     }
+
+    @Override
+    protected void inflateFragment() {
+        Fragment newFragment = getNewFragment();
+        if (newFragment == null) {
+            return;
+        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(com.tokopedia.abstraction.R.id.parent_view, newFragment, getTagFragment())
+                .setCustomAnimations(R.anim.enter_from_bottom_to_top, R.anim.exit_from_top_to_bottom)
+                .commit();
+    }
+
 }

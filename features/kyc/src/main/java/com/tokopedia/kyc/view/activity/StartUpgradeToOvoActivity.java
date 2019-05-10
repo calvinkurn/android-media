@@ -81,8 +81,19 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
 
     @Override
     public void addReplaceFragment(BaseDaggerFragment baseDaggerFragment, boolean replace, String tag) {
-        retryCount = 3;
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        executeFragmentTrxn(fragmentTransaction, baseDaggerFragment, replace, tag);
+    }
+
+    @Override
+    public void addReplaceFragmentWithCustAnim(BaseDaggerFragment baseDaggerFragment, boolean replace, String tag, int entryAnimId, int exitAnimId){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(entryAnimId, exitAnimId);
+        executeFragmentTrxn(fragmentTransaction, baseDaggerFragment, replace, tag);
+    }
+
+    private void executeFragmentTrxn(FragmentTransaction fragmentTransaction, BaseDaggerFragment baseDaggerFragment, boolean replace, String tag){
+        retryCount = 3;
         if(replace) {
             fragmentTransaction.replace(R.id.parent_view, baseDaggerFragment, tag);
         }

@@ -29,6 +29,7 @@ import com.tokopedia.tkpd.R;
 public class AppLinkWebsiteActivity extends BasePresenterActivity
         implements FragmentGeneralWebView.OnFragmentInteractionListener {
     private static final String EXTRA_URL = "EXTRA_URL";
+    private static final String EXTRA_REFRESH_FLAG = "EXTRA_REFRESH_FLAG";
     private static final String EXTRA_TITLEBAR = "EXTRA_TITLEBAR";
     private static final String EXTRA_NEED_LOGIN = "EXTRA_NEED_LOGIN";
     private static final String EXTRA_PARENT_APP_LINK = "EXTRA_PARENT_APP_LINK";
@@ -49,6 +50,11 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
                 .putExtra(EXTRA_TITLEBAR, true)
                 .putExtra(EXTRA_NEED_LOGIN, false);
 
+    }
+
+    public static Intent refreshIntent(Context context, boolean refreshPage) {
+        return new Intent(context, AppLinkWebsiteActivity.class)
+                .putExtra(EXTRA_REFRESH_FLAG, refreshPage);
     }
 
     public static Intent newInstance(Context context, String url, boolean showToolbar,
@@ -224,5 +230,12 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         }
 
         return super.getContentId();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if(intent.getBooleanExtra(EXTRA_REFRESH_FLAG, false)){
+            fragmentGeneralWebView.reloadPage();
+        }
     }
 }

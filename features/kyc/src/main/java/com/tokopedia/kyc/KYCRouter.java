@@ -1,6 +1,8 @@
 package com.tokopedia.kyc;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
@@ -15,4 +17,5 @@ public interface KYCRouter {
             ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType);
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
     String getUserId();
+    Intent getRefreshWebPageIntent(Context context, boolean refreshPage);
 }
