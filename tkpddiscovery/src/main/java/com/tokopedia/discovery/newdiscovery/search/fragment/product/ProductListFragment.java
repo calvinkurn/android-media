@@ -589,8 +589,10 @@ public class ProductListFragment extends SearchSectionFragment
         boolean isQuickFilterSelectedReversed = !isQuickFilterSelected(option);
 
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed);
-        applyFilterToSearchParameter(quickFilterController.getFilterParameter());
-        setSelectedFilter(new HashMap<>(quickFilterController.getFilterParameter()));
+
+        Map<String, String> parameterFromFilter = quickFilterController.getParameter();
+        applyFilterToSearchParameter(parameterFromFilter);
+        setSelectedFilter(new HashMap<>(parameterFromFilter));
 
         clearDataFilterSort();
         reloadData();

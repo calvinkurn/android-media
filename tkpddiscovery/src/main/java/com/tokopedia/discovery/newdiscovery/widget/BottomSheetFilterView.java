@@ -326,7 +326,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         updateResetButtonVisibility();
         loadingView.setVisibility(View.VISIBLE);
         buttonFinish.setText("");
-        callback.onApplyFilter(filterController.getFilterParameter());
+        callback.onApplyFilter(filterController.getParameter());
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
