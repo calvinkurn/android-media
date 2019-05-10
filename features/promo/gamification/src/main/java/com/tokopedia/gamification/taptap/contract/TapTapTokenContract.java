@@ -53,6 +53,8 @@ public interface TapTapTokenContract {
         void navigateToHomePage();
 
         void dismissSummaryPage();
+
+        void clearViewAndAnimations();
     }
 
     interface Presenter extends CustomerPresenter<View> {

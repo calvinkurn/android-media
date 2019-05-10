@@ -98,7 +98,8 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                     showErrorView(R.drawable.gf_internet_not_connected_error
                             , getView().getResources().getString(R.string.internet_not_connected_error_occured), true);
                 } else {
-                    showErrorView(R.drawable.gf_server_full_error, getView().getResources().getString(R.string.error_server_full), true);
+                    getView().showErrorSnackBar(getView().getResources().getString(R.string.gf_server_error_crack_token_tap_tap));
+                    getView().clearViewAndAnimations();
                 }
 
             }
@@ -114,18 +115,21 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                     if (crackResult.isCrackTokenSuccess() || crackResult.isTokenHasBeenCracked()) {
                         getView().onSuccessCrackToken(crackResult);
                     } else if (crackResult.isCrackTokenExpired()) {
-                        showErrorView(R.drawable.gf_ic_toped_sorry, getView().getResources().getString(R.string.error_campaign_expired), false);
+                        getView().showErrorSnackBar(getView().getResources().getString(R.string.gf_server_error_crack_token_tap_tap));
+                        getView().clearViewAndAnimations();
                     } else if (crackResult.getResultStatus() != null
                             && crackResult.getResultStatus().getMessage() != null
                             && crackResult.getResultStatus().getMessage().size() != 0
                             && crackResult.isCrackButtonErrorTapTap()) {
                         getView().showErrorSnackBarOnCrackError(TextUtils.join(",", crackResult.getResultStatus().getMessage()));
                     } else {
-                        showErrorView(R.drawable.gf_server_full_error, getView().getResources().getString(R.string.error_server_full), true);
+                        getView().showErrorSnackBar(getView().getResources().getString(R.string.gf_server_error_crack_token_tap_tap));
+                        getView().clearViewAndAnimations();
                         getView().onFinishCrackToken();
                     }
                 } else {
-                    showErrorView(R.drawable.gf_server_full_error, getView().getResources().getString(R.string.error_server_full), true);
+                    getView().showErrorSnackBar(getView().getResources().getString(R.string.gf_server_error_crack_token_tap_tap));
+                    getView().clearViewAndAnimations();
                     getView().onFinishCrackToken();
                 }
             }
