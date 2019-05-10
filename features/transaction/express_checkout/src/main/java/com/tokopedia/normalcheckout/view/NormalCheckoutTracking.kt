@@ -125,7 +125,7 @@ class NormalCheckoutTracking {
                                 ?: NONE_OTHER),
                             "url" to selectedProductInfo.basic.url,
                             "category_id" to selectedProductInfo.category.id,
-                            "cart_id" to (cartId ?: NONE_OTHER),
+                            "dimension45" to (cartId ?: NONE_OTHER),
                             "dimension38" to (trackerAttribution ?: NONE_OTHER)
                         )),
                         "actionField" to mutableMapOf("list" to (trackerListName ?: ""))

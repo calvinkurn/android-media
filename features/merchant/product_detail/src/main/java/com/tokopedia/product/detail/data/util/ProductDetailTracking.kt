@@ -520,7 +520,7 @@ class ProductDetailTracking() {
         private const val KEY_PROMOTIONS = "promotions"
         private const val KEY_USER_ID = "user_id"
 
-        const val PRODUCT_DETAIL_SCREEN_NAME = "Product Info"
+        const val PRODUCT_DETAIL_SCREEN_NAME = "/product"
 
         private const val ID = "id"
         private const val PROMO_NAME = "name"

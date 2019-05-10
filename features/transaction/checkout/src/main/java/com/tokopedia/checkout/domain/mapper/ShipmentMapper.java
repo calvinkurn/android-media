@@ -142,6 +142,7 @@ public class ShipmentMapper implements IShipmentMapper {
                         voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
                         voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
                         voucherOrdersItemData.setTitleDescription(voucherOrdersItem.getTitleDescription());
+                        voucherOrdersItemData.setIsAutoapply(true);
                         voucherOrdersItemDataList.add(voucherOrdersItemData);
                     }
                     autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
@@ -287,6 +288,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                         voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
                                         voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
                                         voucherOrdersItemData.setTitleDescription(voucherOrdersItem.getTitleDescription());
+                                        voucherOrdersItemData.setIsAutoapply(true);
                                         shopResult.setVoucherOrdersItemData(voucherOrdersItemData);
                                     }
                                 }
@@ -494,10 +496,23 @@ public class ShipmentMapper implements IShipmentMapper {
                     hasError = true;
                     break;
                 }
+                int totalProductError = 0;
+                String defaultErrorMessage = "";
                 for (Product product : groupShop.getProducts()) {
                     if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
                         hasError = true;
-                        break;
+                        totalProductError++;
+                        if (TextUtils.isEmpty(defaultErrorMessage)) {
+                            defaultErrorMessage = product.getErrorMessage();
+                        }
+                    }
+                }
+                if (totalProductError == groupShop.getProducts().size()) {
+                    groupShop.setError(true);
+                    groupShop.setErrorMessage(defaultErrorMessage);
+                    for (Product product : groupShop.getProducts()) {
+                        product.setError(false);
+                        product.setErrorMessage("");
                     }
                 }
             }

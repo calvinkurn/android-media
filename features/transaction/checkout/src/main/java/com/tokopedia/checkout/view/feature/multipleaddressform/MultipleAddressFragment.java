@@ -413,8 +413,13 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
-            presenter.setCartListData(savedInstanceState.getParcelable(CartListData.class.getSimpleName()));
-            renderCartData(presenter.getCartListData());
+            CartListData cartListData = savedInstanceState.getParcelable(CartListData.class.getSimpleName());
+            if (cartListData != null) {
+                presenter.setCartListData(cartListData);
+                renderCartData(presenter.getCartListData());
+            } else {
+                presenter.processGetCartList(getArguments().getString(CART_IDS_EXTRA));
+            }
         }
     }
 
