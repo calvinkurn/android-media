@@ -1,5 +1,7 @@
 package com.tokopedia.network.constant;
 
+import com.tokopedia.config.url.TokopediaUrl;
+
 /**
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
@@ -43,7 +45,7 @@ public class TkpdBaseURL {
     public static String GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com";
     public static String GOLD_MERCHANT_STAGING_DOMAIN = "http://goldmerchant-staging.tokopedia.com";
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
-    public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
+    public static String MOBILE_DOMAIN = TokopediaUrl.Companion.getInstance().getMOBILEWEB();
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
@@ -59,7 +61,6 @@ public class TkpdBaseURL {
     public static String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
-    public static String BASE_API_DOMAIN = "https://api.tokopedia.com/";
 
     public static String WALLET_DOMAIN = "https://www.tokocash.com/";
     public static String TOKOPOINT_API_DOMAIN = "https://gw.tokopedia.com/tokopoints/api/";
@@ -776,7 +777,6 @@ public class TkpdBaseURL {
     }
 
     public static class ResCenterV2 {
-        public static final String BASE_RESOLUTION = BASE_API_DOMAIN + "resolution/";
         public static final String BASE_RESOLUTION_VERSION_1 = "v1/";
         public static final String BASE_RESOLUTION_VERSION_2 = "v2/";
         public static final String BASE_INBOX_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "inbox";

@@ -1,11 +1,13 @@
 package com.tokopedia.loginphone.common.data;
 
+import com.tokopedia.config.url.TokopediaUrl;
+
 /**
  * @author by nisie on 29/10/18.
  */
 public class LoginRegisterPhoneUrl {
 
-    public static String BASE_DOMAIN = "https://www.tokocash.com/";
+    public static String BASE_DOMAIN = TokopediaUrl.Companion.getInstance().getTOKOCASH();
 
     public static final String REQUEST_OTP_LOGIN = "oauth/otp";
     public static final String VERIFY_OTP_LOGIN = "oauth/verify_native";

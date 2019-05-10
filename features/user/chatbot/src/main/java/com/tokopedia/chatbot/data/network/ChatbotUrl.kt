@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.data.network
 
+import com.tokopedia.config.url.TokopediaUrl
 import com.tokopedia.network.constant.TkpdBaseURL
 
 /**
@@ -16,6 +17,6 @@ class ChatbotUrl {
         }
 
         val CONNECT_WEBSOCKET = "/connect"
-        val WEBSOCKET_URL = TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN
+        val WEBSOCKET_URL = TokopediaUrl.getInstance().WS_CHAT
     }
 }

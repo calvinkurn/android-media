@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.common.domain.interactor;
 
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.usecase.RequestParams;
 
@@ -24,7 +25,7 @@ public class DeleteShopInfoTomeUseCase extends CacheApiDataDeleteUseCase {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        RequestParams newRequestParams = CacheApiDataDeleteUseCase.createParams(TkpdBaseURL.TOME_DOMAIN, SHOP_INFO_PATH);
+        RequestParams newRequestParams = CacheApiDataDeleteUseCase.createParams(TokopediaUrl.Companion.getInstance().getTOME(), SHOP_INFO_PATH);
         return super.createObservable(newRequestParams);
     }
 }

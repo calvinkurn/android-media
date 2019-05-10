@@ -3,6 +3,7 @@ package com.tokopedia.loyalty.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.loyalty.di.qualifier.DigitalQualifier;
 import com.tokopedia.loyalty.di.qualifier.LoyaltyModuleQualifier;
 import com.tokopedia.loyalty.di.qualifier.PromoQualifier;
@@ -67,7 +68,7 @@ public class ServiceApiModule {
         tkpdOkHttpBuilder.addInterceptor(new TokoPointAuthInterceptor(context, networkRouter, userSession, TkpdBaseURL.TokoPoint.HMAC_KEY));
         OkHttpClient okHttpClient = tkpdOkHttpBuilder.build();
 
-        return RetrofitFactory.createRetrofitTokoPointConfig(TkpdBaseURL.DEFAULT_TOKOPEDIA_GQL_URL)
+        return RetrofitFactory.createRetrofitTokoPointConfig(TokopediaUrl.Companion.getInstance().getGQL())
                 .client(okHttpClient)
                 .build();
     }
