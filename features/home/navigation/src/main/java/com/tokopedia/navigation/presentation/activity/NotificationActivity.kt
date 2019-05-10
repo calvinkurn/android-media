@@ -21,6 +21,7 @@ import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateUnread
 import com.tokopedia.navigation.presentation.adapter.NotificationFragmentAdapter
+import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
 import com.tokopedia.navigation.presentation.fragment.NotificationFragment
 import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
