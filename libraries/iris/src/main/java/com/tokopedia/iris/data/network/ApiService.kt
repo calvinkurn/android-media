@@ -4,6 +4,8 @@ import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.iris.*
+
+import com.tokopedia.config.GlobalConfig
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -45,7 +47,7 @@ class ApiService(private val context: Context) {
                 .writeTimeout(10000, TimeUnit.MILLISECONDS)
                 .readTimeout(10000, TimeUnit.MILLISECONDS)
 
-        if (BuildConfig.DEBUG) {
+        if (GlobalConfig.DEBUG) {
             builder.addInterceptor(ChuckInterceptor(context))
         }
         return builder.build()
