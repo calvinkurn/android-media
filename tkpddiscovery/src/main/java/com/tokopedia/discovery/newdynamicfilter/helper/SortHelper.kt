@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdynamicfilter.helper
 
-import com.tokopedia.core.discovery.model.Sort
+import com.tokopedia.discovery.common.data.Sort
 
 class SortHelper {
 

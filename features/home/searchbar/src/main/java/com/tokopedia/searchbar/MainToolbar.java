@@ -130,7 +130,7 @@ public class MainToolbar extends Toolbar {
         editTextSearch.setOnClickListener(v -> {
             searchBarAnalytics.eventTrackingSearchBar();
             getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                    .gotoSearchPage(getContext()));
+                    .gotoSearchAutoCompletePage(getContext()));
         });
 
         btnNotification.setOnClickListener(v -> {

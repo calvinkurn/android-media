@@ -763,14 +763,14 @@ class ProductDetailFragment : BaseDaggerFragment() {
         initStatusBarLight()
         initToolbarLight()
         fab_detail?.hide()
-        label_cod.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
+        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
     }
 
     private fun expandedAppBar() {
         initStatusBarDark()
         initToolbarTransparent()
         showFabDetailAfterLoadData()
-        label_cod.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
+        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
     }
 
     private fun initToolbarLight() {
@@ -1208,10 +1208,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun gotoEditProduct() {
         val id = productInfo?.parentProductId ?: return
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT, id)
-            intent?.run {
-                startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT)
-            }
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_ITEM, id)
+            intent?.run { startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT) }
         }
     }
 
