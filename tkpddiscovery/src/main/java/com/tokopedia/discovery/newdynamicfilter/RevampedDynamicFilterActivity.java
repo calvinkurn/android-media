@@ -354,7 +354,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     private void renderFilterResult() {
         Intent intent = new Intent();
-        HashMap<String, String> filterParameterHashMap = new HashMap<>(filterController.getFilterParameter());
+        HashMap<String, String> filterParameterHashMap = new HashMap<>(filterController.getParameter());
         HashMap<String, String> activeFilterParameterHashMap = new HashMap<>(filterController.getActiveFilterMap());
 
         intent.putExtra(EXTRA_FILTER_PARAMETER, filterParameterHashMap);
