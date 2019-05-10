@@ -11,27 +11,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import rx.Observable;
+import java.util.HashMap;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyMapOf;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 public class SearchPresenterTest {
 
-    private static class MockInitiateSearchUseCase extends UseCase<InitiateSearchModel> {
-        @Override
-        public Observable<InitiateSearchModel> createObservable(RequestParams requestParams) {
-            return null;
-        }
-    }
+    private static abstract class MockInitiateSearchUseCase extends UseCase<InitiateSearchModel> { }
 
     private SearchContract.View searchContractView;
     private UseCase<InitiateSearchModel> initiateSearchModelUseCase;
@@ -40,11 +31,11 @@ public class SearchPresenterTest {
 
     @Before
     public void setUp() {
-        searchPresenter = spy(new SearchPresenter());
+        searchPresenter = new SearchPresenter();
         searchContractView = mock(SearchContract.View.class);
         initiateSearchModelUseCase = mock(MockInitiateSearchUseCase.class);
 
-        mockDependencyInjection();
+//        mockDependencyInjection();
     }
 
     private void mockDependencyInjection() {
@@ -56,33 +47,50 @@ public class SearchPresenterTest {
 
     @Test(expected = RuntimeException.class)
     public void initiateSearch_NotInjected_ShouldThrowError() {
-        searchPresenter.initiateSearch(anyMapOf(String.class, Object.class), anyBoolean());
+        searchPresenter.initiateSearch(new HashMap<>(), false);
     }
 
     @Test(expected = RuntimeException.class)
     public void initiateSearch_NoListener_ShouldThrowError() {
-        searchPresenter.initInjector(searchContractView);
-        searchPresenter.initiateSearch(anyMapOf(String.class, Object.class), anyBoolean());
+        searchPresenter.initiateSearchModelUseCase = initiateSearchModelUseCase;
+        searchPresenter.initiateSearch(new HashMap<>(), false);
     }
 
     @Test
     public void initiateSearch_GivenNulls_ShouldNotExecuteUseCase() {
-        searchPresenter.initInjector(searchContractView);
+        searchPresenter.initiateSearchModelUseCase = initiateSearchModelUseCase;
         searchPresenter.setInitiateSearchListener(mock(InitiateSearchListener.class));
-        searchPresenter.initiateSearch(eq(null), anyBoolean());
+        searchPresenter.initiateSearch(null, false);
 
         verify(initiateSearchModelUseCase, never()).execute(any(RequestParams.class), any(InitiateSearchSubscriber.class));
     }
 
     @Test
     public void initiateSearch_GivenAnyParams_ShouldExecuteUseCase() {
-        searchPresenter.initInjector(searchContractView);
+        searchPresenter.initiateSearchModelUseCase = initiateSearchModelUseCase;
         searchPresenter.setInitiateSearchListener(mock(InitiateSearchListener.class));
         doNothing().when(initiateSearchModelUseCase).execute(any(RequestParams.class), any(InitiateSearchSubscriber.class));
 
-        searchPresenter.initiateSearch(anyMapOf(String.class, Object.class), anyBoolean());
+        searchPresenter.initiateSearch(new HashMap<>(), false);
 
         verify(initiateSearchModelUseCase).execute(any(RequestParams.class), any(InitiateSearchSubscriber.class));
+    }
+
+    @Test
+    public void onPause_NotInjected_ShouldNotError() {
+        searchPresenter.onPause();
+
+        verify(initiateSearchModelUseCase, never()).execute(any(RequestParams.class), any(InitiateSearchSubscriber.class));
+    }
+
+    @Test
+    public void onPause_AfterInjectUseCase_ShouldUnsubscribeAnyUseCase() {
+        searchPresenter.initiateSearchModelUseCase = initiateSearchModelUseCase;
+        doNothing().when(initiateSearchModelUseCase).unsubscribe();
+
+        searchPresenter.onPause();
+
+        verify(initiateSearchModelUseCase).unsubscribe();
     }
 
     @After
