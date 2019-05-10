@@ -126,6 +126,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun onSuccessMarkAllReadNotificationUpdate(): () -> Unit {
         return {
             (adapter as NotificationUpdateAdapter).markAllAsRead()
+            updateCounterTitle()
         }
     }
 
