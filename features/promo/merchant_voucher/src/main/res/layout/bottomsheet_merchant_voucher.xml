@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/buttonUse"
-                android:hint="@string/label_ketik_promo_code"
+                android:hint="@string/label_ketik_promo_merchant_code"
                 app:hintEnabled="true">
 
                 <EditText
@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_promo_code"
                     android:inputType="text"
-                    android:textColor="@color/tkpd_main_orange" />
+                    android:textColor="#ae31353b" />
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 

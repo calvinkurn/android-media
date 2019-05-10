@@ -9,16 +9,16 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
 import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
 
 import javax.inject.Inject;
 
@@ -402,21 +402,25 @@ public class FlightAnalytics {
     }
 
     private void eventAddToCart(String label, FlightDetailViewModel viewModel, Object actionField, List<Object> products) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, ATC_EVENT,
-                        EVENT_CATEGORY, GENERIC_CATEGORY,
-                        EVENT_ACTION, Category.ADD_TO_CART,
-                        EVENT_LABEL, label,
-                        ECOMMERCE, DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "add", DataLayer.mapOf(
-                                        "products", DataLayer.listOf(
-                                                products.toArray(new Object[products.size()])),
-                                        "actionField", actionField
-                                )
-                        )
-                )
-        );
+        try {
+            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                    DataLayer.mapOf(EVENT, ATC_EVENT,
+                            EVENT_CATEGORY, GENERIC_CATEGORY,
+                            EVENT_ACTION, Category.ADD_TO_CART,
+                            EVENT_LABEL, label,
+                            ECOMMERCE, DataLayer.mapOf(
+                                    "currencyCode", "IDR",
+                                    "add", DataLayer.mapOf(
+                                            "products", DataLayer.listOf(
+                                                    products.toArray(new Object[products.size()])),
+                                            "actionField", actionField
+                                    )
+                            )
+                    )
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void eventPassengerClick(int adult, int children, int infant) {

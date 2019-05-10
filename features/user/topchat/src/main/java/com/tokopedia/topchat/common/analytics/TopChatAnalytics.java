@@ -84,6 +84,8 @@ public class TopChatAnalytics {
 
     public interface Label {
         public static final String PRODUCT_PAGE = "message shop";
+        public static final String FOLLOW_SHOP = "follow shop";
+        public static final String UNFOLLOW_SHOP = "unfollow shop";
     }
 
     public void eventClickInboxChannel() {
@@ -211,6 +213,22 @@ public class TopChatAnalytics {
         );
     }
 
+
+    public void eventFollowUnfollowShop(boolean actionFollow, String shopId) {
+        String label = Label.FOLLOW_SHOP;
+        if(!actionFollow){
+            label = Label.UNFOLLOW_SHOP;
+        }
+
+        label = String.format("%s - %s", label, shopId);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Name.INBOX_CHAT,
+                "message room",
+                "click header - three bullet",
+                label
+        ));
+    }
 
     public void eventClickProductThumbnailEE(int blastId, String productId, String productName,
                                              int productPrice, String category, String variant) {

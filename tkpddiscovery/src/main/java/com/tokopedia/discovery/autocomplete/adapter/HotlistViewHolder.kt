@@ -42,7 +42,7 @@ class HotlistViewHolder(val view : View, val clickListener : ItemClickListener) 
 
         val startIndex = indexOfSearchQuery(element.getKeyword(), element.getSearchTerm())
         if (startIndex == -1) {
-            view.title_hotlist.text = element.keyword.toLowerCase()
+            view.title_hotlist.text = element.keyword
         } else {
             val highlightedTitle = SpannableString(element.getKeyword())
             highlightedTitle.setSpan(TextAppearanceSpan(view.context, R.style.searchTextHiglight),

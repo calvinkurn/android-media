@@ -78,7 +78,8 @@
     <string name="error_message_contact_not_found">Aplikasi kontak tidak ditemukan</string>
 
     <string name="title_tooltip_instan_payment">Bayar Instan</string>
-    <string name="body_tooltip_instan_payment">Selesaikan transaksi dengan 1 klik saja menggunakan OVO Cash.</string>
+    <string name="body_tooltip_instan_payment">Bayar hanya sekali klik, otomatis menggunakan Wallet yang ada di Tokopedia Anda (Ovo Points, Ovo Cash atau Saldo Tokopedia).
+</string>
     <string name="error_message_product">Product List kosong</string>
     <string name="error_message_operator">Operator tidak tersedia</string>
     <string name="error_message_not_found_product">Produk yang anda pilih saat ini tidak tersedia</string>

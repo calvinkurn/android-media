@@ -14,6 +14,7 @@ interface PromoCheckoutDetailContract {
         fun onSuccessValidatePromoStacking(data: DataUiModel)
         fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel)
         fun onErrorValidatePromo(e: Throwable)
+        fun onErrorValidatePromoStacking(e: Throwable)
         fun showLoading()
         fun hideLoading()
         fun onErrorCancelPromo(e: Throwable)

@@ -89,12 +89,6 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         this.homeTrackingQueue = homeTrackingQueue;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        homeTrackingQueue = new TrackingQueue(getActivity());
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -127,18 +121,20 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     }
 
     private void hitHomeFeedImpressionTracker(HomeFeedViewModel homeFeedViewModel) {
-        if (userSession.isLoggedIn()){
-            HomePageTracking.eventImpressionOnProductRecommendationForLoggedInUser(
-                    homeTrackingQueue,
-                    homeFeedViewModel,
-                    tabName.toLowerCase()
-            );
-        } else {
-            HomePageTracking.eventImpressionOnProductRecommendationForNonLoginUser(
-                    homeTrackingQueue,
-                    homeFeedViewModel,
-                    tabName.toLowerCase()
-            );
+        if(homeTrackingQueue != null) {
+            if (userSession.isLoggedIn()) {
+                HomePageTracking.eventImpressionOnProductRecommendationForLoggedInUser(
+                        homeTrackingQueue,
+                        homeFeedViewModel,
+                        tabName.toLowerCase()
+                );
+            } else {
+                HomePageTracking.eventImpressionOnProductRecommendationForNonLoginUser(
+                        homeTrackingQueue,
+                        homeFeedViewModel,
+                        tabName.toLowerCase()
+                );
+            }
         }
     }
 
@@ -199,23 +195,23 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     @Override
     public void onItemClicked(HomeFeedViewModel homeFeedViewModel) {
         if (userSession.isLoggedIn()) {
-            if(!homeFeedViewModel.isTopAds()){
+            if (!homeFeedViewModel.isTopAds()) {
                 HomePageTracking.eventClickOnHomeProductFeedForLoggedInUser(
-                        homeTrackingQueue,
+                        getActivity(),
                         homeFeedViewModel,
                         tabName.toLowerCase()
                 );
             }
         } else {
-            if(!homeFeedViewModel.isTopAds()){
+            if (!homeFeedViewModel.isTopAds()) {
                 HomePageTracking.eventClickOnHomeProductFeedForNonLoginUser(
-                        homeTrackingQueue,
+                        getActivity(),
                         homeFeedViewModel,
                         tabName.toLowerCase()
                 );
             }
         }
-        if(homeFeedViewModel.isTopAds()) {
+        if (homeFeedViewModel.isTopAds()) {
             new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
             Product p = new Product();
             p.setId(homeFeedViewModel.getProductId());
@@ -236,9 +232,9 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         getActivity().startActivity(getProductIntent(productId));
     }
 
-    private Intent getProductIntent(String productId){
+    private Intent getProductIntent(String productId) {
         if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }
@@ -274,7 +270,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @Override
     protected String getScreenName() {
-        return ConstantKey.Analytics.AppScreen.UnifyTracking.SCREEN_UNIFY_HOME_BERANDA;
+        return null;
     }
 
     public void scrollToTop() {
@@ -292,7 +288,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @Override
     public void onProductImpression(HomeFeedViewModel model, int position) {
-        if(model.isTopAds()) {
+        if (model.isTopAds()) {
             Product p = new Product();
             p.setId(model.getProductId());
             p.setName(model.getProductName());
@@ -309,9 +305,11 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @Override
     public void onPause() {
-        TopAdsGtmTracker.getInstance().eventRecomendationProductView(homeTrackingQueue,
-                tabName.toLowerCase(), userSession.isLoggedIn());
-        homeTrackingQueue.sendAll();
+        if(homeTrackingQueue != null) {
+            TopAdsGtmTracker.getInstance().eventRecomendationProductView(homeTrackingQueue,
+                    tabName.toLowerCase(), userSession.isLoggedIn());
+            homeTrackingQueue.sendAll();
+        }
         super.onPause();
     }
 }

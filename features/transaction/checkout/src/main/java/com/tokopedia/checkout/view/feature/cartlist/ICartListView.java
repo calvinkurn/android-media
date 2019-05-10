@@ -141,7 +141,7 @@ public interface ICartListView extends IBaseView {
 
     void showMerchantVoucherListBottomsheet(ShopGroupData shopGroupData);
 
-    void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel);
+    void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);
 
-    void onSuccessClearPromoStachAfterClash();
+    void onSuccessClearPromoStackAfterClash();
 }
