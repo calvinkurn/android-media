@@ -100,7 +100,7 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         requestParams.putString(SearchApiConst.START, getSearchStart(searchParameter));
         requestParams.putString(SearchApiConst.IMAGE_SIZE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
-        requestParams.putString(SearchApiConst.Q, omitNewline(searchParameter.getSearchQuery()));
+        requestParams.putString(SearchApiConst.Q, omitNewlineAndPlusSign(searchParameter.getSearchQuery()));
         requestParams.putString(SearchApiConst.UNIQUE_ID, searchParameter.get(SearchApiConst.UNIQUE_ID));
     }
 
@@ -137,8 +137,8 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         return String.valueOf(searchParameter.getInteger(SearchApiConst.START));
     }
 
-    private static String omitNewline(String text) {
-        return text.replace("\n", "");
+    private static String omitNewlineAndPlusSign(String text) {
+        return text.replace("\n", "").replace("+", " ");
     }
 
     private static int getTopAdsKeyPage(SearchParameter searchParameter) {

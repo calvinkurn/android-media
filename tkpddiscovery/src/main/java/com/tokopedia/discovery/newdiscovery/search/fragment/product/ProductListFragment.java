@@ -738,11 +738,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public HashMap<String, String> getAdditionalParamsMap() {
-        if (isFilterActive()) {
-            return NetworkParamHelper.getParamMap(additionalParams);
-        } else {
-            return new HashMap<>();
-        }
+        return NetworkParamHelper.getParamMap(additionalParams);
     }
 
     @Override
