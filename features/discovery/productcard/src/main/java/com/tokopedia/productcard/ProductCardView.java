@@ -1,6 +1,7 @@
 package com.tokopedia.productcard;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,34 +18,53 @@ import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
 public class ProductCardView extends BaseCustomView {
 
-    private TextView textName;
-    private TextView textPrice;
-    private TextView textDiscount;
-    private TextView textSlashedPrice;
-    private ImpressedImageView imageView;
-    private View topAdsIcon;
-    private View wishlistButton;
-    private View ratingReviewContainer;
-    private ImageView ratingView;
-    private TextView reviewCountView;
+    protected TextView textName;
+    protected TextView textPrice;
+    protected TextView textDiscount;
+    protected TextView textSlashedPrice;
+    protected ImpressedImageView imageView;
+    protected View topAdsIcon;
+    protected View wishlistButton;
+    protected View ratingReviewContainer;
+    protected ImageView ratingView;
+    protected TextView reviewCountView;
+    protected int layout;
+    protected boolean fixedHeight = false;
 
     public ProductCardView(@NonNull Context context) {
         super(context);
-        init();
+        init(null);
     }
 
     public ProductCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(attrs);
     }
 
     public ProductCardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(attrs);
     }
 
-    private void init() {
-        final View view = inflate(getContext(), R.layout.product_card_layout, this);
+    public void setFixedHeight(boolean fixedHeight) {
+        this.fixedHeight = fixedHeight;
+    }
+
+    protected void init(@Nullable AttributeSet attrs) {
+        if (attrs != null) {
+            TypedArray a = getContext().obtainStyledAttributes(
+                    attrs,
+                    R.styleable.ProductCardView,
+                    0, 0);
+
+            try {
+                fixedHeight = a.getBoolean(R.styleable.ProductCardView_fixedHeight, false);
+            } finally {
+                a.recycle();
+            }
+        }
+
+        final View view = inflate(getContext(), getLayout(), this);
         textName = view.findViewById(R.id.textName);
         textPrice = view.findViewById(R.id.textPrice);
         textDiscount = view.findViewById(R.id.textDiscount);
@@ -61,23 +81,20 @@ public class ProductCardView extends BaseCustomView {
         textName.setText(MethodChecker.fromHtml(title));
     }
 
-    public void hideRatingView(){
-        ratingReviewContainer.setVisibility(View.INVISIBLE);
-    }
-
-    public void setViewPdpRecommendation(){
-        textName.setMinLines(2);
-    }
-
     public void setDiscount(int discount) {
         if (discount > 0) {
             String discountText = Integer.toString(discount) + "%";
             textDiscount.setText(discountText);
-            textDiscount.setVisibility(VISIBLE);
-            textSlashedPrice.setVisibility(VISIBLE);
+            textDiscount.setVisibility(View.VISIBLE);
+            textSlashedPrice.setVisibility(View.VISIBLE);
         } else {
-            textDiscount.setVisibility(GONE);
-            textSlashedPrice.setVisibility(GONE);
+            if(fixedHeight) {
+                textDiscount.setVisibility(View.INVISIBLE);
+                textSlashedPrice.setVisibility(View.INVISIBLE);
+            } else {
+                textDiscount.setVisibility(View.GONE);
+                textSlashedPrice.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -110,7 +127,11 @@ public class ProductCardView extends BaseCustomView {
             ratingView.setImageResource(getRatingDrawable(rating));
             reviewCountView.setText("(" + Integer.toString(reviewCount) + ")");
         } else {
-            ratingReviewContainer.setVisibility(View.GONE);
+            if(fixedHeight) {
+                ratingReviewContainer.setVisibility(View.INVISIBLE);
+            } else {
+                ratingReviewContainer.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -118,7 +139,7 @@ public class ProductCardView extends BaseCustomView {
         return imageView;
     }
 
-    private int getRatingDrawable(int param) {
+    protected int getRatingDrawable(int param) {
         switch (param) {
             case 0:
                 return R.drawable.ic_star_none;
@@ -135,5 +156,17 @@ public class ProductCardView extends BaseCustomView {
             default:
                 return R.drawable.ic_star_none;
         }
+    }
+
+    protected int getLayout() {
+        if(fixedHeight) {
+            return R.layout.product_card_layout_fixed_height;
+        } else {
+            return R.layout.product_card_layout;
+        }
+    }
+
+    public void setLayout(int layout) {
+        this.layout = layout;
     }
 }

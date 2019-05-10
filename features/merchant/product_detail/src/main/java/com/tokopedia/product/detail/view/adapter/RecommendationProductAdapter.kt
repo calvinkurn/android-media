@@ -31,12 +31,9 @@ class RecommendationProductAdapter(private var product: RecommendationModel) : R
         private val recommendationCardView: RecommendationCardView? = itemView.findViewById(R.id.productCardView)
 
         fun bind(product: RecommendationItem) {
+            recommendationCardView?.setFixedHeight(true)
             recommendationCardView?.setRecommendationModel(product, this)
-            if (product.isTopAds) recommendationCardView?.hideRatingView()
-            else
-                if (product.rating < 1) recommendationCardView?.hideRatingView()
             recommendationCardView?.setWishlistButtonVisible(false)
-            recommendationCardView?.setViewPdpRecommendation()
         }
 
         override fun onImpressionTopAds(item: RecommendationItem) {
