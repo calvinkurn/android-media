@@ -388,8 +388,9 @@ class ProductDetailTracking() {
                 "category", getEnhanceCategoryFormatted(productInfo?.category?.detail),
                 "variant", "none / other",
                 "dimension38", trackerAttribution ?: "none / other",
-                "dimension55",dimension55),
-                "dimension54", getMultiOriginAttribution(multiOrigin))).apply {
+                "dimension55",dimension55,
+                "dimension54", getMultiOriginAttribution(multiOrigin)
+            ))).apply {
             if (trackerListName?.isNotEmpty() == true) {
                 put("actionField", DataLayer.mapOf("list", trackerListName))
             }
