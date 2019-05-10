@@ -21,7 +21,9 @@ import com.tokopedia.reputation.common.domain.repository.ReputationCommonReposit
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase;
+import com.tokopedia.shop.info.data.GQLQueryStringConst;
 import com.tokopedia.shop.info.di.scope.ShopInfoScope;
+import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase;
 import com.tokopedia.shop.note.data.repository.ShopNoteRepositoryImpl;
 import com.tokopedia.shop.note.data.source.ShopNoteDataSource;
 import com.tokopedia.shop.note.domain.repository.ShopNoteRepository;
@@ -30,10 +32,14 @@ import com.tokopedia.shop.page.di.ShopInfoReputationSpeedQualifier;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.Map;
+
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.StringKey;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -131,11 +137,50 @@ public class ShopInfoModule {
     }
 
     @ShopInfoScope
+    @IntoMap
+    @StringKey(GQLQueryStringConst.GET_SHOP_PACK_SPEED)
+    @Provides
+    public String getStringQueryShopPackSpeed(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_package_process);
+    }
+
+    @ShopInfoScope
+    @IntoMap
+    @StringKey(GQLQueryStringConst.GET_SHOP_RATING)
+    @Provides
+    public String getStringQueryShopRating(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_rating);
+    }
+
+    @ShopInfoScope
+    @IntoMap
+    @StringKey(GQLQueryStringConst.GET_SHOP_SATISFACTION)
+    @Provides
+    public String getStringQueryShopSatisfaction(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_satisfaction);
+    }
+
+    @ShopInfoScope
+    @IntoMap
+    @StringKey(GQLQueryNamedConstant.SHOP_REPUTATION)
+    @Provides
+    public String getStringQueryShopReputation(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_badge);
+    }
+
+    @ShopInfoScope
     @Provides
     public GetShopNotesByShopIdUseCase provideGetShopNotesByShopIdUseCase(MultiRequestGraphqlUseCase graphqlUseCase,
                                                                           @Named(GQLQueryNamedConstant.SHOP_NOTES_BY_SHOP_ID)
                                                                           String gqlQuery){
         return new GetShopNotesByShopIdUseCase(gqlQuery, graphqlUseCase);
+    }
+
+    @ShopInfoScope
+    @Provides
+    public GetShopStatisticUseCase provideGetShopStatisticUseCase(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                                  Map<String, String> queries){
+        return new GetShopStatisticUseCase(queries, graphqlUseCase);
     }
 }
 

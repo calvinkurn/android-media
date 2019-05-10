@@ -7,6 +7,7 @@ query getShopNotesByShopId($shopId: String!, $id: String, $isTerm: Boolean, $slu
           isTerms
           updateTime
           position
+          url
         }
         error {
           message
