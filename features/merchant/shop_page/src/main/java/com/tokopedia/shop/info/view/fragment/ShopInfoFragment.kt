@@ -77,7 +77,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         shopViewModel.shopNotesResp.observe(this, Observer {
             when(it){
                 is Success -> renderListNote(it.data)
-                is Fail -> {}
+                is Fail -> { hideNoteLoading() }
             }
         })
 
@@ -182,7 +182,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
         shopStatisticsResp.shopReputation?.let {
             totalPoin.text = getString(R.string.dashboard_x_points, it.score)
-            context?.run { ImageHandler.loadImage(this, shopReputationView, it.badge, -1) }
+            context?.run { ImageHandler.loadImage(this, shopReputationView, it.badgeHD, -1) }
         }
 
         shopStatisticsResp.shopPackSpeed?.let {
