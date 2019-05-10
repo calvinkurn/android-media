@@ -44,7 +44,7 @@ public interface GlobalNavRouter {
 
     Intent getHomeIntent(Context context);
 
-    Intent gotoSearchPage(Context context);
+    Intent gotoSearchAutoCompletePage(Context context);
 
     Intent instanceIntentDigitalCategoryList();
 

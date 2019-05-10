@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Search</string>
+
+    <string name="product_tab_title">Produk</string>
+    <string name="catalog_tab_title">Katalog</string>
+    <string name="shop_tab_title">Toko</string>
+
+    <string name="title_category">Kategori</string>
+    <string name="title_share">Bagikan</string>
+
+    <string name="grid">Grid</string>
+</resources>

@@ -7,7 +7,7 @@ import android.os.Parcelable
  * @author by milhamj on 26/03/18.
  */
 
-class ChannelPartnerChildViewModel : Parcelable {
+class ChannelPartnerChildViewModel() : Parcelable {
     var partnerId: String? = null
         private set
     var partnerAvatar: String? = null
@@ -18,7 +18,7 @@ class ChannelPartnerChildViewModel : Parcelable {
         private set
 
     constructor(partnerId: String, partnerAvatar: String, partnerName: String,
-                partnerUrl: String) {
+                partnerUrl: String): this() {
         this.partnerId = partnerId
         this.partnerAvatar = partnerAvatar
         this.partnerName = partnerName
@@ -36,7 +36,7 @@ class ChannelPartnerChildViewModel : Parcelable {
         dest.writeString(this.partnerUrl)
     }
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel): this() {
         this.partnerId = `in`.readString()
         this.partnerAvatar = `in`.readString()
         this.partnerName = `in`.readString()

@@ -10,6 +10,7 @@ import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.util.MERCHANT
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.usecase.RequestParams
@@ -96,32 +97,22 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                         val responseGetPromoStack = checkPromoStackingCodeMapper.call(response)
                         if (responseGetPromoStack.status.equals(statusOK, true)) {
                             if (responseGetPromoStack.data.clashings.isClashedPromos) {
-                                view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings)
+                                view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings, paramMerchant)
                             } else {
-                                var isRed = false
-                                var message = ""
-                                if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-                                    isRed = true
-                                    message = responseGetPromoStack.data.message.text
-                                } else {
-                                    responseGetPromoStack.data.voucherOrders.forEach {
+                                responseGetPromoStack.data.voucherOrders.forEach {
+                                    if (it.code.equals(promoMerchantCode, true)) {
                                         if (it.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-                                            isRed = true
-                                            message = it.message.text
+                                            view?.hideProgressLoading()
+                                            view.onErrorCheckPromoFirstStep(it.message.text)
+                                        } else {
+                                            view.onSuccessCheckPromoFirstStep(responseGetPromoStack, promoMerchantCode, isFromList)
                                         }
                                     }
                                 }
-
-                                if (isRed) {
-                                    view?.hideProgressLoading()
-                                    view.onErrorCheckPromoFirstStep(message)
-                                } else {
-                                    view.onSuccessCheckPromoFirstStep(responseGetPromoStack, promoMerchantCode, isFromList)
-                                }
                             }
                         } else {
-                            val message = responseGetPromoStack.data.message.text
-                            view.onErrorCheckPromoFirstStep(message)
+                            view?.hideProgressLoading()
+                            view.onErrorCheckPromoFirstStep(responseGetPromoStack.data.message.text)
                         }
                     }
                 }
