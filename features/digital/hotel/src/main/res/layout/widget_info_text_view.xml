@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/info_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:lineSpacingExtra="@dimen/sp_6"
+        app:fontSize="title"
+        app:textViewTheme="lightPrimary" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/info_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/sp_6"
+        app:fontSize="micro"
+        app:textViewTheme="lightSecondary"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/info_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/hotel_read_more_title"
+        android:textColor="@color/green_500"
+        android:visibility="gone"
+        app:fontSize="micro" />
+</LinearLayout>

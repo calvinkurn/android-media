@@ -2,6 +2,7 @@ package com.tokopedia.hotel.roomlist.presentation.fragment
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
@@ -13,11 +14,17 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
+import com.tokopedia.hotel.roomdetail.view.activity.HotelRoomDetailActivity
+import com.tokopedia.hotel.roomdetail.view.fragment.HotelRoomDetailFragment
+import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
+import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.di.HotelRoomListComponent
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
@@ -25,13 +32,12 @@ import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
 import com.tokopedia.hotel.roomlist.widget.ChipAdapter
-import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
 import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
-import kotlinx.android.synthetic.main.widget_filter_chip_recycler_view.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -40,22 +46,23 @@ import javax.inject.Inject
  * @author by jessica on 15/04/19
  */
 
-class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(), ChipAdapter.OnClickListener,
+class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>(), ChipAdapter.OnClickListener,
         HotelRoomAndGuestBottomSheets.HotelGuestListener, BaseEmptyViewHolder.Callback,
-        RoomListViewHolder.OnClickBookListener{
+        RoomListViewHolder.OnClickBookListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var roomListViewModel: HotelRoomListViewModel
 
-    lateinit var saveInstanceCacheManager: SaveInstanceCacheManager
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     var hotelRoomListPageModel = HotelRoomListPageModel()
 
+    var firstTime = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        saveInstanceCacheManager = SaveInstanceCacheManager(activity!!, savedInstanceState)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -80,20 +87,23 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        roomListViewModel.roomListResult.observe(this, android.arch.lifecycle.Observer { when (it) {
-            is Success -> {
-                if (!roomListViewModel.isFilter) {
-                    roomListViewModel.roomList = it.data
-                    showFilterRecyclerView(it.data.size > 0)
-                } else showFilterRecyclerView(true)
-                clearAllData()
-                renderList(it.data)
+        roomListViewModel.roomListResult.observe(this, android.arch.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    firstTime = false
+                    if (!roomListViewModel.isFilter) {
+                        roomListViewModel.roomList = it.data
+                        showFilterRecyclerView(it.data.size > 0)
+                    } else showFilterRecyclerView(true)
+                    clearAllData()
+                    renderList(it.data, false)
+                }
+                is Fail -> {
+                    showGetListError(it.throwable)
+                    showFilterRecyclerView(false)
+                }
             }
-            is Fail -> {
-                showGetListError(it.throwable)
-                showFilterRecyclerView(false)
-            }
-        } })
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -113,8 +123,12 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         renderRoomAndGuestView()
         renderDate()
 
-        getRoomList(false)
+        loadInitialData()
     }
+
+    override fun hasInitialSwipeRefresh(): Boolean = true
+
+    override fun callInitialLoadAutomatically(): Boolean = false
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -126,19 +140,8 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         filter_recycler_view.setItem(arrayListOf(getString(PAY_IN_HOTEL),
                 getString(FREE_BREAKFAST), getString(FREE_CANCELABLE)),
                 R.color.snackbar_border_normal)
-        filter_recycler_view.chip_recycler_view.addItemDecoration(object: RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                super.getItemOffsets(outRect, view, parent, state)
 
-                val itemPosition = parent.getChildLayoutPosition(view)
-                val itemCount = state.getItemCount()
-
-                outRect.left = if (itemPosition == 0) 20 else 0
-                outRect.right = if (itemCount > 0 && itemPosition == itemCount - 1) 20 else 0
-            }
-        })
-
-        recycler_view.addItemDecoration(object: RecyclerView.ItemDecoration() {
+        recycler_view.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
 
@@ -156,18 +159,11 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         filter_recycler_view.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    fun getRoomList(fromCloud: Boolean = true) {
-        showFilterRecyclerView(false)
-        loadInitialData()
-        roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list), hotelRoomListPageModel, fromCloud)
-    }
-
     fun onGuestInfoClicked() {
         val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
         hotelRoomAndGuestBottomSheets.listener = this
         hotelRoomAndGuestBottomSheets.roomCount = hotelRoomListPageModel.room
         hotelRoomAndGuestBottomSheets.adultCount = hotelRoomListPageModel.adult
-        hotelRoomAndGuestBottomSheets.childCount = hotelRoomListPageModel.child
         hotelRoomAndGuestBottomSheets.show(activity!!.supportFragmentManager, TAG_GUEST_INFO)
     }
 
@@ -254,7 +250,7 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
         renderDate()
-        getRoomList(true)
+        loadInitialData()
     }
 
     override fun getAdapterTypeFactory(): RoomListTypeFactory {
@@ -262,7 +258,18 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
     }
 
     override fun onItemClicked(room: HotelRoom) {
-        saveInstanceCacheManager.put(EXTRA_ROOM_DATA, room)
+        val objectId = System.currentTimeMillis().toString()
+        SaveInstanceCacheManager(context!!, objectId).apply {
+            val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
+            put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(room, addCartParam))
+        }
+        startActivityForResult(HotelRoomDetailActivity.getCallingIntent(context!!, objectId), RESULT_ROOM_DETAIL)
+    }
+
+    fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {
+        return HotelAddCartParam("", hotelRoomListPageModel.checkIn,
+                hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
+                room.roomId, hotelRoomListPageModel.room, hotelRoomListPageModel.adult)
     }
 
     override fun getScreenName(): String = ""
@@ -272,24 +279,34 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
     }
 
     override fun loadData(page: Int) {
-
+        showFilterRecyclerView(false)
+        if (firstTime) {
+            roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                    hotelRoomListPageModel, false)
+        } else roomListViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                hotelRoomListPageModel, true)
     }
 
-    override fun onChipClickListener(string: String) {
+    override fun onChipClickListener(string: String, isSelected: Boolean) {
         when (string) {
-            getString(FREE_BREAKFAST) -> { roomListViewModel.clickFilter(clickFreeBreakfast = true) }
-            getString(FREE_CANCELABLE) -> { roomListViewModel.clickFilter(clickFreeCancelable = true) }
-            getString(PAY_IN_HOTEL) -> { roomListViewModel.clickFilter(clickPayInHotel = true) }
+            getString(FREE_BREAKFAST) -> {
+                roomListViewModel.clickFilter(clickFreeBreakfast = true)
+            }
+            getString(FREE_CANCELABLE) -> {
+                roomListViewModel.clickFilter(clickFreeCancelable = true)
+            }
+            getString(PAY_IN_HOTEL) -> {
+                roomListViewModel.clickFilter(clickPayInHotel = true)
+            }
         }
     }
 
-    override fun onSaveGuest(room: Int, adult: Int, child: Int) {
+    override fun onSaveGuest(room: Int, adult: Int) {
         hotelRoomListPageModel.room = room
         hotelRoomListPageModel.adult = adult
-        hotelRoomListPageModel.child = child
 
         renderRoomAndGuestView()
-        getRoomList(true)
+        loadInitialData()
     }
 
     fun renderRoomAndGuestView() {
@@ -315,22 +332,37 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         return emptyModel
     }
 
-    override fun onEmptyContentItemTextClicked() { }
+    override fun onEmptyContentItemTextClicked() {}
 
     override fun onEmptyButtonClicked() {
         //DELETE FILTER
-        filter_recycler_view.resetChipSelected()
+        filter_recycler_view.onResetChip()
         roomListViewModel.clearFilter()
     }
 
     override fun onClickBookListener(room: HotelRoom) {
+        if (userSessionInterface.isLoggedIn) {
+            roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
+                    HotelAddCartParam("", hotelRoomListPageModel.checkIn,
+                            hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
+                            room.roomId, hotelRoomListPageModel.room, hotelRoomListPageModel.adult))
+        } else {
+            goToLoginPage()
+        }
+    }
 
+    fun goToLoginPage() {
+        if (activity != null) {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
     }
 
     companion object {
         val FREE_BREAKFAST = R.string.hotel_room_list_filter_free_breakfast
         val FREE_CANCELABLE = R.string.hotel_room_list_filter_free_cancelable
         val PAY_IN_HOTEL = R.string.hotel_room_list_filter_pay_in_hotel
+
+        const val RESULT_ROOM_DETAIL = 102
 
         const val ARG_PROPERTY_ID = "arg_property_id"
         const val ARG_PROPERTY_NAME = "arg_property_name"
@@ -340,7 +372,6 @@ class HotelRoomListFragment: BaseListFragment<HotelRoom, RoomListTypeFactory>(),
         const val ARG_TOTAL_ADULT = "arg_total_adult"
         const val ARG_TOTAL_CHILDREN = "arg_total_children"
         const val TAG_GUEST_INFO = "guestHotelInfo"
-        const val EXTRA_ROOM_DATA = "extra_room_data"
         const val EXTRA_HOTEL_ROOM_LIST_MODEL = "extra_room_list_model"
 
         val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"

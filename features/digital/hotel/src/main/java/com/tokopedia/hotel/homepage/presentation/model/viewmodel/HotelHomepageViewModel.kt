@@ -19,8 +19,8 @@ import javax.inject.Inject
 /**
  * @author by furqan on 04/04/19
  */
-class HotelHomepageViewModel @Inject constructor(val graphqlRepository: GraphqlRepository,
-        val dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
+class HotelHomepageViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                                 dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
 
     val promoData = MutableLiveData<Result<MutableList<HotelPromoEntity>>>()
 

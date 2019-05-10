@@ -1,0 +1,20 @@
+query propertyReview($data:PropertyReviewRequest!){
+  propertyReview(input:$data){
+    item{
+      id
+      propertyId
+      reviewerId
+      name
+      score
+      headline
+      pros
+      cons
+      createTime
+    }
+    totalReview
+    averageScoreReview
+    totalReviewOri
+    hasNext
+    headline
+  }
+}

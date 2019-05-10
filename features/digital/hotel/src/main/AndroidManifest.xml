@@ -9,27 +9,45 @@
 
     <application>
         <activity android:name=".homepage.presentation.activity.HotelHomepageActivity"
-            android:label="@string/hotel_toolbar_title"
+            android:label="@string/hotel_app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Hotel" />
+            android:theme="@style/Theme.White" />
 
         <activity android:name=".destination.view.activity.HotelDestinationActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Hotel" />
+            android:theme="@style/Theme.White" />
 
         <activity android:name=".search.presentation.activity.HotelSearchResultActivity"
-            android:label="@string/app_name"
+            android:label="@string/hotel_app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Hotel"/>
+            android:theme="@style/Theme.White"/>
 
         <activity android:name=".search.presentation.activity.HotelSearchFilterActivity"
             android:label="@string/label_filter"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Hotel"/>
+            android:theme="@style/Theme.White"/>
+
+        <activity android:name=".hoteldetail.presentation.activity.HotelDetailActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.NoActionBar"/>
+
+        <activity android:name=".hoteldetail.presentation.activity.HotelDetailMapActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
 
         <activity android:name=".roomlist.presentation.activity.HotelRoomListActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Hotel"/>
+            android:theme="@style/Theme.White"/>
+
+        <activity android:name=".roomdetail.view.activity.HotelRoomDetailActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.NoActionBar"/>
+
+        <activity android:name=".hoteldetail.presentation.activity.HotelReviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 
 </manifest>

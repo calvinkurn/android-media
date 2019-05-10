@@ -1,11 +1,16 @@
 <resources>
-    <string name="app_name">Hotel</string>
+    <string name="hotel_app_name">Hotel</string>
 
     <string name="hotel_bottom_menu_transaction_list">Daftar Transaksi</string>
     <string name="hotel_bottom_menu_promo">Promo</string>
     <string name="hotel_bottom_menu_help">Bantuan</string>
     <string name="hotel_bottom_menu_action_text">Tutup</string>
-    <string name="hotel_toolbar_title">Hotel</string>
+    <string name="hotel_show_all_text">Lihat Semua</string>
+
+    <string name="hotel_show_map_text">Lihat Peta</string>
+    <string name="hotel_address_title">Alamat</string>
+    <string name="hotel_facility_title">Fasilitas</string>
+    <string name="hotel_policy_title">Kebijakan</string>
 
     <string name="hotel_bottomsheet_sort_title">Urutkan Berdasarkan</string>
     <string name="hotel_filter_reset">Reset</string>
@@ -16,7 +21,7 @@
     <string name="hotel_search_filter_rating_title">Rating</string>
     <string name="hotel_search_filter_accomodation_type_title">Tipe akomodasi</string>
     <string name="hotel_search_filter_preference_title">Preference</string>
-    <string name="template_search_subtitle">%1$s - %2$s, %3$d Kamar, %4$d Tamu, %5$d Anak</string>
+    <string name="template_search_subtitle">%1$s - %2$s, %3$d Kamar, %4$d Tamu</string>
 
     <string name="hotel_check_in_calendar_title">Check-in</string>
     <string name="hotel_check_out_calendar_title">Check-out</string>
@@ -28,14 +33,10 @@
     <string name="hotel_homepage_check_out">Check-out</string>
     <string name="hotel_homepage_button_search">Cari</string>
     <string name="hotel_homepage_promo_title">Promo</string>
-    <string name="hotel_homepage_all_promo">Lihat Semua</string>
-    <string name="hotel_homepage_guest_detail_with_child" formatted="false"> %d kamar, %d dewasa, %d anak</string>
-    <string name="hotel_homepage_guest_detail_without_child" formatted="false"> %d kamar, %d dewasa</string>
+    <string name="hotel_homepage_guest_detail_without_child" formatted="false"> %d kamar, %d tamu</string>
     <string name="hotel_bottom_sheets_room_guest_title">Kamar dan Tamu</string>
     <string name="hotel_bottom_sheets_room_count_title">Kamar</string>
-    <string name="hotel_bottom_sheets_adult_count_title">Dewasa</string>
-    <string name="hotel_bottom_sheets_child_count_title">Anak</string>
-    <string name="hotel_bottom_sheets_child_count_subtitle">0 - 6 tahun</string>
+    <string name="hotel_bottom_sheets_adult_count_title">Tamu</string>
     <string name="hotel_button_save">Simpan</string>
     <string name="hotel_guest_info_room_more_than_adult_error_message">Jumlah kamar tidak boleh melebihi jumlah tamu dewasa.</string>
     <string name="hotel_homepage_near_by_destination">Hotel dekat lokasimu</string>
@@ -50,6 +51,9 @@
     <string name="hotel_destination_empty_view_holder_title">Nggak ada hasil yang cocok</string>
     <string name="hotel_destination_empty_view_holder_subtitle">Coba cari ulang pakai kata kunci lain.</string>
     <string name="hotel_destination_toolbar_title">Tujuan</string>
+    <string name="hotel_important_info_title">Informasi penting</string>
+    <string name="hotel_read_more_title">Baca Selengkapnya</string>
+    <string name="hotel_description_title">Deskripsi</string>
 
     <string name="hotel_room_list_check_in_check_out_date">%1$s - %2$s</string>
     <string name="hotel_room_list_filter_pay_in_hotel">Bayar di Hotel</string>
@@ -72,6 +76,39 @@
     <string name="hotel_room_list_pay_in_hotel">Bayar di Hotel</string>
     <string name="hotel_room_list_without_credit_card">Tanpa Jaminan Kartu Kredit</string>
 
+    <string name="hotel_detail_more_image_counter">+%1$d</string>
+    <string name="hotel_detail_check_from_to">%1$s - %2$s</string>
+    <string name="hotel_detail_check_start_from">Mulai %1$s</string>
+    <string name="hotel_detail_check_to">Sampai %1$s</string>
+    <string name="hotel_detail_map_marker_title">%1$s</string>
+    <string name="hotel_detail_map_marker_snippet">%1$s</string>
+    <string name="hotel_detail_show_room_text">Lihat Kamar</string>
+    <string name="hotel_detail_room_price_from">Harga /kamar/malam dari</string>
+    <!--<string name="hotel_detail_map_marker_title"><![CDATA[<strong>%1$s</strong> - %2$s]]></string>-->
+
+    <string name="hotel_review_title">Ulasan</string>
+    <string name="hotel_review_indonesia_not_found_title">Belum ada ulasan dari Indonesia</string>
+    <string name="hotel_review_indonesia_not_found_subtitle">Kamu bisa jadi yang pertama ngasih ulasan kalau nginep di sini. Pesan kamarnya, yuk!</string>
+    <string name="hotel_review_total_review">%1$s Ulasan</string>
+
+    <string name="hotel_room_detail_header_occupancy">Maksimum: %1$s</string>
+    <string name="hotel_room_detail_header_breakfast">Sarapan Gratis</string>
+    <string name="hotel_room_detail_header_refund">Refund Bersyarat</string>
+    <string name="hotel_room_detail_pay_at_hotel">Bayar di Hotel</string>
+    <string name="hotel_room_detail_pay_at_hotel_desc">Perlu jaminan kartu kredit\nKartu kredit diperlukan untuk verifikasi, biaya pemesanan akan ditagihkan saat tiba di hotel.</string>
+    <string name="hotel_room_detail_cancellation">Pembatalan</string>
+    <string name="hotel_room_detail_upfront_payment">Pembayaran di muka</string>
+    <string name="hotel_room_detail_upfront_payment_desc">Kartu kredit Anda akan terpotong sejumlah biaya pada waktu yang telah ditentukan.</string>
+    <string name="hotel_room_detail_tax">Pajak</string>
+    <string name="hotel_room_detail_tax_desc">Termasuk pajak 10% dan biaya layanan 10%</string>
+    <string name="hotel_room_detail_deposit">Deposit</string>
+    <string name="hotel_room_detail_deposit_desc">Kamar ini menerapkan sistem deposit yang harus dibayar saat check-in.</string>
+    <string name="hotel_room_detail_facilities">Fasilitas kamar</string>
+    <string name="hotel_room_detail_facility_item">• %1$s</string>
+    <string name="hotel_room_detail_description">Deskripsi</string>
+    <string name="hotel_room_detail_breakfast">Makanan</string>
+    <string name="hotel_room_detail_extra_bed">Extra bed</string>
+    <string name="hotel_room_detail_price_info">Harga /kamar/malam</string>
     <string name="hotel_order_detail_status">Status</string>
     <string name="hotel_order_detail_transaction_date">Tanggal Transaksi</string>
     <string name="hotel_order_detail_product_category">Kategori Produk</string>

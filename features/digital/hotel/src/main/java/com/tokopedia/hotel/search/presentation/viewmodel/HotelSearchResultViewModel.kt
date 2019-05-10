@@ -11,12 +11,11 @@ import com.tokopedia.hotel.search.data.model.Sort
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.experimental.CoroutineDispatcher
 import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -30,7 +29,7 @@ class HotelSearchResultViewModel @Inject constructor(
         private val dummySearchResult: String
 ): BaseViewModel(dispatcher){
 
-    private val searchParam: SearchParam = SearchParam()
+    val searchParam: SearchParam = SearchParam()
     var selectedSort: Sort = Sort()
     val selectedFilter: ParamFilter
         get() = searchParam.filter
@@ -63,10 +62,7 @@ class HotelSearchResultViewModel @Inject constructor(
             val response = withContext(Dispatchers.IO){ graphqlRepository.getReseponse(listOf(graphqlRequest)) }
             liveSearchResult.value = Success(response.getSuccessData<PropertySearch.Response>().response)
         }){
-            it.printStackTrace()
-            val gson = Gson()
-            liveSearchResult.value = Success(gson.fromJson(dummySearchResult,
-                    PropertySearch.Response::class.java).response)
+            liveSearchResult.value = Fail(it)
         }
     }
 

@@ -32,6 +32,7 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.features.commonTravel)
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.imagePreviewSlider)
 
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.useCase)
@@ -81,6 +82,9 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.playServicesDependencies.base
+    implementation rootProject.ext.playServicesDependencies.maps
 
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
