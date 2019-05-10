@@ -6,6 +6,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import com.tokopedia.config.GlobalConfig;
@@ -101,16 +102,15 @@ public class RouteManager {
             return;
         }
         String uriString = UriUtil.buildUri(applinkPattern, parameter);
-        Intent intent = getIntent(context, uriString);
+        Intent intent = getIntentNoFallback(context, uriString);
         if (intent != null) {
             context.startActivity(intent);
-        } else {
-            ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, uriString);
         }
     }
 
     /**
      * return the intent for the deeplink
+     * If no activity found will return to home
      * <p>
      * return airbnb intent if supported.
      * http:// and https:// will return implicit intent to open webview
@@ -119,29 +119,42 @@ public class RouteManager {
      */
     public static Intent getIntent(Context context, String deeplinkPattern, String... parameter) {
         String deeplink = UriUtil.buildUri(deeplinkPattern, parameter);
+        Intent intent = getIntentNoFallback(context, deeplink);
+        // set fallback for implicit intent
+        if (intent == null || intent.resolveActivity(context.getPackageManager()) == null) {
+            intent = new Intent();
+            intent.setClassName(context.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
+            intent.setData(Uri.parse(deeplink));
+        }
+        return intent;
+    }
+
+    /**
+     * return the intent for the deeplink
+     * If no activity found will return null
+     * <p>
+     * return airbnb intent if supported.
+     * http:// and https:// will return implicit intent to open webview
+     * Manifest registration will return explicit intent.
+     * else will return implicit intent
+     */
+    private static @Nullable
+    Intent getIntentNoFallback(Context context, String deeplink) {
+        String internalDeeplink = DeeplinkMapper.INSTANCE.getRegisteredNavigation(deeplink);
+        if (!TextUtils.isEmpty(internalDeeplink)) {
+            // Found internal deeplink, redirect
+            return buildInternalExplicitIntent(context, internalDeeplink);
+        }
 
         // Check airbnb first.
         // Temporary solution. will be removed after all airbnb converted to manifest registration.
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(deeplink)) {
             return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, deeplink);
         }
-        Intent intent;
         if (URLUtil.isNetworkUrl(deeplink)) {
-            intent = buildInternalImplicitIntent(context, deeplink);
-        } else {
-            intent = buildInternalExplicitIntent(context, deeplink);
-            if (intent != null) {
-                return intent;
-            } else {
-                intent = buildInternalImplicitIntent(context, deeplink);
-            }
+            return buildInternalImplicitIntent(context, deeplink);
         }
-        // set fallback for implicit intent
-        if (intent.resolveActivity(context.getPackageManager()) == null) {
-            intent.setClassName(context.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
-            intent.setData(Uri.parse(deeplink));
-        }
-        return intent;
+        return buildInternalExplicitIntent(context, deeplink);
     }
 
     /**

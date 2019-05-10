@@ -26,6 +26,8 @@ object ApplinkConstInternalMarketplace {
 
     // ProductDetailActivity
     @JvmField
+    val PRODUCT_ADD_ITEM = "$INTERNAL_MARKETPLACE/product-add-item"
+    @JvmField
     val PRODUCT_CATEGORY_PICKER = "$INTERNAL_MARKETPLACE/product-category-picker/{id}/"
     @JvmField
     val PRODUCT_DETAIL = "$INTERNAL_MARKETPLACE/product-detail/{id}/"

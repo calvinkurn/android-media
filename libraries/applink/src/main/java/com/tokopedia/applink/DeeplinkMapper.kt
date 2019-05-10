@@ -8,7 +8,6 @@ object DeeplinkMapper {
     /**
      * Get registered deeplink navigation in manifest
      */
-    @Deprecated("")
     fun getRegisteredNavigation(deeplink: String): String {
         if (deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true)) {
             return getRegisteredNavigationFromHttp(deeplink)
@@ -39,18 +38,13 @@ object DeeplinkMapper {
      * eg: tokopedia://product/add to tokopedia-android-internal://marketplace/product-add-item
      * If not found, return current deeplink, means it registered
      *
-     * Update:
-     * If possible, do not do any mapping here.
-     * If scheme tokopedia exists,
-     * Just register tokopedia:// into manifest and do not use tokopedia-android-internal://
-     *
-     * For example, "tokopedia://inbox" already exists in Applink Const,
-     * put in manifest of InboxActivity. No need to create internal.
-     * Also remove that @Deeplink("tokopedia://inbox") for airbnb.
+     * Use this only of the tokopedia deeeplink is conflicted with the other tokopedia deeplink
+     * for example: tokopedia://product/{id} conflicts with tokopedia://product/add
      */
     @Deprecated("")
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
         return when (deeplink) {
+            ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             else -> ""
         }
     }
@@ -60,20 +54,11 @@ object DeeplinkMapper {
      * eg: sellerapp://product/add to tokopedia-android-internal://marketplace/product-add-item
      * If not found, return current deeplink, means it registered
      *
-     * Update:
-     * If possible, do not do any mapping here.
-     * If scheme sellerapp exists,
-     * Just register sellerapp:// into manifest and do not use tokopedia-android-internal://
-     *
-     * For example, "sellerapp://product/add" already exists in Applink Const,
-     * put in manifest of ProductAddActivity. No need to create internal.
-     * Also remove that @Deeplink("sellerapp://product/add") for airbnb.
-     *
-     * If the format is different betweek original deeplink and internal deeplink, mapping is okay..
+     * for example: sellerapp://product/{id} conflicts with sellerapp://product/add
      */
-    @Deprecated("")
     private fun getRegisteredNavigationFromSellerapp(deeplink: String): String {
         return when (deeplink) {
+            ApplinkConst.SellerApp.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             else -> ""
         }
     }
