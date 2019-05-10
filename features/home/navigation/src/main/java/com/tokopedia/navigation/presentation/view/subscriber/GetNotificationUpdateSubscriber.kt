@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.view.subscriber
 
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.navigation.data.mapper.GetNotificationUpdateMapper
 import com.tokopedia.navigation.domain.pojo.NotificationCenterDetail
@@ -17,6 +18,7 @@ class GetNotificationUpdateSubscriber(
     }
 
     override fun onError(e: Throwable) {
+        ErrorHandler.getErrorMessage()
         onErrorInitiateData(e)
     }
 
