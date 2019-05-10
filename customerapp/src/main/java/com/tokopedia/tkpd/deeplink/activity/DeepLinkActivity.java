@@ -82,7 +82,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private boolean isNeedToUseToolbarWithOptions;
     private View mainView;
 
-
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_DEEP_LINK;

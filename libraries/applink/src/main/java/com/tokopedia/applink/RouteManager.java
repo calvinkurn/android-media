@@ -125,14 +125,23 @@ public class RouteManager {
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(deeplink)) {
             return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, deeplink);
         }
+        Intent intent;
         if (URLUtil.isNetworkUrl(deeplink)) {
-            return buildInternalImplicitIntent(context, deeplink);
+            intent = buildInternalImplicitIntent(context, deeplink);
+        } else {
+            intent = buildInternalExplicitIntent(context, deeplink);
+            if (intent != null) {
+                return intent;
+            } else {
+                intent = buildInternalImplicitIntent(context, deeplink);
+            }
         }
-        Intent intent = buildInternalExplicitIntent(context, deeplink);
-        if (intent != null) {
-            return intent;
+        // set fallback for implicit intent
+        if (intent.resolveActivity(context.getPackageManager()) == null) {
+            intent.setClassName(context.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
+            intent.setData(Uri.parse(deeplink));
         }
-        return buildInternalImplicitIntent(context, deeplink);
+        return intent;
     }
 
     /**
