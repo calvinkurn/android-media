@@ -1,12 +1,13 @@
-package com.tokopedia.topupbills
+package com.tokopedia.topupbills.telco.model
 
 /**
  * Created by nabillasabbaha on 11/04/19.
  */
-class ProductDigitalModel(
+class DigitalProductTelco(
         val id : String,
         val price : String,
         val priceDiscount : String,
         val description : String,
-        val title : String
+        val title : String,
+        val productSelected: Boolean = false
 )

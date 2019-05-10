@@ -36,7 +36,8 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/ticker_view">
+        android:layout_below="@+id/ticker_view"
+        android:fillViewport="true">
 
         <FrameLayout
             android:id="@+id/fragment_container"

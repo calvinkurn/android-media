@@ -40,6 +40,7 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun setRecentNumbers(recentNumbers: List<DigitalRecentNumber>) {
+        titleWidget.visibility = View.VISIBLE
         titleWidget.setText(context.getString(R.string.title_reccent_transaction_widget))
         digitalRecentNumbersAdapter.setListener(object : DigitalRecentNumbersAdapter.ActionListener {
             override fun onClickRecentNumber(digitalRecentNumber: DigitalRecentNumber, position: Int) {

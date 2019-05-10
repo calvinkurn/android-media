@@ -1,6 +1,8 @@
 package com.tokopedia.topupbills.telco.widget
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import android.widget.AutoCompleteTextView
@@ -45,6 +47,26 @@ open class DigitalBaseClientNumberWidget @JvmOverloads constructor(@NotNull cont
         btnClear.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 autoCompleteInputNumber.setText("")
+                listener.clearAutoComplete()
+            }
+        })
+
+        autoCompleteInputNumber.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (count == 0) {
+                    listener.clearAutoComplete()
+                }
+                if (count > 4) {
+                    listener.renderProductList()
+                }
             }
         })
     }
@@ -64,5 +86,7 @@ open class DigitalBaseClientNumberWidget @JvmOverloads constructor(@NotNull cont
 
     interface ActionListener {
         fun navigateToContact()
+        fun renderProductList()
+        fun clearAutoComplete()
     }
 }

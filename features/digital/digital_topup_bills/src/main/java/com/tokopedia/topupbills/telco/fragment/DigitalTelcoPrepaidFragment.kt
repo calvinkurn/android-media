@@ -5,7 +5,9 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +17,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.covertContactUriToContactData
+import com.tokopedia.topupbills.telco.adapter.DigitalTelcoProductAdapter
 import com.tokopedia.topupbills.telco.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.model.DigitalProductTelcoItem
 import com.tokopedia.topupbills.telco.model.DigitalPromo
 import com.tokopedia.topupbills.telco.model.DigitalRecentNumber
 import com.tokopedia.topupbills.telco.widget.DigitalBaseClientNumberWidget
@@ -32,6 +36,8 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
     private lateinit var telcoClientNumberWidget: DigitalTelcoClientNumberWidget
     private lateinit var recentNumbersView: DigitalRecentTransactionWidget
     private lateinit var promoListView: DigitalPromoListWidget
+    private lateinit var viewPager: ViewPager
+    private lateinit var tabLayout: TabLayout
     private val recentNumbers = mutableListOf<DigitalRecentNumber>()
     private val promoList = mutableListOf<DigitalPromo>()
 
@@ -54,6 +60,8 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         recentNumbersView = view.findViewById(R.id.recent_numbers)
         telcoClientNumberWidget = view.findViewById(R.id.telco_input_number)
         promoListView = view.findViewById(R.id.promo_widget)
+        viewPager = view.findViewById(R.id.product_view_pager)
+        tabLayout = view.findViewById(R.id.tab_layout)
         return view
     }
 
@@ -63,6 +71,7 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         renderInputNumber()
         renderRecentTransactions()
         renderPromoList()
+        renderViewPager()
     }
 
     fun renderInputNumber() {
@@ -89,6 +98,18 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
                 } else {
                     openContactPicker()
                 }
+            }
+
+            override fun renderProductList() {
+                recentNumbersView.visibility = View.GONE
+                promoListView.visibility = View.GONE
+                viewPager.visibility = View.VISIBLE
+            }
+
+            override fun clearAutoComplete() {
+                recentNumbersView.visibility = View.VISIBLE
+                promoListView.visibility = View.VISIBLE
+                viewPager.visibility = View.GONE
             }
         })
     }
@@ -131,6 +152,16 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         promoList.add(DigitalPromo("4", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLULU", false, ""))
         promoList.add(DigitalPromo("5", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLOLO", false, ""))
         promoListView.setPromoList(promoList)
+    }
+
+    fun renderViewPager() {
+        val listProductTab = mutableListOf<DigitalProductTelcoItem>()
+        listProductTab.add(DigitalProductTelcoItem(DigitalTelcoProductFragment.newInstance(), "Pulsa"))
+        listProductTab.add(DigitalProductTelcoItem(DigitalTelcoProductFragment.newInstance(), "Paket Data"))
+        listProductTab.add(DigitalProductTelcoItem(DigitalTelcoProductFragment.newInstance(), "Roaming"))
+        val pagerAdapter = DigitalTelcoProductAdapter(listProductTab, childFragmentManager)
+        viewPager.adapter = pagerAdapter
+        tabLayout.setupWithViewPager(viewPager)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
