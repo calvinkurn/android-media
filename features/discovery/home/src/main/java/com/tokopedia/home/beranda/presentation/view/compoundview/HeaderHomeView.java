@@ -168,8 +168,6 @@ public class HeaderHomeView extends BaseCustomView {
     private OnClickListener onScanListener() {
         return v -> {
             HomePageTracking.eventQrCode(getContext());
-//            getContext().startActivity(((IHomeRouter) getContext().getApplicationContext())
-//                    .gotoQrScannerPage(false));
             RouteManager.route(getContext(), ApplinkConstInternalMarketplace.QR_SCANNEER);
         };
     }

@@ -120,7 +120,6 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
                 adapter.data.indexOf(element).toString(),
                 "no code"
         )
-//        (activity?.applicationContext as IHomeRouter).goToApplinkActivity(activity, element.applink)
         RouteManager.route(context, element.applink)
     }
 
