@@ -15,6 +15,7 @@ import com.tkpd.library.utils.data.model.ListDistricts;
 import com.tkpd.library.utils.data.model.ListProvince;
 import com.tkpd.library.utils.data.model.ListShippingCity;
 import com.tkpd.library.utils.data.model.ListShippingCity.Shipping_city;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
@@ -574,7 +575,7 @@ public class DataManagerImpl implements DataManager {
 
             dataReceiver.getSubscription().add(
                     RetrofitUtils
-                            .createRetrofit(TkpdBaseURL.BASE_DOMAIN)
+                            .createRetrofit(TokopediaUrl.Companion.getInstance().getWEB())
                             .create(AddressApi.class)
                             .getShippingCity(
                                     NetworkCalculator.getContentMd5(networkCalculator),

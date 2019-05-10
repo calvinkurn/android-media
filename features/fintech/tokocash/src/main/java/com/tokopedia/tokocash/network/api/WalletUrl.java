@@ -17,7 +17,6 @@ public interface WalletUrl {
         public static String HMAC_PENDING_CASHBACK = "CPAnAGpC3NIg7ZSj";
     }
 
-
     class Account {
         public static final String PATH_CASH_BACK_DOMAIN = "api/v1/me/cashback/balance";
         public static final String PATH_REQUEST_OTP_WALLET = "api/v1/wallet/otp/request";
