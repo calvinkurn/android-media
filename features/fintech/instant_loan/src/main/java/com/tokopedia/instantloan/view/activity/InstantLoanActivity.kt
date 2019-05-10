@@ -567,7 +567,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
         val PINJAMAN_TITLE = "Pinjaman Online"
         val COLUMN_COUNT_FOR_LOAN_CATEGORY = 4
-        val COLUMN_COUNT_FOR_LOAN_PARTNER = 2
+        val COLUMN_COUNT_FOR_LOAN_PARTNER = 3
         val TAB_NAME = "tab_name"
         private val TAB_INSTAN = "instan"
         private val TAB_TANPA_AGUNAN = "tanpaagunan"

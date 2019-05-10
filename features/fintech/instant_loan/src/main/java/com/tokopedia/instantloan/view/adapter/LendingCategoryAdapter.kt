@@ -38,23 +38,19 @@ class LendingCategoryAdapter(lendingCategoryList: ArrayList<GqlLendingCategoryDa
     class LeCategoryViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
         var imageView: ImageView
         var heading: TextView
-        var subHeading: TextView
         var context: Context
 
         init {
             context = view.context
             imageView = view.findViewById(R.id.category_image_view)
             heading = view.findViewById(R.id.category_heading)
-            subHeading = view.findViewById(R.id.category_subheading)
         }
 
         fun bindData(categoryItem: GqlLendingCategoryData, position: Int) {
             heading.text = categoryItem.categoryName
-            subHeading.text = categoryItem.categoryNameSlug.capitalize()
-            ImageHandler.loadImageWithoutPlaceholder(imageView, categoryItem.categoryIconUrl)
+            ImageHandler.LoadImage(imageView, categoryItem.categoryIconUrl)
             itemView.tag = categoryItem.categoryNameSlug
             itemView.setOnClickListener(this)
-            subHeading.visibility = View.GONE
         }
 
         override fun onClick(view: View?) {

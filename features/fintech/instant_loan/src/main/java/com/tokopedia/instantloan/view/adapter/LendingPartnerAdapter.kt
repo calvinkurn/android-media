@@ -44,7 +44,7 @@ class LendingPartnerAdapter(lendingPartnerList: ArrayList<GqlLendingPartnerData>
         }
 
         fun bindData(partnerItem: GqlLendingPartnerData, position: Int) {
-            ImageHandler.loadImageWithoutPlaceholder(imageView, partnerItem.partnerIconUrl)
+            ImageHandler.LoadImage(imageView, partnerItem.partnerIconUrl)
             itemView.tag = partnerItem.partnerNameSlug
             itemView.setOnClickListener(this)
         }
