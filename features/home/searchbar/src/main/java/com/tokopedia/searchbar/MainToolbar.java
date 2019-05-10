@@ -109,8 +109,6 @@ public class MainToolbar extends Toolbar {
             if (userSession.isLoggedIn()) {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
                 RouteManager.route(context, ApplinkConst.WISHLIST);
-//                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-//                        .gotoWishlistPage(getContext()));
             } else {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
                 RouteManager.route(context, ApplinkConst.LOGIN);
@@ -120,8 +118,6 @@ public class MainToolbar extends Toolbar {
         btnInbox.setOnClickListener(v -> {
             if (userSession.isLoggedIn()) {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
-//                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-//                        .gotoInboxMainPage(getContext()));
                 RouteManager.route(context, ApplinkConst.INBOX);
             } else {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
@@ -132,8 +128,6 @@ public class MainToolbar extends Toolbar {
         editTextSearch.setOnClickListener(v -> {
             searchBarAnalytics.eventTrackingSearchBar();
             RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
-//            getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-//                    .gotoSearchAutoCompletePage(getContext()));
         });
 
         btnNotification.setOnClickListener(v -> {

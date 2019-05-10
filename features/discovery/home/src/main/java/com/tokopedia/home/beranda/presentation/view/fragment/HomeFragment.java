@@ -689,21 +689,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void onGoToLogin() {
-        Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
-        Intent intentHome = RouteManager.getIntent(getContext(), ApplinkConst.HOME);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+        Intent intentHome = RouteManager.getIntent(getActivity(), ApplinkConst.HOME);
         intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         getActivity().startActivities(new Intent[]{intentHome, intent});
         getActivity().finish();
     }
 
     private void onGoToCreateShop() {
-        Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.CREATE_SHOP);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.CREATE_SHOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
 
     private void onGoToShop(String shopId) {
-        Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.SHOP);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP);
         intent.putExtra(EXTRA_SHOP_ID, shopId);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
@@ -735,10 +735,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void goToOvo(String appLinkScheme){
         Intent intent = appLinkScheme == null || appLinkScheme.isEmpty() ?
-                RouteManager.getIntent(getContext(), ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme)
-                : RouteManager.isSupportApplink(getContext(), appLinkScheme)
-                ? RouteManager.getIntent(getContext(), appLinkScheme).setData(Uri.parse(appLinkScheme))
-                : RouteManager.getIntent(getContext(), ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme);
+                RouteManager.getIntent(getActivity(), ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme)
+                : RouteManager.isSupportApplink(getActivity(), appLinkScheme)
+                ? RouteManager.getIntent(getActivity(), appLinkScheme).setData(Uri.parse(appLinkScheme))
+                : RouteManager.getIntent(getActivity(), ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme);
         startActivityForResult(intent, IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE);
     }
 
@@ -786,7 +786,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
         }
 
-        AnalyticsTrackerUtil.sendEvent(getContext(),
+        AnalyticsTrackerUtil.sendEvent(getActivity(),
                 AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                 AnalyticsTrackerUtil.CategoryKeys.HOMEPAGE,
                 AnalyticsTrackerUtil.ActionKeys.CLICK_POINT,
@@ -795,10 +795,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onPromoClick(int position, BannerSlidesModel slidesModel, String attribution) {
-        if (getActivity() != null && RouteManager.isSupportApplink(getContext(), slidesModel.getApplink())) {
+        if (getActivity() != null && RouteManager.isSupportApplink(getActivity(), slidesModel.getApplink())) {
             openApplink(slidesModel.getApplink(), attribution);
         } else {
-            openWebViewURL(slidesModel.getRedirectUrl(), getContext());
+            openWebViewURL(slidesModel.getRedirectUrl(), getActivity());
         }
         presenter.onBannerClicked(slidesModel);
     }
@@ -827,7 +827,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void showBannerWebViewOnAllPromoClickFromHomeIntent(String url, String title){
-        Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.PROMO);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PROMO);
         intent.putExtra(BannerWebView.EXTRA_URL, url);
         intent.putExtra(BannerWebView.EXTRA_TITLE, title);
         startActivity(intent);
@@ -1002,16 +1002,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
 
         if (getActivity() != null
-                && RouteManager.isSupportApplink(getContext(), actionLink)) {
+                && RouteManager.isSupportApplink(getActivity(), actionLink)) {
             openApplink(actionLink, trackingAttribution);
         } else {
-            openWebViewURL(actionLink, getContext());
+            openWebViewURL(actionLink, getActivity());
         }
     }
 
     private void openApplink(String applink) {
         if (!TextUtils.isEmpty(applink)) {
-            Intent intent = RouteManager.getIntent(getContext(), applink);
+            Intent intent = RouteManager.getIntent(getActivity(), applink);
             startActivity(intent);
         }
     }
@@ -1019,7 +1019,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void openApplink(String applink, String trackingAttribution) {
         if (!TextUtils.isEmpty(applink)) {
             applink = appendTrackerAttributionIfNeeded(applink, trackingAttribution);
-            RouteManager.route(getContext(), applink);
+            RouteManager.route(getActivity(), applink);
         }
     }
 
@@ -1221,7 +1221,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            String data = extras.getString(getContext().getString(R.string.broadcast_wallet));
+            String data = extras.getString(getActivity().getString(R.string.broadcast_wallet));
             if (data != null && !data.isEmpty())
                 presenter.getHeaderData(false); // update header data
         }
@@ -1231,7 +1231,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void startShopInfo(String shopId) {
         if (getActivity() != null
                 && getActivity().getApplication() != null) {
-            RouteManager.route(getContext(), ApplinkConst.SHOP, shopId);
+            RouteManager.route(getActivity(), ApplinkConst.SHOP, shopId);
         }
     }
 
@@ -1376,8 +1376,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private Intent getProductIntent(String productId) {
-        if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        if (getActivity() != null) {
+            return RouteManager.getIntent(getActivity(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }
@@ -1402,10 +1402,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
 
         if (getActivity() != null
-                && RouteManager.isSupportApplink(getContext(), applink)) {
+                && RouteManager.isSupportApplink(getActivity(), applink)) {
             openApplink(applink);
         } else {
-            openWebViewURL(applink, getContext());
+            openWebViewURL(applink, getActivity());
         }
     }
 }
