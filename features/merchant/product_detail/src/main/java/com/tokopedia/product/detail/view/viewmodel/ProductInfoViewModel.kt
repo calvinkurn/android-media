@@ -513,7 +513,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             const val KEY_XSOURCE = "xSource"
             const val KEY_PAGE_NUMBER = "pageNumber"
             const val DEFAULT_PAGE_NUMBER = 1
-            const val DEFAULT_PAGE_NAME = "default"
+            const val DEFAULT_PAGE_NAME = "pdp"
         }
 
         private object ParamAffiliate {
