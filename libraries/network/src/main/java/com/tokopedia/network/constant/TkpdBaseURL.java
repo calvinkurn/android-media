@@ -33,7 +33,6 @@ public class TkpdBaseURL {
     public static String CHAT_DOMAIN = "https://chat.tokopedia.com";
     public static String CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com";
     public static String GROUP_CHAT_WEBSOCKET_DOMAIN = "wss://groupchat.tokopedia.com";
-    public static String CHAT_REPORT_URL = "https://m.tokopedia.com/chat/report/";
     public static String JS_DOMAIN = "https://js.tokopedia.com/";
     public static String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";
     public static String JS_ALPHA_DOMAIN = "https://ajax-alpha.tokopedia.com/js/";
@@ -45,6 +44,7 @@ public class TkpdBaseURL {
     public static String GOLD_MERCHANT_STAGING_DOMAIN = "http://goldmerchant-staging.tokopedia.com";
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
+    public static String CHAT_REPORT_URL = MOBILE_DOMAIN + "chat/report/";
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
