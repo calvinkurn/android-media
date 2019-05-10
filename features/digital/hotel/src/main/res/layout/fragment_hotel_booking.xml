@@ -15,19 +15,19 @@
             android:orientation="vertical">
 
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/room_booking_hotel_detail"
+                android:id="@+id/hotel_detail_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:padding="@dimen/dp_16">
 
                 <LinearLayout
-                    android:id="@+id/room_booking_hotel_info"
+                    android:id="@+id/hotel_info_container"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="16dp"
                     android:orientation="vertical"
-                    app:layout_constraintEnd_toStartOf="@id/roundedCornerImageView"
+                    app:layout_constraintEnd_toStartOf="@id/hotel_image"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -77,7 +77,7 @@
                 </LinearLayout>
 
                 <com.tokopedia.design.image.RoundedCornerImageView
-                    android:id="@+id/roundedCornerImageView"
+                    android:id="@+id/hotel_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -96,6 +96,59 @@
                 android:id="@+id/room_booking_duration_info"
                 layout="@layout/widget_hotel_room_duration"
                 android:visibility="visible" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:src="@drawable/bg_dash_stroke_hotel"/>
+
+            <LinearLayout
+                android:id="@+id/room_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_24"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_24">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/room_info_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:textStyle="bold"
+                    app:fontSize="title"
+                    app:textViewTheme="lightPrimary"
+                    tools:text="Kamar Deluxe Double" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/room_info_pay_at_hotel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    tools:text="Bayar di Hotel (Perlu Jaminan Kartu Kredit)" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/room_info_occupancy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    tools:text="2 Kamar • 2 Tamu" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/room_info_breakfast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    tools:text="Sarapan Gratis" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:src="@drawable/bg_dash_stroke_hotel"/>
 
         </LinearLayout>
     </ScrollView>
