@@ -142,6 +142,7 @@ public class ShipmentMapper implements IShipmentMapper {
                         voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
                         voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
                         voucherOrdersItemData.setTitleDescription(voucherOrdersItem.getTitleDescription());
+                        voucherOrdersItemData.setIsAutoapply(true);
                         voucherOrdersItemDataList.add(voucherOrdersItemData);
                     }
                     autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
@@ -287,6 +288,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                         voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
                                         voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
                                         voucherOrdersItemData.setTitleDescription(voucherOrdersItem.getTitleDescription());
+                                        voucherOrdersItemData.setIsAutoapply(true);
                                         shopResult.setVoucherOrdersItemData(voucherOrdersItemData);
                                     }
                                 }
