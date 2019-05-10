@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
-import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardViewFixedHeight
+import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel
 import com.tokopedia.topads.sdk.domain.model.Category
@@ -26,11 +26,12 @@ class RecommendationProductAdapter(private var product: RecommendationModel) : R
         holder.bind(product.recommendationItemList[position])
     }
 
-    class RecommendationProductViewHolder(itemView: View) : RecommendationCardViewFixedHeight.TrackingListener, RecyclerView.ViewHolder(itemView) {
+    class RecommendationProductViewHolder(itemView: View) : RecommendationCardView.TrackingListener, RecyclerView.ViewHolder(itemView) {
         private val productDetailTracking = ProductDetailTracking()
-        private val recommendationCardView: RecommendationCardViewFixedHeight? = itemView.findViewById(R.id.productCardView)
+        private val recommendationCardView: RecommendationCardView? = itemView.findViewById(R.id.productCardView)
 
         fun bind(product: RecommendationItem) {
+            recommendationCardView?.setFixedHeight(true)
             recommendationCardView?.setRecommendationModel(product, this)
             recommendationCardView?.setWishlistButtonVisible(false)
         }

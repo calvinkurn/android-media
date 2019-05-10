@@ -22,6 +22,10 @@ class RecommendationCardView : ProductCardView {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
+    fun setFixedHeight(fixedHeight:Boolean) {
+        this.fixedHeight = fixedHeight
+    }
+
     fun setRecommendationModel(item: RecommendationItem, trackingListener: TrackingListener) {
         setTitle(item.name)
         setPrice(item.price)

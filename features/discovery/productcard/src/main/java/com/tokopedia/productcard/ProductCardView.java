@@ -28,6 +28,7 @@ public class ProductCardView extends BaseCustomView {
     protected ImageView ratingView;
     protected TextView reviewCountView;
     protected int layout;
+    protected boolean fixedHeight;
 
     public ProductCardView(@NonNull Context context) {
         super(context);
@@ -42,6 +43,10 @@ public class ProductCardView extends BaseCustomView {
     public ProductCardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
+    }
+
+    public void setFixedHeight(boolean fixedHeight) {
+        this.fixedHeight = fixedHeight;
     }
 
     protected void init() {
@@ -66,19 +71,20 @@ public class ProductCardView extends BaseCustomView {
         ratingReviewContainer.setVisibility(View.INVISIBLE);
     }
 
-    public void setViewPdpRecommendation(){
-        textName.setMinLines(2);
-    }
-
     public void setDiscount(int discount) {
         if (discount > 0) {
             String discountText = Integer.toString(discount) + "%";
             textDiscount.setText(discountText);
-            textDiscount.setVisibility(VISIBLE);
-            textSlashedPrice.setVisibility(VISIBLE);
+            textDiscount.setVisibility(View.VISIBLE);
+            textSlashedPrice.setVisibility(View.VISIBLE);
         } else {
-            textDiscount.setVisibility(GONE);
-            textSlashedPrice.setVisibility(GONE);
+            if(fixedHeight) {
+                textDiscount.setVisibility(View.INVISIBLE);
+                textSlashedPrice.setVisibility(View.INVISIBLE);
+            } else {
+                extDiscount.setVisibility(View.VISIBLE);
+                textSlashedPrice.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -111,7 +117,11 @@ public class ProductCardView extends BaseCustomView {
             ratingView.setImageResource(getRatingDrawable(rating));
             reviewCountView.setText("(" + Integer.toString(reviewCount) + ")");
         } else {
-            ratingReviewContainer.setVisibility(View.GONE);
+            if(fixedHeight) {
+                ratingReviewContainer.setVisibility(View.INVISIBLE);
+            } else {
+                ratingReviewContainer.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -139,7 +149,11 @@ public class ProductCardView extends BaseCustomView {
     }
 
     protected int getLayout() {
-        return R.layout.product_card_layout;
+        if(fixedHeight) {
+            return R.layout.product_card_layout_fixed_height;
+        } else {
+            return R.layout.product_card_layout_;
+        }
     }
 
     public void setLayout(int layout) {
