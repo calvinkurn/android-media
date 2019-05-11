@@ -308,6 +308,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             statusBarBackground.setVisibility(View.GONE);
         }
 
+        initEggDragListener();
+
         presenter.attachView(this);
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
         return view;
@@ -404,6 +406,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void loadEggData() {
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+
         if (floatingEggButtonFragment != null) {
             floatingEggButtonFragment.loadEggData();
         }
@@ -1287,6 +1290,23 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         );
         if (feedViewHolder instanceof HomeRecommendationFeedViewHolder) {
             ((HomeRecommendationFeedViewHolder) feedViewHolder).showFeedTabShadow(show);
+        }
+    }
+
+    private void initEggDragListener() {
+        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+        if (floatingEggButtonFragment != null) {
+            floatingEggButtonFragment.setOnDragListener(new FloatingEggButtonFragment.OnDragListener() {
+                @Override
+                public void onDragStart() {
+                    refreshLayout.setCanChildScrollUp(true);
+                }
+
+                @Override
+                public void onDragEnd() {
+                    refreshLayout.setCanChildScrollUp(false);
+                }
+            });
         }
     }
 

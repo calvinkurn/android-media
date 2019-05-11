@@ -31,15 +31,6 @@
             app:floating_left_icon="@drawable/ic_drop_down_arrow"
             app:floating_title="@string/cek_recomendasi" />
 
-        <fragment
-            android:id="@+id/floating_egg_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:name="com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment"
-            android:tag="floating_egg"
-            app:draggable="true"
-            app:margin_bottom="@dimen/new_margin_sm"/>
-
         <com.tokopedia.searchbar.HomeMainToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -57,6 +48,15 @@
             android:background="@color/green_600"
             android:layout_width="match_parent"
             android:layout_height="25dp"/>
+
+        <fragment
+            android:id="@+id/floating_egg_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment"
+            android:tag="floating_egg"
+            app:draggable="true"
+            app:margin_bottom="@dimen/new_margin_sm"/>
 
     </FrameLayout>
 
