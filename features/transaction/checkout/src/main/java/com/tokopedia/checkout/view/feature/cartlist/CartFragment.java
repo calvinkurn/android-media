@@ -1,8 +1,6 @@
 package com.tokopedia.checkout.view.feature.cartlist;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.IntentService;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -210,6 +208,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (savedInstanceState != null && saveInstanceCacheManager != null) {
             cartListData = saveInstanceCacheManager.get(CartListData.class.getSimpleName(), CartListData.class);
         }
+
+        dPresenter.attachView(this);
     }
 
     @Override
@@ -235,6 +235,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onDestroy() {
         cartAdapter.unsubscribeSubscription();
+        dPresenter.detachView();
         super.onDestroy();
     }
 
@@ -581,11 +582,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onCartItemQuantityFormEdited(int position, int parentPosition, boolean needRefreshItemView) {
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
-    }
-
-    @Override
     public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         sendAnalyticsOnClickProductNameCartItem(cartItemHolderData.getCartItemData().getOriginData().getProductName());
         navigateToActivity(getProductIntent(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
@@ -646,11 +642,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         data.setVisible(false);
         cartAdapter.notifyItemChanged(position);
         cartAdapter.checkForShipmentForm();
-    }
-
-    @Override
-    public void onCartItemListIsEmpty(int shopPosition) {
-        renderEmptyCartData(null);
     }
 
     @Override
@@ -856,11 +847,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onQuantityChanged() {
-
-    }
-
-    @Override
     public boolean onCartItemCheckChanged(int position, int parentPosition, boolean checked) {
         dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
         dPresenter.setHasPerformChecklistChange();
@@ -926,27 +912,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void showDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void dismissDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
-
-    }
-
-    @Override
-    public String getStringFromResource(int resId) {
-        return null;
-    }
-
-
-    @Override
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams
     ) {
@@ -960,11 +925,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 userSession.getUserId(),
                 userSession.getDeviceId()
         );
-    }
-
-    @Override
-    public void closeView() {
-
     }
 
     @Override
@@ -1142,55 +1102,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void renderErrorHttpInitialGetCartListData(String message) {
-        if (cartAdapter.getItemCount() > 0) {
-            showSnackbarRetry(message);
-        } else {
-            showErrorLayout(message);
-        }
-    }
-
-    @Override
-    public void renderErrorNoConnectionInitialGetCartListData(String message) {
-        if (cartAdapter.getItemCount() > 0) {
-            showSnackbarRetry(message);
-        } else {
-            showErrorLayout(message);
-        }
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionInitialGetCartListData(String message) {
-        if (cartAdapter.getItemCount() > 0) {
-            showSnackbarRetry(message);
-        } else {
-            showErrorLayout(message);
-        }
-    }
-
-    @Override
     public void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList) {
 
-    }
-
-    @Override
-    public void renderErrorActionDeleteCartData(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorHttpActionDeleteCartData(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionActionDeleteCartData(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionActionDeleteCartData(String message) {
-        showToastMessageRed(message);
     }
 
     @Override
@@ -1276,41 +1189,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void renderErrorHttpToShipmentForm(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionToShipmentForm(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionToShipmentForm(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorToShipmentMultipleAddress(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorHttpToShipmentMultipleAddress(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionToShipmentMultipleAddress(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
     public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
         PromoStackingData promoStackingData = new PromoStackingData.Builder()
                 .typePromo(PromoStackingData.CREATOR.getTYPE_VOUCHER())
@@ -1334,26 +1212,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 .title(responseFirstStep.getData().getTitleDescription())
                 .build();
         cartAdapter.updateItemPromoStackVoucher(promoStackingData);
-    }
-
-    @Override
-    public void renderErrorCheckPromoCodeFromSuggestedPromo(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorHttpCheckPromoCodeFromSuggestedPromo(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionCheckPromoCodeFromSuggestedPromo(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionCheckPromoCodeFromSuggestedPromo(String message) {
-        showToastMessageRed(message);
     }
 
     @Override
