@@ -155,8 +155,6 @@ public class RouteManager {
             // Found internal deeplink, redirect
             return buildInternalExplicitIntent(context, internalDeeplink);
         }
-        // Check airbnb first.
-        // Temporary solution. will be removed after all airbnb converted to manifest registration.
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(deeplink)) {
             return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, deeplink);
         }
@@ -169,7 +167,7 @@ public class RouteManager {
     /**
      * return true if applink is supported, either by airbnb or registered in manifest
      * <p>
-     * http:// and https:// will always return true (because it will open webview)
+     * http:// and https:// will always return true (will open webview)
      * tokopedia://wrongpath will return false.
      * <p>
      */
