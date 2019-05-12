@@ -1,47 +1,41 @@
 package com.tokopedia.applink
 
 import android.net.Uri
+import com.tokopedia.applink.DeepLinkChecker.BLOG
+import com.tokopedia.applink.DeepLinkChecker.BROWSE
+import com.tokopedia.applink.DeepLinkChecker.CATALOG
+import com.tokopedia.applink.DeepLinkChecker.CATEGORY
+import com.tokopedia.applink.DeepLinkChecker.CONTENT
+import com.tokopedia.applink.DeepLinkChecker.DISCOVERY_PAGE
+import com.tokopedia.applink.DeepLinkChecker.ETALASE
+import com.tokopedia.applink.DeepLinkChecker.FLIGHT
+import com.tokopedia.applink.DeepLinkChecker.GROUPCHAT
+import com.tokopedia.applink.DeepLinkChecker.HOT
+import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
+import com.tokopedia.applink.DeepLinkChecker.INVOICE
+import com.tokopedia.applink.DeepLinkChecker.OTHER
+import com.tokopedia.applink.DeepLinkChecker.PELUANG
+import com.tokopedia.applink.DeepLinkChecker.PLAY
+import com.tokopedia.applink.DeepLinkChecker.PRODUCT
+import com.tokopedia.applink.DeepLinkChecker.PROFILE
+import com.tokopedia.applink.DeepLinkChecker.PROMO
+import com.tokopedia.applink.DeepLinkChecker.RECHARGE
+import com.tokopedia.applink.DeepLinkChecker.REFERRAL
+import com.tokopedia.applink.DeepLinkChecker.SALE
+import com.tokopedia.applink.DeepLinkChecker.SHOP
+import com.tokopedia.applink.DeepLinkChecker.SMCREFERRAL
+import com.tokopedia.applink.DeepLinkChecker.TOKOPOINT
+import com.tokopedia.applink.DeepLinkChecker.TOPPICKS
+import com.tokopedia.applink.DeepLinkChecker.WALLET_OVO
 
 class DeeplinkMatcher() {
     private val EQ = true
     private val GT = false
 
-    private val matcherList = mutableListOf<Pair<Pattern, Int>>()
-
-    companion object {
-        val OTHER = -1
-        val BROWSE = 0
-        val HOT = 1
-        val CATALOG = 2
-        val PRODUCT = 3
-        val SHOP = 4
-        val TOPPICKS = 5
-        val HOT_LIST = 6
-        val CATEGORY = 7
-        val HOME = 8
-        val PROMO = 9
-        val ETALASE = 10
-        val APPLINK = 11
-        val INVOICE = 12
-        val ACCOUNTS = 13
-        val RECHARGE = 14
-        val BLOG = 15
-        val PELUANG = 16
-        val DISCOVERY_PAGE = 17
-        val FLIGHT = 18
-        val REFERRAL = 19
-        val TOKOPOINT = 20
-        val GROUPCHAT = 21
-        val SALE = 22
-        val WALLET_OVO = 23
-        val PLAY = 24
-        val PROFILE = 25
-        val CONTENT = 26
-        val SMCREFERRAL = 27
-    }
+    var matcherList: List<Pair<Pattern, Int>>
 
     init {
-        matcherList.apply {
+        matcherList = mutableListOf<Pair<Pattern, Int>>().apply {
             add(Pattern(GT, 0, mapOf(0 to "play")) to PLAY)
             add(Pattern(GT, 0, mapOf(0 to "groupchat")) to GROUPCHAT)
             add(Pattern(GT, 0, mapOf(0 to "flight")) to FLIGHT)
@@ -86,7 +80,7 @@ class DeeplinkMatcher() {
         val linkSegmentSize = linkSegment.size
         for ((matcherPattern, result) in matcherList) {
             if (
-                ! if (matcherPattern.isSegmentSizeEqual) {
+                !if (matcherPattern.isSegmentSizeEqual) {
                     linkSegmentSize == matcherPattern.segmentSize
                 } else {
                     linkSegmentSize > matcherPattern.segmentSize

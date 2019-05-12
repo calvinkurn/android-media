@@ -16,10 +16,10 @@ import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
@@ -39,7 +39,6 @@ import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
@@ -53,15 +52,13 @@ import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
-import com.tokopedia.tkpd.deeplink.WhitelistItem;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.di.component.DaggerDeeplinkComponent;
 import com.tokopedia.tkpd.deeplink.di.component.DeeplinkComponent;
-import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
-import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpd.utils.ProductNotFoundException;
+import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.track.TrackApp;
 
@@ -116,7 +113,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Override
     public void checkUriLogin(Uri uriData) {
-        if (DeepLinkChecker.getDeepLinkType(uriData.toString()) == DeepLinkChecker.ACCOUNTS && uriData.getPath().contains("activation")) {
+        if (DeepLinkChecker.getDeepLinkType(context, uriData.toString()) == DeepLinkChecker.ACCOUNTS && uriData.getPath().contains("activation")) {
             if (!SessionHandler.isV4Login(context)) {
                 login(uriData);
             }
@@ -142,7 +139,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         } else {
             List<String> linkSegment = uriData.getPathSegments();
             String screenName;
-            int type = DeepLinkChecker.getDeepLinkType(uriData.toString());
+            int type = DeepLinkChecker.getDeepLinkType(context, uriData.toString());
             CommonUtils.dumper("FCM wvlogin deeplink type " + type);
             switch (type) {
                 case DeepLinkChecker.HOME:
@@ -360,12 +357,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openSmcReferralPage(List<String> linkSegment, Uri uriData) {
         if (linkSegment != null && linkSegment.size() > 0) {
-            String url=ApplinkConst.SMC_REFERRAL+"?url="+uriData.toString();
-            Intent intent=RouteManager.getIntent(context, url);
+            String url = ApplinkConst.SMC_REFERRAL + "?url=" + uriData.toString();
+            Intent intent = RouteManager.getIntent(context, url);
             viewListener.goToPage(intent);
         }
     }
-    
+
     private void login(Uri uriData) {
         interactor.handleAccounts(parseUriData(uriData), new SignInInteractor.SignInListener() {
             @Override
@@ -579,11 +576,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDiscoveryPage(String url) {
+        String pageId;
+        if (DeepLinkChecker.getDeepLinkType(context, url) != DeepLinkChecker.DISCOVERY_PAGE) {
+            pageId = "";
+        } else {
+            Uri uriData = Uri.parse(url);
+            List<String> linkSegment = uriData.getPathSegments();
+            pageId = linkSegment.get(1);
+        }
         context.startActivity(ReactNativeDiscoveryActivity.createCallingIntent(
                 context,
                 ReactConst.Screen.DISCOVERY_PAGE,
                 "",
-                DeepLinkChecker.getDiscoveryPageId(url))
+                pageId)
         );
     }
 
@@ -603,8 +608,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     uriData
             );
         } else {
-            RouteManager.route(context,ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
-                            urlParser.getDepIDfromURI(context));
+            RouteManager.route(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
+                    urlParser.getDepIDfromURI(context));
         }
         context.finish();
     }

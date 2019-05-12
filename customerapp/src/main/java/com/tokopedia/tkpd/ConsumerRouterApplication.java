@@ -92,9 +92,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
-import com.tokopedia.product.detail.ProductDetailRouter;
-import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
@@ -127,7 +124,6 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -158,6 +154,7 @@ import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.discovery.DiscoveryRouter;
+import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
@@ -222,7 +219,6 @@ import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.model.Configuration;
 import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.kyc.KYCRouter;
@@ -303,6 +299,7 @@ import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
+import com.tokopedia.product.detail.ProductDetailRouter;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.view.activity.ProfileActivity;
@@ -310,6 +307,7 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity;
 import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity;
 import com.tokopedia.recentview.RecentViewInternalRouter;
@@ -328,11 +326,8 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
-import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
-import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
@@ -361,9 +356,6 @@ import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
-import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
-import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
-import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.drawer.NoOpDrawerHelper;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.flight.FlightGetProfileInfoData;
@@ -447,7 +439,6 @@ import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -1726,23 +1717,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
-    }
-
-    @Override
-    public String applink(Activity activity, String deeplink) {
-        DeeplinkRepository deeplinkRepository = new DeeplinkRepositoryImpl(this, new GlobalCacheManager());
-        MapUrlUseCase mapUrlUseCase = new MapUrlUseCase(deeplinkRepository);
-        Uri uri = Uri.parse(deeplink);
-        final List<String> linkSegments = uri.getPathSegments();
-        StringBuilder finalSegments = new StringBuilder();
-        for (int i = 0; i < linkSegments.size(); i++) {
-            if (i != linkSegments.size() - 1) {
-                finalSegments.append(linkSegments.get(i)).append("/");
-            } else {
-                finalSegments.append(linkSegments.get(i));
-            }
-        }
-        return mapUrlUseCase.getData(mapUrlUseCase.setRequestParam(finalSegments.toString())).applink;
     }
 
     public Intent getKolFollowingPageIntent(Context context, int userId) {

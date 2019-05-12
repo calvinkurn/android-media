@@ -27,7 +27,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -47,9 +46,6 @@ import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
-import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
-import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
@@ -92,19 +88,15 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         presenter.sendAuthenticatedEvent(uriData, getScreenName());
     }
 
-    private void checkUrlMapToApplink(){
+    private void checkUrlMapToApplink() {
         String applink = DeeplinkMapper.getRegisteredNavigation(uriData.toString());
-        if (TextUtils.isEmpty(applink)) {
-            initDeepLink();
+        if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(this, applink)) {
+            String screenName = AppScreen.SCREEN_NATIVE_RECHARGE;
+            presenter.sendCampaignGTM(this, applink, screenName);
+            RouteManager.route(this, applink);
+            finish();
         } else {
-            if (RouteManager.isSupportApplink(this, applink)) {
-                String screenName = AppScreen.SCREEN_NATIVE_RECHARGE;
-                presenter.sendCampaignGTM(this, applink, screenName);
-                RouteManager.route(this, applink);
-                finish();
-            } else {
-                initDeepLink();
-            }
+            initDeepLink();
         }
     }
 
@@ -120,7 +112,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     protected void initialPresenter() {
-        DeeplinkRepository deeplinkRepository = new DeeplinkRepositoryImpl(this, new GlobalCacheManager());
         presenter = new DeepLinkPresenterImpl(this);
     }
 

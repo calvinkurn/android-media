@@ -15,6 +15,7 @@ object DeeplinkMapper {
 
     /**
      * Get registered deeplink navigation in manifest
+     * In conventional term, convert deeplink (http or tokopedia) to applink (tokopedia:// or tokopedia-android-internal://)
      */
     @JvmStatic
     fun getRegisteredNavigation(deeplink: String): String {

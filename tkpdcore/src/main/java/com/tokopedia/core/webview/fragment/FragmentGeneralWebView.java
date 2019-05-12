@@ -30,6 +30,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.DeeplinkMapper;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -329,17 +331,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         }
     }
 
-    private void openDigitalPage(String applink) {
-        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            if (((IDigitalModuleRouter) getActivity().getApplication())
-                    .isSupportedDelegateDeepLink(applink)) {
-                Bundle bundle = new Bundle();
-                ((IDigitalModuleRouter) getActivity().getApplication()).actionNavigateByApplinksUrl(getActivity(),
-                        applink, bundle);
-            }
-        }
-    }
-
     @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
@@ -551,12 +542,10 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                             .getApplinkUnsupported(getActivity())
                             .showAndCheckApplinkUnsupported();
                 }
-            } else if (getActivity() != null &&
-                    getActivity().getApplication() instanceof TkpdCoreRouter) {
-                String applink = ((TkpdCoreRouter) getActivity().getApplication())
-                        .applink(getActivity(), url);
-                if (!TextUtils.isEmpty(applink)) {
-                    openDigitalPage(applink);
+            } else {
+                String applink = DeeplinkMapper.getRegisteredNavigation(url);
+                if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(getActivity(), applink)) {
+                    RouteManager.route(getActivity(), applink);
                     return true;
                 }
             }
