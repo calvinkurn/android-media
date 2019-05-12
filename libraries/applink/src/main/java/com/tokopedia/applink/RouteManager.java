@@ -26,6 +26,8 @@ import java.util.Set;
 
 public class RouteManager {
 
+    public static final String EXTRA_APPLINK_UNSUPPORTED = "EXTRA_APPLINK_UNSUPPORTED";
+
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
      */
@@ -138,6 +140,7 @@ public class RouteManager {
             intent = new Intent();
             intent.setClassName(context.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
             intent.setData(Uri.parse(deeplink));
+            intent.putExtra(EXTRA_APPLINK_UNSUPPORTED, true);
         }
         return intent;
     }
@@ -148,12 +151,12 @@ public class RouteManager {
      *
      * See getIntent
      */
-    private static @Nullable
+    public static @Nullable
     Intent getIntentNoFallback(Context context, String deeplink) {
-        String internalDeeplink = DeeplinkMapper.INSTANCE.getRegisteredNavigation(deeplink);
-        if (!TextUtils.isEmpty(internalDeeplink)) {
+        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(deeplink);
+        if (!TextUtils.isEmpty(mappedDeeplink)) {
             // Found internal deeplink, redirect
-            return buildInternalExplicitIntent(context, internalDeeplink);
+            return buildInternalExplicitIntent(context, mappedDeeplink);
         }
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(deeplink)) {
             return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, deeplink);

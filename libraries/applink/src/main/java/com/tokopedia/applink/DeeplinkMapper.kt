@@ -8,6 +8,7 @@ object DeeplinkMapper {
     /**
      * Get registered deeplink navigation in manifest
      */
+    @JvmStatic
     fun getRegisteredNavigation(deeplink: String): String {
         if (deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true)) {
             return getRegisteredNavigationFromHttp(deeplink)
