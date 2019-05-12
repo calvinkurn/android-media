@@ -108,8 +108,19 @@ public class RouteManager {
             return;
         }
         String uriString = UriUtil.buildUri(applinkPattern, parameter);
-        Intent intent = getIntentNoFallback(context, uriString);
-        if (intent != null) {
+        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(uriString);
+        Intent intent;
+        if (!TextUtils.isEmpty(mappedDeeplink)) {
+            intent = buildInternalExplicitIntent(context, mappedDeeplink);
+        } else if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(uriString)) {
+            ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, uriString);
+            return;
+        } else if (URLUtil.isNetworkUrl(uriString)) {
+            intent = buildInternalImplicitIntent(context, uriString);
+        } else {
+            intent = buildInternalExplicitIntent(context, uriString);
+        }
+        if (intent != null && intent.resolveActivity(context.getPackageManager()) != null) {
             context.startActivity(intent);
         }
     }
@@ -123,13 +134,32 @@ public class RouteManager {
             return;
         }
         String uriString = UriUtil.buildUri(applinkPattern, parameter);
-        context.startActivity(getIntent(context, uriString));
+        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(uriString);
+        Intent intent;
+        if (!TextUtils.isEmpty(mappedDeeplink)) {
+            intent = buildInternalExplicitIntent(context, mappedDeeplink);
+        } else if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(uriString)) {
+            ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, uriString);
+            return;
+        } else if (URLUtil.isNetworkUrl(uriString)) {
+            intent = buildInternalImplicitIntent(context, uriString);
+        } else {
+            intent = buildInternalExplicitIntent(context, uriString);
+        }
+        if (intent == null || intent.resolveActivity(context.getPackageManager()) == null) {
+            intent = new Intent();
+            intent.setClassName(context.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
+            intent.setData(Uri.parse(uriString));
+            intent.putExtra(EXTRA_APPLINK_UNSUPPORTED, true);
+        } else {
+            context.startActivity(intent);
+        }
     }
 
     /**
      * return the intent for the given deeplink
      * If no activity found will return to home
-     *
+     * <p>
      * See getIntentNoFallback if want to return null when no activity is found.
      */
     public static Intent getIntent(Context context, String deeplinkPattern, String... parameter) {
@@ -148,7 +178,7 @@ public class RouteManager {
     /**
      * return the intent for the deeplink
      * If no activity found will return null
-     *
+     * <p>
      * See getIntent
      */
     public static @Nullable

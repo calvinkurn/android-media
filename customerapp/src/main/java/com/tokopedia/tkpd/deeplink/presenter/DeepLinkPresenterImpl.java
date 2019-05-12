@@ -22,6 +22,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
+import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -62,11 +63,13 @@ import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.track.TrackApp;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -95,7 +98,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private final Activity context;
     private final DeepLinkView viewListener;
     private SignInInteractor interactor;
-    private MapUrlUseCase mapUrlUseCase;
 
     @Inject
     GetShopInfoByDomainUseCase getShopInfoUseCase;
@@ -104,53 +106,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     @Named("productUseCase")
     GraphqlUseCase<ProductInfo.Response> getProductUseCase;
 
-    public DeepLinkPresenterImpl(DeepLinkActivity activity, MapUrlUseCase mapUrlUseCase) {
+    public DeepLinkPresenterImpl(DeepLinkActivity activity) {
         this.viewListener = activity;
         this.context = activity;
         this.interactor = SignInInteractorImpl.createInstance(activity);
-        this.mapUrlUseCase = mapUrlUseCase;
 
         initInjection(activity);
-    }
-
-    @Override
-    public boolean isLandingPageWebView(Uri uri) {
-        int type = DeepLinkChecker.getDeepLinkType(uri.toString());
-        switch (type) {
-            case DeepLinkChecker.HOME:
-                return false;
-            case DeepLinkChecker.CATEGORY:
-                return false;
-            case DeepLinkChecker.BROWSE:
-                return false;
-            case DeepLinkChecker.HOT:
-            case DeepLinkChecker.HOT_LIST:
-                return false;
-            case DeepLinkChecker.CATALOG:
-                return false;
-            case DeepLinkChecker.DISCOVERY_PAGE:
-                return false;
-            case DeepLinkChecker.FLIGHT:
-                return false;
-            case DeepLinkChecker.PRODUCT:
-                return false;
-            case DeepLinkChecker.SHOP:
-                return false;
-            case DeepLinkChecker.ACCOUNTS:
-                return true;
-            case DeepLinkChecker.OTHER:
-                return true;
-            case DeepLinkChecker.INVOICE:
-                return false;
-            case DeepLinkChecker.RECHARGE:
-                return true;
-            case DeepLinkChecker.PELUANG:
-                return false;
-            case DeepLinkChecker.REFERRAL:
-                return false;
-            default:
-                return true;
-        }
     }
 
     @Override
@@ -172,45 +133,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 .baseAppComponent(((BaseMainApplication) activity.getApplication()).getBaseAppComponent())
                 .build();
         component.inject(this);
-    }
-
-    @Override
-    public void mapUrlToApplink(Uri uri) {
-        final List<String> linkSegments = uri.getPathSegments();
-        StringBuilder finalSegments = new StringBuilder();
-        for (int i = 0; i < linkSegments.size(); i++) {
-            if (i != linkSegments.size() - 1) {
-                finalSegments.append(linkSegments.get(i)).append("/");
-            } else {
-                finalSegments.append(linkSegments.get(i));
-            }
-        }
-        mapUrlUseCase.execute(mapUrlUseCase.setRequestParam(finalSegments.toString()), mapUrlToApplinkSubscriber(uri));
-    }
-
-    private Subscriber<WhitelistItem> mapUrlToApplinkSubscriber(final Uri uriData) {
-        return new Subscriber<WhitelistItem>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(WhitelistItem deeplink) {
-                if (TextUtils.isEmpty(deeplink.applink)) {
-                    viewListener.initDeepLink();
-                } else {
-                    String screenName = AppScreen.SCREEN_NATIVE_RECHARGE;
-                    sendCampaignGTM(context, uriData.toString(), screenName);
-                    openDigitalPage(deeplink.applink);
-                }
-            }
-        };
     }
 
     public void processDeepLinkAction(Activity activity, Uri uriData) {
@@ -830,8 +752,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     public void sendAuthenticatedEvent(Uri uriData, String screenName) {
         try {
             URL obtainedURL = new URL(uriData.toString());
-            if (obtainedURL != null)
-                ScreenTracking.sendScreen(context, screenName, obtainedURL.toString());
+            Map<String, String> customDimension = new HashMap<>();
+            customDimension.put(Authenticated.KEY_DEEPLINK_URL, obtainedURL.toString());
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
