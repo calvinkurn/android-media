@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -234,8 +235,20 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         if(intent.getBooleanExtra(EXTRA_REFRESH_FLAG, false)){
             fragmentGeneralWebView.reloadPage();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PersistentCacheManager cacheManager = new PersistentCacheManager(this, "");
+        if(cacheManager.get("reload_webview", int.class, 0) == 1) {
+            if (fragmentGeneralWebView != null) {
+                fragmentGeneralWebView.reloadPage();
+            }
         }
     }
 }

@@ -225,8 +225,7 @@
             android:name=".applink.AppLinkWebsiteActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_deep_link"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".home.ReactNativeDiscoveryActivity"
             android:screenOrientation="portrait" />

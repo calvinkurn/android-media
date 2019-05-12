@@ -3319,6 +3319,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getRefreshWebPageIntent(Context context, boolean refreshPage){
+        PersistentCacheManager cacheManager = new PersistentCacheManager(context, "");
+        cacheManager.put("reload_webview", 1);
         return AppLinkWebsiteActivity.refreshIntent(context, refreshPage);
     }
 
