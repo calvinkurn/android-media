@@ -497,14 +497,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
         actionButtonView.addToCartClick = {
             productDetailTracking.eventClickAddToCart(productInfo?.basic?.id?.toString() ?: "",
                 productInfo?.variant?.isVariant ?: false)
-            if (productInfoViewModel.isUserSessionActive()) {
-                goToNormalCheckout(ATC_ONLY)
-            } else {
-                context?.let {
-                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
-                }
-            }
+            goToNormalCheckout(ATC_ONLY)
+
+//            if (productInfoViewModel.isUserSessionActive()) {
+//                goToNormalCheckout(ATC_ONLY)
+//            } else {
+//                context?.let {
+//                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+//                        REQUEST_CODE_LOGIN)
+//                }
+//            }
         }
         actionButtonView.buyNowClick = {
             // buy now / buy / preorder
