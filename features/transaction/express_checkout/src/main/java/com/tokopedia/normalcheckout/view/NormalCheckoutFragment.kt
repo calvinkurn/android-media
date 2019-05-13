@@ -198,13 +198,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         trackClickTradeIn()
                     }
                 } else {
-                    tv_trade_in.setOnClickListener {
-                        if (!viewModel.isUserSessionActive()) {
+                    if (!viewModel.isUserSessionActive()) {
+                        tv_trade_in.setOnClickListener {
                             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                                     REQUEST_CODE_LOGIN_THEN_TRADE_IN)
-                        } else {
-                            doTradeIn()
                         }
+                    } else {
+                        tv_trade_in.invalidate()
+                        tv_trade_in.requestLayout()
                     }
                 }
             }
