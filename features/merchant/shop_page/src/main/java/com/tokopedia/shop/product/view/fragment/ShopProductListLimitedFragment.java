@@ -2,6 +2,8 @@ package com.tokopedia.shop.product.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -88,6 +90,7 @@ import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductLimitedListPresenter;
+import com.tokopedia.shop.product.view.viewmodel.ShopProductLimitedViewModel;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -113,7 +116,8 @@ import static com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHO
 public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
         implements ShopProductListView, WishListActionListener, BaseEmptyViewHolder.Callback,
         ShopProductPromoViewHolder.PromoViewHolderListener, ShopProductClickedListener,
-        ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener, ShopCarouselSeeAllClickedListener, MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener, MerchantVoucherListView {
+        ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener, ShopCarouselSeeAllClickedListener,
+        MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener, MerchantVoucherListView {
 
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
@@ -134,6 +138,10 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     public static final String SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official";
     public static final String SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant";
     public static final int NUM_VOUCHER_DISPLAY = 3;
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
+    private ShopProductLimitedViewModel viewModel;
 
 
     @Inject
@@ -213,18 +221,17 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
         attribution = getArguments().getString(SHOP_ATTRIBUTION, "");
         shopProductLimitedListPresenter.attachView(this, this);
+
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopProductLimitedViewModel.class);
     }
 
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (shopInfo != null) {
-                    Intent intent = ShopProductSortActivity.createIntent(getActivity(), sortName);
-                    ShopProductListLimitedFragment.this.startActivityForResult(intent, REQUEST_CODE_SORT);
-                }
+        bottomActionView.setButton1OnClickListener(view1 -> {
+            if (shopInfo != null) {
+                Intent intent = ShopProductSortActivity.createIntent(getActivity(), sortName);
+                ShopProductListLimitedFragment.this.startActivityForResult(intent, REQUEST_CODE_SORT);
             }
         });
         bottomActionView.setVisibility(View.GONE);
@@ -338,9 +345,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
             loadVoucherList();
 
-            shopProductLimitedListPresenter.getProductFeatureListWithAttributes(
-                    shopInfo.getShopCore().getShopID(),
-                    shopInfo.getGoldOS().isOfficial() == 1);
+            viewModel.getFeaturedProduct(shopInfo.getShopCore().getShopID(), false);
 
         }
     }
