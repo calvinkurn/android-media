@@ -1,7 +1,10 @@
 package com.tokopedia.hotel.destination.view.activity
 
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -12,10 +15,14 @@ import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.di.DaggerHotelDestinationComponent
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.hotel.destination.view.fragment.HotelSearchDestinationFragment
+import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.activity_hotel_destination.*
 import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
+import javax.inject.Inject
 
 /**
  * @author by jessica on 25/03/19
@@ -24,9 +31,15 @@ import kotlinx.coroutines.experimental.launch
 class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinationComponent>, SearchInputView.Listener,
         SearchInputView.ResetListener {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var destinationViewModel: HotelDestinationViewModel
+
     var isSearching: Boolean = false
 
     private var searchTemp = ""
+
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     override fun shouldShowOptionMenu(): Boolean = false
 
@@ -46,11 +59,18 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
         initInjector()
         initView()
+
+        run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            destinationViewModel = viewModelProvider.get(HotelDestinationViewModel::class.java)
+        }
+
+        permissionCheckerHelper = PermissionCheckerHelper()
+        destinationViewModel.setPermissionChecker(permissionCheckerHelper)
     }
 
     fun initView() {
         initEditText()
-        initHotelRecommendationFragment()
     }
 
     fun initEditText() {
@@ -62,11 +82,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
     fun initInjector() {
         component.inject(this)
-    }
-
-    fun initHotelRecommendationFragment() {
-        supportFragmentManager.beginTransaction().replace(R.id.parent_view,
-                HotelRecommendationFragment()).commit()
     }
 
     fun showSearchDestinationResult() {
@@ -87,20 +102,29 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
         if (text == searchTemp) return
         searchTemp = text
 
-        launch(Dispatchers.Main) {
-
+        GlobalScope.launch(Dispatchers.Main) {
             delay(300)
             if (text != searchTemp) return@launch
             if (text.isEmpty() && isSearching) {
                 isSearching = false
                 backToHotelRecommendation()
-            } else if (text.isNotEmpty() && !isSearching && text.length > 2) {
+            } else if (text.isNotEmpty() && !isSearching) {
                 isSearching = true
                 showSearchDestinationResult()
             } else if (isSearching) {
                 //search
                 doSearch(text)
             }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(this,
+                    requestCode, permissions,
+                    grantResults)
         }
     }
 
