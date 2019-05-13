@@ -15,5 +15,6 @@ query propertyReview($data:PropertyReviewRequest!){
     averageScoreReview
     totalReviewOri
     hasNext
+    headline
   }
 }

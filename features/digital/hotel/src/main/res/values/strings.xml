@@ -72,7 +72,7 @@
     <string name="hotel_room_list_not_refundable">Non-refundable</string>
     <string name="hotel_room_list_per_room_per_night">/kamar/malam</string>
     <string name="hotel_room_list_include_tax">Termasuk pajak</string>
-    <string name="hotel_room_list_choose_room_button">Pilih %1$sKamar</string>
+    <string name="hotel_room_list_choose_room_button">Pilih Kamar</string>
     <string name="hotel_room_list_pay_in_hotel">Bayar di Hotel</string>
     <string name="hotel_room_list_without_credit_card">Tanpa Jaminan Kartu Kredit</string>
 
@@ -87,12 +87,15 @@
     <!--<string name="hotel_detail_map_marker_title"><![CDATA[<strong>%1$s</strong> - %2$s]]></string>-->
 
     <string name="hotel_review_title">Ulasan</string>
+    <string name="hotel_review_indonesia_not_found_title">Belum ada ulasan dari Indonesia</string>
+    <string name="hotel_review_indonesia_not_found_subtitle">Kamu bisa jadi yang pertama ngasih ulasan kalau nginep di sini. Pesan kamarnya, yuk!</string>
+    <string name="hotel_review_total_review">%1$s Ulasan</string>
 
     <string name="hotel_room_detail_header_occupancy">Maksimum: %1$s</string>
     <string name="hotel_room_detail_header_breakfast">Sarapan Gratis</string>
     <string name="hotel_room_detail_header_refund">Refund Bersyarat</string>
     <string name="hotel_room_detail_pay_at_hotel">Bayar di Hotel</string>
-    <string name="hotel_room_detail_pay_at_hotel_desc">Perlu jaminan kartu kredit\nKartu kredit diperlukan untuk verifikasi, biaya pemesanan akan ditagihkan saat tiba di hotel.</string>
+    <string name="hotel_room_detail_pay_at_hotel_desc">\nKartu kredit diperlukan untuk verifikasi, biaya pemesanan akan ditagihkan saat tiba di hotel.</string>
     <string name="hotel_room_detail_cancellation">Pembatalan</string>
     <string name="hotel_room_detail_upfront_payment">Pembayaran di muka</string>
     <string name="hotel_room_detail_upfront_payment_desc">Kartu kredit Anda akan terpotong sejumlah biaya pada waktu yang telah ditentukan.</string>

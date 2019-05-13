@@ -188,5 +188,11 @@
       "extraBedInfo": {
         "IsFreeExtraBed": false,
         "Content": "Tidak Menyediakan tempat tidur tambahan"
+      },
+      "additionalPropertyInfo": {
+        "propertyId": 1791,
+        "isAdressRequired": false,
+        "isCvCRequired": false,
+        "isDirectPayment": false
       }
 }

@@ -13,13 +13,17 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
-import com.tokopedia.hotel.roomdetail.view.activity.HotelRoomDetailActivity
-import com.tokopedia.hotel.roomdetail.view.fragment.HotelRoomDetailFragment
+import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
+import com.tokopedia.hotel.roomdetail.presentation.fragment.HotelRoomDetailFragment
+import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
+import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.di.HotelRoomListComponent
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
@@ -30,6 +34,7 @@ import com.tokopedia.hotel.roomlist.widget.ChipAdapter
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
 import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
 import java.util.*
@@ -47,6 +52,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var roomListViewModel: HotelRoomListViewModel
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     var hotelRoomListPageModel = HotelRoomListPageModel()
 
@@ -78,21 +86,23 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        roomListViewModel.roomListResult.observe(this, android.arch.lifecycle.Observer { when (it) {
-            is Success -> {
-                firstTime = false
-                if (!roomListViewModel.isFilter) {
-                    roomListViewModel.roomList = it.data
-                    showFilterRecyclerView(it.data.size > 0)
-                } else showFilterRecyclerView(true)
-                clearAllData()
-                renderList(it.data, false)
+        roomListViewModel.roomListResult.observe(this, android.arch.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    firstTime = false
+                    if (!roomListViewModel.isFilter) {
+                        roomListViewModel.roomList = it.data
+                        showFilterRecyclerView(it.data.size > 0)
+                    } else showFilterRecyclerView(true)
+                    clearAllData()
+                    renderList(it.data, false)
+                }
+                is Fail -> {
+                    showGetListError(it.throwable)
+                    showFilterRecyclerView(false)
+                }
             }
-            is Fail -> {
-                showGetListError(it.throwable)
-                showFilterRecyclerView(false)
-            }
-        } })
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -249,9 +259,16 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onItemClicked(room: HotelRoom) {
         val objectId = System.currentTimeMillis().toString()
         SaveInstanceCacheManager(context!!, objectId).apply {
-            put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, room)
+            val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
+            put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(room, addCartParam))
         }
         startActivityForResult(HotelRoomDetailActivity.getCallingIntent(context!!, objectId), RESULT_ROOM_DETAIL)
+    }
+
+    fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {
+        return HotelAddCartParam("", hotelRoomListPageModel.checkIn,
+                hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
+                room.roomId, hotelRoomListPageModel.room, hotelRoomListPageModel.adult)
     }
 
     override fun getScreenName(): String = ""
@@ -269,7 +286,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                 hotelRoomListPageModel, true)
     }
 
-    override fun onChipClickListener(string: String) {
+    override fun onChipClickListener(string: String, isSelected: Boolean) {
         when (string) {
             getString(FREE_BREAKFAST) -> {
                 roomListViewModel.clickFilter(clickFreeBreakfast = true)
@@ -318,12 +335,25 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onEmptyButtonClicked() {
         //DELETE FILTER
-        filter_recycler_view.resetChipSelected()
+        filter_recycler_view.onResetChip()
         roomListViewModel.clearFilter()
     }
 
     override fun onClickBookListener(room: HotelRoom) {
+        if (userSessionInterface.isLoggedIn) {
+            roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
+                    HotelAddCartParam("", hotelRoomListPageModel.checkIn,
+                            hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
+                            room.roomId, hotelRoomListPageModel.room, hotelRoomListPageModel.adult))
+        } else {
+            goToLoginPage()
+        }
+    }
 
+    fun goToLoginPage() {
+        if (activity != null) {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
     }
 
     companion object {

@@ -46,11 +46,11 @@ data class HotelReview(
         @Expose
         val createTime: String = ""
 
-): Visitable<ReviewAdapterTypeFactory> {
+) : Visitable<ReviewAdapterTypeFactory> {
 
-        override fun type(typeFactory: ReviewAdapterTypeFactory?): Int {
-                return typeFactory?.type(this) ?: 0
-        }
+    override fun type(typeFactory: ReviewAdapterTypeFactory?): Int {
+        return typeFactory?.type(this) ?: 0
+    }
 
     data class Response(
             @SerializedName("propertyReview")
@@ -77,6 +77,10 @@ data class HotelReview(
 
             @SerializedName("hasNext")
             @Expose
-            val hasNext: Boolean = true
+            val hasNext: Boolean = true,
+
+            @SerializedName("headline")
+            @Expose
+            val headline: String = ""
     )
 }
