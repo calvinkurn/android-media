@@ -34,7 +34,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.screen.IndexScreenTracking;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
@@ -120,6 +119,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String KEY_NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
     public static final String KEY_DIMEN = "dimen";
     public static final String KEY_DEF_PACKAGE = "android";
+    public static final String EXTRA_URL = "url";
+    public static final String EXTRA_TITLE = "core_web_view_extra_title";
+
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
 
@@ -661,8 +663,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void showBannerWebViewOnAllPromoClickFromHomeIntent(String url, String title){
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PROMO);
-        intent.putExtra(BannerWebView.EXTRA_URL, url);
-        intent.putExtra(BannerWebView.EXTRA_TITLE, title);
+        intent.putExtra(EXTRA_URL, url);
+        intent.putExtra(EXTRA_TITLE, title);
         startActivity(intent);
     }
 
@@ -912,7 +914,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void openWebViewURL(String url, Context context) {
         if (!TextUtils.isEmpty(url) && context != null) {
             Intent intent = RouteManager.getIntent(context, ApplinkConst.PROMO);
-            intent.putExtra(BannerWebView.EXTRA_URL, url);
+            intent.putExtra(EXTRA_URL, url);
             startActivity(intent);
         }
     }
