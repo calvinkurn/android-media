@@ -5,24 +5,20 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.DownloadResultReceiver;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
+import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core2.R;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
 import com.tokopedia.seller.selling.orderReject.fragment.ConfirmRejectOrderFragment;
 import com.tokopedia.seller.selling.orderReject.fragment.ShopClosedReasonFragment;
-import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.seller.selling.presenter.listener.SellingView;
 
 import org.parceler.Parcels;
-
-import butterknife.ButterKnife;
 
 /**
  * Created by Erry on 6/3/2016.
@@ -50,7 +46,6 @@ public class ConfirmRejectOrderActivity extends TActivity implements DownloadRes
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_confirm_reject_order);
-        ButterKnife.bind(this);
         fragmentManager = getSupportFragmentManager();
 
         Bundle bundle = getIntent().getExtras();
@@ -58,8 +53,6 @@ public class ConfirmRejectOrderActivity extends TActivity implements DownloadRes
         OrderShippingList orderShippingList = Parcels.unwrap(bundle.getParcelable(ORDERS));
         String orderId = bundle.getString(ORDER_ID);
         int index = bundle.getInt(INDEX);
-
-        Gson gson = new GsonBuilder().create();
 
         switch (index){
             case 0:

@@ -8,12 +8,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
-
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by zulfikarrahman on 11/10/16.
