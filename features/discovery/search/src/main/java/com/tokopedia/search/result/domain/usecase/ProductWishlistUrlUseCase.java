@@ -28,7 +28,7 @@ class ProductWishlistUrlUseCase extends UseCase<Boolean> {
                 .map(this::mapResponseToBoolean);
     }
 
-    private boolean mapResponseToBoolean(Response<Object> response) {
+    private boolean mapResponseToBoolean(Response<String> response) {
         if(response.isSuccessful()) {
             return getSuccessfulResponse(response);
         } else {
@@ -36,9 +36,9 @@ class ProductWishlistUrlUseCase extends UseCase<Boolean> {
         }
     }
 
-    private boolean getSuccessfulResponse(Response<Object> response) {
+    private boolean getSuccessfulResponse(Response<String> response) {
         try {
-            JSONObject object = new JSONObject(response.body().toString());
+            JSONObject object = new JSONObject(response.body());
             return object.getJSONObject("data").getBoolean("success");
         } catch (JSONException e) {
             return false;

@@ -3,6 +3,7 @@ package com.tokopedia.search.result.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
@@ -12,6 +13,8 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.search.di.qualifier.TopAdsQualifier;
+import com.tokopedia.search.result.network.converterfactory.GeneratedHostConverter;
+import com.tokopedia.search.result.network.converterfactory.StringResponseConverter;
 import com.tokopedia.search.result.network.interceptor.TopAdsAuthInterceptor;
 import com.tokopedia.search.result.network.response.TopAdsResponseError;
 import com.tokopedia.search.result.network.service.TopAdsService;
@@ -91,8 +94,18 @@ public class TopAdsServiceModule {
     @TopAdsQualifier
     @SearchScope
     @Provides
+    public Retrofit.Builder provideTopAdsRetrofitBuildeer(Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder
+                .addConverterFactory(new GeneratedHostConverter())
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
+                .addConverterFactory(new StringResponseConverter());
+    }
+
+    @TopAdsQualifier
+    @SearchScope
+    @Provides
     public Retrofit provideTopAdsRetrofit(@TopAdsQualifier OkHttpClient okHttpClient,
-                                          Retrofit.Builder retrofitBuilder) {
+                                          @TopAdsQualifier Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(SearchConstant.BaseUrl.TOPADS_DOMAIN).client(okHttpClient).build();
     }
 
