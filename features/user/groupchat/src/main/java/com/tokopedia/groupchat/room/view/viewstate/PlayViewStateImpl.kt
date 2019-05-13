@@ -247,6 +247,8 @@ open class PlayViewStateImpl(
             setChatListHasSpaceOnTop(false)
             analytics.eventClickShowVideoToggle(viewModel?.channelId)
         }
+
+        errorView.setOnClickListener {  }
     }
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
