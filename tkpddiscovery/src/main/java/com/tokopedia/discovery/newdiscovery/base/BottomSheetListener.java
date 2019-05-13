@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import com.tokopedia.core.discovery.model.Filter;
+
+import com.tokopedia.discovery.common.data.Filter;
 
 import java.util.ArrayList;
 import java.util.Map;

@@ -22,8 +22,6 @@ buildscript {
 dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    implementation project(rootProject.ext.libraries.remoteConfig)
 }
 
 apply from: '../../publish_local.gradle'
