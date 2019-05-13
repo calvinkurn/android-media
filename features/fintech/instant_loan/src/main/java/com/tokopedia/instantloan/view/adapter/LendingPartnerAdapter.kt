@@ -14,7 +14,7 @@ import com.tokopedia.instantloan.data.model.response.GqlLendingPartnerData
 import com.tokopedia.instantloan.network.InstantLoanUrl
 
 
-class LendingPartnerAdapter(lendingPartnerList: ArrayList<GqlLendingPartnerData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class LendingPartnerAdapter(lendingPartnerList: ArrayList<GqlLendingPartnerData>?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val partnerList = lendingPartnerList
     lateinit var context: Context
@@ -27,11 +27,11 @@ class LendingPartnerAdapter(lendingPartnerList: ArrayList<GqlLendingPartnerData>
     }
 
     override fun getItemCount(): Int {
-        return partnerList.size
+        return partnerList!!.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as LendingPartnerAdapter.LePartnerViewHolder).bindData(partnerList.get(position), position)
+        (holder as LendingPartnerAdapter.LePartnerViewHolder).bindData(partnerList!!.get(position), position)
     }
 
     class LePartnerViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {

@@ -29,6 +29,7 @@ import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.GqlLendingBannerData
 import com.tokopedia.instantloan.data.model.response.GqlLendingDataResponse
+import com.tokopedia.instantloan.data.model.response.GqlLendingPartnerData
 import com.tokopedia.instantloan.data.model.response.TestimonialEntity
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager
 import com.tokopedia.instantloan.network.InstantLoanUrl
@@ -41,17 +42,18 @@ import com.tokopedia.instantloan.view.contractor.BannerContractor
 import com.tokopedia.instantloan.view.contractor.OnGoingLoanContractor
 import com.tokopedia.instantloan.view.fragment.DanaInstantFragment
 import com.tokopedia.instantloan.view.fragment.DenganAgunanFragment
+import com.tokopedia.instantloan.view.fragment.LePartnerFragment
 import com.tokopedia.instantloan.view.fragment.TanpaAgunanFragment
 import com.tokopedia.instantloan.view.presenter.BannerListPresenter
 import com.tokopedia.instantloan.view.presenter.OnGoingLoanPresenter
 import com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
 import com.tokopedia.instantloan.view.ui.InstantLoanItem
+import com.tokopedia.instantloan.view.ui.PartnerDataPageItem
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_instant_loan.*
 import kotlinx.android.synthetic.main.il_other_financial_products.*
 import kotlinx.android.synthetic.main.layout_il_testimonials.*
 import kotlinx.android.synthetic.main.layout_lending_category.*
-import kotlinx.android.synthetic.main.layout_lending_partner.*
 import javax.inject.Inject
 
 class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, BannerContractor.View, OnGoingLoanContractor.View,
@@ -74,6 +76,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     private var tabLayout: TabLayout? = null
     private var heightWrappingViewPager: HeightWrappingViewPager? = null
+    private lateinit var partnerHeightWrappingViewPager: HeightWrappingViewPager
     private var activeTabPosition = 0
     private var instantLoanEnabled = true
     private var menu: Menu? = null
@@ -84,11 +87,12 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     private lateinit var rvSeoLayout: RecyclerView
 
     private lateinit var lendingCategoryAdpater: LendingCategoryAdapter
-    private lateinit var lendingPartnerAdpater: LendingPartnerAdapter
 
     private lateinit var lendingSeoAdapter: LendingSeoAdapter
 
     internal var instantLoanItemList: MutableList<InstantLoanItem> = ArrayList()
+
+    internal var partnerDataItemList: ArrayList<PartnerDataPageItem> = ArrayList()
 
     private val mBannerPageChangeListener = object : ViewPager.OnPageChangeListener {
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -114,7 +118,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         }
     }
 
-
     override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
         initInjector()
@@ -135,6 +138,12 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     private lateinit var layoutManager: GridLayoutManager
     private lateinit var linearLayoutManager: LinearLayoutManager
 
+    private fun setupSeoLayout() {
+        linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        rvSeoLayout.layoutManager = linearLayoutManager
+        rvSeoLayout.adapter = lendingSeoAdapter
+    }
+
     private fun setupCategoryLayout() {
         layoutManager = GridLayoutManager(this, COLUMN_COUNT_FOR_LOAN_CATEGORY)
         rv_lending_category.layoutManager = layoutManager
@@ -142,16 +151,13 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun setupPartnerLayout() {
-        layoutManager = GridLayoutManager(this, COLUMN_COUNT_FOR_LOAN_PARTNER, RecyclerView.HORIZONTAL, false)
-        rv_lending_partner.layoutManager = layoutManager
-        rv_lending_partner.adapter = lendingPartnerAdpater
+        populatePartnerItemList()
+        val partnerItemPagerAdapter = LendingPartnerPagerAdapter(supportFragmentManager)
+        partnerItemPagerAdapter.setData(partnerDataItemList)
+
+        partnerHeightWrappingViewPager.adapter = partnerItemPagerAdapter
     }
 
-    private fun setupSeoLayout() {
-        linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        rvSeoLayout.layoutManager = linearLayoutManager
-        rvSeoLayout.adapter = lendingSeoAdapter
-    }
 
     fun renderBannerList(banners: ArrayList<GqlLendingBannerData>) {
         if (banners.size > 1) {
@@ -166,6 +172,8 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         mBannerPager!!.addOnPageChangeListener(mBannerPageChangeListener)
         sendBannerImpressionEvent(0)
     }
+
+    private var parterDataList: ArrayList<GqlLendingPartnerData> = ArrayList()
 
     override fun renderLendingData(gqlLendingDataResponse: GqlLendingDataResponse) {
 
@@ -190,7 +198,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
             if (gqlLendingDataResponse != null && gqlLendingDataResponse.lePartner != null && gqlLendingDataResponse.lePartner.partnerData.isNotEmpty()) {
                 showPartnerLayout()
-                lendingPartnerAdpater = LendingPartnerAdapter(gqlLendingDataResponse.lePartner.partnerData)
+                parterDataList = gqlLendingDataResponse.lePartner.partnerData
                 setupPartnerLayout()
             } else {
                 hidePartnerLayout()
@@ -257,11 +265,11 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun hidePartnerLayout() {
-
+        il_partner_layout.visibility = View.GONE
     }
 
     private fun showPartnerLayout() {
-
+        il_partner_layout.visibility = View.VISIBLE
     }
 
     private fun hideTestimonials() {
@@ -321,6 +329,25 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
                 getDenganAngunanFragment(2)))
     }
 
+    private fun populatePartnerItemList() {
+
+        var pointer = 0
+        var tempList: ArrayList<GqlLendingPartnerData> = ArrayList(DEFAULT_PARTNER_ITEM_LIST_SIZE)
+        for (inx in parterDataList) {
+            tempList.add(inx)
+            pointer++
+            if (pointer == DEFAULT_PARTNER_ITEM_LIST_SIZE) {
+                pointer = 0
+                partnerDataItemList.add(PartnerDataPageItem(getPartnerFragment(tempList)))
+                tempList = ArrayList(DEFAULT_PARTNER_ITEM_LIST_SIZE)
+            }
+        }
+
+        if (tempList.size > 0) {
+            partnerDataItemList.add(PartnerDataPageItem(getPartnerFragment(tempList)))
+        }
+    }
+
 
     private fun setActiveTab() {
         heightWrappingViewPager!!.viewTreeObserver.addOnGlobalLayoutListener(
@@ -342,6 +369,10 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     private fun getDenganAngunanFragment(position: Int): DenganAgunanFragment {
         return DenganAgunanFragment.createInstance(position)
+    }
+
+    private fun getPartnerFragment(partnerItemList: ArrayList<GqlLendingPartnerData>): Fragment {
+        return LePartnerFragment.createInstance(partnerItemList)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -470,6 +501,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     private fun initializeView() {
         tabLayout = findViewById(R.id.tabs)
         heightWrappingViewPager = findViewById(R.id.pager)
+        partnerHeightWrappingViewPager = findViewById(R.id.view_pager_partner)
         mBtnNextBanner = findViewById(R.id.button_next)
         mBtnPreviousBanner = findViewById(R.id.button_previous)
         rvSeoLayout = findViewById(R.id.rv_lending_seo)
@@ -567,7 +599,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
         val PINJAMAN_TITLE = "Pinjaman Online"
         val COLUMN_COUNT_FOR_LOAN_CATEGORY = 4
-        val COLUMN_COUNT_FOR_LOAN_PARTNER = 3
+        val DEFAULT_PARTNER_ITEM_LIST_SIZE = 9
         val TAB_NAME = "tab_name"
         private val TAB_INSTAN = "instan"
         private val TAB_TANPA_AGUNAN = "tanpaagunan"
