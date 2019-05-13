@@ -12,7 +12,6 @@
         android:layout_height="@dimen/dp_48"
         android:layout_marginTop="@dimen/dp_8"
         android:padding="@dimen/dp_6"
-        android:src="@drawable/pinjaman_bpkb"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
