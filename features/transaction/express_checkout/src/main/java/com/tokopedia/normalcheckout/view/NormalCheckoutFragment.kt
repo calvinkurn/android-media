@@ -106,6 +106,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var shopType: String? = null
     var shopName: String? = null
     private var tradeInParams: TradeInParams? = null
+    private var hasStateToLoginBeforeTradeIn: Boolean = false
 
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
@@ -200,8 +201,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 } else {
                     if (!viewModel.isUserSessionActive()) {
                         tv_trade_in.setOnClickListener {
-                            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                                    REQUEST_CODE_LOGIN_THEN_TRADE_IN)
+                            hasStateToLoginBeforeTradeIn = true;
                         }
                     } else {
                         tv_trade_in.invalidate()
@@ -233,7 +233,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     fun goToTradeInHome() {
-        if (context == null) return
         val intent = TradeInHomeActivity.getIntent(context)
 
         if (tradeInParams != null && selectedProductInfo != null) {
@@ -545,6 +544,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             } else {
                 addToCart()
             }
+        }
+
+        if (hasStateToLoginBeforeTradeIn) {
+            hasStateToLoginBeforeTradeIn = false
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN_THEN_TRADE_IN)
         }
     }
 
