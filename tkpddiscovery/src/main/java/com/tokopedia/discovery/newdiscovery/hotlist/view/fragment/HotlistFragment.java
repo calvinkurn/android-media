@@ -1142,12 +1142,12 @@ public class HotlistFragment extends BrowseSectionFragment
             this.selectedFilter.put(filterKey, filterValue);
             eventLabel = "true";
         }
-        eventLabel = filterKey + " " + filterValue + " " + eventLabel;
+        eventLabel = filterKey + " - " + filterValue + " - " + eventLabel;
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Event.HOTLIST_PAGE,
-                "quick filter" + " " + getScreenName(),
+                "quick filter" + " - " + getScreenName(),
                 eventLabel
         ).getEvent());
         reloadData();
