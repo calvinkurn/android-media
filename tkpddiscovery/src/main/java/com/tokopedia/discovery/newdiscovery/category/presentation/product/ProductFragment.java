@@ -28,9 +28,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -42,6 +39,9 @@ import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
+import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.discovery.common.data.Filter;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
@@ -711,12 +711,12 @@ public class ProductFragment extends BrowseSectionFragment
             this.selectedFilter.put(filterKey, filterValue);
             eventLabel = "true";
         }
-        eventLabel = filterKey + "-" + filterValue + "-" + eventLabel;
+        eventLabel = filterKey + " " + filterValue + " " + eventLabel;
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.HOTLIST,
-                AppEventTracking.Event.HOTLIST_PAGE,
-                "quick filter" + "-" + getScreenName(),
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Event.CATEGORY,
+                "quick filter" + " " + getScreenName(),
                 eventLabel
         ).getEvent());
         reloadData();
