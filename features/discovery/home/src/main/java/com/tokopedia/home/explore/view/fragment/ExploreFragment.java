@@ -18,17 +18,14 @@ import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
-import com.tokopedia.home.analytics.HomePageTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
-import com.tokopedia.home.explore.di.ExploreComponent;
 import com.tokopedia.home.explore.di.DaggerExploreComponent;
+import com.tokopedia.home.explore.di.ExploreComponent;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.activity.ExploreActivity;
@@ -52,6 +49,10 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     public static final int TYPE_AJUKAN = 3;
     public static final int TYPE_JUAL = 4;
     private static final String NAME_PINJAMAN_ONLINE = "Pinjaman Online";
+    public static final String EXTRA_URL = "url";
+    public static final String EXTRA_TITLE = "core_web_view_extra_title";
+    public static final String DEPARTMENT_ID = "DEPARTMENT_ID";
+    public static final String DEPARTMENT_NAME = "DEPARTMENT_NAME";
 
     @Inject
     UserSession userSession;
@@ -132,8 +133,8 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         TrackingUtils.sendMoEngageClickMainCategoryIcon(getActivity(), data.getName());
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.DISCOVERY_CATEGORY_DETAIL);
         Bundle bundle = new Bundle();
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, String.valueOf(data.getCategoryId()));
-        bundle.putString(BrowseProductRouter.DEPARTMENT_NAME, data.getName());
+        bundle.putString(DEPARTMENT_ID, String.valueOf(data.getCategoryId()));
+        bundle.putString(DEPARTMENT_NAME, data.getName());
         intent.putExtras(bundle);
     }
 
@@ -261,7 +262,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         if (!url.equals("") && context != null) {
             if (getActivity() != null) {
                 Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PROMO);
-                intent.putExtra(BannerWebView.EXTRA_URL, url);
+                intent.putExtra(EXTRA_URL, url);
                 startActivity(intent);
             }
         }
@@ -271,8 +272,8 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         if (!url.equals("")) {
             if (getActivity() != null) {
                 Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.WEBVIEW);
-                intent.putExtra(BannerWebView.EXTRA_TITLE, title);
-                intent.putExtra("EXTRA_URL", url);
+                intent.putExtra(EXTRA_TITLE, title);
+                intent.putExtra(EXTRA_URL, url);
                 getActivity().startActivity(intent);
                 HomePageTracking.eventHomeGimmick(getActivity(), label);
             }
