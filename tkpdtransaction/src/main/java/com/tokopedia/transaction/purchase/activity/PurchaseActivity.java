@@ -79,70 +79,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
-    public static Intent getConfirmedIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (!openNewBom(context)) {
-            return new Intent(context, PurchaseActivity.class)
-                    .setData(uri.build())
-                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_CONFIRMED)
-                    .putExtras(extras);
-        } else {
-            return getMarketPlaceIntent(context, extras);
-        }
-    }
 
-    @DeepLink(ApplinkConst.PURCHASE_PROCESSED)
-    public static Intent getProcessedIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (!openNewBom(context)) {
-            return new Intent(context, PurchaseActivity.class)
-                    .setData(uri.build())
-                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_PROCESSED)
-                    .putExtras(extras);
-        } else {
-            return getMarketPlaceIntent(context, extras);
-        }
-    }
-
-    @DeepLink({ApplinkConst.PURCHASE_SHIPPED})
-    public static Intent getShippedIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (!openNewBom(context)) {
-            return new Intent(context, PurchaseActivity.class)
-                    .setData(uri.build())
-                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_SHIPPED)
-                    .putExtras(extras);
-        } else {
-            return getMarketPlaceIntent(context, extras);
-        }
-    }
-
-    @DeepLink({ApplinkConst.PURCHASE_DELIVERED, ApplinkConst.PURCHASE_SHIPPING_CONFIRM})
-    public static Intent getDeliveredIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (!openNewBom(context)) {
-            return new Intent(context, PurchaseActivity.class)
-                    .setData(uri.build())
-                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_DELIVERED)
-                    .putExtras(extras);
-        } else {
-            return getMarketPlaceIntent(context, extras);
-        }
-    }
-
-    @DeepLink(ApplinkConst.PURCHASE_HISTORY)
-    public static Intent getHistoryIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (!openNewBom(context)) {
-            return new Intent(context, PurchaseActivity.class)
-                    .setData(uri.build())
-                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_ALL_ORDER)
-                    .putExtras(extras);
-        } else {
-            return getMarketPlaceIntent(context, extras);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -305,12 +242,6 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
         return (((ITransactionOrderDetailRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true));
     }
 
-    private static Intent getMarketPlaceIntent(Context context, Bundle extras) {
-        Uri uri = Uri.parse(extras.getString(DeepLink.URI));
-        extras.putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
-        extras.putString(OrderListContants.ORDER_FILTER_ID, uri.getQueryParameter(OrderListContants.ORDER_FILTER_ID));
-        Intent intent = new Intent(context, OrderListActivity.class);
-        return intent.putExtras(extras);
-    }
+
 
 }
