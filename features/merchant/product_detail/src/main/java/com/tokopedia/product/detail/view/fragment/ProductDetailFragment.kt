@@ -69,6 +69,7 @@ import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.ProductInfoP1
 import com.tokopedia.product.detail.data.model.ProductInfoP2
 import com.tokopedia.product.detail.data.model.ProductInfoP3
@@ -102,13 +103,10 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
-import com.tokopedia.topads.sdk.base.adapter.Item
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
-import com.tokopedia.topads.sdk.listener.TopAdsListener
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.transaction.common.TransactionRouter
@@ -128,6 +126,7 @@ import kotlinx.android.synthetic.main.partial_product_full_descr.*
 import kotlinx.android.synthetic.main.partial_product_image_review.*
 import kotlinx.android.synthetic.main.partial_product_latest_talk.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
+import kotlinx.android.synthetic.main.partial_product_recommendation.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import model.TradeInParams
@@ -156,6 +155,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     lateinit var mostHelpfulReviewView: PartialMostHelpfulReviewView
     lateinit var latestTalkView: PartialLatestTalkView
     lateinit var otherProductView: PartialOtherProductView
+    lateinit var recommendationProductView: PartialRecommendationProductView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -327,12 +327,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
         productInfoViewModel.loadTopAdsProduct.observe(this, Observer {
             when (it) {
                 is Loading -> {
-                    loading_topads_product.visible()
-                    topads_carousel.gone()
+                    recommendationProductView.startLoading()
                 }
                 is Loaded -> {
-                    loading_topads_product.gone()
-                    (it.data as? Success)?.data?.let { topads_carousel.setData(it) }
+                    recommendationProductView.renderData((it.data as? Success)?.data ?: return@Observer)
+                    (it.data as? Success)?.data?.let { result ->
+                        recommendationProductView.renderData(result) }
                 }
             }
         })
@@ -360,7 +360,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (it) {
                 if (productInfo != null && shopInfo != null)
                     productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                        it, tradeInParams?.usedPrice > 0)
+                        it, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
 
                 if (tv_trade_in_promo != null) {
                     tv_trade_in_promo.visible()
@@ -369,7 +369,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             } else
                 if (productInfo != null && shopInfo != null)
                     productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                        it, tradeInParams?.usedPrice > 0)
+                        it, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
 
         }
         context?.let {
@@ -645,6 +645,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (!::otherProductView.isInitialized)
             otherProductView = PartialOtherProductView.build(base_other_product)
 
+        if (!::recommendationProductView.isInitialized){
+            recommendationProductView = PartialRecommendationProductView.build(base_recommen_product)
+        }
+
     }
 
     private fun onImageReviewClick(imageReview: ImageReviewItem, isSeeAll: Boolean = false) {
@@ -723,54 +727,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 }
             }
         })
-        topads_carousel.setAdsItemClickListener(adsItemsClickListener)
-        topads_carousel.setAdsListener(adsListener)
-        topads_carousel.setAdsItemImpressionListener(object : TopAdsItemImpressionListener() {
-            override fun onImpressionProductAdsItem(position: Int, product: Product?) {
-                product?.let {
-                    productDetailTracking.eventTopAdsImpression(position, it)
-                }
-            }
-        })
-    }
-
-    private val adsItemsClickListener = object : TopAdsItemClickListener {
-        override fun onShopItemClicked(position: Int, shop: Shop?) {}
-
-        override fun onAddFavorite(position: Int, data: Data?) {}
-
-        override fun onProductItemClicked(position: Int, product: Product?) {
-            if (product == null) return
-            activity?.let {
-                productDetailTracking.eventTopAdsClicked(product, position)
-                startActivity(ProductDetailActivity.createIntent(it, product.id.toInt()))
-            }
-        }
-    }
-
-    private val adsListener = object : TopAdsListener {
-        override fun onTopAdsLoaded(list: MutableList<Item<Any>>?) {
-            topads_carousel.visible()
-        }
-
-        override fun onTopAdsFailToLoad(errorCode: Int, message: String?) {
-            topads_carousel.gone()
-        }
-
     }
 
     private fun collapsedAppBar() {
         initStatusBarLight()
         initToolbarLight()
         fab_detail?.hide()
-        label_cod.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
+        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
     }
 
     private fun expandedAppBar() {
         initStatusBarDark()
         initToolbarTransparent()
         showFabDetailAfterLoadData()
-        label_cod.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
+        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
     }
 
     private fun initToolbarLight() {
@@ -862,7 +832,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun loadProductData(forceRefresh: Boolean = false) {
         if (forceRefresh) {
             otherProductView.renderData(listOf())
-            topads_carousel.gone()
+            recommendationProductView.hideView()
         }
         if (productId != null || (productKey != null && shopDomain != null)) {
             productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), forceRefresh)
@@ -1160,7 +1130,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
             if (!isHandPhone)
                 productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution,
-                    false, false)
+                    false, false, productInfoP2.nearestWarehouse.warehouseInfo.isFulfillment)
 
             productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                 ?: "")
@@ -1208,10 +1178,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun gotoEditProduct() {
         val id = productInfo?.parentProductId ?: return
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT, id)
-            intent?.run {
-                startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT)
-            }
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_ITEM, id)
+            intent?.run { startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT) }
         }
     }
 

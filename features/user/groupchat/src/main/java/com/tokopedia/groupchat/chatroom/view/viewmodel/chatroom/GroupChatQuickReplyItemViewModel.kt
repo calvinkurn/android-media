@@ -10,20 +10,15 @@ import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.QuickR
  * @author by StevenFredian on 15/05/18.
  */
 
-class GroupChatQuickReplyItemViewModel : Visitable<QuickReplyTypeFactory>, Parcelable {
+class GroupChatQuickReplyItemViewModel(
+        var id: String? = null,
+        var text: String? = null
+) : Visitable<QuickReplyTypeFactory>, Parcelable {
 
-    var id: String? = null
-    var text: String? = null
-
-    constructor(id: String, text: String) {
-        this.id = id
-        this.text = text
-    }
-
-    protected constructor(`in`: Parcel) {
-        id = `in`.readString()
+    protected constructor(`in`: Parcel): this(
+        id = `in`.readString(),
         text = `in`.readString()
-    }
+    )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(id)

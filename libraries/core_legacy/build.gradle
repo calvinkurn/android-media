@@ -77,6 +77,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.cacheManager)
     implementation rootProject.ext.firebase.config
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
