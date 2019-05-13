@@ -34,13 +34,13 @@ data class PopularSearch(
         @SerializedName("metaDescription")
         @Expose
         val metaDescription: String = ""
-): Visitable<PopularSearchTypeFactory> {
-        override fun type(typeFactory: PopularSearchTypeFactory) = typeFactory.type(this)
+) : Visitable<PopularSearchTypeFactory> {
+    override fun type(typeFactory: PopularSearchTypeFactory) = typeFactory.type(this)
 
-        data class Response (
-                @SerializedName("propertyPopular")
-                @Expose
-                val popularSearchList: List<PopularSearch> = listOf()
-        )
+    data class Response(
+            @SerializedName("propertyPopular")
+            @Expose
+            val popularSearchList: List<PopularSearch> = listOf()
+    )
 }
 

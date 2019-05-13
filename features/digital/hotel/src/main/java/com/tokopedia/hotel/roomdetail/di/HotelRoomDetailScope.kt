@@ -8,5 +8,5 @@ import javax.inject.Scope
 
 @MustBeDocumented
 @Scope
-@kotlin.annotation.Retention
+@Retention
 annotation class HotelRoomDetailScope

@@ -55,6 +55,11 @@
             android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+      
+        <activity android:name=".roomdetail.presentation.activity.HotelRoomDetailActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
 
         <activity
             android:name=".roomlist.presentation.activity.HotelRoomListActivity"

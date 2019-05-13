@@ -93,6 +93,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <RelativeLayout
+                android:id="@+id/popular_search_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -112,7 +113,6 @@
                     android:text="@string/hotel_destination_popular_search_title"
                     />
             </RelativeLayout>
-
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
