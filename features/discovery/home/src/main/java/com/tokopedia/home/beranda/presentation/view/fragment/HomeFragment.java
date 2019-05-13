@@ -1186,16 +1186,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onFeedContentScrolled(int dy, int totalScrollY) {
-//        homeFeedsTabLayout.adjustTabCollapseOnScrolled(dy, totalScrollY);
+
     }
 
     @Override
     public void onFeedContentScrollStateChanged(int newState) {
-        if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-//            homeFeedsTabLayout.scrollActiveTabToLeftScreen();
-        } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-//            homeFeedsTabLayout.snapCollapsingTab();
-        }
+
     }
 
     @Override

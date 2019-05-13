@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 
 import android.support.annotation.LayoutRes;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 

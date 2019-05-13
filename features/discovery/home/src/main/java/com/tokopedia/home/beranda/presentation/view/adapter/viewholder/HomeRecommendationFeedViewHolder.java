@@ -1,23 +1,17 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.WindowInsetsCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.DisplayCutout;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
-import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter;
