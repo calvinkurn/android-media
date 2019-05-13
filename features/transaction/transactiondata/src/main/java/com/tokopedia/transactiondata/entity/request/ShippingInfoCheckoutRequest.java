@@ -28,6 +28,8 @@ public class ShippingInfoCheckoutRequest implements Parcelable {
     @Expose
     public String ut;
 
+    public String analyticsDataShippingCourierPrice;
+
     public ShippingInfoCheckoutRequest() {
     }
 
@@ -37,41 +39,8 @@ public class ShippingInfoCheckoutRequest implements Parcelable {
         ratesId = builder.ratesId;
         checksum = builder.checksum;
         ut = builder.ut;
+        analyticsDataShippingCourierPrice = builder.analyticsDataShippingCourierPrice;
     }
-
-    protected ShippingInfoCheckoutRequest(Parcel in) {
-        shippingId = in.readInt();
-        spId = in.readInt();
-        ratesId = in.readString();
-        checksum = in.readString();
-        ut = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(shippingId);
-        dest.writeInt(spId);
-        dest.writeString(ratesId);
-        dest.writeString(checksum);
-        dest.writeString(ut);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<ShippingInfoCheckoutRequest> CREATOR = new Creator<ShippingInfoCheckoutRequest>() {
-        @Override
-        public ShippingInfoCheckoutRequest createFromParcel(Parcel in) {
-            return new ShippingInfoCheckoutRequest(in);
-        }
-
-        @Override
-        public ShippingInfoCheckoutRequest[] newArray(int size) {
-            return new ShippingInfoCheckoutRequest[size];
-        }
-    };
 
     public static final class Builder {
         private int shippingId;
@@ -79,6 +48,7 @@ public class ShippingInfoCheckoutRequest implements Parcelable {
         private String ratesId;
         private String checksum;
         private String ut;
+        private String analyticsDataShippingCourierPrice;
 
         public Builder() {
         }
@@ -108,8 +78,49 @@ public class ShippingInfoCheckoutRequest implements Parcelable {
             return this;
         }
 
+        public Builder analyticsDataShippingCourierPrice(String val) {
+            analyticsDataShippingCourierPrice = val;
+            return this;
+        }
+
         public ShippingInfoCheckoutRequest build() {
             return new ShippingInfoCheckoutRequest(this);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.shippingId);
+        dest.writeInt(this.spId);
+        dest.writeString(this.ratesId);
+        dest.writeString(this.checksum);
+        dest.writeString(this.ut);
+        dest.writeString(this.analyticsDataShippingCourierPrice);
+    }
+
+    protected ShippingInfoCheckoutRequest(Parcel in) {
+        this.shippingId = in.readInt();
+        this.spId = in.readInt();
+        this.ratesId = in.readString();
+        this.checksum = in.readString();
+        this.ut = in.readString();
+        this.analyticsDataShippingCourierPrice = in.readString();
+    }
+
+    public static final Creator<ShippingInfoCheckoutRequest> CREATOR = new Creator<ShippingInfoCheckoutRequest>() {
+        @Override
+        public ShippingInfoCheckoutRequest createFromParcel(Parcel source) {
+            return new ShippingInfoCheckoutRequest(source);
+        }
+
+        @Override
+        public ShippingInfoCheckoutRequest[] newArray(int size) {
+            return new ShippingInfoCheckoutRequest[size];
+        }
+    };
 }

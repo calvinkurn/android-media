@@ -536,42 +536,50 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void eventViewDuration(boolean isCourierPromo, String duration) {
+        String eventLabel = isCourierPromo ? EventLabel.PROMO + EventLabel.SEPARATOR + duration
+                : EventLabel.NON_PROMO + EventLabel.SEPARATOR + duration;
         sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.VIEW_DURATION,
-                isCourierPromo ? "promo - " + duration : "non promo - " + duration
+                eventLabel
         );
     }
 
     public void eventViewCourierOption(boolean isCourierPromo, int shippingProductId) {
+        String eventLabel = isCourierPromo ? EventLabel.PROMO + EventLabel.SEPARATOR + shippingProductId
+                : EventLabel.NON_PROMO + EventLabel.SEPARATOR + shippingProductId;
         sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.VIEW_COURIER_OPTION,
-                isCourierPromo ? "promo - " + shippingProductId : "non promo - " + shippingProductId
+                eventLabel
         );
     }
 
-    public void eventClickChecklistPilihDurasiPengiriman(boolean isCourierPromo, String duration, boolean isCod) {
-        String label = (isCourierPromo ? "promo" : "non promo") +
-                " - " + duration + (isCod ? " - cod" : "");
+    public void eventClickChecklistPilihDurasiPengiriman(boolean isCourierPromo, String duration, boolean isCod, String shippingPriceMin, String shippingPriceHigh) {
+        String eventLabel = (isCourierPromo ? EventLabel.PROMO : EventLabel.NON_PROMO)
+                + EventLabel.SEPARATOR + duration
+                + EventLabel.SEPARATOR + (isCod ? EventLabel.COD : "")
+                + EventLabel.SEPARATOR + shippingPriceMin
+                + EventLabel.SEPARATOR + shippingPriceHigh;
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
-                label
+                eventLabel
         );
     }
 
     public void eventClickChangeCourierOption(boolean isCourierPromo, int shippingProductId, boolean isCod) {
-        String label = (isCourierPromo ? "promo" : "non promo") +
-                " - " + shippingProductId + (isCod ? " - cod" : "");
+        String eventLabel = (isCourierPromo ? EventLabel.PROMO : EventLabel.NON_PROMO)
+                + EventLabel.SEPARATOR + shippingProductId
+                + EventLabel.SEPARATOR + (isCod ? EventLabel.COD : "");
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_CHANGE_COURIER_OPTION,
-                label
+                eventLabel
         );
     }
 
