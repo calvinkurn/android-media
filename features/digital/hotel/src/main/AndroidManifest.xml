@@ -48,6 +48,10 @@
         <activity android:name=".hoteldetail.presentation.activity.HotelReviewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
+
+        <activity android:name=".orderdetail.presentation.activity.HotelOrderDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 
 </manifest>

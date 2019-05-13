@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.orderdetail.di
 
 import com.tokopedia.hotel.common.di.component.HotelComponent
+import com.tokopedia.hotel.orderdetail.presentation.fragment.HotelOrderDetailFragment
 import dagger.Component
 
 /**
@@ -9,8 +10,8 @@ import dagger.Component
 
 @HotelOrderDetailScope
 @Component(modules = [HotelOrderDetailModule::class, HotelOrderDetailViewModelModule::class], dependencies = [HotelComponent::class])
-interface HotelHomepageComponent {
+interface HotelOrderDetailComponent {
 
-//    fun inject(hotelHomepageFragment: HotelHomepageFragment)
+    fun inject(hotelOrderDetailFragment: HotelOrderDetailFragment)
 
 }
