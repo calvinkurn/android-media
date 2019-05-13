@@ -26,9 +26,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.multiDex
 
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
-
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
