@@ -269,6 +269,67 @@
                     app:fontSize="micro"
                     app:textViewTheme="lightSecondary" />
 
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/user_contact_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="@dimen/dp_4"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_12"
+                    android:paddingRight="@dimen/dp_12"
+                    android:paddingBottom="@dimen/dp_12">
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/tv_contact_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_8"
+                            android:textStyle="bold"
+                            app:fontSize="small"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:textViewTheme="lightPrimary"
+                            tools:text="Stevanus Kurniawan Suharyanto" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/tv_contact_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_2"
+                            app:fontSize="micro"
+                            app:textViewTheme="lightSecondary"
+                            tools:text="stevanus.suharyanto@tokopedia.com " />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/tv_contact_phone_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/hotel_booking_contact_detail_info"
+                            app:fontSize="micro"
+                            app:textViewTheme="lightSecondary"
+                            tools:text="+62 131 014 7481" />
+
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/iv_edit_contact"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="@id/linearLayout"
+                        app:layout_constraintTop_toTopOf="@id/linearLayout"
+                        app:srcCompat="@drawable/ic_travel_edit" />
+
+                </android.support.constraint.ConstraintLayout>
+
                 <RadioGroup
                     android:id="@+id/radio_group_contact"
                     android:layout_width="match_parent"
