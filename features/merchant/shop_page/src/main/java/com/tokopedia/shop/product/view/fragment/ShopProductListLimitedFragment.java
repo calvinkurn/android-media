@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -94,6 +95,9 @@ import com.tokopedia.shop.product.view.viewmodel.ShopProductLimitedViewModel;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.usecase.coroutines.Fail;
+import com.tokopedia.usecase.coroutines.Result;
+import com.tokopedia.usecase.coroutines.Success;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -186,6 +190,18 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         bundle.putString(SHOP_ATTRIBUTION, shopAttribution);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        viewModel.getFeaturedProductResponse().observe(this, listResult -> {
+            if (listResult instanceof Success){
+                onSuccessGetProductFeature(((Success<List<ShopProductViewModel>>)listResult).getData());
+            } else {
+                onErrorGetProductFeature(((Fail)listResult).getThrowable());
+            }
+        });
     }
 
     @Nullable
@@ -506,6 +522,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onDestroy() {
+        viewModel.getFeaturedProductResponse().removeObservers(this);
+        viewModel.clear();
         super.onDestroy();
         if (shopProductLimitedListPresenter != null) {
             shopProductLimitedListPresenter.detachView();
