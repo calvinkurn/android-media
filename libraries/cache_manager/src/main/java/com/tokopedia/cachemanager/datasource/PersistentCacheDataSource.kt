@@ -5,7 +5,7 @@ import com.tokopedia.cachemanager.db.CacheDeletion
 import com.tokopedia.cachemanager.db.PersistentCacheDatabase
 import com.tokopedia.cachemanager.db.dao.PersistentCacheDatabaseDao
 import com.tokopedia.cachemanager.db.model.PersistentCacheDbModel
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.*
 
 class PersistentCacheDataSource(context: Context) :
         CacheDataSource<PersistentCacheDbModel, PersistentCacheDatabaseDao>(context) {

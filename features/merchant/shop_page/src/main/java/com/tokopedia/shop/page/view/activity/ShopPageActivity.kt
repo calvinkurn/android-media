@@ -25,6 +25,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -543,7 +545,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         shopInfo?.run {
             shopPageTracking.clickAddProduct(CustomDimensionShopPage.create(shopInfo))
         }
-        (application as ShopModuleRouter).goToAddProduct(this)
+        RouteManager.route(this, ApplinkConst.PRODUCT_ADD)
     }
 
     override fun openShop() {

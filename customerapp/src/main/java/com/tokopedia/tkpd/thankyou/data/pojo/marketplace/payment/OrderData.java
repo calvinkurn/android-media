@@ -31,6 +31,9 @@ public class OrderData {
     @SerializedName("item_price")
     @Expose
     private float itemPrice;
+    @SerializedName("is_fulfillment")
+    @Expose
+    private boolean isFulfillment;
 
     public int getOrderId() {
         return orderId;
@@ -86,5 +89,13 @@ public class OrderData {
 
     public void setItemPrice(float itemPrice) {
         this.itemPrice = itemPrice;
+    }
+
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setFulfillment(boolean fulfillment) {
+        isFulfillment = fulfillment;
     }
 }

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
 import com.tokopedia.core.network.entity.discovery.GuidedSearchResponse;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
@@ -53,6 +54,9 @@ public class ProductViewModelHelper {
                 = gqlResponse.getSearchProduct();
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setAdsModel(gqlResponse.getTopAdsModel());
+        if (ListHelper.isContainItems(gqlResponse.getGlobalNavModel().getData().getGlobalNavItems())) {
+            productViewModel.setGlobalNavViewModel(convertToViewModel(gqlResponse.getGlobalNavModel()));
+        }
         productViewModel.setCpmModel(gqlResponse.getCpmModel());
         if (searchProductResponse.getRelated() != null &&
                 !TextUtils.isEmpty(searchProductResponse.getRelated().getRelatedKeyword())) {
@@ -74,6 +78,35 @@ public class ProductViewModelHelper {
         }
         productViewModel.setAdditionalParams(gqlResponse.getSearchProduct().getAdditionalParams());
         return productViewModel;
+    }
+
+    private static GlobalNavViewModel convertToViewModel(SearchProductGqlResponse.GlobalNavModel globalNavModel) {
+        return new GlobalNavViewModel(
+                globalNavModel.getData().getTitle(),
+                globalNavModel.getData().getKeyword(),
+                globalNavModel.getData().getSeeAllApplink(),
+                globalNavModel.getData().getSeeAllUrl(),
+                convertToViewModel(globalNavModel.getData().getGlobalNavItems())
+        );
+    }
+
+    private static List<GlobalNavViewModel.Item> convertToViewModel(List<SearchProductGqlResponse.GlobalNavItem> globalNavItems) {
+        List<GlobalNavViewModel.Item> itemList = new ArrayList<>();
+
+        int position = 1;
+        for (SearchProductGqlResponse.GlobalNavItem item : globalNavItems) {
+            itemList.add(new GlobalNavViewModel.Item(
+                    item.getName(),
+                    item.getInfo(),
+                    item.getImageUrl(),
+                    item.getApplink(),
+                    item.getUrl(),
+                    position
+            ));
+            position++;
+        }
+
+        return itemList;
     }
 
     private static RelatedSearchModel convertToRelatedSearchModel(SearchProductGqlResponse.Related related) {

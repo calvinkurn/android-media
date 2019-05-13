@@ -21,7 +21,7 @@ project.ext {
 
 
 dependencies {
-    
+
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.libraries.design)
@@ -37,6 +37,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.dagger
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
