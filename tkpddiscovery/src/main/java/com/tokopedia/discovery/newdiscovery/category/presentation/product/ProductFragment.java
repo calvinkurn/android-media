@@ -711,12 +711,12 @@ public class ProductFragment extends BrowseSectionFragment
             this.selectedFilter.put(filterKey, filterValue);
             eventLabel = "true";
         }
-        eventLabel = filterKey + " " + filterValue + " " + eventLabel;
+        eventLabel = filterKey + " - " + filterValue + " - " + eventLabel;
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Event.CATEGORY,
-                "quick filter" + " " + getScreenName(),
+                "quick filter" + " - " + getScreenName(),
                 eventLabel
         ).getEvent());
         reloadData();
