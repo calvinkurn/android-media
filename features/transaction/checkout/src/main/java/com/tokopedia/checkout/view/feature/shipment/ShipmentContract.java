@@ -211,8 +211,6 @@ public interface ShipmentContract {
 
         void sendAnalyticsOnClickChangeDurationShipmentRecommendation();
 
-        void sendAnalyticsOnClickButtonDoneShowCaseDurationShipmentRecommendation();
-
         void sendAnalyticsOnViewPromoAutoApply();
 
         void sendAnalyticsOnViewPromoManualApply(String type);
