@@ -32,6 +32,7 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_DIMENSION_38 = "dimension38";
     private static final String KEY_DIMENSION_40 = "dimension40";
     private static final String KEY_DIMENSION_45 = "dimension45";
+    private static final String KEY_DIMENSION_54 = "dimension54";
     private static final String KEY_DIMENSION_80 = "dimension80";
     private static final String KEY_ATTRIBUTION = "attribution";
 
@@ -68,6 +69,11 @@ public class EnhancedECommerceProductCartMapData {
 
     public void setDimension38(String data) {
         Product.put(KEY_DIMENSION_38, !TextUtils.isEmpty(data) ? data : DEFAULT_VALUE_NONE_OTHER);
+    }
+
+    public void setDimension54(Boolean isFulfill) {
+        String data = isFulfill ? "tokopedia" : "regular";
+        Product.put(KEY_DIMENSION_54, !TextUtils.isEmpty(data) ? data : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public void setDimension80(String data) {

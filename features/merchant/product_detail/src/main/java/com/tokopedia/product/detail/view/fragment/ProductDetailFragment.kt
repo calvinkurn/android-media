@@ -69,6 +69,7 @@ import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.ProductInfoP1
 import com.tokopedia.product.detail.data.model.ProductInfoP2
 import com.tokopedia.product.detail.data.model.ProductInfoP3
@@ -359,7 +360,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (it) {
                 if (productInfo != null && shopInfo != null)
                     productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                        it, tradeInParams?.usedPrice > 0)
+                        it, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
 
                 if (tv_trade_in_promo != null) {
                     tv_trade_in_promo.visible()
@@ -368,7 +369,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             } else
                 if (productInfo != null && shopInfo != null)
                     productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                        it, tradeInParams?.usedPrice > 0)
+                        it, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
 
         }
         context?.let {
@@ -1129,7 +1130,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
             if (!isHandPhone)
                 productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, this, productInfoP2.shopInfo, trackerAttribution,
-                    false, false)
+                    false, false, productInfoP2.nearestWarehouse.warehouseInfo.isFulfillment)
 
             productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                 ?: "")

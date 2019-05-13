@@ -841,6 +841,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         enhancedECommerceProductCartMapData.setDimension38(productDataCheckoutRequest.getProductAttribution());
                         enhancedECommerceProductCartMapData.setDimension40(productDataCheckoutRequest.getProductListName());
                         enhancedECommerceProductCartMapData.setDimension45(String.valueOf(productDataCheckoutRequest.getCartId()));
+                        enhancedECommerceProductCartMapData.setDimension54(getFulfillmentStatus(shopProductCheckoutRequest.getShopId()));
                         enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
                     }
                 }
@@ -853,6 +854,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             return checkoutMapData;
         }
         return null;
+    }
+
+    private boolean getFulfillmentStatus(int shopId) {
+        for (ShipmentCartItemModel cartItemModel : shipmentCartItemModelList) {
+            if (cartItemModel.getShopId() == shopId) {
+                return cartItemModel.isFulfillment();
+            }
+        }
+        return false;
     }
 
     @Override
