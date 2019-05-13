@@ -274,6 +274,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 if (data != null)
                     onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
             }
+        } else if (requestCode == REQUEST_CODE_LOGIN) {
+            if (resultCode == Activity.RESULT_OK) {
+                doAtc()
+            }
         }
     }
 
@@ -510,27 +514,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 }
                 return@setOnClickListener
             }
-            if (action == ATC_ONLY) {
-                addToCart()
-            } else if (action == TRADEIN_BUY) {
-                if (tradeInParams != null) {
-                    val label : String
-                    if (tradeInParams!!.usedPrice > 0) {
-                        goToHargaFinal()
-                        label = "after diagnostic"
-                    } else {
-                        tv_trade_in.setTrackListener(null)
-                        tv_trade_in.performClick()
-                        label = "before diagnostic"
-                    }
-                    sendGeneralEvent("clickPDP",
-                            "product detail page",
-                            "click trade in button on variants page",
-                            label)
-                    }
-            } else {
-                doBuyOrPreorder(isOcs)
-            }
+            doAtc()
         }
         tv_trade_in.setTrackListener { trackClickTradeIn() }
         button_cart.setOnClickListener {
@@ -546,6 +530,30 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             } else {
                 addToCart()
             }
+        }
+    }
+
+    private fun doAtc() {
+        if (action == ATC_ONLY) {
+            addToCart()
+        } else if (action == TRADEIN_BUY) {
+            if (tradeInParams != null) {
+                val label: String
+                if (tradeInParams!!.usedPrice > 0) {
+                    goToHargaFinal()
+                    label = "after diagnostic"
+                } else {
+                    tv_trade_in.setTrackListener(null)
+                    tv_trade_in.performClick()
+                    label = "before diagnostic"
+                }
+                sendGeneralEvent("clickPDP",
+                        "product detail page",
+                        "click trade in button on variants page",
+                        label)
+            }
+        } else {
+            doBuyOrPreorder(isOcs)
         }
     }
 
