@@ -46,13 +46,11 @@ public class DeveloperOptionActivity extends BaseActivity {
     private static final String LOG_GROUPCHAT = "log_groupchat";
 
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
-    private String HAS_SEEN_FREE_RETURN_ONBOARDING = "HAS_SEEN_FREE_RETURN_ONBOARDING";
 
     private TextView resetOnBoarding;
     private TextView testOnBoarding;
     private TextView vForceCrash;
     private TextView vDevOptionRN;
-    private View vMaintenance;
     private AppCompatEditText remoteConfigKeyEditText;
     private AppCompatEditText remoteConfigValueEditText;
     private AppCompatButton remoteConfigCheckBtn;
@@ -236,6 +234,7 @@ public class DeveloperOptionActivity extends BaseActivity {
                     TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.values()[position]);
                     TokopediaUrl.Companion.deleteInstance();
                     TokopediaUrl.Companion.init(DeveloperOptionActivity.this);
+                    userSession.logoutSession();
                     Toast.makeText(DeveloperOptionActivity.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
                 }
                 isUserEditEnvironment = true;
