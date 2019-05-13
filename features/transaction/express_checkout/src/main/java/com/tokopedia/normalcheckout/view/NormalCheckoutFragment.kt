@@ -233,6 +233,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     fun goToTradeInHome() {
+        if (context == null) return
         val intent = TradeInHomeActivity.getIntent(context)
 
         if (tradeInParams != null && selectedProductInfo != null) {
