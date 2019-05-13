@@ -88,17 +88,17 @@ class DeeplinkMatcher() {
             ) {
                 continue
             }
+            var isMatch = true
             matcherPattern.patternIndex?.let { it ->
-                var isMatch = true
                 for ((index, pattern) in it) {
                     if (!linkSegment.get(index).equals(pattern, false)) {
                         isMatch = false
                         break
                     }
                 }
-                if (isMatch) {
-                    return result
-                }
+            }
+            if (isMatch) {
+                return result
             }
         }
         return OTHER
