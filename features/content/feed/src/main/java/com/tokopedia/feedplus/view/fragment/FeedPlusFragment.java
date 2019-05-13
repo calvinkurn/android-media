@@ -110,8 +110,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.feedplus.view.FeedPlusConstant.KEY_FEED;
-import static com.tokopedia.feedplus.view.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
+import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED;
+import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
 import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED;
@@ -1066,14 +1066,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onUserNotLogin() {
-        finishLoading();
-        adapter.clearData();
-        adapter.unsetEndlessScrollListener();
-        adapter.showUserNotLogin();
-    }
-
-    @Override
     public void onGoToLogin() {
         if (getActivity() != null) {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
@@ -1379,21 +1371,25 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type,
                                     boolean isFollow) {
-        if (type.equals(FollowCta.AUTHOR_USER)) {
-            int userIdInt = 0;
-            try {
-                userIdInt = Integer.valueOf(id);
-            } catch (NumberFormatException ignored) {
-            }
+        if (userSession.isLoggedIn()) {
+            if (type.equals(FollowCta.AUTHOR_USER)) {
+                int userIdInt = 0;
+                try {
+                    userIdInt = Integer.valueOf(id);
+                } catch (NumberFormatException ignored) {
+                }
 
-            if (isFollow) {
-                onUnfollowKolClicked(positionInFeed, userIdInt);
-            } else {
-                onFollowKolClicked(positionInFeed, userIdInt);
-            }
+                if (isFollow) {
+                    onUnfollowKolClicked(positionInFeed, userIdInt);
+                } else {
+                    onFollowKolClicked(positionInFeed, userIdInt);
+                }
 
-        } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
-            presenter.toggleFavoriteShop(positionInFeed, id);
+            } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
+                presenter.toggleFavoriteShop(positionInFeed, id);
+            }
+        } else {
+            onGoToLogin();
         }
 
         if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
@@ -1420,7 +1416,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
                 @Override
                 public void onReportClick() {
-                    goToContentReport(postId);
+                    if (userSession.isLoggedIn()) {
+                        goToContentReport(postId);
+                    } else {
+                        onGoToLogin();
+                    }
                 }
 
                 @Override
