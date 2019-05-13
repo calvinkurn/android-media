@@ -26,9 +26,20 @@
     <com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
         android:id="@+id/view_pager_partner"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/dp_4"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/text_label_lending_partner" />
+
+    <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/il_partner_page_indicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        app:fillColor="@color/text_error"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_pager_partner"
+        app:pageColor="@color/grey_300" />
 
 </android.support.constraint.ConstraintLayout>

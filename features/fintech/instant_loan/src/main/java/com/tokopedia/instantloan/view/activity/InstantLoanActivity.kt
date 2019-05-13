@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -52,12 +51,14 @@ import com.tokopedia.instantloan.view.ui.PartnerDataPageItem
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_instant_loan.*
 import kotlinx.android.synthetic.main.il_other_financial_products.*
+import kotlinx.android.synthetic.main.layout_bottom_banner.*
 import kotlinx.android.synthetic.main.layout_il_testimonials.*
 import kotlinx.android.synthetic.main.layout_lending_category.*
+import kotlinx.android.synthetic.main.layout_lending_partner.*
 import javax.inject.Inject
 
 class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, BannerContractor.View, OnGoingLoanContractor.View,
-        DanaInstantFragment.ActivityInteractor, BannerPagerAdapter.BannerClick, View.OnClickListener {
+        DanaInstantFragment.ActivityInteractor, BannerPagerAdapter.BannerClick {
     @Inject
     lateinit var mBannerPresenter: BannerListPresenter
 
@@ -71,8 +72,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     lateinit var userSession: UserSession
 
     private var mBannerPager: ViewPager? = null
-    private var mBtnNextBanner: FloatingActionButton? = null
-    private var mBtnPreviousBanner: FloatingActionButton? = null
 
     private var tabLayout: TabLayout? = null
     private var heightWrappingViewPager: HeightWrappingViewPager? = null
@@ -100,16 +99,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         }
 
         override fun onPageSelected(position: Int) {
-            if (position == mBannerPager!!.adapter!!.count - 1) {
-                mBtnNextBanner!!.hide()
-                mBtnPreviousBanner!!.show()
-            } else if (position == 0) {
-                mBtnPreviousBanner!!.hide()
-                mBtnNextBanner!!.show()
-            } else {
-                mBtnNextBanner!!.show()
-                mBtnPreviousBanner!!.show()
-            }
             sendBannerImpressionEvent(position)
         }
 
@@ -156,12 +145,22 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         partnerItemPagerAdapter.setData(partnerDataItemList)
 
         partnerHeightWrappingViewPager.adapter = partnerItemPagerAdapter
+
+        if (partnerDataItemList.size > 1) {
+            il_partner_page_indicator.visibility = View.VISIBLE
+            il_partner_page_indicator.setViewPager(partnerHeightWrappingViewPager, 0)
+        } else {
+            il_partner_page_indicator.visibility = View.GONE
+        }
     }
 
 
     fun renderBannerList(banners: ArrayList<GqlLendingBannerData>) {
         if (banners.size > 1) {
-            (findViewById<View>(R.id.button_next) as FloatingActionButton).show()
+            il_banner_page_indicator.visibility = View.VISIBLE
+            il_banner_page_indicator.setViewPager(mBannerPager, 0)
+        } else {
+            il_banner_page_indicator.visibility = View.GONE
         }
         mBannerPager = findViewById(R.id.view_pager_banner)
         mBannerPager!!.offscreenPageLimit = 2
@@ -484,15 +483,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         mBannerPager!!.setCurrentItem(mBannerPager!!.currentItem - 1, true) //-1 for move the page to prev
     }
 
-
-    override fun onClick(source: View) {
-        if (source.id == R.id.button_next) {
-            nextBanner()
-        } else if (source.id == R.id.button_previous) {
-            previousBanner()
-        }
-    }
-
     private fun initInjector() {
         val daggerInstantLoanComponent = InstantLoanComponentInstance.get(application)
         daggerInstantLoanComponent!!.inject(this)
@@ -502,15 +492,10 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         tabLayout = findViewById(R.id.tabs)
         heightWrappingViewPager = findViewById(R.id.pager)
         partnerHeightWrappingViewPager = findViewById(R.id.view_pager_partner)
-        mBtnNextBanner = findViewById(R.id.button_next)
-        mBtnPreviousBanner = findViewById(R.id.button_previous)
         rvSeoLayout = findViewById(R.id.rv_lending_seo)
     }
 
     private fun attachViewListener() {
-        mBtnNextBanner!!.setOnClickListener(this)
-        mBtnPreviousBanner!!.setOnClickListener(this)
-
         financial_product_one.setOnClickListener {
             openWebView(InstantLoanUrl.COMMON_URL.CREDIT_CARD_WEBVIEW_URL)
         }
