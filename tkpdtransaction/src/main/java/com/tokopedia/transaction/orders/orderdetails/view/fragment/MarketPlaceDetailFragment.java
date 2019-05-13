@@ -470,6 +470,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
+    public void askPermission() {
+
+    }
+
+    @Override
     public void setActionButtons(List<ActionButton> actionButtons) {
         actionBtnLayout.removeAllViews();
         actionBtnLayout.setOrientation(LinearLayout.VERTICAL);
