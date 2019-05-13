@@ -1,0 +1,72 @@
+query PropertyCart($data: PropertyGetCartRequest) {
+    propertyCart(input: $data) {
+        cartID
+        cart {
+            contact {
+                name
+                email
+                phone
+                phoneCode
+            }
+            adult
+            rooms {
+                roomID
+                numOfRooms
+            }
+            checkIn
+            checkOut
+            guestName
+            specialRequest
+            totalPrice
+            totalPriceAmount
+            localTotalPrice
+            localTotalPriceAmount
+            currency
+            fares {
+                type
+                description
+                price
+                priceAmount
+                localPrice
+                localPriceAmount
+            }
+        }
+        property {
+            propertyID
+            name
+            type
+            address
+            image
+            star
+            paymentNote
+            rooms: {
+                roomID
+                isBreakFastIncluded
+                maxOccupancy
+                roomName
+                isNeedDeposit
+                isRefundAble
+                isCCRequired
+                importantNote
+                paymentTerms {
+                    name
+                    cancellationDescription
+                    prepaymentDescription
+                }
+                roomPolicies {
+                    content
+                    policyType
+                }
+                cancellationPolicies {
+                    content
+                    policyType
+                    isClickable
+                    details {
+                        title
+                        content
+                    }
+                }
+            }
+        }
+    }
+}
