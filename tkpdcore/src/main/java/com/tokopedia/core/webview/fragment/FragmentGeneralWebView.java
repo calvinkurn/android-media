@@ -509,7 +509,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             //TODO will be removed #TESTUTMSOURCE
             Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
-            
+
             Log.d(TAG, "redirect url = " + url);
             if (getActivity() != null
                     && url.equalsIgnoreCase(PARAM_WEBVIEW_BACK)
