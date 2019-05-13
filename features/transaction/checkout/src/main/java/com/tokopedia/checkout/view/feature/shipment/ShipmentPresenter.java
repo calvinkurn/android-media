@@ -39,6 +39,7 @@ import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddres
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
@@ -153,6 +154,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private ShipmentCostModel shipmentCostModel;
     private EgoldAttributeModel egoldAttributeModel;
     private ShipmentDonationModel shipmentDonationModel;
+    private ShipmentButtonPaymentModel shipmentButtonPaymentModel;
     private CodModel codData;
     private Token token;
 
@@ -165,6 +167,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private boolean hasDeletePromoAfterChecKPromoCodeFinal;
     private Map<Integer, List<ShippingCourierViewModel>> shippingCourierViewModelsState;
     private boolean isPurchaseProtectionPage = false;
+    private boolean isShowOnboarding;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
     private CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
@@ -359,7 +362,26 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment, boolean isTradeIn,
+    public void setShipmentButtonPaymentModel(ShipmentButtonPaymentModel shipmentButtonPaymentModel) {
+        this.shipmentButtonPaymentModel = shipmentButtonPaymentModel;
+    }
+
+    @Override
+    public ShipmentButtonPaymentModel getShipmentButtonPaymentModel() {
+        if (shipmentButtonPaymentModel == null) {
+            shipmentButtonPaymentModel = new ShipmentButtonPaymentModel();
+        }
+        return shipmentButtonPaymentModel;
+    }
+
+    @Override
+    public boolean isShowOnboarding() {
+        return isShowOnboarding;
+    }
+
+    @Override
+    public void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
+                                               boolean isTradeIn, boolean isSkipUpdateOnboardingState,
                                                @Nullable String cornerId, String deviceId) {
         if (isReloadData) {
             getView().showLoading();
@@ -372,6 +394,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         RequestParams requestParams = RequestParams.create();
         Map<String, String> params = getGeneratedAuthParamNetwork(paramGetShipmentForm);
+        params.put(GetShipmentAddressFormUseCase.PARAM_SKIP_ONBOARDING_UPDATE_STATE, String.valueOf(isSkipUpdateOnboardingState ? 1 : 0));
 
         if (isOneClickShipment) {
             if (isTradeIn) {
@@ -441,6 +464,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         token = new Token();
         token.setUt(cartShipmentAddressFormData.getKeroUnixTime());
         token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
+
+        isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
     }
 
     private boolean checkHaveSameCurrentCodAddress(String cornerId) {
@@ -777,11 +802,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
                 String errorMessage = e.getMessage();
                 if (!(e instanceof CartResponseErrorException)) {
                     errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), e);
                 }
+                analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage);
                 getView().showToastError(errorMessage);
                 processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn, deviceId);
             }
@@ -807,7 +832,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     }
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else {
-                    analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
+                    analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.getErrorMessage());
                     getView().renderCheckoutCartError(checkoutData.getErrorMessage());
                 }
             }
