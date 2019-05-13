@@ -18,6 +18,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.tokopedia.core2.R;
 import com.tokopedia.core.home.BannerWebView;
@@ -171,6 +172,8 @@ public class BrandsWebViewFragment extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
+        //TODO will be removed #TESTUTMSOURCE
+        Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
         if ((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()) ||
                 Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
                 && !url.endsWith(KEYWORD_PL_SUFFIX)

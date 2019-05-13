@@ -18,6 +18,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core2.R;
@@ -111,7 +112,8 @@ public class FragmentTopPicksWebView extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
-
+        //TODO will be removed #TESTUTMSOURCE
+        Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
             if (((Uri.parse(url).getHost().contains(BASE_URL))
                     || Uri.parse(url).getHost().contains(BASE_MOBILE_URL))
                     && !url.endsWith(".pl")) {

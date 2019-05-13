@@ -16,6 +16,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
@@ -188,6 +189,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
+        //TODO will be removed #TESTUTMSOURCE
+        Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
         return false;
     }
 
