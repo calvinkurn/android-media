@@ -128,6 +128,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message"
 
         const val REQUEST_CODE_LOGIN = 561
+        const val REQUEST_CODE_LOGIN_THEN_ATC = 562
+        const val REQUEST_CODE_LOGIN_THEN_BUY = 563
+        const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 564
 
         fun createInstance(shopId: String?, productId: String?,
                            notes: String? = "", quantity: Int? = 0,
@@ -264,19 +267,15 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == FinalPriceActivity.FINAL_PRICE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                FinalPriceActivity.FINAL_PRICE_REQUEST_CODE -> if (data != null)
                     onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
-            }
-        } else if (requestCode == TradeInHomeActivity.TRADEIN_HOME_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null)
+                TradeInHomeActivity.TRADEIN_HOME_REQUEST -> if (data != null)
                     onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
-            }
-        } else if (requestCode == REQUEST_CODE_LOGIN) {
-            if (resultCode == Activity.RESULT_OK) {
-                doAtc()
+                REQUEST_CODE_LOGIN_THEN_BUY -> doAtc(ATC_AND_BUY)
+                REQUEST_CODE_LOGIN_THEN_ATC -> doAtc(ATC_ONLY)
+                REQUEST_CODE_LOGIN_THEN_TRADE_IN -> doAtc(TRADEIN_BUY)
             }
         }
     }
@@ -506,52 +505,58 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     //do tracking
                     if (action == ATC_ONLY) {
                         normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN_THEN_ATC)
                     } else {
                         normalCheckoutTracking.eventClickBuyInVariantNotLogin(productId)
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN_THEN_BUY)
                     }
-                    startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
                 }
                 return@setOnClickListener
             }
-            doAtc()
+            doAtc(ATC_AND_BUY)
         }
         tv_trade_in.setTrackListener { trackClickTradeIn() }
         button_cart.setOnClickListener {
             if (hasError()) {
                 return@setOnClickListener
             }
-            action == ATC_ONLY
             if (!viewModel.isUserSessionActive()) {
                 //do tracking
                 normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
                 //do login
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                    REQUEST_CODE_LOGIN)
+                    REQUEST_CODE_LOGIN_THEN_ATC)
             } else {
                 addToCart()
             }
         }
     }
 
-    private fun doAtc() {
+    private fun doAtc(action: Int) {
         if (action == ATC_ONLY) {
             addToCart()
         } else if (action == TRADEIN_BUY) {
-            if (tradeInParams != null) {
-                val label: String
-                if (tradeInParams!!.usedPrice > 0) {
-                    goToHargaFinal()
-                    label = "after diagnostic"
-                } else {
-                    tv_trade_in.setTrackListener(null)
-                    tv_trade_in.performClick()
-                    label = "before diagnostic"
+            if (!viewModel.isUserSessionActive()) {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN_THEN_TRADE_IN)
+            } else {
+                if (tradeInParams != null) {
+                    val label: String
+                    if (tradeInParams!!.usedPrice > 0) {
+                        goToHargaFinal()
+                        label = "after diagnostic"
+                    } else {
+                        tv_trade_in.setTrackListener(null)
+                        tv_trade_in.performClick()
+                        label = "before diagnostic"
+                    }
+                    sendGeneralEvent("clickPDP",
+                            "product detail page",
+                            "click trade in button on variants page",
+                            label)
                 }
-                sendGeneralEvent("clickPDP",
-                        "product detail page",
-                        "click trade in button on variants page",
-                        label)
             }
         } else {
             doBuyOrPreorder(isOcs)
