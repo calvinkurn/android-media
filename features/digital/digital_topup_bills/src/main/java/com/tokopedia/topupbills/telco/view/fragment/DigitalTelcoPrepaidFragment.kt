@@ -1,6 +1,8 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
 import android.app.Activity
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
@@ -13,15 +15,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.covertContactUriToContactData
-import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductAdapter
+import com.tokopedia.topupbills.telco.data.TelcoComponentData
+import com.tokopedia.topupbills.telco.data.TelcoRechargeComponentData
+import com.tokopedia.topupbills.telco.data.constant.DataCollectionType
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalProductTelcoItem
 import com.tokopedia.topupbills.telco.view.model.DigitalPromo
 import com.tokopedia.topupbills.telco.view.model.DigitalRecentNumber
+import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalBaseClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
@@ -38,11 +45,31 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
     private lateinit var promoListView: DigitalPromoListWidget
     private lateinit var viewPager: ViewPager
     private lateinit var tabLayout: TabLayout
+    private lateinit var telcoRechargeData: TelcoRechargeComponentData
     private val recentNumbers = mutableListOf<DigitalRecentNumber>()
     private val promoList = mutableListOf<DigitalPromo>()
 
     @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
+    private lateinit var viewModel: DigitalTelcoViewModel
+
+    override fun onStart() {
+        context?.let {
+            GraphqlClient.init(it)
+        }
+        super.onStart()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.let {
+            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            viewModel = viewModelProvider.get(DigitalTelcoViewModel::class.java)
+        }
+    }
 
     override fun getScreenName(): String {
         return DigitalTelcoPrepaidFragment::class.java.simpleName
@@ -68,10 +95,52 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        telcoRechargeData = TelcoRechargeComponentData(TelcoComponentData(kotlin.collections.mutableListOf()))
+
         renderInputNumber()
         renderRecentTransactions()
         renderPromoList()
         renderViewPager()
+        getInputFilterDataCollections()
+    }
+
+    fun getInputFilterDataCollections() {
+        var mapParam = HashMap<String, kotlin.Any>()
+        mapParam.put("data", DataCollectionType.CUSTOM)
+        mapParam.put("componentID", 5)
+        viewModel.getRechargeCollections(GraphqlHelper.loadRawString(resources, R.raw.query_digital_data_collection), mapParam,
+                this::onSuccessInputFilter, this::onErrorInputFilter)
+    }
+
+    fun onSuccessInputFilter(telcoData: TelcoRechargeComponentData) {
+        this.telcoRechargeData = telcoData
+        renderProductListFromInputfilter()
+    }
+
+    fun renderProductListFromInputfilter() {
+        val prefixClientNumber = telcoClientNumberWidget.getInputNumber().substring(0, 4)
+        try {
+            val dataFound = this.telcoRechargeData.rechargeComponentData.dataCollections.filter {
+                it.value.equals(prefixClientNumber)
+            }.single()
+            Toast.makeText(activity, dataFound.operator.attributes.name, Toast.LENGTH_SHORT).show()
+        } catch (exception: Exception){
+            Toast.makeText(activity, "error exception", Toast.LENGTH_SHORT).show()
+        }
+//        viewModel.getRechargeCollections(GraphqlHelper.loadRawString(resources, R.raw.query_digital_data_collection), mapOf(),
+//                this::onSuccessProductList, this::onErrorProductList)
+    }
+
+    fun onErrorInputFilter(throwable: Throwable) {
+
+    }
+
+    fun onSuccessProductList(telcoData: TelcoRechargeComponentData) {
+
+    }
+
+    fun onErrorProductList(throwable: Throwable) {
+
     }
 
     fun renderInputNumber() {
@@ -101,6 +170,13 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
             }
 
             override fun renderProductList() {
+                telcoRechargeData.rechargeComponentData.dataCollections.isEmpty()?.let {
+                    if (it) {
+                        getInputFilterDataCollections()
+                    } else {
+                        renderProductListFromInputfilter()
+                    }
+                }
                 recentNumbersView.visibility = View.GONE
                 promoListView.visibility = View.GONE
                 viewPager.visibility = View.VISIBLE
@@ -184,6 +260,11 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         context?.run {
             permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
         }
+    }
+
+    override fun onDestroy() {
+        viewModel.clear()
+        super.onDestroy()
     }
 
     companion object {

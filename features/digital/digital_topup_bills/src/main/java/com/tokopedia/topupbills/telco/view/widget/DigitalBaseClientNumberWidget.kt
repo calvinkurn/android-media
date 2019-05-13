@@ -64,7 +64,7 @@ open class DigitalBaseClientNumberWidget @JvmOverloads constructor(@NotNull cont
                 if (count == 0) {
                     listener.clearAutoComplete()
                 }
-                if (count > 4) {
+                if (count >= 4) {
                     listener.renderProductList()
                 }
             }
@@ -82,6 +82,37 @@ open class DigitalBaseClientNumberWidget @JvmOverloads constructor(@NotNull cont
 
     fun setInputNumber(inputNumber: String) {
         autoCompleteInputNumber.setText(inputNumber)
+    }
+
+    fun getInputNumber(): String {
+        return formatPrefixClientNumber(autoCompleteInputNumber.text.toString());
+    }
+
+    fun validatePrefixClientNumber(phoneNumber: String): String {
+        var phoneNumber = phoneNumber
+        if (phoneNumber.startsWith("62")) {
+            phoneNumber = phoneNumber.replaceFirst("62".toRegex(), "0")
+        }
+        if (phoneNumber.startsWith("+62")) {
+            phoneNumber = phoneNumber.replace("+62", "0")
+        }
+        phoneNumber = phoneNumber.replace(".", "")
+
+        return phoneNumber.replace("[^0-9]+".toRegex(), "")
+    }
+
+    fun formatPrefixClientNumber(phoneNumber: String?): String {
+        phoneNumber?.run {
+            if (phoneNumber == null || "".equals(phoneNumber.trim { it <= ' ' }, ignoreCase = true)) {
+                return phoneNumber
+            }
+            var phoneNumberWithPrefix = validatePrefixClientNumber(phoneNumber)
+            if (!phoneNumberWithPrefix.startsWith("0")) {
+                phoneNumberWithPrefix = "0$phoneNumber"
+            }
+            return phoneNumberWithPrefix
+        }
+        return ""
     }
 
     interface ActionListener {
