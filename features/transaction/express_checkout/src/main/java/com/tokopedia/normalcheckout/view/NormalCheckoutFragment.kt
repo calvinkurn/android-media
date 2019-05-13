@@ -521,6 +521,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             if (hasError()) {
                 return@setOnClickListener
             }
+            action == ATC_ONLY
             if (!viewModel.isUserSessionActive()) {
                 //do tracking
                 normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
