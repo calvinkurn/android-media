@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.domain.usecase;
 
-import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.constant.ResponseStatus;
 import com.tokopedia.search.result.network.service.TopAdsService;
@@ -13,6 +12,8 @@ import org.json.JSONObject;
 import retrofit2.Response;
 import rx.Observable;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.PRODUCT_WISHLIST_URL;
+
 class ProductWishlistUrlUseCase extends UseCase<Boolean> {
 
     private final TopAdsService topAdsService;
@@ -23,11 +24,11 @@ class ProductWishlistUrlUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return topAdsService.productWishlistUrl(requestParams.getString(SearchConstant.Wishlist.PRODUCT_WISHLIST_URL, ""))
+        return topAdsService.productWishlistUrl(requestParams.getString(PRODUCT_WISHLIST_URL, ""))
                 .map(this::mapResponseToBoolean);
     }
 
-    private boolean mapResponseToBoolean(Response<String> response) {
+    private boolean mapResponseToBoolean(Response<Object> response) {
         if(response.isSuccessful()) {
             return getSuccessfulResponse(response);
         } else {
@@ -35,9 +36,9 @@ class ProductWishlistUrlUseCase extends UseCase<Boolean> {
         }
     }
 
-    private boolean getSuccessfulResponse(Response<String> response) {
+    private boolean getSuccessfulResponse(Response<Object> response) {
         try {
-            JSONObject object = new JSONObject(response.body());
+            JSONObject object = new JSONObject(response.body().toString());
             return object.getJSONObject("data").getBoolean("success");
         } catch (JSONException e) {
             return false;

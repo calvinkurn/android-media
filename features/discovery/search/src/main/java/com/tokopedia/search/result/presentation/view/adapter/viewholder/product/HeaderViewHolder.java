@@ -37,7 +37,7 @@ import java.util.List;
 public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.search_header_layout;
+    public static final int LAYOUT = R.layout.search__header_layout;
     private static final String SHOP = "shop";
     private LinearLayout suggestionContainer;
     private RecyclerView quickFilterListView;

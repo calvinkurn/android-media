@@ -8,5 +8,5 @@ import rx.Observable;
 public interface TopAdsService {
 
     @GET
-    Observable<Response<String>> productWishlistUrl(@Url String wishlistUrl);
+    Observable<Response<Object>> productWishlistUrl(@Url String wishlistUrl);
 }
