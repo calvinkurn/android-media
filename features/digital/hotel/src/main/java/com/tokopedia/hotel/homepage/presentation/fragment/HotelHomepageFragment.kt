@@ -16,6 +16,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
@@ -275,9 +276,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                 REQUEST_CODE_SEARCH)
     }
 
-    private fun countNightDifference(): Long =
-            ((TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate).time -
-                    TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate).time)) / ONE_DAY
+    private fun countNightDifference(): Long = HotelUtils.countNightDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
 
     private fun loadPromoData() {
         homepageViewModel.getHotelPromo(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_home_promo))
