@@ -26,6 +26,7 @@ internal val staging = Url(
         JAHE = "jahe-staging".tokopediaCom(),
         GOLDMERCHANT = "goldmerchant-staging".tokopediaCom(),
         PULSA = "pulsa-staging".tokopediaCom(),
+        PULSA_API = "pulsa-api-staging".tokopediaCom(),
         PAY_ID = "https://pay-staging.tokopedia.id/",
         PAY = "https://pay-staging.tokopedia.com",
         PAYMENT = "payment-staging".tokopediaCom(),

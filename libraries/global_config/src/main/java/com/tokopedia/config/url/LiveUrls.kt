@@ -27,6 +27,7 @@ internal val live = Url(
         JAHE = "jahe".tokopediaCom(),
         GOLDMERCHANT = "goldmerchant".tokopediaCom(),
         PULSA = "pulsa".tokopediaCom(),
+        PULSA_API = "pulsa-api".tokopediaCom(),
         PAY_ID = "https://pay.tokopedia.id/",
         PAY = "https://pay.tokopedia.com",
         PAYMENT = "payment".tokopediaCom(),

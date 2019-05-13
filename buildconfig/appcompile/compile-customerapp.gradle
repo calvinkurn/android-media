@@ -167,8 +167,6 @@ include "features:user:user_identification_common"
 include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
 
-include 'logisticanalytics'
-include 'tkpdfeed'
 include 'tkpdcore'
 include 'tkpdinbox'
 include 'tkpddiscovery'
@@ -177,10 +175,7 @@ include 'tkpdsession'
 include 'tkpdpdp'
 include 'tkpddesign'
 include 'tkpdseller'
-include 'tkpdtokocash'
 include 'tkpdabstraction'
-include 'tkpdcontent'
-include 'tkpdstream'
 include 'tkpdtransaction-common'
 
 include 'customerapp'

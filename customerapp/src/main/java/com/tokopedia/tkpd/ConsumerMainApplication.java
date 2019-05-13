@@ -39,7 +39,6 @@ import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.common.category.CategoryDbFlow;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.cpm.CharacterPerMinuteActivityLifecycleCallbacks;
@@ -96,7 +95,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.PREINSTALL_DESC = BuildConfig.PREINSTALL_DESC;
         com.tokopedia.config.GlobalConfig.PREINSTALL_SITE = BuildConfig.PREINSTALL_SITE;
         com.tokopedia.config.GlobalConfig.APPLICATION_ID = BuildConfig.APPLICATION_ID;
-        generateConsumerAppBaseUrl();
+
+        TokopediaUrl.Companion.init(this); // generate base url
+
         generateConsumerAppNetworkKeys();
 
         initializeDatabase();
@@ -177,15 +178,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         }
     }
-
-    private void generateConsumerAppBaseUrl() {
-        TokopediaUrl.Companion.init(this);
-
-        TkpdBaseURL.DIGITAL_API_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
-        com.tokopedia.common_digital.common.constant.DigitalUrl.INSTANCE.setDIGITAL_API_DOMAIN(ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN);
-        tradein_common.Constants.LAKU6_BASEURL = TokopediaUrl.Companion.getInstance().getLAKU6();
-    }
-
 
     private void generateConsumerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
