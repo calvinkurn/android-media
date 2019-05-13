@@ -30,9 +30,8 @@ public class SimilarSearchManager {
         remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
-    private boolean isSimilarSearchEnable() {
+    public boolean isSimilarSearchEnable() {
         return remoteConfig.getBoolean(FIREBASE_SIMILAR_SEARCH_REMOTE_CONFIG_KEY,true);
-
     }
 
     public void startSimilarSearchIfEnable(String queryKey, ProductItemViewModel item) {

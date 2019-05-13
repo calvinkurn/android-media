@@ -53,6 +53,11 @@ import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.similarsearch.SimilarSearchManager;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -124,6 +129,7 @@ public class ProductListFragment
     private SimilarSearchManager similarSearchManager;
     private PerformanceMonitoring performanceMonitoring;
     private TrackingQueue trackingQueue;
+    private ShowCaseDialog showCaseDialog;
 
     private FilterController quickFilterController = new FilterController();
 
@@ -320,6 +326,10 @@ public class ProductListFragment
         adapter.clear();
 
         addProductList(list);
+
+        if (similarSearchManager.isSimilarSearchEnable()){
+            startShowCase();
+        }
     }
 
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
@@ -956,5 +966,80 @@ public class ProductListFragment
     public void updateScrollListener() {
         gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
         linearLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+    }
+
+    public void startShowCase() {
+        final String showCaseTag = ProductListFragment.class.getName();
+        if (!isShowCaseAllowed(showCaseTag)) {
+            return;
+        }
+        if (showCaseDialog != null) {
+            return;
+        }
+
+        final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
+
+        if (recyclerView == null)
+            return;
+
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getView() == null) {
+                    return;
+                }
+
+                View itemView = scrollToShowCaseItem();
+                if (itemView != null) {
+                    showCaseList.add(
+                            new ShowCaseObject(
+                                    itemView.findViewById(R.id.container),
+                                    getString(R.string.view_similar_item),
+                                    getString(R.string.press_to_see_similar),
+                                    ShowCaseContentPosition.BOTTOM));
+                }
+
+                if (showCaseList.isEmpty())
+                    return;
+
+                showCaseDialog = createShowCaseDialog();
+                showCaseDialog.show(getActivity(), showCaseTag, showCaseList);
+            }
+        }, 300);
+    }
+
+    private boolean isShowCaseAllowed(String tag) {
+        if (getActivity() == null) {
+            return false;
+        }
+        return similarSearchManager.isSimilarSearchEnable() && !ShowCasePreference.hasShown(getActivity(), tag);
+    }
+
+    private ShowCaseDialog createShowCaseDialog() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.item_top_ads_show_case)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .arrowWidth(R.dimen.arrow_width_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .textSizeRes(R.dimen.fontvs)
+                .finishStringRes(R.string.megerti)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .useSkipWord(false)
+                .build();
+    }
+
+
+    public View scrollToShowCaseItem() {
+        if (recyclerView.getAdapter().getItemCount() >= PRODUCT_POSITION) {
+            recyclerView.stopScroll();
+            recyclerView.getLayoutManager().scrollToPosition(PRODUCT_POSITION + PRODUCT_POSITION);
+            return ((GridLayoutManager) recyclerView.getLayoutManager()).findViewByPosition(PRODUCT_POSITION);
+        }
+        return null;
     }
 }
