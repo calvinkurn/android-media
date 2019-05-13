@@ -10,7 +10,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.app.TActivity;

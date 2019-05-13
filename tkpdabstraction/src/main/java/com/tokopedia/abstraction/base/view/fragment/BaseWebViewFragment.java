@@ -16,7 +16,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
