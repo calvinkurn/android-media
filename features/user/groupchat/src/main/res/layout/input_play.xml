@@ -79,11 +79,21 @@
         android:visibility="gone"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/interaction_button"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible"
         tools:itemCount="3"
-        tools:listitem="@layout/dynamic_icon_item" />
+        tools:listitem="@layout/dynamic_icon_item"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_2" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/interaction_button"
+        android:layout_width="@dimen/dp_44"
+        android:layout_height="@dimen/dp_44"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_fileName="lovebutton1.json"/>
 
 </android.support.constraint.ConstraintLayout>

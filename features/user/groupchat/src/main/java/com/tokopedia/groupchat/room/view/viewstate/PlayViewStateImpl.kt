@@ -3,6 +3,7 @@ package com.tokopedia.groupchat.room.view.viewstate
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
@@ -22,6 +23,7 @@ import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import com.airbnb.lottie.LottieAnimationView
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -34,6 +36,8 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.BackEditText
 import com.tokopedia.groupchat.R
+import com.tokopedia.groupchat.animation.ParticleSystem
+import com.tokopedia.groupchat.animation.modifiers.MovementModifier
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.DynamicButtonAdapter
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter
@@ -65,6 +69,7 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 /**
  * @author : Steven 13/02/19
@@ -116,6 +121,8 @@ open class PlayViewStateImpl(
     private var hideVideoToggle: View = view.findViewById(R.id.hide_video_toggle)
     private var showVideoToggle: View = view.findViewById(R.id.show_video_toggle)
     private var spaceChatVideo: View = view.findViewById(R.id.top_space_guideline)
+    private var interactionButton: LottieAnimationView = view.findViewById(R.id.interaction_button)
+    private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -247,7 +254,30 @@ open class PlayViewStateImpl(
             setChatListHasSpaceOnTop(false)
             analytics.eventClickShowVideoToggle(viewModel?.channelId)
         }
+
+        var iconList = arrayListOf(
+                R.drawable.ic_green,
+                R.drawable.ic_blue,
+                R.drawable.ic_yellow,
+                R.drawable.ic_pink
+        )
+
+        val interactionDirection = Random()
+        interactionButton.setOnClickListener {
+            interactionButton.playAnimation()
+            ParticleSystem(interactionGuideline, 10, getRandomHeart(iconList), 3000)
+                    .setSpeedModuleAndAngleRange(0.1f, 0.2f, 270, 270)
+                    .setFadeOut(2000)
+                    .addModifier(MovementModifier(2f, interactionDirection.nextBoolean()))
+                    .oneShot(it, 1)
+        }
     }
+
+    private fun getRandomHeart(iconList: ArrayList<Int>): Drawable? {
+        val temp = iconList.shuffled().take(1)[0]
+        return MethodChecker.getDrawable(activity, temp)
+    }
+
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
         viewModel?.let { viewModel ->
@@ -486,7 +516,6 @@ open class PlayViewStateImpl(
             }
             initVideoFragment(childFragmentManager, it.videoId, it.videoLive)
         }
-
     }
 
     override fun onChannelFrozen(channelId: String) {
@@ -524,6 +553,19 @@ open class PlayViewStateImpl(
                 dialog.show()
             }
         }
+    }
+
+
+    fun broadcastChannelEnd() {
+//        var dialog = Dialog(activity, Dialog.Type.RETORIC)
+//        dialog.setTitle(it.bannedTitle)
+//        dialog.setDesc(it.bannedMessage)
+//        dialog.setBtnOk(it.bannedButtonTitle)
+//        dialog.setOnOkClickListener {
+//            listener.backToChannelList()
+//            dialog.dismiss()
+//        }
+//        dialog.show()
     }
 
     private fun getStringResource(id: Int): String {
@@ -846,7 +888,7 @@ open class PlayViewStateImpl(
                                                 }
 
                                                 override fun onPaused() {
-                                                    if(!showVideoToggle.isShown) {
+                                                    if (!showVideoToggle.isShown) {
                                                         hideVideoToggle.show()
                                                     }
                                                     analytics.eventClickPauseVideo(viewModel?.channelId)
@@ -1023,7 +1065,7 @@ open class PlayViewStateImpl(
     override fun onErrorGetInfo(it: String) {
         setEmptyState(R.drawable.ic_play_overload,
                 getStringResource(R.string.error_overload_play),
-                it.replace("channelName", viewModel?.title?: "", false),
+                it.replace("channelName", viewModel?.title ?: "", false),
                 getStringResource(R.string.title_try_again),
                 listener::onRetryGetInfo)
         loadingView.hide()
