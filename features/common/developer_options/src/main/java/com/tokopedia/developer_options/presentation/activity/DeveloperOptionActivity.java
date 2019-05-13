@@ -7,6 +7,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.Spinner;
@@ -22,6 +23,7 @@ import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.url.Env;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.developer_options.R;
@@ -57,6 +59,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private AppCompatButton remoteConfigSaveBtn;
     private ToggleButton toggleReactDeveloperMode;
     private ToggleButton toggleReactEnableDeveloperOptions;
+    private Spinner spinnerEnvironmentChooser;
 
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
@@ -71,6 +74,8 @@ public class DeveloperOptionActivity extends BaseActivity {
     private UserSessionInterface userSession;
     private static TkpdCoreRouter tkpdCoreRouter;
     private SharedPreferences groupChatSf;
+
+    private boolean isUserEditEnvironment = true;
 
     @Override
     public String getScreenName() {
@@ -115,7 +120,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
         groupChatLogToggle = findViewById(R.id.groupchat_log);
 
-        Spinner spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
+        spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
         ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Env.values());
         envSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
@@ -214,6 +219,31 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         ipGroupChat.setText(groupChatSf.getString(IP_GROUPCHAT,""));
         groupChatLogToggle.setChecked(groupChatSf.getBoolean(LOG_GROUPCHAT, false));
+
+        Env currentEnv = TokopediaUrl.Companion.getInstance().getTYPE();
+        for(int i = 0; i < Env.values().length; i++) {
+            if(currentEnv == Env.values()[i]) {
+                isUserEditEnvironment = false;
+                spinnerEnvironmentChooser.setSelection(i);
+                break;
+            }
+        }
+
+        spinnerEnvironmentChooser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isUserEditEnvironment) {
+                    TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.values()[position]);
+                    TokopediaUrl.Companion.deleteInstance();
+                    TokopediaUrl.Companion.init(DeveloperOptionActivity.this);
+                    Toast.makeText(DeveloperOptionActivity.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
+                }
+                isUserEditEnvironment = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
     }
 
     private void actionCheckValueRemoteConfig() {
