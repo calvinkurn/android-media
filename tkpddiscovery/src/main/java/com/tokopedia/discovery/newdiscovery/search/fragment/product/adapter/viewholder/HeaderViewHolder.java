@@ -189,7 +189,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                 break;
             case DeepLinkChecker.ETALASE:
                 bundle = new Bundle();
-                bundle.putString(ETALASE_NAME, DeepLinkChecker.getLinkSegment(url).get(2));
+                bundle.putString(ETALASE_NAME, Uri.parse(url).getPathSegments().get(2));
                 if (DeepLinkChecker.getQuery(url, KEYWORD) != null) {
                     bundle.putString(KEYWORD, DeepLinkChecker.getQuery(url, KEYWORD));
                 }
