@@ -1,8 +1,5 @@
 package com.tokopedia.events.view.activity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -14,16 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.domain.model.scanticket.ScanTicketResponse;
 import com.tokopedia.events.view.contractor.ScanCodeContract;
 import com.tokopedia.events.view.presenter.ScanCodeDataPresenter;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeContract.ScanCodeDataView, View.OnClickListener {
 
@@ -41,6 +33,7 @@ public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeCon
     private String scanUrl = "";
 
     ScanCodeDataPresenter scanCodeDataPresenter;
+
 
     @Override
     void initPresenter() {
