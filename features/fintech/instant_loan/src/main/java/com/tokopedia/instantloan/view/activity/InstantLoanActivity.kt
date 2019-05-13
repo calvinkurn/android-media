@@ -156,12 +156,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
 
     fun renderBannerList(banners: ArrayList<GqlLendingBannerData>) {
-        if (banners.size > 1) {
-            il_banner_page_indicator.visibility = View.VISIBLE
-            il_banner_page_indicator.setViewPager(mBannerPager, 0)
-        } else {
-            il_banner_page_indicator.visibility = View.GONE
-        }
         mBannerPager = findViewById(R.id.view_pager_banner)
         mBannerPager!!.offscreenPageLimit = 2
         mBannerPager!!.adapter = BannerPagerAdapter(this, banners, this)
@@ -169,6 +163,14 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         mBannerPager!!.clipToPadding = false
         mBannerPager!!.pageMargin = resources.getDimensionPixelOffset(R.dimen.il_margin_medium)
         mBannerPager!!.addOnPageChangeListener(mBannerPageChangeListener)
+
+        if (banners.size > 1) {
+            il_banner_page_indicator.visibility = View.VISIBLE
+            il_banner_page_indicator.setViewPager(mBannerPager, 0)
+        } else {
+            il_banner_page_indicator.visibility = View.GONE
+        }
+
         sendBannerImpressionEvent(0)
     }
 
