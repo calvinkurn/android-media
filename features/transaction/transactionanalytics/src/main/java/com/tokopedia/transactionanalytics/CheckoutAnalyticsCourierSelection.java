@@ -208,12 +208,12 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess() {
+    public void eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(String errorMessage) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                EventLabel.NOT_SUCCESS
+                EventLabel.NOT_SUCCESS + " - " + errorMessage
         );
     }
 
@@ -456,6 +456,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    // Implementation method has been removed due to absence of usage
     public void eventClickCourierCourierSelectionClickCtaButton() {
         sendEventCategoryAction(
                 EventName.CLICK_COURIER,

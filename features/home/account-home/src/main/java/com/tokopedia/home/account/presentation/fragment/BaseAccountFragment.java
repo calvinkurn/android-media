@@ -335,7 +335,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public void onLearnMoreSellerClicked() {
         openApplink(String.format("%s?url=%s",
                 ApplinkConst.WEBVIEW,
-                AccountHomeUrl.MORE_SELLER));
+                AccountHomeUrl.EDU_MORE_SELLER));
     }
 
     @Override

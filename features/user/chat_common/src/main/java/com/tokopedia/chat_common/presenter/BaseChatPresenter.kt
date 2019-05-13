@@ -56,6 +56,7 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
     ) {
         if (isValidReply(sendMessage)) {
             onSendingMessage()
+            clearText()
             if (networkMode == MODE_WEBSOCKET) {
                 sendMessageWithWebsocket(messageId, sendMessage, startTime, opponentId)
             } else {
@@ -75,4 +76,6 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
     abstract fun showErrorSnackbar(stringId: Int)
 
     abstract fun isUploading(): Boolean
+
+    abstract fun clearText()
 }

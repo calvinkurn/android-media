@@ -174,4 +174,11 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_PP)
     fun provideProductPurchaseProtection(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_pp)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT)
+    fun proviceRecommendationProduct(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
 }
