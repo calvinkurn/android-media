@@ -273,9 +273,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
                 TradeInHomeActivity.TRADEIN_HOME_REQUEST -> if (data != null)
                     onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
-                REQUEST_CODE_LOGIN_THEN_BUY -> doAtc(ATC_AND_BUY)
-                REQUEST_CODE_LOGIN_THEN_ATC -> doAtc(ATC_ONLY)
-                REQUEST_CODE_LOGIN_THEN_TRADE_IN -> doAtc(TRADEIN_BUY)
+                REQUEST_CODE_LOGIN_THEN_BUY -> doCheckoutAction(ATC_AND_BUY)
+                REQUEST_CODE_LOGIN_THEN_ATC -> doCheckoutAction(ATC_ONLY)
+                REQUEST_CODE_LOGIN_THEN_TRADE_IN -> doCheckoutAction(TRADEIN_BUY)
             }
         }
     }
@@ -507,15 +507,18 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
                         startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                                 REQUEST_CODE_LOGIN_THEN_ATC)
-                    } else {
+                    } else if(action == ATC_AND_BUY) {
                         normalCheckoutTracking.eventClickBuyInVariantNotLogin(productId)
                         startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                                 REQUEST_CODE_LOGIN_THEN_BUY)
+                    } else {
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN_THEN_TRADE_IN)
                     }
                 }
                 return@setOnClickListener
             }
-            doAtc(action)
+            doCheckoutAction(action)
         }
         tv_trade_in.setTrackListener { trackClickTradeIn() }
         button_cart.setOnClickListener {
@@ -534,32 +537,29 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    private fun doAtc(action: Int) {
-        if (action == ATC_ONLY) {
-            addToCart()
-        } else if (action == TRADEIN_BUY) {
-            if (!viewModel.isUserSessionActive()) {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN_THEN_TRADE_IN)
+    private fun doCheckoutAction(action: Int) {
+        when (action) {
+            ATC_ONLY -> addToCart()
+            TRADEIN_BUY -> doTradeIn()
+            else -> doBuyOrPreorder(isOcs)
+        }
+    }
+
+    private fun doTradeIn() {
+        if (tradeInParams != null) {
+            val label: String
+            if (tradeInParams!!.usedPrice > 0) {
+                goToHargaFinal()
+                label = "after diagnostic"
             } else {
-                if (tradeInParams != null) {
-                    val label: String
-                    if (tradeInParams!!.usedPrice > 0) {
-                        goToHargaFinal()
-                        label = "after diagnostic"
-                    } else {
-                        tv_trade_in.setTrackListener(null)
-                        tv_trade_in.performClick()
-                        label = "before diagnostic"
-                    }
-                    sendGeneralEvent("clickPDP",
-                            "product detail page",
-                            "click trade in button on variants page",
-                            label)
-                }
+                tv_trade_in.setTrackListener(null)
+                tv_trade_in.performClick()
+                label = "before diagnostic"
             }
-        } else {
-            doBuyOrPreorder(isOcs)
+            sendGeneralEvent("clickPDP",
+                    "product detail page",
+                    "click trade in button on variants page",
+                    label)
         }
     }
 
