@@ -515,7 +515,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 }
                 return@setOnClickListener
             }
-            doAtc(ATC_AND_BUY)
+            doAtc(action)
         }
         tv_trade_in.setTrackListener { trackClickTradeIn() }
         button_cart.setOnClickListener {
