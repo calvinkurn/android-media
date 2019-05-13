@@ -375,7 +375,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                     itemClickListener.onSearchGuideClicked(query);
                 }
             });
-            imageView.setImageResource(BACKGROUND[getAdapterPosition()]);
+            imageView.setImageResource(BACKGROUND[getAdapterPosition() % 5]);
         }
     }
 }
