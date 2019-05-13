@@ -2,7 +2,6 @@ package com.tokopedia.hotel.roomlist.presentation.fragment
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
@@ -20,8 +19,8 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
-import com.tokopedia.hotel.roomdetail.view.activity.HotelRoomDetailActivity
-import com.tokopedia.hotel.roomdetail.view.fragment.HotelRoomDetailFragment
+import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
+import com.tokopedia.hotel.roomdetail.presentation.fragment.HotelRoomDetailFragment
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
@@ -287,7 +286,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                 hotelRoomListPageModel, true)
     }
 
-    override fun onChipClickListener(string: String) {
+    override fun onChipClickListener(string: String, isSelected: Boolean) {
         when (string) {
             getString(FREE_BREAKFAST) -> {
                 roomListViewModel.clickFilter(clickFreeBreakfast = true)
@@ -336,7 +335,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onEmptyButtonClicked() {
         //DELETE FILTER
-        filter_recycler_view.resetChipSelected()
+        filter_recycler_view.onResetChip()
         roomListViewModel.clearFilter()
     }
 

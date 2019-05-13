@@ -15,20 +15,15 @@ import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 
 class InfoTextView: BaseCustomView {
 
-    var infoTitle: CharSequence = ""
-    var infoDescription: CharSequence = ""
     var descriptionLineCount = INFO_DESC_DEFAULT_LINE_COUNT
     var truncateDescription = true
 
     var infoViewListener: InfoViewListener? = null
 
-    interface InfoViewListener {
-        fun onMoreClicked()
-    }
-
     constructor(context: Context) : super(context) { init() }
-    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) { init() }
-    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(context, attributeSet, defStyleAttr) { init() }
+    constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet) { init() }
+    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int): super(context, attributeSet, defStyleAttr) { init() }
+
 
     fun init() {
         View.inflate(context, R.layout.widget_info_text_view, this)
@@ -40,31 +35,38 @@ class InfoTextView: BaseCustomView {
         }
     }
 
+    interface InfoViewListener {
+        fun onMoreClicked()
+    }
+
+    fun setTitleAndDescription(title: CharSequence, desc: CharSequence) {
+        info_title.text = title
+        info_desc.text = desc
+    }
+
     fun buildView() {
         visibility = View.VISIBLE
-        info_title.setText(infoTitle)
 
-        info_desc.setText(infoDescription)
         if (truncateDescription) {
             info_desc.post {
                 if (info_desc.lineCount > descriptionLineCount) {
-                    info_desc.setEllipsize(TextUtils.TruncateAt.END)
-                    info_desc.setMaxLines(descriptionLineCount)
+                    info_desc.ellipsize = TextUtils.TruncateAt.END
+                    info_desc.maxLines = descriptionLineCount
                     info_more.visibility = View.VISIBLE
                 }
             }
         }
 
-        infoViewListener?.let { listener -> info_more.setOnClickListener{ listener.onMoreClicked() } }
+        infoViewListener.let { listener -> info_more.setOnClickListener{ listener?.onMoreClicked() } }
     }
 
     fun resetMaxLineCount() {
-        info_desc.setEllipsize(null)
-        info_desc.setMaxLines(Integer.MAX_VALUE)
+        info_desc.ellipsize = null
+        info_desc.maxLines = Integer.MAX_VALUE
         info_more.visibility = View.GONE
     }
 
     companion object {
-        val INFO_DESC_DEFAULT_LINE_COUNT = 3
+        const val INFO_DESC_DEFAULT_LINE_COUNT = 3
     }
 }
