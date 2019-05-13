@@ -189,6 +189,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         ProductDetailTracking()
     }
 
+    var productVariant: ProductVariant? = null
     var productInfo: ProductInfo? = null
     var shopInfo: ShopInfo? = null
 
@@ -1314,6 +1315,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             partialVariantAndRateEstView.renderData(null, "", this::onVariantClicked)
             return
         }
+        productVariant = data
         val selectedVariantListString = data.getOptionListString(userInputVariant)?.joinToString(separator = ", ")
                 ?: ""
         partialVariantAndRateEstView.renderData(data, selectedVariantListString, this::onVariantClicked)
@@ -1458,6 +1460,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         ApplinkConst.TOPCHAT_ASKSELLER,
                         shop.shopCore.shopID, product.basic.url,
                         "product", shop.shopCore.name, shop.shopAssets.avatar)
+                putChatProductInfoTo(intent)
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
@@ -1466,6 +1469,40 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
         productDetailTracking.eventSendMessage()
         productDetailTracking.eventSendChat()
+    }
+
+    private fun putChatProductInfoTo(intent: Intent?) {
+        if (intent == null) return
+        val productImageUrl = getProductImageUrl()
+        val productName = getProductName()
+        val productPrice = getProductPrice()
+        val productVariant = getSelectedProductVariant()
+        with(intent) {
+            putExtra(ApplinkConst.Chat.ASK_PRODUCT_IMAGE_URL, productImageUrl)
+            putExtra(ApplinkConst.Chat.ASK_PRODUCT_NAME, productName)
+            putExtra(ApplinkConst.Chat.ASK_PRODUCT_PRICE, productPrice)
+            extras?.putSerializable(ApplinkConst.Chat.ASK_PRODUCT_VARIANT, productVariant)
+        }
+    }
+
+    private fun getProductImageUrl(): String {
+        val images = productInfo?.pictures ?: return ""
+        if (images.isEmpty()) return ""
+        val image = images[0]
+        return image.urlThumbnail
+    }
+
+    private fun getProductName(): String {
+        return productInfo?.basic?.name ?: ""
+    }
+
+    private fun getProductPrice(): Float {
+        return productInfo?.basic?.price ?: 0f
+    }
+
+    private fun getSelectedProductVariant(): Array<Array<String?>>? {
+        val selectedVariantId = userInputVariant ?: productVariant?.defaultChildString
+        return productVariant?.getSelectedProductVariantChild(selectedVariantId)
     }
 
     /**

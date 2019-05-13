@@ -69,6 +69,10 @@ data class ProductVariant(
     fun getOptionListString(selectedVariantId: String?): List<String>? {
         return getVariant(selectedVariantId)?.getOptionStringList(variant)
     }
+
+    fun getSelectedProductVariantChild(selectedVariantId: String?): Array<Array<String?>>? {
+        return getVariant(selectedVariantId)?.getSelectedVariant(variant)
+    }
 }
 
 data class Picture(

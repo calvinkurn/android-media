@@ -77,6 +77,23 @@ data class Child(
         }
         return listOf()
     }
+
+    fun getSelectedVariant(variantReference: List<Variant>?): Array<Array<String?>>? {
+        if (variantReference != null && variantReference.isNotEmpty()) {
+            val variants = Array<Array<String?>>(optionIds.size) { arrayOfNulls(2) }
+            var indexCounter = 0
+            optionIds.forEachIndexed { index, optionId ->
+                val option: Option? = variantReference[index].options.find { it.id == optionId }
+                option?.let {
+                    variants[indexCounter][0] = option.value
+                    variants[indexCounter][1] = option.hex
+                    indexCounter++
+                }
+            }
+            return variants
+        }
+        return null
+    }
 }
 
 data class Campaign(
