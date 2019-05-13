@@ -122,7 +122,6 @@ public class ProductCardView extends BaseCustomView {
 
     public void setRatingReviewCount(int rating, int reviewCount) {
         if (rating > 0 && rating <= 5) {
-            showRatingContainer(true);
             ratingView.setImageResource(getRatingDrawable(rating));
             reviewCountView.setText("(" + Integer.toString(reviewCount) + ")");
         } else {
