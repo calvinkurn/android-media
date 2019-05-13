@@ -59,11 +59,11 @@ final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> imp
     private RequestParams createInitiateSearchRequestParams(Map<String, Object> searchParameter) {
         RequestParams requestParams = RequestParams.create();
 
-        requestParams.putAll(searchParameter);
-
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putBoolean(SearchApiConst.RELATED, true);
+
+        requestParams.putAll(searchParameter);
 
         return requestParams;
     }

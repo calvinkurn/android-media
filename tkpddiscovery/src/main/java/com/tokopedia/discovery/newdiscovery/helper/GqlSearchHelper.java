@@ -36,7 +36,6 @@ public class GqlSearchHelper {
         Map<String, Object> variables = new HashMap<>();
         variables.put(KEY_QUERY, requestParams.getString(BrowseApi.Q, ""));
         variables.put(KEY_PARAMS, UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
-        variables.put(KEY_SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_PRODUCT);
 
         TKPDMapParam<String, String> headlineParams = requestParams.getParamsAllValueInString();
         headlineParams.put(TopAdsParams.KEY_EP, DiscoveryPresenter.HEADLINE);
@@ -78,7 +77,7 @@ public class GqlSearchHelper {
         Map<String, Object> variables = new HashMap<>();
         variables.put(KEY_QUERY, requestParams.getString(SearchApiConst.Q, ""));
         variables.put(KEY_PARAMS, UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
-        variables.put(KEY_SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_PRODUCT);
+        variables.put(KEY_SOURCE, requestParams.getString(SearchApiConst.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_PRODUCT));
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),

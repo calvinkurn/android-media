@@ -59,11 +59,11 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     private com.tokopedia.usecase.RequestParams createInitiateSearchRequestParams(SearchParameter searchParameter) {
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
 
-        requestParams.putAll(searchParameter.getSearchParameterMap());
-
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putBoolean(SearchApiConst.RELATED, true);
+
+        requestParams.putAll(searchParameter.getSearchParameterMap());
 
         return requestParams;
     }
