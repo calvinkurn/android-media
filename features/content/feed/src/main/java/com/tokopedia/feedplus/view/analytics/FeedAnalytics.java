@@ -18,6 +18,7 @@ import static com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking.Event.P
 import static com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking.Event.PROMO_VIEW;
 import static com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel.SCREEN_UNIFY_HOME_FEED;
 import static com.tokopedia.kol.analytics.KolEventTracking.Category.CONTENT_FEED;
+import static com.tokopedia.kol.analytics.KolEventTracking.Category.CONTENT_FEED_TIMELINE;
 
 import com.tokopedia.track.TrackApp;
 
@@ -51,7 +52,6 @@ public class FeedAnalytics {
     private static final String SINGLE = "single";
     private static final String MULTIPLE = "multiple";
     private static final String FORMAT_PROMOTION_NAME = "%s - %s - %s - %s";
-    private static final String FORMAT_PROMOTION_NAME_BANNER = "%s - %s - %s";
 
     private UserSessionInterface userSession;
 
@@ -146,7 +146,7 @@ public class FeedAnalytics {
                                                       int userId) {
         return DataLayer.mapOf(
                 EVENT_NAME, PROMO_VIEW,
-                EVENT_CATEGORY, CONTENT_FEED,
+                EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
                 EVENT_ACTION, action,
                 EVENT_LABEL, label,
                 KEY_USER_ID, userId,
@@ -161,7 +161,7 @@ public class FeedAnalytics {
                                                        int userId) {
         return DataLayer.mapOf(
                 EVENT_NAME, PROMO_CLICK,
-                EVENT_CATEGORY, CONTENT_FEED,
+                EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
                 EVENT_ACTION, action,
                 EVENT_LABEL, label,
                 KEY_USER_ID, userId,
@@ -173,6 +173,56 @@ public class FeedAnalytics {
     private String singleOrMultiple(int totalContent) {
         if (totalContent == 1) return SINGLE;
         else return MULTIPLE;
+    }
+
+    public void eventBannerImpression(String templateType, String activityName, String mediaType,
+                                      String bannerUrl, String applink, int postId,
+                                      int bannerPosition, int userId) {
+        List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
+        //TODO milhamj change TODO
+        promotionList.add(new FeedEnhancedTracking.Promotion(
+                postId,
+                String.format("%s - %s - %s", CONTENT_FEED, activityName, mediaType),
+                bannerUrl,
+                applink,
+                bannerPosition,
+                "",
+                postId,
+                String.format("%s - %s", templateType, "TODO")
+        ));
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                getEventEcommerceView(
+                        "impression banner",
+                        String.valueOf(postId),
+                        promotionList,
+                        userId
+                )
+        );
+    }
+
+    public void eventBannerClick(String templateType, String activityName, String mediaType,
+                                 String bannerUrl, String applink, int totalBanner, int postId,
+                                 int bannerPosition, int userId) {
+        List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
+        //TODO milhamj change TODO
+        promotionList.add(new FeedEnhancedTracking.Promotion(
+                postId,
+                String.format("%s - %s - %s", CONTENT_FEED, activityName, mediaType),
+                bannerUrl,
+                applink,
+                bannerPosition,
+                String.valueOf(totalBanner),
+                postId,
+                String.format("%s - %s", templateType, "TODO")
+        ));
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                getEventEcommerceClick(
+                        "click banner",
+                        String.valueOf(postId),
+                        promotionList,
+                        userId
+                )
+        );
     }
 
     public void eventCardPostImpression(String templateType, String activityName,
@@ -220,66 +270,6 @@ public class FeedAnalytics {
                         redirectUrl + DASH + contentPosition,
                         position,
                         "",
-                        0,
-                        ""
-                )
-        );
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                getEventEcommerceClick(
-                        ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
-                                + activityName + DASH + trackingType + DASH + element,
-                        mediaType,
-                        promotionList,
-                        userId
-                )
-        );
-    }
-
-    public void eventBannerImpression(String templateType, String activityName,
-                                      String trackingType, String mediaType,
-                                      String bannerUrl, int totalBanner,
-                                      int postId, int feedPosition, int bannerPosition,
-                                      int userId) {
-        List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
-        promotionList.add(new FeedEnhancedTracking.Promotion(
-                        postId,
-                        String.format(FORMAT_PROMOTION_NAME_BANNER,
-                                CONTENT_FEED,
-                                activityName,
-                                singleOrMultiple(totalBanner)),
-                        bannerUrl + DASH + bannerPosition,
-                        feedPosition,
-                        String.valueOf(totalBanner),
-                        0,
-                        ""
-                )
-        );
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                getEventEcommerceView(
-                        ACTION_IMPRESSION.toLowerCase() + DASH + templateType + DASH
-                                + activityName + DASH + trackingType,
-                        mediaType,
-                        promotionList,
-                        userId
-                )
-        );
-    }
-
-    public void eventBannerClick(String templateType, String activityName,
-                                 String trackingType, String mediaType,
-                                 String bannerUrl, String element, int totalBanner,
-                                 int postId, int feedPosition, int bannerPosition,
-                                 int userId) {
-        List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
-        promotionList.add(new FeedEnhancedTracking.Promotion(
-                        postId,
-                        String.format(FORMAT_PROMOTION_NAME_BANNER,
-                                CONTENT_FEED,
-                                activityName,
-                                singleOrMultiple(totalBanner)),
-                        bannerUrl + DASH + bannerPosition,
-                        feedPosition,
-                        String.valueOf(totalBanner),
                         0,
                         ""
                 )

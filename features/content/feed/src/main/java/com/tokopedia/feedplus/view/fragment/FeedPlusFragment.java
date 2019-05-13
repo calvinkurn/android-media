@@ -725,7 +725,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 afterPost = false;
             }
 
-            analytics.trackScreen(getActivity(), getScreenName());
+            analytics.trackScreen(getScreenName());
         }
     }
 
@@ -1242,10 +1242,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (adapter.getlist().get(positionInFeed) instanceof BannerViewModel) {
             BannerViewModel model = (BannerViewModel) adapter.getlist().get(positionInFeed);
             trackBannerClick(
-                    positionInFeed,
                     adapterPosition,
-                    model.getItemViewModels().get(adapterPosition).getTrackingBannerModel(),
-                    FeedAnalytics.Element.IMAGE
+                    model.getItemViewModels().get(adapterPosition).getTrackingBannerModel()
             );
         }
     }
@@ -1690,12 +1688,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     analytics.eventBannerImpression(
                             trackingBannerModel.getTemplateType(),
                             trackingBannerModel.getActivityName(),
-                            trackingBannerModel.getTrackingType(),
                             trackingBannerModel.getMediaType(),
                             trackingBannerModel.getBannerUrl(),
-                            trackingBannerModel.getTotalBanner(),
+                            trackingBannerModel.getApplink(),
                             trackingBannerModel.getPostId(),
-                            feedPosition,
                             trackingBannerModel.getBannerPosition(),
                             userId
                     );
@@ -1798,9 +1794,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         );
     }
 
-    private void trackBannerClick(int positionInFeed, int adapterPosition,
-                                  TrackingBannerModel trackingBannerModel,
-                                  String element) {
+    private void trackBannerClick(int adapterPosition,
+                                  TrackingBannerModel trackingBannerModel) {
         int userId = 0;
         try {
             userId = Integer.valueOf(getUserSession().getUserId());
@@ -1810,13 +1805,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         analytics.eventBannerClick(
                 trackingBannerModel.getTemplateType(),
                 trackingBannerModel.getActivityName(),
-                trackingBannerModel.getTrackingType(),
                 trackingBannerModel.getMediaType(),
                 trackingBannerModel.getBannerUrl(),
-                element,
+                trackingBannerModel.getApplink(),
                 trackingBannerModel.getTotalBanner(),
                 trackingBannerModel.getPostId(),
-                positionInFeed,
                 adapterPosition,
                 userId
         );

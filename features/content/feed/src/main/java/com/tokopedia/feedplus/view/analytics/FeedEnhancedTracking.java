@@ -34,6 +34,7 @@ public class FeedEnhancedTracking {
         private static final String KEY_ID = "id";
         private static final String KEY_NAME = "name";
         private static final String KEY_CREATIVE = "creative";
+        private static final String KEY_CREATIVE_URL = "creative_url";
         private static final String KEY_POSITION = "position";
         private static final String KEY_CATEGORY = "category";
         private static final String KEY_PROMO_ID = "promo_id";
@@ -67,6 +68,7 @@ public class FeedEnhancedTracking {
             map.put(KEY_ID, String.valueOf(promo.getId()));
             map.put(KEY_NAME, promo.getName());
             map.put(KEY_CREATIVE, promo.getCreative());
+            map.put(KEY_CREATIVE_URL, promo.getCreativeUrl());
             map.put(KEY_POSITION, String.valueOf(promo.getPosition()));
             map.put(KEY_CATEGORY, promo.getCategory());
             map.put(KEY_PROMO_ID, String.valueOf(promo.getPromoId()));
@@ -90,6 +92,7 @@ public class FeedEnhancedTracking {
         int id;
         String name;
         String creative;
+        String creativeUrl = "";
         int position;
         String category;
         int promoId;
@@ -106,6 +109,18 @@ public class FeedEnhancedTracking {
             this.promoCode = promoCode;
         }
 
+        public Promotion(int id, String name, String creative, String creativeUrl, int position,
+                         String category, int promoId, String promoCode) {
+            this.id = id;
+            this.name = name;
+            this.creative = creative;
+            this.creativeUrl = creativeUrl;
+            this.position = position;
+            this.category = category;
+            this.promoId = promoId;
+            this.promoCode = promoCode;
+        }
+
         public int getId() {
             return id;
         }
@@ -116,6 +131,10 @@ public class FeedEnhancedTracking {
 
         public String getCreative() {
             return creative;
+        }
+
+        public String getCreativeUrl() {
+            return creativeUrl;
         }
 
         public int getPosition() {

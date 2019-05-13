@@ -116,6 +116,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     media.type,
                     media.tags.firstOrNull()?.linkType ?: "",
                     media.thumbnail,
+                    media.appLink,
                     feed.id,
                     feed.content.cardbanner.body.media.size,
                     index

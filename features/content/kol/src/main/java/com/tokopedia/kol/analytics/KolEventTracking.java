@@ -23,6 +23,7 @@ public interface KolEventTracking {
         String HOMEPAGE = "Homepage";
         String KOL_TOP_PROFILE = "kol top profile";
         String CONTENT_FEED = "content feed";
+        String CONTENT_FEED_TIMELINE = "content feed timeline";
         String SHOP_PAGE_FEED = "shop page feed";
     }
 
