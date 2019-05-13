@@ -41,6 +41,7 @@
     <string name="app_name">contact_us</string>
     <string name="finish_contact_us">Terima kasih telah menghubungi, senang bisa membantu anda.</string>
     <string name="thanks_input">Terima kasih atas masukan Anda</string>
+    <string name="display_a_problem_report_here">Seluruh kendala yang Anda laporkan akan ditampilkan disini</string>
 
     <string name="title_help">Bantuan</string>
     <string name="please_wait">Please Wait...</string>

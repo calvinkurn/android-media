@@ -456,6 +456,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    // Implementation method has been removed due to absence of usage
     public void eventClickCourierCourierSelectionClickCtaButton() {
         sendEventCategoryAction(
                 EventName.CLICK_COURIER,
