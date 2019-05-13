@@ -2,6 +2,8 @@ package com.tokopedia.search.result.di.module;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -26,10 +28,51 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 @SearchScope
 @Module
 public class TopAdsServiceModule {
+
+    @TopAdsQualifier
+    @SearchScope
+    @Provides
+    public TopAdsService proviceTopAdsService(@TopAdsQualifier Retrofit topAdsRetrofit) {
+        return topAdsRetrofit.create(TopAdsService.class);
+    }
+
+    @TopAdsQualifier
+    @SearchScope
+    @Provides
+    public Retrofit provideTopAdsRetrofit(@TopAdsQualifier OkHttpClient okHttpClient,
+                                          @TopAdsQualifier Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(SearchConstant.BaseUrl.TOPADS_DOMAIN).client(okHttpClient).build();
+    }
+
+    @TopAdsQualifier
+    @SearchScope
+    @Provides
+    public OkHttpClient provideOkHttpClientTopAdsAuth(@ApplicationContext Context context,
+                                                      @TopAdsQualifier FingerprintInterceptor fingerprintInterceptor,
+                                                      @TopAdsQualifier TopAdsAuthInterceptor topAdsAuthInterceptor,
+                                                      @TopAdsQualifier ErrorResponseInterceptor errorResponseInterceptor,
+                                                      @TopAdsQualifier CacheApiInterceptor cacheApiInterceptor) {
+
+        cacheApiInterceptor.setResponseValidator(new CacheApiTKPDResponseValidator<>(TopAdsResponseError.class));
+
+        OkHttpClient client = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder())
+                .addInterceptor(getHttpLoggingInterceptor())
+                .build();
+
+        return new TkpdOkHttpBuilder(context, client.newBuilder())
+                .addInterceptor(cacheApiInterceptor)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(topAdsAuthInterceptor)
+                .addInterceptor(errorResponseInterceptor)
+                .setOkHttpRetryPolicy()
+                .build();
+    }
 
     @TopAdsQualifier
     @SearchScope
@@ -59,30 +102,6 @@ public class TopAdsServiceModule {
         return new CacheApiInterceptor();
     }
 
-    @TopAdsQualifier
-    @SearchScope
-    @Provides
-    public OkHttpClient provideOkHttpClientTopAdsAuth(@ApplicationContext Context context,
-                                                      @TopAdsQualifier FingerprintInterceptor fingerprintInterceptor,
-                                                      @TopAdsQualifier TopAdsAuthInterceptor topAdsAuthInterceptor,
-                                                      @TopAdsQualifier ErrorResponseInterceptor errorResponseInterceptor,
-                                                      @TopAdsQualifier CacheApiInterceptor cacheApiInterceptor) {
-
-        cacheApiInterceptor.setResponseValidator(new CacheApiTKPDResponseValidator<>(TopAdsResponseError.class));
-
-        OkHttpClient client = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder())
-                                .addInterceptor(getHttpLoggingInterceptor())
-                                .build();
-
-        return new TkpdOkHttpBuilder(context, client.newBuilder())
-                .addInterceptor(cacheApiInterceptor)
-                .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(topAdsAuthInterceptor)
-                .addInterceptor(errorResponseInterceptor)
-                .setOkHttpRetryPolicy()
-                .build();
-    }
-
     private HttpLoggingInterceptor getHttpLoggingInterceptor() {
         HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -94,25 +113,18 @@ public class TopAdsServiceModule {
     @TopAdsQualifier
     @SearchScope
     @Provides
-    public Retrofit.Builder provideTopAdsRetrofitBuildeer(Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder
+    public Retrofit.Builder provideTopAdsRetrofitBuilder() {
+        Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                    .setPrettyPrinting()
+                    .serializeNulls()
+                    .create();
+
+        return new Retrofit.Builder()
                 .addConverterFactory(new GeneratedHostConverter())
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
-                .addConverterFactory(new StringResponseConverter());
-    }
-
-    @TopAdsQualifier
-    @SearchScope
-    @Provides
-    public Retrofit provideTopAdsRetrofit(@TopAdsQualifier OkHttpClient okHttpClient,
-                                          @TopAdsQualifier Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(SearchConstant.BaseUrl.TOPADS_DOMAIN).client(okHttpClient).build();
-    }
-
-    @TopAdsQualifier
-    @SearchScope
-    @Provides
-    public TopAdsService proviceTopAdsService(@TopAdsQualifier Retrofit topAdsRetrofit) {
-        return topAdsRetrofit.create(TopAdsService.class);
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }
 }
