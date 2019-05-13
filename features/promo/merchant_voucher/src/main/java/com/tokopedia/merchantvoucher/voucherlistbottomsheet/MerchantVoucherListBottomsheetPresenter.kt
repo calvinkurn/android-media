@@ -100,7 +100,7 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                                 view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings, paramMerchant)
                             } else {
                                 responseGetPromoStack.data.voucherOrders.forEach {
-                                    if (it.type.equals(MERCHANT, true) && it.code.equals(promoMerchantCode, true)) {
+                                    if (it.code.equals(promoMerchantCode, true)) {
                                         if (it.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
                                             view?.hideProgressLoading()
                                             view.onErrorCheckPromoFirstStep(it.message.text)

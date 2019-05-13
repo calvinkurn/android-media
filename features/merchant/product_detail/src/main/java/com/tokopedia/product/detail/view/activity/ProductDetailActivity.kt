@@ -10,15 +10,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ProductDetailRouteManager
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternal
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
+import com.tokopedia.product.detail.R
+
 
 /**
  * For navigating to this class
@@ -105,7 +104,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         val uri = intent.data
         val bundle = intent.extras
         if (uri != null) {
-            if (uri.scheme == ApplinkConstInternal.INTERNAL_SCHEME) {
+            if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL) {
                 val segmentUri = uri.pathSegments
                 if (segmentUri.size == 2) {
                     productId = uri.lastPathSegment
@@ -156,22 +155,5 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         }
 
         super.onCreate(savedInstanceState)
-
-        //Last resort to route to old pdp, if some link is missing in route manager.
-        if (ProductDetailRouteManager.isGoToOldProductDetail(this) ){
-            val intent = Intent()
-            intent.setClassName(packageName, "com.tokopedia.tkpdpdp.ProductInfoActivity")
-            if (intent.resolveActivity(packageManager) != null) {
-                intent.putExtra(PARAM_PRODUCT_ID, productId)
-                intent.putExtra(PARAM_SHOP_DOMAIN, shopDomain)
-                intent.putExtra(PARAM_PRODUCT_KEY, productKey)
-                intent.putExtra(PARAM_TRACKER_ATTRIBUTION, trackerAttribution)
-                intent.putExtra(PARAM_TRACKER_LIST_NAME, trackerListName)
-                intent.putExtra(PARAM_IS_FROM_DEEPLINK, isFromDeeplink)
-                intent.putExtra(IS_FROM_EXPLORE_AFFILIATE, isFromAffiliate)
-                startActivity(intent)
-                finish()
-            }
-        }
     }
 }

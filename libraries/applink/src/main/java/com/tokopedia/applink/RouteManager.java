@@ -4,10 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
-import com.tokopedia.applink.internal.ApplinkConstInternal;
-
-import static com.tokopedia.applink.ProductDetailRouteManager.getProductIntent;
+import com.tokopedia.applink.constant.DeeplinkConstant;
 
 /**
  * @author ricoharisin .
@@ -45,31 +44,24 @@ public class RouteManager {
     }
 
     public static Intent getIntent(Context context, String applinkPattern, String... parameter) {
+        String internalDeeplink = DeeplinkMapper.INSTANCE.getRegisteredNavigation(applinkPattern);
+        if (!TextUtils.isEmpty(internalDeeplink)) {
+            // Found internal deeplink, redirect
+            return buildInternalUri(context, internalDeeplink);
+        }
         // Temporary solution: using airbnb applink
         String applink = UriUtil.buildUri(applinkPattern, parameter);
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink)){
             return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applink);
         }
 
-        // Solution to redirect based on internal-scheme, or deeplink registered in manifest
-        Intent intent;
-        if (applink.startsWith(ApplinkConstInternal.INTERNAL_SCHEME) &&
-                ProductDetailRouteManager.isProductApplink(applink)){
-            intent = getProductIntent(context, applink);
-        } else {
-            intent = buildInternalUri(context, applink);
-        }
-        return intent;
+        return  buildInternalUri(context, applink);
     }
 
     public static boolean isSupportApplink(Context context, String applink) {
-        if (applink.startsWith(ApplinkConstInternal.INTERNAL_SCHEME)) {
-            Intent intent;
-            if (ProductDetailRouteManager.isProductApplink(applink)){
-                intent = getProductIntent(context, applink);
-            } else {
-                intent = buildInternalUri(context, applink);
-            }
+        if (applink.startsWith(DeeplinkConstant.SCHEME_INTERNAL)) {
+            Intent intent = buildInternalUri(context, applink);
+
             if (intent.resolveActivity(context.getPackageManager()) != null) {
                 return true;
             } else {
