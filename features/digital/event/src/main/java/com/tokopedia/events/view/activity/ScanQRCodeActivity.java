@@ -42,17 +42,6 @@ public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeCon
 
     ScanCodeDataPresenter scanCodeDataPresenter;
 
-    public static Intent getCallingIntent(Context context) {
-        return new Intent(context, ScanQRCodeActivity.class);
-    }
-
-    @DeepLink({ApplinkConst.QRSCAN})
-    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        Intent intent = getCallingIntent(context);
-        return intent.setData(uri.build());
-    }
-
     @Override
     void initPresenter() {
         initInjector();
