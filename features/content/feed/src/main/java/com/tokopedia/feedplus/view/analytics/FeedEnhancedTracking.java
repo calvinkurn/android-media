@@ -83,14 +83,6 @@ public class FeedEnhancedTracking {
         private static final String PRODUCT = "product";
         private static final String SHOP = "shop";
         private static final String TOKOPEDIA_CONTENT = "tokopedia_content";
-        private static final String KOL_RECOMMENDATION = "kolrecommendation";
-        private static final String PRODUCT_UPLOAD = "product_upload";
-        private static final String SINGLE = "single";
-        private static final String MULTIPLE = "multiple";
-        private static final String ANNOUNCEMENT = "announcement";
-        private static final String VOTE = "vote";
-        private static final String BANNER = "banner";
-        private static String PROFILE = "profile";
 
         public static final String TRACKING_NONE = "none";
         public static final String TRACKING_EMPTY = "-";
@@ -142,10 +134,6 @@ public class FeedEnhancedTracking {
             return promoCode;
         }
 
-        public static String createContentNameRecommendation() {
-            return CONTENT_FEED + " - " + KOL_RECOMMENDATION + " - " + PROFILE;
-        }
-
         public static String createContentNameTopadsProduct(){
             return String.format("/%s - %s - %s", CONTENT_FEED, TOPADS, PRODUCT);
         }
@@ -154,33 +142,6 @@ public class FeedEnhancedTracking {
             return String.format("/%s - %s - %s", CONTENT_FEED, TOPADS, SHOP);
         }
 
-        public static String createContentNameProductUpload(int totalProduct) {
-            if (totalProduct == 1) {
-                return String.format("/%s - %s - %s", CONTENT_FEED, PRODUCT_UPLOAD, SINGLE);
-            } else if (totalProduct > 1) {
-                return String.format("/%s - %s - %s", CONTENT_FEED, PRODUCT_UPLOAD, MULTIPLE);
-            }
-            return "";
-        }
-
-        public static String createContentNameVote() {
-            return String.format("/%s - %s - %s", CONTENT_FEED, ANNOUNCEMENT, VOTE);
-        }
-
-        public static String createContentNameBanner() {
-            return String.format("/%s - %s - %s", CONTENT_FEED, ANNOUNCEMENT, BANNER);
-        }
-
-        public static String createContentNameAnnouncement(String tagsType, String cardType) {
-            return String.format("/%s - %s - %s - %s", CONTENT_FEED, ANNOUNCEMENT, cardType,
-                    tagsType);
-        }
-
-        public static String createContentName(String tagsType, String cardType) {
-            return CONTENT_FEED + " - "
-                    + cardType + " - "
-                    + tagsType;
-        }
     }
 
     public static Map<String, Object> getImpressionTracking(List<Promotion> listPromotion,

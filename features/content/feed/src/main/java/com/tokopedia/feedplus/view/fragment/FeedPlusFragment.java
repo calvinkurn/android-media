@@ -608,8 +608,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        goToProductDetail(product.getId()
-        );
+        goToProductDetail(product.getId());
 
         analytics.eventFeedClickProduct(getScreenName(),
                 product.getId(),
