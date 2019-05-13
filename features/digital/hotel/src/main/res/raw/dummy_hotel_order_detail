@@ -1,0 +1,205 @@
+{
+    "orderDetails": {
+      "status": {
+        "status": 700,
+        "statusText": "Transaksi berhasil"
+      },
+      "title": [
+        {
+          "label": "Tanggal Transaksi",
+          "value": "02 Apr 2019, 13:57"
+        },
+        {
+          "label": "Kategori Produk",
+          "value": "Hotel"
+        }
+      ],
+      "invoice": {
+        "invoiceRefNum": "IVR/20170713/XVII/VII/16205811",
+        "invoiceUrl": "https://api.tokopedia.com/travel/v1/flight/invoice?invoice_id=PPB-LTJMO-M96Y&amp;user_id=17154331"
+      },
+      "contactUs": {
+        "helpText": "Butuh bantuan ? Klik <hyperlink>disini</hyperlink>",
+        "helpUrl": "https://www.tokopedia.com/contact-us?pid=46&amp;ivtype=4&amp;iv=PPB-LTJMO-M96Y&amp;ostat=700"
+      },
+      "actionButtons": [
+        {
+          "label": "Batalkan",
+          "buttonType": "buy",
+          "uri": "tokopedia://hotel",
+          "uriWeb": "https://tokopedia.com/hotel",
+          "weight": 1
+        },
+        {
+          "label": "Kembalikan",
+          "buttonType": "refund",
+          "uri": "tokopedia://hotel",
+          "uriWeb": "https://tokopedia.com/hotel",
+          "weight": 2
+        }
+      ],
+      "HotelTransportDetails": [
+        {
+          "fares": [
+            {
+              "label": "2 Kamar x 1 Malam",
+              "value": "Rp 239.000"
+            },
+            {
+              "label": "Pajak",
+              "value": "Sudah Termasuk"
+            }
+          ],
+          "conditionalInfoTop": {
+            "text": "Dana Pembayaran blablabla"
+          },
+          "conditionalInfoBottom": {
+            "text": "credit card tidak ditagih"
+          },
+          "guestDetail": {
+            "title": "nama tamu",
+            "text": "Stevanus Kurniawan"
+          },
+          "propertyDetail": [
+            {
+              "bookingKey": {
+                "title": "kode booking",
+                "text": "P231PC"
+              },
+              "image": [
+                {
+                  "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/156940807.jpg?k=35c02516917d301b8ccf7dc034878e6ef0e6ee4b874c4782af9dcd6ea25749a8&amp;o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max500/156940807.jpg?k=35c02516917d301b8ccf7dc034878e6ef0e6ee4b874c4782af9dcd6ea25749a8&amp;o=",
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/156940807.jpg?k=35c02516917d301b8ccf7dc034878e6ef0e6ee4b874c4782af9dcd6ea25749a8&amp;o="
+                }
+              ],
+              "checkInOut": [
+                {
+                  "title": "checkin",
+                  "text" : "",
+                  "checkInOut": {
+                    "date": "18 Des 2018",
+                    "day": "Senin",
+                    "time": "14.00"
+                  }
+                },
+                {
+                  "title": "checkout",
+                  "text": "",
+                  "checkInOut": {
+                    "date": "18 Des 2018",
+                    "day": "Senin",
+                    "time": "14.00"
+                  }
+                },
+                {
+                  "title": "staylength",
+                  "text": "10 malam",
+                  "checkInOut": {
+                    "date": "",
+                    "day": "",
+                    "time": ""
+                  }
+                }
+              ],
+              "propertyInfo": {
+                "type": "hotel",
+                "name": "Avissa Suites",
+                "address": "jalan...",
+                "starRating": 4
+              },
+              "room": [
+                {
+                  "title": "Kamar Deluxe Double",
+                  "text": "2 kamar, 2 tamu",
+                  "amenities": [
+                    {
+                      "text": "termasuk sarapan"
+                    }
+                  ]
+                }
+              ],
+              "specialRequest": [
+                {
+                  "title": "permintaan khusus",
+                  "text": "kamar view pantai"
+                }
+              ],
+              "extraInfo": "Dana deposit, pajak wisata, dan biaya lainnya mungkin akan ditagihkan saat check-in. Pelajari lebih lanjut"
+            }
+          ],
+          "payment": [
+            {
+              "detail": [
+                {
+                  "title": "metode pembayaran",
+                  "text": "bayar di hotel"
+                },
+                {
+                  "title": "mata uang berlaku",
+                  "text": "SGD"
+                },
+                {
+                  "title": "kartu yang diterima",
+                  "text": "Mastercard, JCB, Visa, ..."
+                },
+                {
+                  "title": "Kode Pembayaran",
+                  "text": "881 881 881  8881"
+                },
+                {
+                  "title": "batas akhir pembayaran",
+                  "text": "2 sep 2018, 20:30 WIB"
+                }
+              ],
+              "summary": [
+                {
+                  "title": "estimasi pembayaran",
+                  "text": "Rp. 200.000"
+                },
+                {
+                  "title": "dalam mata uang lokal",
+                  "text": "SGD 100"
+                }
+              ]
+            }
+          ],
+          "cancelllation": {
+            "title": "refundable",
+            "text": "silahkan klik disni",
+            "cancellationPolicies": [
+              {
+                "shortTitle": "Pembatalan Gratis",
+                "longTitle" : "Free Cancellation",
+                "shortDesc" : "Pembatalan gratis",
+                "longDesc" : "Pembatalan Gratis Tidak Dikenakan Biaya",
+                "active": true,
+                "isClickable": true
+              },
+              {
+                "shortTitle": "Refund Bersyarat",
+                "longTitle" : "Biaya pemesanan dikembalikan Rp 50.000.000",
+                "shortDesc" : "pengajuan pembatalan sebelum 30 November 2019, pelajari lebih lanjut",
+                "longDesc" : "Untuk pengajuan pembatalan antara 24 November 2019, 21:00 - 30 November 2019, 21:00",
+                "active": false,
+                "isClickable": false
+              },
+              {
+                "shortTitle": "Non Refundable",
+                "longTitle" : "Biaya pemesanan Tidak Dapat dikembalikan",
+                "shortDesc" : "Tidak Dapat Dikembalikan",
+                "longDesc" :  "Untuk pengajuan pembatalan setelah 15 Desember 2019, 21:00 biaya pemesanan tidak bisa dikembalikan.",
+                "active": false,
+                "isClickable": false
+              }
+            ],
+            "contactInfo": [
+              {
+                "number": "+62 812 12314"
+              }
+            ]
+          }
+        }
+      ]
+    }
+}

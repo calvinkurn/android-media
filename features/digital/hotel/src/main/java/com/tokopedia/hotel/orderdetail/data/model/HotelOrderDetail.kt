@@ -94,5 +94,10 @@ data class HotelOrderDetail(
             val weight: Int = 0
     )
 
+    data class Response(
+            @SerializedName("orderDetails")
+            @Expose
+            val response: HotelOrderDetail = HotelOrderDetail()
+    )
 
 }

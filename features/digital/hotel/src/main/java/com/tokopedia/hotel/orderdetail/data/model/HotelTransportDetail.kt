@@ -26,11 +26,11 @@ data class HotelTransportDetail(
 
         @SerializedName("propertyDetail")
         @Expose
-        val propertyDetail: PropertyDetail = PropertyDetail(),
+        val propertyDetail: List<PropertyDetail> = listOf(),
 
         @SerializedName("payment")
         @Expose
-        val payment: Payment = Payment(),
+        val payment: List<Payment> = listOf(),
 
         @SerializedName("cancellation")
         @Expose
@@ -47,16 +47,6 @@ data class HotelTransportDetail(
     )
 
     data class ConditionalInfo(
-            @SerializedName("text")
-            @Expose
-            val text: String = ""
-    )
-
-    data class TitleText(
-            @SerializedName("title")
-            @Expose
-            val title: String = "",
-
             @SerializedName("text")
             @Expose
             val text: String = ""
