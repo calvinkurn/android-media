@@ -79,6 +79,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public final static int ATTACH_FILE_REQUEST = 1;
     private boolean doubleTapExit = false;
     private static final int EXIT_DELAY_MILLIS = 2000;
+    private boolean allowOverride = false;
 
     private boolean pageLoaded = false;
 
@@ -115,6 +116,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             url = getArguments().getString(EXTRA_URL);
             needLogin = getArguments().getBoolean(EXTRA_NEED_LOGIN, false);
             showToolbar = getArguments().getBoolean(EXTRA_SHOW_TOOLBAR, true);
+            allowOverride = getArguments().getBoolean(EXTRA_OVERRIDE_URL, true);
         } else if (savedInstanceState != null) {
             url = savedInstanceState.getString(EXTRA_URL);
             needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
@@ -275,6 +277,9 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     private boolean overrideUrl(String url) {
+        if (!allowOverride) {
+            return false;
+        }
         if (url == null) {
             return false;
         }
