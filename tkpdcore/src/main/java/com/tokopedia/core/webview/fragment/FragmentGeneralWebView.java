@@ -283,9 +283,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         if (url == null) {
             return false;
         }
-        //TODO will be removed #TESTUTMSOURCE
-        Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
-
         Uri uri = null;
         try {
             uri = Uri.parse(url);
@@ -408,8 +405,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
 
     @Override
     public boolean onOverrideUrl(String url) {
-        //TODO will be removed #TESTUTMSOURCE
-        Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
         String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
         if (query != null && query.equals(QUERY_PARAM_PLUS)) {
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
@@ -512,9 +507,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            //TODO will be removed #TESTUTMSOURCE
-            Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
-
             Log.d(TAG, "redirect url = " + url);
             if (getActivity() != null
                     && url.equalsIgnoreCase(PARAM_WEBVIEW_BACK)

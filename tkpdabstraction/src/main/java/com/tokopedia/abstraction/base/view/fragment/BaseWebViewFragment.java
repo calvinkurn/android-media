@@ -189,8 +189,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
-        //TODO will be removed #TESTUTMSOURCE
-        Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
         return false;
     }
 

@@ -112,8 +112,6 @@ public class FragmentTopPicksWebView extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
-        //TODO will be removed #TESTUTMSOURCE
-        Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
             if (((Uri.parse(url).getHost().contains(BASE_URL))
                     || Uri.parse(url).getHost().contains(BASE_MOBILE_URL))
                     && !url.endsWith(".pl")) {

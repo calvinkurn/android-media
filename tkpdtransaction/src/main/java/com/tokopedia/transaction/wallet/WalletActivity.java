@@ -118,8 +118,6 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
 
     @Override
     public boolean onOverrideUrl(String url) {
-        //TODO will be removed #TESTUTMSOURCE
-        Toast.makeText(this, url, Toast.LENGTH_LONG).show();
         Uri uri = Uri.parse(url);
         String pathUri = uri.getPath();
         if (pathUri != null && uri.getPath().contains("thanks_wallet")) {

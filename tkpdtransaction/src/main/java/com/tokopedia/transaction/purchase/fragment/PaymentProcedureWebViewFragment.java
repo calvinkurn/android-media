@@ -93,8 +93,6 @@ public class PaymentProcedureWebViewFragment extends TkpdBaseV4Fragment {
     }
 
     private boolean overrideUrl(String url) {
-        //TODO will be removed #TESTUTMSOURCE
-        Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
         if (getActivity() != null && ((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url)) {
             ((TkpdCoreRouter) getActivity().getApplicationContext()).actionApplinkFromActivity(getActivity(), url);
             return true;

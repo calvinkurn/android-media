@@ -142,8 +142,6 @@ public class FragmentBannerWebView extends Fragment implements GeneralWebView {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            //TODO will be removed #TESTUTMSOURCE
-            Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
             return overrideUrl(url);
         }
 
@@ -187,8 +185,6 @@ public class FragmentBannerWebView extends Fragment implements GeneralWebView {
         if (TextUtils.isEmpty(url) || TextUtils.isEmpty(Uri.parse(url).getHost())) {
             return false;
         }
-        //TODO will be removed #TESTUTMSOURCE
-        Toast.makeText(getActivity(), url, Toast.LENGTH_LONG).show();
 
         if (activity.getApplication() instanceof IDigitalModuleRouter && (((IDigitalModuleRouter) activity.getApplication())
                 .isSupportedDelegateDeepLink(url))) {
