@@ -35,7 +35,6 @@ public interface ApplinkConst {
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
     String CART = "tokopedia://cart";
-    String CART_FROM_ATC = "tokopedia://cart/{cart_id}";
     String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
     String SELLER_SHIPMENT = "tokopedia://seller/shipment";
     String SELLER_STATUS = "tokopedia://seller/status";
@@ -278,7 +277,4 @@ public interface ApplinkConst {
         String PARAM_URL = "url";
     }
 
-    interface Cart {
-        String CART_ID = "cart_id";
-    }
 }

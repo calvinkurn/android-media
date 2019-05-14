@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -650,9 +651,16 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     val intent = router.getCheckoutIntent(this, ShipmentFormRequest.BundleBuilder().build())
                     startActivity(intent)
                 } else {
-                    val intent = RouteManager.getIntent(this, ApplinkConst.CART_FROM_ATC.replace("{${ApplinkConst.Cart.CART_ID}}", cartId
-                            ?: "", false))
-                    startActivity(intent)
+//                    val intent = RouteManager.getIntent(this, ApplinkConst.CART_FROM_ATC.replace("{${ApplinkConst.Cart.CART_ID}}", cartId
+//                            ?: "", false))
+//                    startActivity(intent)
+
+                    val cartUriString = ApplinkConstInternalMarketplace.CART
+                    val intent = RouteManager.getIntent(this, cartUriString)
+                    intent?.run {
+                        putExtra("cart_id", cartId)
+                        startActivity(intent)
+                    }
                 }
             }
         }, onRetryWhenError = {
