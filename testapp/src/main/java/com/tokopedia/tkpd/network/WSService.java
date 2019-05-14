@@ -1,4 +1,4 @@
-package com.tokopedia.imagepickerapp.network;
+package com.tokopedia.tkpd.network;
 
 import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.sessioncommon.data.model.MakeLoginPojo;

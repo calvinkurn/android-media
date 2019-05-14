@@ -1,4 +1,4 @@
-package com.tokopedia.imagepickerapp.network;
+package com.tokopedia.tkpd.network;
 
 import java.io.IOException;
 import java.net.UnknownHostException;

@@ -1,4 +1,4 @@
-package com.tokopedia.imagepickerapp.network;
+package com.tokopedia.tkpd.network;
 
 import com.tokopedia.application.MyApplication;
 import com.tokopedia.network.data.model.FingerprintModel;

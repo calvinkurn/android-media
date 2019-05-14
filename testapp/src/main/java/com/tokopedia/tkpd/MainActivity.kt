@@ -8,9 +8,8 @@ import android.widget.EditText
 import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
-import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
-import com.tokopedia.imagepickerapp.network.DataSource
-import com.tokopedia.imagepickerapp.network.LogoutPojo
+import com.tokopedia.tkpd.network.DataSource
+import com.tokopedia.tkpd.network.LogoutPojo
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.user.session.UserSession
@@ -187,7 +186,7 @@ class MainActivity : AppCompatActivity() {
 //            var url = "https://www.tokopedia.com/grot45/totebag-kimora-best-seller-merah"
 //            var url = "https://www.tokopedia.com/fashionista-yus/cardigan-abg-black-ro-cardi-wanita-rajut-spandex-hitam"
             //var url = "https://www.tokopedia.com/ravaid/baju-kaos-pria-henley-lengan-panjang-misty-by-rava-best-seller-hijau-tua-s"
-            startActivityForResult(HotelHomepageActivity.getCallingIntent(this), 123)
+//            startActivityForResult(HotelHomepageActivity.getCallingIntent(this), 123)
 
 //            val uri = Uri.parse(url)
 //            val pathSegmentList = uri.pathSegments

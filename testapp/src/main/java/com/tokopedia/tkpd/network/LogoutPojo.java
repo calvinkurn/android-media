@@ -1,4 +1,4 @@
-package com.tokopedia.imagepickerapp.network;
+package com.tokopedia.tkpd.network;
 
 import com.google.gson.annotations.SerializedName;
 
