@@ -71,16 +71,6 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
         return new Intent(context, PurchaseActivity.class);
     }
 
-    @DeepLink(ApplinkConst.ORDER_LIST)
-    public static Intent getIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

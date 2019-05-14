@@ -61,63 +61,6 @@ public class TransactionPurchaseRouter {
     public static final String ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION
             = "ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION";
 
-    public static Intent createIntentPurchaseActivity(Context context) {
-        return RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
-    }
-    // TODO: 7/30/18 oka: to be deleted
-    public static Intent createIntentTxSummary(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
-        intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_CONFIRMED);
-        return intent;
-    }
-
-    public static Intent createIntentOrderListSummary(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_ORDER_LIST_ACTIVITY);
-        intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_ALL_ORDER);
-        return intent;
-    }
-// TODO: 7/30/18 oka: to be deleted
-//    public static Intent createIntentTxCanceled(Context context) {
-//        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
-//        intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_ALL_ORDER);
-//        intent.putExtra(EXTRA_STATE_TX_FILTER, TRANSACTION_CANCELED_FILTER_ID);
-//        return intent;
-//    }
-//
-//    public static Intent createIntentTxAll(Context context) {
-//        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
-//        intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_ALL_ORDER);
-//        intent.putExtra(EXTRA_STATE_TX_FILTER, ALL_STATUS_FILTER_ID);
-//        return intent;
-//    }
-//
-//    public static Intent createIntentConfirmShipping(Context context) {
-//        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
-//        intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_DELIVER_ORDER);
-//        return intent;
-//    }
-//
-//    public static Intent createIntentTxVerification(Context context) {
-//        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
-//        intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_VERIFICATION);
-//        return intent;
-//    }
-//
-//    public static Intent createIntentTxStatus(Context context) {
-//        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
-//        intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_STATUS_ORDER);
-//        return intent;
-//    }
-//
-//    public static Intent createIntentConfirmPayment(Context context) {
-//        Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_PURCHASE_ACTIVITY);
-//        intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_VERIFICATION);
-//        return intent;
-//    }
-
-    public static ComponentName getPurchaseActivityComponentName(Context context) {
-        return RouterUtils.getActivityComponentName(context, TRANSACTION_PURCHASE_ACTIVITY);
-    }
 
     public static Class<?> getPurchaseActivityClass() {
         Class<?> parentIndexHomeClass = null;
@@ -127,24 +70,5 @@ public class TransactionPurchaseRouter {
             e.printStackTrace();
         }
         return parentIndexHomeClass;
-    }
-
-    public static Fragment instanceTxListFromNotification(Context context, String txFilterID) {
-        Fragment fragment = Fragment.instantiate(context, TRANSACTION_TX_LIST_FRAGMENT);
-        Bundle bundle = new Bundle();
-        bundle.putInt(ARG_PARAM_EXTRA_INSTANCE_TYPE, INSTANCE_ALL);
-        bundle.putString(ARG_PARAM_EXTRA_INSTANCE_FILTER, txFilterID);
-        bundle.putBoolean(ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION, true);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    public static void startWebViewActivity(Context context, String url) {
-        try {
-            context.startActivity(SimpleWebViewWithFilePickerActivity.getIntent(context,
-                    URLEncoder.encode(url, "UTF-8")));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -416,7 +416,6 @@ import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
-import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
@@ -2005,11 +2004,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent checkoutModuleRouterGetTransactionSummaryIntent() {
-        return TransactionPurchaseRouter.createIntentTxSummary(getAppContext());
-    }
-
-    @Override
     public void checkoutModuleRouterResetBadgeCart() {
         CartBadgeNotificationReceiver.resetBadgeCart(getAppContext());
     }
@@ -2043,14 +2037,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String checkoutModuleRouterGetPublicKey(PublicKey publicKey) {
         return FingerPrintDialog.getPublicKey(publicKey);
-    }
-
-    @Override
-    public void goToPurchasePage(Activity activity) {
-        activity.startActivity(PurchaseActivity.newInstance(activity));
-        if (!(activity instanceof MainParentActivity)) {
-            activity.finish();
-        }
     }
 
     @Override

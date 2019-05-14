@@ -14,8 +14,6 @@ public interface ITransactionOrderDetailRouter {
 
     Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload);
 
-    Intent getCartIntent(Activity activity);
-
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
     boolean isToggleBuyAgainOn();
