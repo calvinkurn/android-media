@@ -87,7 +87,6 @@ ext {
     artifactIdLogisticTracking = 'tracking'
     artifactIdLogisticAddAddress = 'logisticaddaddress'
     artifactIdLogisticListAddress = 'logisticlistaddress'
-    artifactIdLogisticGeoLocation = 'logisticgeolocation'
     artifactIdLogisticCommon = 'logisticcommon'
     artifactIdLogisticInsurance = 'logisticinsurance'
     logisticGroupVersion = '2.22'
@@ -245,8 +244,6 @@ ext {
 //            tracking                      : ":features:logistic:tracking_no_op",
             logisticuploadawb               : ":features:logistic:logisticuploadawb",
 //            logisticuploadawb               : ":features:logistic:logisticuploadawb_no_op",
-            logisticgeolocation             : ":features:logistic:logisticgeolocation",
-//            logisticgeolocation             : ":features:logistic:logisticgeolocation_no_op",
             logisticdistrictrecommendation  : ":features:logistic:district_recommendation",
             logisticinsurance               : ":features:logistic:logisticinsurance",
 //            logisticinsurance      : ":features:logistic:logisticinsurance_no_op",

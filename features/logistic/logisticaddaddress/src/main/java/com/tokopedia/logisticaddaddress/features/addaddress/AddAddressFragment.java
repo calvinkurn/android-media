@@ -37,6 +37,7 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
+import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticaddaddress.router.IAddressRouter;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
@@ -931,12 +932,11 @@ public class AddAddressFragment extends BaseDaggerFragment
                 locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
             }
 
-            Intent intent = ((IAddressRouter) getActivity().getApplication())
-                    .getGeoLocationActivityIntent(
-                            getActivity(), locationPass,
-                            isAddAddressFromCartCheckoutMarketplace()
-                    );
-            startActivityForResult(intent, REQUEST_CODE);
+            if (getActivity() != null) {
+                Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass,
+                        isAddAddressFromCartCheckoutMarketplace());
+                startActivityForResult(intent, REQUEST_CODE);
+            }
         } else {
             CommonUtils.dumper("Google play services unavailable");
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);

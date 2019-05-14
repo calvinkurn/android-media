@@ -17,6 +17,4 @@ public interface IAddressRouter {
 
     Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart);
 
-    Intent getGeoLocationActivityIntent(Context context, LocationPass locationMap, boolean isFromMarketplaceCart);
-
 }
