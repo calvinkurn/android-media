@@ -664,6 +664,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             userSession.hasShop(),
             actionLoginMethod
         )
+
+        if(emailPhoneEditText.text.isNotBlank())
+            userSession.autofillUserData = emailPhoneEditText.text.toString()
+
         onSuccessLogin()
     }
 
@@ -815,6 +819,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             LoginRegisterAnalytics.LABEL_EMAIL
         )
 
+        if(emailPhoneEditText.text.isNotBlank())
+            userSession.autofillUserData = emailPhoneEditText.text.toString()
+
         onSuccessLogin()
     }
 
@@ -854,6 +861,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 activity?.let {
                     analytics.eventClickLoginButton(it.applicationContext)
                 }
+            } else if (requestCode == REQUEST_SMART_LOCK
+                    && resultCode == SmartLockActivity.RC_READ
+                    && !userSession.autofillUserData.isNullOrEmpty()) {
+                emailPhoneEditText.setText(userSession.autofillUserData)
+                emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
             } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 handleGoogleSignInResult(task)
