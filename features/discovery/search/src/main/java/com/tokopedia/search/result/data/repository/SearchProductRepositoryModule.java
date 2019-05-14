@@ -12,6 +12,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
+@SearchScope
 @Module(includes = GqlSearchProductSpecModule.class)
 public class SearchProductRepositoryModule {
 

@@ -5,11 +5,15 @@ import com.tokopedia.discovery.common.domain.Repository;
 import com.tokopedia.discovery.common.repository.gql.GqlSpecification;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.model.InitiateSearchModel;
+import com.tokopedia.search.result.data.gql.initiatesearch.GqlInitiateSearchModule;
 
 import javax.inject.Named;
 
+import dagger.Module;
 import dagger.Provides;
 
+@SearchScope
+@Module(includes = GqlInitiateSearchModule.class)
 public class InitiateSearchRepositoryModule {
 
     @SearchScope
