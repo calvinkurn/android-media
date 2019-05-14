@@ -29,10 +29,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
 import com.tokopedia.otp.common.design.PinInputEditText;
@@ -44,7 +43,6 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.presenter.VerificationPresenter;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
-import com.tokopedia.otp.cotp.view.viewmodel.ValidateOtpLoginDomain;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -344,7 +342,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onGoToPhoneVerification() {
-        if (getActivity()!= null) {
+        if (getActivity() != null) {
             getActivity().setResult(Activity.RESULT_OK);
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PHONE_VERIFICATION);
             startActivity(intent);
