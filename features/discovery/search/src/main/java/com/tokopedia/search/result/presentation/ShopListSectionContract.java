@@ -29,7 +29,7 @@ public interface ShopListSectionContract {
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
-        void attachView(View view, FavoriteActionListener favoriteActionListener);
+        void setFavoriteActionListener(FavoriteActionListener favoriteActionListener);
 
         void loadShop(Map<String, Object> searchParameter, ShopListLoadMoreListener loadMoreListener);
 
