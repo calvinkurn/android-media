@@ -86,21 +86,5 @@ data class ShopFeaturedProduct(
                 val shopFeaturedProductList: ShopFeaturedProductList = ShopFeaturedProductList()
         )
 
-        data class CashbackDetail(
-                @SerializedName("cashback_percent")
-                @Expose
-                val cashbackPercent: Int = 0,
 
-                @SerializedName("cashback_status")
-                @Expose
-                val cashbackStatus: Int = 0,
-
-                @SerializedName("cashback_value")
-                @Expose
-                val cashbackValue: Int = 0,
-
-                @SerializedName("is_cashback_expired")
-                @Expose
-                val isCashbackExpired: Int = 0
-        )
 }

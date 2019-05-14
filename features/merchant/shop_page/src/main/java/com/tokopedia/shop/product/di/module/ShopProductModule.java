@@ -33,6 +33,7 @@ import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetProductCampaignsUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase;
+import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -69,10 +70,25 @@ public class ShopProductModule {
 
     @ShopProductScope
     @Provides
+    @Named(GQLQueryConstant.SHOP_PRODUCT)
+    public String getShopProductQuery(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_product);
+    }
+
+    @ShopProductScope
+    @Provides
     public GetShopFeaturedProductUseCase getShopFeaturedProductUseCase(@Named(GQLQueryConstant.SHOP_FEATURED_PRODUCT)
                                                                        String gqlQuery,
                                                                        MultiRequestGraphqlUseCase gqlUseCase){
         return new GetShopFeaturedProductUseCase(gqlQuery, gqlUseCase);
+    }
+
+    @ShopProductScope
+    @Provides
+    public GqlGetShopProductUseCase getShopProductUseCase(@Named(GQLQueryConstant.SHOP_PRODUCT)
+                                                                               String gqlQuery,
+                                                                  MultiRequestGraphqlUseCase gqlUseCase){
+        return new GqlGetShopProductUseCase(gqlQuery, gqlUseCase);
     }
 
     @Provides
