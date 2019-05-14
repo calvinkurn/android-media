@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.di.component;
+package com.tokopedia.search.result.presentation.view.fragment;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;

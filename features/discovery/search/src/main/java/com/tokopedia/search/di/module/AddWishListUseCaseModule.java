@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.di.module;
+package com.tokopedia.search.di.module;
 
 import android.content.Context;
 

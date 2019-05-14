@@ -24,6 +24,9 @@ public interface SearchConstant {
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
 
+    int AUTO_COMPLETE_ACTIVITY_REQUEST_CODE = 14332;
+    int AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY = 12323;
+
     interface RecyclerView {
         int VIEW_PRODUCT = 3;
         int VIEW_PRODUCT_GRID_1 = 12;
@@ -55,6 +58,8 @@ public interface SearchConstant {
     interface SearchProduct {
         String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
+        String SEARCH_PRODUCT_FIRST_PAGE_REPOSITORY = "search_product_first_page_repository";
+        String SEARCH_PRODUCT_LOAD_MORE_REPOSITORY = "search_product_load_more_repository";
         String PARAMETER_ROWS = "8";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
