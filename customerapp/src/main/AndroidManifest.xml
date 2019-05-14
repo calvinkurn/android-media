@@ -112,6 +112,14 @@
                     android:scheme="https"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".FallbackActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3.PlainGreen">
+        </activity>
+
         <activity
             android:name=".deeplink.activity.DeepLinkActivity"
             android:hardwareAccelerated="true"
