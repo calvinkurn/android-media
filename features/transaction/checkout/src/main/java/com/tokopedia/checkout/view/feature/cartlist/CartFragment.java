@@ -1941,7 +1941,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     // get newly added cart id if open cart after ATC on PDP
-    private String getCartId() {
+    @Override
+    public String getCartId() {
         if (getArguments() != null && !TextUtils.isEmpty(getArguments().getString("cart_id"))) {
             return getArguments().getString("cart_id");
         }
