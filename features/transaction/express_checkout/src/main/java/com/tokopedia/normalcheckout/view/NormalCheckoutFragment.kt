@@ -204,8 +204,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                                     REQUEST_CODE_LOGIN_THEN_TRADE_IN)
                         }
                     } else {
-                        tv_trade_in.invalidate()
-                        tv_trade_in.requestLayout()
+                        tv_trade_in.setOnClickListener(tv_trade_in.clickListener)
                     }
                 }
             }
@@ -286,8 +285,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 REQUEST_CODE_LOGIN_THEN_BUY -> doCheckoutAction(ATC_AND_BUY)
                 REQUEST_CODE_LOGIN_THEN_ATC -> doCheckoutAction(ATC_ONLY)
                 REQUEST_CODE_LOGIN_THEN_TRADE_IN -> {
-                    tv_trade_in.invalidate()
-                    tv_trade_in.requestLayout()
+                    tv_trade_in.setOnClickListener(tv_trade_in.clickListener)
                     doCheckoutAction(TRADEIN_BUY)
                 }
             }
