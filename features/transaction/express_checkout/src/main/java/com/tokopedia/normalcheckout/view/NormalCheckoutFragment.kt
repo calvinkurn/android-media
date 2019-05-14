@@ -130,7 +130,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val REQUEST_CODE_LOGIN = 561
         const val REQUEST_CODE_LOGIN_THEN_ATC = 562
         const val REQUEST_CODE_LOGIN_THEN_BUY = 563
-        const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 5646352
+        const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 5649
 
         fun createInstance(shopId: String?, productId: String?,
                            notes: String? = "", quantity: Int? = 0,
