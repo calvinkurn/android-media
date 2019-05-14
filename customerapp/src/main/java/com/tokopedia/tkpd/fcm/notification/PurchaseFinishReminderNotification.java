@@ -6,8 +6,11 @@ import android.os.Bundle;
 
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.data.OrderMarketplaceFilterId;
+import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
@@ -23,15 +26,17 @@ public class PurchaseFinishReminderNotification extends BaseNotification {
     @Override
     protected void configureNotificationData(Bundle data) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                new Intent(mContext, TransactionPurchaseRouter.getPurchaseActivityClass())
+                new Intent(mContext, OrderListActivity.class)
         );
-        mNotificationPass.classParentStack = TransactionPurchaseRouter.getPurchaseActivityClass();
+        mNotificationPass.classParentStack = OrderListActivity.class;
         mNotificationPass.title = mContext.getString(R.string.purchase_confirm_receiving);
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+
         Bundle bundle = new Bundle();
-        bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER);
+        bundle.putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
+        bundle.putString(OrderListContants.ORDER_FILTER_ID, OrderMarketplaceFilterId.MENUNGGU_KONFIRMASI);
+
         mNotificationPass.extraData = bundle;
         mNotificationPass.mIntent.putExtras(bundle);
     }
