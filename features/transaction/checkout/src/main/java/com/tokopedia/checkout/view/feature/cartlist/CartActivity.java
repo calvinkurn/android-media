@@ -22,6 +22,7 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
 
     private Fragment cartFragment;
     private Fragment emptyCartFragment;
+    private String cartId;
 
     @DeepLink(ApplinkConst.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -49,6 +50,7 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
 
     @Override
     protected void setupBundlePass(Bundle extras) {
+        cartId = extras.getString("cart_id");
     }
 
     @Override
@@ -92,9 +94,7 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
     @Override
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();
-        if (getIntent() != null && TextUtils.isEmpty(getIntent().getStringExtra("cart_id"))) {
-            bundle.putString("cart_id", getIntent().getStringExtra("cart_id"));
-        }
+        bundle.putString("cart_id", cartId);
         cartFragment = CartFragment.newInstance(bundle, "");
         ((CartFragment) cartFragment).setEmptyCartListener(this);
         return cartFragment;
@@ -115,9 +115,7 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
     @Override
     public void onCartNotEmpty(Bundle bundle) {
         if (cartFragment == null) {
-            if (getIntent() != null && TextUtils.isEmpty(getIntent().getStringExtra("cart_id"))) {
-                bundle.putString("cart_id", getIntent().getStringExtra("cart_id"));
-            }
+            bundle.putString("cart_id", cartId);
             cartFragment = CartFragment.newInstance(bundle, "");
         }
         if (cartFragment.isAdded()) return;
