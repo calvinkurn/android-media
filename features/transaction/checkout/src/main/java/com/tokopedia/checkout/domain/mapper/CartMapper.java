@@ -169,6 +169,7 @@ public class CartMapper implements ICartMapper {
                 CartItemData cartItemData = new CartItemData();
 
                 CartItemData.OriginData cartItemDataOrigin = new CartItemData.OriginData();
+                cartItemDataOrigin.setCheckboxState(data.isCheckboxState());
                 cartItemDataOrigin.setProductVarianRemark(
                         data.getProduct().getProductNotes()
                 );

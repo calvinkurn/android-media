@@ -119,7 +119,7 @@ public class ShopGroupData implements Parcelable {
             cartItemHolderData.setEditableRemark(false);
             cartItemHolderData.setErrorFormItemValidationMessage("");
             cartItemHolderData.setEditableRemark(false);
-            cartItemHolderData.setSelected(!cartItemData.isError());
+            cartItemHolderData.setSelected(cartItemData.getOriginData().isCheckboxState() || !cartItemData.isError());
             cartItemHolderDataList.add(cartItemHolderData);
         }
     }
