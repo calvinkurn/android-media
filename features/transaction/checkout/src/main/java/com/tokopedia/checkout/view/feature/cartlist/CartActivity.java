@@ -20,6 +20,8 @@ import com.tokopedia.navigation_common.listener.EmptyCartListener;
 
 public class CartActivity extends BaseCheckoutActivity implements EmptyCartListener {
 
+    private static final String EXTRA_CART_ID = "cart_id";
+
     private Fragment cartFragment;
     private Fragment emptyCartFragment;
     private String cartId;
@@ -50,7 +52,7 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        cartId = extras.getString("cart_id");
+        cartId = extras.getString(EXTRA_CART_ID);
     }
 
     @Override
@@ -94,7 +96,7 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
     @Override
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();
-        bundle.putString("cart_id", cartId);
+        bundle.putString(EXTRA_CART_ID, cartId);
         cartFragment = CartFragment.newInstance(bundle, "");
         ((CartFragment) cartFragment).setEmptyCartListener(this);
         return cartFragment;
@@ -115,7 +117,7 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
     @Override
     public void onCartNotEmpty(Bundle bundle) {
         if (cartFragment == null) {
-            bundle.putString("cart_id", cartId);
+            bundle.putString(EXTRA_CART_ID, cartId);
             cartFragment = CartFragment.newInstance(bundle, "");
         }
         if (cartFragment.isAdded()) return;

@@ -120,6 +120,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val EXTRA_SHOP_NAME = "shop_name"
         const val EXTRA_OCS = "ocs"
         const val EXTRA_TRADE_IN_PARAMS = "trade_in_params"
+        const val EXTRA_CART_ID = "cart_id"
         private const val TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val TRACKER_LIST_NAME = "tracker_list_name"
 
@@ -651,14 +652,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     val intent = router.getCheckoutIntent(this, ShipmentFormRequest.BundleBuilder().build())
                     startActivity(intent)
                 } else {
-//                    val intent = RouteManager.getIntent(this, ApplinkConst.CART_FROM_ATC.replace("{${ApplinkConst.Cart.CART_ID}}", cartId
-//                            ?: "", false))
-//                    startActivity(intent)
-
                     val cartUriString = ApplinkConstInternalMarketplace.CART
                     val intent = RouteManager.getIntent(this, cartUriString)
                     intent?.run {
-                        putExtra("cart_id", cartId)
+                        putExtra(EXTRA_CART_ID, cartId)
                         startActivity(intent)
                     }
                 }
