@@ -1,29 +1,11 @@
 package com.tokopedia.core.router.transactionmodule;
 
-import android.app.Fragment;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.util.RouterUtils;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 /**
  * Created by Nathaniel on 11/9/2016.
  */
 
 public class TransactionPurchaseRouter {
 
-    private static final String TRANSACTION_PURCHASE_ACTIVITY
-            = "com.tokopedia.transaction.purchase.activity.PurchaseActivity";
-    private static final String TRANSACTION_ORDER_LIST_ACTIVITY
-            = "com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity";
-    private static final String TRANSACTION_TX_LIST_FRAGMENT
-            = "com.tokopedia.transaction.purchase.fragment.TxListFragment";
 
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public static final String EXTRA_STATE_TX_FILTER = "EXTRA_STATE_TX_FILTER";
@@ -62,13 +44,4 @@ public class TransactionPurchaseRouter {
             = "ARG_PARAM_EXTRA_INSTANCE_FROM_NOTIFICATION";
 
 
-    public static Class<?> getPurchaseActivityClass() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = RouterUtils.getActivityClass(TRANSACTION_PURCHASE_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
 }

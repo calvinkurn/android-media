@@ -61,7 +61,6 @@ public class OrderListActivity extends BaseSimpleActivity
     @DeepLink({ApplinkConst.PURCHASE_DELIVERED, ApplinkConst.PURCHASE_SHIPPING_CONFIRM})
     public static Intent getDeliveredIntent(Context context, Bundle extras) {
         return getMarketPlaceIntent(context, extras);
-
     }
 
     @DeepLink(ApplinkConst.PURCHASE_HISTORY)

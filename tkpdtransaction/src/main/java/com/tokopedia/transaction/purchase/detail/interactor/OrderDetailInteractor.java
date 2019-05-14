@@ -27,8 +27,6 @@ public interface OrderDetailInteractor {
 
     String PRODUCT_WEIGHT_UNIT_KEY = "product_weight_unit";
 
-    String PRODUCT_DESCRIPTION_KEY = "product_id_description_key";
-
     void requestDetailData(Subscriber<OrderDetailData> subscriber,
                            TKPDMapParam<String, Object> params);
 

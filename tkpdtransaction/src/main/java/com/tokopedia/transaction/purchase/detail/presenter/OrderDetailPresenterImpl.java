@@ -20,7 +20,6 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderDetailInteractor;
-import com.tokopedia.transaction.common.data.order.OrderDetailShipmentModel;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.buyagain.ResponseBuyAgain;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
@@ -83,11 +82,6 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
-    public void processToShop(Context context, OrderDetailData data) {
-
-    }
-
-    @Override
     public void processShowComplain(Context context, OrderDetailData data) {
         mainView.onViewComplaint(data);
     }
@@ -110,11 +104,6 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     @Override
     public void processRequestCancelOrder(Context context, OrderDetailData data) {
         mainView.onRequestCancelOrder(data);
-    }
-
-    @Override
-    public void processSeeAllHistories(Context context, OrderDetailData data) {
-
     }
 
     @Override
@@ -271,22 +260,6 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
-    public void processShipping(Context context,
-                                OrderDetailShipmentModel shipmentModel) {
-        mainView.showProgressDialog();
-        TKPDMapParam<String, String> processShippingParam = new TKPDMapParam<>();
-        processShippingParam.put(ACTION_TYPE_KEY, CONFIRM_SHIPPING_CONSTANT);
-        processShippingParam.put(ORDER_ID_KEY, shipmentModel.getOrderId());
-        processShippingParam.put(SHIPPING_REF_KEY, shipmentModel.getShippingRef());
-        processShippingParam.put(SHIPMENT_ID_KEY, shipmentModel.getShipmentId());
-        processShippingParam.put(SHIPMENT_NAME_KEY, shipmentModel.getShipmentName());
-        processShippingParam.put(SERVICE_ID_KEY, shipmentModel.getPackageId());
-        orderDetailInteractor.processOrder(sellerActionSubscriber(),
-                AuthUtil.generateParamsNetwork(context, processShippingParam));
-
-    }
-
-    @Override
     public void cancelShipping(Context context, String orderId, String reason) {
         mainView.showProgressDialog();
         TKPDMapParam<String, String> processShippingParam = new TKPDMapParam<>();
@@ -295,16 +268,6 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
         processShippingParam.put(REASON_KEY, reason);
         orderDetailInteractor.cancelShipping(sellerActionSubscriber(),
                 AuthUtil.generateParamsNetwork(context, processShippingParam));
-    }
-
-    @Override
-    public void retryOrder(Context context, OrderDetailData data) {
-        mainView.showProgressDialog();
-        TKPDMapParam<String, String> retryPickUpParams = new TKPDMapParam<>();
-        retryPickUpParams.put(ORDER_ID_KEY, data.getOrderId());
-        orderDetailInteractor.retryPickup(
-                sellerActionSubscriber(),
-                AuthUtil.generateParamsNetwork(context, retryPickUpParams));
     }
 
     @Override

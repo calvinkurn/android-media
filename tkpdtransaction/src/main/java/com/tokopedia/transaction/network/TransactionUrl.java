@@ -8,8 +8,4 @@ public class TransactionUrl {
 
     public static String BASE_URL = "https://api-staging.tokopedia.com/";
 
-    public static String CART_PROMO = "cart/v2/auto_applied_kupon/";
-
-    public static final String PATH_CLEAR_PROMO = "clear";
-
 }

@@ -4,9 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
-import com.tokopedia.transaction.common.data.order.OrderDetailShipmentModel;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 
@@ -24,8 +23,6 @@ public interface OrderDetailPresenter {
 
     void processInvoice(Context context, OrderDetailData data, boolean seller);
 
-    void processToShop(Context context, OrderDetailData data);
-
     void processShowComplain(Context context, OrderDetailData data);
 
     void processComplaint(Context context, OrderDetailData data);
@@ -35,8 +32,6 @@ public interface OrderDetailPresenter {
     void processTrackOrder(Context context, OrderDetailData data);
 
     void processRequestCancelOrder(Context context, OrderDetailData data);
-
-    void processSeeAllHistories(Context context, OrderDetailData data);
 
     void processAskSeller(Context context, OrderDetailData data);
 
@@ -79,12 +74,7 @@ public interface OrderDetailPresenter {
     void processInstantCourierShipping(Context context,
                                        String orderId);
 
-    void processShipping(Context context,
-                         OrderDetailShipmentModel shipmentModel);
-
     void cancelShipping(Context context, String orderId, String reason);
-
-    void retryOrder(Context context, OrderDetailData data);
 
     void processFinish(Context context, String orderId, String orderStatus);
 
