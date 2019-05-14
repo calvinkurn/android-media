@@ -61,10 +61,12 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setKeroUnixTime(shipmentAddressFormDataResponse.getKeroUnixTime());
         dataResult.setMultiple(shipmentAddressFormDataResponse.getIsMultiple() == 1);
         dataResult.setUseCourierRecommendation(shipmentAddressFormDataResponse.getIsRobinhood() == 1);
+        dataResult.setHidingCourier(shipmentAddressFormDataResponse.getHideCourier());
         dataResult.setIsBlackbox(shipmentAddressFormDataResponse.getIsBlackbox() == 1);
         dataResult.setErrorCode(shipmentAddressFormDataResponse.getErrorCode());
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
+        dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
 
         if (shipmentAddressFormDataResponse.getPromoSuggestion() != null) {
             CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
@@ -142,6 +144,7 @@ public class ShipmentMapper implements IShipmentMapper {
                         voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
                         voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
                         voucherOrdersItemData.setTitleDescription(voucherOrdersItem.getTitleDescription());
+                        voucherOrdersItemData.setIsAutoapply(true);
                         voucherOrdersItemDataList.add(voucherOrdersItemData);
                     }
                     autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
@@ -287,6 +290,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                         voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
                                         voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
                                         voucherOrdersItemData.setTitleDescription(voucherOrdersItem.getTitleDescription());
+                                        voucherOrdersItemData.setIsAutoapply(true);
                                         shopResult.setVoucherOrdersItemData(voucherOrdersItemData);
                                     }
                                 }

@@ -15,4 +15,9 @@
         <item name="android:textColor">@color/text_submit_button</item>
     </style>
 
+    <style name="AlertDialogTheme">
+        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:layout_margin">@dimen/dp_3</item>
+    </style>
+
 </resources>
