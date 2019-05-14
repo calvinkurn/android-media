@@ -4,15 +4,19 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.hotel.HotelComponentInstance
+import com.tokopedia.hotel.booking.di.DaggerHotelBookingComponent
+import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 
-class HotelBookingActivity : HotelBaseActivity(), HasComponent<HotelRoomDetailComponent> {
+class HotelBookingActivity : HotelBaseActivity(), HasComponent<HotelBookingComponent> {
 
-    override fun getComponent(): HotelRoomDetailComponent {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getComponent(): HotelBookingComponent =
+        DaggerHotelBookingComponent.builder()
+                .hotelComponent(HotelComponentInstance.getHotelComponent(application))
+                .build()
 
     override fun getNewFragment(): Fragment =
             HotelBookingFragment.getInstance(

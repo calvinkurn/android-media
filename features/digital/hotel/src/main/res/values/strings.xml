@@ -110,16 +110,26 @@
     <string name="hotel_room_detail_extra_bed">Extra bed</string>
     <string name="hotel_room_detail_price_info">Harga /kamar/malam</string>
 
+    <string name="hotel_booking_title">Pembayaran</string>
+    <string name="hotel_room_night_count">%1$d Kamar</string>
     <string name="hotel_booking_pay_at_hotel_label">Bayar di Hotel (Perlu Jaminan Kartu Kredit)</string>
     <string name="hotel_booking_room_general_info">%1$d Kamar • %2$d Tamu</string>
     <string name="hotel_booking_free_breakfast">Sarapan Gratis</string>
     <string name="hotel_booking_add_request_label">Tambahkan Permintaan Khusus</string>
+    <string name="hotel_booking_request_form_title">Permintaan Khusus*</string>
+    <string name="hotel_booking_request_form_hint">Isi permintaan khusus di sini</string>
+    <string name="hotel_booking_request_form_notice">*Pemenuhan permintaan khusus tergantung kebijakan hotel.</string>
+    <string name="hotel_booking_request_char_count">%1$d/%2$d</string>
+    <string name="hotel_booking_request_char_count_error">Maksimum %1$d karakter</string>
     <string name="hotel_booking_contact_detail_title">Detail Kontak</string>
     <string name="hotel_booking_contact_detail_info">E-voucher dan informasi mengenai pemesanan akan dikirim ke kontak ini.</string>
+    <string name="hotel_booking_contact_detail_phone_number">+%1$d %2$s</string>
     <string name="hotel_booking_contact_self">Pesan untuk diri sendiri</string>
     <string name="hotel_booking_contact_guest">Pesan untuk orang lain</string>
+    <string name="hotel_booking_guest_form_title">Nama Lengkap</string>
+    <string name="hotel_booking_guest_form_hint">Ketik nama tamu yang akan menginap</string>
+    <string name="hotel_booking_guest_form_notice">Nama harus sesuai dengan kartu identitas (KTP/SIM/Paspor)</string>
     <string name="hotel_booking_invoice_title">Ringkasan Tagihan</string>
-    <string name="hotel_booking_invoice_room_info">%1$d Kamar x %2$d Tamu</string>
     <string name="hotel_booking_tax_label">Pajak</string>
     <string name="hotel_booking_tax_included">Sudah termasuk</string>
     <string name="hotel_booking_invoice_estimate">Estimasi total tagihan</string>

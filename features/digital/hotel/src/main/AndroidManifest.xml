@@ -41,11 +41,16 @@
             android:theme="@style/Theme.White"/>
 
         <activity android:name=".roomdetail.presentation.activity.HotelRoomDetailActivity"
-            android:label=""
+            android:label="@string/hotel_booking_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.NoActionBar"/>
 
         <activity android:name=".hoteldetail.presentation.activity.HotelReviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
+        <activity android:name=".booking.presentation.activity.HotelBookingActivity"
+            android:label="Pembayaran"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
     </application>

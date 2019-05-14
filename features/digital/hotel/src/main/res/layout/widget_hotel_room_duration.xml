@@ -17,9 +17,9 @@
             android:id="@+id/hotel_check_in_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/hotel_homepage_check_in"
             app:fontSize="micro"
-            app:textViewTheme="lightSecondary"
-            tools:text="Check-in" />
+            app:textViewTheme="lightSecondary" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/hotel_check_in_date"
@@ -34,9 +34,11 @@
             android:id="@+id/hotel_check_in_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:fontSize="micro"
             app:textViewTheme="lightSecondary"
-            tools:text="Senin, 14:00" />
+            tools:text="Senin, 14:00"
+            tools:visibility="visible"/>
 
     </LinearLayout>
 
@@ -55,9 +57,9 @@
             android:id="@+id/hotel_check_out_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/hotel_homepage_check_out"
             app:fontSize="micro"
-            app:textViewTheme="lightSecondary"
-            tools:text="Check-out" />
+            app:textViewTheme="lightSecondary" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/hotel_check_out_date"
@@ -72,9 +74,11 @@
             android:id="@+id/hotel_check_out_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:fontSize="micro"
             app:textViewTheme="lightSecondary"
-            tools:text="Kamis, 12:00" />
+            tools:text="Kamis, 12:00"
+            tools:visibility="visible" />
 
     </LinearLayout>
 
@@ -84,7 +88,7 @@
         android:layout_weight="1" />
 
     <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/hotel_room_days"
+        android:id="@+id/hotel_room_night_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_search_destination_tag"
@@ -92,8 +96,9 @@
         android:paddingTop="@dimen/dp_2"
         android:paddingRight="@dimen/dp_6"
         android:paddingBottom="@dimen/dp_2"
+        android:text="@string/hotel_room_night_count"
         android:textColor="#9e9fa3"
         android:textStyle="bold"
         app:fontSize="micro"
-        tools:text="Hotel" />
+        tools:text="10 Malam" />
 </LinearLayout>
