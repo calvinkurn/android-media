@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel
@@ -21,6 +22,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
@@ -30,6 +32,12 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
                                                       private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
                                                       private val getShopProductUseCase: GqlGetShopProductUseCase,
                                                       dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
+
+    val userDeviceId: String
+        get() = userSession.deviceId
+
+    val userId: String
+        get() = userSession.userId
 
     val isLogin: Boolean
         get() = userSession.isLoggedIn
@@ -41,6 +49,7 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
     val featuredProductResponse = MutableLiveData<Result<List<ShopProductViewModel>>>()
     val etalaseResponse = MutableLiveData<Result<List<ShopEtalaseViewModel>>>()
     val productResponse = MutableLiveData<Result<Pair<Boolean, List<ShopProductViewModel>>>>()
+    val productHighlightResp = MutableLiveData<List<List<ShopProductViewModel>>>()
 
     fun getFeaturedProduct(shopId: String, isForceRefresh: Boolean = false){
         getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(shopId.toInt())
@@ -94,6 +103,33 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
         }){
             productResponse.value = Fail(it)
         }
+    }
+
+    fun getShopProductsEtalaseHighlight(shopId: String, etalaseHighlight: List<ShopEtalaseViewModel>, isForceRefresh: Boolean = false){
+        launchCatchError(block = {
+            productHighlightResp.value =
+                    etalaseHighlight.map { ShopProductFilterInput(1, ShopPageConstant.ETALASE_HIGHLIGHT_COUNT, "", it.etalaseId) }
+                        .map {
+                            getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, filterInput)
+                            getShopProductUseCase.isFromCacheFirst = !isForceRefresh
+                            async(Dispatchers.IO) {
+                                try {
+                                    val resp = getShopProductUseCase.executeOnBackground()
+                                    if (resp.errors.isNotEmpty()){
+                                        null
+                                    } else {
+                                        resp.data.map { product -> product.toProductViewModel(isMyShop(shopId)) }
+                                    }
+                                } catch (t: Throwable){
+                                    null
+                                }
+                            }
+                        }.map { it.await() }.filterNotNull();
+        }){}
+    }
+
+    fun clearEtalaseCache(){
+        getShopEtalaseByShopUseCase.clearCache()
     }
 
     private fun isHasNextPage(page: Int, perPage: Int, totalData: Int): Boolean = page * perPage < totalData
@@ -150,5 +186,4 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
             it.etalaseBadge = badge
         }
     }
-
 }

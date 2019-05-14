@@ -87,7 +87,6 @@ import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel
 import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel
 import com.tokopedia.shop.product.view.model.ShopProductViewModel
-import com.tokopedia.shop.product.view.presenter.ShopProductLimitedListPresenter
 import com.tokopedia.shop.product.view.viewmodel.ShopProductLimitedViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
@@ -120,8 +119,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     lateinit var viewModel: ShopProductLimitedViewModel
 
 
-    @Inject
-    lateinit var shopProductLimitedListPresenter: ShopProductLimitedListPresenter
+    /*@Inject
+    lateinit var shopProductLimitedListPresenter: ShopProductLimitedListPresenter*/
 
     var shopPageTracking: ShopPageTrackingBuyer? = null
     lateinit var merchantVoucherListPresenter: MerchantVoucherListPresenter
@@ -190,6 +189,10 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                 is Fail -> showGetListError(it.throwable)
             }
         })
+
+        viewModel.productHighlightResp.observe(this, Observer {
+            it?.run { onSuccessGetEtalaseHighlight(this) }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -217,7 +220,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         merchantVoucherListPresenter.attachView(this)
 
         attribution = arguments?.getString(SHOP_ATTRIBUTION, "") ?: ""
-        shopProductLimitedListPresenter.attachView(this, this)
+        //shopProductLimitedListPresenter.attachView(this, this)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopProductLimitedViewModel::class.java)
     }
@@ -291,7 +294,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     fun clearCache() {
         merchantVoucherListPresenter.clearCache()
-        shopProductLimitedListPresenter.clearCache()
+        viewModel.clearEtalaseCache()
     }
 
     // load data promo/featured/etalase
@@ -333,7 +336,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             shopProductAdapter.clearMerchantVoucherData()
             shopProductAdapter.clearFeaturedData()
 
-            shopProductLimitedListPresenter.loadProductPromoModel(getOfficialWebViewUrl(shopInfo))
+            //shopProductLimitedListPresenter.loadProductPromoModel(getOfficialWebViewUrl(shopInfo))
 
             loadVoucherList()
 
@@ -447,9 +450,10 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     override fun onDestroy() {
         viewModel.featuredProductResponse.removeObservers(this)
         viewModel.etalaseResponse.removeObservers(this)
+        viewModel.productHighlightResp.removeObservers(this)
+        viewModel.productResponse.removeObservers(this)
         viewModel.clear()
         super.onDestroy()
-        shopProductLimitedListPresenter.detachView()
         merchantVoucherListPresenter.detachView()
     }
 
@@ -659,10 +663,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             }
         }
         shopId = shopInfo!!.shopCore.shopID
-        shopProductLimitedListPresenter!!.getProductListHighlight(shopId,
-                shopInfo!!.isOpen != 1,
-                shopInfo!!.goldOS.isOfficial == 1,
-                highlightEtalaseViewModelList)
+        viewModel.getShopProductsEtalaseHighlight(shopId!!,
+                highlightEtalaseViewModelList ?: listOf())
     }
 
     override fun onErrorGetEtalaseListByShop(e: Throwable) {
@@ -687,9 +689,9 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     override fun promoClicked(url: String?) {
         activity?.let {
             val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopInfo!!.shopCore.shopID,
-                    shopProductLimitedListPresenter.isLogin,
-                    shopProductLimitedListPresenter.deviceId,
-                    shopProductLimitedListPresenter.userId)
+                    viewModel.isLogin,
+                    viewModel.userDeviceId,
+                    viewModel.userId)
             // Need to login
             if (!urlProceed) {
                 urlNeedTobBeProceed = url
@@ -767,11 +769,11 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                                 shopProductViewModel.id))
             }
         }
-        if (shopProductViewModel.isWishList) {
+        /*if (shopProductViewModel.isWishList) {
             shopProductLimitedListPresenter.removeFromWishList(shopProductViewModel.id)
         } else {
             shopProductLimitedListPresenter.addToWishList(shopProductViewModel.id)
-        }
+        }*/
     }
 
     override fun onSeeAllClicked(shopEtalaseViewModel: ShopEtalaseViewModel) {
@@ -1021,11 +1023,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         if (shopInfo != null) {
             merchantVoucherListPresenter.getVoucherList(shopInfo!!.shopCore.shopID, NUM_VOUCHER_DISPLAY)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        shopProductLimitedListPresenter.detachView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
