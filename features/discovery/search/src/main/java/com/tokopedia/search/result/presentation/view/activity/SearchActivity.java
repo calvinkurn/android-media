@@ -48,7 +48,6 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.di.component.DaggerSearchComponent;
-import com.tokopedia.search.result.di.component.SearchComponent;
 import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -115,7 +114,7 @@ public class SearchActivity extends BaseActivity
     @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
 
-    private SearchComponent searchComponent;
+    private SearchViewComponent searchComponent;
     private MenuItem menuChangeGrid;
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;

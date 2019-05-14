@@ -5,9 +5,9 @@ import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.search.di.module.RemoteConfigModule;
 import com.tokopedia.search.di.module.UserSessionModule;
 import com.tokopedia.search.result.data.repository.SearchProductRepositoryModule;
-import com.tokopedia.search.result.di.module.AddWishListUseCaseModule;
-import com.tokopedia.search.result.di.module.RemoveWishListUseCaseModule;
-import com.tokopedia.search.result.di.module.TopAdsServiceModule;
+import com.tokopedia.search.di.module.AddWishListUseCaseModule;
+import com.tokopedia.search.di.module.RemoveWishListUseCaseModule;
+import com.tokopedia.search.di.module.TopAdsServiceModule;
 import com.tokopedia.search.result.domain.usecase.ProductWishlistUrlUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.SearchProductUseCaseModule;
 

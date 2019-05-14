@@ -1,21 +1,21 @@
-package com.tokopedia.search.result.di.component;
+package com.tokopedia.search.result.presentation.view.activity;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.search.di.module.SearchTrackingModule;
 import com.tokopedia.search.di.module.UserSessionModule;
-import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule;
-import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
+import com.tokopedia.search.result.presentation.presenter.search.SearchPresenterModule;
+import com.tokopedia.search.result.presentation.view.activity.SearchActivity;
 
 import dagger.Component;
 
 @SearchScope
 @Component(modules = {
-        ProductListPresenterModule.class,
         UserSessionModule.class,
-        SearchTrackingModule.class
+        SearchTrackingModule.class,
+        SearchPresenterModule.class
 }, dependencies = BaseAppComponent.class)
-public interface ProductListViewComponent {
+public interface SearchViewComponent {
 
-    void inject(ProductListFragment view);
+    void inject(SearchActivity searchActivity);
 }
