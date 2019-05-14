@@ -651,7 +651,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     startActivity(intent)
                 } else {
                     val intent = RouteManager.getIntent(this, ApplinkConst.CART)
-                    intent.putExtra("cart_id", cartId)
+                    intent.putExtra("atc_cart_id", cartId)
                     startActivity(intent)
                 }
             }

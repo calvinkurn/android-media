@@ -90,7 +90,11 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
 
     @Override
     protected Fragment getNewFragment() {
-        cartFragment = CartFragment.newInstance(null,"");
+        Bundle bundle = new Bundle();
+        if (getIntent() != null && getIntent().getIntExtra("atc_cart_id", -1) != -1) {
+            bundle.putInt("atc_cart_id", getIntent().getIntExtra("atc_cart_id", -1));
+        }
+        cartFragment = CartFragment.newInstance(bundle, "");
         ((CartFragment) cartFragment).setEmptyCartListener(this);
         return cartFragment;
     }
@@ -110,7 +114,10 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
     @Override
     public void onCartNotEmpty(Bundle bundle) {
         if (cartFragment == null) {
-            cartFragment = CartFragment.newInstance(bundle,"");
+            if (getIntent() != null && getIntent().getIntExtra("atc_cart_id", -1) != -1) {
+                bundle.putInt("atc_cart_id", getIntent().getIntExtra("atc_cart_id", -1));
+            }
+            cartFragment = CartFragment.newInstance(bundle, "");
         }
         if (cartFragment.isAdded()) return;
         emptyCartFragment = null;
