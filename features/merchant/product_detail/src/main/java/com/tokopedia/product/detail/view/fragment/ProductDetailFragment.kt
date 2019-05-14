@@ -190,7 +190,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
         ProductDetailTracking()
     }
 
-    var productVariant: ProductVariant? = null
     var productInfo: ProductInfo? = null
     var shopInfo: ShopInfo? = null
 
@@ -1316,7 +1315,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
             partialVariantAndRateEstView.renderData(null, "", this::onVariantClicked)
             return
         }
-        productVariant = data
         val selectedVariantListString = data.getOptionListString(userInputVariant)?.joinToString(separator = ", ")
                 ?: ""
         partialVariantAndRateEstView.renderData(data, selectedVariantListString, this::onVariantClicked)
@@ -1505,7 +1503,14 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun mapSelectedProductVariants(): ArrayMap<String, ArrayMap<String, String>>? {
-        return productVariant?.mapSelectedProductVariants(userInputVariant)
+        return getProductVariant()?.mapSelectedProductVariants(userInputVariant)
+    }
+
+    private fun getProductVariant(): ProductVariant? {
+        val productVariantResponse = productInfoViewModel.productVariantResp.value
+        return if (productVariantResponse is Success) {
+            productVariantResponse.data
+        }  else { null }
     }
 
     /**
