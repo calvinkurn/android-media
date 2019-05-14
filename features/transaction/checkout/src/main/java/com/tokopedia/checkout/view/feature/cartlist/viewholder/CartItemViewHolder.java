@@ -250,7 +250,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderWarningAndError(CartItemHolderData data) {
         if (data.getCartItemData().isParentHasErrorOrWarning()) {
-            if (data.getCartItemData().isSingleChild()) {
+            if (!data.getCartItemData().isDisableAllProducts()) {
                 renderErrorItemHeader(data);
                 renderWarningItemHeader(data);
                 setWarningAndErrorVisibility(data);
@@ -708,7 +708,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             checkQtyMustDisabled(cartItemHolderData, qty);
             cartItemHolderData.getCartItemData().getUpdatedData().setQuantity(qty);
             validateWithAvailableQuantity(cartItemHolderData, qty);
-            actionListener.onCartItemQuantityFormEdited(getAdapterPosition(), parentPosition, needToUpdateView);
+            handleRefreshType(cartItemHolderData, viewHolderListener, parentPosition);
         }
     }
 

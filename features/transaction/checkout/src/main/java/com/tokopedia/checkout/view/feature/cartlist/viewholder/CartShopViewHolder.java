@@ -125,12 +125,12 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectShop.setChecked(cartShopHolderData.isAllSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
 
-        if (cartShopHolderData.getShopGroupData().isFulfillment()) {
-            imgFulfillment.setVisibility(View.VISIBLE);
+        imgFulfillment.setVisibility(cartShopHolderData.getShopGroupData().isFulfillment() ?
+                View.VISIBLE : View.GONE);
+        if (!TextUtils.isEmpty(cartShopHolderData.getShopGroupData().getFulfillmentName())) {
             tvFulfillDistrict.setVisibility(View.VISIBLE);
             tvFulfillDistrict.setText(cartShopHolderData.getShopGroupData().getFulfillmentName());
         } else {
-            imgFulfillment.setVisibility(View.GONE);
             tvFulfillDistrict.setVisibility(View.GONE);
         }
 
@@ -158,47 +158,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                     cartShopHolderData.getShopGroupData().setVoucherOrdersItemData(null);
                 }
             } else {
-                tickerPromoStackingCheckoutView.enableView();
-                if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null) {
-                    tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
-                    VoucherOrdersItemData voucherOrdersItemData = cartShopHolderData.getShopGroupData().getVoucherOrdersItemData();
-                    String state = voucherOrdersItemData.getMessageData().getState();
-                    if (state.equalsIgnoreCase("red")) {
-                        tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.FAILED);
-                    } else if (state.equalsIgnoreCase("green")) {
-                        tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.ACTIVE);
-                    } else {
-                        tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.INACTIVE);
-                    }
-                    tickerPromoStackingCheckoutView.setDesc(voucherOrdersItemData.getInvoiceDescription());
-                    tickerPromoStackingCheckoutView.setTitle(voucherOrdersItemData.getMessageData().getText());
-                } else {
-                    tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.EMPTY);
-                    tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
-                    tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
-                }
-                tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
-                    @Override
-                    public void onClickUsePromo() {
-                        actionListener.onVoucherMerchantPromoClicked(cartShopHolderData.getShopGroupData());
-                    }
-
-                    @Override
-                    public void onResetPromoDiscount() {
-                        actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), false);
-                    }
-
-                    @Override
-                    public void onClickDetailPromo() {
-
-                    }
-
-                    @Override
-                    public void onDisablePromoDiscount() {
-                        actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
-                    }
-                });
-
                 int disabledItem = 0;
                 for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
                     if (!cartItemHolderData.isSelected()) {
@@ -212,6 +171,65 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                         actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
                         cartShopHolderData.getShopGroupData().setVoucherOrdersItemData(null);
                     }
+                } else {
+                    boolean isApplied = false;
+                    tickerPromoStackingCheckoutView.enableView();
+                    if (disabledItem > 0) {
+                        if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null &&
+                            cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getIsAutoapply()) {
+                            actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
+                            tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+                            tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
+                            tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
+                        } else {
+                            isApplied = true;
+                        }
+                    } else {
+                        isApplied = true;
+                    }
+
+                    if (isApplied) {
+                        if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null) {
+                            tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
+                            VoucherOrdersItemData voucherOrdersItemData = cartShopHolderData.getShopGroupData().getVoucherOrdersItemData();
+                            String state = voucherOrdersItemData.getMessageData().getState();
+                            if (state.equalsIgnoreCase("red")) {
+                                tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.FAILED);
+                            } else if (state.equalsIgnoreCase("green")) {
+                                tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.ACTIVE);
+                            } else {
+                                tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.INACTIVE);
+                            }
+                            tickerPromoStackingCheckoutView.setDesc(voucherOrdersItemData.getInvoiceDescription());
+                            tickerPromoStackingCheckoutView.setTitle(voucherOrdersItemData.getMessageData().getText());
+                        } else {
+                            tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+                            tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
+                            tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
+                        @Override
+                        public void onClickUsePromo() {
+                            actionListener.onVoucherMerchantPromoClicked(cartShopHolderData.getShopGroupData());
+                        }
+
+                        @Override
+                        public void onResetPromoDiscount() {
+                            actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), false);
+                        }
+
+                        @Override
+                        public void onClickDetailPromo() {
+
+                        }
+
+                        @Override
+                        public void onDisablePromoDiscount() {
+                            actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
+                        }
+                    });
                 }
             }
         } else {

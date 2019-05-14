@@ -2,8 +2,8 @@ package com.tokopedia.discovery.newdynamicfilter.helper;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.discovery.common.data.Filter;
+import com.tokopedia.discovery.common.data.Option;
 
 import java.lang.reflect.Type;
 import java.util.List;

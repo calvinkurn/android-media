@@ -1,12 +1,13 @@
 package com.tokopedia.discovery.newdynamicfilter.controller
 
-import com.tokopedia.core.discovery.model.Filter
-import com.tokopedia.core.discovery.model.LevelThreeCategory
-import com.tokopedia.core.discovery.model.LevelTwoCategory
-import com.tokopedia.core.discovery.model.Option
+import com.tokopedia.discovery.common.data.Filter
+import com.tokopedia.discovery.common.data.LevelThreeCategory
+import com.tokopedia.discovery.common.data.LevelTwoCategory
+import com.tokopedia.discovery.common.data.Option
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper
 import org.junit.Test
+import java.util.*
 
 class FilterControllerTest {
 
@@ -126,21 +127,21 @@ class FilterControllerTest {
 
     @Test
     fun testFilterControllerInitializedProperly() {
-        val filterParameter = createFilterParameter()
+        val filterParameter = createParameter()
         val filterList = createFilterList()
 
         filterController.initFilterController(filterParameter, filterList)
 
-        assertFilterViewStateCorrect(tokoOptions)
-        assertFilterViewStateSizeCorrect(tokoOptions.size)
+        assertFilterViewStateSizeCorrect(1)
+        assertFilterViewStateCorrect(listOf<Option>() + officialOption)
     }
 
-    private fun createFilterParameter() : Map<String, String> {
-        val filterParameter = mutableMapOf<String, String>()
-        filterParameter[SearchApiConst.Q] = QUERY_FOR_TEST_SAMSUNG
-        filterParameter[SearchApiConst.OFFICIAL] = TRUE_VALUE
+    private fun createParameter() : Map<String, String> {
+        val parameter = mutableMapOf<String, String>()
+        parameter[SearchApiConst.Q] = QUERY_FOR_TEST_SAMSUNG
+        parameter[SearchApiConst.OFFICIAL] = TRUE_VALUE
 
-        return filterParameter
+        return parameter
     }
 
     private fun createFilterList() : List<Filter> {
@@ -175,7 +176,7 @@ class FilterControllerTest {
 
     @Test
     fun testFilterControllerInitializedUsingOptionsWithEmptyValue() {
-        val filterParameter = HashMap<String, String>(createFilterParameter())
+        val filterParameter = HashMap<String, String>(createParameter())
         filterParameter[minPriceOption.key] = 1000.toString()
         filterParameter[maxPriceOption.key] = 10000.toString()
 
@@ -205,12 +206,83 @@ class FilterControllerTest {
 
     @Test
     fun testLoadFilterViewStateWithBundledOptions() {
+        prepareLocationOptions()
+
+        val locationOptionPermutations = getAllOptionPermutations(locationOptions.toTypedArray())
+        for(locationOptionPermutation in locationOptionPermutations!!) {
+            val locationOptionPermutationList = createOptionsFromPermutations(locationOptionPermutation)
+
+            testLoadFilterViewStateWithBundledLocationOptions(locationOptionPermutationList)
+        }
+    }
+
+    private fun prepareLocationOptions() {
+        locationOptions.add(jabodetabekOption)
+        locationOptions.add(jakartaOption)
+        locationOptions.add(jakartaBaratOption)
+        locationOptions.add(tangerangOption)
+        locationOptions.add(bandungOption)
+    }
+
+    private fun getAllOptionPermutations(optionList: Array<Option>?): Set<Array<Option?>>? {
+        if (optionList == null)
+            return null
+
+        val perms = mutableSetOf<Array<Option?>>()
+
+        if (optionList.isEmpty()) {
+            perms.add(arrayOfNulls(0))
+            return perms
+        }
+
+        val first = optionList[0]
+        val remainder = Arrays.copyOfRange(optionList, 1, optionList.size)
+        val subPerms = getAllOptionPermutations(remainder)
+        for (subPerm in subPerms!!) {
+            for (i in 0..subPerm.size) {
+                val newPerm = subPerm.copyOf(subPerm.size + 1)
+                for (j in newPerm.size - 1 downTo i + 1)
+                    newPerm[j] = newPerm[j - 1]
+                newPerm[i] = first
+                perms.add(newPerm)
+            }
+        }
+
+        return perms
+    }
+
+    private fun createOptionsFromPermutations(optionArray: Array<Option?>) : List<Option> {
+        val optionList = mutableListOf<Option>()
+
+        for(option in optionArray) {
+            if(option == null) continue
+
+            optionList.add(option)
+        }
+
+        return optionList
+    }
+
+    private fun testLoadFilterViewStateWithBundledLocationOptions(locationOptions: List<Option>) {
+        printLocationOptionsName(locationOptions)
+
         val filterParameter = createFilterParameterWithBundledOption()
-        val filterList = createFilterList()
+        val filterList = createFilterListWithVariousLocationOptions(locationOptions)
 
         filterController.initFilterController(filterParameter, filterList)
 
         assertFilterViewStateOnlyHasBundledOptions()
+
+        printTestPassed()
+    }
+
+    private fun printLocationOptionsName(locationOptions: List<Option>) {
+        print("Testing location option with combination: ")
+
+        val locationOptionNames = mutableListOf<String>()
+        locationOptions.forEach { locationOptionNames.add(it.name) }
+
+        print(locationOptionNames.joinToString())
     }
 
     private fun createFilterParameterWithBundledOption() : Map<String, String> {
@@ -222,27 +294,12 @@ class FilterControllerTest {
         return filterParameter
     }
 
-    @Test
-    fun testLoadFilterViewStateWithBundledOptionsWithNotOrganizedFilterList() {
-        val filterParameter = createFilterParameterWithBundledOption()
-        val filterList = createNotOrganizedFilterList()
-
-        filterController.initFilterController(filterParameter, filterList)
-
-        assertFilterViewStateOnlyHasBundledOptions()
-    }
-
-    private fun createNotOrganizedFilterList() : List<Filter> {
+    private fun createFilterListWithVariousLocationOptions(locationOptions : List<Option>) : List<Filter> {
         val filterList = mutableListOf<Filter>()
 
         tokoOptions.add(officialOption)
         filterList.add(createFilterWithOptions(tokoOptions))
 
-        locationOptions.add(jakartaOption)
-        locationOptions.add(jakartaBaratOption)
-        locationOptions.add(tangerangOption)
-        locationOptions.add(jabodetabekOption)
-        locationOptions.add(bandungOption)
         filterList.add(createFilterWithOptions(locationOptions))
 
         categoryOptions.add(handphoneOption)
@@ -266,9 +323,13 @@ class FilterControllerTest {
         assertFilterViewStateCorrect(expectedOptions)
     }
 
+    private fun printTestPassed() {
+        println(".... Passed")
+    }
+
     @Test
     fun testLoadFilterViewStateWithLevelTwoCategory() {
-        val filterParameter = HashMap<String, String>(createFilterParameter())
+        val filterParameter = HashMap<String, String>(createParameter())
         filterParameter[semuaHandphoneOption.key] = semuaHandphoneOption.value
 
         val filterList = createFilterList()
@@ -289,7 +350,7 @@ class FilterControllerTest {
 
     @Test
     fun testLoadFilterViewStateWithLevelThreeCategoryExpectingLevelTwo() {
-        val filterParameter = HashMap<String, String>(createFilterParameter())
+        val filterParameter = HashMap<String, String>(createParameter())
         filterParameter[semuaHandphoneBesarOption.key] = semuaHandphoneBesarOption.value
 
         val filterList = createFilterList()
@@ -310,7 +371,7 @@ class FilterControllerTest {
 
     @Test
     fun testLoadFilterViewStateWithLevelThreeCategory() {
-        val filterParameter = HashMap<String, String>(createFilterParameter())
+        val filterParameter = HashMap<String, String>(createParameter())
         filterParameter[handphoneEnamInchOption.key] = handphoneEnamInchOption.value
 
         val filterList = createFilterList()
@@ -357,7 +418,7 @@ class FilterControllerTest {
 
     @Test
     fun testResetAllFilters() {
-        val filterParameter = createFilterParameter()
+        val filterParameter = createParameter()
         val filterList = createFilterList()
 
         filterController.initFilterController(filterParameter, filterList)
@@ -369,16 +430,16 @@ class FilterControllerTest {
     }
 
     private fun assertResetAllFiltersCorrect() {
-        val actualFilterParameter = filterController.getFilterParameter()
-        val expectedFilterParameterSize = 1
-        val expectedFilterParameterKey = SearchApiConst.Q
-        val expectedFilterParameterContainsKey = true
+        val actualParameter = filterController.getParameter()
+        val expectedParameterSize = 1
+        val expectedParameterKey = SearchApiConst.Q
+        val expectedParameterContainsKey = true
 
-        assert(actualFilterParameter.size == expectedFilterParameterSize
-                && actualFilterParameter.contains(expectedFilterParameterKey)) {
+        assert(actualParameter.size == expectedParameterSize
+                && actualParameter.contains(expectedParameterKey)) {
             "Testing reset all filters:\n" +
-                    "Filter Parameter expected size: $expectedFilterParameterSize, actual size: ${actualFilterParameter.size}\n" +
-                    "Filter Parameter should contain key: $expectedFilterParameterKey, expected: $expectedFilterParameterContainsKey, actual: ${actualFilterParameter.contains(expectedFilterParameterKey)}"
+                    "Parameter expected size: $expectedParameterSize, actual size: ${actualParameter.size}\n" +
+                    "Parameter should contain key: $expectedParameterKey, expected: $expectedParameterContainsKey, actual: ${actualParameter.contains(expectedParameterKey)}"
         }
 
         val actualFilterViewStateSize = filterController.getFilterViewStateSize()
@@ -392,7 +453,7 @@ class FilterControllerTest {
 
     @Test
     fun testSetFilterNoCleanUp() {
-        val filterParameter = createFilterParameter()
+        val filterParameter = createParameter()
         val filterList = createFilterList()
 
         filterController.initFilterController(filterParameter, filterList)
@@ -414,7 +475,7 @@ class FilterControllerTest {
 
     @Test
     fun testSetFilterWithCleanUp() {
-        val filterParameter = createFilterParameter()
+        val filterParameter = createParameter()
         val filterList = createFilterList()
 
         filterController.initFilterController(filterParameter, filterList)
@@ -439,7 +500,7 @@ class FilterControllerTest {
 
     @Test
     fun testRemoveFilter() {
-        val filterParameter = createFilterParameter()
+        val filterParameter = createParameter()
         val filterList = createFilterList()
 
         filterController.initFilterController(filterParameter, filterList)
@@ -449,14 +510,13 @@ class FilterControllerTest {
     }
 
     private fun assertFilterViewStateRemoved() {
-        assert(filterController.getFilterValue(SearchApiConst.OFFICIAL) == "")
         assertFilterViewStateCorrect(listOf())
         assertFilterViewStateSizeCorrect(0)
     }
 
     @Test
     fun testSetFilterMultipleOptions() {
-        val filterParameter = createFilterParameter()
+        val filterParameter = createParameter()
         val filterList = createFilterList()
 
         filterController.initFilterController(filterParameter, filterList)
@@ -497,7 +557,7 @@ class FilterControllerTest {
 
     @Test
     fun testSetFilterMultipleOptionsShouldReplacePreviouslySelectedOptionWithSameKey() {
-        val filterParameter = createFilterParameter()
+        val filterParameter = createParameter()
         val filterList = createFilterList()
 
         filterController.initFilterController(filterParameter, filterList)
@@ -523,7 +583,7 @@ class FilterControllerTest {
 
     @Test
     fun testGetActiveFilterAsOptionList() {
-        val filterParameter = createFilterParameter()
+        val filterParameter = createParameter()
         val filterList = createFilterList()
 
         filterController.initFilterController(filterParameter, filterList)
@@ -542,7 +602,7 @@ class FilterControllerTest {
 
     @Test
     fun testGetActiveFilterAsOptionListWithCategoryOption() {
-        val filterParameter = createFilterParameter()
+        val filterParameter = createParameter()
         val filterList = createFilterList()
 
         filterController.initFilterController(filterParameter, filterList)
@@ -557,7 +617,7 @@ class FilterControllerTest {
 
     @Test
     fun testGetActiveFilterAsMap() {
-        val filterParameter = createFilterParameter()
+        val filterParameter = createParameter()
         val filterList = createFilterList()
 
         filterController.initFilterController(filterParameter, filterList)

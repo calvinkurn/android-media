@@ -31,6 +31,8 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.otp.OtpModuleRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
 import com.tokopedia.otp.common.design.PinInputEditText;
@@ -342,10 +344,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onGoToPhoneVerification() {
-        if (getActivity().getApplicationContext() instanceof OtpModuleRouter) {
+        if (getActivity()!= null) {
             getActivity().setResult(Activity.RESULT_OK);
-            Intent intent = ((OtpModuleRouter) getActivity().getApplicationContext())
-                    .getPhoneVerificationActivationIntent(getActivity());
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PHONE_VERIFICATION);
             startActivity(intent);
             getActivity().finish();
         }

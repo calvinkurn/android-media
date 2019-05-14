@@ -529,6 +529,9 @@ public class HomePageTracking {
             TrackingQueue trackingQueue,
             HomeFeedViewModel feedViewModel,
             String tabName) {
+        if (trackingQueue == null) {
+            return;
+        }
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
@@ -548,6 +551,10 @@ public class HomePageTracking {
             TrackingQueue trackingQueue,
             HomeFeedViewModel feedViewModel,
             String tabName) {
+
+        if (trackingQueue == null) {
+            return;
+        }
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
@@ -751,7 +758,7 @@ public class HomePageTracking {
         }
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
-                EVENT_CATEGORY, EVENT_CATEGORY_TICKER_HOMEPAGE,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, "impression on bu widget",
                 EVENT_LABEL, "",
                 ECOMMERCE, DataLayer.mapOf(
@@ -782,12 +789,12 @@ public class HomePageTracking {
             @NonNull String promoCode
     ) {
         ContextAnalytics tracker = getTracker(context);
-        if (tracker != null){
+        if (tracker != null) {
             Map<String, Object> data = DataLayer.mapOf(
-                    "event", "promoClick",
-                    "eventCategory", "homepage",
+                    "event", PROMO_CLICK,
+                    "eventCategory", CATEGORY_HOME_PAGE,
                     "eventAction", "click on bu widget",
-                    "eventLabel", name,
+                    "eventLabel", alias,
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(

@@ -46,8 +46,7 @@
     <string name="indicator_password_error">kata sandi</string>
     <string name="alert_success_withdraw_title">Penarikan Saldo Sedang Diproses</string>
     <string name="alert_success_withdraw_positive">Ok</string>
-    <string name="alert_success_withdraw_body">Anda telah melakukan penarikan saldo. Waktu proses
-        penarikan paling lama 24 jam (tidak termasuk Sabtu/Minggu/Libur)</string>
+    <string name="alert_success_withdraw_body">Anda telah melakukan penarikan saldo. Waktu proses penarikan paling lama 2x24 jam (tidak termasuk Sabtu/Minggu/Libur)</string>
     <string name="minimal_withdrawal">Jumlah minimum penarikan dana sebesar Rp %1$s</string>
 
     <string name="alert_not_verified_yet_title">Akun Anda Belum Terverifikasi</string>

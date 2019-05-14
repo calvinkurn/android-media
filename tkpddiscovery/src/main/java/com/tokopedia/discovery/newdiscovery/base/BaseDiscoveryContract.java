@@ -31,8 +31,6 @@ public interface BaseDiscoveryContract {
 
         void onHandleResponseIntermediary(String departmentId);
 
-        void onHandleOfficialStorePage();
-
         void onHandleResponseUnknown();
 
         void onHandleResponseCatalog(String redirectUrl);
@@ -56,6 +54,6 @@ public interface BaseDiscoveryContract {
 
         void requestImageSearch(String filePath);
 
-        void initiateSearch(SearchParameter searchParameter, boolean forceSearch);
+        void initiateSearch(SearchParameter searchParameter, boolean forceSearch, InitiateSearchListener initiateSearchListener);
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.video.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -38,5 +39,10 @@ class VideoDetailActivity: BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {
         toolbar.hide()
         return VideoDetailFragment.getInstance(intent.extras)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        setResult(Activity.RESULT_OK)
     }
 }

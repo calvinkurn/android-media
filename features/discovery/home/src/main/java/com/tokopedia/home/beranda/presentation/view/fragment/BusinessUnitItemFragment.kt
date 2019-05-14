@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.IHomeRouter
 import com.tokopedia.home.R
@@ -109,16 +111,16 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     }
 
     override fun onItemClicked(element: HomeWidget.ContentItemTab) {
-        (activity?.applicationContext as IHomeRouter).goToApplinkActivity(activity, element.applink)
         HomePageTracking.eventEnhancedClickHomeWidget(
                 activity,
                 element.id.toString(),
                 String.format("/ - p%s - bu widget - %s", positionWidget.toString(), nameTab.toLowerCase()),
-                element.name,
+                MethodChecker.fromHtml(element.name).toString(),
                 element.imageUrl,
                 adapter.data.indexOf(element).toString(),
-                ""
+                "no code"
         )
+        RouteManager.route(context, element.applink)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -183,10 +185,10 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
                 trackingQueue,
                 element.id.toString(),
                 String.format("/ - p%s - bu widget - %s", positionWidget.toString(), nameTab.toLowerCase()),
-                element.name,
+                MethodChecker.fromHtml(element.name).toString(),
                 element.imageUrl,
                 position.toString(),
-                ""
+                "no code"
         )
     }
 }

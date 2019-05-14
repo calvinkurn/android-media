@@ -25,21 +25,20 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
 
+    // WithdrawActivity
+    // tokopedia-android-internal://global/withdraw
+    @JvmField
+    val WITHDRAW = "$INTERNAL_GLOBAL/withdraw"
+
     // ChangeInactiveFormRequestActivity
     // tokopedia-android-internal://global/change-inactive-phone-form
     @JvmField
     val CHANGE_INACTIVE_PHONE_FORM = "$INTERNAL_GLOBAL/change-inactive-phone-form"
 
-
     //ChooseTokocashAccountActivity
     // tokopedia-android-internal://global/choose-account
     @JvmField
     val CHOOSE_ACCOUNT = "$INTERNAL_GLOBAL/choose-account"
-
-    // WithdrawActivity
-    // tokopedia-android-internal://global/withdraw
-    @JvmField
-    val WITHDRAW = "$INTERNAL_GLOBAL/withdraw"
 
 
 }

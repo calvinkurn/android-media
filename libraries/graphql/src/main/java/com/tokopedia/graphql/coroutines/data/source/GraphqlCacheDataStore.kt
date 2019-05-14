@@ -6,8 +6,8 @@ import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class GraphqlCacheDataStore(private val mCacheManager: GraphqlCacheManager,
                             private val mFingerprintManager: FingerprintManager): GraphqlDataStore {

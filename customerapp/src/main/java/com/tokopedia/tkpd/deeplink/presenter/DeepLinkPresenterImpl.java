@@ -60,6 +60,7 @@ import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
+import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
@@ -325,6 +326,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openContent(linkSegment);
                     screenName = "";
                     break;
+                case DeepLinkChecker.SMCREFERRAL:
+                    openSmcReferralPage(linkSegment, uriData);
+                    screenName = AppScreen.SCREEN_WEBVIEW;
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -427,6 +432,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (linkSegment.size() >= 2) {
             String contentId = linkSegment.get(1);
             Intent intent = RouteManager.getIntent(context, ApplinkConst.CONTENT_DETAIL, contentId);
+            viewListener.goToPage(intent);
+        }
+    }
+
+    private void openSmcReferralPage(List<String> linkSegment, Uri uriData) {
+        if (linkSegment != null && linkSegment.size() > 0) {
+            String url=ApplinkConst.SMC_REFERRAL+"?url="+uriData.toString();
+            Intent intent=RouteManager.getIntent(context, url);
             viewListener.goToPage(intent);
         }
     }
@@ -603,6 +616,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
                             linkSegment.get(0), linkSegment.get(1)));
                 } else {
+                    if (!GlobalConfig.DEBUG) {
+                        Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
+                        Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
+                    }
                     Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
                     context.startActivity(intent);
                 }
@@ -812,7 +829,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     @Override
     public void sendAuthenticatedEvent(Uri uriData, String screenName) {
         try {
-            URL obtainedURL = new URL(uriData.getScheme(), uriData.getHost(), uriData.getPath());
+            URL obtainedURL = new URL(uriData.toString());
             if (obtainedURL != null)
                 ScreenTracking.sendScreen(context, screenName, obtainedURL.toString());
         } catch (MalformedURLException e) {

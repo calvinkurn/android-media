@@ -104,33 +104,11 @@
                     android:visibility="gone" />
                 <include layout="@layout/partial_product_full_descr"/>
                 <include layout="@layout/partial_product_shop_info"/>
+                <include layout="@layout/partial_product_recommendation"/>
                 <include layout="@layout/partial_product_image_review"/>
                 <include layout="@layout/partial_most_helpful_review_view"/>
                 <include layout="@layout/partial_product_latest_talk"/>
                 <include layout="@layout/partial_other_product"/>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <ProgressBar android:id="@+id/loading_topads_product"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="@dimen/dp_16"
-                        android:visibility="gone"
-                        tools:visibility="visible"/>
-
-                    <com.tokopedia.topads.sdk.widget.TopAdsCarouselView
-                        android:layout_margin="@dimen/dp_6"
-                        android:id="@+id/topads_carousel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:descendantFocusability="blocksDescendants"
-                        android:visibility="gone" />
-
-                </FrameLayout>
-
 
                 <FrameLayout android:id="@+id/open_shop"
                     android:layout_width="match_parent"
