@@ -8,25 +8,104 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class RecentSearch(
-    @SerializedName("destinationId")
+        @SerializedName("UUID")
     @Expose
-    val id: Int = 0,
+    val uuid: String = "",
 
-    @SerializedName("type")
+        @SerializedName("property")
     @Expose
-    val type: String = "",
+    val property: Property = Property(),
 
-    @SerializedName("name")
+        @SerializedName("startTime")
     @Expose
-    val name: String = "",
+    val startTime: String = "",
 
-    @SerializedName("uuid")
+        @SerializedName("endTime")
     @Expose
-    val uuid: String = ""
+    val endTime: String = "",
+
+        @SerializedName("lastSearch")
+    @Expose
+    val lastSearch: String = "",
+
+        @SerializedName("customer")
+    @Expose
+    val customer: Customer = Customer()
+
 ) {
-    data class Response (
-            @SerializedName("propertyRecentSearch")
+    data class Property(
+            @SerializedName("type")
             @Expose
-            val recentSearchList: List<RecentSearch> = listOf()
+            val type: String = "",
+
+            @SerializedName("value")
+            @Expose
+            val value: String = "",
+
+            @SerializedName("ID")
+            @Expose
+            val id: String = "",
+
+            @SerializedName("location")
+            @Expose
+            val location: Location = Location()
+    ) {
+        data class Location (
+                 @SerializedName("district")
+                 @Expose
+                 val district: String = "",
+
+                 @SerializedName("region")
+                 @Expose
+                 val region: String = "",
+
+                 @SerializedName("city")
+                 @Expose
+                 val city: String = "",
+
+                 @SerializedName("country")
+                 @Expose
+                 val country: String = ""
+        )
+    }
+
+    data class Customer(
+            @SerializedName("adult")
+            @Expose
+            val adult: Int = 0,
+
+            @SerializedName("child")
+            @Expose
+            val child: Int = 0,
+
+            @SerializedName("class")
+            @Expose
+            val customerClass: String = "",
+
+            @SerializedName("infant")
+            @Expose
+            val infant: Int = 0,
+
+            @SerializedName("room")
+            @Expose
+            val room: String = ""
     )
+
+    data class Response(
+            @SerializedName("travelRecentSearch")
+            @Expose
+            val recentSearch: List<RecentSearch> = listOf()
+    )
+
+    data class DeleteResponse(
+            @SerializedName("travelRecentSearchDelete")
+            @Expose
+            val travelRecentSearchDelete: DeleteResult = DeleteResult()
+    ) {
+        data class DeleteResult(
+                @SerializedName("Result")
+                @Expose
+                val result: Boolean = false
+        )
+    }
 }
