@@ -308,16 +308,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
-        onGoToLink(redirectUrl)
-//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
-//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
-//            trackCardPostClick(
-//                    positionInFeed,
-//                    model.trackingPostModel,
-//                    ProfileAnalytics.Element.AVATAR,
-//                    redirectUrl
-//            )
-//        }
+
     }
 
     override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean) {
