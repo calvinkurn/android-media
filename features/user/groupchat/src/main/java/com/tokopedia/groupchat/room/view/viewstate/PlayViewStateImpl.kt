@@ -67,6 +67,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import rx.subjects.PublishSubject
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -123,6 +124,7 @@ open class PlayViewStateImpl(
     private var spaceChatVideo: View = view.findViewById(R.id.top_space_guideline)
     private var interactionButton: LottieAnimationView = view.findViewById(R.id.interaction_button)
     private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
+    private var interactionAnimationSequence = 0
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -264,6 +266,7 @@ open class PlayViewStateImpl(
 
         val interactionDirection = Random()
         interactionButton.setOnClickListener {
+            setAnimationInteractionButton()
             interactionButton.playAnimation()
             ParticleSystem(interactionGuideline, 10, getRandomHeart(iconList), 3000)
                     .setSpeedModuleAndAngleRange(0.1f, 0.2f, 270, 270)
@@ -271,6 +274,19 @@ open class PlayViewStateImpl(
                     .addModifier(MovementModifier(2f, interactionDirection.nextBoolean()))
                     .oneShot(it, 1)
         }
+
+
+    }
+
+    private fun setAnimationInteractionButton() {
+        (interactionAnimationSequence.rem(2).equals(0)).let {
+            if (it) {
+                interactionButton.setAnimation("heart1.json", LottieAnimationView.CacheStrategy.Strong)
+            } else {
+                interactionButton.setAnimation("heart2.json", LottieAnimationView.CacheStrategy.Strong)
+            }
+        }
+        interactionAnimationSequence++
     }
 
     private fun getRandomHeart(iconList: ArrayList<Int>): Drawable? {
@@ -373,7 +389,7 @@ open class PlayViewStateImpl(
 
     }
 
-    override fun setBottomView() {
+    final override fun setBottomView() {
         showLoginButton(!userSession.isLoggedIn)
         if (userSession.isLoggedIn) {
             onKeyboardHidden()
@@ -555,18 +571,6 @@ open class PlayViewStateImpl(
         }
     }
 
-
-    fun broadcastChannelEnd() {
-//        var dialog = Dialog(activity, Dialog.Type.RETORIC)
-//        dialog.setTitle(it.bannedTitle)
-//        dialog.setDesc(it.bannedMessage)
-//        dialog.setBtnOk(it.bannedButtonTitle)
-//        dialog.setOnOkClickListener {
-//            listener.backToChannelList()
-//            dialog.dismiss()
-//        }
-//        dialog.show()
-    }
 
     private fun getStringResource(id: Int): String {
         return view.context.resources.getString(id)

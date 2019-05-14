@@ -184,7 +184,7 @@ public class ParticleSystem {
      * @param parentViewId The view Id for the parent of the particle system
 	 */
 	public ParticleSystem(Activity a, int maxParticles, Drawable drawable, long timeToLive, int parentViewId) {
-		this((ViewGroup) a.findViewById(parentViewId), maxParticles, drawable, timeToLive);
+		this(a.findViewById(parentViewId), maxParticles, drawable, timeToLive);
 	}
 
 	public float dpToPx(float dp) {
@@ -240,7 +240,7 @@ public class ParticleSystem {
      * @param parentViewId The view Id for the parent of the particle system
 	 */
 	public ParticleSystem(Activity a, int maxParticles, AnimationDrawable animation, long timeToLive, int parentViewId) {
-		this((ViewGroup) a.findViewById(parentViewId), maxParticles, timeToLive);
+		this(a.findViewById(parentViewId), maxParticles, timeToLive);
 		// Create the particles
 		for (int i=0; i<mMaxParticles; i++) {
 			mParticles.add (new AnimatedParticle (animation));
