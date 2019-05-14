@@ -75,4 +75,9 @@ public interface SearchConstant {
         String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
         String PATH_GET_DYNAMIC_ATTRIBUTE_V4 = "v4/dynamic_attributes";
     }
+
+    interface DynamicFilter {
+        String DYNAMIC_FILTER_REPOSITORY = "dynamic_filter_repository";
+        String DYNAMIC_FILTER_REPOSITORY_V4 = "dynamic_filter_repository_v4";
+    }
 }
