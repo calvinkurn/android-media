@@ -1079,7 +1079,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         const val NUM_VOUCHER_DISPLAY = 3
 
         @JvmStatic
-        fun createInstance(shopAttribution: String): ShopProductListLimitedFragment {
+        fun createInstance(shopAttribution: String?): ShopProductListLimitedFragment {
             val fragment = ShopProductListLimitedFragment()
             val bundle = Bundle()
             bundle.putString(SHOP_ATTRIBUTION, shopAttribution)
