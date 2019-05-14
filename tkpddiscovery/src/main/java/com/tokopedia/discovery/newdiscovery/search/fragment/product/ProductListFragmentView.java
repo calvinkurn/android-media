@@ -84,4 +84,8 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void setFirstTimeLoad(boolean isFirstTimeLoad);
 
     void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
+
+    boolean isAnyFilterActive();
+
+    HashMap<String, String> getAdditionalParamsMap();
 }

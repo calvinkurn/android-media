@@ -22,25 +22,18 @@ public abstract class SearchSectionFragmentPresenterImpl<V extends SearchSection
 
     @Override
     public void requestDynamicFilter() {
-        requestDynamicFilter(new HashMap<String, String>());
-    }
-
-    @Override
-    public void requestDynamicFilter(HashMap<String, String> additionalParams) {
         if (getView() == null) {
             return;
         }
         RequestParams params = getDynamicFilterParam();
         params = enrichWithFilterAndSortParams(params);
-        params = enrichWithAdditionalParams(params, additionalParams);
         removeDefaultCategoryParam(params);
         getFilterFromNetwork(params);
     }
 
-    protected RequestParams enrichWithAdditionalParams(RequestParams requestParams,
+    protected void enrichWithAdditionalParams(RequestParams requestParams,
                                                      HashMap<String, String> additionalParams) {
         requestParams.putAll(additionalParams);
-        return requestParams;
     }
 
     protected RequestParams enrichWithFilterAndSortParams(RequestParams requestParams) {
