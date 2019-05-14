@@ -37,6 +37,8 @@ object InstantLoanUrl {
         val IL_CATEGORY_URL = "https://www.tokopedia.com/pinjaman-online/c/%s"
         val IL_PARTNER_URL = "https://www.tokopedia.com/pinjaman-online/%s"
 
+        val INSTANT_LOAN_LEARN_MORE = "https://www.tokopedia.com/help/browse/st-1179"
+
     }
 
 }
