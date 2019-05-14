@@ -130,7 +130,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val REQUEST_CODE_LOGIN = 561
         const val REQUEST_CODE_LOGIN_THEN_ATC = 562
         const val REQUEST_CODE_LOGIN_THEN_BUY = 563
-        const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 564
+        const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 5646352
 
         fun createInstance(shopId: String?, productId: String?,
                            notes: String? = "", quantity: Int? = 0,
@@ -196,6 +196,16 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     tv_trade_in.setOnClickListener {
                         goToHargaFinal()
                         trackClickTradeIn()
+                    }
+                } else {
+                    if (!viewModel.isUserSessionActive()) {
+                        tv_trade_in.setOnClickListener {
+                            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                                    REQUEST_CODE_LOGIN_THEN_TRADE_IN)
+                        }
+                    } else {
+                        tv_trade_in.invalidate()
+                        tv_trade_in.requestLayout()
                     }
                 }
             }
@@ -534,16 +544,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             } else {
                 addToCart()
             }
-        }
-
-        if (!viewModel.isUserSessionActive()) {
-            tv_trade_in.setOnClickListener {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN_THEN_TRADE_IN)
-            }
-        } else {
-            tv_trade_in.invalidate()
-            tv_trade_in.requestLayout()
         }
     }
 
