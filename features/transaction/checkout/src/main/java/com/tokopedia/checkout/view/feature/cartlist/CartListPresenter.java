@@ -194,7 +194,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processInitialGetCartData(boolean initialLoad) {
+    public void processInitialGetCartData(String cartId, boolean initialLoad) {
         if (initialLoad) {
             view.renderLoadGetCartData();
         }
@@ -204,6 +204,8 @@ public class CartListPresenter implements ICartListPresenter {
                 GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
                 view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(null))
         );
+        requestParams.putString(GetCartListUseCase.PARAM_SELECTED_CART_ID, cartId);
+
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
                 .flatMap(new Func1<CartListData, Observable<CartListData>>() {
                     @Override
