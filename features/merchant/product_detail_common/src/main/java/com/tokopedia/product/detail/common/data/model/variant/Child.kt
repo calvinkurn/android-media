@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.variant
 
+import android.support.v4.util.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -78,21 +79,31 @@ data class Child(
         return listOf()
     }
 
-    fun getSelectedVariant(variantReference: List<Variant>?): Array<Array<String?>>? {
-        if (variantReference != null && variantReference.isNotEmpty()) {
-            val variants = Array<Array<String?>>(optionIds.size) { arrayOfNulls(2) }
-            var indexCounter = 0
-            optionIds.forEachIndexed { index, optionId ->
-                val option: Option? = variantReference[index].options.find { it.id == optionId }
-                option?.let {
-                    variants[indexCounter][0] = option.value
-                    variants[indexCounter][1] = option.hex
-                    indexCounter++
+    fun mapVariant(variants: List<Variant>?): ArrayMap<String, ArrayMap<String, String>>? {
+        if (variants == null || variants.isEmpty()) return null
+        val hm = initArrayMapVariant()
+        for (optionId in optionIds) {
+            for (variant in variants) {
+                var isFound = false
+                for (option in variant.options) {
+                    if (option.id == optionId) {
+                        hm[variant.identifier]?.set("value", option.value)
+                        hm[variant.identifier]?.set("hex", option.hex)
+                        isFound = true
+                        break
+                    }
                 }
+                if (isFound) break
             }
-            return variants
         }
-        return null
+        return hm
+    }
+
+    private fun initArrayMapVariant(): ArrayMap<String, ArrayMap<String, String>> {
+        return ArrayMap<String, ArrayMap<String, String>>().apply {
+            put("colour", ArrayMap())
+            put("size", ArrayMap())
+        }
     }
 }
 

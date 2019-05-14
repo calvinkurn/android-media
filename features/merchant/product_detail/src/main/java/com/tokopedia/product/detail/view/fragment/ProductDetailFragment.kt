@@ -20,6 +20,7 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
+import android.support.v4.util.ArrayMap
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.*
@@ -1473,36 +1474,38 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun putChatProductInfoTo(intent: Intent?) {
         if (intent == null) return
+        val variants = mapSelectedProductVariants()
         val productImageUrl = getProductImageUrl()
         val productName = getProductName()
         val productPrice = getProductPrice()
-        val productVariant = getSelectedProductVariant()
+        val productColorVariant = variants?.get("colour")?.get("name")
+        val productColorHexVariant = variants?.get("colour")?.get("hex")
+        val productSizeVariant = variants?.get("size")?.get("name")
         with(intent) {
             putExtra(ApplinkConst.Chat.ASK_PRODUCT_IMAGE_URL, productImageUrl)
             putExtra(ApplinkConst.Chat.ASK_PRODUCT_NAME, productName)
             putExtra(ApplinkConst.Chat.ASK_PRODUCT_PRICE, productPrice)
-            extras?.putSerializable(ApplinkConst.Chat.ASK_PRODUCT_VARIANT, productVariant)
+            putExtra(ApplinkConst.Chat.ASK_PRODUCT_COLOR_VARIANT, productColorVariant)
+            putExtra(ApplinkConst.Chat.ASK_PRODUCT_HEX_COLOR_VARIANT, productColorHexVariant)
+            putExtra(ApplinkConst.Chat.ASK_PRODUCT_SIZE_VARIANT, productSizeVariant)
         }
     }
 
-    private fun getProductImageUrl(): String {
-        val images = productInfo?.pictures ?: return ""
-        if (images.isEmpty()) return ""
-        val image = images[0]
-        return image.urlThumbnail
+    private fun getProductImageUrl(): String? {
+        val images = productInfo?.pictures
+        return images?.get(0)?.urlThumbnail
     }
 
-    private fun getProductName(): String {
-        return productInfo?.basic?.name ?: ""
+    private fun getProductName(): String? {
+        return productInfo?.basic?.name
     }
 
-    private fun getProductPrice(): Float {
-        return productInfo?.basic?.price ?: 0f
+    private fun getProductPrice(): String? {
+        return productInfo?.basic?.price?.getCurrencyFormatted()
     }
 
-    private fun getSelectedProductVariant(): Array<Array<String?>>? {
-        val selectedVariantId = userInputVariant ?: productVariant?.defaultChildString
-        return productVariant?.getSelectedProductVariantChild(selectedVariantId)
+    private fun mapSelectedProductVariants(): ArrayMap<String, ArrayMap<String, String>>? {
+        return productVariant?.mapSelectedProductVariants(userInputVariant)
     }
 
     /**

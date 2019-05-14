@@ -271,7 +271,9 @@ public interface ApplinkConst {
         String ASK_PRODUCT_IMAGE_URL = "ask_product_image_url";
         String ASK_PRODUCT_NAME = "ask_product_name";
         String ASK_PRODUCT_PRICE = "ask_product_price";
-        String ASK_PRODUCT_VARIANT = "ask_product_variant";
+        String ASK_PRODUCT_COLOR_VARIANT = "ask_product_color";
+        String ASK_PRODUCT_HEX_COLOR_VARIANT = "ask_product_hex_color";
+        String ASK_PRODUCT_SIZE_VARIANT = "ask_product_size";
     }
 
     interface Play {
