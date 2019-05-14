@@ -22,6 +22,8 @@
     <string name="hotel_search_filter_accomodation_type_title">Tipe akomodasi</string>
     <string name="hotel_search_filter_preference_title">Preference</string>
     <string name="template_search_subtitle">%1$s - %2$s, %3$d Kamar, %4$d Tamu</string>
+    <string name="hotel_item_list_include_pajak">Termasuk pajak • /kamar/malam</string>
+    <string name="hotel_search_filter_feature_title">Fitur Unggulan</string>
 
     <string name="hotel_check_in_calendar_title">Check-in</string>
     <string name="hotel_check_out_calendar_title">Check-out</string>
@@ -106,4 +108,5 @@
     <string name="hotel_room_detail_breakfast">Makanan</string>
     <string name="hotel_room_detail_extra_bed">Extra bed</string>
     <string name="hotel_room_detail_price_info">Harga /kamar/malam</string>
+    <string name="hotel_search_filter_only_show_pay_at_hotel">Hanya tampilkan Bayar di Hotel</string>
 </resources>

@@ -24,9 +24,7 @@ class HotelSearchResultViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         dispatcher: CoroutineDispatcher,
         @Named("search_query")
-        private val searchQuery: String,
-        @Named("dummy_search_result")
-        private val dummySearchResult: String
+        private val searchQuery: String
 ): BaseViewModel(dispatcher){
 
     val searchParam: SearchParam = SearchParam()
