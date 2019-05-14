@@ -1,6 +1,7 @@
 package com.tokopedia.home.account;
 
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.network.constant.TkpdBaseURL;
 
 /**
@@ -8,8 +9,8 @@ import com.tokopedia.network.constant.TkpdBaseURL;
  */
 public class AccountHomeUrl {
     public static String BASE_SELLER_URL = "https://seller.tokopedia.com/";
-    public static String WEB_DOMAIN = "https://www.tokopedia.com/";
-    public static String BASE_MOBILE_DOMAIN = "https://m.tokopedia.com/";
+    public static String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getWEB();
+    public static String BASE_MOBILE_DOMAIN = TokopediaUrl.Companion.getInstance().getMOBILEWEB();
 
     public static String CDN_URL = "https://ecs7.tokopedia.net";
     public static String CDN_IMAGE_PATH = "/img/android/others/";

@@ -1,48 +1,52 @@
 package com.tokopedia.config.url
 
 import android.content.Context
-import android.support.annotation.GuardedBy
 
 /**
  * @author okasurya on 4/8/19.
  */
 class TokopediaUrl {
+
     companion object {
-        private const val LOCK = "LOCK"
 
-        @GuardedBy(LOCK)
-        @Volatile
-        private var tokopediaUrl: Url? = null
+        private val lock = Any()
 
-        fun init(context: Context?) {
-            synchronized(LOCK) {
-                if (tokopediaUrl == null) {
-                    val sharedPref = context?.getSharedPreferences(KEY_ENV_PREFERENCES, Context.MODE_PRIVATE)
-                    tokopediaUrl = selectInstance(sharedPref?.getString(KEY_ENV, Env.LIVE.value))
+        @Volatile private var tokopediaUrl: Url? = null
+
+        fun init(context: Context) : Url {
+            return tokopediaUrl?: synchronized(lock) {
+                getEnvironment(context).also {
+                    tokopediaUrl = it
                 }
             }
         }
 
-        internal fun selectInstance(env: String?): Url {
+        fun getInstance() : Url {
+            return tokopediaUrl?: staging
+        }
+
+        fun deleteInstance() {
+            synchronized(lock) {
+                tokopediaUrl = null
+            }
+        }
+
+        private fun getEnvironment(context: Context) : Url {
+            val sharedPreferences = context.getSharedPreferences(KEY_ENV_PREFERENCES,
+                    Context.MODE_PRIVATE)
+            return selectInstance(sharedPreferences.getString(KEY_ENV, Env.LIVE.value));
+        }
+
+        fun selectInstance(env: String?): Url {
             return when(env) {
                 Env.STAGING.value -> staging
                 else ->  live
             }
         }
 
-        val url: Url
-            get() = synchronized(LOCK) {
-                if (tokopediaUrl == null) {
-                    // if not initialized, force to Live Url
-                    tokopediaUrl = live
-                    return tokopediaUrl as Url
-                }
-                return tokopediaUrl as Url
-            }
-
-        fun setEnvironment(context: Context?, env: Env) {
-            val sharedPref = context?.getSharedPreferences(KEY_ENV_PREFERENCES, Context.MODE_PRIVATE)
-            sharedPref?.edit()?.putString(KEY_ENV, env.value)?.commit()
+        fun setEnvironment(context: Context, env: Env) {
+            val sharedPreferences = context.getSharedPreferences(KEY_ENV_PREFERENCES, Context.MODE_PRIVATE)
+            sharedPreferences.edit().putString(KEY_ENV, env.value).apply()
         }
     }
 }

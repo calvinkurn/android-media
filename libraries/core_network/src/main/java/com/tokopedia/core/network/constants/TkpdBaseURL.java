@@ -1,5 +1,7 @@
 package com.tokopedia.core.network.constants;
 
+import com.tokopedia.config.url.TokopediaUrl;
+
 /**
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
@@ -11,8 +13,7 @@ public class TkpdBaseURL {
     public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
     public static final String FLAG_APP = "?flag_app=1";
     public static final String URL_TOPPICKS = "https://m.tokopedia.com/toppicks/";
-    public static String DEFAULT_TOKOPEDIA_WEBSITE_URL = "https://www.tokopedia.com/";
-    public static String LIVE_DOMAIN = "https://ws.tokopedia.com/";
+    public static String LIVE_DOMAIN = TokopediaUrl.Companion.getInstance().getWS();
     public static String STAGE_DOMAIN = "https://ws-staging.tokopedia.com/";
     public static String ALPHA_DOMAIN = "https://ws-alpha.tokopedia.com/";
     public static String BASE_DOMAIN = LIVE_DOMAIN;
@@ -30,43 +31,43 @@ public class TkpdBaseURL {
     public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
     public static String ACCOUNTS_STAGING_DOMAIN = "https://accounts-staging.tokopedia.com/";
     public static String ACCOUNTS_ALPHA_DOMAIN = "https://accounts-alpha.tokopedia.com/";
-    public static String INBOX_DOMAIN = "https://inbox.tokopedia.com";
-    public static String CHAT_DOMAIN = "https://chat.tokopedia.com";
-    public static String CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com";
-    public static String JS_DOMAIN = "https://js.tokopedia.com/";
+    public static String INBOX_DOMAIN = TokopediaUrl.Companion.getInstance().getINBOX();
+    public static String CHAT_DOMAIN = TokopediaUrl.Companion.getInstance().getCHAT();
+    public static String CHAT_WEBSOCKET_DOMAIN = TokopediaUrl.Companion.getInstance().getWS_CHAT();
+    public static String JS_DOMAIN = TokopediaUrl.Companion.getInstance().getJS();
     public static String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";
     public static String JS_ALPHA_DOMAIN = "https://ajax-alpha.tokopedia.com/js/";
-    public static String KERO_DOMAIN = "https://kero.tokopedia.com/";
-    public static String KERO_RATES_DOMAIN = "https://gw.tokopedia.com/";
-    public static String JAHE_DOMAIN = "https://jahe.tokopedia.com";
-    public static String PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
+    public static String KERO_DOMAIN = TokopediaUrl.Companion.getInstance().getKERO();
+    public static String KERO_RATES_DOMAIN = TokopediaUrl.Companion.getInstance().getGW();
+    public static String JAHE_DOMAIN = TokopediaUrl.Companion.getInstance().getJAHE();
+    public static String PULSA_WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getPULSA();
     public static String PULSA_WEB_STAGING_DOMAIN = "https://pulsa-staging.tokopedia.com";
-    public static String GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com";
+    public static String GOLD_MERCHANT_DOMAIN = TokopediaUrl.Companion.getInstance().getGOLDMERCHANT();
     public static String GOLD_MERCHANT_STAGING_DOMAIN = "http://goldmerchant-staging.tokopedia.com";
-    public static String WEB_DOMAIN = "https://www.tokopedia.com/";
-    public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
+    public static String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getWEB();
+    public static String MOBILE_DOMAIN = TokopediaUrl.Companion.getInstance().getMOBILEWEB();
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart/";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
-    public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
-    public static String DIGITAL_WEBSITE_DOMAIN = "https://pulsa.tokopedia.com/";
+    public static String DIGITAL_API_DOMAIN = TokopediaUrl.Companion.getInstance().getPULSA_API();
+    public static String DIGITAL_WEBSITE_DOMAIN = TokopediaUrl.Companion.getInstance().getPULSA();
     public static String TRAIN_WEBSITE_DOMAIN = "https://tiket.tokopedia.com/kereta-api/";
     public static String RIDE_DOMAIN = "https://ride.tokopedia.com/";
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
-    public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
-    public static String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
+    public static String TOKO_CASH_DOMAIN = TokopediaUrl.Companion.getInstance().getTOKOCASH();
+    public static String SCROOGE_DOMAIN = TokopediaUrl.Companion.getInstance().getPAY();
     public static String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
-    public static String HOME_DATA_BASE_URL = "https://gql.tokopedia.com/";
-    public static String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
-    public static String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
-    public static String GALADRIEL = "https://galadriel.tokopedia.com/";
+    public static String HOME_DATA_BASE_URL = TokopediaUrl.Companion.getInstance().getGQL();
+    public static String SCROOGE_CREDIT_CARD_DOMAIN = TokopediaUrl.Companion.getInstance().getPAY_ID();
+    public static String PAYMENT_DOMAIN = TokopediaUrl.Companion.getInstance().getPAYMENT();
+    public static String GALADRIEL = TokopediaUrl.Companion.getInstance().getGALADRIEL();
     public static String POS_DOMAIN = "https://gw.tokopedia.com/";
-    public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
-    public static String EVENTS_DOMAIN = "https://booking.tokopedia.com/";
+    public static String MAPS_DOMAIN = TokopediaUrl.Companion.getInstance().getGW();
+    public static String EVENTS_DOMAIN = TokopediaUrl.Companion.getInstance().getBOOKING();
     public static String BASE_API_DOMAIN = "https://api.tokopedia.com/";
 
-    public static String WALLET_DOMAIN = "https://www.tokocash.com/";
-    public static String TOKOPOINT_API_DOMAIN = "https://gw.tokopedia.com/tokopoints/api/";
+    public static String WALLET_DOMAIN = TokopediaUrl.Companion.getInstance().getTOKOCASH();
+    public static String TOKOPOINT_API_DOMAIN = TokopediaUrl.Companion.getInstance().getGW() + "tokopoints/api/";
     public static String PROMO_API_DOMAIN = "https://www.tokopedia.com/promo/";
 
     public static class Product {
@@ -414,7 +415,7 @@ public class TkpdBaseURL {
     }
 
     public static final class Tome {
-        public static final String URL_ADDRESS = TOME_DOMAIN + "v1/web-service/apps/";
+        public static final String URL_ADDRESS = TokopediaUrl.Companion.getInstance().getTOME() + "v1/web-service/apps/";
         public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
         public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
         public static final String PATH_PRODUCT_VARIANT = "v2/product/{productId}/variant";
@@ -463,7 +464,7 @@ public class TkpdBaseURL {
         public static final String URL_HOT_LIST = BASE_DOMAIN + "v4/hotlist/";
         public static final String URL_SEARCH = BASE_DOMAIN + "v4/search/";
 
-        public static final String URL_SEARCH_SUGGESTION = ACE_DOMAIN;
+        public static final String URL_SEARCH_SUGGESTION = TokopediaUrl.Companion.getInstance().getACE();
 
         public static final String PATH_GET_CATALOG = "get_catalog.pl";
         public static final String PATH_GET_CATALOG_DETAIL = "get_catalog_detail.pl";
@@ -494,7 +495,7 @@ public class TkpdBaseURL {
         public static final String URL_TX_PAYMENT_EMONEY = BASE_DOMAIN + "v4/";
         public static final String URL_TX_PAYMENT_SPRINT_ASIA = BASE_DOMAIN + "v4/";
         public static final String URL_TX_PAYMENT_VOUCHER = BASE_DOMAIN + "v4/tx-voucher/";
-        public static final String URL_PICKUP_POINT = BASE_API_DOMAIN + "v4/action/tx-cart/";
+        public static final String URL_PICKUP_POINT = TokopediaUrl.Companion.getInstance().getAPI() + "v4/action/tx-cart/";
 
         public static final String PATH_DO_WITHDRAW = "do_withdraw.pl";
         public static final String PATH_SEND_OTP_VERIFY_BANK_ACCOUNT = "send_otp_verify_bank_account.pl";
@@ -596,7 +597,7 @@ public class TkpdBaseURL {
 
     public static class Ace {
         public static final String PATH_SEARCH = "search/";
-        public static final String URL_SEARCH = ACE_DOMAIN + PATH_SEARCH;
+        public static final String URL_SEARCH = TokopediaUrl.Companion.getInstance().getACE() + PATH_SEARCH;
 
         public static final String PATH_CATALOG_SHOP_LIST = "catalog/product";
         public static final String PATH_SEARCH_SHOP = "shop";
@@ -625,8 +626,8 @@ public class TkpdBaseURL {
     }
 
     public static class TopAds {
-        public static final String URL_TOPADS = TOPADS_DOMAIN + "promo/v1.1/display/";
-        public static final String URL_TOPADS_SHOP = TOPADS_DOMAIN + "promo/v1/display/";
+        public static final String URL_TOPADS = TokopediaUrl.Companion.getInstance().getTA() + "promo/v1.1/display/";
+        public static final String URL_TOPADS_SHOP = TokopediaUrl.Companion.getInstance().getTA() + "promo/v1/display/";
 
         public static final String PATH_DISPLAY_SHOP = "promo/v1/display/shops";
         public static final String PATH_GET_PROMO_TOP_ADS = "/promo/v1.1/display/products";
@@ -808,7 +809,7 @@ public class TkpdBaseURL {
 
     public static class HadesCategory {
         public static final String CHECK_VERSION = "/v1/categories_version";
-        public static final String URL_HADES = HADES_DOMAIN;
+        public static final String URL_HADES = TokopediaUrl.Companion.getInstance().getHADES();
         public static final String PATH_CATEGORIES = "/v2/categories/{catId}/detail";
         public static final String PATH_CATEGORIES_LAYOUT_ROOT = "/v1/category_layout/{catId}?type=root";
         public static final String PATH_CATEGORIES_LAYOUT = "/v1/category_layout/{catId}";
@@ -820,7 +821,7 @@ public class TkpdBaseURL {
     }
 
     public static class ResCenterV2 {
-        public static final String BASE_RESOLUTION = BASE_API_DOMAIN + "resolution/";
+        public static final String BASE_RESOLUTION = TokopediaUrl.Companion.getInstance().getAPI() + "resolution/";
         public static final String BASE_RESOLUTION_VERSION_1 = "v1/";
         public static final String BASE_RESOLUTION_VERSION_2 = "v2/";
         public static final String BASE_INBOX_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "inbox";

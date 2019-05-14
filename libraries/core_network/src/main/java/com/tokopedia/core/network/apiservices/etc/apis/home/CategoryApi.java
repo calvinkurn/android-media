@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.apiservices.etc.apis.home;
 
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.home.Slide;
@@ -21,7 +22,7 @@ import rx.Observable;
 
 @Deprecated
 public interface CategoryApi {
-    String MOJITO = TkpdBaseURL.MOJITO_DOMAIN;
+    String MOJITO = TokopediaUrl.Companion.getInstance().getMOJITO();
 
     //[DEFAULT] values
     String size = "50";

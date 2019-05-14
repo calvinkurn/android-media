@@ -27,6 +27,7 @@ data class Url(
         val JAHE: String,
         val GOLDMERCHANT: String,
         val PULSA: String,
+        val PULSA_API: String,
         val PAY_ID: String,
         val PAY: String,
         val PAYMENT: String,

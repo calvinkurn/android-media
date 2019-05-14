@@ -31,16 +31,24 @@ class TokopediaUrlTest {
     fun init_multiThread_consistentInstance() {
         Mockito.`when`(sharedPrefs.getString(KEY_ENV, Env.LIVE.value)).thenReturn("STAGING")
         val initThread = Thread {
-            TokopediaUrl.init(context)
-            Assert.assertNotNull(TokopediaUrl.url)
-            Assert.assertEquals(Env.STAGING, TokopediaUrl.url.TYPE)
+            val baseUrl = TokopediaUrl.getInstance(context)
+            Assert.assertNotNull(baseUrl)
+//            Assert.assertEquals(Env.LIVE, baseUrl.TYPE)
+            Assert.assertEquals(Env.STAGING, baseUrl.TYPE)
+            println(baseUrl.TYPE.value)
         }
 
         val execThread = Thread {
-            Assert.assertEquals(Env.STAGING, TokopediaUrl.url.TYPE)
+            val baseUrlTest = TokopediaUrl.getInstance(context)
+            Assert.assertNotNull(baseUrlTest)
+            Assert.assertEquals(Env.STAGING, baseUrlTest.TYPE)
+            println(baseUrlTest.TYPE.value)
         }
 
-        initThread.start().run { execThread.start() }
+        TokopediaUrl.deleteInstance()
+        initThread.start().run {
+            execThread.start()
+        }
     }
 
     @Test
