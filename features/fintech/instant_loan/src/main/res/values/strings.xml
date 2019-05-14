@@ -20,8 +20,6 @@
     <string name="description_intro_slide_3">Perangkat Anda dibutuhkan untuk membantu membangun profil kredit Anda.</string>
     <string name="label_online_promo">Promo Pinjaman Online</string>
     <string name="label_connect_device">Hubungkan Perangkat</string>
-    <string name="label_no_collateral">Tanpa Jaminan</string>
-    <string name="label_with_collateral">Jaminan</string>
     <string name="label_select_nominal">Pilih Nominal</string>
 
     <string-array name="values_amount_array">
@@ -37,9 +35,8 @@
     </string-array>
 
     <string-array name="values_title">
+        <item>@string/label_loan_online</item>
         <item>@string/label_instant_fund</item>
-        <item>@string/label_no_collateral</item>
-        <item>@string/label_with_collateral</item>
     </string-array>
 
     <integer-array name="values_drawable_enable">
@@ -109,6 +106,8 @@
     <string name="label_financial_product_desc_two">Ajukan Asuransi yang sesuai</string>
     <string name="il_lending_category">Kategori Pinjaman</string>
     <string name="il_lending_partner">Mitra Kami</string>
+    <string name="label_loan_online">Pinjaman Online</string>
+    <string name="label_loan_amount">Jumlah Pinjaman</string>
 
 
 </resources>

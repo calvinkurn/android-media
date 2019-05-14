@@ -10,9 +10,6 @@ interface BannerContractor {
 
         fun renderLendingData(gqlLendingDataResponse: GqlLendingDataResponse)
 
-        fun nextBanner()
-
-        fun previousBanner()
     }
 
     interface Presenter : CustomerPresenter<View> {

@@ -79,11 +79,11 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
         val adapter = ArrayAdapter.createFromResource(getContext()!!,
                 R.array.values_amount_array, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner_value_nominal!!.adapter = adapter
+//        spinner_value_nominal!!.adapter = adapter
     }
 
     private fun initView(view: View) {
-        text_value_amount.text = resources.getStringArray(R.array.values_amount)[mCurrentTab]
+        /*text_value_amount.text = resources.getStringArray(R.array.values_amount)[mCurrentTab]
         text_value_duration.text = resources.getStringArray(R.array.values_duration)[mCurrentTab]
         text_value_processing_time.text = resources.getStringArray(R.array.values_processing_time)[mCurrentTab]
         text_value_interest_rate.text = resources.getStringArray(R.array.values_interest_rate)[mCurrentTab]
@@ -101,15 +101,15 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
                         spinner_value_nominal!!.selectedItem.toString()
                                 .split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].replace(".", ""))
             }
-        }
+        }*/
     }
 
-    private fun sendCariPinjamanClickEvent() {
+    /*private fun sendCariPinjamanClickEvent() {
         val eventLabel = screenName + " - " + spinner_value_nominal!!.selectedItem.toString()
         instantLoanAnalytics.eventCariPinjamanClick(eventLabel)
-    }
+    }*/
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST_CODE) {
             if (userSession != null && userSession.isLoggedIn) {
@@ -119,7 +119,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
                         spinner_value_nominal!!.selectedItem.toString().split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1])
             }
         }
-    }
+    }*/
 
     override fun onDestroyView() {
         super.onDestroyView()
