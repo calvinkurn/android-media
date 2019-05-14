@@ -7,10 +7,6 @@ kapt {
     generateStubs = false
 }
 
-//apply plugin: 'com.google.firebase.firebase-perf'
-//apply plugin: 'android-apt'
-//apply plugin: 'io.fabric'
-////apply plugin: 'io.hansel.preprocessor'
 def getDpiId(String density) {
     def DPI_ID = ['null': 0, 'mdpi': 1, 'hdpi': 2, 'xhdpi': 3, 'xxhdpi': 4]
     if (density != null)
@@ -56,29 +52,13 @@ def renameAPKFile(variant, density, versionCode) {
     fileName += ".apk";
     return fileName;
 }
-//def archiveAPK(variant, output) {
-//
-//    String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-//    def originZipAlignedApkFile = output.outputFile;
-//    def renameAPKFile = renameAPKFile(variant, density, output.versionCodeOverride);
-//    copy {
-//        from "$originZipAlignedApkFile"
-//        into getAPKArchiveFolder(variant)
-//        rename("$originZipAlignedApkFile.name", "$renameAPKFile")
-//    }
-//}
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
         maven { url "https://maven.google.com" }
         mavenCentral()
         jcenter()
-//        //////////maven { url 'https://hansel.io/maven' }
     }
-//    dependencies {
-//        classpath 'io.fabric.tools:gradle:1.+'
-//        classpath 'io.hansel.preprocessor:preprocessor:6.0.1'
-//    }
     dependencies{
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath 'com.google.gms:google-services:4.2.0'
@@ -95,10 +75,6 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     useLibrary 'org.apache.http.legacy'
     sourceSets {
-//        packagingOptions {
-//            exclude 'META-INF/LICENSE.txt'
-//            exclude 'META-INF/rxjava.properties'
-//        }
         main {
             java.srcDirs = ['src/main/java']
             resources.srcDirs = ['src/main/java']
@@ -141,36 +117,6 @@ android {
             zipAlignEnabled true
             shrinkResources true
             proguardFiles  'proguard-rules.pro'
-//            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-//            if (allowProguard()) {
-//                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-//            } else {
-//                proguardFiles 'proguard-rules.txt'
-//            }
-//            ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
-//            ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
-//            if (allowSplit()) {
-//                applicationVariants.all { variant ->
-//                    variant.outputs.each { output ->
-//                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-//                        String abi = output.getFilter(com.android.build.OutputFile.ABI);
-//                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
-//                    }
-//                    variant.assemble.doLast {
-//                        variant.outputs.each { output ->
-//                            if (output.zipAlign) {
-//                                archiveAPK(variant, output);
-//                            }
-//                        }
-//                    }
-//                }
-//            } else {
-//                applicationVariants.all { variant ->
-//                    variant.outputs.each { output ->
-//                        output.versionCodeOverride = (getTkpdVersionCode() * 100);
-//                    }
-//                }
-//            }
         }
     }
     splits {
@@ -195,37 +141,17 @@ android {
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = true
-//        testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
-//        packagingOptions {
-//            exclude "lib/arm64-v8a/libgnustl_shared.so"
-//        }
     }
-//    dexOptions {
-//        javaMaxHeapSize "4g"
-//        keepRuntimeAnnotatedClasses false
-//    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-//    configurations.all {
-//        resolutionStrategy.force 'com.android.support:multidex:1.0.3'
-//        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
-//        resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
-//    }
-//    productFlavors {
-//        live {
-//
-//        }
-//    }
 }
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-//    compile project(rootProject.ext.features.core)
-//    compile project(rootProject.ext.features.inbox)
 
     implementation rootProject.ext.miscDependencies.multiDex
 
@@ -235,43 +161,12 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
 
-    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
-        exclude group: 'com.android.support'
-    }
-
-//    implementation rootProject.ext.serviceDependencies.hockeyApp
-
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.gson
-
-    implementation rootProject.ext.networkDependencies.glide
-
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.supportLibDependencies.appCompactV7
 
-//    implementation (project(rootProject.ext.features.shopPage)){
-//        exclude group: 'com.android.support'
-//    }
-//    implementation (project(rootProject.ext.features.shopCommon)){
-//        exclude group: 'com.android.support'
-//    }
-//    implementation project(rootProject.ext.features.shopCommon)
-//    implementation (project(rootProject.ext.features.merchantVoucher))
-//    implementation (project(rootProject.ext.features.transactioncommon))
-// {
-//        exclude group: 'com.android.support'
-//    }
-
     implementation (project(rootProject.ext.features.sessioncommon))
-    implementation (project(rootProject.ext.features.hotel))
-
-//    implementation (project(rootProject.ext.features.productManageDetail))
-//    implementation (project(rootProject.ext.features.productShare))
-//    implementation (project(rootProject.ext.features.contactUs))
 
     implementation (project(rootProject.ext.libraries.remoteConfig))
-
-//    implementation (project(rootProject.ext.features.flashsaleManagement))
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
@@ -280,15 +175,9 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
 
-    implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.track)
-//    implementation project(rootProject.ext.libraries.trackinterface)
-
-//    implementation project(rootProject.ext.features.transactiondata)
-//    implementation project(rootProject.ext.features.transactioncommon)
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     kapt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
@@ -317,8 +206,8 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
 
     implementation 'com.facebook.stetho:stetho:1.5.0'
-//    compile project(path: ':features:transaction:express_checkout')
 }
+
 repositories {
     mavenCentral()
 }
