@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.home.BannerWebView;
@@ -26,7 +27,9 @@ import com.tokopedia.discovery.autocomplete.HostAutoCompleteTypeFactory;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.di.AutoCompleteComponent;
 import com.tokopedia.discovery.autocomplete.di.DaggerAutoCompleteComponent;
+import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.SearchPresenter;
@@ -210,6 +213,59 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     public void onItemClicked(String applink, String webUrl) {
         dropKeyBoard();
 
+        // TODO:: TEMPORARY SOLUTION IF Activity is AutoCompleteActivity!!
+        // Currently SearchActivity starts AutoCompleteActivity for Result,
+        // so we need to finish AutoCompleteActivity and setResult back to SearchActivity
+        // SearchActivity will need to finish itself and start the next activity based on the applink / webUrl from here
+        // TODO:: For permanent solution:
+        // 1. HotListActivity, CategoryActivity, and ImageSearchActivity will need to start AutoCompleteActivity for result as well
+        // 2. This Fragment will directly be used by AutoCompleteActivity
+        if(getActivity() instanceof AutoCompleteActivity) {
+            handleItemClickedForAutoCompleteActivity(applink, webUrl);
+        }
+        else {
+            handleItemClickedForNotAutoCompleteActivity(applink, webUrl);
+        }
+    }
+
+    private void handleItemClickedForAutoCompleteActivity(String applink, String webUrl) {
+        if(getActivity() == null || getActivity().getApplicationContext() == null) return;
+
+        Intent data;
+
+        if(isActivityAnApplinkRouter()) {
+            ApplinkRouter router = ((ApplinkRouter) getActivity().getApplicationContext());
+            if (router.isSupportApplink(applink)) {
+                data = RouteManager.getIntent(getActivity(), applink);
+            } else {
+                data = createIntentForWebView(webUrl);
+            }
+        }
+        else {
+            data = createIntentForWebView(webUrl);
+        }
+
+        setAutoCompleteActivityResult(data);
+    }
+
+    private Intent createIntentForWebView(String webUrl) {
+        if (!TextUtils.isEmpty(webUrl)) {
+            Intent intent = new Intent(getActivity(), BannerWebView.class);
+            intent.putExtra("url", webUrl);
+        }
+
+        return null;
+    }
+
+    private void setAutoCompleteActivityResult(Intent data) {
+        if(data == null || getActivity() == null) return;
+
+        getActivity().setResult(SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, data);
+        getActivity().finish();
+        getActivity().overridePendingTransition(0, 0);
+    }
+
+    private void handleItemClickedForNotAutoCompleteActivity(String applink, String webUrl) {
         if (isActivityAnApplinkRouter()) {
             handleItemClickedIfActivityAnApplinkRouter(applink, webUrl);
         } else {

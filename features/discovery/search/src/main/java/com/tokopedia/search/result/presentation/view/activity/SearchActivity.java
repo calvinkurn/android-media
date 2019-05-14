@@ -27,6 +27,8 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.Filter;
@@ -58,6 +60,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_ACTIVE_TAB_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SEARCH;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
@@ -187,14 +191,18 @@ public class SearchActivity extends BaseActivity
     }
 
     private void moveToAutoCompleteActivity() {
-        ActivityCompat.startActivity(this, getAutoCompleteIntent(), getOptionsForTransitionAnimation().toBundle());
+        ActivityCompat.startActivityForResult(
+                this,
+                getAutoCompleteIntent(),
+                AUTO_COMPLETE_ACTIVITY_REQUEST_CODE,
+                getOptionsForTransitionAnimation().toBundle());
     }
 
     private Intent getAutoCompleteIntent() {
         SearchParameter autoCompleteSearchParameter = new SearchParameter();
         autoCompleteSearchParameter.setSearchQuery(searchParameter.getSearchQuery());
 
-        Intent intent = ((DiscoveryRouter)getApplicationContext()).gotoSearchAutoCompletePage(SearchActivity.this);
+        Intent intent = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
         intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, autoCompleteSearchParameter);
 
         return intent;
@@ -566,6 +574,26 @@ public class SearchActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode) {
+            case AUTO_COMPLETE_ACTIVITY_REQUEST_CODE:
+                handleResultFromAutoCompleteActivity(resultCode, data);
+                break;
+            default:
+                handleDefaultActivityResult(requestCode, resultCode, data);
+                break;
+        }
+    }
+
+    private void handleResultFromAutoCompleteActivity(int resultCode, Intent data) {
+        switch(resultCode) {
+            case AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY:
+                startActivity(data);
+                break;
+        }
+    }
+
+    private void handleDefaultActivityResult(int requestCode, int resultCode, Intent data) {
         bottomSheetFilterView.onActivityResult(requestCode, resultCode, data);
     }
 
