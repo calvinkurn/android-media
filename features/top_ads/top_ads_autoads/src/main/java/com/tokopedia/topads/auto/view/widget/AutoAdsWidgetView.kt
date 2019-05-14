@@ -35,6 +35,8 @@ class AutoAdsWidgetView : CardView {
     }
 
     private fun initView(context: Context) {
+        useCompatPadding = true
+        radius = resources.getDimension(R.dimen.dp_8)
         View.inflate(context, R.layout.layout_auto_ads_widget, this)
         statusAdsContainer = findViewById(R.id.status_ads_container)
         activeStatus = findViewById(R.id.active_status)

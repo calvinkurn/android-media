@@ -1,16 +1,14 @@
 package com.tokopedia.topads.auto.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.SeekBar
 import android.widget.Switch
 
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.auto.R
+import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsInfoSheet
 
 /**
@@ -21,7 +19,6 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
     private lateinit var infoBtn: ImageView
     private lateinit var budgetContainer: View
     private lateinit var switchBudget: Switch
-    private lateinit var seekBar: SeekBar
     private lateinit var saveBtn: Button
 
     override fun getLayoutId(): Int {
@@ -38,16 +35,16 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
     override fun setListener() {
         super.setListener()
         infoBtn.setOnClickListener {
-            SettingAutoAdsInfoSheet.newInstance(activity!!).show()
+            SettingAutoAdsInfoSheet.newInstance(context!!).show()
         }
         saveBtn.setOnClickListener {
-            activity?.finish()
+            startActivity(Intent(context, ConfirmationDialogActivity::class.java))
         }
         switchBudget.setOnCheckedChangeListener { buttonView, isChecked ->
             if(isChecked){
-                hideBudgetContainer()
-            } else{
                 showBudgetContainer()
+            } else{
+                hideBudgetContainer()
             }
         }
     }

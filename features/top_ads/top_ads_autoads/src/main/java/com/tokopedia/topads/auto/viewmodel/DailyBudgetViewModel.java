@@ -3,11 +3,15 @@ package com.tokopedia.topads.auto.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.topads.auto.R;
+import com.tokopedia.topads.auto.data.TopAdsShopInfo;
+import com.tokopedia.topads.auto.data.TopadsBidInfo;
+import com.tokopedia.topads.auto.repository.AutoAdsRepository;
 
 import java.text.DecimalFormat;
 
@@ -16,11 +20,21 @@ import java.text.DecimalFormat;
  */
 public class DailyBudgetViewModel extends AndroidViewModel {
 
+    private AutoAdsRepository repository;
     public static final double BUDGET_MULTIPLE_BY = 1000;
-    private LiveData<String> potentialImpression;
+    private MutableLiveData<TopadsBidInfo> bidInfo;
 
     public DailyBudgetViewModel(@NonNull Application application) {
         super(application);
+        if(repository!=null){
+            return;
+        }
+        repository = AutoAdsRepository.getInstance();
+        bidInfo = repository.getBidInfo();
+    }
+
+    public LiveData<TopadsBidInfo> getBidInfo() {
+        return bidInfo;
     }
 
     public String getPotentialImpression(double minBid, double maxBid, double bid) {
@@ -32,7 +46,7 @@ public class DailyBudgetViewModel extends AndroidViewModel {
         return ((100 / 2.5) * (val / bid));
     }
 
-    public String checkBudget(double number, int minDailyBudget, int maxDailyBudget) {
+    public String checkBudget(double number, double minDailyBudget, double maxDailyBudget) {
         if (number <= 0) {
             return getApplication().getString(R.string.error_empty_budget);
         } else if (number < minDailyBudget) {

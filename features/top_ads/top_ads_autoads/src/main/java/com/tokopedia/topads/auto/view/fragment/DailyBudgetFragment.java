@@ -1,5 +1,6 @@
 package com.tokopedia.topads.auto.view.fragment;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -9,13 +10,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -23,11 +20,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.common.widget.PrefixEditText;
+import com.tokopedia.topads.auto.data.BidInfoData;
+import com.tokopedia.topads.auto.data.TopadsBidInfo;
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter;
-import com.tokopedia.topads.auto.view.widget.InfoAutoAdsSheet;
-import com.tokopedia.topads.auto.view.widget.ManualAdsConfirmationSheet;
 import com.tokopedia.topads.auto.R;
-import com.tokopedia.topads.auto.view.activity.AutoAdsActivatedActivity;
 import com.tokopedia.topads.auto.view.widget.Range;
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar;
 import com.tokopedia.topads.auto.viewmodel.DailyBudgetViewModel;
@@ -36,18 +32,17 @@ import com.tokopedia.topads.common.constant.TopAdsAddingOption;
 /**
  * Author errysuprayogi on 07,May,2019
  */
-public abstract class DailyBudgetFragment extends BaseDaggerFragment implements
-        SeekBar.OnSeekBarChangeListener {
+public abstract class DailyBudgetFragment extends BaseDaggerFragment {
 
     public static final int REQUEST_CODE_AD_OPTION = 3;
     public static final String SELECTED_OPTION = "selected_option";
     public static final int MIN_BUDGET = 10000;
     public static final int MAX_BUDGET = 20000;
-    private RangeSeekBar sekBar;
-    private TextView priceRange;
-    private PrefixEditText priceEditText;
-    private DailyBudgetViewModel budgetViewModel;
-    private TextInputLayout budgetInputLayout;
+    public RangeSeekBar seekBar;
+    public TextView priceRange;
+    public PrefixEditText priceEditText;
+    public DailyBudgetViewModel budgetViewModel;
+    public TextInputLayout budgetInputLayout;
 
 
     @Override
@@ -56,24 +51,35 @@ public abstract class DailyBudgetFragment extends BaseDaggerFragment implements
         budgetViewModel = ViewModelProviders.of(this).get(DailyBudgetViewModel.class);
     }
 
-
     @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-        double minBid = 200;
-        double maxBid = 300;
+        budgetViewModel.getBidInfo().observe(this, new Observer<TopadsBidInfo>() {
+            @Override
+            public void onChanged(@Nullable TopadsBidInfo topadsBidInfo) {
+                BidInfoData bidInfo = topadsBidInfo.getData().get(0);
+                seekBar.setRange(new Range(bidInfo.getMinBid(), bidInfo.getMaxBid(), bidInfo.getMinBid()));
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        priceRange.setText(budgetViewModel.getPotentialImpression(bidInfo.getMinBid(),
+                                bidInfo.getMaxBid(), progress));
+                        priceEditText.setText(String.valueOf(progress));
+                    }
 
-        priceRange.setText(budgetViewModel.getPotentialImpression(minBid, maxBid, progress));
-        priceEditText.setText(String.valueOf(progress));
-    }
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
 
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
+                    }
 
-    }
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
 
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
+                    }
+                });
+            }
+        });
 
     }
 
@@ -88,16 +94,15 @@ public abstract class DailyBudgetFragment extends BaseDaggerFragment implements
         priceRange = view.findViewById(R.id.price_range);
         budgetInputLayout = view.findViewById(R.id.input_layout_budget_price);
         priceEditText = view.findViewById(R.id.edit_text_max_price);
-        sekBar = view.findViewById(R.id.seekbar);
+        seekBar = view.findViewById(R.id.seekbar);
         setUpView(view);
         setListener();
         return view;
     }
 
     public void setListener(){
-        sekBar.setRange(new Range(MIN_BUDGET, MAX_BUDGET, 1000));
-        sekBar.setValue(15000);
-        sekBar.setOnSeekBarChangeListener(this);
+        seekBar.setRange(new Range(MIN_BUDGET, MAX_BUDGET, 1000));
+        seekBar.setValue(15000);
         priceEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
