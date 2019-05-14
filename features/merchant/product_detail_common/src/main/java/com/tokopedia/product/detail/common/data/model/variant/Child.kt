@@ -81,14 +81,14 @@ data class Child(
 
     fun mapVariant(variants: List<Variant>?): ArrayMap<String, ArrayMap<String, String>>? {
         if (variants == null || variants.isEmpty()) return null
-        val hm = initArrayMapVariant()
+        val productVariantMap = initArrayMapVariant()
         for (optionId in optionIds) {
             for (variant in variants) {
                 var isFound = false
                 for (option in variant.options) {
                     if (option.id == optionId) {
-                        hm[variant.identifier]?.set("value", option.value)
-                        hm[variant.identifier]?.set("hex", option.hex)
+                        productVariantMap[variant.identifier]?.set("value", option.value)
+                        productVariantMap[variant.identifier]?.set("hex", option.hex)
                         isFound = true
                         break
                     }
@@ -96,7 +96,7 @@ data class Child(
                 if (isFound) break
             }
         }
-        return hm
+        return productVariantMap
     }
 
     private fun initArrayMapVariant(): ArrayMap<String, ArrayMap<String, String>> {
