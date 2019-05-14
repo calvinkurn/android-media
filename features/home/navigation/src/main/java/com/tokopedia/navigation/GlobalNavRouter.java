@@ -20,9 +20,9 @@ public interface GlobalNavRouter {
 
     Fragment getCartFragment(Bundle bundle);
 
-    Fragment getOfficialStoreFragment(Bundle bundle);
+    Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc, String promoCode);
 
-    Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc);
+    Fragment getOfficialStoreFragment(Bundle bundle);
 
     Intent getInboxTalkCallingIntent(Context context);
 
@@ -44,7 +44,7 @@ public interface GlobalNavRouter {
 
     Intent getHomeIntent(Context context);
 
-    Intent gotoSearchPage(Context context);
+    Intent gotoSearchAutoCompletePage(Context context);
 
     Intent instanceIntentDigitalCategoryList();
 

@@ -7,6 +7,7 @@
     	order_id
     	phone
     	item_price
+    	is_fulfillment
     	order_detail{
             order_detail_id
             product{
@@ -79,10 +80,34 @@
       	}
       }
     }
+    payment_type{
+      metadata
+      types
+    }
     payment_amount
     voucher{
       voucher_code
       voucher_id
+    }
+    stacked_promos{
+      promo_code_id
+      final_benefit_amount
+      final_discount_amount
+      benefits_by_orders{
+        order_id
+        order_level_orders{
+          promo_code
+          type
+          total_discount
+          total_benefit
+        }
+        global_level_orders{
+          promo_code
+          type
+          total_discount
+          total_benefit
+        }
+      }
     }
   }
 }

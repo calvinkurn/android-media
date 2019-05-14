@@ -21,9 +21,11 @@
     <string name="tp_label_see_membership">Lihat Status Membership</string>
     <string name="tp_label_see_loyalty">Loyalty</string>
     <string name="tp_label_membership">Status Membership</string>
+    <string name="tp_label_membership_bottom">Membership</string>
     <string name="tp_label_see_point">Points</string>
     <string name="tp_label_exchange_points">Penukaran Points</string>
     <string name="tp_label_my_coupon">Kupon Milik Saya</string>
+    <string name="tp_label_my_coupon_new">Kupon Saya</string>
     <string name="tp_label_my_coupon_space">Kupon Milik Saya \u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
     <string name="tp_label_see_all">Lihat Semua</string>
     <string name="tp_label_help_with_storepoints">Bantuan TokoPoints</string>
@@ -67,6 +69,7 @@
     <string name="title_bottomsheet_filters">Filter Kupon</string>
     <string name="bottomsheet_filter_subtitle">Kisaran Points</string>
     <string name="tp_history">Riwayat</string>
+    <string name="tp_leader">Leaderboard</string>
     <string name="moreCouponCount">99+</string>
 
 </resources>

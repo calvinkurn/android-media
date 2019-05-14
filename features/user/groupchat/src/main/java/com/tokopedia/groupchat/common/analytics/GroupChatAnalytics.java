@@ -8,6 +8,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
 
 /**
  * @author by StevenFredian on 05/03/18.
@@ -64,7 +64,9 @@ public class GroupChatAnalytics {
     private static final String EVENT_ACTION_CLICK_OVERLAY_CLOSE = "click on close button";
     private static final String EVENT_ACTION_CLICK_OVERLAY_IMAGE = "click on image overlay";
     private static final String EVENT_ACTION_VIEW_OVERLAY = "view on overlay";
-
+    private static final String EVENT_ACTION_CLICK_HIDE_VIDEO = "click hide video";
+    private static final String EVENT_ACTION_CLICK_SHOW_VIDEO = "click show video";
+    private static final String EVENT_ACTION_CLICK_PAUSE_VIDEO = "click on pause video";
 
     private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
     private static final String EVENT_NAME_CLICK_SHARE = "clickShare";
@@ -815,4 +817,25 @@ public class GroupChatAnalytics {
         ));
     }
 
+    public void eventClickHideVideoToggle(@Nullable String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_HIDE_VIDEO,
+                channelId
+        ));
+    }
+    public void eventClickShowVideoToggle(@Nullable String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_SHOW_VIDEO,
+                channelId
+        ));
+    }
+    public void eventClickPauseVideo(@Nullable String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_PAUSE_VIDEO,
+                channelId
+        ));
+    }
 }

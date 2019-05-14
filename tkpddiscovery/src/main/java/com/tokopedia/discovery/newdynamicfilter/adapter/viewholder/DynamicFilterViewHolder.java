@@ -3,10 +3,9 @@ package com.tokopedia.discovery.newdynamicfilter.adapter.viewholder;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.discovery.common.data.Filter;
 
 /**
  * Created by henrypriyono on 8/11/17.
@@ -18,7 +17,7 @@ public abstract class DynamicFilterViewHolder extends AbstractViewHolder<Filter>
         super(itemView);
     }
 
-    public void bindSwitch(SwitchCompat switchView,
+    void bindSwitch(SwitchCompat switchView,
                            Boolean isChecked,
                            CompoundButton.OnCheckedChangeListener onCheckedChangeListener) {
 

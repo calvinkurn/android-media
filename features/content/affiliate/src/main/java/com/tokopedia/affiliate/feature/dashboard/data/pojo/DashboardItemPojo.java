@@ -38,6 +38,9 @@ public class DashboardItemPojo {
     @SerializedName("commission")
     @Expose
     private String commission;
+    @SerializedName("productCommission")
+    @Expose
+    private String productCommission;
 
     public String getId() {
         return id;
@@ -94,4 +97,13 @@ public class DashboardItemPojo {
     public void setCommission(String commission) {
         this.commission = commission;
     }
+
+    public String getProductCommission() {
+        return productCommission;
+    }
+
+    public void setProductCommission(String productCommission) {
+        this.productCommission = productCommission;
+    }
+
 }

@@ -16,10 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -32,6 +29,7 @@ import com.tokopedia.groupchat.common.data.GroupChatUrl
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -164,7 +162,19 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     }
 
     private fun loadWebview() {
+        if(shouldRedirectToSeamless(url)){
+            url = URLGenerator.generateURLSessionLogin(url, userSession.deviceId, userSession
+                    .userId)
+
+        }
+
         webview.loadAuthUrl(url, userSession.userId, userSession.accessToken, getHeaderPlay())
+
+    }
+
+    private fun shouldRedirectToSeamless(url: String): Boolean {
+        return !url.contains("tokopedia.com/play", true)
+                && !url.contains("js.tokopedia.com/seamless", true)
     }
 
     fun setUrl(url: String) {
@@ -181,8 +191,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         progressBar = view.findViewById(R.id.progress_bar)
         progressBar.isIndeterminate = true
         webview.setOnKeyListener(this)
-        webview.settings.javaScriptEnabled = true
-        webview.addJavascriptInterface(WebViewResizer(), "WebViewResizer")
+//        webview.addJavascriptInterface(WebViewResizer(), "WebViewResizer")
         webview.settings.cacheMode = WebSettings.LOAD_NO_CACHE
         webview.settings.domStorageEnabled = true
         webview.settings.javaScriptEnabled = true
@@ -289,9 +298,18 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
                 super.onReceivedError(view, request, error)
-                webview.hide()
-                errorView.show()
-
+                var showError = true
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && GlobalConfig.isAllowDebuggingTools()) {
+                    var text= error?.errorCode.toString() +" "+ error?.description
+                    errorView.findViewById<TextView>(R.id.error_subtitle).text = text
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && error?.errorCode == WebViewClient.ERROR_CONNECT) {
+                    showError = false
+                }
+                if(showError) {
+                    webview.hide()
+                    errorView.show()
+                }
             }
 
             override fun onOverrideUrl(url: Uri?): Boolean {
@@ -301,7 +319,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                webview.loadUrl("javascript:window.WebViewResizer.processHeight(document.querySelector('body').offsetHeight);")
+//                webview.loadUrl("javascript:window.WebViewResizer.processHeight(document.querySelector('body').offsetHeight);")
                 super.onPageFinished(view, url)
             }
         }

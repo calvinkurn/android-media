@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
@@ -40,6 +42,11 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
         holder.bind(visitables.get(position));
+        //check if visitable is homerecommendation, we will set newData = false after bind
+        //because newData = true will force viewholder to recreate tab and viewpager
+        if (visitables.get(position) instanceof HomeRecommendationFeedViewModel) {
+            ((HomeRecommendationFeedViewModel) visitables.get(position)).setNewData(false);
+        }
     }
 
     @Override
@@ -82,7 +89,11 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     public void updateItems(List<Visitable> visitables) {
         List<Visitable> temporaryList = new ArrayList<>();
         temporaryList.addAll(visitables);
-        if (getItems().size() > 1 && getItems().get(1) instanceof HeaderViewModel) {
+        if (hasHeaderViewModelInPosition(1) && hasTicker(visitables)) {
+            temporaryList.add(2, getItems().get(1));
+        } else if (hasHeaderViewModelInPosition(2) && hasTicker(visitables)) {
+            temporaryList.add(2, getItems().get(2));
+        } else if (hasHeaderViewModelInPosition(1) && !hasTicker(visitables)) {
             temporaryList.add(1, getItems().get(1));
         }
 
@@ -96,7 +107,18 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
         notifyDataSetChanged();
     }
 
+    private boolean hasTicker(List<Visitable> visitables) {
+        return visitables.size() > 1 && visitables.get(1) instanceof TickerViewModel;
+    }
+
+    private boolean hasHeaderViewModelInPosition(int position) {
+        return getItems().size() > position && getItems().get(position) instanceof HeaderViewModel;
+    }
+
     public void showRetry() {
+        if (this.visitables.contains(retryModel)) {
+            return;
+        }
         int positionStart = getItemCount();
         this.visitables.add(retryModel);
         notifyItemRangeInserted(positionStart, 1);
@@ -106,6 +128,10 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
         int index = this.visitables.indexOf(retryModel);
         this.visitables.remove(retryModel);
         notifyItemRemoved(index);
+    }
+
+    public int getRecommendationFeedSectionPosition() {
+        return visitables.size()-1;
     }
 
     public boolean isRetryShown() {

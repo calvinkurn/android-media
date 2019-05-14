@@ -24,6 +24,7 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
@@ -69,8 +70,12 @@ class TopChatRoomPresenter @Inject constructor(
         private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
         private var deleteMessageListUseCase: DeleteMessageListUseCase,
         private var changeChatBlockSettingUseCase: ChangeChatBlockSettingUseCase,
-        private var getShopFollowingUseCase: GetShopFollowingUseCase)
+        private var getShopFollowingUseCase: GetShopFollowingUseCase,
+        private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
+
+    override fun clearText() {
+    }
 
     private var mSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
@@ -494,6 +499,23 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun copyVoucherCode(fromUid: String?, replyId: String, blastId: String, attachmentId: String, replyTime: String?) {
         sendMessageWebSocket(TopChatWebSocketParam.generateParamCopyVoucherCode(thisMessageId, replyId, blastId, attachmentId, replyTime, fromUid))
+    }
+
+    override fun followUnfollowShop(shopId: String,
+                                    onError: (Throwable) -> Unit,
+                                    onSuccess: (isSuccess: Boolean) -> Unit) {
+        toggleFavouriteShopUseCase.execute(
+                ToggleFavouriteShopUseCase.createRequestParam(shopId), object : Subscriber<Boolean>() {
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable) {
+                onError(e)
+            }
+
+            override fun onNext(success: Boolean) {
+                onSuccess(success)
+            }
+        })
     }
 
 }

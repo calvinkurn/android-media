@@ -11,7 +11,7 @@
 
     <android.support.v7.widget.AppCompatRatingBar
         android:id="@+id/ratingBar"
-        style="@style/RatingBar.Small"
+        style="@style/RatingBar.Micro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

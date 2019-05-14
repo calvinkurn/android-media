@@ -62,7 +62,7 @@ public class SectionCarouselAdapter extends RecyclerView.Adapter<SectionCarousel
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView ivCol;
-        private TextView bnrTitle, bnrSubTitle;
+        private TextView bnrTitle, bnrSubTitle, titleBottom, subTitleBottom;
         public boolean isVisited = false;
 
         public ViewHolder(View itemView) {
@@ -70,6 +70,8 @@ public class SectionCarouselAdapter extends RecyclerView.Adapter<SectionCarousel
             ivCol = itemView.findViewById(R.id.iv_col_1);
             bnrTitle = itemView.findViewById(R.id.text_title_banner);
             bnrSubTitle = itemView.findViewById(R.id.text_sub_title_banner);
+            titleBottom = itemView.findViewById(R.id.text_title_bottom);
+            subTitleBottom = itemView.findViewById(R.id.text_sub_title_bottom);
         }
 
         public void bindData(ImageList item) {
@@ -88,6 +90,20 @@ public class SectionCarouselAdapter extends RecyclerView.Adapter<SectionCarousel
                 handledClick(item.getRedirectAppLink(), item.getRedirectURL());
             });
 
+            if (TextUtils.isEmpty(item.getTitle())) {
+                titleBottom.setVisibility(View.GONE);
+            } else {
+                titleBottom.setVisibility(View.VISIBLE);
+                titleBottom.setText(item.getTitle());
+            }
+
+            if (TextUtils.isEmpty(item.getSubTitle())) {
+                subTitleBottom.setVisibility(View.GONE);
+            } else {
+                subTitleBottom.setVisibility(View.VISIBLE);
+                subTitleBottom.setText(item.getSubTitle());
+            }
+
         }
     }
 
@@ -103,9 +119,9 @@ public class SectionCarouselAdapter extends RecyclerView.Adapter<SectionCarousel
 
             if (!holder.isVisited) {
                 AnalyticsTrackerUtil.sendEvent(holder.itemView.getContext(),
-                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                        AnalyticsTrackerUtil.ActionKeys.VIEW_DYNAMIC_CAT,
+                        AnalyticsTrackerUtil.ActionKeys.VIEW_DYNAMIC_ICON,
                         data.getTitle());
 
                 holder.isVisited = true;

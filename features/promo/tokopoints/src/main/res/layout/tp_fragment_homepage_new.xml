@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/tp_margin_large" />
+                android:theme="@style/TPProgressBar" />
 
             <android.support.design.widget.CoordinatorLayout
                 android:id="@+id/col_header"
@@ -51,16 +51,15 @@
 
                         <RelativeLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:background="@color/white">
 
                             <ImageView
                                 android:id="@+id/img_bg_header"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/tp_home_top_bg_height"
                                 android:layout_alignParentTop="true"
-                                android:scaleType="fitXY"
-                                android:src="@drawable/temp" />
-
+                                android:scaleType="fitXY" />
 
                             <ImageView
                                 android:id="@+id/img_egg"
@@ -114,15 +113,17 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/text_membership_value"
-                                android:layout_margin="@dimen/dp_16"
-                                app:cardCornerRadius="8dp"
+                                android:layout_marginStart="@dimen/dp_16"
+                                android:layout_marginLeft="@dimen/dp_16"
+                                android:layout_marginTop="@dimen/dp_16"
+                                android:layout_marginEnd="@dimen/dp_16"
+                                android:layout_marginRight="@dimen/dp_16"
+                                app:cardCornerRadius="@dimen/dp_8"
                                 app:cardUseCompatPadding="true">
 
                                 <include layout="@layout/tp_home_point" />
 
-
                             </android.support.v7.widget.CardView>
-
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -132,7 +133,12 @@
 
                                 <include layout="@layout/tp_layout_section_category_parent" />
 
-                                <include layout="@layout/tp_layout_ticker" />
+                                <include layout="@layout/tp_layout_section_ticker_new" />
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/dp_8"
+                                    android:background="@color/tp_ticker_background_color" />
                             </LinearLayout>
                         </RelativeLayout>
 
@@ -160,7 +166,7 @@
                 </android.support.design.widget.AppBarLayout>
 
 
-                <android.support.v4.view.ViewPager
+                <com.tokopedia.tokopoints.view.customview.CustomViewPager
                     android:id="@+id/view_pager_promos"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -172,7 +178,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
-                    android:layout_marginBottom="@dimen/dp_24"
+                    android:layout_marginBottom="@dimen/dp_40"
                     android:background="@color/transparent"
                     android:visibility="gone"
                     app:layout_behavior="com.tokopedia.tokopoints.view.util.QuickReturnFloaterBehavior">
@@ -189,7 +195,16 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <include layout="@layout/tp_bottomview_membership" />
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_16"
+                        app:cardCornerRadius="8dp"
+                        app:cardUseCompatPadding="true">
+
+                        <include layout="@layout/tp_bottomview_membership_new" />
+
+                    </android.support.v7.widget.CardView>
                 </LinearLayout>
 
 

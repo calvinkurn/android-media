@@ -2,6 +2,9 @@ package com.tokopedia.home.analytics;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.home.beranda.data.model.Promotion;
@@ -9,10 +12,13 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -270,11 +276,6 @@ public class HomePageTracking {
         );
     }
 
-    public static void eventEnhancedImpressionSprintSaleHomePage(Context context,
-                                                                 Map<String, Object> data) {
-        getTracker(context).sendEnhanceEcommerceEvent(data);
-    }
-
     public static void eventEnhancedClickSprintSaleProduct(Context context,
                                                            Map<String, Object> data) {
         ContextAnalytics tracker = getTracker(context);
@@ -283,20 +284,14 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventEnhancedImpressionDynamicChannelHomePage(Context context,
+    public static void eventEnhancedImpressionWidgetHomePage(TrackingQueue trackingQueue,
                                                                      Map<String, Object> data) {
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(data);
-        }
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
 
-    public static void eventEnhancedImpressionDynamicIconHomePage(Context context,
+    public static void eventEnhancedImpressionDynamicIconHomePage(TrackingQueue trackingQueue,
                                                                   Map<String, Object> data) {
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(data);
-        }
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
 
     public static void eventEnhancedClickDynamicChannelHomePage(Context context,
@@ -488,10 +483,8 @@ public class HomePageTracking {
     }
 
     public static void eventEnhanceImpressionLegoAndCuratedHomePage(
-            Context context,
+            TrackingQueue trackingQueue,
             List<Object> legoAndCuratedList) {
-
-        ContextAnalytics tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
                 "event", "promoView",
@@ -507,12 +500,14 @@ public class HomePageTracking {
                 ),
                 "attribution", "2 - homeBanner"
         );
-        tracker.sendEnhanceEcommerceEvent(data);
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
 
     public static void eventClickOnHomePageRecommendationTab(
-            TrackingQueue trackingQueue,
+            Context context,
             FeedTabModel feedTabModel) {
+
+        ContextAnalytics tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
@@ -527,13 +522,16 @@ public class HomePageTracking {
                         )
                 )
         );
-        trackingQueue.putEETracking((HashMap<String, Object>) data);
+        tracker.sendEnhanceEcommerceEvent(data);
     }
 
     public static void eventImpressionOnProductRecommendationForLoggedInUser(
             TrackingQueue trackingQueue,
             HomeFeedViewModel feedViewModel,
             String tabName) {
+        if (trackingQueue == null) {
+            return;
+        }
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
@@ -553,6 +551,10 @@ public class HomePageTracking {
             TrackingQueue trackingQueue,
             HomeFeedViewModel feedViewModel,
             String tabName) {
+
+        if (trackingQueue == null) {
+            return;
+        }
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
@@ -587,9 +589,11 @@ public class HomePageTracking {
     }
 
     public static void eventClickOnHomeProductFeedForLoggedInUser(
-            TrackingQueue trackingQueue,
+            Context context,
             HomeFeedViewModel homeFeedViewModel,
             String tabName) {
+
+        ContextAnalytics tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
@@ -611,13 +615,15 @@ public class HomePageTracking {
                         )
                 )
         );
-        trackingQueue.putEETracking((HashMap<String, Object>) data);
+        tracker.sendEnhanceEcommerceEvent(data);
     }
 
     public static void eventClickOnHomeProductFeedForNonLoginUser(
-            TrackingQueue trackingQueue,
+            Context context,
             HomeFeedViewModel homeFeedViewModel,
             String tabName) {
+
+        ContextAnalytics tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
@@ -639,7 +645,7 @@ public class HomePageTracking {
                         )
                 )
         );
-        trackingQueue.putEETracking((HashMap<String, Object>) data);
+        tracker.sendEnhanceEcommerceEvent(data);
     }
 
     public static void eventClickWishlistOnProductRecommendation(Context context, String tabName) {
@@ -734,6 +740,88 @@ public class HomePageTracking {
                     CATEGORY_HOME_PAGE,
                     String.format("%s %s %s - %s", CLICK, ON, LABEL_TOKOPOINTS, NON_LOGIN),
                     ""
+            );
+        }
+    }
+
+    public static void eventEnhancedImpressionHomeWidget(
+            @Nullable TrackingQueue trackingQueue,
+            @NonNull String id,
+            @NonNull String name,
+            @NonNull String alias,
+            @NonNull String creativeUrl,
+            @NonNull String position,
+            @NonNull String promoCode
+    ) {
+        if (trackingQueue == null) {
+            return;
+        }
+        Map<String, Object> data = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, "impression on bu widget",
+                EVENT_LABEL, "",
+                ECOMMERCE, DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", id,
+                                                "name", name,
+                                                "creative", alias,
+                                                "creative_url", creativeUrl,
+                                                "position", position,
+                                                "promo_code", !TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
+                                        )
+                                )
+                        )
+                )
+        );
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
+    }
+
+    public static void eventEnhancedClickHomeWidget(
+            @Nullable Context context,
+            @NonNull String id,
+            @NonNull String name,
+            @NonNull String alias,
+            @NonNull String creativeUrl,
+            @NonNull String position,
+            @NonNull String promoCode
+    ) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            Map<String, Object> data = DataLayer.mapOf(
+                    "event", PROMO_CLICK,
+                    "eventCategory", CATEGORY_HOME_PAGE,
+                    "eventAction", "click on bu widget",
+                    "eventLabel", alias,
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", id,
+                                                    "name", name,
+                                                    "creative", alias,
+                                                    "creative_url", creativeUrl,
+                                                    "position", position,
+                                                    "promo_code", !TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
+                                            )
+                                    )
+                            )
+                    )
+            );
+            tracker.sendEnhanceEcommerceEvent(data);
+        }
+    }
+
+    public static void eventClickTabHomeWidget(Context context, String headerName) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    "click on bu widget tab",
+                    headerName
             );
         }
     }

@@ -101,7 +101,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
     override fun getInsurances(): List<FlightInsuranceViewModel> =
             view.getCurrentBookingParamViewModel().insurances
 
-    override fun getComboKey(): String = view.getPriceViewModel().comboKey
+    override fun getComboKey(): String = view.getPriceViewModel().comboKey ?: ""
 
     override fun getRequestParams(): RequestParams {
         return getRequestParams(calculateTotalPassengerFare())
@@ -109,7 +109,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
 
     override fun onFinishTransactionTimeReached() {
         if (isViewAttached) {
-            onGetCart(false, view.getCurrentCartPassData())
+            onGetCart(true, view.getCurrentCartPassData())
         }
     }
 
@@ -293,7 +293,10 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 val passengerViewModels = buildPassengerViewModel(view.getCurrentBookingParamViewModel().searchParam)
                 view.getCurrentBookingParamViewModel().passengerViewModels = passengerViewModels
                 view.renderPassengersList(passengerViewModels)
+            } else {
+                view.renderPassengersList(view.getCurrentBookingParamViewModel().passengerViewModels)
             }
+
             if (isFromSavedInstance) {
                 view.renderPassengersList(view.getCurrentBookingParamViewModel().passengerViewModels)
                 view.setContactName(view.getCurrentBookingParamViewModel().contactName)
@@ -500,6 +503,10 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                                             searchPassDataViewModel.flightPassengerViewModel.infant
                                     )
 
+                                    val newTotalPrice = actionCalculateCurrentTotalPrice(
+                                            t.departureTrip, t.returnTrip)
+                                    updateTotalPrice(newTotalPrice)
+
                                     view.setCartData(t)
 
                                     return flightAddToCartUseCase.createObservable(getRequestParams(price))
@@ -522,6 +529,11 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                             .subscribe(object : Subscriber<AddToCartEntity>() {
                                 override fun onNext(t: AddToCartEntity?) {
                                     if (isViewAttached && t != null) {
+                                        if (view.getCurrentBookingParamViewModel().passengerViewModels == null
+                                                || view.getCurrentBookingParamViewModel().passengerViewModels.size == 0){
+                                            val passengerViewModels = buildPassengerViewModel(view.getCurrentBookingParamViewModel().searchParam)
+                                            view.getCurrentBookingParamViewModel().passengerViewModels = passengerViewModels
+                                        }
                                         onGetCart(true, view.getCurrentCartPassData())
                                     }
                                 }

@@ -12,7 +12,7 @@ import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.taptap.fragment.TapTapTokenFragment;
-import com.tokopedia.gamification.util.TapTapAnalyticsTrackerUtil;
+import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 
 public class TapTapTokenActivity extends BaseSimpleActivity {
 
@@ -60,10 +60,6 @@ public class TapTapTokenActivity extends BaseSimpleActivity {
         TapTapTokenFragment crackTokenFragment = getCrackFragment();
         if (crackTokenFragment != null && crackTokenFragment.isShowBackPopup()) {
             crackTokenFragment.showBackPopup();
-
-        } else if (crackTokenFragment != null) {
-            crackTokenFragment.clearViewAndAnimations();
-            onBackPressedRoot();
         } else {
             onBackPressedRoot();
         }

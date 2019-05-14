@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 
 import java.util.List;
 
-import kotlinx.coroutines.experimental.Deferred;
+import kotlinx.coroutines.Deferred;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;

@@ -65,9 +65,12 @@ public abstract class ContextAnalytics implements Analytics {
 
     public void setPushPreference(boolean status) {}
 
+    public void setNewsletterEmailPref(boolean status) { }
+
     public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {}
 
     public void getAdsID(final AFAdsIDCallback callback) {}
+    public String getGoogleAdId() {return "";}
 
     public void sendDeeplinkData(Activity activity) {}
 

@@ -1,61 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cv_invoice_item"
+    android:id="@+id/ll_invoice_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    app:cardCornerRadius="@dimen/dp_4"
-    app:cardElevation="@dimen/dp_2">
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <include
+        android:id="@+id/layout_warning_and_error"
+        layout="@layout/layout_item_warning_and_error"
+        tools:visibility="visible" />
+
+    <include
+        layout="@layout/item_shipment_seller_info"
+        tools:visibility="visible" />
+
+    <FrameLayout
+        android:id="@+id/fl_disable_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <include
-            android:id="@+id/layout_warning_and_error"
-            layout="@layout/layout_item_warning_and_error"
-            tools:visibility="visible" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <include
-            layout="@layout/item_shipment_seller_info"
-            tools:visibility="visible" />
+            <include
+                layout="@layout/item_promo_merchant"
+                tools:visibility="gone" />
 
-        <include
-            layout="@layout/item_cart_product"
-            tools:visibility="visible" />
+            <include
+                layout="@layout/item_cart_product"
+                tools:visibility="visible" />
 
-        <include
-            layout="@layout/item_shipment_other_product"
-            tools:visibility="visible" />
+            <include
+                layout="@layout/item_shipment_other_product"
+                tools:visibility="visible" />
 
-        <include
-            layout="@layout/item_shipment_address"
-            tools:visibility="visible" />
+            <include
+                layout="@layout/item_shipment_address"
+                tools:visibility="visible" />
 
-        <include
-            layout="@layout/item_shipment_courier"
-            tools:visibility="visible" />
+            <include
+                layout="@layout/item_shipment_courier"
+                tools:visibility="visible" />
 
-        <include
-            layout="@layout/item_shipment_courier_recommendation"
-            tools:visibility="visible" />
+            <include
+                layout="@layout/item_shipment_courier_recommendation"
+                tools:visibility="visible" />
 
-        <include
-            layout="@layout/item_shipment_courier_blackbox"
-            tools:visibility="visible" />
+            <include
+                layout="@layout/item_shipment_courier_blackbox"
+                tools:visibility="visible" />
 
-        <include
-            layout="@layout/item_shipment_shipping_options"
-            tools:visibility="visible" />
+            <include
+                layout="@layout/item_shipment_shipping_options"
+                tools:visibility="visible" />
 
-        <include
-            layout="@layout/item_shipment_subtotal"
-            tools:visibility="visible" />
+            <include
+                layout="@layout/item_shipment_subtotal"
+                tools:visibility="visible" />
 
-    </LinearLayout>
+        </LinearLayout>
 
-</android.support.v7.widget.CardView>
+    </FrameLayout>
+
+</LinearLayout>
