@@ -130,7 +130,7 @@ import rx.subscriptions.CompositeSubscription;
 public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View>
         implements ShipmentContract.Presenter {
 
-    private static final int LAST_THREE_DIGIT_MODULUS = 1000;
+    private static final long LAST_THREE_DIGIT_MODULUS = 1000;
     private final CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase;
     private final CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase;
     private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
@@ -340,18 +340,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     private void updateEgoldBuyValue() {
-        double totalPrice = shipmentCostModel.getTotalPrice();
+
+        long totalPrice = (long) shipmentCostModel.getTotalPrice();
 
         int valueTOCheck = 0;
         int buyEgoldValue = 0;
 
         if (egoldAttributeModel.isTiering()) {
-            Collections.sort(egoldAttributeModel.getEgoldTieringModelArrayList(), new Comparator<EgoldTieringModel>() {
-                @Override
-                public int compare(EgoldTieringModel o1, EgoldTieringModel o2) {
-                    return (int) (o1.getMinTotalAmount() - o2.getMinTotalAmount());
-                }
-            });
+            Collections.sort(egoldAttributeModel.getEgoldTieringModelArrayList(), (o1, o2) -> (int) (o1.getMinTotalAmount() - o2.getMinTotalAmount()));
             EgoldTieringModel egoldTieringModel = new EgoldTieringModel();
             for (EgoldTieringModel data : egoldAttributeModel.getEgoldTieringModelArrayList()) {
                 if (totalPrice > data.getMinTotalAmount()) {
@@ -359,23 +355,22 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     egoldTieringModel = data;
                 }
             }
-            buyEgoldValue = calculateBuyEgoldValue(valueTOCheck, (int) egoldTieringModel.getMinAmount(), (int) egoldTieringModel.getMaxAmount());
+            buyEgoldValue = calculateBuyEgoldValue(valueTOCheck, (int) egoldTieringModel.getMinAmount(), (int) egoldTieringModel.getMaxAmount(), egoldTieringModel.getBasisAmount());
         } else {
             valueTOCheck = (int) (totalPrice % LAST_THREE_DIGIT_MODULUS);
-            buyEgoldValue = calculateBuyEgoldValue(valueTOCheck, egoldAttributeModel.getMinEgoldRange(), egoldAttributeModel.getMaxEgoldRange());
+            buyEgoldValue = calculateBuyEgoldValue(valueTOCheck, egoldAttributeModel.getMinEgoldRange(), egoldAttributeModel.getMaxEgoldRange(), LAST_THREE_DIGIT_MODULUS);
 
         }
         egoldAttributeModel.setBuyEgoldValue(buyEgoldValue);
         getView().renderDataChanged();
     }
 
-    private int calculateBuyEgoldValue(int valueTOCheck, int minRange, int maxRange) {
+    private int calculateBuyEgoldValue(int valueTOCheck, int minRange, int maxRange, long basisAmount) {
 
         int buyEgoldValue = 0;
 
         for (int i = minRange; i <= maxRange; i++) {
-            valueTOCheck = valueTOCheck + i;
-            if (valueTOCheck % LAST_THREE_DIGIT_MODULUS == 0) {
+            if ((valueTOCheck + i ) % basisAmount == 0) {
                 buyEgoldValue = i;
                 break;
             }
