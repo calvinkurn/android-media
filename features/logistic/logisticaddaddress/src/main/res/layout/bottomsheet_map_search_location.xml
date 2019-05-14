@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_map_search_location"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/merchant_voucher_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout_search"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_search_corner"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_marginLeft="19dp"
+                    android:layout_marginStart="19dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_search"
+                    android:tint="@color/ic_grey_color"
+                    android:layout_gravity="center_vertical"/>
+
+                <TextView
+                    android:id="@+id/et_search"
+                    android:layout_marginLeft="@dimen/dp_11"
+                    android:layout_marginStart="@dimen/dp_11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_search_location"
+                    android:inputType="text"
+                    android:focusable="true"
+                    android:enabled="true"
+                    android:textSize="@dimen/sp_14"
+                    android:maxLines="1"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:background="@null"
+                    android:layout_gravity="center_vertical"/>
+
+            </LinearLayout>
+
+        <View
+            android:id="@+id/map_search_divider_1"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/separator_color" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16">
+
+                <ImageView
+                    android:id="@+id/iv_current_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:contentDescription="@string/current_location"
+                    android:src="@drawable/ic_current_location"/>
+
+                <TextView
+                    android:id="@+id/tv_current_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/iv_current_location"
+                    android:layout_toEndOf="@id/iv_current_location"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:textSize="@dimen/sp_14"
+                    android:text="@string/tv_current_location_text"/>
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/map_search_divider_2"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@color/separator_color" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                android:textColor="@color/title_search_location_color"
+                android:text="@string/use_points_of_interest"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvPOIList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_8" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

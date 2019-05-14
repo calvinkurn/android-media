@@ -142,25 +142,25 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         Intent intent;
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                /*intent = AddAddressActivity
+                intent = AddAddressActivity
                         .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
                                 this, token);
                 startActivityForResult(intent,
-                        LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);*/
+                        LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
 
-                intent = new Intent(this, AddNewAddressActivity.class);
-                startActivity(intent);
+                /*intent = new Intent(this, AddAddressActivity.class);
+                startActivity(intent);*/
                 break;
             case TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
-                /*RecipientAddressModel currentAddress = getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
+                RecipientAddressModel currentAddress = getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
                 AddressModelMapper mapper = new AddressModelMapper();
                 intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
                         this, mapper.transform(currentAddress), token
                 );
                 startActivityForResult(intent,
-                        LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);*/
-                intent = new Intent(this, AddNewAddressActivity.class);
-                startActivity(intent);
+                        LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+                /*intent = new Intent(this, AddNewAddressActivity.class);
+                startActivity(intent);*/
                 break;
             default:
         }

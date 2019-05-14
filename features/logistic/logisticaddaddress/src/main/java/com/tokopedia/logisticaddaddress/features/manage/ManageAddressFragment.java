@@ -197,18 +197,16 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     public void openFormAddressView(AddressModel data) {
         Token token = mPresenter.getToken();
         if (data == null) {
-            /*startActivityForResult(
+            startActivityForResult(
                     AddAddressActivity.createInstanceAddAddressFromManageAddressWhenDefaultAddressIsEmpty(
                             getActivity(), token
-                    ), REQUEST_CODE_PARAM_CREATE);*/
-            startActivity(new Intent(getActivity(), AddNewAddressActivity.class));
+                    ), REQUEST_CODE_PARAM_CREATE);
 
         } else {
-            /*startActivityForResult(
+            startActivityForResult(
                     AddAddressActivity.createInstanceEditAddressFromManageAddress(
                             getActivity(), data, token
-                    ), REQUEST_CODE_PARAM_EDIT);*/
-            startActivity(new Intent(getActivity(), AddNewAddressActivity.class));
+                    ), REQUEST_CODE_PARAM_EDIT);
         }
     }
 

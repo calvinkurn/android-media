@@ -39,4 +39,7 @@ public class AddressConstants {
 
     public static final int INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT = 21;
     public static final int INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT = 22;
+
+    public static final String EXTRA_DEFAULT_LAT = "EXTRA_DEFAULT_LAT";
+    public static final String EXTRA_DEFAULT_LONG = "EXTRA_DEFAULT_LONG";
 }

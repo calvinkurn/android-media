@@ -441,21 +441,21 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         AddressModelMapper mapper = new AddressModelMapper();
 
         if (getActivity() != null) {
-            /*Intent intent;
+            Intent intent;
             if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
                 intent = AddAddressActivity.createInstanceEditAddressFromCheckoutMultipleAddressForm(
                         getActivity(), mapper.transform(model), token
                 );
-                intent = new Intent(getActivity(), AddNewAddressActivity.class);
+                // intent = new Intent(getActivity(), AddNewAddressActivity.class);
             } else {
                 intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
                         getActivity(), mapper.transform(model), token
                 );
             }
-            startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);*/
+            startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
 
-            Intent intent = new Intent(getActivity(), AddNewAddressActivity.class);
-            startActivity(intent);
+            /*Intent intent = new Intent(getActivity(), AddNewAddressActivity.class);
+            startActivity(intent);*/
         }
     }
 
@@ -501,11 +501,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (getActivity() != null) {
             if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickPlusFromMultiple();
-                /*startActivityForResult(
+                startActivityForResult(
                         AddAddressActivity.createInstanceAddAddressFromCheckoutMultipleAddressForm(
                                 getActivity(), token
-                        ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);*/
-                startActivity(new Intent(getActivity(), AddNewAddressActivity.class));
+                        ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                // startActivity(new Intent(getActivity(), AddNewAddressActivity.class));
             } else {
                 checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
                 checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
@@ -514,7 +514,14 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                                 getActivity(), token
                         ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
                 );*/
-                startActivity(new Intent(getActivity(), AddNewAddressActivity.class));
+
+                startActivityForResult(
+                        AddNewAddressActivity.createInstanceFromCheckoutSingleAddressForm(
+                                getActivity(), token
+                        ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
+                );
+
+                // startActivity(new Intent(getActivity(), AddNewAddressActivity.class));
             }
 
 

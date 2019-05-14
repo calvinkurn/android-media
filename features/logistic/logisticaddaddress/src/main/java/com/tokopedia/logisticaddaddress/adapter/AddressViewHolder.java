@@ -49,7 +49,7 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
         this.listener = listener;
         addressName = itemView.findViewById(R.id.address_name);
         addressDetail = itemView.findViewById(R.id.address_detail);
-        mapView = itemView.findViewById(R.id.mapview);
+        mapView = itemView.findViewById(R.id.mapView);
         editBtn = itemView.findViewById(R.id.action_edit);
         deleteBtn = itemView.findViewById(R.id.action_delete);
         defaultBtn = itemView.findViewById(R.id.action_default);

@@ -59,4 +59,12 @@
     <string name="logistic_district_recommendation_label">Kota atau Kecamatan</string>
     <string name="logistic_zip_code_label">Kode Pos</string>
     <string name="logistic_result_error_message">Ada masalah, hubungi resolusi</string>
+
+    <string name="navigate_up">Navigate Up</string>
+    <string name="pointer">Map Pointer</string>
+    <string name="hint_search_location">Tulis jalan / perumahan / gedung</string>
+    <string name="title_bottomsheet_search_location">Cari Lokasi</string>
+    <string name="current_location">Current Location</string>
+    <string name="tv_current_location_text">Gunakan lokasi saya saat ini</string>
+    <string name="use_points_of_interest">Mau gunakan lokasi ini?</string>
 </resources>
