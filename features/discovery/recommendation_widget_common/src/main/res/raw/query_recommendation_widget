@@ -1,5 +1,5 @@
-query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!, $xDevice: String!, $xSource: String!) {
-  productRecommendationWidget(userID: $userID, pageName: $pageName, pageNumber: $pageNumber, xDevice: $xDevice, xSource: $xSource) {
+query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!, $xDevice: String!, $xSource: String!, $productIDs: String!) {
+  productRecommendationWidget(userID: $userID, pageName: $pageName, pageNumber: $pageNumber, xDevice: $xDevice, xSource: $xSource, productIDs : $productIDs) {
     data {
       tID
       source

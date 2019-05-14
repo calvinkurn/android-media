@@ -21,4 +21,7 @@ public class ShopPageConstant {
 
     // if the count data <= SMALL_DATA_LIMIT, the data become vertical list
     public static final int SMALL_DATA_LIMIT = 2;
+
+    public static final String MODERATE_STATUS_QUERY = "moderate_status_query";
+    public static final String MODERATE_REQUEST_QUERY = "moderate_request_query";
 }

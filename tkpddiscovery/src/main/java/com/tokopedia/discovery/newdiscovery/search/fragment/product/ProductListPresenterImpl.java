@@ -3,7 +3,6 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.base.adapter.Visitable;
@@ -14,10 +13,7 @@ import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchFilterProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.ProductWishlistUrlUseCase;
 import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
@@ -29,10 +25,10 @@ import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -57,17 +53,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     private static final String TAG = ProductListPresenterImpl.class.getSimpleName();
 
     @Inject
-    GetProductUseCase getProductUseCase;
-    @Inject
-    GetSearchGuideUseCase getSearchGuideUseCase;
-    @Inject
     AddWishListUseCase addWishlistActionUseCase;
     @Inject
     RemoveWishListUseCase removeWishlistActionUseCase;
-    @Inject
-    GetDynamicFilterUseCase getDynamicFilterUseCase;
-    @Inject
-    GetDynamicFilterV4UseCase getDynamicFilterV4UseCase;
     @Inject
     ProductWishlistUrlUseCase productWishlistUrlUseCase;
     @Inject
@@ -102,9 +90,20 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     }
 
     @Override
-    protected void getFilterFromNetwork(RequestParams requestParams) {
+    public void requestDynamicFilter() {
+        if (getView() == null) {
+            return;
+        }
+        RequestParams params = RequestParams.create();
+        params.putAll(getView().getSearchParameter().getSearchParameterHashMap());
+        enrichWithAdditionalParams(params, getView().getAdditionalParamsMap());
         Subscriber<GraphqlResponse> subscriber = getFilterFromNetworkSubscriber();
-        GqlSearchHelper.requestDynamicFilter(context, requestParams, graphqlUseCase, subscriber);
+        GqlSearchHelper.requestDynamicFilter(context, params, graphqlUseCase, subscriber);
+    }
+
+    @Override
+    protected void getFilterFromNetwork(RequestParams requestParams) {
+
     }
 
     private Subscriber<GraphqlResponse> getFilterFromNetworkSubscriber() {
@@ -200,17 +199,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     protected RequestParams getDynamicFilterParam() {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(generateParamsNetwork(requestParams));
-        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_PRODUCT);
-        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
-        if(!TextUtils.isEmpty(getView().getSearchParameter().get(SearchApiConst.SC))) {
-            requestParams.putString(SearchApiConst.SC, getView().getSearchParameter().get(SearchApiConst.SC));
-        } else {
-            requestParams.putString(SearchApiConst.SC, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SC);
-        }
-        return requestParams;
+        return RequestParams.EMPTY;
     }
 
     private HashMap<String, String> generateParamsNetwork(RequestParams requestParams) {
@@ -222,11 +211,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     public void loadMoreData(final SearchParameter searchParameter, HashMap<String, String> additionalParams) {
-        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false);
-        enrichWithFilterAndSortParams(requestParams);
+        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter);
         enrichWithRelatedSearchParam(requestParams, true);
         enrichWithAdditionalParams(requestParams, additionalParams);
-        removeDefaultCategoryParam(requestParams);
 
         unsubscribeLoadMoreDataSubscriberIfStillSubscribe();
 
@@ -316,13 +303,12 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     }
 
     @Override
-    public void loadData(final SearchParameter searchParameter, boolean isForceSearch, HashMap<String, String> additionalParams, boolean isFirstTimeLoad) {
-        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false, true);
-        enrichWithFilterAndSortParams(requestParams);
-        enrichWithForceSearchParam(requestParams, isForceSearch);
+    public void loadData(final SearchParameter searchParameter, HashMap<String, String> additionalParams, boolean isFirstTimeLoad) {
+        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, true);
         enrichWithRelatedSearchParam(requestParams, true);
-        enrichWithAdditionalParams(requestParams, additionalParams);
-        removeDefaultCategoryParam(requestParams);
+        if (isViewAttached() && getView().isAnyFilterActive()) {
+            enrichWithAdditionalParams(requestParams, additionalParams);
+        }
 
         unsubscribeLoadDataSubscriberIfStillSubscribe();
 
@@ -371,6 +357,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     private void loadDataSubscriberOnCompleteIfViewAttached() {
         if (isViewAttached()) {
             getView().hideRefreshLayout();
+            getView().getDynamicFilter();
         }
     }
 
@@ -395,7 +382,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
             }
 
             getView().storeTotalData(productViewModel.getTotalData());
-            getView().renderDynamicFilter(productViewModel.getDynamicFilterModel());
 
             if(isFirstTimeLoad) {
                 getViewToSendTrackingOnFirstTimeLoad(productViewModel);
@@ -469,29 +455,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         getView().setFirstTimeLoad(false);
     }
 
-    @Override
-    public void setIsUsingFilterV4(boolean isUsingFilterV4) {
-        this.isUsingFilterV4 = isUsingFilterV4;
-    }
-
-    private RequestParams getQuickFilterRequestParams() {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(generateParamsNetwork(requestParams));
-        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_QUICK_FILTER);
-        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
-        if (!TextUtils.isEmpty(getView().getSearchParameter().get(SearchApiConst.SC))) {
-            requestParams.putString(SearchApiConst.SC, getView().getSearchParameter().get(SearchApiConst.SC));
-        } else {
-            requestParams.putString(SearchApiConst.SC, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SC);
-        }
-        return requestParams;
-    }
-
-    private void enrichWithForceSearchParam(RequestParams requestParams, boolean isForceSearch) {
-        requestParams.putBoolean(SearchApiConst.REFINED, isForceSearch);
-    }
-
     private void enrichWithRelatedSearchParam(RequestParams requestParams, boolean relatedSearchEnabled) {
         requestParams.putBoolean(SearchApiConst.RELATED, relatedSearchEnabled);
     }
@@ -499,12 +462,8 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     @Override
     public void detachView() {
         super.detachView();
-        getProductUseCase.unsubscribe();
-        getSearchGuideUseCase.unsubscribe();
         addWishlistActionUseCase.unsubscribe();
         removeWishlistActionUseCase.unsubscribe();
-        getDynamicFilterUseCase.unsubscribe();
-        getDynamicFilterV4UseCase.unsubscribe();
         graphqlUseCase.unsubscribe();
     }
 }

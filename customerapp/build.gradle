@@ -297,7 +297,6 @@ afterEvaluate {
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.intellij:annotations:+@jar'
     implementation project(":libraries:akamai_bot_lib")
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.contactUs)
