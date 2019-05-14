@@ -27,7 +27,6 @@ import com.tokopedia.discovery.autocomplete.HostAutoCompleteTypeFactory;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.di.AutoCompleteComponent;
 import com.tokopedia.discovery.autocomplete.di.DaggerAutoCompleteComponent;
-import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
@@ -213,22 +212,20 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     public void onItemClicked(String applink, String webUrl) {
         dropKeyBoard();
 
-        // TODO:: TEMPORARY SOLUTION IF Activity is AutoCompleteActivity!!
-        // Currently SearchActivity starts AutoCompleteActivity for Result,
-        // so we need to finish AutoCompleteActivity and setResult back to SearchActivity
-        // SearchActivity will need to finish itself and start the next activity based on the applink / webUrl from here
-        // TODO:: For permanent solution:
-        // 1. HotListActivity, CategoryActivity, and ImageSearchActivity will need to start AutoCompleteActivity for result as well
-        // 2. This Fragment will directly be used by AutoCompleteActivity
-        if(getActivity() instanceof AutoCompleteActivity) {
-            handleItemClickedForAutoCompleteActivity(applink, webUrl);
+        if(isActivityCalledForResult()) {
+            handleItemClickedWithResult(applink, webUrl);
         }
         else {
-            handleItemClickedForNotAutoCompleteActivity(applink, webUrl);
+            handleItemClickedWithoutResult(applink, webUrl);
         }
     }
 
-    private void handleItemClickedForAutoCompleteActivity(String applink, String webUrl) {
+    private boolean isActivityCalledForResult() {
+        return getActivity() != null
+                && getActivity().getCallingActivity() != null;
+    }
+
+    private void handleItemClickedWithResult(String applink, String webUrl) {
         if(getActivity() == null || getActivity().getApplicationContext() == null) return;
 
         Intent data;
@@ -262,10 +259,9 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
         getActivity().setResult(SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, data);
         getActivity().finish();
-        getActivity().overridePendingTransition(0, 0);
     }
 
-    private void handleItemClickedForNotAutoCompleteActivity(String applink, String webUrl) {
+    private void handleItemClickedWithoutResult(String applink, String webUrl) {
         if (isActivityAnApplinkRouter()) {
             handleItemClickedIfActivityAnApplinkRouter(applink, webUrl);
         } else {

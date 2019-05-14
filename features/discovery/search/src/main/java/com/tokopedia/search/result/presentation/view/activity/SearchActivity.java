@@ -588,7 +588,9 @@ public class SearchActivity extends BaseActivity
     private void handleResultFromAutoCompleteActivity(int resultCode, Intent data) {
         switch(resultCode) {
             case AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY:
+                finish();
                 startActivity(data);
+                overridePendingTransition(0, 0);
                 break;
         }
     }
