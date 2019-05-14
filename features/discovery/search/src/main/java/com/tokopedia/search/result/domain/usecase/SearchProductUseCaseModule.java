@@ -19,17 +19,17 @@ public class SearchProductUseCaseModule {
     @Provides
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
     UseCase<SearchProductModel> provideSearchProductFirstPageUseCase(
-            @Named(SearchConstant.GQL.GQL_SEARCH_PRODUCT_FIRST_PAGE) Repository<SearchProductModel> searchProductFirstPageRepository
+            @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_REPOSITORY) Repository<SearchProductModel> searchProductFirstPageRepository
     ) {
-        return new SearchProductFirstPageUseCase(searchProductFirstPageRepository);
+        return new SearchProductUseCase(searchProductFirstPageRepository);
     }
 
     @SearchScope
     @Provides
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
     UseCase<SearchProductModel> provideSearchProductLoadMoreUseCase(
-            @Named(SearchConstant.GQL.GQL_SEARCH_PRODUCT_LOAD_MORE) Repository<SearchProductModel> searchProductLoadMoreRepository
+            @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_REPOSITORY) Repository<SearchProductModel> searchProductLoadMoreRepository
     ) {
-        return new SearchProductLoadMoreUseCase(searchProductLoadMoreRepository);
+        return new SearchProductUseCase(searchProductLoadMoreRepository);
     }
 }

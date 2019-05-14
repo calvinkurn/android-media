@@ -32,18 +32,4 @@ public class GqlSearchProductSpecModule {
     GqlSpecification provideGqlSearchProductLoadMoreSpec(@ApplicationContext Context context) {
         return new GqlSearchProductLoadMoreSpec(context);
     }
-
-    @SearchScope
-    @Provides
-    @Named(SearchConstant.GQL.GQL_SEARCH_PRODUCT_FIRST_PAGE)
-    Repository<SearchProductModel> provideSearchProductFirstPageRepository(@Named(SearchConstant.GQL.GQL_SEARCH_PRODUCT_FIRST_PAGE)GqlSpecification specification) {
-        return new GqlRepository<>(specification);
-    }
-
-    @SearchScope
-    @Provides
-    @Named(SearchConstant.GQL.GQL_SEARCH_PRODUCT_LOAD_MORE)
-    Repository<SearchProductModel> provideSearchProductLoadMoreRepository(@Named(SearchConstant.GQL.GQL_SEARCH_PRODUCT_LOAD_MORE)GqlSpecification specification) {
-        return new GqlRepository<>(specification);
-    }
 }

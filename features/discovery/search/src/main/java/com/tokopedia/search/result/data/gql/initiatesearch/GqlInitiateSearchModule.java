@@ -25,10 +25,4 @@ public class GqlInitiateSearchModule {
     GqlSpecification provideGqlInitiateSearchSpec(@ApplicationContext Context context) {
         return new GqlInitiateSearchSpec(context);
     }
-
-    @SearchScope
-    @Provides
-    Repository<InitiateSearchModel> provideInitiateSearchModelRepository(@Named(SearchConstant.GQL.GQL_INITIATE_SEARCH)GqlSpecification specification) {
-        return new GqlRepository<>(specification);
-    }
 }

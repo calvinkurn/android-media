@@ -23,13 +23,6 @@ class InitiateSearchUseCase extends UseCase<InitiateSearchModel> {
 
     @Override
     public Observable<InitiateSearchModel> createObservable(RequestParams requestParams) {
-        return repository.query(createParametersForQuery(requestParams));
-    }
-
-    private Map<String, Object> createParametersForQuery(RequestParams requestParams) {
-        Map<String, Object> variables = new HashMap<>();
-        variables.put(KEY_PARAMS, UrlParamUtils.generateUrlParamString(requestParams.getParameters()));
-
-        return variables;
+        return repository.query(requestParams.getParameters());
     }
 }

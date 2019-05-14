@@ -55,6 +55,8 @@ public interface SearchConstant {
     interface SearchProduct {
         String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
+        String SEARCH_PRODUCT_FIRST_PAGE_REPOSITORY = "search_product_first_page_repository";
+        String SEARCH_PRODUCT_LOAD_MORE_REPOSITORY = "search_product_load_more_repository";
         String PARAMETER_ROWS = "8";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
