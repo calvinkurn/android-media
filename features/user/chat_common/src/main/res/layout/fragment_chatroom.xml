@@ -146,6 +146,7 @@
                 android:paddingTop="@dimen/dp_5"
                 android:visibility="visible">
 
+                <include layout="@layout/ask_attach_product"/>
 
                 <ImageView
                     android:id="@+id/add_url"

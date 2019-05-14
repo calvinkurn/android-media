@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.customview
 
 import android.os.Parcelable
 import android.support.annotation.NonNull
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -18,10 +19,12 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.AskProductAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
+import com.tokopedia.topchat.chatroom.view.viewmodel.AskedProduct
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
@@ -50,7 +53,9 @@ class TopChatViewStateImpl(
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
+    private var askProductContainer: ConstraintLayout = view.findViewById(R.id.cl_ask_product)
 
+    lateinit var askProductAdapter: AskProductAdapter
     lateinit var templateAdapter: TemplateChatAdapter
     lateinit var templateChatTypeFactory: TemplateChatTypeFactory
     var isUploading: Boolean = false
@@ -93,6 +98,17 @@ class TopChatViewStateImpl(
         attachButton.setOnClickListener {
             analytics.eventAttachProduct()
             onAttachProductClicked()
+        }
+
+        initAskedProductLayout()
+    }
+
+    private fun initAskedProductLayout() {
+        askProductAdapter = AskProductAdapter()
+        view.findViewById<RecyclerView>(R.id.rv_ask_product).apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = askProductAdapter
         }
     }
 
@@ -406,6 +422,11 @@ class TopChatViewStateImpl(
     fun onSendProductAttachment(item: ProductAttachmentViewModel) {
         getAdapter().addElement(item)
         scrollDownWhenInBottom()
+    }
+
+    override fun showAskedProduct(askedProduct: AskedProduct) {
+        askProductContainer.visibility = View.VISIBLE
+        askProductAdapter.updateProduct(askedProduct)
     }
 
 }

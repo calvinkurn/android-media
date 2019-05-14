@@ -47,9 +47,11 @@ import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
+import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.chatroom.view.viewmodel.AskedProduct
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
@@ -91,6 +93,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
+    private lateinit var askedProduct: AskedProduct
     var indexFromInbox = -1
     var isMoveItemInboxToTop = false
 
@@ -136,6 +139,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
         initView(view)
         loadInitialData()
+        initAskedProduct(savedInstanceState)
     }
 
     override fun loadInitialData() {
@@ -151,6 +155,19 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     onError(),
                     onSuccessGetMessageId())
         }
+    }
+
+    private fun initAskedProduct(savedInstanceState: Bundle?) {
+        val productImageUrl = getParamString(ApplinkConst.Chat.ASK_PRODUCT_IMAGE_URL, arguments, savedInstanceState)
+        val productName = getParamString(ApplinkConst.Chat.ASK_PRODUCT_NAME, arguments, savedInstanceState)
+        val productPrice = getParamString(ApplinkConst.Chat.ASK_PRODUCT_PRICE, arguments, savedInstanceState)
+        val productColorVariant = getParamString(ApplinkConst.Chat.ASK_PRODUCT_COLOR_VARIANT, arguments, savedInstanceState)
+        val productColorHexVariant = getParamString(ApplinkConst.Chat.ASK_PRODUCT_HEX_COLOR_VARIANT, arguments, savedInstanceState)
+        val productSizeVariant = getParamString(ApplinkConst.Chat.ASK_PRODUCT_SIZE_VARIANT, arguments, savedInstanceState)
+        askedProduct = AskedProduct(productImageUrl, productName, productPrice,
+                productColorVariant, productColorHexVariant, productSizeVariant)
+
+        initAskProductLayoutIfExist()
     }
 
     private fun onUnblockChatClicked(): () -> Unit {
@@ -356,6 +373,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
             hideLoading()
         }
+    }
+
+    private fun initAskProductLayoutIfExist() {
+        if (view == null || askedProduct.noAskedProduct()) return
+        (viewState as? TopChatViewState)?.showAskedProduct(askedProduct)
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
