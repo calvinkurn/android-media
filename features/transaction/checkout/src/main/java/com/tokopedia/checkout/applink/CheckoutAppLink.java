@@ -8,6 +8,6 @@ import com.tokopedia.abstraction.constant.TkpdAppLink;
 
 public class CheckoutAppLink extends TkpdAppLink {
 
-    public static final String CART = "tokopedia://cart";
+    public static final String CART = "tokopedia://cart/{cart_id}";
 
 }

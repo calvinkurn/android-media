@@ -650,8 +650,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     val intent = router.getCheckoutIntent(this, ShipmentFormRequest.BundleBuilder().build())
                     startActivity(intent)
                 } else {
-                    val intent = RouteManager.getIntent(this, ApplinkConst.CART)
-                    intent.putExtra("atc_cart_id", cartId)
+                    val intent = RouteManager.getIntent(this, ApplinkConst.CART.replace("{${ApplinkConst.Cart.CART_ID}}", cartId
+                            ?: "", false))
                     startActivity(intent)
                 }
             }

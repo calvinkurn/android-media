@@ -5,10 +5,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.applink.CheckoutAppLink;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
@@ -22,7 +23,7 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
     private Fragment cartFragment;
     private Fragment emptyCartFragment;
 
-    @DeepLink(CheckoutAppLink.CART)
+    @DeepLink(ApplinkConst.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, CartActivity.class).putExtras(extras);
         intent.putExtras(extras);
@@ -91,8 +92,8 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
     @Override
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();
-        if (getIntent() != null && getIntent().getIntExtra("atc_cart_id", -1) != -1) {
-            bundle.putInt("atc_cart_id", getIntent().getIntExtra("atc_cart_id", -1));
+        if (getIntent() != null && TextUtils.isEmpty(getIntent().getStringExtra(ApplinkConst.Cart.CART_ID))) {
+            bundle.putString(ApplinkConst.Cart.CART_ID, getIntent().getStringExtra(ApplinkConst.Cart.CART_ID));
         }
         cartFragment = CartFragment.newInstance(bundle, "");
         ((CartFragment) cartFragment).setEmptyCartListener(this);
@@ -114,8 +115,8 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
     @Override
     public void onCartNotEmpty(Bundle bundle) {
         if (cartFragment == null) {
-            if (getIntent() != null && getIntent().getIntExtra("atc_cart_id", -1) != -1) {
-                bundle.putInt("atc_cart_id", getIntent().getIntExtra("atc_cart_id", -1));
+            if (getIntent() != null && TextUtils.isEmpty(getIntent().getStringExtra(ApplinkConst.Cart.CART_ID))) {
+                bundle.putString(ApplinkConst.Cart.CART_ID, getIntent().getStringExtra(ApplinkConst.Cart.CART_ID));
             }
             cartFragment = CartFragment.newInstance(bundle, "");
         }
