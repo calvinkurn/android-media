@@ -24,6 +24,7 @@ import com.tokopedia.hotel.homepage.presentation.adapter.HotelPromoAdapter
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
+import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
@@ -269,11 +270,17 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     }
 
     private fun onSearchButtonClicked() {
-        startActivityForResult(HotelSearchResultActivity.createIntent(activity!!, hotelHomepageModel.locName,
-                hotelHomepageModel.locId, hotelHomepageModel.locType, hotelHomepageModel.locLat.toFloat(),
-                hotelHomepageModel.locLong.toFloat(), hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate,
-                hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
-                REQUEST_CODE_SEARCH)
+        if (hotelHomepageModel.locType.equals(TYPE_PROPERTY, false)) {
+            startActivityForResult(HotelDetailActivity.getCallingIntent(activity!!, hotelHomepageModel.checkInDate,
+                    hotelHomepageModel.checkOutDate, hotelHomepageModel.locId, hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
+                    REQUEST_CODE_DETAIL)
+        } else {
+            startActivityForResult(HotelSearchResultActivity.createIntent(activity!!, hotelHomepageModel.locName,
+                    hotelHomepageModel.locId, hotelHomepageModel.locType, hotelHomepageModel.locLat.toFloat(),
+                    hotelHomepageModel.locLong.toFloat(), hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate,
+                    hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
+                    REQUEST_CODE_SEARCH)
+        }
     }
 
     private fun countNightDifference(): Long = HotelUtils.countNightDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
@@ -305,18 +312,21 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
 
     companion object {
         val ONE_DAY: Long = TimeUnit.DAYS.toMillis(1)
-        val MAX_SELECTION_DATE = 30
-        val DEFAULT_LAST_HOUR_IN_DAY = 23
-        val DEFAULT_LAST_MIN_SEC_IN_DAY = 59
+        const val MAX_SELECTION_DATE = 30
+        const val DEFAULT_LAST_HOUR_IN_DAY = 23
+        const val DEFAULT_LAST_MIN_SEC_IN_DAY = 59
 
-        val REQUEST_CODE_DESTINATION = 101
-        val REQUEST_CODE_SEARCH = 102
+        const val REQUEST_CODE_DESTINATION = 101
+        const val REQUEST_CODE_SEARCH = 102
+        const val REQUEST_CODE_DETAIL = 103
 
-        val EXTRA_HOTEL_MODEL = "EXTRA_HOTEL_MODEL"
+        const val EXTRA_HOTEL_MODEL = "EXTRA_HOTEL_MODEL"
 
-        val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"
-        val TAG_CALENDAR_CHECK_OUT = "calendarHotelCheckOut"
-        val TAG_GUEST_INFO = "guestHotelInfo"
+        const val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"
+        const val TAG_CALENDAR_CHECK_OUT = "calendarHotelCheckOut"
+        const val TAG_GUEST_INFO = "guestHotelInfo"
+
+        const val TYPE_PROPERTY = "property"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
     }

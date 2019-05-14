@@ -14,6 +14,7 @@ propertyDetail(input: $data){
     phoneNumber
     latitude
     longitude
+    locationImageStatic
     images {
       isLogoPhoto
       urlSquare60
@@ -55,17 +56,20 @@ propertyDetail(input: $data){
   }
   facility {
     groupName
+    groupIconUrl
     item {
       id
       name
       icon
       availability
+      iconUrl
     }
   }
   mainFacility {
     id
     name
     icon
+    iconUrl
     availability
   }
   propertyPolicy {

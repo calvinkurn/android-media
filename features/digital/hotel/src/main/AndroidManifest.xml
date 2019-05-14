@@ -8,44 +8,63 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application>
-        <activity android:name=".homepage.presentation.activity.HotelHomepageActivity"
+        <activity
+            android:name=".homepage.presentation.activity.HotelHomepageActivity"
             android:label="@string/hotel_app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
-        <activity android:name=".destination.view.activity.HotelDestinationActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity android:name=".search.presentation.activity.HotelSearchResultActivity"
-            android:label="@string/hotel_app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
-
-        <activity android:name=".search.presentation.activity.HotelSearchFilterActivity"
-            android:label="@string/label_filter"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
-
-        <activity android:name=".hoteldetail.presentation.activity.HotelDetailActivity"
+        <activity
+            android:name=".destination.view.activity.HotelDestinationActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.NoActionBar"/>
+            android:theme="@style/Theme.White" />
 
-        <activity android:name=".hoteldetail.presentation.activity.HotelDetailMapActivity"
+        <activity
+            android:name=".search.presentation.activity.HotelSearchResultActivity"
+            android:label="@string/hotel_app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White" />
 
-        <activity android:name=".roomlist.presentation.activity.HotelRoomListActivity"
+        <activity
+            android:name=".search.presentation.activity.HotelSearchFilterActivity"
+            android:label="@string/label_filter"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White" />
 
-        <activity android:name=".roomdetail.presentation.activity.HotelRoomDetailActivity"
+        <activity
+            android:name=".hoteldetail.presentation.activity.HotelDetailActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.NoActionBar" />
+
+        <activity
+            android:name=".hoteldetail.presentation.activity.HotelDetailMapActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".hoteldetail.presentation.activity.HotelDetailAllFacilityActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".hoteldetail.presentation.activity.HotelReviewActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".roomdetail.presentation.activity.HotelRoomDetailActivity"
             android:label="@string/hotel_booking_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.NoActionBar"/>
+            android:theme="@style/Theme.White.NoActionBar" />
 
-        <activity android:name=".hoteldetail.presentation.activity.HotelReviewActivity"
+        <activity
+            android:name=".roomlist.presentation.activity.HotelRoomListActivity"
+            android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
