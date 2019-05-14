@@ -28,7 +28,6 @@ public class ProductViewModel implements Parcelable {
     private SuggestionModel suggestionModel;
     private int totalData;
     private int totalItem;
-    private boolean forceSearch;
     private boolean imageSearch;
     private DynamicFilterModel dynamicFilterModel;
     private GuidedSearchViewModel guidedSearchViewModel;
@@ -163,14 +162,6 @@ public class ProductViewModel implements Parcelable {
         return searchParameter;
     }
 
-    public boolean isForceSearch() {
-        return forceSearch;
-    }
-
-    public void setForceSearch(boolean forceSearch) {
-        this.forceSearch = forceSearch;
-    }
-
     public RelatedSearchModel getRelatedSearchModel() {
         return relatedSearchModel;
     }
@@ -207,7 +198,6 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
         dest.writeInt(this.totalItem);
-        dest.writeByte(this.forceSearch ? (byte) 1 : (byte) 0);
         dest.writeByte(this.imageSearch ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.dynamicFilterModel, flags);
         dest.writeParcelable(this.guidedSearchViewModel, flags);
@@ -229,7 +219,6 @@ public class ProductViewModel implements Parcelable {
         this.suggestionModel = in.readParcelable(SuggestionModel.class.getClassLoader());
         this.totalData = in.readInt();
         this.totalItem = in.readInt();
-        this.forceSearch = in.readByte() != 0;
         this.imageSearch = in.readByte() != 0;
         this.dynamicFilterModel = in.readParcelable(DynamicFilterModel.class.getClassLoader());
         this.guidedSearchViewModel = in.readParcelable(GuidedSearchViewModel.class.getClassLoader());
