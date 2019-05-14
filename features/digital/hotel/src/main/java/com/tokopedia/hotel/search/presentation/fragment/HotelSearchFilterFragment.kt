@@ -60,7 +60,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         save_filter.button.setOnClickListener {
             selectedFilter.star = starAdapter.selectedItems.mapNotNull { it.toIntOrNull() }
             selectedFilter.propertyType = propertyTypeAdapter.selectedItems.mapNotNull { it.toIntOrNull() }
-            selectedFilter.paymentType = if (switch_pay_at_hotel.isEnabled) PAYMENT_TYPE_PAY_AT_HOTEL else 0
+            selectedFilter.paymentType = if (switch_pay_at_hotel.isChecked) PAYMENT_TYPE_PAY_AT_HOTEL else 0
             activity?.run {
                 setResult(Activity.RESULT_OK, Intent().apply {
                     val cacheManager = SaveInstanceCacheManager(this@run, true).also {
@@ -75,7 +75,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
             selectedFilter = ParamFilter()
             starAdapter.clearSelection()
             propertyTypeAdapter.clearSelection()
-            switch_pay_at_hotel.isEnabled = false
+            switch_pay_at_hotel.isChecked = false
             price_range_input_view.setData(filter.price.minPrice.toInt(), filter.price.maxPrice.toInt(),
                     filter.price.minPrice.toInt(), filter.price.maxPrice.toInt())
             rating_seekbar.progress = rating_seekbar.max
@@ -83,7 +83,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
     }
 
     private fun setupPayAtHotel() {
-        switch_pay_at_hotel.isEnabled = selectedFilter.paymentType == PAYMENT_TYPE_PAY_AT_HOTEL
+        switch_pay_at_hotel.isChecked = selectedFilter.paymentType == PAYMENT_TYPE_PAY_AT_HOTEL
     }
 
     private fun setupAccomodationType(accomodation: List<Filter.FilterAccomodation>) {
