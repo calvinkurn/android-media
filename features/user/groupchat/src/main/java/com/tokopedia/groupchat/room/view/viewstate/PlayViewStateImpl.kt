@@ -27,6 +27,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -66,8 +67,9 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
-import rx.subjects.PublishSubject
+import rx.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -125,6 +127,14 @@ open class PlayViewStateImpl(
     private var interactionButton: LottieAnimationView = view.findViewById(R.id.interaction_button)
     private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
     private var interactionAnimationSequence = 0
+    private lateinit var interactionSubscription: Subscription
+
+    private val iconList = arrayListOf(
+            R.drawable.ic_green,
+            R.drawable.ic_blue,
+            R.drawable.ic_yellow,
+            R.drawable.ic_pink
+    )
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -257,25 +267,45 @@ open class PlayViewStateImpl(
             analytics.eventClickShowVideoToggle(viewModel?.channelId)
         }
 
-        var iconList = arrayListOf(
-                R.drawable.ic_green,
-                R.drawable.ic_blue,
-                R.drawable.ic_yellow,
-                R.drawable.ic_pink
-        )
 
-        val interactionDirection = Random()
         interactionButton.setOnClickListener {
             setAnimationInteractionButton()
             interactionButton.playAnimation()
-            ParticleSystem(interactionGuideline, 10, getRandomHeart(iconList), 3000)
+            shootOneInteractionButton(getRandomHeart(iconList), it)
+        }
+        fakeShot(interactionButton)
+    }
+
+    private fun shootOneInteractionButton(drawable: Drawable?, anchorView: View?) {
+        val interactionDirection = Random()
+        try {
+            ParticleSystem(interactionGuideline, 10, drawable, 3000)
                     .setSpeedModuleAndAngleRange(0.1f, 0.2f, 270, 270)
                     .setFadeOut(2000)
                     .addModifier(MovementModifier(2f, interactionDirection.nextBoolean()))
-                    .oneShot(it, 1)
+                    .oneShot(anchorView, 1)
+        }catch (e : Exception) {
+            if(GlobalConfig.isAllowDebuggingTools()){
+                Log.e(this.toString(), e.message)
+            }
+            e.printStackTrace()
         }
+    }
 
 
+    private fun fakeShot(anchorView: View) {
+        val time = Random().nextInt(3)+2
+        Log.d("fakeShot gen", time.toString())
+        if(::interactionSubscription.isInitialized) {
+            interactionSubscription.unsubscribe()
+        }
+        interactionSubscription = Observable.timer(time.toLong(), TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    shootOneInteractionButton(getRandomHeart(iconList), anchorView)
+                    fakeShot(interactionButton)
+                }
     }
 
     private fun setAnimationInteractionButton() {
@@ -1342,6 +1372,7 @@ open class PlayViewStateImpl(
     override fun destroy() {
         youTubePlayer?.release()
         youtubeRunnable.removeCallbacksAndMessages(null)
+        interactionSubscription?.unsubscribe()
     }
 
     override fun autoAddSprintSale() {
