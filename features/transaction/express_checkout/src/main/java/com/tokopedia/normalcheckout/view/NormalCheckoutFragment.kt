@@ -130,7 +130,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val REQUEST_CODE_LOGIN = 561
         const val REQUEST_CODE_LOGIN_THEN_ATC = 562
         const val REQUEST_CODE_LOGIN_THEN_BUY = 563
-        const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 5649
+        const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 564
 
         fun createInstance(shopId: String?, productId: String?,
                            notes: String? = "", quantity: Int? = 0,
@@ -285,7 +285,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
                 REQUEST_CODE_LOGIN_THEN_BUY -> doCheckoutAction(ATC_AND_BUY)
                 REQUEST_CODE_LOGIN_THEN_ATC -> doCheckoutAction(ATC_ONLY)
-                REQUEST_CODE_LOGIN_THEN_TRADE_IN -> doCheckoutAction(TRADEIN_BUY)
+                REQUEST_CODE_LOGIN_THEN_TRADE_IN -> {
+                    tv_trade_in.invalidate()
+                    tv_trade_in.requestLayout()
+                    doCheckoutAction(TRADEIN_BUY)
+                }
             }
         }
     }
