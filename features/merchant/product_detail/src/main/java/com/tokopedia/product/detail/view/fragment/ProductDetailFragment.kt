@@ -1478,9 +1478,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         val productImageUrl = getProductImageUrl()
         val productName = getProductName()
         val productPrice = getProductPrice()
-        val productColorVariant = variants?.get("colour")?.get("name")
+        val productColorVariant = variants?.get("colour")?.get("value")
         val productColorHexVariant = variants?.get("colour")?.get("hex")
-        val productSizeVariant = variants?.get("size")?.get("name")
+        val productSizeVariant = variants?.get("size")?.get("value")
         with(intent) {
             putExtra(ApplinkConst.Chat.ASK_PRODUCT_IMAGE_URL, productImageUrl)
             putExtra(ApplinkConst.Chat.ASK_PRODUCT_NAME, productName)
