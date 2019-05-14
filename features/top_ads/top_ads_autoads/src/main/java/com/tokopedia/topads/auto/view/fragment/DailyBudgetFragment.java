@@ -167,7 +167,7 @@ public class DailyBudgetFragment extends BaseDaggerFragment implements View.OnCl
             @Override
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
-                String error = budgetViewModel.checkBudget(getActivity(), number, MIN_BUDGET, MAX_BUDGET);
+                String error = budgetViewModel.checkBudget(number, MIN_BUDGET, MAX_BUDGET);
                 if(!TextUtils.isEmpty(error)){
                     budgetInputLayout.setError(error);
                 } else {
