@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="@dimen/dp_8">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/status_ads_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_80"
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart"
+                android:src="@drawable/ilustration_autoads_inprogress" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dp_10">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/title_otomatis"
+                        style="@style/TextView.TitleMedium.Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:lineSpacingExtra="6sp"
+                        android:text="@string/iklan_otomatis" />
+
+                    <TextView
+                        android:id="@+id/active_status"
+                        style="@style/AutoAdsText.Active"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/title_otomatis"
+                        android:text="@string/ads_active" />
+
+                    <ImageView
+                        android:id="@+id/btn_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_chevron_autoads" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/arrow"
+                    style="@style/TextView.Micro.Black40"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="left"
+                    android:lineSpacingExtra="6sp"
+                    android:text="@string/akan_aktif_dalam_beberapa_menit" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_16">
+
+            <TextView
+                style="@style/TextView.Title.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Terpakai Rp200.000" />
+
+            <ProgressBar
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:progress="20" />
+
+            <TextView
+                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Anggaran Harian Rp1.000.000" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

@@ -9,4 +9,26 @@
         <item name="behavior_peekHeight">1000dp</item>
     </style>
 
+    <style name="AutoAdsText" parent="@style/TextAppearance.AppCompat">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
+    <style name="AutoAdsText.Active" parent="@style/AutoAdsText">
+        <item name="android:background">@drawable/bg_autoads_active</item>
+        <item name="android:textColor">@color/green</item>
+    </style>
+
+    <style name="AutoAdsText.Inprogress" parent="@style/AutoAdsText">
+        <item name="android:background">@drawable/bg_autoads_inprogress</item>
+        <item name="android:textColor">@color/orange_300</item>
+    </style>
+
+    <style name="AutoAdsText.Inactive" parent="@style/AutoAdsText">
+        <item name="android:background">@drawable/bg_autoads_deactive</item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+
 </resources>

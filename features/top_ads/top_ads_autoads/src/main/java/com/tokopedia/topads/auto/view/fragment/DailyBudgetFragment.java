@@ -16,14 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter;
@@ -39,78 +36,26 @@ import com.tokopedia.topads.common.constant.TopAdsAddingOption;
 /**
  * Author errysuprayogi on 07,May,2019
  */
-public class DailyBudgetFragment extends BaseDaggerFragment implements View.OnClickListener,
-        ManualAdsConfirmationSheet.ActionListener,
+public abstract class DailyBudgetFragment extends BaseDaggerFragment implements
         SeekBar.OnSeekBarChangeListener {
 
-    private static final int REQUEST_CODE_AD_OPTION = 3;
+    public static final int REQUEST_CODE_AD_OPTION = 3;
     public static final String SELECTED_OPTION = "selected_option";
     public static final int MIN_BUDGET = 10000;
     public static final int MAX_BUDGET = 20000;
-    private Button startAutoAdsBtn;
-    private Button startManualAdsBtn;
     private RangeSeekBar sekBar;
     private TextView priceRange;
     private PrefixEditText priceEditText;
-    private ManualAdsConfirmationSheet adsConfirmationSheet;
     private DailyBudgetViewModel budgetViewModel;
     private TextInputLayout budgetInputLayout;
 
-    public static DailyBudgetFragment newInstance() {
-
-        Bundle args = new Bundle();
-
-        DailyBudgetFragment fragment = new DailyBudgetFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        adsConfirmationSheet = ManualAdsConfirmationSheet.Companion.newInstance(getActivity());
-        adsConfirmationSheet.setActionListener(this);
         budgetViewModel = ViewModelProviders.of(this).get(DailyBudgetViewModel.class);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_info, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == R.id.action_info) {
-            InfoAutoAdsSheet.Companion.newInstance(getActivity()).show();
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.start_manual_ads_btn) {
-            adsConfirmationSheet.show();
-        } else if (id == R.id.start_autoads_btn) {
-            startActivity(new Intent(getActivity(), AutoAdsActivatedActivity.class));
-        }
-    }
-
-    @Override
-    public void onManualAdsClicked() {
-        Intent intent = ((TopAdsAutoRouter) getActivity().getApplication())
-                .getTopAdsAddingPromoOptionIntent(getActivity());
-        startActivityForResult(intent, REQUEST_CODE_AD_OPTION);
-    }
-
-    @Override
-    public void onAutoAdsClicked() {
-
-    }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -132,26 +77,27 @@ public class DailyBudgetFragment extends BaseDaggerFragment implements View.OnCl
 
     }
 
+    public abstract int getLayoutId();
+
+    public abstract void setUpView(View view);
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_start_daily_budget, container, false);
-        startAutoAdsBtn = view.findViewById(R.id.start_autoads_btn);
-        startManualAdsBtn = view.findViewById(R.id.start_manual_ads_btn);
+        View view = inflater.inflate(getLayoutId(), container, false);
         priceRange = view.findViewById(R.id.price_range);
         budgetInputLayout = view.findViewById(R.id.input_layout_budget_price);
         priceEditText = view.findViewById(R.id.edit_text_max_price);
         sekBar = view.findViewById(R.id.seekbar);
+        setUpView(view);
         setListener();
         return view;
     }
 
-    private void setListener(){
+    public void setListener(){
         sekBar.setRange(new Range(MIN_BUDGET, MAX_BUDGET, 1000));
         sekBar.setValue(15000);
         sekBar.setOnSeekBarChangeListener(this);
-        startManualAdsBtn.setOnClickListener(this);
-        startAutoAdsBtn.setOnClickListener(this);
         priceEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -175,16 +121,6 @@ public class DailyBudgetFragment extends BaseDaggerFragment implements View.OnCl
                 }
             }
         });
-    }
-
-    @Override
-    protected void initInjector() {
-
-    }
-
-    @Override
-    protected String getScreenName() {
-        return null;
     }
 
     @Override

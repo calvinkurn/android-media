@@ -35,4 +35,13 @@
     <string name="error_maximum_budget">Biaya per hari maksimum Rp %,.0f</string>
     <string name="error_empty_budget">Biaya tidak boleh kosong</string>
     <string name="error_multiply_budget">Biaya harus kelipatan Rp %1s</string>
+    <string name="simpan">Simpan</string>
+    <string name="got_it">Got it!</string>
+    <string name="nonatifkan_iklan_otomatis">Nonaktifkan Iklan Otomatis</string>
+    <string name="gunakan_iklan_otomatis">Gunakan Iklan Otomatis</string>
+    <string name="ads_active">\u25CF Aktif</string>
+    <string name="ads_deactive">\u25CF Tidak Aktif</string>
+    <string name="ads_inprogress">\u25CF Dalam Proses</string>
+    <string name="saatnya_beriklan_mudah_dan_efektif">Saatnya beriklan mudah dan efektif</string>
+    <string name="akan_aktif_dalam_beberapa_menit">Akan aktif dalam beberapa menit…</string>
 </resources>

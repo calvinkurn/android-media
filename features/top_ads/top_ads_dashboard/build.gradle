@@ -20,6 +20,7 @@ project.ext {
 
 dependencies {
     implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.productManageItem)

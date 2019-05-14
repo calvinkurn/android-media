@@ -37,6 +37,11 @@
             android:label="@string/autoads_iklan_otomatis"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity
+            android:name=".view.activity.SettingBudgetAdsActivity"
+            android:label="@string/autoads_pengaturan_iklan"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
 
     </application>
 

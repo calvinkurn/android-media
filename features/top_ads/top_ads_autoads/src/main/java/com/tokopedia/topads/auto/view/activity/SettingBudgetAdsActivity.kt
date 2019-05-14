@@ -5,15 +5,15 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.topads.auto.view.fragment.InitialBudgetFragment
+import com.tokopedia.topads.auto.view.fragment.SettingBudgetAdsFragment
 
 /**
- * Author errysuprayogi on 07,May,2019
+ * Author errysuprayogi on 09,May,2019
  */
-class DailyBudgetActivity : BaseSimpleActivity() {
+class SettingBudgetAdsActivity : BaseSimpleActivity() {
 
-    override fun getNewFragment(): Fragment {
-        return InitialBudgetFragment.newInstance()
+    override fun getNewFragment(): Fragment? {
+        return SettingBudgetAdsFragment.newInstance()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,5 +22,4 @@ class DailyBudgetActivity : BaseSimpleActivity() {
             toolbar.elevation = 0f
         }
     }
-
 }
