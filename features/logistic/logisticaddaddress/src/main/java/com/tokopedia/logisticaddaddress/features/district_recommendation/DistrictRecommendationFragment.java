@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.logisticaddaddress.R;
+import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent;
 import com.tokopedia.logisticaddaddress.di.DistrictRecommendationComponent;
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressMapper;
 import com.tokopedia.logisticaddaddress.domain.model.Token;
