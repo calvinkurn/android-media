@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.booking.presentation.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.PorterDuff
@@ -13,8 +14,11 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.data.model.HotelCart
+import com.tokopedia.hotel.booking.data.model.HotelCartData
+import com.tokopedia.hotel.booking.data.model.HotelPropertyData
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
@@ -25,6 +29,12 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
 import kotlinx.android.synthetic.main.widget_hotel_room_duration.view.*
 import javax.inject.Inject
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.view.inputmethod.InputMethodManager
+import android.widget.RadioGroup
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.design.component.Dialog
+
 
 class HotelBookingFragment : BaseDaggerFragment() {
 
@@ -64,6 +74,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     hotelCart = it.data
+                    initView()
                 }
                 is Fail -> {}
             }
@@ -76,50 +87,54 @@ class HotelBookingFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bookingViewModel.getcartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart),
-                cartId, false)
-
-        initView()
+        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), cartId,
+                GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_cart))
     }
 
     private fun initView() {
-        setupHotelInfo()
-        setupRoomDuration()
-        setupRoomInfo()
+        setupHotelInfo(hotelCart.property)
+        setupRoomDuration(hotelCart.cart)
+        setupRoomInfo(hotelCart.property, hotelCart.cart)
         setupRoomRequestForm()
-        setupContactDetail()
-        setupInvoiceSummary()
+        setupContactDetail(hotelCart.cart)
+        setupInvoiceSummary(hotelCart.cart)
         setupBookingButton()
     }
 
-    private fun setupHotelInfo() {
-        tv_hotel_info_name.text = hotelCart.property.name
-        tv_hotel_info_property_type.text = hotelCart.property.type
-        for (i in 1..hotelCart.property.star) {
+    private fun setupHotelInfo(property: HotelPropertyData) {
+        tv_hotel_info_name.text = property.name
+        tv_hotel_info_property_type.text = property.type
+        for (i in 1..property.star) {
             hotel_info_rating_container.addView(RatingStarView(context!!))
         }
-        tv_hotel_info_address.text = hotelCart.property.address
-        iv_hotel_info_image.loadImage(hotelCart.property.image, R.drawable.ic_failed_load_image)
+        tv_hotel_info_address.text = property.address
+        iv_hotel_info_image.loadImage(property.image, R.drawable.ic_failed_load_image)
     }
 
-    private fun setupRoomDuration() {
-        val checkInDate = hotelCart.cart.checkIn
-        val checkOutDate = hotelCart.cart.checkOut
-        booking_room_duration_info.hotel_check_in_date.text = checkInDate
-        booking_room_duration_info.hotel_check_out_date.text = checkOutDate
+    private fun setupRoomDuration(cart: HotelCartData) {
+        booking_room_duration_info.hotel_check_in_date.text = changeDateStringFormat(cart.checkIn,
+                TravelDateUtil.YYYY_MM_DD, TravelDateUtil.DEFAULT_VIEW_FORMAT)
+        booking_room_duration_info.hotel_check_out_date.text = changeDateStringFormat(cart.checkOut,
+                TravelDateUtil.YYYY_MM_DD, TravelDateUtil.DEFAULT_VIEW_FORMAT)
+
         booking_room_duration_info.hotel_room_night_count.text = getString(R.string.hotel_room_night_count,
-                HotelUtils.countNightDifference(checkInDate, checkOutDate))
+                HotelUtils.countNightDifference(cart.checkIn, cart.checkOut))
     }
 
-    private fun setupRoomInfo() {
-        if (hotelCart.property.rooms.isNotEmpty())
-            tv_booking_room_info_title.text = hotelCart.property.rooms[0].roomName
+    private fun changeDateStringFormat(dateString: String, oldFormat: String, newFormat: String): String {
+        return TravelDateUtil.dateToString(newFormat, TravelDateUtil.stringToDate(oldFormat, dateString))
+    }
+
+    private fun setupRoomInfo(property: HotelPropertyData, cart: HotelCartData) {
+        if (property.rooms.isNotEmpty()) {
+            tv_booking_room_info_title.text = property.rooms[0].roomName
             tv_booking_room_info_pay_at_hotel.visibility = View.VISIBLE
             tv_booking_room_info_pay_at_hotel.setDrawableLeft(R.drawable.ic_hotel)
-            hotelCart.cart.fares.find { it.type == "base_price" }?.let {
+            cart.fares.find { it.type == "base_price" }?.let {
                 tv_booking_room_info_occupancy.text = it.description.replace("x", "•")
             }
-            if (!hotelCart.property.rooms[0].isBreakFastIncluded) tv_booking_room_info_breakfast.visibility = View.GONE
+            if (!property.rooms[0].isBreakFastIncluded) tv_booking_room_info_breakfast.visibility = View.GONE
+        }
     }
 
     private fun setupRoomRequestForm() {
@@ -143,11 +158,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
             override fun afterTextChanged(s: Editable) {
                 val roomRequestCharCount = s.length
                 updateRoomRequestCounter(roomRequestCharCount)
-                if (roomRequestCharCount > roomRequestMaxCharCount) {
-                    toggleRoomRequestError(false)
-                } else {
-                    toggleRoomRequestError(true)
-                }
+                toggleRoomRequestError(roomRequestCharCount > roomRequestMaxCharCount)
             }
         })
     }
@@ -162,64 +173,74 @@ class HotelBookingFragment : BaseDaggerFragment() {
     }
 
     private fun toggleRoomRequestError(value: Boolean) {
-        if (value) {
-            if (tv_room_request_char_count_error.visibility == View.INVISIBLE) {
-                tv_room_request_char_count.visibility = View.INVISIBLE
-                tv_room_request_char_count_error.visibility = View.VISIBLE
-                tv_room_request_input.background.mutate().setColorFilter(ContextCompat.getColor(context!!, R.color.pink_property), PorterDuff.Mode.SRC_ATOP)
+        when (value) {
+            true -> {
+                if (tv_room_request_char_count_error.visibility == View.INVISIBLE) {
+                    tv_room_request_char_count.visibility = View.INVISIBLE
+                    tv_room_request_char_count_error.visibility = View.VISIBLE
+                    tv_room_request_input.background.mutate().setColorFilter(ContextCompat.getColor(context!!, R.color.pink_property), PorterDuff.Mode.SRC_ATOP)
+                }
             }
-        } else {
-            if (tv_room_request_char_count.visibility == View.INVISIBLE) {
-                tv_room_request_char_count.visibility = View.VISIBLE
-                tv_room_request_char_count_error.visibility = View.INVISIBLE
-                tv_room_request_input.background.mutate().colorFilter = null
+            false -> {
+                if (tv_room_request_char_count.visibility == View.INVISIBLE) {
+                    tv_room_request_char_count.visibility = View.VISIBLE
+                    tv_room_request_char_count_error.visibility = View.INVISIBLE
+                    tv_room_request_input.background.mutate().colorFilter = null
+                }
             }
         }
     }
 
-    private fun setupContactDetail() {
-        val contactData = hotelCart.cart.contact
+    private fun setupContactDetail(cart: HotelCartData) {
+        val contactData = cart.contact
         tv_contact_name.text = contactData.name
         tv_contact_email.text = contactData.email
         tv_contact_phone_number.text = getString(R.string.hotel_booking_contact_detail_phone_number,
                 contactData.phoneCode, contactData.phone)
 
-        if (guestName.isNotEmpty()) radio_button_contact_guest.isChecked = true
-        if (radio_button_contact_guest.isChecked) {
-            guest_form_container.visibility = View.VISIBLE
-        } else {
-            guest_form_container.visibility = View.GONE
+        radio_button_contact_guest.isChecked = guestName.isNotEmpty()
+        toggleShowGuestForm(radio_button_contact_guest.isChecked)
+        radio_group_contact.setOnCheckedChangeListener { group, checkedId ->
+            toggleShowGuestForm(radio_button_contact_guest.id == checkedId)
         }
-        tv_guest_form_input.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus && tv_guest_form_input.text.isNullOrEmpty()) toggleGuestFormError(true)
+
+        tv_guest_form_input.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+//                val inputMethodManager = activity!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+//                inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                KeyboardHandler.hideSoftKeyboard(activity)
+
+                toggleGuestFormError(tv_guest_form_input.text.isNullOrEmpty())
+            }
+        }
+    }
+
+    private fun toggleShowGuestForm(value: Boolean) {
+        when (value) {
+            true -> guest_form_container.visibility = View.VISIBLE
+            false -> guest_form_container.visibility = View.GONE
         }
     }
 
     private fun toggleGuestFormError(value: Boolean) {
-        if (value) {
-            tv_room_request_input.background.mutate().setColorFilter(ContextCompat.getColor(context!!, R.color.pink_property), PorterDuff.Mode.SRC_ATOP)
-        } else {
-            tv_room_request_input.background.mutate().colorFilter = null
+        when (value) {
+            true -> tv_room_request_input.background.mutate().setColorFilter(ContextCompat.getColor(context!!, R.color.pink_property),
+                    PorterDuff.Mode.SRC_ATOP)
+            false -> tv_room_request_input.background.mutate().colorFilter = null
         }
     }
 
-    private fun setupInvoiceSummary() {
-        var totalPrice = 0.0
-        var localTotalPrice = 0.0
-        hotelCart.cart.fares.find { it.type == "base_price" }?.let {
+    private fun setupInvoiceSummary(cart: HotelCartData) {
+        cart.fares.find { it.type == "base_price" }?.let {
             tv_room_price_label.text = it.description
             tv_room_price.text = it.price
-            totalPrice += it.priceAmount
-            localTotalPrice += it.localPriceAmount
         }
-        hotelCart.cart.fares.find { it.type == "tax" }?.let {
+        cart.fares.find { it.type == "tax" }?.let {
             tv_room_tax_label.text = it.description
             tv_room_tax.text = it.price
-            totalPrice += it.priceAmount
-            localTotalPrice += it.localPriceAmount
         }
-        tv_room_estimated_price.text = totalPrice.toString()
-        tv_invoice_foreign_currency.text = getString(R.string.hotel_booking_invoice_foreign_currency_label, localTotalPrice.toString())
+        tv_room_estimated_price.text = cart.totalPrice
+        tv_invoice_foreign_currency.text = getString(R.string.hotel_booking_invoice_foreign_currency_label, cart.localTotalPrice)
     }
 
     private fun setupBookingButton() {
