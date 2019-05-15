@@ -480,18 +480,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showHelpMenu(String url) {
-        digitalHelpUrl = url;
-        getActivity().invalidateOptionsMenu();
-    }
-
-    @Override
-    public String getHelpUrl() {
-        return digitalHelpUrl;
-    }
-
-    @Override
-    public void navigateToWebview(String helpUrl) {
+    public void navigateToWebview() {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
         startActivity(intent);
     }
@@ -933,11 +922,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             menu.findItem(R.id.action_menu_subscription_digital).setVisible(false);
             menu.findItem(R.id.action_menu_product_list_digital).setVisible(false);
         }
-        if (digitalHelpUrl != null && digitalHelpUrl.length() > 0) {
-            menu.findItem(R.id.action_menu_help_digital).setVisible(true);
-        } else {
-            menu.findItem(R.id.action_menu_help_digital).setVisible(false);
-        }
+        menu.findItem(R.id.action_menu_help_digital).setVisible(true);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
