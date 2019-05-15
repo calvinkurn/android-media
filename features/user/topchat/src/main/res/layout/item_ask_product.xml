@@ -3,14 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="230dp"
-    android:layout_height="90dp"
-    tools:background="@color/red_30">
+    android:layout_height="90dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
-        android:background="@color/white"
+        android:background="@drawable/bg_rounded_grey"
         android:padding="10dp">
 
         <ImageView
@@ -40,12 +39,12 @@
                 android:id="@+id/ll_variant_color"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginRight="4dp"
                 android:orientation="horizontal"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                tools:background="@color/background_star_review">
+                tools:background="@drawable/bg_rounded_grey">
 
                 <ImageView
                     android:id="@+id/iv_variant_color"
@@ -74,7 +73,7 @@
                 android:orientation="horizontal"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                tools:background="@color/background_star_review">
+                tools:background="@drawable/bg_rounded_grey">
 
                 <TextView
                     android:id="@+id/tv_variant_size"
@@ -97,6 +96,7 @@
             android:layout_marginRight="8dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_product"
@@ -114,6 +114,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/orange_red"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_product"
@@ -127,7 +128,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:src="@drawable/ic_close_border_24"
-        tools:src="@drawable/ic_close_default" />
+        android:src="@drawable/ic_close_border_24" />
 
 </FrameLayout>

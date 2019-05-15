@@ -24,7 +24,7 @@ class AskProductViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) 
     private val productSizeVariantValue = itemView?.findViewById<TextView>(R.id.tv_variant_size)
 
     fun bind(askedProduct: AskedProduct) {
-        ImageHandler.loadImageWithoutPlaceholder(productImage, askedProduct.imageUrl)
+        ImageHandler.loadImageRounded(productImage?.context, productImage, askedProduct.imageUrl, 3f)
         productName?.text = askedProduct.name
         productPrice?.text = askedProduct.price
 
