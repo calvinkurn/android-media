@@ -2,7 +2,6 @@ package com.tokopedia.search.result.data.gql.dynamicfilter;
 
 import android.content.Context;
 
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.common.repository.gql.GqlSpecification;
 import com.tokopedia.search.R;
 
@@ -24,6 +23,6 @@ final class GqlDynamicFilterSpec extends GqlSpecification {
     @NotNull
     @Override
     public Type getType() {
-        return DynamicFilterModel.class;
+        return GqlDynamicFilterResponse.class;
     }
 }

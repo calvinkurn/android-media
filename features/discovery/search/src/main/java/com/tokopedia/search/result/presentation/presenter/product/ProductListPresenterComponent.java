@@ -7,9 +7,9 @@ import com.tokopedia.search.di.module.RemoteConfigModule;
 import com.tokopedia.search.di.module.RemoveWishListUseCaseModule;
 import com.tokopedia.search.di.module.TopAdsServiceModule;
 import com.tokopedia.search.di.module.UserSessionModule;
-import com.tokopedia.search.result.domain.usecase.GetDynamicFilterUseCaseModule;
-import com.tokopedia.search.result.domain.usecase.ProductWishlistUrlUseCaseModule;
-import com.tokopedia.search.result.domain.usecase.SearchProductUseCaseModule;
+import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterUseCaseModule;
+import com.tokopedia.search.result.domain.usecase.productwishlisturl.ProductWishlistUrlUseCaseModule;
+import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule;
 
 import dagger.Component;
 

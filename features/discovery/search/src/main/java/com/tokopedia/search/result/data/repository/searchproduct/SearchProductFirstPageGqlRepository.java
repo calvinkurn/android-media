@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.data.repository;
+package com.tokopedia.search.result.data.repository.searchproduct;
 
 import com.tokopedia.discovery.common.repository.Specification;
 import com.tokopedia.discovery.common.repository.gql.GqlRepository;

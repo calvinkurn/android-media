@@ -53,6 +53,7 @@ public interface SearchConstant {
         String GQL_SEARCH_PRODUCT_FIRST_PAGE = "gql_search_product_first_page";
         String GQL_SEARCH_PRODUCT_LOAD_MORE = "gql_search_product_load_more";
         String GQL_DYNAMIC_FILTER_SPEC = "gql_dynamic_filter_spec";
+        String GQL_DYNAMIC_FILTER_RESPONSE_REPOSITORY = "gql_dynamic_filter_response_repository";
     }
 
     interface SearchProduct {

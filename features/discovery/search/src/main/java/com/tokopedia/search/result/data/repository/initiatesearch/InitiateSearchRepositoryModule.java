@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.data.repository;
+package com.tokopedia.search.result.data.repository.initiatesearch;
 
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.domain.Repository;

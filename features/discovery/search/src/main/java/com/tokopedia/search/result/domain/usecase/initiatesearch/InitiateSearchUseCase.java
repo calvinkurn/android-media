@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.domain.usecase;
+package com.tokopedia.search.result.domain.usecase.initiatesearch;
 
 import com.tokopedia.discovery.common.domain.Repository;
 import com.tokopedia.discovery.newdiscovery.domain.model.InitiateSearchModel;

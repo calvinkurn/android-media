@@ -1,9 +1,10 @@
-package com.tokopedia.search.result.data.repository;
+package com.tokopedia.search.result.data.repository.dynamicfilter;
 
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.discovery.common.repository.Specification;
+import com.tokopedia.discovery.common.domain.Repository;
 import com.tokopedia.discovery.common.repository.gql.GqlRepository;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.search.result.data.gql.dynamicfilter.GqlDynamicFilterResponse;
 import com.tokopedia.search.utils.UrlParamUtils;
 
 import java.util.HashMap;
@@ -15,15 +16,19 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PA
 import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_QUERY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_SOURCE;
 
-final class DynamicFilterGqlRepository extends GqlRepository<DynamicFilterModel> {
+final class DynamicFilterGqlRepository implements Repository<DynamicFilterModel> {
 
-    DynamicFilterGqlRepository(Specification gqlSpecification) {
-        super(gqlSpecification);
+    private GqlRepository<GqlDynamicFilterResponse> gqlDynamicFilterResponseRepository;
+
+    DynamicFilterGqlRepository(GqlRepository<GqlDynamicFilterResponse> gqlDynamicFilterResponseRepository) {
+        this.gqlDynamicFilterResponseRepository = gqlDynamicFilterResponseRepository;
     }
 
     @Override
     public Observable<DynamicFilterModel> query(Map<String, Object> parameters) {
-        return super.query(createParametersForQuery(parameters));
+        return gqlDynamicFilterResponseRepository
+                .query(createParametersForQuery(parameters))
+                .map(GqlDynamicFilterResponse::getDynamicFilterModel);
     }
 
     private Map<String, Object> createParametersForQuery(Map<String, Object> parameters) {
