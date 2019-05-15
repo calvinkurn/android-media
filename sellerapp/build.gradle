@@ -225,7 +225,6 @@ android {
             dimension "client"
         }
     }
-    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings]
 }
 
 repositories {
@@ -330,6 +329,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.paymentSetting)
+    implementation project(rootProject.ext.features.shopSettings)
 
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.phoneVerification)
