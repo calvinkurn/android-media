@@ -413,7 +413,6 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
                         onStartBarcodeScanner();
                     }
                 },"");
-                FragmentSellingStatusPermissionsDispatcher.onStartBarcodeScannerWithCheck(FragmentSellingStatus.this);
             }
         });
         ConfirmButton.setOnClickListener(new View.OnClickListener() {
