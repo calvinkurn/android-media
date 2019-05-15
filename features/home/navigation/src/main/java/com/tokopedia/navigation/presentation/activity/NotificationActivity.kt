@@ -193,6 +193,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         val defaultTitle = getString(R.string.title_notification_update)
         var counter: String = ""
 
+        updateCounter = 0
         if (updateCounter > 0) {
             counter = getString(R.string.title_counter_update_notification, updateCounter.toString())
         }

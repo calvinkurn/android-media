@@ -91,7 +91,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         bottomActionView.setButton2OnClickListener {
             analytics.trackMarkAllAsRead()
             updateCounterTitle()
-            bottomActionView.hideBav2()
+//            bottomActionView.hideBav2()
             presenter.markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate())
         }
 
@@ -203,11 +203,12 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     override fun notifyBottomActionView(updateCounter: Long) {
         bottomActionView?.let {
-            if (updateCounter == 0L) {
-                it.hideBav2()
-            } else {
-                it.showBav2()
-            }
+//            if (updateCounter == 0L) {
+//                it.hideBav2()
+//            } else {
+//                it.showBav2()
+//            }
+            it.showBav2()
         }
     }
 
