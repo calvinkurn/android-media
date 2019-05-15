@@ -33,6 +33,7 @@ import com.tokopedia.discovery.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
+import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.io.Serializable;
@@ -46,7 +47,11 @@ import javax.inject.Inject;
 import static com.tokopedia.discovery.common.constants.SearchConstant.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_COLUMN_MAIN;
 
-public abstract class SearchSectionFragment extends BaseDaggerFragment implements SearchSectionContract.View {
+public abstract class SearchSectionFragment
+        extends BaseDaggerFragment
+        implements
+        SearchSectionContract.View,
+        RequestDynamicFilterListener {
 
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
 
@@ -430,18 +435,13 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment implement
     public void getDynamicFilter() {
         if (canRequestDynamicFilter()) {
             isGettingDynamicFilter = true;
-            requestDynamicFilter();
+            getPresenter().requestDynamicFilter();
         }
     }
 
     private boolean canRequestDynamicFilter() {
         return !isFilterDataAvailable()
                 && !isGettingDynamicFilter;
-    }
-
-    //TODO will be removed after catalog and shop already migrated also to Gql
-    protected void requestDynamicFilter() {
-        getPresenter().requestDynamicFilter();
     }
 
     @Override
@@ -472,7 +472,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment implement
     protected abstract void refreshAdapterForEmptySearch();
 
     @Override
-    public void renderFailGetDynamicFilter() {
+    public void renderFailRequestDynamicFilter() {
         isGettingDynamicFilter = false;
 
         if(getActivity() == null) return;
@@ -480,8 +480,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment implement
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_get_dynamic_filter));
     }
 
-    public void performNewProductSearch(String query, boolean forceSearch) {
-        redirectionListener.performNewProductSearch(query, forceSearch);
+    public void performNewProductSearch(String query) {
+        redirectionListener.performNewProductSearch(query);
     }
 
     public void showSearchInputView() {

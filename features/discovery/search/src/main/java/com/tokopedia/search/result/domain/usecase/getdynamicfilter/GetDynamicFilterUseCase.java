@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.domain.usecase;
+package com.tokopedia.search.result.domain.usecase.getdynamicfilter;
 
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.common.domain.Repository;
@@ -9,9 +9,9 @@ import rx.Observable;
 
 class GetDynamicFilterUseCase extends UseCase<DynamicFilterModel> {
 
-    private final Repository<DynamicFilterModel> repository;
+    private Repository<DynamicFilterModel> repository;
 
-    public GetDynamicFilterUseCase(Repository<DynamicFilterModel> repository) {
+    GetDynamicFilterUseCase(Repository<DynamicFilterModel> repository) {
         this.repository = repository;
     }
 

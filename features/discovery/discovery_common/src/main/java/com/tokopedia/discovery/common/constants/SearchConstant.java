@@ -8,7 +8,6 @@ public interface SearchConstant {
     String EXTRA_HAS_CATALOG = "EXTRA_HAS_CATALOG";
     String EXTRA_FORCE_SWIPE_TO_SHOP = "EXTRA_FORCE_SWIPE_TO_SHOP";
 
-    String EXTRA_FORCE_SEARCH = "EXTRA_FORCE_SEARCH";
     String EXTRA_ACTIVE_TAB_POSITION = "EXTRA_ACTIVE_TAB_POSITION";
 
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
@@ -53,6 +52,8 @@ public interface SearchConstant {
         String GQL_INITIATE_SEARCH = "gql_initiate_search";
         String GQL_SEARCH_PRODUCT_FIRST_PAGE = "gql_search_product_first_page";
         String GQL_SEARCH_PRODUCT_LOAD_MORE = "gql_search_product_load_more";
+        String GQL_DYNAMIC_FILTER_SPEC = "gql_dynamic_filter_spec";
+        String GQL_DYNAMIC_FILTER_RESPONSE_REPOSITORY = "gql_dynamic_filter_response_repository";
     }
 
     interface SearchProduct {
@@ -77,6 +78,10 @@ public interface SearchConstant {
     }
 
     interface DynamicFilter {
+        String GET_DYNAMIC_FILTER_USE_CASE = "get_dynamic_filter_use_case";
+        String GET_DYNAMIC_FILTER_V4_USE_CASE = "get_dynamic_filter_v4_use_case";
+        String GET_DYNAMIC_FILTER_GQL_USE_CASE = "get_dynamic_filter_gql_use_case";
+        String DYNAMIC_FILTER_GQL_REPOSITORY = "get_dynamic_filter_gql_repository";
         String DYNAMIC_FILTER_REPOSITORY = "dynamic_filter_repository";
         String DYNAMIC_FILTER_REPOSITORY_V4 = "dynamic_filter_repository_v4";
     }

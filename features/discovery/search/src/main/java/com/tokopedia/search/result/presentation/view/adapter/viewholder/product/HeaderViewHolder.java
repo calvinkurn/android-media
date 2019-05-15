@@ -336,10 +336,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         public void bind(final GuidedSearchViewModel.Item item) {
             textView.setText(item.getKeyword());
             textView.setOnClickListener(view -> {
-                Uri uri = Uri.parse(item.getUrl());
-                String query = uri.getQueryParameter(SearchApiConst.Q);
                 SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
-                itemClickListener.onSearchGuideClicked(query);
+                itemClickListener.onSearchGuideClicked(Uri.parse(item.getUrl()).getEncodedQuery());
             });
             imageView.setImageResource(BACKGROUND[getAdapterPosition() % 5]);
         }

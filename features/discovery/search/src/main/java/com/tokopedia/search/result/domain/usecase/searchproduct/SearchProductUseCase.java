@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.domain.usecase;
+package com.tokopedia.search.result.domain.usecase.searchproduct;
 
 import com.tokopedia.discovery.common.domain.Repository;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;

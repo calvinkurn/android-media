@@ -197,25 +197,9 @@ public class ProductViewModelMapper {
         SearchProductModel.Suggestion suggestionModel = searchProduct.getSuggestion();
         SuggestionViewModel suggestionViewModel = new SuggestionViewModel();
         suggestionViewModel.setSuggestionText(suggestionModel.getText());
-        String suggestedQuery = getQueryValue(suggestionModel.getQuery());
-        suggestionViewModel.setSuggestedQuery(suggestedQuery);
+        suggestionViewModel.setSuggestedQuery(suggestionModel.getQuery());
         suggestionViewModel.setSuggestionCurrentKeyword(suggestionModel.getCurrentKeyword());
         suggestionViewModel.setFormattedResultCount(searchProduct.getCountText());
         return suggestionViewModel;
-    }
-
-    private String getQueryValue(String paramString) {
-        if (!TextUtils.isEmpty(paramString)) {
-            String[] params = paramString.split("&");
-            for (String param : params) {
-                if(param.split("=").length > 0) {
-                    String name = param.split("=")[0];
-                    if (SearchApiConst.Q.equals(name)) {
-                        return param.split("=")[1];
-                    }
-                }
-            }
-        }
-        return "";
     }
 }

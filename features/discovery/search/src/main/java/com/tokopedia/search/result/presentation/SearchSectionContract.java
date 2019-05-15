@@ -21,10 +21,6 @@ public interface SearchSectionContract {
 
         void getDynamicFilter();
 
-        void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
-
-        void renderFailGetDynamicFilter();
-
         void showRefreshLayout();
 
         void hideRefreshLayout();
@@ -38,7 +34,5 @@ public interface SearchSectionContract {
         void initInjector(T view);
 
         void requestDynamicFilter();
-
-        void requestDynamicFilter(HashMap<String, String> additionalParams);
     }
 }

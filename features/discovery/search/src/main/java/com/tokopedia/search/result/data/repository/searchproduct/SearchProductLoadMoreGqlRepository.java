@@ -1,8 +1,8 @@
-package com.tokopedia.search.result.data.repository;
+package com.tokopedia.search.result.data.repository.searchproduct;
 
 import com.tokopedia.discovery.common.repository.Specification;
 import com.tokopedia.discovery.common.repository.gql.GqlRepository;
-import com.tokopedia.discovery.newdiscovery.domain.model.InitiateSearchModel;
+import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.utils.UrlParamUtils;
 
 import java.util.HashMap;
@@ -12,20 +12,20 @@ import rx.Observable;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS;
 
-final class InitiateSearchGqlRepository extends GqlRepository<InitiateSearchModel> {
+final class SearchProductLoadMoreGqlRepository extends GqlRepository<SearchProductModel> {
 
-    InitiateSearchGqlRepository(Specification gqlSpecification) {
+    SearchProductLoadMoreGqlRepository(Specification gqlSpecification) {
         super(gqlSpecification);
     }
 
     @Override
-    public Observable<InitiateSearchModel> query(Map<String, Object> parameters) {
+    public Observable<SearchProductModel> query(Map<String, Object> parameters) {
         return super.query(createParametersForQuery(parameters));
     }
 
-    private Map<String, Object> createParametersForQuery(Map<String, Object> requestParams) {
+    private Map<String, Object> createParametersForQuery(Map<String, Object> parameters) {
         Map<String, Object> variables = new HashMap<>();
-        variables.put(KEY_PARAMS, UrlParamUtils.generateUrlParamString(requestParams));
+        variables.put(KEY_PARAMS, UrlParamUtils.generateUrlParamString(parameters));
 
         return variables;
     }

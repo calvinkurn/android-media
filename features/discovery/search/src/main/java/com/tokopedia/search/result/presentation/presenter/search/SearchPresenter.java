@@ -52,11 +52,11 @@ class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> implement
     }
 
     @Override
-    public void initiateSearch(Map<String, Object> searchParameter, boolean isForceSearch) {
+    public void initiateSearch(Map<String, Object> searchParameter) {
         initiateSearchCheckForNulls();
         if(searchParameter == null) return;
 
-        RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, isForceSearch);
+        RequestParams requestParams = createInitiateSearchRequestParams(searchParameter);
 
         initiateSearchModelUseCase.execute(requestParams, new InitiateSearchSubscriber(initiateSearchListener));
     }
@@ -66,15 +66,14 @@ class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> implement
         if(initiateSearchListener == null) throw new RuntimeException("InitiateSearchListener is not set.");
     }
 
-    private RequestParams createInitiateSearchRequestParams(Map<String, Object> searchParameter, boolean isForceSearch) {
+    private RequestParams createInitiateSearchRequestParams(Map<String, Object> searchParameter) {
         RequestParams requestParams = RequestParams.create();
-
-        requestParams.putAll(searchParameter);
 
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putBoolean(SearchApiConst.REFINED, isForceSearch);
         requestParams.putBoolean(SearchApiConst.RELATED, true);
+
+        requestParams.putAll(searchParameter);
 
         return requestParams;
     }

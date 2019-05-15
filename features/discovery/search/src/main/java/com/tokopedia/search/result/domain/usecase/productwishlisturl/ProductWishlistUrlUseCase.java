@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.domain.usecase;
+package com.tokopedia.search.result.domain.usecase.productwishlisturl;
 
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.constant.ResponseStatus;

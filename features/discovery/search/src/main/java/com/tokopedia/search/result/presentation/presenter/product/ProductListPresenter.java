@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -13,6 +14,8 @@ import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
+import com.tokopedia.search.result.presentation.presenter.subscriber.RequestDynamicFilterSubscriber;
+import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -48,6 +51,9 @@ final class ProductListPresenter
     @Named(SearchConstant.Wishlist.PRODUCT_WISHLIST_URL_USE_CASE)
     UseCase<Boolean> productWishlistUrlUseCase;
     @Inject
+    @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_GQL_USE_CASE)
+    UseCase<DynamicFilterModel> dynamicFilterModelGqlUseCase;
+    @Inject
     AddWishListUseCase addWishlistActionUseCase;
     @Inject
     RemoveWishListUseCase removeWishlistActionUseCase;
@@ -55,6 +61,7 @@ final class ProductListPresenter
     RemoteConfig remoteConfig;
 
     private WishListActionListener wishlistActionListener;
+    private RequestDynamicFilterListener requestDynamicFilterListener;
     private boolean enableGlobalNavWidget;
     private boolean changeParamRow;
 
@@ -75,23 +82,34 @@ final class ProductListPresenter
         this.wishlistActionListener = wishlistActionListener;
     }
 
-    /**
-     * This method intentionally left blank for ProductListPresenter
-     * Retrieving Product Filter data is already combined together with loadData using GraphQL, so we don't need to request Filter data separately anymore
-     * This method will be removed When other implementations of SearchSectionPresenter already use GraphQL
-    * */
     @Override
-    @Deprecated
-    protected void getFilterFromNetwork(RequestParams requestParams) { }
+    public void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener) {
+        this.requestDynamicFilterListener = requestDynamicFilterListener;
+    }
 
-    /**
-     * This method intentionally return null for ProductListPresenter
-     * Retrieving Product Filter data is already combined together with loadData using GraphQL, so we don't need to request Filter data separately anymore
-     * This method will be removed When other implementations of SearchSectionPresenter already use GraphQL
-     * */
     @Override
-    @Deprecated
-    protected RequestParams getDynamicFilterParam() { return null; }
+    public void requestDynamicFilter() {
+        requestDynamicFilterCheckForNulls();
+
+        Map<String, Object> searchParameterMap = getView().getSearchParameterMap();
+        Map<String, String> additionalParamsMap = getView().getAdditionalParamsMap();
+
+        if(searchParameterMap == null) return;
+
+        RequestParams params = RequestParams.create();
+        params.putAll(searchParameterMap);
+
+        if(additionalParamsMap != null) {
+            enrichWithAdditionalParams(params, additionalParamsMap);
+        }
+
+        dynamicFilterModelGqlUseCase.execute(params, new RequestDynamicFilterSubscriber(requestDynamicFilterListener));
+    }
+
+    private void requestDynamicFilterCheckForNulls() {
+        if(requestDynamicFilterListener == null) throw new RuntimeException("UseCase<DynamicFilterModeL> is not injected.");
+        if(dynamicFilterModelGqlUseCase == null) throw new RuntimeException("RequestDynamicFilterListener is not set.");
+    }
 
     @Override
     public void handleWishlistButtonClicked(final ProductItemViewModel productItem) {
@@ -151,13 +169,13 @@ final class ProductListPresenter
 
     @Override
     public void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams) {
+        checkViewAttached();
         if(searchParameter == null || additionalParams == null) return;
 
-        RequestParams requestParams = createInitializeSearchParam(searchParameter, false);
+        RequestParams requestParams = createInitializeSearchParam(searchParameter);
         enrichWithFilterAndSortParams(requestParams);
-        enrichWithRelatedSearchParam(requestParams, true);
+        enrichWithRelatedSearchParam(requestParams);
         enrichWithAdditionalParams(requestParams, additionalParams);
-        removeDefaultCategoryParam(requestParams);
 
         // Unsubscribe first in case user has slow connection, and the previous loadMoreUseCase has not finished yet.
         searchProductLoadMoreUseCase.unsubscribe();
@@ -165,24 +183,24 @@ final class ProductListPresenter
         searchProductLoadMoreUseCase.execute(requestParams, getLoadMoreDataSubscriber(searchParameter));
     }
 
-    private RequestParams createInitializeSearchParam(Map<String, Object> searchParameter, boolean forceSearch) {
+    private RequestParams createInitializeSearchParam(Map<String, Object> searchParameter) {
         RequestParams requestParams = RequestParams.create();
 
+        putRequestParamsOtherParameters(requestParams, searchParameter);
         requestParams.putAll(searchParameter);
-        putRequestParamsOtherParameters(requestParams, searchParameter, forceSearch);
 
         return requestParams;
     }
 
-    private void putRequestParamsOtherParameters(RequestParams requestParams, Map<String, Object> searchParameter, boolean forceSearch) {
-        putRequestParamsSearchParameters(requestParams, searchParameter, forceSearch);
+    private void putRequestParamsOtherParameters(RequestParams requestParams, Map<String, Object> searchParameter) {
+        putRequestParamsSearchParameters(requestParams, searchParameter);
 
         putRequestParamsTopAdsParameters(requestParams, searchParameter);
 
         putRequestParamsDepartmentIdIfNotEmpty(requestParams, searchParameter);
     }
 
-    private void putRequestParamsSearchParameters(RequestParams requestParams, Map<String, Object> searchParameter, boolean forceSearch) {
+    private void putRequestParamsSearchParameters(RequestParams requestParams, Map<String, Object> searchParameter) {
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putString(SearchApiConst.ROWS, getSearchRows());
@@ -190,9 +208,8 @@ final class ProductListPresenter
         requestParams.putString(SearchApiConst.START, getSearchStart(searchParameter));
         requestParams.putString(SearchApiConst.IMAGE_SIZE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
-        requestParams.putString(SearchApiConst.Q, omitNewline(getSearchQuery(searchParameter)));
+        requestParams.putString(SearchApiConst.Q, omitNewlineAndPlusSign(getSearchQuery(searchParameter)));
         requestParams.putString(SearchApiConst.UNIQUE_ID, getUniqueId(searchParameter));
-        requestParams.putBoolean(SearchApiConst.REFINED, forceSearch);
     }
 
     private String getSearchRows() {
@@ -216,11 +233,11 @@ final class ProductListPresenter
         Object queryObject = searchParameter.get(SearchApiConst.Q);
         String query = queryObject == null ? "" : queryObject.toString();
 
-        return omitNewline(query);
+        return omitNewlineAndPlusSign(query);
     }
 
-    private String omitNewline(String text) {
-        return String.valueOf(text).replace("\n", "");
+    private String omitNewlineAndPlusSign(String text) {
+        return text.replace("\n", "").replace("+", " ");
     }
 
     private String getUniqueId(Map<String, Object> searchParameter) {
@@ -421,20 +438,25 @@ final class ProductListPresenter
     }
 
     @Override
-    public void loadData(Map<String, Object> searchParameter, boolean isForceSearch, Map<String, String> additionalParams, boolean isFirstTimeLoad) {
+    public void loadData(Map<String, Object> searchParameter, Map<String, String> additionalParams, boolean isFirstTimeLoad) {
+        checkViewAttached();
         if(searchParameter == null || additionalParams == null) return;
 
-        RequestParams requestParams = createInitializeSearchParam(searchParameter, false);
-        enrichWithFilterAndSortParams(requestParams);
-        enrichWithForceSearchParam(requestParams, isForceSearch);
-        enrichWithRelatedSearchParam(requestParams, true);
-        enrichWithAdditionalParams(requestParams, additionalParams);
-        removeDefaultCategoryParam(requestParams);
+        RequestParams requestParams = createInitializeSearchParam(searchParameter);
+        enrichWithRelatedSearchParam(requestParams);
+
+        if (checkShouldEnrichWithAdditionalParams(additionalParams)) {
+            enrichWithAdditionalParams(requestParams, additionalParams);
+        }
 
         // Unsubscribe first in case user has slow connection, and the previous loadDataUseCase has not finished yet.
         searchProductFirstPageUseCase.unsubscribe();
 
         searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(isFirstTimeLoad));
+    }
+
+    private boolean checkShouldEnrichWithAdditionalParams(Map<String, String> additionalParams) {
+        return getView().isAnyFilterActive() && additionalParams != null;
     }
 
     // TODO:: Create a new class that extends Subscriber<SearchProductModel> for easier unit testing. See InitiateSearchSubscriber for reference.
@@ -472,6 +494,7 @@ final class ProductListPresenter
     private void loadDataSubscriberOnCompleteIfViewAttached() {
         if (isViewAttached()) {
             getView().hideRefreshLayout();
+            getView().getDynamicFilter();
         }
     }
 
@@ -500,7 +523,6 @@ final class ProductListPresenter
             }
 
             getView().storeTotalData(productViewModel.getTotalData());
-            getView().renderDynamicFilter(productViewModel.getDynamicFilterModel());
 
             if(isFirstTimeLoad) {
                 getViewToSendTrackingOnFirstTimeLoad(productViewModel);
@@ -573,12 +595,8 @@ final class ProductListPresenter
         getView().setFirstTimeLoad(false);
     }
 
-    private void enrichWithForceSearchParam(RequestParams requestParams, boolean isForceSearch) {
-        requestParams.putBoolean(SearchApiConst.REFINED, isForceSearch);
-    }
-
-    private void enrichWithRelatedSearchParam(RequestParams requestParams, boolean relatedSearchEnabled) {
-        requestParams.putBoolean(SearchApiConst.RELATED, relatedSearchEnabled);
+    private void enrichWithRelatedSearchParam(RequestParams requestParams) {
+        requestParams.putBoolean(SearchApiConst.RELATED, true);
     }
 
     @Override
