@@ -1,7 +1,5 @@
 package com.tokopedia.feedplus.view.analytics;
 
-import android.text.TextUtils;
-
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.track.TrackApp;
@@ -295,30 +293,23 @@ public class FeedAnalytics {
     }
 
     public void eventRecommendationImpression(String templateType, String activityName,
-                                              String trackingType, String mediaType,
                                               String authorName, String authorType, int authorId,
-                                              int feedPosition, int cardPosition, int userId) {
-
+                                              int cardPosition, int userId) {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
-        String promoName = CONTENT_FEED + DASH + activityName;
-        if (!TextUtils.isEmpty(authorType)) {
-            promoName += DASH + authorType;
-        }
         promotionList.add(new FeedEnhancedTracking.Promotion(
-                        authorId,
-                        promoName,
-                        authorName + DASH + cardPosition,
-                        feedPosition,
-                        "",
-                        0,
-                        ""
-                )
-        );
+                authorId,
+                String.format("/content feed - %s - profile", activityName),
+                authorName,
+                "",
+                cardPosition,
+                "",
+                0,
+                templateType
+        ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceView(
-                        ACTION_IMPRESSION.toLowerCase() + DASH + templateType + DASH
-                                + activityName + DASH + trackingType,
-                        mediaType,
+                        String.format("impression - %s recommendation", authorType),
+                        String.valueOf(authorId),
                         promotionList,
                         userId
                 )
@@ -326,34 +317,82 @@ public class FeedAnalytics {
     }
 
     public void eventRecommendationClick(String templateType, String activityName,
-                                         String trackingType, String mediaType,
-                                         String authorName, String authorType, String element,
-                                         int authorId, int feedPosition, int cardPosition,
-                                         int userId) {
+                                         String authorName, String authorType, int authorId,
+                                         int cardPosition, int userId) {
 
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
-        String promoName = CONTENT_FEED + DASH + activityName;
-        if (!TextUtils.isEmpty(authorType)) {
-            promoName += DASH + authorType;
-        }
         promotionList.add(new FeedEnhancedTracking.Promotion(
-                        authorId,
-                        promoName,
-                        authorName + DASH + cardPosition,
-                        feedPosition,
-                        "",
-                        0,
-                        ""
-                )
-        );
+                authorId,
+                String.format("/content feed - %s - profile", activityName),
+                authorName,
+                "",
+                cardPosition,
+                "",
+                0,
+                templateType
+        ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceClick(
-                        ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
-                                + activityName + DASH + trackingType + DASH + element,
-                        mediaType,
+                        String.format("click avatar - %s recommendation", authorType),
+                        String.valueOf(authorId),
                         promotionList,
                         userId
                 )
+        );
+    }
+
+    public void eventTopadsRecommendationImpression(String templateType, int adId, int authorId,
+                                                    int cardPosition, int userId) {
+        List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
+        promotionList.add(new FeedEnhancedTracking.Promotion(
+                authorId,
+                "/content feed - topads - shop",
+                "",
+                "",
+                cardPosition,
+                "",
+                adId,
+                templateType
+        ));
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                getEventEcommerceView(
+                        "impression - topads shop recommendation",
+                        String.valueOf(authorId),
+                        promotionList,
+                        userId
+                )
+        );
+    }
+
+    public void eventTopadsRecommendationClick(String templateType, int adId, int authorId,
+                                               int cardPosition, int userId) {
+        List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
+        promotionList.add(new FeedEnhancedTracking.Promotion(
+                authorId,
+                "/content feed - topads - shop",
+                "",
+                "",
+                cardPosition,
+                "",
+                adId,
+                templateType
+        ));
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                getEventEcommerceClick(
+                        "click avatar - topads shop recommendation",
+                        String.valueOf(authorId),
+                        promotionList,
+                        userId
+                )
+        );
+    }
+
+    public void eventFollowRecommendation(String action, String authorType, String authorId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_FEED,
+                CONTENT_FEED_TIMELINE,
+                String.format("click %s - %s recommendation", action, authorType),
+                authorId
         );
     }
 

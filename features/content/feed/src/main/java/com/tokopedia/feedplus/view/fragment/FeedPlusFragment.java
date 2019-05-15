@@ -1257,14 +1257,23 @@ public class FeedPlusFragment extends BaseDaggerFragment
         onGoToLink(redirectLink);
 
         if (adapter.getlist().get(positionInFeed) instanceof FeedRecommendationViewModel) {
-
             FeedRecommendationViewModel model
                     = (FeedRecommendationViewModel) adapter.getlist().get(positionInFeed);
-            trackRecommendationClick(
-                    positionInFeed,
-                    adapterPosition,
-                    model.getCards().get(adapterPosition).getTrackingRecommendationModel(),
-                    FeedAnalytics.Element.AVATAR
+            TrackingRecommendationModel tracking
+                    = model.getCards().get(adapterPosition).getTrackingRecommendationModel();
+            int userId = 0;
+            try {
+                userId = Integer.valueOf(getUserSession().getUserId());
+            } catch (NumberFormatException ignored) {
+            }
+            analytics.eventRecommendationClick(
+                    tracking.getTemplateType(),
+                    tracking.getActivityName(),
+                    tracking.getAuthorName(),
+                    tracking.getAuthorType(),
+                    tracking.getAuthorId(),
+                    tracking.getCardPosition(),
+                    userId
             );
         }
     }
@@ -1294,11 +1303,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
             FeedRecommendationViewModel model
                     = (FeedRecommendationViewModel) adapter.getlist().get(positionInFeed);
-            trackRecommendationClick(
-                    positionInFeed,
-                    adapterPosition,
+            trackRecommendationFollowClick(
                     model.getCards().get(adapterPosition).getTrackingRecommendationModel(),
-                    FeedAnalytics.Element.FOLLOW
+                    isFollow ? FeedAnalytics.Element.UNFOLLOW : FeedAnalytics.Element.FOLLOW
             );
         }
     }
@@ -1309,14 +1316,19 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         if (adapter.getlist().get(positionInFeed) instanceof TopadsShopViewModel) {
             TopadsShopViewModel model = (TopadsShopViewModel) adapter.getlist().get(positionInFeed);
-
+            int userId = 0;
+            try {
+                userId = Integer.valueOf(getUserSession().getUserId());
+            } catch (NumberFormatException ignored) {
+            }
             for (TrackingRecommendationModel tracking : model.getTrackingList()) {
                 if (TextUtils.equals(tracking.getAuthorName(), shop.getName())) {
-                    trackRecommendationClick(
-                            positionInFeed,
-                            adapterPosition,
-                            tracking,
-                            FeedAnalytics.Element.FOLLOW
+                    analytics.eventTopadsRecommendationClick(
+                            tracking.getTemplateType(),
+                            tracking.getAdId(),
+                            tracking.getAuthorId(),
+                            tracking.getCardPosition(),
+                            userId
                     );
                     break;
                 }
@@ -1333,9 +1345,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
             for (TrackingRecommendationModel tracking : model.getTrackingList()) {
                 if (TextUtils.equals(tracking.getAuthorName(), data.getShop().getName())) {
-                    trackRecommendationClick(
-                            positionInFeed,
-                            adapterPosition,
+                    trackRecommendationFollowClick(
                             tracking,
                             FeedAnalytics.Element.FOLLOW
                     );
@@ -1671,12 +1681,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     analytics.eventRecommendationImpression(
                             trackingRecommendationModel.getTemplateType(),
                             trackingRecommendationModel.getActivityName(),
-                            trackingRecommendationModel.getTrackingType(),
-                            trackingRecommendationModel.getMediaType(),
                             trackingRecommendationModel.getAuthorName(),
                             trackingRecommendationModel.getAuthorType(),
                             trackingRecommendationModel.getAuthorId(),
-                            feedPosition,
                             trackingRecommendationModel.getCardPosition(),
                             userId
                     );
@@ -1687,15 +1694,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 for (TrackingRecommendationModel trackingRecommendationModel
                         : topadsShopViewModel.getTrackingList()) {
 
-                    analytics.eventRecommendationImpression(
+                    analytics.eventTopadsRecommendationImpression(
                             trackingRecommendationModel.getTemplateType(),
-                            trackingRecommendationModel.getActivityName(),
-                            trackingRecommendationModel.getTrackingType(),
-                            trackingRecommendationModel.getMediaType(),
-                            trackingRecommendationModel.getAuthorName(),
-                            trackingRecommendationModel.getAuthorType(),
+                            trackingRecommendationModel.getAdId(),
                             trackingRecommendationModel.getAuthorId(),
-                            feedPosition,
                             trackingRecommendationModel.getCardPosition(),
                             userId
                     );
@@ -1729,27 +1731,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
         );
     }
 
-    private void trackRecommendationClick(int positionInFeed, int cardPosition,
-                                          TrackingRecommendationModel trackingRecommendationModel,
-                                          String element) {
-        int userId = 0;
-        try {
-            userId = Integer.valueOf(getUserSession().getUserId());
-        } catch (NumberFormatException ignored) {
-        }
-
-        analytics.eventRecommendationClick(
-                trackingRecommendationModel.getTemplateType(),
-                trackingRecommendationModel.getActivityName(),
-                trackingRecommendationModel.getTrackingType(),
-                trackingRecommendationModel.getMediaType(),
-                trackingRecommendationModel.getAuthorName(),
+    private void trackRecommendationFollowClick(TrackingRecommendationModel trackingRecommendationModel,
+                                                String action) {
+        analytics.eventFollowRecommendation(
+                action,
                 trackingRecommendationModel.getAuthorType(),
-                element,
-                trackingRecommendationModel.getAuthorId(),
-                positionInFeed,
-                cardPosition,
-                userId
+                String.valueOf(trackingRecommendationModel.getAuthorId())
         );
     }
 

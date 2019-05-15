@@ -31,6 +31,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecomme
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.util.ContainNullException
 import com.tokopedia.kotlin.util.isContainNull
 import rx.functions.Func1
@@ -53,6 +54,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         private const val CONTENT_GRID = "productgrid"
 
         private const val ACTIVITY_TOPADS = "topads"
+
+        private const val AUTHOR_TOPADS_SHOP = "topads shop"
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -152,9 +155,10 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                         feed.tracking.type,
                         card.media.firstOrNull()?.type ?: "",
                         card.header.avatarTitle,
-                        card.header.followCta.authorType,
+                        AUTHOR_TOPADS_SHOP,
                         card.header.followCta.authorID.toIntOrNull() ?: 0,
-                        index
+                        index,
+                        feed.tracking.topads.getOrNull(index)?.id.toIntOrZero()
                 ))
             }
 
@@ -226,7 +230,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val trackingPostModel = mapPostTracking(feed)
 
         if (shouldAddCardPost(feed, contentList)) {
-            var postTag = feed.content.cardpost.body.postTag.firstOrNull() ?: PostTag()
+            val postTag = feed.content.cardpost.body.postTag.firstOrNull() ?: PostTag()
             posts.add(
                     DynamicPostViewModel(
                             feed.id,
