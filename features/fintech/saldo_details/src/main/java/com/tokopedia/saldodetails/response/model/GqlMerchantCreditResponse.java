@@ -63,7 +63,7 @@ public class GqlMerchantCreditResponse implements Parcelable {
         this.mainRedirectUrl = in.readString();
         this.logoURL = in.readString();
         this.bodyDesc = in.readString();
-        this.anchorList = ((GqlAnchorListResponse) in.readValue((GqlAnchorListResponse.class.getClassLoader())));// in.createTypedArrayList(GqlAnchorListResponse.CREATOR);
+        this.anchorList = ((GqlAnchorListResponse) in.readValue((GqlAnchorListResponse.class.getClassLoader())));
         this.infoList = in.createTypedArrayList(GqlInfoListResponse.CREATOR);
         this.showBox = in.readByte() != 0;
         this.boxInfo = ((GqlBoxInfoResponse) in.readValue((GqlBoxInfoResponse.class.getClassLoader())));
