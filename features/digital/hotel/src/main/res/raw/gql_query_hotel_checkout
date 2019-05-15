@@ -1,0 +1,6 @@
+mutation PropertyCheckout($data: PropertyCheckoutRequest!) {
+    propertyCheckout(input: $data) {
+        queryString
+        redirectURL
+    }
+}

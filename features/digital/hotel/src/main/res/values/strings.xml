@@ -119,7 +119,7 @@
 
     <string name="hotel_booking_title">Pembayaran</string>
     <string name="hotel_room_night_count">%1$d Kamar</string>
-    <string name="hotel_booking_pay_at_hotel_label">Bayar di Hotel (Perlu Jaminan Kartu Kredit)</string>
+    <string name="hotel_booking_pay_at_hotel_label">\u0020Bayar di Hotel (Perlu Jaminan Kartu Kredit)</string>
     <string name="hotel_booking_room_general_info">%1$d Kamar • %2$d Tamu</string>
     <string name="hotel_booking_free_breakfast">Sarapan Gratis</string>
     <string name="hotel_booking_add_request_label">Tambahkan Permintaan Khusus</string>
@@ -142,4 +142,8 @@
     <string name="hotel_booking_invoice_estimate">Estimasi total tagihan</string>
     <string name="hotel_booking_invoice_foreign_currency_label">Dalam mata uang lokal sebesar %1$s</string>
     <string name="hotel_booking_button">Lanjutkan</string>
+    <string name="hotel_booking_back_dialog_title">Yakin batal pesan?</string>
+    <string name="hotel_booking_back_dialog_desc">Kamar bisa penuh dan tidak tersedia di waktu lain. Lanjut pesan untuk tetap menginap di kamar ini.</string>
+    <string name="hotel_booking_back_dialog_no">Batalkan</string>
+    <string name="hotel_booking_back_dialog_yes">Lanjut pesan</string>
 </resources>

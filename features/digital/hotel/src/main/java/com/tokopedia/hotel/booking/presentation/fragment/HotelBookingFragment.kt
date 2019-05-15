@@ -1,23 +1,28 @@
 package com.tokopedia.hotel.booking.presentation.fragment
 
-import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.PorterDuff
+import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.text.Editable
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextWatcher
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelCartData
+import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelPropertyData
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
@@ -29,11 +34,6 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
 import kotlinx.android.synthetic.main.widget_hotel_room_duration.view.*
 import javax.inject.Inject
-import android.content.Context.INPUT_METHOD_SERVICE
-import android.view.inputmethod.InputMethodManager
-import android.widget.RadioGroup
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.design.component.Dialog
 
 
 class HotelBookingFragment : BaseDaggerFragment() {
@@ -48,7 +48,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
     var roomRequest = ""
     var roomRequestMaxCharCount = ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT
 
-    var guestName: String = ""
+    var promoCode = ""
 
     lateinit var saveInstanceCacheManager: SaveInstanceCacheManager
 
@@ -75,6 +75,15 @@ class HotelBookingFragment : BaseDaggerFragment() {
                 is Success -> {
                     hotelCart = it.data
                     initView()
+                }
+                is Fail -> {}
+            }
+        })
+
+        bookingViewModel.hotelCheckoutResult.observe(this, android.arch.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    // Start activity
                 }
                 is Fail -> {}
             }
@@ -128,8 +137,12 @@ class HotelBookingFragment : BaseDaggerFragment() {
     private fun setupRoomInfo(property: HotelPropertyData, cart: HotelCartData) {
         if (property.rooms.isNotEmpty()) {
             tv_booking_room_info_title.text = property.rooms[0].roomName
+
             tv_booking_room_info_pay_at_hotel.visibility = View.VISIBLE
-            tv_booking_room_info_pay_at_hotel.setDrawableLeft(R.drawable.ic_hotel)
+            tv_booking_room_info_pay_at_hotel.setDrawableLeft(R.drawable.ic_hotel_16)
+            val spannableString = SpannableString(getString(R.string.hotel_booking_pay_at_hotel_label))
+            spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
             cart.fares.find { it.type == "base_price" }?.let {
                 tv_booking_room_info_occupancy.text = it.description.replace("x", "•")
             }
@@ -161,6 +174,11 @@ class HotelBookingFragment : BaseDaggerFragment() {
                 toggleRoomRequestError(roomRequestCharCount > roomRequestMaxCharCount)
             }
         })
+        tv_room_request_input.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                KeyboardHandler.hideSoftKeyboard(activity)
+            }
+        }
     }
 
     private fun showRequestForm() {
@@ -204,13 +222,10 @@ class HotelBookingFragment : BaseDaggerFragment() {
             toggleShowGuestForm(radio_button_contact_guest.id == checkedId)
         }
 
-        tv_guest_form_input.setOnFocusChangeListener { v, hasFocus ->
+        tv_guest_input.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
-//                val inputMethodManager = activity!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-//                inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0)
                 KeyboardHandler.hideSoftKeyboard(activity)
-
-                toggleGuestFormError(tv_guest_form_input.text.isNullOrEmpty())
+                toggleGuestFormError(tv_guest_input.text.isNullOrEmpty())
             }
         }
     }
@@ -224,9 +239,9 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
     private fun toggleGuestFormError(value: Boolean) {
         when (value) {
-            true -> tv_room_request_input.background.mutate().setColorFilter(ContextCompat.getColor(context!!, R.color.pink_property),
+            true -> tv_guest_input.background.mutate().setColorFilter(ContextCompat.getColor(context!!, R.color.pink_property),
                     PorterDuff.Mode.SRC_ATOP)
-            false -> tv_room_request_input.background.mutate().colorFilter = null
+            false -> tv_guest_input.background.mutate().colorFilter = null
         }
     }
 
@@ -240,14 +255,23 @@ class HotelBookingFragment : BaseDaggerFragment() {
             tv_room_tax.text = it.price
         }
         tv_room_estimated_price.text = cart.totalPrice
-        tv_invoice_foreign_currency.text = getString(R.string.hotel_booking_invoice_foreign_currency_label, cart.localTotalPrice)
+        val spannableString = SpannableString(getString(R.string.hotel_booking_invoice_foreign_currency_label, cart.localTotalPrice))
+        spannableString.setSpan(StyleSpan(Typeface.BOLD), spannableString.length - cart.localTotalPrice.length, spannableString.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tv_invoice_foreign_currency.text = spannableString
     }
 
     private fun setupBookingButton() {
         booking_button.setOnClickListener {
-            // Validate request & guest
             if (validateRoomRequest() && validateGuestName()) {
-                // Continue to payment
+                val hotelCheckoutParam = HotelCheckoutParam(
+                    cartId = cartId,
+                    contact = hotelCart.cart.contact,
+                    guestName = tv_guest_input.text.toString(),
+                    promoCode = promoCode,
+                    specialRequest = roomRequest
+                )
+                bookingViewModel.checkoutCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_checkout), hotelCheckoutParam)
             }
         }
     }
@@ -259,7 +283,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
     private fun validateGuestName(): Boolean {
         return !radio_button_contact_guest.isSelected || (
-                radio_button_contact_guest.isSelected && tv_guest_form_input.text.isNotEmpty())
+                radio_button_contact_guest.isSelected && tv_guest_input.text.isNotEmpty())
     }
 
     override fun getScreenName(): String = "Pembayaran"

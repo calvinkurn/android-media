@@ -28,6 +28,21 @@ class HotelBookingActivity : HotelBaseActivity(), HasComponent<HotelBookingCompo
 
     override fun shouldShowOptionMenu(): Boolean = false
 
+    override fun onBackPressed() {
+        val dialog = Dialog(this, Dialog.Type.PROMINANCE)
+        dialog.setTitle(getString(R.string.hotel_booking_back_dialog_title))
+        dialog.setDesc(getString(R.string.hotel_booking_back_dialog_desc))
+        dialog.setBtnCancel(getString(R.string.hotel_booking_back_dialog_no))
+        dialog.setBtnOk(getString(R.string.hotel_booking_back_dialog_yes))
+
+        dialog.setOnOkClickListener { dialog.dismiss() }
+        dialog.setOnCancelClickListener {
+            dialog.dismiss()
+            super.onBackPressed()
+        }
+        dialog.show()
+    }
+
     companion object {
         fun getCallingIntent(context: Context, cartId: String): Intent =
                 Intent(context, HotelBookingActivity::class.java)
