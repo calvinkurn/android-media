@@ -98,7 +98,7 @@ public class CategoryDetailActivity extends DealsBaseActivity implements Categor
     public void replaceFragment(CategoriesModel categoriesModel) {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.parent_view, AllBrandsFragment.newInstance(categoriesModel));
+        transaction.replace(R.id.parent_view, AllBrandsFragment.newInstance(categoriesModel, ""));
         transaction.addToBackStack(BRAND_FRAGMENT);
         transaction.commit();
     }

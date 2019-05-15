@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -35,6 +36,7 @@ import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
@@ -54,6 +56,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         DealsSearchContract.View, SearchInputView.Listener, android.view.View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet {
 
     private final boolean IS_SHORT_LAYOUT = true;
+    public static final String EXTRA_LIST = "list";
 
     private CoordinatorLayout mainContent;
     private ScrollView noContent;
@@ -62,7 +65,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private ConstraintLayout clLocation;
     private AppBarLayout appBarBrands;
     private TextView dealsHeading;
-    private TextView brandsHeading;
+    private TextView brandsHeading, brandCount;
     private View divider;
     private LinearLayoutManager layoutManager;
     private SearchInputView searchInputView;
@@ -70,7 +73,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private ImageView back;
     private TextView tvCityName;
     private List<Brand> brands = new ArrayList<>();
-    private boolean firstTimeRefresh = true;
+    List<CategoriesModel> categoryList = new ArrayList<>();
 
     @Inject
     public DealsSearchPresenter mPresenter;
@@ -96,6 +99,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         setUpVariables();
         searchInputView.setListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        categoryList = getIntent().getParcelableArrayListExtra(EXTRA_LIST);
         mPresenter.attachView(this);
         mPresenter.initialize();
     }
@@ -109,6 +113,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         mainContent = findViewById(R.id.main_content);
         dealsHeading = findViewById(R.id.tv_topevents);
         brandsHeading = findViewById(R.id.brand_list);
+        brandCount = findViewById(R.id.num_of_brands);
         back = findViewById(R.id.imageViewBack);
         divider = findViewById(R.id.divider);
         noContent = findViewById(R.id.no_content);
@@ -139,6 +144,16 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                         appBarToolbar.setElevation(getResources().getDimension(R.dimen.dp_0));
                     }
                 }
+            }
+        });
+
+        brandCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent brandIntent = new Intent(DealsSearchActivity.this, AllBrandsActivity.class);
+                brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoryList);
+                brandIntent.putExtra(AllBrandsActivity.SEARCH_TEXT, searchInputView.getSearchText());
+                navigateToActivity(brandIntent);
             }
         });
     }
@@ -182,9 +197,9 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Override
     public void renderFromSearchResults() {
-            Location location = Utils.getSingletonInstance().getLocation(getActivity());
-            rvDeals.addOnScrollListener(rvOnScrollListener);
-            tvCityName.setText(location.getName());
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        rvDeals.addOnScrollListener(rvOnScrollListener);
+        tvCityName.setText(location.getName());
     }
 
     private SpannableString getHeaderFormattedText(String searchText, int count) {
@@ -263,15 +278,17 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     public void setSuggestedBrands(List<Brand> brandList) {
         if (brandList != null && brandList.size() > 0) {
             this.brands = brandList;
-           brandLayout.setVisibility(View.VISIBLE);
+            brandLayout.setVisibility(View.VISIBLE);
             brandsHeading.setVisibility(View.VISIBLE);
+            brandCount.setVisibility(View.VISIBLE);
+            brandCount.setText(String.format(getResources().getString(R.string.brand_count_text), searchInputView.getSearchText(), brandList.size()));
             noBrandsFound.setVisibility(View.GONE);
             LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) dealsHeading.getLayoutParams();
             params1.setMargins(getResources().getDimensionPixelOffset(R.dimen.dp_16), getResources().getDimensionPixelOffset(R.dimen.dp_12), 0, 0);
             dealsHeading.setLayoutParams(params1);
             brandLayout.removeAllViews();
             View view;
-            int itemCount = Utils.getScreenWidth()/ (int)(getResources().getDimension(R.dimen.dp_66) + getResources().getDimension(R.dimen.dp_8));//Divide by item width including margin
+            int itemCount = Utils.getScreenWidth() / (int) (getResources().getDimension(R.dimen.dp_66) + getResources().getDimension(R.dimen.dp_8));//Divide by item width including margin
             int maxBrands = Math.min(brandList.size(), itemCount);
 
             ImageView imageViewBrandItem;
@@ -300,6 +317,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             this.brands.clear();
             brandLayout.removeAllViews();
             brandsHeading.setVisibility(View.GONE);
+            brandCount.setVisibility(View.GONE);
             noBrandsFound.setVisibility(View.GONE);
         }
     }
@@ -321,6 +339,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             rvDeals.setVisibility(View.VISIBLE);
             brandsHeading.setVisibility(View.GONE);
             brandLayout.setVisibility(View.GONE);
+            brandCount.setVisibility(View.GONE);
             dealsHeading.setVisibility(View.VISIBLE);
         }
     }
@@ -459,7 +478,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             if (locationUpdated) {
                 Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
             }
-                mPresenter.getDealsListBySearch(searchInputView.getSearchText());
+            mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
     }
 

@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -46,6 +47,8 @@ public class AllBrandsContract {
         void showEmptyView();
 
         void hideEmptyView();
+
+        void startLocationFragment(List<Location> locations);
     }
 
     public interface Presenter extends CustomerPresenter<AllBrandsContract.View> {

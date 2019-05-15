@@ -58,6 +58,7 @@ public class Utils {
     private static Utils singleInstance;
     private static Location location;
     public static String BRAND_QUERY_PARAM_TREE = "tree";
+    public static String BRAND_QUERY_TAGS = "tags";
     public static String BRAND_QUERY_PARAM_BRAND = "brand";
     public static String QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
     public static String QUERY_PARAM_CITY_ID = "cities";

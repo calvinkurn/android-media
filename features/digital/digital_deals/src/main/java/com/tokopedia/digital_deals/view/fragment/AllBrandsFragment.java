@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,10 +18,12 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
+import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.AllBrandsContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.model.Brand;
@@ -34,27 +38,28 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsContract.View, SearchInputView.Listener {
+public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsContract.View, SearchInputView.Listener, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet {
 
     private static final boolean IS_SHORT_LAYOUT = true;
     private static final String ARG_PARAM_EXTRA_DEALS_DATA = "ARG_PARAM_EXTRA_DEALS_DATA";
-    private final int SPAN_COUNT_3 = 3;
     private LinearLayout baseMainContent;
     private LinearLayout noContent;
     private FrameLayout progressBarLayout;
     private GridLayoutManager layoutManager;
     private RecyclerView recyclerview;
-//    private SearchInputView searchInputView;
     @Inject
     AllBrandsPresenter mPresenter;
     private CategoriesModel categoriesModel;
     private String searchText;
+    CloseableBottomSheetDialog selectLocationFragment;
+    String selectedLocation;
+    UpdateLocation updateLocation;
 
-
-    public static Fragment newInstance(CategoriesModel categoriesModel) {
+    public static Fragment newInstance(CategoriesModel categoriesModel, String searchText) {
         AllBrandsFragment categoryFragment = new AllBrandsFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_PARAM_EXTRA_DEALS_DATA, categoriesModel);
+        args.putString(AllBrandsActivity.SEARCH_TEXT, searchText);
         categoryFragment.setArguments(args);
         return categoryFragment;
     }
@@ -63,8 +68,26 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.categoriesModel = getArguments().getParcelable(ARG_PARAM_EXTRA_DEALS_DATA);
+        this.searchText = getArguments().getString(AllBrandsActivity.SEARCH_TEXT);
         setHasOptionsMenu(true);
 
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            updateLocation = (UpdateLocation) activity;
+        }
+        catch (Exception e) {
+            throw new ClassCastException(activity.toString() + "must implement Update Location Interface");
+        }
+
+    }
+
+    public void getLocations(String selectedLocation) {
+        this.selectedLocation = selectedLocation;
+        mPresenter.getLocations();
     }
 
     @Nullable
@@ -83,18 +106,12 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     private void setUpVariables(View view) {
         recyclerview = view.findViewById(R.id.rv_brand_items);
-//        searchInputView = view.findViewById(R.id.search_input_view);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         noContent = view.findViewById(R.id.no_content);
         baseMainContent = view.findViewById(R.id.base_main_content);
-//        searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_brand));
-//        searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_17));
-//        searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_24), getResources().getDimensionPixelSize(R.dimen.dp_24));
         layoutManager = new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false);
         recyclerview.setLayoutManager(layoutManager);
         recyclerview.setAdapter(new DealsBrandAdapter(null, DealsBrandAdapter.ITEM_BRAND_HOME));
-//        searchInputView.setListener(this);
-//        KeyboardHandler.DropKeyboard(getContext(), searchInputView);
     }
 
     @Override
@@ -106,16 +123,17 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     public void onSearchSubmitted(String text) {
-        searchText = text;
-        mPresenter.sendEventClick(DealsAnalytics.EVENT_CLICK_SEARCH_BRAND, text);
-        mPresenter.searchSubmitted(text);
+        onSearchTextChanged(text);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
+        if(!TextUtils.isEmpty(searchText) && searchText.equals(text)){
+            return;
+        }
         searchText = text;
         mPresenter.sendEventClick(DealsAnalytics.EVENT_CLICK_SEARCH_BRAND, text);
-        mPresenter.searchTextChanged(text);
+        mPresenter.searchSubmitted(text);
     }
 
 
@@ -159,9 +177,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
             recyclerview.setVisibility(View.VISIBLE);
             recyclerview.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
-            if (isSearchSubmitted) {
-//                KeyboardHandler.DropKeyboard(getContext(), searchInputView);
-            }
         } else {
             mPresenter.sendEventView(DealsAnalytics.EVENT_NO_BRAND_FOUND,
                     searchText);
@@ -197,6 +212,9 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
             requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
         if (categoriesModel.getPosition() != 0) {
             requestParams.putInt(Utils.QUERY_PARAM_CHILD_CATEGORY_ID, categoriesModel.getCategoryId());
+        }
+        if (!TextUtils.isEmpty(searchText)) {
+            requestParams.putString(Utils.BRAND_QUERY_TAGS, searchText);
         }
         return requestParams;
     }
@@ -242,6 +260,13 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         noContent.setVisibility(View.GONE);
     }
 
+    @Override
+    public void startLocationFragment(List<Location> locations) {
+        selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(getContext(), false, locations, this, selectedLocation, this), "", false);
+        selectLocationFragment.show();
+    }
+
     private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -259,5 +284,28 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     public void onDestroyView() {
         mPresenter.onDestroy();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onLocationItemSelected(boolean locationUpdated) {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (locationUpdated && location != null) {
+            updateLocation.onLocationUpdated(location);
+            mPresenter.getAllBrands();
+        }
+        if (selectLocationFragment != null) {
+            selectLocationFragment.dismiss();
+        }
+    }
+
+    @Override
+    public void closeBottomsheet() {
+        if (selectLocationFragment != null) {
+            selectLocationFragment.dismiss();
+        }
+    }
+
+    public interface UpdateLocation {
+        void onLocationUpdated(Location location);
     }
 }
