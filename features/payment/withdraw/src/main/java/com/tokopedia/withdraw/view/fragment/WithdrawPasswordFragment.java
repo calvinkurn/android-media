@@ -105,7 +105,6 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
                 }
             }
         });
-
         withdrawButton.setOnClickListener(v -> {
             int withdrawal = (int) StringUtils.convertToNumeric(
                     Objects.requireNonNull(getArguments()).getString(WithdrawPasswordActivity.BUNDLE_WITHDRAW)

@@ -111,7 +111,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         val intent = Intent()
         val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
         val promoStackingData = PromoStackingData(typePromo, data.codes[0],
-                data.message.text, data.titleDescription,
+                data.message.text, data.titleDescription, "",
                 data.cashbackWalletAmount, data.message.state.mapToStatePromoStackingCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         activity?.setResult(Activity.RESULT_OK, intent)
@@ -144,7 +144,10 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
                 val clashingInfoDetailUiModel: ClashingInfoDetailUiModel? = bundle?.getParcelable(EXTRA_CLASHING_DATA);
                 intent.putExtra(EXTRA_CLASHING_DATA, clashingInfoDetailUiModel)
                 activity?.setResult(RESULT_CLASHING, intent)
-                activity?.finish()
+
+                if (clashingInfoDetailUiModel != null) {
+                    activity?.finish()
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

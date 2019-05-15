@@ -27,6 +27,7 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
     private lateinit var tvClashingInfoTicker: TextView
     private lateinit var uiModel: ClashingInfoDetailUiModel
     private lateinit var source: String
+    private lateinit var type: String
     private lateinit var rvClashingOption: RecyclerView
     private lateinit var btSubmit: ButtonCompat
     private lateinit var adapter: ClashingAdapter
@@ -34,7 +35,7 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
     private var checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection? = null
 
     interface ActionListener {
-        fun onSubmitNewPromoAfterClash(oldPromoList: ArrayList<String>, newPromoList: ArrayList<ClashingVoucherOrderUiModel>)
+        fun onSubmitNewPromoAfterClash(oldPromoList: ArrayList<String>, newPromoList: ArrayList<ClashingVoucherOrderUiModel>, type: String)
     }
 
     companion object {
@@ -50,6 +51,10 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
 
     fun setSource(source: String) {
         this.source = source
+    }
+
+    fun setType(type: String) {
+        this.type = type
     }
 
     fun setActionListener(actionListener: ActionListener) {
@@ -124,7 +129,7 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
                                 }
                             }
                             dismiss()
-                            actionListener.onSubmitNewPromoAfterClash(oldPromoList, adapter.data[index].voucherOrders)
+                            actionListener.onSubmitNewPromoAfterClash(oldPromoList, adapter.data[index].voucherOrders, type)
                         } else {
                             if (oldPromoList.size > 0) {
                                 if (source.equals("cart", ignoreCase = true)) {
@@ -148,7 +153,7 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
     }
 
     override fun title(): String {
-        return getString(R.string.clash_bottomsheet_title_new)
+        return getString(R.string.clash_bottomsheet_title)
     }
 
     override fun onVoucherItemSelected(index: Int, isSelected: Boolean) {

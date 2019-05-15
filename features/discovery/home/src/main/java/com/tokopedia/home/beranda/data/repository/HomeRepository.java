@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.data.repository;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 
 import java.util.List;
 
@@ -12,8 +13,8 @@ import rx.Observable;
 
 public interface HomeRepository {
 
-    Observable<List<Visitable>> getAllHomeData();
+    Observable<List<TrackedVisitable>> getAllHomeData();
 
-    Observable<List<Visitable>> getHomeDataCache();
+    Observable<List<TrackedVisitable>> getHomeDataCache();
 
 }

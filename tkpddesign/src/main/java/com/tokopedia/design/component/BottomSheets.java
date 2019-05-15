@@ -83,23 +83,26 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         } catch (IllegalArgumentException e) {
             Log.d(BottomSheets.class.getName(), e.getMessage());
         }
+      
+        try {
+            ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) ((View) inflatedView.getParent()).getLayoutParams();
 
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) inflatedView.getParent()).getLayoutParams();
+            inflatedView.measure(0, 0);
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            int screenHeight = displaymetrics.heightPixels;
 
-        inflatedView.measure(0, 0);
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int screenHeight = displaymetrics.heightPixels;
+            if (state() == BottomSheetsState.FULL) {
+                height = screenHeight;
+            }
 
-        if (state() == BottomSheetsState.FULL) {
-            height = screenHeight;
-        }
+            if (bottomSheetBehavior != null)
+                bottomSheetBehavior.setPeekHeight(height);
 
-        if (bottomSheetBehavior != null)
-            bottomSheetBehavior.setPeekHeight(height);
+            params.height = screenHeight;
+            parent.setLayoutParams(params);
+        } catch (Exception ignored) { }
 
-        params.height = screenHeight;
-        parent.setLayoutParams(params);
     }
 
     public BottomSheetBehavior getBottomSheetBehavior() {

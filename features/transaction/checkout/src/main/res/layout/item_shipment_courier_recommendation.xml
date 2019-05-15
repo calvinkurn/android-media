@@ -132,25 +132,23 @@
                     android:layout_height="wrap_content"
                     tools:text="Rp20.000" />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_selected_price_b"
+                    style="@style/TextMidMediumBlack70"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:visibility="gone"
+                    tools:text="Rp20.000" />
 
-            <TextView
-                android:id="@+id/tv_change_selected_courier_recommendation"
-                android:layout_width="@dimen/dp_120"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:background="@drawable/bg_grey_round"
-                android:foreground="?selectableItemBackground"
-                android:gravity="center"
-                android:paddingLeft="@dimen/dp_27"
-                android:paddingTop="@dimen/dp_9"
-                android:paddingRight="@dimen/dp_27"
-                android:paddingBottom="@dimen/dp_9"
-                android:text="@string/label_button_change_courier_recommendation"
-                android:textColor="@color/black_54"
-                android:textSize="@dimen/sp_11"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_button_change_courier"
+                    style="@style/TextSmallNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_button_change_courier_recommendation"
+                    android:textColor="@color/tkpd_main_green" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -169,20 +167,49 @@
             tools:visibility="visible">
 
             <TextView
-                android:id="@+id/tv_logistic_promo_label"
-                style="@style/TextSmallNormalBlack54"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_4"
-                android:text="@string/gratis_ongkir_promo_kurir" />
-
-            <TextView
                 android:id="@+id/tv_logistic_promo_msg"
                 style="@style/TextSmallNormalBlack54"
                 android:layout_width="match_parent"
-                android:lineSpacingExtra="@dimen/dp_4"
                 android:layout_height="wrap_content"
+                android:lineSpacingExtra="@dimen/dp_4"
                 tools:text="Tidak dapat ubah kurir karena promo telah diterapkan" />
+
+            <RelativeLayout
+                android:id="@+id/tv_logistic_promo_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:gravity="center_vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_logistic_title_desc"
+                    style="@style/TextSmallNormalBlack54"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/gratis_ongkir_promo_kurir" />
+
+                <TextView
+                    android:id="@+id/tv_logistic_disc_amount"
+                    style="@style/TextSmallNormalBlack54"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_logistic_promo_err"
+                style="@style/TextSmallNormal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/logistic_promo_err_msg"
+                android:textColor="@color/error_red_text" />
+
         </LinearLayout>
 
     </LinearLayout>

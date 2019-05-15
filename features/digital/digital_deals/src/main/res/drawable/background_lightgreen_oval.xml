@@ -4,5 +4,5 @@
 
     <solid android:color="@color/vlight_red"/>
 
-    <corners android:radius="10dp"/>
+    <corners android:radius="3dp"/>
 </shape>
