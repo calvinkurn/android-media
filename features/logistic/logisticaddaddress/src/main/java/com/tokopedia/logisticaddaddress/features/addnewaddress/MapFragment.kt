@@ -1,7 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.MapLoadingBottomSheetFragment
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.MapSearchLocationBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutoCompleteGeocodeBottomSheetFragment
 import kotlinx.android.synthetic.main.fragment_map.*
 import javax.inject.Inject
 
@@ -31,8 +30,7 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-05-08.
  */
 class MapFragment: BaseDaggerFragment(), AddNewAddressView, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, ResultCallback<LocationSettingsResult>,
-        MapSearchLocationBottomSheetFragment.ActionListener{
+        GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, ResultCallback<LocationSettingsResult>{
 
     private var googleMap: GoogleMap? = null
     private var currentLat: Double? = 0.0
@@ -122,10 +120,6 @@ class MapFragment: BaseDaggerFragment(), AddNewAddressView, GoogleApiClient.Conn
     private fun showMapLoadingBottomSheet() {
         val mapLoadingBottomSheetFragment = MapLoadingBottomSheetFragment.newInstance()
         mapLoadingBottomSheetFragment.show(fragmentManager, "")
-    }
-
-    override fun onSelectedLocation(selectedLat: Double, selectedLong: Double) {
-
     }
 
     override fun onResume() {

@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.View
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutoCompleteGeocodeBottomSheetFragment
 
 /**
  * Created by fwidjaja on 2019-05-14.
@@ -44,7 +45,7 @@ class MapLoadingBottomSheetFragment: BottomSheets() {
 
     private fun showMapSearchLocationBottomSheet() {
         val mapSearchLocationBottomSheetFragment =
-                MapSearchLocationBottomSheetFragment.newInstance()
+                AutoCompleteGeocodeBottomSheetFragment.newInstance()
         mapSearchLocationBottomSheetFragment.show(fragmentManager, "")
     }
 }

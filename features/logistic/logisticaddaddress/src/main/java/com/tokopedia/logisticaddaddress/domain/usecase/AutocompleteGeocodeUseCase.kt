@@ -24,7 +24,7 @@ class AutocompleteGeocodeUseCase @Inject constructor(@ApplicationContext val con
         val PARAM_LONG = "#long"
     }
 
-    fun setParams(lat: Double, long: Double) {
+    fun setParams(lat: Double?, long: Double?) {
         queryString = GraphqlHelper.loadRawString(context.resources, R.raw.autocomplete_geocode)
         queryString = queryString.replace(PARAM_LAT, lat.toString())
         queryString = queryString.replace(PARAM_LONG, long.toString())

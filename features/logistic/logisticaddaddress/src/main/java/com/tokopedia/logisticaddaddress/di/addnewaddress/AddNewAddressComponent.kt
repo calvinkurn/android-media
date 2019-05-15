@@ -2,6 +2,8 @@ package com.tokopedia.logisticaddaddress.di.addnewaddress
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.MapFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutoCompleteGeocodeBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutoCompleteGeocodeBottomSheetPresenter
 import dagger.Component
 
 /**
@@ -11,4 +13,7 @@ import dagger.Component
 @Component(modules = [AddNewAddressModule::class], dependencies = [BaseAppComponent::class])
 interface AddNewAddressComponent {
     fun inject(addNewAddressFragment: MapFragment)
+    fun inject(autoCompleteGeocodeBottomSheetFragment: AutoCompleteGeocodeBottomSheetFragment)
+
+    fun autoComleteGeocodeBottomSheetPresenter(): AutoCompleteGeocodeBottomSheetPresenter
 }
