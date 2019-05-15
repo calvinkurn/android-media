@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
@@ -20,7 +19,7 @@ import com.tokopedia.navigation_common.listener.EmptyCartListener;
 
 public class CartActivity extends BaseCheckoutActivity implements EmptyCartListener {
 
-    private static final String EXTRA_CART_ID = "cart_id";
+    public static final String EXTRA_CART_ID = "cart_id";
 
     private Fragment cartFragment;
     private Fragment emptyCartFragment;
