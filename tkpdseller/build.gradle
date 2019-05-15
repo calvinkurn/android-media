@@ -51,7 +51,6 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.resourcesCommon)
 

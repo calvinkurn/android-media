@@ -25,9 +25,9 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
@@ -41,8 +41,6 @@ import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenSho
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
 
-import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS;
-
 /**
  * Created by Kris on 2/19/2016.
  * TOKOPEDIA
@@ -50,6 +48,7 @@ import static com.tokopedia.district_recommendation.view.DistrictRecommendationC
 public class FragmentEditShipping extends Fragment implements EditShippingViewListener {
 
     private static final int GET_DISTRICT_RECCOMENDATION_REQUEST_CODE = 100;
+    private final String RESULT_INTENT_DISTRICT_RECOMMENDATION = "district_recommendation_address";
 
     LinearLayout fragmentShipingMainLayout;
 
@@ -274,7 +273,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     @Override
-    public void refreshLocationViewListener(Address address) {
+    public void refreshLocationViewListener(DistrictRecommendationAddress address) {
         refreshView();
         fragmentShippingHeader.updateLocationData(address.getProvinceName(),
                 address.getCityName(), address.getDistrictName());
@@ -384,7 +383,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case GET_DISTRICT_RECCOMENDATION_REQUEST_CODE:
-                    Address address = data.getParcelableExtra(INTENT_DATA_ADDRESS);
+                    DistrictRecommendationAddress address = data.getParcelableExtra(RESULT_INTENT_DISTRICT_RECOMMENDATION);
                     editShippingPresenter.setSelectedAddress(address);
                     fragmentShippingHeader.initializeZipCodes();
                     fragmentShippingHeader.updateLocationData(

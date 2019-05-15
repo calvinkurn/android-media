@@ -2,7 +2,7 @@ package com.tokopedia.seller.shopsettings.shipping.presenter;
 
 import android.os.Bundle;
 
-import com.tokopedia.district_recommendation.domain.model.Address;
+import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.EditShippingCouriers;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ProvinceCitiesDistrict;
@@ -97,9 +97,9 @@ public interface EditShippingPresenter {
 
     void saveAddressArea(String s);
 
-    void setSelectedAddress(Address address);
+    void setSelectedAddress(DistrictRecommendationAddress address);
 
-    Address getselectedAddress();
+    DistrictRecommendationAddress getselectedAddress();
 
     Token getToken();
 }
