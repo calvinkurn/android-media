@@ -8,11 +8,11 @@ import com.tokopedia.network.constant.ResponseStatus;
 import retrofit2.Response;
 import rx.functions.Func1;
 
-public class DynamicFilterMapper implements Func1<Response<String>, DynamicFilterModel> {
+class DynamicFilterMapper implements Func1<Response<String>, DynamicFilterModel> {
 
     private final Gson gson;
 
-    public DynamicFilterMapper(Gson gson) {
+    DynamicFilterMapper(Gson gson) {
         this.gson = gson;
     }
 

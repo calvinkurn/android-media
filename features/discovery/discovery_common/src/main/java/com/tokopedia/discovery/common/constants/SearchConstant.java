@@ -73,6 +73,7 @@ public interface SearchConstant {
 
     interface BaseUrl {
         String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
+        String ACE_DOMAIN = "https://ace.tokopedia.com/";
         String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
         String PATH_GET_DYNAMIC_ATTRIBUTE_V4 = "v4/dynamic_attributes";
     }

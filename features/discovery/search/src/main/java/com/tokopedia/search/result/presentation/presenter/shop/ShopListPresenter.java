@@ -63,12 +63,7 @@ final class ShopListPresenter
     }
 
     @Override
-    protected RequestParams getDynamicFilterParam() {
-        return null;
-    }
+    public void requestDynamicFilter() {
 
-    @Override
-    protected void getFilterFromNetwork(RequestParams requestParams) {
-//        getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
     }
 }

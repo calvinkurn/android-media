@@ -23,4 +23,20 @@ public class GetDynamicFilterUseCaseModule {
             @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_GQL_REPOSITORY) Repository<DynamicFilterModel> repository) {
         return new GetDynamicFilterUseCase(repository);
     }
+
+    @SearchScope
+    @Provides
+    @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
+    UseCase<DynamicFilterModel> provideGetDynamicFilterUseCase(
+            @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_REPOSITORY) Repository<DynamicFilterModel> repository) {
+        return new GetDynamicFilterUseCase(repository);
+    }
+
+    @SearchScope
+    @Provides
+    @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_V4_USE_CASE)
+    UseCase<DynamicFilterModel> provideGetDynamicFilterV4UseCase(
+            @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_REPOSITORY_V4) Repository<DynamicFilterModel> repository) {
+        return new GetDynamicFilterUseCase(repository);
+    }
 }

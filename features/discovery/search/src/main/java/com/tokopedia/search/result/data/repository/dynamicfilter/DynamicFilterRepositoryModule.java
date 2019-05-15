@@ -8,6 +8,8 @@ import com.tokopedia.discovery.common.repository.gql.GqlSpecification;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.search.result.data.gql.dynamicfilter.GqlDynamicFilterResponse;
 import com.tokopedia.search.result.data.gql.dynamicfilter.GqlDynamicFilterSpecModule;
+import com.tokopedia.search.result.data.source.DynamicFilterDataSource;
+import com.tokopedia.search.result.data.source.DynamicFilterDataSourceModule;
 
 import javax.inject.Named;
 
@@ -15,8 +17,20 @@ import dagger.Module;
 import dagger.Provides;
 
 @SearchScope
-@Module(includes = GqlDynamicFilterSpecModule.class)
+@Module(includes = {
+        GqlDynamicFilterSpecModule.class,
+        DynamicFilterDataSourceModule.class
+})
 public class DynamicFilterRepositoryModule {
+
+    @SearchScope
+    @Provides
+    @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_GQL_REPOSITORY)
+    Repository<DynamicFilterModel> provideDynamicFilterModelGqlRepository(
+            @Named(SearchConstant.GQL.GQL_DYNAMIC_FILTER_RESPONSE_REPOSITORY) GqlRepository<GqlDynamicFilterResponse> gqlDynamicFilterResponseRepository
+    ) {
+        return new DynamicFilterGqlRepository(gqlDynamicFilterResponseRepository);
+    }
 
     @SearchScope
     @Provides
@@ -28,10 +42,15 @@ public class DynamicFilterRepositoryModule {
 
     @SearchScope
     @Provides
-    @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_GQL_REPOSITORY)
-    Repository<DynamicFilterModel> provideDynamicFilterModelGqlRepository(
-            @Named(SearchConstant.GQL.GQL_DYNAMIC_FILTER_RESPONSE_REPOSITORY) GqlRepository<GqlDynamicFilterResponse> gqlDynamicFilterResponseRepository
-    ) {
-        return new DynamicFilterGqlRepository(gqlDynamicFilterResponseRepository);
+    @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_REPOSITORY)
+    Repository<DynamicFilterModel> provideDynamicFilterRepository(DynamicFilterDataSource dynamicFilterDataSource) {
+        return new DynamicFilterRepository(dynamicFilterDataSource);
+    }
+
+    @SearchScope
+    @Provides
+    @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_REPOSITORY_V4)
+    Repository<DynamicFilterModel> provideDynamicFilterRepositoryV4(DynamicFilterDataSource dynamicFilterDataSource) {
+        return new DynamicFilterRepositoryV4(dynamicFilterDataSource);
     }
 }

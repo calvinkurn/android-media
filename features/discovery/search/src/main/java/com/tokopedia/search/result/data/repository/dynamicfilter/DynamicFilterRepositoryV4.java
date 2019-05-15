@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.data.repository;
+package com.tokopedia.search.result.data.repository.dynamicfilter;
 
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.common.domain.Repository;
