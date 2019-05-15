@@ -14,12 +14,6 @@ class HotelSearchPropertyModule{
 
     @Provides
     @HotelSearchPropertyScope
-    @Named("dummy_search_result")
-    fun provideDummySearchResult(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.dummy_search_result)
-
-    @Provides
-    @HotelSearchPropertyScope
     @Named("search_query")
     fun provideSearchQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_property_search)
