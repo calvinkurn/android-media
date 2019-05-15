@@ -69,9 +69,9 @@
             android:id="@+id/footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_bottom_button_nob"
-            android:layout_marginLeft="@dimen/margin_side_button_nob"
-            android:layout_marginRight="@dimen/margin_side_button_nob"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_40"
+            android:layout_marginRight="@dimen/dp_40"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -82,7 +82,7 @@
                 android:background="@color/transparent"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
-                android:padding="@dimen/padding_button_nob"
+                android:padding="@dimen/dp_16"
                 android:text="@string/title_skip_2"
                 android:textColor="@color/transparent"
                 android:textSize="14sp"/>
@@ -92,11 +92,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="#ffffff"
+                android:background="@color/white"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:lines="1"
-                android:padding="@dimen/padding_button_nob"
+                android:padding="@dimen/dp_16"
                 android:text="@string/title_activity_login"
                 android:textSize="14sp"
                 tools:layout_width="match_parent"/>

@@ -16,11 +16,12 @@ import com.tokopedia.onboarding.fragment.OnboardingFragment
 import com.tokopedia.onboarding.listener.CustomAnimationPageTransformer
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.track.TrackApp
 import javax.inject.Inject
+import com.tokopedia.onboarding.R
 
 /**
  * @author by stevenfredian on 14/05/19.
+ * For navigate: use ApplinkConstInternalMarketplace.ONBOARDING
  */
 
 class OnboardingActivity : BaseSimpleActivity() {

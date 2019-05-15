@@ -3,7 +3,6 @@ package com.tokopedia.onboarding.fragment
 import android.animation.AnimatorSet
 import android.app.Activity
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,7 @@ import com.tokopedia.onboarding.animation.OnboardingAnimation.slideReverseX
 import com.tokopedia.onboarding.listener.CustomAnimationPageTransformerDelegate
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.onboarding.R
 
 /**
  * @author by stevenfredian on 14/05/19.
@@ -102,21 +102,20 @@ class OnboardingFragment : BaseDaggerFragment(),
                               container: ViewGroup?,
                               savedInstanceState: Bundle?)
             : View? {
-//        val defaultView = inflater.inflate(R.layout.base_onboarding_fragment, container, false)
-//        val main = defaultView.findViewById(R.id.main)
-//        main.setBackgroundColor(bgColor)
-//
-//        lottieAnimationView = defaultView.findViewById(R.id.animation_view)
-//        lottieAnimationView.setAnimation(lottieAsset, LottieAnimationView.CacheStrategy.Strong)
-//
-//        titleView = defaultView.findViewById(R.id.title)
-//        descView = defaultView.findViewById(R.id.description)
-//
-//        titleView.text = MethodChecker.fromHtml(title)
-//        descView.text = MethodChecker.fromHtml(description)
-//
-//        return defaultView
-        return null
+        val defaultView = inflater.inflate(R.layout.base_onboarding_fragment, container, false)
+        val main = defaultView.findViewById(R.id.main)
+        main.setBackgroundColor(bgColor)
+
+        lottieAnimationView = defaultView.findViewById(R.id.animation_view)
+        lottieAnimationView.setAnimation(lottieAsset, LottieAnimationView.CacheStrategy.Strong)
+
+        titleView = defaultView.findViewById(R.id.title)
+        descView = defaultView.findViewById(R.id.description)
+
+        titleView.text = MethodChecker.fromHtml(title)
+        descView.text = MethodChecker.fromHtml(description)
+
+        return defaultView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

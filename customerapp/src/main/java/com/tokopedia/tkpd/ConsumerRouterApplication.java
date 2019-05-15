@@ -363,7 +363,6 @@ import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
-import com.tokopedia.tkpd.onboarding.NewOnboardingActivity;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
@@ -2826,12 +2825,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public ApplicationUpdate getAppUpdate(Context context) {
         return new FirebaseRemoteAppUpdate(context);
     }
-
-    @Override
-    public Intent getOnBoardingIntent(Activity activity) {
-        return new Intent(activity, NewOnboardingActivity.class);
-    }
-
 
     @Override
     public String getStringRemoteConfig(String key) {
