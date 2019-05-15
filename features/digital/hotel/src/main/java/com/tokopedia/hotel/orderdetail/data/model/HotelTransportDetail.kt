@@ -31,7 +31,11 @@ data class HotelTransportDetail(
 
         @SerializedName("cancellation")
         @Expose
-        val cancellation: Cancellation = Cancellation()
+        val cancellation: Cancellation = Cancellation(),
+
+        @SerializedName("contactInfo")
+        @Expose
+        val contactInfo: List<ContactInfo> = listOf()
 ) {
 
     data class ConditionalInfo(
@@ -180,11 +184,7 @@ data class HotelTransportDetail(
 
             @SerializedName("cancellationPolicies")
             @Expose
-            val cancellationPolicies: List<CancellationPolicy> = listOf(),
-
-            @SerializedName("contactInfo")
-            @Expose
-            val contactInfo: List<ContactInfo> = listOf()
+            val cancellationPolicies: List<CancellationPolicy> = listOf()
     ) {
         data class CancellationPolicy(
                 @SerializedName("shortTitle")
@@ -211,11 +211,11 @@ data class HotelTransportDetail(
                 @Expose
                 val isClickable: Boolean = false
         )
-
-        data class ContactInfo(
-                @SerializedName("number")
-                @Expose
-                val number: String = ""
-        )
     }
+
+    data class ContactInfo(
+            @SerializedName("number")
+            @Expose
+            val number: String = ""
+    )
 }

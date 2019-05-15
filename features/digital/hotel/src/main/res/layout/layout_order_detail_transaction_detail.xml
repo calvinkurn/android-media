@@ -49,11 +49,29 @@
                     android:background="@color/grey_300"
                     app:layout_constraintTop_toBottomOf="@id/transaction_status" />
 
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/top_conditional_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/transaction_seperator"
+                    tools:text="Dana Pembayaran akan dikembalikan ke Saldo Tokopedia/OVO/Limit Kartu Kredit"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10"
+                    android:paddingEnd="@dimen/dp_24"
+                    android:paddingStart="@dimen/dp_24"
+                    android:paddingLeft="@dimen/dp_24"
+                    android:paddingRight="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@drawable/bg_rect_yellow_rounded_stroke_yellow"
+                    android:visibility="gone"
+                    />
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/transaction_detail_title_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/transaction_seperator"
+                    app:layout_constraintTop_toBottomOf="@id/top_conditional_text"
                     android:layout_marginTop="@dimen/dp_16"/>
             </android.support.constraint.ConstraintLayout>
 

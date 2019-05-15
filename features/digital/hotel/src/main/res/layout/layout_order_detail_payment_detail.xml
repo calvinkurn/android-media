@@ -33,35 +33,44 @@
             android:id="@+id/payment_info_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_24"/>
+            android:layout_marginTop="@dimen/dp_24" />
 
         <View
             android:id="@+id/seperator_1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
+            android:layout_marginTop="@dimen/dp_16"
             android:background="@color/grey_300"
-            app:layout_constraintTop_toBottomOf="@id/transaction_status"
-            android:layout_marginTop="@dimen/dp_16"/>
+            app:layout_constraintTop_toBottomOf="@id/transaction_status" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/payment_fares_recycler_View"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"/>
+            android:layout_marginTop="@dimen/dp_16" />
 
         <View
             android:id="@+id/seperator_2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
+            android:layout_marginTop="@dimen/dp_16"
             android:background="@color/grey_300"
-            app:layout_constraintTop_toBottomOf="@id/transaction_status"
-            android:layout_marginTop="@dimen/dp_16"/>
+            app:layout_constraintTop_toBottomOf="@id/transaction_status" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/payment_summary_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"/>
+            android:layout_marginTop="@dimen/dp_16" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/bottom_conditional_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            app:fontSize="micro"
+            tools:text="Kartu Kredit Anda tidak akan terpotong biaya apapun dikarenakan transaksi gagal."
+            tools:textSize="@dimen/sp_12" />
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

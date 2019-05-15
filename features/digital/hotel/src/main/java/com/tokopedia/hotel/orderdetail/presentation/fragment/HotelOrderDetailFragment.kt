@@ -3,6 +3,7 @@ package com.tokopedia.hotel.orderdetail.presentation.fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Html
@@ -11,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.TextViewCompat
@@ -19,8 +21,10 @@ import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
 import com.tokopedia.hotel.orderdetail.data.model.TitleContent
 import com.tokopedia.hotel.orderdetail.di.HotelOrderDetailComponent
+import com.tokopedia.hotel.orderdetail.presentation.adapter.ContactAdapter
 import com.tokopedia.hotel.orderdetail.presentation.adapter.TitleTextAdapter
 import com.tokopedia.hotel.orderdetail.presentation.viewmodel.HotelOrderDetailViewModel
+import com.tokopedia.hotel.orderdetail.presentation.widget.HotelContactPhoneBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_order_detail.*
@@ -28,12 +32,15 @@ import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_payment_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_transaction_detail.*
 import javax.inject.Inject
+import android.content.Intent.ACTION_CALL
+import android.net.Uri
+
 
 /**
  * @author by jessica on 10/05/19
  */
 
-class HotelOrderDetailFragment : BaseDaggerFragment() {
+class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCallListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -60,6 +67,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment() {
                 is Success -> {
                     renderTransactionDetail(it.data)
                     if (it.data.hotelTransportDetails.isNotEmpty()) {
+                        renderConditionalInfo(it.data.hotelTransportDetails.first())
                         renderHotelDetail(it.data.hotelTransportDetails.first().propertyDetail.first())
                         renderGuestDetail(it.data.hotelTransportDetails.first().guestDetail)
                         renderPaymentDetail(it.data.hotelTransportDetails.first().payment)
@@ -76,6 +84,17 @@ class HotelOrderDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         orderDetailViewModel.getOrderDetail("")
+    }
+
+    fun renderConditionalInfo(hotelTransportDetail: HotelTransportDetail) {
+
+        top_conditional_text.visibility = if (hotelTransportDetail.conditionalInfoTop.title.isNotBlank()) View.VISIBLE else View.GONE
+        top_conditional_text.text = hotelTransportDetail.conditionalInfoTop.title
+
+        bottom_conditional_text.visibility = if (hotelTransportDetail.conditionalInfoBottom.title.isNotBlank()) View.VISIBLE else View.GONE
+        bottom_conditional_text.text = hotelTransportDetail.conditionalInfoBottom.title
+
+        call_hotel_layout.setOnClickListener { showCallButtonSheet(hotelTransportDetail.contactInfo) }
     }
 
     fun renderTransactionDetail(orderDetail: HotelOrderDetail) {
@@ -117,6 +136,13 @@ class HotelOrderDetailFragment : BaseDaggerFragment() {
         specialRequestAdapter.addData(propertyDetail.specialRequest.toMutableList())
 
         special_notes.text = propertyDetail.extraInfo
+    }
+
+    fun showCallButtonSheet(contactList: List<HotelTransportDetail.ContactInfo>) {
+        val bottomSheet = HotelContactPhoneBottomSheet()
+        bottomSheet.contactList = contactList
+        bottomSheet.listener = this
+        bottomSheet.show(activity!!.supportFragmentManager, TAG_CONTACT_INFO)
     }
 
     fun renderGuestDetail(guestDetail: TitleContent) {
@@ -168,13 +194,23 @@ class HotelOrderDetailFragment : BaseDaggerFragment() {
             }
             order_detail_footer_layout.addView(buttonCompat)
         }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_order_detail, container, false)
 
 
+    override fun onClickCall(contactNumber: String) {
+        Toast.makeText(context, contactNumber, Toast.LENGTH_SHORT).show()
+        val callIntent = Intent(ACTION_CALL)
+        callIntent.setData(Uri.parse("tel:${contactNumber}"))
+        startActivity(callIntent)
+    }
+
     companion object {
         fun getInstance(): HotelOrderDetailFragment = HotelOrderDetailFragment()
+
+        val TAG_CONTACT_INFO = "guestContactInfo"
     }
 }
