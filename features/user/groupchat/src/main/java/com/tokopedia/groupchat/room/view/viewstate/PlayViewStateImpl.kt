@@ -269,7 +269,6 @@ open class PlayViewStateImpl(
 
 
         interactionButton.setOnClickListener {
-            setAnimationInteractionButton()
             interactionButton.playAnimation()
             shootOneInteractionButton(getRandomHeart(iconList), it)
         }
@@ -306,17 +305,6 @@ open class PlayViewStateImpl(
                     shootOneInteractionButton(getRandomHeart(iconList), anchorView)
                     fakeShot(interactionButton)
                 }
-    }
-
-    private fun setAnimationInteractionButton() {
-        (interactionAnimationSequence.rem(2).equals(0)).let {
-            if (it) {
-                interactionButton.setAnimation("heart1.json", LottieAnimationView.CacheStrategy.Strong)
-            } else {
-                interactionButton.setAnimation("heart2.json", LottieAnimationView.CacheStrategy.Strong)
-            }
-        }
-        interactionAnimationSequence++
     }
 
     private fun getRandomHeart(iconList: ArrayList<Int>): Drawable? {
@@ -415,6 +403,7 @@ open class PlayViewStateImpl(
         inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.transparent))
         sendButton.hide()
         dynamicButtonRecyclerView.show()
+        interactionButton.show()
         scrollToBottom()
 
     }
@@ -431,6 +420,7 @@ open class PlayViewStateImpl(
         inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
         sendButton.show()
         dynamicButtonRecyclerView.hide()
+        interactionButton.hide()
 //            setSprintSaleIcon(null)
         scrollToBottom()
     }
