@@ -183,6 +183,9 @@ public class RouteManager {
      */
     public static @Nullable
     Intent getIntentNoFallback(Context context, String deeplink) {
+        if (context == null) {
+            return null;
+        }
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(deeplink);
         if (!TextUtils.isEmpty(mappedDeeplink)) {
             // Found internal deeplink, redirect
@@ -205,6 +208,9 @@ public class RouteManager {
      * <p>
      */
     public static boolean isSupportApplink(Context context, String applink) {
+        if (context == null) {
+            return false;
+        }
         // check with airbnb
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink)) {
             return true;
