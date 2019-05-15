@@ -1,4 +1,4 @@
-package com.tokopedia.kol.analytics
+package com.tokopedia.feedcomponent.analytics.posttag
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
@@ -160,7 +160,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
             : List<PostTagEnhancedTracking.Product> {
         val dataList = ArrayList<PostTagEnhancedTracking.Product>()
         dataList.add(PostTagEnhancedTracking.Product(
-            id, name, price, brand, category, variant, list, position
+                id, name, price, brand, category, variant, list, position
         ))
         return dataList
     }
