@@ -1,5 +1,6 @@
 package com.tokopedia.applink;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -35,7 +36,11 @@ public class RouteManager {
         String uriString = UriUtil.buildUri(applinkPattern, parameter);
         Intent intent = getIntent(context, uriString);
         if (intent != null) {
-            context.startActivity(intent);
+            try {
+                context.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, uriString);
+            }
         } else {
             ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, uriString);
         }
