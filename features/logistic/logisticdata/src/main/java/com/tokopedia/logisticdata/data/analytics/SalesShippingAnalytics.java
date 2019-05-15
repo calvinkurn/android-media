@@ -1,4 +1,4 @@
-package com.tokopedia.logisticanalytics;
+package com.tokopedia.logisticdata.data.analytics;
 
 import javax.inject.Inject;
 

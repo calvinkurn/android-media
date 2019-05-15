@@ -8,10 +8,9 @@ import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
-import com.tokopedia.logisticanalytics.CodAnalytics;
+import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 
 /**
  * Created by Fajar Ulin Nuha on 23/11/18.

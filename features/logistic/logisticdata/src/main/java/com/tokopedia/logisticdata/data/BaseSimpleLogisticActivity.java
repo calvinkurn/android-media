@@ -1,4 +1,4 @@
-package com.tokopedia.logisticcommon.base;
+package com.tokopedia.logisticdata.data;
 
 import android.net.Uri;
 import android.os.Bundle;

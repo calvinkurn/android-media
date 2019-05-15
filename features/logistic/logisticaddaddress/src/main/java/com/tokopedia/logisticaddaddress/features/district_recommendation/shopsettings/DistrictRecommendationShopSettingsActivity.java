@@ -76,9 +76,9 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(GetShopAddressUseCase.PARAM_AUTH, params);
 
-        ProgressDialog progress = new ProgressDialog(this, com.tokopedia.logisticcommon.R.style.CoolDialog);
+        ProgressDialog progress = new ProgressDialog(this, R.style.CoolDialog);
         progress.show();
-        progress.setContentView(com.tokopedia.logisticcommon.R.layout.loader_logistic_module);
+        progress.setContentView(R.layout.loader_logistic_module);
         progress.setCancelable(false);
         progress.setOnCancelListener(dialog -> (this).finish());
 

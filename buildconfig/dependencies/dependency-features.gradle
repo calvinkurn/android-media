@@ -77,7 +77,6 @@ ext {
 
     //SCOPE LOGISTIC
     groupIdLogistic = 'com.tokopedia.logistic'
-    artifactIdLogisticAnalytics = 'logisticanalytics'
     artifactIdLogisticCod = 'logisticCod'
     artifactIdLogisticData = 'logisticdata'
     artifactIdLogisticInputReceiptShipment = 'logisticinputreceiptshipment'
@@ -85,7 +84,6 @@ ext {
     artifactIdLogisticTracking = 'tracking'
     artifactIdLogisticAddAddress = 'logisticaddaddress'
     artifactIdLogisticListAddress = 'logisticlistaddress'
-    artifactIdLogisticCommon = 'logisticcommon'
     artifactIdLogisticInsurance = 'logisticinsurance'
     logisticGroupVersion = '2.22'
 
@@ -231,12 +229,10 @@ ext {
 //            challenges                    : ":features:im:challenges_no_op",
 
             logisticdata                    : ":features:logistic:logisticdata",
-            logisticanalytics               : ":features:logistic:logisticanalytics",
             logisticinputreceiptshipment    : ":features:logistic:logisticinputreceiptshipment",
 //            logisticinputreceiptshipment    : ":features:logistic:logisticinputreceiptshipment_no_op",
             logisticlistaddress             : ":features:logistic:logisticlistaddress",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
-            logisticCommon                  : ":features:logistic:logisticcommon",
             tracking                        : ":features:logistic:tracking",
 //            tracking                      : ":features:logistic:tracking_no_op",
             logisticuploadawb               : ":features:logistic:logisticuploadawb",

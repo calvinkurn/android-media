@@ -33,7 +33,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
 
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.miscDependencies.multiDex

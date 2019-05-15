@@ -23,7 +23,6 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressCornerMapper;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
-import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent;
@@ -34,7 +33,7 @@ import com.tokopedia.checkout.view.feature.addressoptions.addressadapter.Shipmen
 import com.tokopedia.checkout.view.feature.addressoptions.cornerbtmsheet.CornerBottomSheet;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
-import com.tokopedia.logisticcommon.LogisticCommonConstant;
+import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;

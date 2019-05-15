@@ -1,4 +1,4 @@
-package com.tokopedia.logisticanalytics.listener;
+package com.tokopedia.logisticdata.data.analytics.listener;
 
 public interface IBarcodeScannerReceiptShippingAnalyticListener {
 

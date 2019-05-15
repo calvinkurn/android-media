@@ -30,11 +30,9 @@ include "features:im:common_promo"
 include "features:im:referral"
 
 include "features:logistic:logisticdata"
-include "features:logistic:logisticanalytics"
 include "features:logistic:logisticinputreceiptshipment"
 //include "features:logistic:logisticinputreceiptshipment_no_op"
 include "features:logistic:logisticdata"
-include "features:logistic:logisticcommon"
 include "features:logistic:logisticuploadawb"
 //include "features:logistic:logisticuploadawb_no_op"
 include "features:logistic:shipping_recommendation"
@@ -121,7 +119,6 @@ include "features:user:user_identification"
 //include "features:user:user_identification_no_op"
 include "features:user:user_identification_common"
 
-include 'logisticanalytics'
 include 'tkpdloyalty'
 include 'tkpdcore'
 include 'tkpdinbox'

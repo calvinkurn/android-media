@@ -9,10 +9,9 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
-import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
-import com.tokopedia.logisticcommon.LogisticCommonConstant;
+import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 

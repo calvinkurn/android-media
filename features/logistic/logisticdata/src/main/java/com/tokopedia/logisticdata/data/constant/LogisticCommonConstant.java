@@ -1,4 +1,4 @@
-package com.tokopedia.logisticcommon;
+package com.tokopedia.logisticdata.data.constant;
 
 /**
  * Created by Irfan Khoirul on 21/11/18.

@@ -33,7 +33,7 @@ import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.di.ActivityContext;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
 import com.tokopedia.logisticaddaddress.utils.LocationCache;
-import com.tokopedia.logisticcommon.LogisticCommonConstant;
+import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;

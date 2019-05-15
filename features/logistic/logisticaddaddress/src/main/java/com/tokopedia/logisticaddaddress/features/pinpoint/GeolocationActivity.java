@@ -19,7 +19,7 @@ import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.di.GeolocationModule;
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil;
 import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
-import com.tokopedia.logisticcommon.LogisticCommonConstant;
+import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.network.utils.AuthUtil;

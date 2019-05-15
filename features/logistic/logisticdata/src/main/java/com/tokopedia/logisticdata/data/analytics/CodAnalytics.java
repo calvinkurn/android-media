@@ -1,10 +1,10 @@
-package com.tokopedia.logisticanalytics;
+package com.tokopedia.logisticdata.data.analytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.EventAction;
-import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.EventCategory;
-import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.EventName;
-import com.tokopedia.logisticanalytics.ConstantLogisticAnalytics.Key;
+import com.tokopedia.logisticdata.data.analytics.ConstantLogisticAnalytics.EventAction;
+import com.tokopedia.logisticdata.data.analytics.ConstantLogisticAnalytics.EventCategory;
+import com.tokopedia.logisticdata.data.analytics.ConstantLogisticAnalytics.EventName;
+import com.tokopedia.logisticdata.data.analytics.ConstantLogisticAnalytics.Key;
 
 import java.util.Map;
 
