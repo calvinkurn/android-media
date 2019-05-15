@@ -1,34 +1,53 @@
-package com.tokopedia.search.result.data.repository.searchproduct;
+package com.tokopedia.search.result.domain.usecase.searchproduct;
 
-import com.tokopedia.discovery.common.repository.Specification;
-import com.tokopedia.discovery.common.repository.gql.GqlRepository;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_HEADLINE_PARAMS;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_QUERY;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_SOURCE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.HEADLINE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.HEADLINE_ITEM_VALUE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.HEADLINE_TEMPLATE_VALUE;
 
-final class SearchProductFirstPageGqlRepository extends GqlRepository<SearchProductModel> {
+class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
 
-    SearchProductFirstPageGqlRepository(Specification gqlSpecification) {
-        super(gqlSpecification);
+    private GraphqlRequest graphqlRequest;
+    private GraphqlUseCase graphqlUseCase;
+    private Func1<GraphqlResponse, SearchProductModel> searchProductModelMapper;
+
+    SearchProductFirstPageGqlUseCase(GraphqlRequest graphqlRequest,
+                                     GraphqlUseCase graphqlUseCase,
+                                     Func1<GraphqlResponse, SearchProductModel> searchProductModelMapper) {
+        this.graphqlRequest = graphqlRequest;
+        this.graphqlUseCase = graphqlUseCase;
+        this.searchProductModelMapper = searchProductModelMapper;
     }
 
     @Override
-    public Observable<SearchProductModel> query(Map<String, Object> parameters) {
-        return super.query(createParametersForQuery(parameters));
+    public Observable<SearchProductModel> createObservable(RequestParams requestParams) {
+        Map<String, Object> variables = createParametersForQuery(requestParams.getParameters());
+
+        graphqlRequest.setVariables(variables);
+
+        graphqlUseCase.addRequest(graphqlRequest);
+
+        return graphqlUseCase
+                .createObservable(RequestParams.EMPTY)
+                .map(searchProductModelMapper);
     }
 
     private Map<String, Object> createParametersForQuery(Map<String, Object> parameters) {
