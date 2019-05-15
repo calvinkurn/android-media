@@ -12,4 +12,12 @@ class AskedProduct(
         return name.isEmpty() || imageUrl.isEmpty() || price.isEmpty()
     }
 
+    fun doesNotHaveVariant(): Boolean {
+        return colorVariant.isEmpty() && sizeVariant.isEmpty()
+    }
+
+    fun hasColorVariant(): Boolean = colorVariant.isNotEmpty()
+
+    fun hasSizeVariant(): Boolean = sizeVariant.isNotEmpty()
+
 }
