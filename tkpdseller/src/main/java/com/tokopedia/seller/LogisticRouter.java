@@ -1,5 +1,6 @@
 package com.tokopedia.seller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,6 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 
 public interface LogisticRouter {
     void navigateToChooseAddressActivityRequest(Fragment fragment, Intent intent, int requestCode);
-    void navigateToDistrictRecommendation(Fragment fragment, int requestCode, Token token);
-    Intent navigateToGeoLocationActivityRequest(Context context, LocationPass locationPass);
+    Intent getDistrictRecommendationIntent(Activity activity, Token token);
+    Intent getGeoLocationActivityIntent(Context context, LocationPass locationPass);
 }

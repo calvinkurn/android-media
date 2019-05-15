@@ -29,7 +29,6 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.customview.CourierView;
@@ -367,9 +366,8 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
     @Override
     public void editAddress() {
-        startActivityForResult(DistrictRecommendationActivity.createInstanceIntent(getActivity(),
-                editShippingPresenter.getToken()),
-                GET_DISTRICT_RECCOMENDATION_REQUEST_CODE);
+        Intent intent = logisticRouter.getDistrictRecommendationIntent(getActivity(), editShippingPresenter.getToken());
+        startActivityForResult(intent, GET_DISTRICT_RECCOMENDATION_REQUEST_CODE);
     }
 
     public boolean editShippingValid() {
@@ -502,7 +500,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
                 );
                 locationPass.setCityName(editShippingPresenter.getShopInformation().getCityName());
             }
-            Intent intent = logisticRouter.navigateToGeoLocationActivityRequest(getActivity(), locationPass);
+            Intent intent = logisticRouter.getGeoLocationActivityIntent(getActivity(), locationPass);
             startActivityForResult(intent, OPEN_MAP_CODE);
         } else {
             CommonUtils.dumper("Google play services unavailable");

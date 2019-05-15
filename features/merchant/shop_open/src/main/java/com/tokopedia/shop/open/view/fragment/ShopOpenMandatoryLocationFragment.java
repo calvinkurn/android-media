@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -21,7 +20,6 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.product.manage.item.common.util.TomeException;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
@@ -218,16 +216,12 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Override
     public void navigateToDistrictRecommendation(Token token) {
-        logisticRouter.navigateToDistrictRecommendation(
-                ShopOpenMandatoryLocationFragment.this,
-                REQUEST_CODE__EDIT_ADDRESS,
-                token
-        );
+        Intent intent = logisticRouter.getDistrictRecommendationIntent(getActivity(), token);
+        startActivityForResult(intent, REQUEST_CODE__EDIT_ADDRESS);
     }
 
     @Override
     public void navigateToGoogleMap(String generatedMap, LocationPass locationPass) {
-
         if (!TextUtils.isEmpty(locationShippingViewHolder.getDistrictName())
                 && !TextUtils.isEmpty(locationShippingViewHolder.getCityName())) {
 
@@ -237,7 +231,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             locationPass.setDistrictName(locationShippingViewHolder.getDistrictName());
             locationPass.setCityName(locationShippingViewHolder.getCityName());
         }
-        Intent intent = logisticRouter.navigateToGeoLocationActivityRequest(getContext(), locationPass);
+        Intent intent = logisticRouter.getGeoLocationActivityIntent(getContext(), locationPass);
         startActivityForResult(intent, REQUEST_CODE_GOOGLE_MAP);
     }
 
