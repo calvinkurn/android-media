@@ -350,7 +350,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             Collections.sort(egoldAttributeModel.getEgoldTieringModelArrayList(), (o1, o2) -> (int) (o1.getMinTotalAmount() - o2.getMinTotalAmount()));
             EgoldTieringModel egoldTieringModel = new EgoldTieringModel();
             for (EgoldTieringModel data : egoldAttributeModel.getEgoldTieringModelArrayList()) {
-                if (totalPrice > data.getMinTotalAmount()) {
+                if (totalPrice >= data.getMinTotalAmount()) {
                     valueTOCheck = (int) (totalPrice % data.getBasisAmount());
                     egoldTieringModel = data;
                 }

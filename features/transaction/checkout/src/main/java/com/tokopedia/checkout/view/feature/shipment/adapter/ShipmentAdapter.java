@@ -455,13 +455,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void updateEmasCostModel() {
         long totalPrice = (long) shipmentCostModel.getTotalPrice();
         int valueTOCheck = 0;
-        int buyEgoldValue = 0;
+        long buyEgoldValue = 0;
 
         if (egoldAttributeModel.isTiering()) {
             Collections.sort(egoldAttributeModel.getEgoldTieringModelArrayList(), (o1, o2) -> (int) (o1.getMinTotalAmount() - o2.getMinTotalAmount()));
             EgoldTieringModel egoldTieringModel = new EgoldTieringModel();
             for (EgoldTieringModel data : egoldAttributeModel.getEgoldTieringModelArrayList()) {
-                if (totalPrice > data.getMinTotalAmount()) {
+                if (totalPrice >= data.getMinTotalAmount()) {
                     valueTOCheck = (int) (totalPrice % data.getBasisAmount());
                     egoldTieringModel = data;
                 }
@@ -475,9 +475,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         egoldAttributeModel.setBuyEgoldValue(buyEgoldValue);
     }
 
-    private int calculateBuyEgoldValue(int valueTOCheck, int minRange, int maxRange, long basisAmount) {
+    private long calculateBuyEgoldValue(int valueTOCheck, int minRange, int maxRange, long basisAmount) {
 
-        int buyEgoldValue = 0;
+        long buyEgoldValue = 0;
 
         for (int i = minRange; i <= maxRange; i++) {
             if ((valueTOCheck + i) % basisAmount == 0) {

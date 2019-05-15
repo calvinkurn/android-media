@@ -246,7 +246,7 @@
     <string name="technical_problem_text">Ada masalah teknis, coba lagi</string>
     <string name="corner_error_stub">Penjual tidak melayani pengiriman dengan SiCepat</string>
     <string name="emas_checkout_title">Bulatkan Tagihan dengan Nabung Emas</string>
-    <string name="emas_checkout_desc" formatted="false"><![CDATA[%s <b>Rp %s</b>]]></string>
+    <string name="emas_checkout_desc" formatted="false"><![CDATA[%s <b>%s</b>]]></string>
     <string name="checkout_shipment_label_tradein" formatted="false">Kurir akan menelfon %s untuk tukar HP di tujuan pengiriman. Ganti nomor</string>
     <string name="label_promo">Promo</string>
     <string name="label_total_nilai_promo">Total Nilai Promo</string>

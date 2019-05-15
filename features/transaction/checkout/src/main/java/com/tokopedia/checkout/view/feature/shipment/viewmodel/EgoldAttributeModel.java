@@ -18,7 +18,7 @@ public class EgoldAttributeModel implements ShipmentData, Parcelable {
     private String tickerText;
     private String tooltipText;
     private boolean checked;
-    private int buyEgoldValue;
+    private long buyEgoldValue;
     private ArrayList<EgoldTieringModel> egoldTieringModelArrayList;
 
     public boolean isEligible() {
@@ -77,11 +77,11 @@ public class EgoldAttributeModel implements ShipmentData, Parcelable {
         this.tooltipText = tooltipText;
     }
 
-    public int getBuyEgoldValue() {
+    public long getBuyEgoldValue() {
         return buyEgoldValue;
     }
 
-    public void setBuyEgoldValue(int buyEgoldValue) {
+    public void setBuyEgoldValue(long buyEgoldValue) {
         this.buyEgoldValue = buyEgoldValue;
     }
 
@@ -115,7 +115,7 @@ public class EgoldAttributeModel implements ShipmentData, Parcelable {
         checked = in.readByte() != 0;
         minEgoldRange = in.readInt();
         maxEgoldRange = in.readInt();
-        buyEgoldValue = in.readInt();
+        buyEgoldValue = in.readLong();
         titleText = in.readString();
         subText = in.readString();
         tickerText = in.readString();
@@ -130,7 +130,7 @@ public class EgoldAttributeModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (checked ? 1 : 0));
         dest.writeInt(minEgoldRange);
         dest.writeInt(maxEgoldRange);
-        dest.writeInt(buyEgoldValue);
+        dest.writeLong(buyEgoldValue);
         dest.writeString(titleText);
         dest.writeString(subText);
         dest.writeString(tickerText);
