@@ -42,7 +42,7 @@ public class ShopGroup {
     private boolean hasPromoList;
     @SerializedName("checkbox_state")
     @Expose
-    private boolean checkboxState = false;
+    private boolean checkboxState;
 
     public int getUserAddressId() {
         return userAddressId;

@@ -55,7 +55,7 @@ public class CartDataListResponse {
     private AutoapplyStack autoapplyStack = new AutoapplyStack();
     @SerializedName("global_checkbox_state")
     @Expose
-    private boolean globalCheckboxState = false;
+    private boolean globalCheckboxState;
 
     public GlobalCouponAttr getGlobalCouponAttr() {
         return globalCouponAttr;

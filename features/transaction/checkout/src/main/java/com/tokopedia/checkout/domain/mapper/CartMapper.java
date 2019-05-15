@@ -97,7 +97,6 @@ public class CartMapper implements ICartMapper {
             ShopGroupData shopGroupData = new ShopGroupData();
 
             shopGroupData.setError(!mapperUtil.isEmpty(shopGroup.getErrors()));
-            shopGroupData.setErrorTitle(mapperUtil.convertToString(shopGroup.getErrors()));
 
             if (!shopGroupData.isError()) {
                 int errorItemCountPerShop = 0;
@@ -298,6 +297,9 @@ public class CartMapper implements ICartMapper {
                 }
 
                 cartItemDataList.add(cartItemData);
+            }
+            if (shopGroupData.isError() && TextUtils.isEmpty(shopGroupData.getErrorTitle())) {
+                shopGroupData.setErrorTitle(mapperUtil.convertToString(shopGroup.getErrors()));
             }
             shopGroupData.setCartItemDataList(cartItemDataList);
             shopGroupData.setChecked(shopGroup.isCheckboxState());
