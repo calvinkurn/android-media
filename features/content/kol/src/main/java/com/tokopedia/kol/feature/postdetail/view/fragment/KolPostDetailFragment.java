@@ -870,7 +870,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGridItemClick(int positionInFeed, int contentPosition, @NotNull String redirectLink) {
+    public void onGridItemClick(int positionInFeed, int contentPosition, int productPosition,
+                                @NotNull String redirectLink) {
         onGoToLink(redirectLink);
     }
 

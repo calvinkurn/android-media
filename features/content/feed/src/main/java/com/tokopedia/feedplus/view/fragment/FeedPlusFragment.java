@@ -56,6 +56,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
@@ -154,6 +156,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String FEED_TRACE = "mp_feed";
     private static final String AFTER_POST = "after_post";
     private static final String TRUE = "true";
+    private static final String FEED_DETAIL = "feedcommunicationdetail";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
@@ -1261,11 +1264,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     = (FeedRecommendationViewModel) adapter.getlist().get(positionInFeed);
             TrackingRecommendationModel tracking
                     = model.getCards().get(adapterPosition).getTrackingRecommendationModel();
-            int userId = 0;
-            try {
-                userId = Integer.valueOf(getUserSession().getUserId());
-            } catch (NumberFormatException ignored) {
-            }
             analytics.eventRecommendationClick(
                     tracking.getTemplateType(),
                     tracking.getActivityName(),
@@ -1273,7 +1271,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     tracking.getAuthorType(),
                     tracking.getAuthorId(),
                     tracking.getCardPosition(),
-                    userId
+                    getUserIdInt()
             );
         }
     }
@@ -1283,11 +1281,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                             @NonNull String id, @NonNull String type,
                                             boolean isFollow) {
         if (type.equals(FollowCta.AUTHOR_USER)) {
-            int userIdInt = 0;
-            try {
-                userIdInt = Integer.valueOf(id);
-            } catch (NumberFormatException ignored) {
-            }
+            int userIdInt = getUserIdInt();
 
             if (isFollow) {
                 onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition);
@@ -1316,11 +1310,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         if (adapter.getlist().get(positionInFeed) instanceof TopadsShopViewModel) {
             TopadsShopViewModel model = (TopadsShopViewModel) adapter.getlist().get(positionInFeed);
-            int userId = 0;
-            try {
-                userId = Integer.valueOf(getUserSession().getUserId());
-            } catch (NumberFormatException ignored) {
-            }
             for (TrackingRecommendationModel tracking : model.getTrackingList()) {
                 if (TextUtils.equals(tracking.getAuthorName(), shop.getName())) {
                     analytics.eventTopadsRecommendationClick(
@@ -1328,7 +1317,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             tracking.getAdId(),
                             tracking.getAuthorId(),
                             tracking.getCardPosition(),
-                            userId
+                            getUserIdInt()
                     );
                     break;
                 }
@@ -1381,16 +1370,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type,
                                     boolean isFollow) {
         if (type.equals(FollowCta.AUTHOR_USER)) {
-            int userIdInt = 0;
-            try {
-                userIdInt = Integer.valueOf(id);
-            } catch (NumberFormatException ignored) {
-            }
-
             if (isFollow) {
-                onUnfollowKolClicked(positionInFeed, userIdInt);
+                onUnfollowKolClicked(positionInFeed, getUserIdInt());
             } else {
-                onFollowKolClicked(positionInFeed, userIdInt);
+                onFollowKolClicked(positionInFeed, getUserIdInt());
             }
 
         } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
@@ -1490,13 +1473,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
             DynamicPostViewModel model
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    contentPosition,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.IMAGE,
-                    redirectLink
-            );
+            trackCardPostClick(positionInFeed, model.getTrackingPostModel());
         }
     }
 
@@ -1513,22 +1490,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
         String redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId);
 
         if (getContext() != null) {
-            RouteManager.route(
-                    getContext(),
-                    redirectUrl
-            );
+            RouteManager.route(getContext(), redirectUrl);
         }
 
         if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
             DynamicPostViewModel model
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    contentPosition,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.VIDEO,
-                    redirectUrl
-            );
+            trackCardPostClick(positionInFeed, model.getTrackingPostModel());
         }
     }
 
@@ -1545,31 +1513,48 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
             DynamicPostViewModel model
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    contentPosition,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.OPTION + option,
-                    redirectLink
-            );
+            if (model.getContentList().get(contentPosition) instanceof PollContentViewModel) {
+                PollContentViewModel poll
+                        = (PollContentViewModel) model.getContentList().get(contentPosition);
+                PollContentOptionViewModel optionViewModel = poll.getOptionList().get(option);
+                analytics.eventVoteClick(
+                        model.getTrackingPostModel().getActivityName(),
+                        model.getTrackingPostModel().getMediaType(),
+                        pollId,
+                        optionId,
+                        optionViewModel.getOption(),
+                        optionViewModel.getImageUrl(),
+                        model.getTrackingPostModel().getPostId(),
+                        getUserIdInt()
+                );
+            }
         }
     }
 
     @Override
-    public void onGridItemClick(int positionInFeed, int contentPosition,
+    public void onGridItemClick(int positionInFeed, int contentPosition, int productPosition,
                                 @NotNull String redirectLink) {
         onGoToLink(redirectLink);
 
         if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
             DynamicPostViewModel model
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    contentPosition,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.PRODUCT,
-                    redirectLink
-            );
+            if (redirectLink.contains(FEED_DETAIL)) {
+                analytics.eventGoToFeedDetail(model.getTrackingPostModel().getPostId());
+            } else if (model.getContentList().get(contentPosition) instanceof GridPostViewModel) {
+                GridPostViewModel grid
+                        = (GridPostViewModel) model.getContentList().get(contentPosition);
+                GridItemViewModel item = grid.getItemList().get(productPosition);
+                analytics.eventProductGridClick(
+                        item.getText(),
+                        item.getId(),
+                        item.getPrice(),
+                        productPosition,
+                        model.getTrackingPostModel().getActivityName(),
+                        model.getTrackingPostModel().getPostId(),
+                        getUserIdInt()
+                );
+            }
         }
     }
 
@@ -1619,31 +1604,22 @@ public class FeedPlusFragment extends BaseDaggerFragment
         for (int i = 0; i < listFeed.size(); i++) {
             Visitable visitable = listFeed.get(i);
             int feedPosition = adapter.getlist().size() + i;
-            int userId = 0;
-            try {
-                userId = Integer.valueOf(getUserSession().getUserId());
-            } catch (NumberFormatException ignored) {
-            }
+            int userId = getUserIdInt();
 
             if (visitable instanceof DynamicPostViewModel) {
                 DynamicPostViewModel postViewModel = (DynamicPostViewModel) visitable;
                 TrackingPostModel trackingPostModel = postViewModel.getTrackingPostModel();
 
-                analytics.eventCardPostImpression(
-                        trackingPostModel.getTemplateType(),
-                        trackingPostModel.getActivityName(),
-                        trackingPostModel.getTrackingType(),
-                        trackingPostModel.getMediaType(),
-                        trackingPostModel.getTagsType(),
-                        trackingPostModel.getRedirectUrl(),
-                        trackingPostModel.getTotalContent(),
-                        trackingPostModel.getPostId(),
-                        feedPosition,
-                        userId
-                );
+                if (postViewModel.getContentList().size() > 0) {
+                    trackPostContentImpression(
+                            postViewModel,
+                            trackingPostModel,
+                            userId,
+                            feedPosition
+                    );
+                }
 
-                if (postViewModel.getPostTag() != null
-                        && postViewModel.getPostTag().getTotalItems() != 0
+                if (postViewModel.getPostTag().getTotalItems() != 0
                         && postViewModel.getPostTag().getItems().size() != 0) {
                     for (int j = 0; j< postViewModel.getPostTag().getTotalItems(); j++) {
                         postTagAnalytics.trackViewPostTagFeed(
@@ -1706,28 +1682,64 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private void trackCardPostClick(int positionInFeed, int contentPosition,
-                                    TrackingPostModel trackingPostModel, String element,
-                                    String redirectUrl) {
-        int userId = 0;
-        try {
-            userId = Integer.valueOf(getUserSession().getUserId());
-        } catch (NumberFormatException ignored) {
+    private void trackPostContentImpression(DynamicPostViewModel postViewModel,
+                                            TrackingPostModel trackingPostModel,
+                                            int userId, int feedPosition) {
+        if (postViewModel.getContentList().isEmpty()) {
+            return;
         }
 
+        if (postViewModel.getContentList().get(0) instanceof GridPostViewModel) {
+            GridPostViewModel model = (GridPostViewModel) postViewModel.getContentList().get(0);
+            for (int position = 0; position < model.getItemList().size(); position++) {
+                GridItemViewModel item = model.getItemList().get(position);
+                analytics.eventProductGridImpression(
+                        item.getText(),
+                        item.getId(),
+                        item.getPrice(),
+                        position,
+                        trackingPostModel.getActivityName(),
+                        trackingPostModel.getPostId(),
+                        userId
+                );
+            }
+        } else if (postViewModel.getContentList().get(0) instanceof PollContentViewModel) {
+            PollContentViewModel model = (PollContentViewModel) postViewModel.getContentList().get(0);
+            analytics.eventVoteImpression(
+                    trackingPostModel.getActivityName(),
+                    trackingPostModel.getMediaType(),
+                    model.getPollId(),
+                    trackingPostModel.getPostId(),
+                    userId
+            );
+        } else {
+            analytics.eventCardPostImpression(
+                    trackingPostModel.getTemplateType(),
+                    trackingPostModel.getActivityName(),
+                    trackingPostModel.getMediaType(),
+                    trackingPostModel.getRedirectUrl(),
+                    trackingPostModel.getMediaUrl(),
+                    trackingPostModel.getAuthorId(),
+                    trackingPostModel.getTotalContent(),
+                    trackingPostModel.getPostId(),
+                    userId,
+                    feedPosition
+            );
+        }
+    }
+
+    private void trackCardPostClick(int positionInFeed, TrackingPostModel trackingPostModel) {
         analytics.eventCardPostClick(
                 trackingPostModel.getTemplateType(),
                 trackingPostModel.getActivityName(),
-                trackingPostModel.getTrackingType(),
                 trackingPostModel.getMediaType(),
-                trackingPostModel.getTagsType(),
-                redirectUrl,
-                element,
+                trackingPostModel.getRedirectUrl(),
+                trackingPostModel.getMediaUrl(),
+                trackingPostModel.getAuthorId(),
                 trackingPostModel.getTotalContent(),
                 trackingPostModel.getPostId(),
-                positionInFeed,
-                contentPosition != -1 ? String.valueOf(contentPosition) : "",
-                userId
+                getUserIdInt(),
+                positionInFeed
         );
     }
 
@@ -1742,12 +1754,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void trackBannerClick(int adapterPosition,
                                   TrackingBannerModel trackingBannerModel) {
-        int userId = 0;
-        try {
-            userId = Integer.valueOf(getUserSession().getUserId());
-        } catch (NumberFormatException ignored) {
-        }
-
         analytics.eventBannerClick(
                 trackingBannerModel.getTemplateType(),
                 trackingBannerModel.getActivityName(),
@@ -1757,7 +1763,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 trackingBannerModel.getTotalBanner(),
                 trackingBannerModel.getPostId(),
                 adapterPosition,
-                userId
+                getUserIdInt()
         );
     }
 
@@ -1782,4 +1788,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    private int getUserIdInt() {
+        try {
+            return Integer.valueOf(getUserSession().getUserId());
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
+    }
 }

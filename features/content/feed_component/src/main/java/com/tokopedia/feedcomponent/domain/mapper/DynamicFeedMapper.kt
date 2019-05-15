@@ -285,15 +285,19 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     private fun mapPostTracking(feed: Feed): TrackingPostModel {
         val media = feed.content.cardpost.body.media.firstOrNull()
         val mediaType = media?.type ?: ""
+        val mediaUrl = media?.thumbnail ?: ""
         val tagsType = media?.tags?.firstOrNull()?.linkType ?: ""
+        val authorId = feed.content.cardpost.header.followCta.authorID
 
         return TrackingPostModel(
                 feed.type,
                 feed.activity,
                 feed.tracking.type,
                 mediaType,
+                mediaUrl,
                 tagsType,
                 feed.content.cardpost.footer.buttonCta.appLink,
+                authorId,
                 feed.id,
                 feed.content.cardpost.body.media.size
         )
