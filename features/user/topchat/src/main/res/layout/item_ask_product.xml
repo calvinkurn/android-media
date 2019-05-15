@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="230dp"
     android:layout_height="90dp"
     tools:background="@color/red_30">
 
@@ -48,18 +48,18 @@
                 tools:background="@color/background_star_review">
 
                 <ImageView
+                    android:id="@+id/iv_variant_color"
                     android:layout_width="6dp"
                     android:layout_height="6dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="4dp"
                     android:layout_marginRight="4dp"
-                    android:id="@+id/iv_variant_color"
                     tools:background="@color/black" />
 
                 <TextView
+                    android:id="@+id/tv_variant_color"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tv_variant_color"
                     android:textSize="9sp"
                     tools:text="Hitam" />
 
@@ -77,9 +77,9 @@
                 tools:background="@color/background_star_review">
 
                 <TextView
+                    android:id="@+id/tv_variant_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tv_variant_size"
                     android:textSize="9sp"
                     tools:text="Besar" />
 
@@ -113,6 +113,7 @@
             android:layout_marginRight="8dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textColor="@color/orange_red"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_product"
@@ -122,10 +123,10 @@
     </android.support.constraint.ConstraintLayout>
 
     <ImageView
+        android:id="@+id/iv_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:id="@+id/iv_close"
         android:src="@drawable/ic_close_border_24"
         tools:src="@drawable/ic_close_default" />
 
