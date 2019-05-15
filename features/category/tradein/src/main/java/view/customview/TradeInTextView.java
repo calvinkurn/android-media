@@ -28,7 +28,7 @@ public class TradeInTextView extends ConstraintLayout {
     public static final String ACTION_TRADEIN_ELLIGIBLE = "ACTION_TRADE_IN_ELLIGIBLE";
     public static final String EXTRA_ISELLIGIBLE = "EXTRA_ISELLIGIBLE";
 
-    public View.OnClickListener clickListener = new OnClickListener() {
+    private View.OnClickListener clickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             if (trackListener != null)
@@ -97,6 +97,13 @@ public class TradeInTextView extends ConstraintLayout {
             throw new NullPointerException("ITradeInParamReceiver is not initialised");
     }
 
+    @Override
+    public void setOnClickListener(OnClickListener listener) {
+        if (listener == null) {
+            listener = this.clickListener;
+        }
+        super.setOnClickListener(listener);
+    }
 
     public void setTrackListener(ClickTrackListener listener) {
         this.trackListener = listener;
