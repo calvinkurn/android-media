@@ -1,4 +1,4 @@
-query getShopProduct($shopId: String!, $filter: ShopProductFilter!){
+query getShopProduct($shopId: String!, $filter: ProductListFilter!){
     GetShopProduct(shopID: $shopId, filter: $filter){
         status
         errors
