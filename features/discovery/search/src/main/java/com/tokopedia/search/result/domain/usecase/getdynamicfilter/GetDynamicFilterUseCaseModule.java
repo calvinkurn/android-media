@@ -12,7 +12,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.data.gql.dynamicfilter.GqlDynamicFilterResponse;
-import com.tokopedia.search.result.data.mapper.DynamicFilterMapper;
+import com.tokopedia.search.result.data.mapper.DynamicFilterMapperModule;
 import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Named;
@@ -22,7 +22,7 @@ import dagger.Provides;
 import rx.functions.Func1;
 
 @SearchScope
-@Module(includes = DynamicFilterMapper.class)
+@Module(includes = DynamicFilterMapperModule.class)
 public class GetDynamicFilterUseCaseModule {
 
     @SearchScope
