@@ -66,7 +66,6 @@ include "features:kyc"
 include "features:logistic:tracking"
 //include 'features:logistic:tracking_no_op'
 include "features:logistic:logisticaddaddress"
-include "features:logistic:district_recommendation"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticanalytics"
 include "features:logistic:cod"
@@ -76,8 +75,6 @@ include "features:logistic:logisticuploadawb"
 include "features:logistic:logisticinputreceiptshipment"
 //include 'features:logistic:logisticinputreceiptshipment_no_op'
 include "features:logistic:logisticlistaddress"
-include "features:logistic:logisticgeolocation"
-//include 'features:logistic:logisticgeolocation_no_op'
 include "features:logistic:logisticcommon"
 include "features:logistic:logisticinsurance"
 //include "features:logistic:logisticinsurance_no_op"

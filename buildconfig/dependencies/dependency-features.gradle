@@ -11,7 +11,6 @@ ext {
     tkpdDeveloperOptions = '2.22'
     tkpdDigitalVersion = '2.22'
     tkpdDiscoveryVersion = '2.22'
-    tkpdDistrictRecommendationVersion = '2.22'
     tkpdEventsVersion = '2.22'
     tkpdExploreVersion = '2.22'
     tkpdEventVersion = '2.22'
@@ -78,7 +77,6 @@ ext {
 
     //SCOPE LOGISTIC
     groupIdLogistic = 'com.tokopedia.logistic'
-    artifactIdDistrictRecommendation = 'district_recommendation'
     artifactIdLogisticAnalytics = 'logisticanalytics'
     artifactIdLogisticCod = 'logisticCod'
     artifactIdLogisticData = 'logisticdata'
@@ -108,7 +106,6 @@ ext {
             digital                 : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
             digitalDeals            : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             discovery               : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
-            districtRecommendation  : "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
             explore                 : "com.tokopedia.explore:explore:${tkpdKolVersion}",
             events                  : "com.tokopedia.events:events:${tkpdEventVersion}",
             feed                    : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
@@ -244,7 +241,6 @@ ext {
 //            tracking                      : ":features:logistic:tracking_no_op",
             logisticuploadawb               : ":features:logistic:logisticuploadawb",
 //            logisticuploadawb               : ":features:logistic:logisticuploadawb_no_op",
-            logisticdistrictrecommendation  : ":features:logistic:district_recommendation",
             logisticinsurance               : ":features:logistic:logisticinsurance",
 //            logisticinsurance      : ":features:logistic:logisticinsurance_no_op",
             logisticCod                     : ":features:logistic:cod",
