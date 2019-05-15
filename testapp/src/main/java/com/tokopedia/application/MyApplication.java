@@ -9,6 +9,9 @@ import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -17,6 +20,8 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
+import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -25,9 +30,14 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import okhttp3.Response;
 
@@ -52,8 +62,95 @@ public class MyApplication extends BaseMainApplication
         GraphqlClient.init(this);
         NetworkClient.init(this);
         TrackApp.initTrackApp(this);
+        TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
+        TrackApp.getInstance().initializeAllApis();
         super.onCreate();
         Stetho.initializeWithDefaults(this);
+        FlowManager.init(new FlowConfig.Builder(this)
+                .build());
+        FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
+        initCacheApi();
+    }
+
+    public static class GTMAnalytics extends DummyAnalytics{
+
+        public GTMAnalytics(Context context) {
+            super(context);
+        }
+    }
+
+    public static class AppsflyerAnalytics extends DummyAnalytics{
+
+        public AppsflyerAnalytics(Context context) {
+            super(context);
+        }
+    }
+
+    public static class MoengageAnalytics extends DummyAnalytics{
+
+        public MoengageAnalytics(Context context) {
+            super(context);
+        }
+    }
+
+    public static abstract class DummyAnalytics extends ContextAnalytics {
+
+        public DummyAnalytics(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void sendGeneralEvent(Map<String, Object> value) {
+
+        }
+
+        @Override
+        public void sendGeneralEvent(String event, String category, String action, String label) {
+
+        }
+
+        @Override
+        public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
+
+        }
+
+        @Override
+        public void sendEvent(String eventName, Map<String, Object> eventValue) {
+
+        }
+    }
+
+    private void initCacheApi() {
+        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
+                getWhiteList(), String.valueOf(System.currentTimeMillis())));
+    }
+
+    public static List<CacheApiWhiteListDomain> getWhiteList() {
+        List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
+        cacheApiWhiteList.addAll(getShopWhiteList());
+        return cacheApiWhiteList;
+    }
+
+    public static final List<CacheApiWhiteListDomain> getShopWhiteList() {
+        List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
+        return cacheApiWhiteList;
     }
 
     @Override
@@ -111,6 +208,10 @@ public class MyApplication extends BaseMainApplication
         return false;
     }
 
+    /**
+     * Use UserSession object from library usersession directly.
+     */
+    @Deprecated
     public UserSession getSession() {
         com.tokopedia.user.session.UserSession userSession =
                 new com.tokopedia.user.session.UserSession(this);
@@ -247,7 +348,8 @@ public class MyApplication extends BaseMainApplication
     @Deprecated
     @Override
     public boolean isSupportApplink(String appLink) {
-        return true;
+        Toast.makeText(getApplicationContext(), "check for airbnb deeplink " + appLink, Toast.LENGTH_LONG).show();
+        return false;
     }
 
     @Deprecated

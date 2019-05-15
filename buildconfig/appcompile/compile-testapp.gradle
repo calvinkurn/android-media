@@ -1,5 +1,3 @@
-include "features:merchant:shop_settings"
-
 //include "libraries:analytics"
 include "libraries:applink"
 //include "libraries:banner"
@@ -70,6 +68,7 @@ include "features:common:resources_common"
 
 
 // FOR SHOP SETTINGS
+include "features:merchant:shop_settings"
 include "features:merchant:shop_common"
 include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_resource"

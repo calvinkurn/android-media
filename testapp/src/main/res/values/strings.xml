@@ -1,4 +1,3 @@
 <resources>
-    <string name="app_name">imagepickerapp</string>
-    <string name="primary">Utama</string>
+    <string name="app_name">testapp</string>
 </resources>

@@ -8,6 +8,8 @@ import android.widget.EditText
 import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.network.LogoutPojo
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -177,33 +179,7 @@ class MainActivity : AppCompatActivity() {
         val button = findViewById<Button>(R.id.button)
 
         button.setOnClickListener {
-            //            val intent = CampaignActivity.createIntent(this@MainActivity)
-//            startActivityForResult(intent, 100)
-
-            var url = "https://www.tokopedia.com/zano-zzz/jeheheh"; // untuk test video
-//            var url = "https://www.tokopedia.com/guzzini/guzzini-sepatu-heels-wanita-fashion-502-m-hitam"; // untuk test harga coret
-//            var url = "https://www.tokopedia.com/britania/britania-short-sleeve-print-shirt-2328"; // untuk test share
-//            var url = "https://www.tokopedia.com/grot45/totebag-kimora-best-seller-merah"
-//            var url = "https://www.tokopedia.com/fashionista-yus/cardigan-abg-black-ro-cardi-wanita-rajut-spandex-hitam"
-            //var url = "https://www.tokopedia.com/ravaid/baju-kaos-pria-henley-lengan-panjang-misty-by-rava-best-seller-hijau-tua-s"
-//            startActivityForResult(HotelHomepageActivity.getCallingIntent(this), 123)
-
-//            val uri = Uri.parse(url)
-//            val pathSegmentList = uri.pathSegments
-//            if (pathSegmentList.size > 1) {
-//                val shopDomain = pathSegmentList[pathSegmentList.size - 2]
-//                val productKey = pathSegmentList[pathSegmentList.size - 1]
-//                RouteManager.routeInternal(this,
-//                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL_DOMAIN,
-//                        shopDomain, productKey))
-//            } else {
-//                val productId = uri.lastPathSegment
-//                RouteManager.routeInternal(this,
-//                    UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, productId))
-//            }
-
-//            RouteManager.routeInternal(this,
-//                UriUtil.buildUri(ApplinkConstInternal.Marketplace.PRODUCT_DETAIL, "399219318"))
+            RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
         }
     }
 

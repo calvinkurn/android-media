@@ -201,11 +201,15 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.cpm)
     implementation project(rootProject.ext.libraries.config)
+    implementation project(rootProject.ext.libraries.cacheApi)
 
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.maps
 
     implementation 'com.facebook.stetho:stetho:1.5.0'
+
+    // TO BE ADDED AS FEATURE REQUIREMENT
+    implementation project(rootProject.ext.features.shopSettings)
 }
 
 repositories {
