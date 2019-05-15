@@ -18,6 +18,20 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
+        <activity
+            android:name=".features.district_recommendation.DistrictRecommendationActivity"
+            android:label="@string/title_activity_search_address"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
+        <activity
+            android:name=".features.district_recommendation.shopsettings.DistrictRecommendationShopSettingsActivity"
+            android:label="@string/title_activity_search_address"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <activity android:name=".features.pinpoint.GeolocationActivity" />
 
         <service
