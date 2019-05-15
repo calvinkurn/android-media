@@ -17,5 +17,28 @@
             android:layout_width="match_parent"
             android:layout_marginTop="@dimen/dp_8"/>
 
+        <include
+            layout="@layout/layout_order_detail_payment_detail"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/dp_8"/>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8">
+            <LinearLayout
+                android:id="@+id/order_detail_footer_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_25"
+                android:paddingEnd="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_25"/>
+        </android.support.v7.widget.CardView>
+
     </LinearLayout>
 </ScrollView>

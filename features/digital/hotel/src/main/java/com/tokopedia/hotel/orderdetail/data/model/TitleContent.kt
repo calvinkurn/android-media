@@ -7,12 +7,12 @@ import com.google.gson.annotations.SerializedName
  * @author by jessica on 13/05/19
  */
 
-data class TitleText(
+data class TitleContent(
         @SerializedName("title")
         @Expose
         val title: String = "",
 
-        @SerializedName("text")
+        @SerializedName("content")
         @Expose
-        val text: String = ""
+        val content: String = ""
 )

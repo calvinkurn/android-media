@@ -149,59 +149,33 @@
                     tools:text="2 Kamar • 2 Tamu"
                     tools:textSize="@dimen/sp_12" />
 
-                <com.tokopedia.design.component.TextViewCompat
-                    android:id="@+id/breakfast_info"
+                <LinearLayout
+                    android:id="@+id/room_amenities"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_2"
-                    app:fontSize="micro"
                     app:layout_constraintTop_toBottomOf="@id/room_info"
-                    tools:text="Termasuk Sarapan"
-                    tools:textSize="@dimen/sp_12" />
+                    android:orientation="vertical"/>
 
                 <!--Ticker-->
 
-                <com.tokopedia.design.component.TextViewCompat
-                    android:id="@+id/special_request_hint"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/special_request_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/room_amenities"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:textSize="@dimen/sp_12"
-                    app:fontSize="micro"
-                    app:layout_constraintTop_toBottomOf="@id/breakfast_info"
-                    tools:text="Permintaan Khusus" />
-
-                <com.tokopedia.design.component.TextViewCompat
-                    android:id="@+id/special_request"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_2"
-                    android:textColor="@color/light_primary"
-                    app:fontSize="small"
-                    app:layout_constraintTop_toBottomOf="@id/special_request_hint"
-                    app:textViewTheme="lightPrimary"
-                    tools:text="Saya ingin kamar yang view nya pantai, dingin, dan tambahan extra bed 2 yah mas tolong."
-                    tools:textSize="@dimen/sp_14" />
-
+                    />
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/special_notes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
                     app:fontSize="micro"
-                    app:layout_constraintTop_toBottomOf="@id/special_request"
+                    app:layout_constraintTop_toBottomOf="@id/special_request_recycler_view"
                     tools:text="Dana deposit, pajak wisata, dan biaya lainnya mungkin akan ditagihkan saat check-in. "
                     tools:textSize="@dimen/sp_12" />
 
-                <com.tokopedia.design.component.TextViewCompat
-                    android:id="@+id/special_notes_learn_more"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/tkpd_main_green"
-                    app:fontSize="micro"
-                    app:layout_constraintTop_toBottomOf="@id/special_notes"
-                    tools:text="Pelajari lebih lanjut"
-                    tools:textSize="@dimen/sp_12" />
             </android.support.constraint.ConstraintLayout>
 
             <View
@@ -249,7 +223,8 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8">
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_2">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
