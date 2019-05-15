@@ -80,7 +80,7 @@ open class PlayActivity : BaseSimpleActivity() {
 
         playComponent.inject(this)
     }
-w
+
     private fun initView() {
         setupToolbar()
         setFragment()
