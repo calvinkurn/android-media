@@ -19,12 +19,12 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.adapter.AskProductAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.ProductPreviewAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.AskedProduct
+import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
@@ -53,9 +53,9 @@ class TopChatViewStateImpl(
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
-    private var askProductContainer: ConstraintLayout = view.findViewById(R.id.cl_ask_product)
+    private var productPreviewContainer: ConstraintLayout = view.findViewById(R.id.cl_product_preview)
 
-    lateinit var askProductAdapter: AskProductAdapter
+    lateinit var productPreviewAdapter: ProductPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
     lateinit var templateChatTypeFactory: TemplateChatTypeFactory
     var isUploading: Boolean = false
@@ -100,14 +100,14 @@ class TopChatViewStateImpl(
             onAttachProductClicked()
         }
 
-        initAskedProductLayout()
+        initProductPreviewLayout()
     }
 
-    private fun initAskedProductLayout() {
-        askProductAdapter = AskProductAdapter()
-        view.findViewById<RecyclerView>(R.id.rv_ask_product).apply {
+    private fun initProductPreviewLayout() {
+        productPreviewAdapter = ProductPreviewAdapter()
+        view.findViewById<RecyclerView>(R.id.rv_product_preview).apply {
             setHasFixedSize(true)
-            adapter = askProductAdapter
+            adapter = productPreviewAdapter
         }
     }
 
@@ -423,9 +423,9 @@ class TopChatViewStateImpl(
         scrollDownWhenInBottom()
     }
 
-    override fun showAskedProduct(askedProduct: AskedProduct) {
-        askProductContainer.visibility = View.VISIBLE
-        askProductAdapter.updateProduct(askedProduct)
+    override fun showProductPreview(productPreview: ProductPreview) {
+        productPreviewContainer.visibility = View.VISIBLE
+        productPreviewAdapter.updateProduct(productPreview)
     }
 
 }

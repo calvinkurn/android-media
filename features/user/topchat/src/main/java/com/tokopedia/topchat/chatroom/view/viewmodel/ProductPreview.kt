@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
-class AskedProduct(
+class ProductPreview(
         val imageUrl: String,
         val name: String,
         val price: String,
@@ -8,7 +8,7 @@ class AskedProduct(
         val colorHexVariant: String,
         val sizeVariant: String
 ) {
-    fun noAskedProduct(): Boolean {
+    fun noProductPreview(): Boolean {
         return name.isEmpty() || imageUrl.isEmpty() || price.isEmpty()
     }
 

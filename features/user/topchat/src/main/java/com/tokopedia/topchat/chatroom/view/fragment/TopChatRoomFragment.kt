@@ -51,7 +51,7 @@ import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
-import com.tokopedia.topchat.chatroom.view.viewmodel.AskedProduct
+import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
@@ -93,7 +93,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
-    private lateinit var askedProduct: AskedProduct
+    private lateinit var productPreview: ProductPreview
     var indexFromInbox = -1
     var isMoveItemInboxToTop = false
 
@@ -139,7 +139,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
         initView(view)
         loadInitialData()
-        initAskedProduct(savedInstanceState)
+        initProductPreview(savedInstanceState)
     }
 
     override fun loadInitialData() {
@@ -157,17 +157,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun initAskedProduct(savedInstanceState: Bundle?) {
-        val productImageUrl = getParamString(ApplinkConst.Chat.ASK_PRODUCT_IMAGE_URL, arguments, savedInstanceState)
-        val productName = getParamString(ApplinkConst.Chat.ASK_PRODUCT_NAME, arguments, savedInstanceState)
-        val productPrice = getParamString(ApplinkConst.Chat.ASK_PRODUCT_PRICE, arguments, savedInstanceState)
-        val productColorVariant = getParamString(ApplinkConst.Chat.ASK_PRODUCT_COLOR_VARIANT, arguments, savedInstanceState)
-        val productColorHexVariant = getParamString(ApplinkConst.Chat.ASK_PRODUCT_HEX_COLOR_VARIANT, arguments, savedInstanceState)
-        val productSizeVariant = getParamString(ApplinkConst.Chat.ASK_PRODUCT_SIZE_VARIANT, arguments, savedInstanceState)
-        askedProduct = AskedProduct(productImageUrl, productName, productPrice,
+    private fun initProductPreview(savedInstanceState: Bundle?) {
+        val productImageUrl = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, arguments, savedInstanceState)
+        val productName = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, arguments, savedInstanceState)
+        val productPrice = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, arguments, savedInstanceState)
+        val productColorVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, arguments, savedInstanceState)
+        val productColorHexVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, arguments, savedInstanceState)
+        val productSizeVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, arguments, savedInstanceState)
+        productPreview = ProductPreview(productImageUrl, productName, productPrice,
                 productColorVariant, productColorHexVariant, productSizeVariant)
 
-        initAskProductLayoutIfExist()
+        initProductPreviewLayoutIfExist()
     }
 
     private fun onUnblockChatClicked(): () -> Unit {
@@ -375,9 +375,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun initAskProductLayoutIfExist() {
-        if (view == null || askedProduct.noAskedProduct()) return
-        (viewState as? TopChatViewState)?.showAskedProduct(askedProduct)
+    private fun initProductPreviewLayoutIfExist() {
+        if (view == null || productPreview.noProductPreview()) return
+        (viewState as? TopChatViewState)?.showProductPreview(productPreview)
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {

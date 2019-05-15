@@ -13,9 +13,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.viewmodel.AskedProduct
+import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
 
-class AskProductViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+class ProductPreviewViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
 
     private val productImage = itemView?.findViewById<ImageView>(R.id.iv_product)
     private val productName = itemView?.findViewById<TextView>(R.id.tv_product_name)
@@ -36,26 +36,26 @@ class AskProductViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) 
         }
     }
 
-    fun bind(askedProduct: AskedProduct) {
-        ImageHandler.loadImageRounded(productImage?.context, productImage, askedProduct.imageUrl, toDp(3))
-        productName?.text = askedProduct.name
-        productPrice?.text = askedProduct.price
+    fun bind(productPreview: ProductPreview) {
+        ImageHandler.loadImageRounded(productImage?.context, productImage, productPreview.imageUrl, toDp(3))
+        productName?.text = productPreview.name
+        productPrice?.text = productPreview.price
 
-        if (askedProduct.doesNotHaveVariant()) {
+        if (productPreview.doesNotHaveVariant()) {
             hideVariantLayout()
             return
         }
 
-        if (askedProduct.hasColorVariant()) {
-            val backgroundDrawable = getBackgroundDrawable(askedProduct.colorHexVariant)
+        if (productPreview.hasColorVariant()) {
+            val backgroundDrawable = getBackgroundDrawable(productPreview.colorHexVariant)
             productColorVariantHex?.background = backgroundDrawable
-            productColorVariantValue?.text = askedProduct.colorVariant
+            productColorVariantValue?.text = productPreview.colorVariant
         } else {
             productColorVariant?.visibility = View.GONE
         }
 
-        if (askedProduct.hasSizeVariant()) {
-            productSizeVariantValue?.text = askedProduct.sizeVariant
+        if (productPreview.hasSizeVariant()) {
+            productSizeVariantValue?.text = productPreview.sizeVariant
         } else {
             productSizeVariant?.visibility = View.GONE
         }

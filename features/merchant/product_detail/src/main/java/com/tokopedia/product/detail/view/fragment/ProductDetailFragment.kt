@@ -1480,12 +1480,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
         val productColorHexVariant = variants?.get("colour")?.get("hex")
         val productSizeVariant = variants?.get("size")?.get("value")
         with(intent) {
-            putExtra(ApplinkConst.Chat.ASK_PRODUCT_IMAGE_URL, productImageUrl)
-            putExtra(ApplinkConst.Chat.ASK_PRODUCT_NAME, productName)
-            putExtra(ApplinkConst.Chat.ASK_PRODUCT_PRICE, productPrice)
-            putExtra(ApplinkConst.Chat.ASK_PRODUCT_COLOR_VARIANT, productColorVariant)
-            putExtra(ApplinkConst.Chat.ASK_PRODUCT_HEX_COLOR_VARIANT, productColorHexVariant)
-            putExtra(ApplinkConst.Chat.ASK_PRODUCT_SIZE_VARIANT, productSizeVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, productImageUrl)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, productName)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, productPrice)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, productColorVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, productColorHexVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, productSizeVariant)
         }
     }
 

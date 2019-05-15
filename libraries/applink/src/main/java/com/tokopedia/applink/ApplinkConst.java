@@ -268,12 +268,12 @@ public interface ApplinkConst {
         String AVATAR = "avatar";
         String CUSTOM_SUBJECT = "customSubject";
         String PARAM_HEADER = "header";
-        String ASK_PRODUCT_IMAGE_URL = "ask_product_image_url";
-        String ASK_PRODUCT_NAME = "ask_product_name";
-        String ASK_PRODUCT_PRICE = "ask_product_price";
-        String ASK_PRODUCT_COLOR_VARIANT = "ask_product_color";
-        String ASK_PRODUCT_HEX_COLOR_VARIANT = "ask_product_hex_color";
-        String ASK_PRODUCT_SIZE_VARIANT = "ask_product_size";
+        String PRODUCT_PREVIEW_IMAGE_URL = "product_preview_image_url";
+        String PRODUCT_PREVIEW_NAME = "product_preview_name";
+        String PRODUCT_PREVIEW_PRICE = "product_preview_price";
+        String PRODUCT_PREVIEW_COLOR_VARIANT = "product_preview_color";
+        String PRODUCT_PREVIEW_HEX_COLOR_VARIANT = "product_preview_hex_color";
+        String PRODUCT_PREVIEW_SIZE_VARIANT = "product_preview_size";
     }
 
     interface Play {
