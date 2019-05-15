@@ -107,7 +107,6 @@ class TopChatViewStateImpl(
         askProductAdapter = AskProductAdapter()
         view.findViewById<RecyclerView>(R.id.rv_ask_product).apply {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
             adapter = askProductAdapter
         }
     }
