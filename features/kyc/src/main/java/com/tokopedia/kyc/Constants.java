@@ -35,7 +35,7 @@ public interface Constants {
     }
     interface AppLinks{
         String OVOUPGRADE = "tokopedia://ovoupgrade";
-        String OVOUPGRADE_STATUS = "tokopedia://ovoupgradestatus/{status}";
+        String OVOUPGRADE_STATUS = "tokopedia://ovoupgradestatus/{status}/{message}";
     }
 
     interface Keys{

@@ -26,6 +26,7 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
         HasComponent<KYCComponent>, ActivityListener {
 
     private String status;
+    private String message;
     private KYCComponent KYCComponent = null;
 
     @DeepLink(Constants.AppLinks.OVOUPGRADE_STATUS)
@@ -40,6 +41,7 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
     protected Fragment getNewFragment() {
         showHideActionbar(false);
         status = getIntent().getExtras().getString(Constants.Keys.STATUS);
+        message = getIntent().getExtras().getString(Constants.Keys.MESSAGE);
         BaseDaggerFragment baseDaggerFragment = null;
         if(TextUtils.isEmpty(status)){
             finish();
@@ -53,6 +55,9 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
         else if(status.equalsIgnoreCase(Constants.Status.FAILED)){
             baseDaggerFragment = FragmentVerificationFailure.newInstance();
         }
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.Keys.MESSAGE, message);
+        baseDaggerFragment.setArguments(bundle);
         return baseDaggerFragment;
     }
 
