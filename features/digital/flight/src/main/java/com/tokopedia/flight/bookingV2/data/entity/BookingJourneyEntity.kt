@@ -14,7 +14,7 @@ class BookingJourneyEntity(
         @SerializedName("status")
         @Expose
         var status: Int,
-        @SerializedName("departure_airport_id")
+        @SerializedName("departure_id")
         @Expose
         var departureId: String,
         @SerializedName("departure_airport_name")
@@ -26,7 +26,7 @@ class BookingJourneyEntity(
         @SerializedName("departure_city_name")
         @Expose
         var departureCityName: String,
-        @SerializedName("arrival_airport_id")
+        @SerializedName("arrival_id")
         @Expose
         var arrivalId: String,
         @SerializedName("arrival_airport_name")

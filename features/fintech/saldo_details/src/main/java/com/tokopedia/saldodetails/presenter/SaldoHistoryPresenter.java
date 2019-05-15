@@ -12,7 +12,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract;
 import com.tokopedia.saldodetails.response.model.GqlAllDepositSummaryResponse;
-import com.tokopedia.saldodetails.response.model.GqlBuyerDepositSummaryResponse;
 import com.tokopedia.saldodetails.response.model.GqlCompleteTransactionResponse;
 import com.tokopedia.saldodetails.response.model.SummaryDepositParam;
 import com.tokopedia.saldodetails.usecase.GetAllTransactionUsecase;
@@ -242,7 +241,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                 @Override
                 public void onError(Throwable e) {
                     Log.e(TAG, e.toString());
-                    if(isViewNotAttached()) {
+                    if (isViewNotAttached()) {
                         return;
                     }
                     hideLoading();
@@ -452,7 +451,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                 @Override
                 public void onError(Throwable e) {
                     Log.e(TAG, e.toString());
-                    if(isViewNotAttached()) {
+                    if (isViewNotAttached()) {
                         return;
                     }
                     hideLoading();
@@ -548,7 +547,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                 @Override
                 public void onError(Throwable e) {
                     Log.e(TAG, e.toString());
-                    if(isViewNotAttached()) {
+                    if (isViewNotAttached()) {
                         return;
                     }
                     hideLoading();
@@ -650,7 +649,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
                 @Override
                 public void onError(Throwable e) {
                     Log.e(TAG, e.toString());
-                    if(isViewNotAttached()) {
+                    if (isViewNotAttached()) {
                         return;
                     }
                     hideLoading();

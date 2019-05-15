@@ -92,6 +92,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var quantity: Int = 0
     var tempQuantity = quantity
     var isTradeIn = 0
+    var isOcs = true
     var selectedVariantId: String? = null
     var placeholderProductImage: String? = null
     @ProductAction
@@ -116,6 +117,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val EXTRA_PRODUCT_IMAGE = "product_image"
         const val EXTRA_SHOP_TYPE = "shop_type"
         const val EXTRA_SHOP_NAME = "shop_name"
+        const val EXTRA_OCS = "ocs"
         const val EXTRA_TRADE_IN_PARAMS = "trade_in_params"
         private const val TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val TRACKER_LIST_NAME = "tracker_list_name"
@@ -136,6 +138,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            trackerListName: String? = "",
                            shopType: String? = "",
                            shopName: String? = "",
+                           isOneClickShipment: Boolean,
                            tradeInParams: TradeInParams?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
@@ -150,6 +153,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putString(TRACKER_LIST_NAME, trackerListName ?: "")
                     putString(EXTRA_SHOP_TYPE, shopType ?: "")
                     putString(EXTRA_SHOP_NAME, shopName ?: "")
+                    putBoolean(EXTRA_OCS, isOneClickShipment)
                     putParcelable(EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
             }
@@ -465,6 +469,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             shopType = argument.getString(EXTRA_SHOP_TYPE)
             shopName = argument.getString(EXTRA_SHOP_NAME)
             tradeInParams = argument.getParcelable(EXTRA_TRADE_IN_PARAMS)
+            isOcs = argument.getBoolean(EXTRA_OCS)
         }
         if (savedInstanceState == null) {
             if (argument != null) {
@@ -524,7 +529,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                             label)
                     }
             } else {
-                doBuyOrPreorder()
+                doBuyOrPreorder(isOcs)
             }
         }
         tv_trade_in.setTrackListener { trackClickTradeIn() }
@@ -601,10 +606,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    private fun doBuyOrPreorder() {
+    private fun doBuyOrPreorder(isOcs:Boolean) {
         tempQuantity = quantity
         isTradeIn = 0
-        addToCart(true, onFinish = { message: String?, cartId: String? ->
+        addToCart(isOcs, onFinish = { message: String?, cartId: String? ->
             onFinishAddToCart()
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickBuyInVariant(
@@ -615,11 +620,16 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     trackerAttribution, trackerListName)
             }
             activity?.run {
-                val intent = router.getCheckoutIntent(this, ShipmentFormRequest.BundleBuilder().build())
-                startActivity(intent)
+                if (isOcs) {
+                    val intent = router.getCheckoutIntent(this, ShipmentFormRequest.BundleBuilder().build())
+                    startActivity(intent)
+                } else {
+                    val intent = RouteManager.getIntent(this, ApplinkConst.CART)
+                    startActivity(intent)
+                }
             }
         }, onRetryWhenError = {
-            doBuyOrPreorder()
+            doBuyOrPreorder(isOcs)
         })
     }
 
