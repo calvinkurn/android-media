@@ -1,6 +1,11 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
+import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.Drawable
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
@@ -23,8 +28,16 @@ class AskProductViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) 
     private val productSizeVariant = itemView?.findViewById<LinearLayout>(R.id.ll_variant_size)
     private val productSizeVariantValue = itemView?.findViewById<TextView>(R.id.tv_variant_size)
 
+    private val closeButton = itemView?.findViewById<ImageView>(R.id.iv_close)
+
+    init {
+        closeButton?.setOnClickListener {
+
+        }
+    }
+
     fun bind(askedProduct: AskedProduct) {
-        ImageHandler.loadImageRounded(productImage?.context, productImage, askedProduct.imageUrl, 3f)
+        ImageHandler.loadImageRounded(productImage?.context, productImage, askedProduct.imageUrl, toDp(3))
         productName?.text = askedProduct.name
         productPrice?.text = askedProduct.price
 
@@ -34,8 +47,9 @@ class AskProductViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) 
         }
 
         if (askedProduct.hasColorVariant()) {
+            val backgroundDrawable = getBackgroundDrawable(askedProduct.colorHexVariant)
+            productColorVariantHex?.background = backgroundDrawable
             productColorVariantValue?.text = askedProduct.colorVariant
-            productColorVariantHex?.setBackgroundColor(Color.parseColor(askedProduct.colorHexVariant))
         } else {
             productColorVariant?.visibility = View.GONE
         }
@@ -49,6 +63,16 @@ class AskProductViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) 
 
     private fun hideVariantLayout() {
         productVariantContainer?.visibility = View.GONE
+    }
+
+    private fun toDp(number: Int): Float {
+        return number * Resources.getSystem().displayMetrics.density + 0.5f
+    }
+
+    private fun getBackgroundDrawable(hexColor: String): Drawable? {
+        val backgroundDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.circle_color_variant_indicator)
+        backgroundDrawable?.colorFilter = PorterDuffColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.SRC_ATOP)
+        return backgroundDrawable
     }
 
 }
