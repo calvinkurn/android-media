@@ -230,9 +230,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
         progressDialog = ProgressDialog(activity)
         progressDialog?.setMessage(getString(R.string.title_loading))
-        super.onViewCreated(view, savedInstanceState)
-
         initRecyclerView(view)
+        super.onViewCreated(view, savedInstanceState)
         if (shopInfo != null) {
             loadInitialData()
         }
