@@ -67,6 +67,8 @@ public interface CMConstant {
         String VISUAL_EXPANDED_IMAGE = "expandedImg";
         String ACTION_BUTTON_ICON = "icon";
         String CAMPAIGN_ID = "campaignId";
+
+        String NOTIFICATION_PRIORITY = "priorityPreOreo";
     }
 
     interface ReceiverExtraData {

@@ -11,7 +11,7 @@ class BaseNotificationModel {
 
     var notificationId: Int = 0
     var campaignId: Long = 0
-    var priorityPreOreo: Int = 0
+    var priorityPreOreo: Int = 2
     var title: String? = null
     var detailMessage: String? = null
     var message: String? = null

@@ -52,9 +52,12 @@ public class CMNotificationFactory {
                 case CMConstant.NotificationType.ACTION_BUTTONS:
                     return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
                 case CMConstant.NotificationType.BIG_IMAGE:
+                    if (CMNotificationUtils.hasActionButton(baseNotificationModel)) {
+                        return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
+                    }
                     return (new ImageNotification(context.getApplicationContext(), baseNotificationModel));
                 case CMConstant.NotificationType.PERSISTENT:
-                    CmEventPost.INSTANCE.postEvent(context, CMEvents.PersistentEvent.EVENT_VIEW_NOTIFICATION, CMEvents.PersistentEvent.EVENT_CATEGORY,
+                    CmEventPost.INSTANCE.postEvent(CMEvents.PersistentEvent.EVENT_VIEW_NOTIFICATION, CMEvents.PersistentEvent.EVENT_CATEGORY,
                             CMEvents.PersistentEvent.EVENT_ACTION_PUSH_RECEIVED, CMEvents.PersistentEvent.EVENT_LABEL);
                     return (new PersistentNotification(context.getApplicationContext(), baseNotificationModel));
                 case CMConstant.NotificationType.DELETE_NOTIFICATION:
@@ -90,6 +93,9 @@ public class CMNotificationFactory {
     private static BaseNotificationModel convertToBaseModel(Bundle data) {
         BaseNotificationModel model = new BaseNotificationModel();
         model.setIcon(data.getString(CMConstant.PayloadKeys.ICON, ""));
+        if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_PRIORITY)) {
+            model.setPriorityPreOreo(Integer.parseInt(data.getString(CMConstant.PayloadKeys.NOTIFICATION_PRIORITY, "2")));
+        }
         model.setSoundFileName(data.getString(CMConstant.PayloadKeys.SOUND, ""));
         model.setNotificationId(Integer.parseInt(data.getString(CMConstant.PayloadKeys.NOTIFICATION_ID, "500")));
         model.setCampaignId(Long.parseLong(data.getString(CMConstant.PayloadKeys.CAMPAIGN_ID, "0")));
@@ -101,15 +107,23 @@ public class CMNotificationFactory {
         model.setMessage(data.getString(CMConstant.PayloadKeys.MESSAGE, ""));
         model.setMedia(getMedia(data));
         model.setAppLink(data.getString(CMConstant.PayloadKeys.APP_LINK, ApplinkConst.HOME));
-        model.setActionButton(getActionButtons(data));
+        List<ActionButton> actionButtonList = getActionButtons(data);
+        if (actionButtonList != null)
+            model.setActionButton(actionButtonList);
         model.setPersistentButtonList(getPersistentNotificationData(data));
         model.setVideoPushModel(getVideoNotificationData(data));
         model.setCustomValues(getCustomValues(data));
-        model.setCarousalList(getCarousalList(data));
-        model.setCarousalIndex(data.getInt(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0));
+        List<Carousal> carousalList = getCarousalList(data);
+        if (carousalList != null) {
+            model.setCarousalList(carousalList);
+            model.setCarousalIndex(data.getInt(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0));
+        }
         model.setVibration(data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true));
         model.setUpdateExisting(data.getBoolean(CMConstant.PayloadKeys.UPDATE, false));
-        model.setGridList(getGridList(data));
+
+        List<Grid> gridList = getGridList(data);
+        if (gridList != null)
+            model.setGridList(gridList);
         model.setSubText(data.getString(CMConstant.PayloadKeys.SUB_TEXT));
         model.setVisualCollapsedImageUrl(data.getString(CMConstant.PayloadKeys.VISUAL_COLLAPSED_IMAGE));
         model.setVisualExpandedImageUrl(data.getString(CMConstant.PayloadKeys.VISUAL_EXPANDED_IMAGE));

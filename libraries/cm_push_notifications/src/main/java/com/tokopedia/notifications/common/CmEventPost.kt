@@ -13,7 +13,7 @@ object CmEventPost {
 
     private val TAG = CmEventPost::class.java.simpleName
 
-    fun postEvent(context: Context, event: String, category: String, action: String, label: String) {
+    fun postEvent(event: String, category: String, action: String, label: String) {
         CommonUtils.dumper("$TAG-$event&$category&$action&$label")
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 event, category, action, label))

@@ -84,7 +84,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
     }
 
     private void cancelPersistentNotification(Context context, int notificationId) {
-        CmEventPost.INSTANCE.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
+        CmEventPost.INSTANCE.postEvent(CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
                 CMEvents.PersistentEvent.EVENT_ACTION_CANCELED, CMEvents.PersistentEvent.EVENT_LABEL);
         context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
         NotificationManagerCompat.from(context).cancel(notificationId);
@@ -97,10 +97,10 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
             if (null == persistentButton)
                 return;
             if (persistentButton.isAppLogo()) {
-                CmEventPost.INSTANCE.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
+                CmEventPost.INSTANCE.postEvent(CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
                         CMEvents.PersistentEvent.EVENT_ACTION_LOGO_CLICK, persistentButton.getAppLink());
             } else {
-                CmEventPost.INSTANCE.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
+                CmEventPost.INSTANCE.postEvent(CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
                         persistentButton.getText(), persistentButton.getAppLink());
             }
 

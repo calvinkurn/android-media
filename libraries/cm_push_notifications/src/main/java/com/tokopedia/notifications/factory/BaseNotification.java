@@ -72,6 +72,9 @@ public abstract class BaseNotification {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 silentChannel();
                 builder.setChannelId("Channel_Silent");
+            } else {
+                builder.setSound(null);
+                builder.setVibrate(null);
             }
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -81,7 +84,7 @@ public abstract class BaseNotification {
                 builder.setNumber(1);
             } else {
                 setNotificationSound(builder);
-                setNotificationPriorityPreOreo(builder);
+                setNotificationPriorityPreOreo(builder, baseNotificationModel.getPriorityPreOreo());
             }
         }
         if (baseNotificationModel.getIcon().isEmpty()) {
@@ -113,13 +116,13 @@ public abstract class BaseNotification {
             builder.setNumber(1);
         } else {
             setNotificationSound(builder);
-            setNotificationPriorityPreOreo(builder);
+            setNotificationPriorityPreOreo(builder, baseNotificationModel.getPriorityPreOreo());
         }
         return builder;
     }
 
-    private void setNotificationPriorityPreOreo(NotificationCompat.Builder builder) {
-        builder.setPriority(baseNotificationModel.getPriorityPreOreo());
+    private void setNotificationPriorityPreOreo(NotificationCompat.Builder builder, int priority) {
+        builder.setPriority(priority);
     }
 
 
