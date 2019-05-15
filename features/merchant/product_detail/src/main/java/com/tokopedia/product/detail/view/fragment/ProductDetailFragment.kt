@@ -505,21 +505,6 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productDetailTracking.eventClickBuy(productInfo?.basic?.id?.toString() ?: "",
                 productInfo?.variant?.isVariant ?: false)
             doBuy()
-
-//            if (productInfoViewModel.isUserSessionActive()) {
-//                val isExpressCheckout = (productInfoViewModel.productInfoP3resp.value)?.isExpressCheckoutType
-//                        ?: false
-//                if (isExpressCheckout) {
-//                    goToAtcExpress()
-//                } else {
-//                    goToNormalCheckout()
-//                }
-//            } else { // not login
-//                context?.let {
-//                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-//                        REQUEST_CODE_LOGIN)
-//                }
-//            }
         }
 
         open_shop.setOnClickListener {
