@@ -24,6 +24,7 @@ public interface KolEventTracking {
         String KOL_TOP_PROFILE = "kol top profile";
         String CONTENT_FEED = "content feed";
         String CONTENT_FEED_TIMELINE = "content feed timeline";
+        String CONTENT_FEED_TIMELINE_DETAIL = "content feed timeline - product detail";
         String SHOP_PAGE_FEED = "shop page feed";
     }
 

@@ -35,6 +35,7 @@ import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewMode
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -64,6 +65,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Inject
     FeedAnalytics analytics;
+
+    @Inject
+    UserSessionInterface userSession;
 
     private EndlessRecyclerViewScrollListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
@@ -158,7 +162,12 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.getFeedDetail(detailId, pagingHandler.getPage());
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        analytics.trackScreen(getScreenName());
     }
 
     private View.OnClickListener onShareClicked(final String url,
@@ -255,6 +264,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         pagingHandler.setHasNext(listDetail.size() > 1 && hasNextPage);
 
         adapter.notifyDataSetChanged();
+
+        trackImpression(listDetail);
     }
 
     private View.OnClickListener onGoToShopDetailFromButton(final Integer shopId) {
@@ -358,19 +369,24 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(String productId, boolean isWishlist, int adapterPosition) {
+    public void onGoToProductDetail(FeedDetailViewModel feedDetailViewModel, int adapterPosition) {
         if (getActivity() != null
                 && getActivity().getApplicationContext() != null
                 && getArguments() != null
                 && getActivity().getApplicationContext() instanceof FeedModuleRouter) {
 
-            getActivity().startActivityForResult(getProductIntent(productId), REQUEST_OPEN_PDP);
+            getActivity().startActivityForResult(
+                    getProductIntent(String.valueOf(feedDetailViewModel.getProductId())),
+                    REQUEST_OPEN_PDP
+            );
 
-            analytics.eventFeedViewProduct(
-                    getScreenName(),
-                    productId,
-                    getArguments().getString(FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
-                            + FeedTrackingEventLabel.View.PRODUCTLIST_PDP);
+            analytics.eventDetailProductClick(
+                    feedDetailViewModel.getName(),
+                    String.valueOf(feedDetailViewModel.getProductId()),
+                    feedDetailViewModel.getPrice(),
+                    adapterPosition,
+                    getUserIdInt()
+            );
         }
     }
 
@@ -436,4 +452,26 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         }
     }
 
+    private void trackImpression(ArrayList<Visitable> listDetail) {
+        for (int position = 0; position < listDetail.size(); position++) {
+            if (listDetail.get(position) instanceof FeedDetailViewModel) {
+                FeedDetailViewModel model = (FeedDetailViewModel) listDetail.get(position);
+                analytics.eventDetailProductImpression(
+                        model.getName(),
+                        String.valueOf(model.getProductId()),
+                        model.getPrice(),
+                        position,
+                        getUserIdInt()
+                );
+            }
+        }
+    }
+
+    private int getUserIdInt() {
+        try {
+            return Integer.valueOf(userSession.getUserId());
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
+    }
 }

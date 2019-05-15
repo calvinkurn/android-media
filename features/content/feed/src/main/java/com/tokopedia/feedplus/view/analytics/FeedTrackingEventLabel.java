@@ -8,7 +8,7 @@ public class FeedTrackingEventLabel {
 
     public static final String PAGE_FEED = "Feed";
     public static final String PAGE_PRODUCT_LIST = "Product List";
-    public static final String SCREEN_FEED_DETAIL = "Feed Detail";
+    public static final String SCREEN_FEED_DETAIL = "/feed/product-detail";
     public static final String SCREEN_UNIFY_HOME_FEED = "/feed";
 
     public class View {
