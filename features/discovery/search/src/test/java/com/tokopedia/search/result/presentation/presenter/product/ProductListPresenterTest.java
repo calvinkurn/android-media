@@ -58,7 +58,7 @@ public class ProductListPresenterTest {
 
     @Test
     public void loadData_givenNulls_shouldNotExecuteUseCase() {
-        productListPresenter.loadData(null, false, null, false);
+        productListPresenter.loadData(null, null, false);
 
         verify(searchProductFirstPageUseCase, never()).execute(any(RequestParams.class), any(ProductListPresenterTest.MockSearchProductModelSubscriber.class));
     }
