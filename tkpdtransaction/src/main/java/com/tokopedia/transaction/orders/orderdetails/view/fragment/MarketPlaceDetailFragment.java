@@ -72,7 +72,6 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
-import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -209,9 +208,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         statusLihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = OrderHistoryActivity
-                        .createInstance(getActivity(), getArguments().getString(KEY_ORDER_ID), 1);
-                startActivity(intent);
+                startActivity(((UnifiedOrderListRouter) getActivity().getApplication()).getOrderHistoryIntent(
+                        getActivity(), getArguments().getString(KEY_ORDER_ID)
+                ));
             }
         });
     }

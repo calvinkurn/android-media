@@ -316,6 +316,7 @@ import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
+import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
@@ -410,8 +411,7 @@ import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
-import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
-import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
+import com.tokopedia.seller.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
@@ -1071,6 +1071,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getOrderHistoryIntent(Context context, String orderId) {
+        return OrderHistoryActivity.createInstance(context, orderId, 1);
+    }
+
+    @Override
     public Intent getBrandsWebViewIntent(Context context, String url) {
         return BrandsWebViewActivity.newInstance(context, url);
     }
@@ -1254,12 +1259,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToUserPaymentList(Activity activity) {
         activity.startActivity(PaymentSettingInternalRouter.getSettingListPaymentActivityIntent(activity));
-    }
-
-    @Override
-    public void goToOrderHistory(Context context, String orderId, int userMode) {
-        Intent intent = OrderHistoryActivity.createInstance(context, orderId, userMode);
-        context.startActivity(intent);
     }
 
     @Override

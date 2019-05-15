@@ -14,8 +14,8 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
-import com.tokopedia.transaction.purchase.detail.fragment.CancelSearchFragment;
-import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderBuyerRequest;
+import com.tokopedia.seller.purchase.detail.fragment.CancelSearchFragment;
+import com.tokopedia.seller.purchase.detail.fragment.RejectOrderBuyerRequest;
 
 import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.ACTION_BUTTON_URL;
 import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.CANCEL_BUYER_REQUEST;

@@ -25,4 +25,6 @@
 
     <color name="rounded_green">#42b549</color>
     <color name="shadow_sticker">#60000000</color>
+
+    <color name="bg_upload_awb">#fde18e</color>
 </resources>
