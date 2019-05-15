@@ -6,13 +6,13 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.view.activity.AutoAdsActivatedActivity
 import com.tokopedia.topads.auto.view.widget.InfoAutoAdsSheet
 import com.tokopedia.topads.auto.view.widget.ManualAdsConfirmationSheet
+import kotlinx.android.synthetic.main.layout_start_daily_budget.*
 
 /**
  * Author errysuprayogi on 14,May,2019
@@ -20,9 +20,7 @@ import com.tokopedia.topads.auto.view.widget.ManualAdsConfirmationSheet
 class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, ManualAdsConfirmationSheet.ActionListener {
 
 
-    private var adsConfirmationSheet: ManualAdsConfirmationSheet? = null
-    private var startAutoAdsBtn: Button? = null
-    private var startManualAdsBtn: Button? = null
+    private lateinit var adsConfirmationSheet: ManualAdsConfirmationSheet
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +45,7 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
     override fun onClick(v: View) {
         val id = v.id
         if (id == R.id.start_manual_ads_btn) {
-            adsConfirmationSheet!!.show()
+            adsConfirmationSheet.show()
         } else if (id == R.id.start_autoads_btn) {
             startActivity(Intent(activity, AutoAdsActivatedActivity::class.java))
         }
@@ -67,16 +65,15 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         return R.layout.layout_start_daily_budget
     }
 
-    override fun setUpView(view: View) {
-        startAutoAdsBtn = view.findViewById(R.id.start_autoads_btn)
-        startManualAdsBtn = view.findViewById(R.id.start_manual_ads_btn)
+    override fun setUpView(view: View?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun setListener() {
         super.setListener()
-        startManualAdsBtn!!.setOnClickListener(this)
-        startAutoAdsBtn!!.setOnClickListener(this)
-        adsConfirmationSheet!!.setActionListener(this)
+        start_manual_ads_btn.setOnClickListener(this)
+        start_autoads_btn.setOnClickListener(this)
+        adsConfirmationSheet.setActionListener(this)
     }
 
     override fun initInjector() {
