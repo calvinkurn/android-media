@@ -755,11 +755,11 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                                 shopProductViewModel.id))
             }
         }
-        /*if (shopProductViewModel.isWishList) {
-            shopProductLimitedListPresenter.removeFromWishList(shopProductViewModel.id)
+        if (shopProductViewModel.isWishList) {
+            viewModel.removeWishList(shopProductViewModel.id, this)
         } else {
-            shopProductLimitedListPresenter.addToWishList(shopProductViewModel.id)
-        }*/
+            viewModel.addWishList(shopProductViewModel.id, this)
+        }
     }
 
     override fun onSeeAllClicked(shopEtalaseViewModel: ShopEtalaseViewModel) {

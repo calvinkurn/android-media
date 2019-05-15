@@ -21,6 +21,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -32,6 +35,8 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
                                                       private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
                                                       private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
                                                       private val getShopProductUseCase: GqlGetShopProductUseCase,
+                                                      private val addWishListUseCase: AddWishListUseCase,
+                                                      private val removeWishlistUseCase: RemoveWishListUseCase,
                                                       dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
 
     val isEtalaseEmpty: Boolean
@@ -139,8 +144,22 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
         }){}
     }
 
+    fun removeWishList(productId: String, listener: WishListActionListener) {
+        removeWishlistUseCase.createObservable(productId, userId, listener)
+    }
+
+    fun addWishList(productId: String, listener: WishListActionListener) {
+        addWishListUseCase.createObservable(productId, userId, listener)
+    }
+
     fun clearEtalaseCache(){
         getShopEtalaseByShopUseCase.clearCache()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        addWishListUseCase.unsubscribe()
+        removeWishlistUseCase.unsubscribe()
     }
 
     private fun isHasNextPage(page: Int, perPage: Int, totalData: Int): Boolean = page * perPage < totalData
