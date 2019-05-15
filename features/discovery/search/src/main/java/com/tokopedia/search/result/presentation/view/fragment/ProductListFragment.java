@@ -48,6 +48,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
+import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.similarsearch.SimilarSearchManager;
@@ -100,9 +101,6 @@ public class ProductListFragment
     private static final String SEARCH_RESULT_ENHANCE_ANALYTIC = "SEARCH_RESULT_ENHANCE_ANALYTIC";
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
 
-    private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
-    private static final String EXTRA_IS_FORCE_SEARCH = "EXTRA_IS_FORCE_SEARCH";
-    private static final String EXTRA_ADDITIONAL_PARAMS = "EXTRA_ADDITIONAL_PARAMS";
     private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
     private static int PRODUCT_POSITION = 2;
     protected RecyclerView recyclerView;
@@ -120,7 +118,6 @@ public class ProductListFragment
     private Config topAdsConfig;
     private ProductListAdapter adapter;
     private ProductListTypeFactory productListTypeFactory;
-    private boolean isForceSearch;
     private String additionalParams = "";
     private boolean isFirstTimeLoad;
 
@@ -131,10 +128,9 @@ public class ProductListFragment
 
     private FilterController quickFilterController = new FilterController();
 
-    public static ProductListFragment newInstance(SearchParameter searchParameter, boolean isForceSearch) {
+    public static ProductListFragment newInstance(SearchParameter searchParameter) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        args.putBoolean(EXTRA_IS_FORCE_SEARCH, isForceSearch);
         ProductListFragment productListFragment = new ProductListFragment();
         productListFragment.setArguments(args);
         return productListFragment;
@@ -154,7 +150,6 @@ public class ProductListFragment
     private void loadDataFromArguments() {
         if(getArguments() != null) {
             copySearchParameter(getArguments().getParcelable(EXTRA_SEARCH_PARAMETER));
-            isForceSearch = getArguments().getBoolean(EXTRA_IS_FORCE_SEARCH);
         }
     }
 
@@ -181,6 +176,7 @@ public class ProductListFragment
         presenter.attachView(this);
         presenter.initInjector(this);
         presenter.setWishlistActionListener(this);
+        presenter.setRequestDynamicFilterListener(this);
 
         return inflater.inflate(R.layout.fragment_base_discovery, null);
     }
@@ -347,10 +343,7 @@ public class ProductListFragment
     private void loadMoreProduct(final int startRow) {
         generateLoadMoreParameter(startRow);
 
-        HashMap<String, String> additionalParamsMap
-                = NetworkParamHelper.getParamMap(additionalParams);
-
-        presenter.loadMoreData(searchParameter.getSearchParameterMap(), additionalParamsMap);
+        presenter.loadMoreData(searchParameter.getSearchParameterMap(), getAdditionalParamsMap());
     }
 
     @Override
@@ -438,11 +431,6 @@ public class ProductListFragment
 
         isFirstTimeLoad = true;
         reloadData();
-    }
-
-    @Override
-    protected void requestDynamicFilter() {
-
     }
 
     @Override
@@ -571,8 +559,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void onSuggestionClicked(String suggestedQuery) {
-        performNewProductSearch(suggestedQuery, true);
+    public void onSuggestionClicked(String queryParams) {
+        performNewProductSearch(queryParams);
     }
 
     @Override
@@ -589,14 +577,14 @@ public class ProductListFragment
     }
 
     @Override
-    public void onSearchGuideClicked(String keyword) {
-        performNewProductSearch(keyword, true);
+    public void onSearchGuideClicked(String queryParams) {
+        performNewProductSearch(queryParams);
     }
 
     @Override
-    public void onRelatedSearchClicked(String keyword) {
+    public void onRelatedSearchClicked(String queryParams, String keyword) {
         SearchTracking.eventClickRelatedSearch(getContext(), getQueryKey(), keyword);
-        performNewProductSearch(keyword, true);
+        performNewProductSearch(queryParams);
     }
 
     @Override
@@ -778,16 +766,13 @@ public class ProductListFragment
         initTopAdsParams();
         generateLoadMoreParameter(0);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
-        presenter.loadData(getSearchParameter().getSearchParameterMap(), isForceSearch, getAdditionalParamsMap(), isFirstTimeLoad);
+        presenter.loadData(getSearchParameter().getSearchParameterMap(), getAdditionalParamsMap(), isFirstTimeLoad);
         TopAdsGtmTracker.getInstance().clearDataLayerList();
     }
 
-    private HashMap<String, String> getAdditionalParamsMap() {
-        if (isFilterActive()) {
-            return NetworkParamHelper.getParamMap(additionalParams);
-        } else {
-            return new HashMap<>();
-        }
+    @Override
+    public Map<String, String> getAdditionalParamsMap() {
+        return NetworkParamHelper.getParamMap(additionalParams);
     }
 
     @Override
@@ -886,7 +871,9 @@ public class ProductListFragment
 
     @Override
     public void setAdditionalParams(String additionalParams) {
-        this.additionalParams = additionalParams;
+        if (!TextUtils.isEmpty(additionalParams)) {
+            this.additionalParams = additionalParams;
+        }
     }
 
     @Override
@@ -911,6 +898,11 @@ public class ProductListFragment
             dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer());
         }
         SearchTracking.trackEventImpressionGlobalNavWidgetItem(trackingQueue, dataLayerList, globalNavViewModel.getKeyword());
+    }
+
+    @Override
+    public boolean isAnyFilterActive() {
+        return isFilterActive();
     }
 
     public void sendMoEngageSearchAttempt(Context context, String keyword, boolean isResultFound, HashMap<String, String> category) {
@@ -1039,5 +1031,10 @@ public class ProductListFragment
             return ((GridLayoutManager) recyclerView.getLayoutManager()).findViewByPosition(PRODUCT_POSITION);
         }
         return null;
+    }
+
+    @Override
+    public Map<String, Object> getSearchParameterMap() {
+        return searchParameter.getSearchParameterMap();
     }
 }

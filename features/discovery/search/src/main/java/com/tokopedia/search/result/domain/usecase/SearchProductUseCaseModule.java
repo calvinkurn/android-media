@@ -3,6 +3,7 @@ package com.tokopedia.search.result.domain.usecase;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.domain.Repository;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.result.data.repository.SearchProductRepositoryModule;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.usecase.UseCase;
 
@@ -12,7 +13,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @SearchScope
-@Module
+@Module(includes = SearchProductRepositoryModule.class)
 public class SearchProductUseCaseModule {
 
     @SearchScope

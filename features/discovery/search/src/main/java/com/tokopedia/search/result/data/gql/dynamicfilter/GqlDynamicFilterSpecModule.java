@@ -14,7 +14,7 @@ import dagger.Provides;
 
 @SearchScope
 @Module
-public class GqlDynamicFilterModule {
+public class GqlDynamicFilterSpecModule {
 
     @SearchScope
     @Provides

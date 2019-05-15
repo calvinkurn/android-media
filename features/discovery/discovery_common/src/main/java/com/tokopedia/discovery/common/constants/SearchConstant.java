@@ -52,6 +52,7 @@ public interface SearchConstant {
         String GQL_INITIATE_SEARCH = "gql_initiate_search";
         String GQL_SEARCH_PRODUCT_FIRST_PAGE = "gql_search_product_first_page";
         String GQL_SEARCH_PRODUCT_LOAD_MORE = "gql_search_product_load_more";
+        String GQL_DYNAMIC_FILTER_SPEC = "gql_dynamic_filter_spec";
     }
 
     interface SearchProduct {
@@ -73,5 +74,12 @@ public interface SearchConstant {
         String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
         String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
         String PATH_GET_DYNAMIC_ATTRIBUTE_V4 = "v4/dynamic_attributes";
+    }
+
+    interface DynamicFilter {
+        String GET_DYNAMIC_FILTER_USE_CASE = "get_dynamic_filter_use_case";
+        String GET_DYNAMIC_FILTER_V4_USE_CASE = "get_dynamic_filter_v4_use_case";
+        String GET_DYNAMIC_FILTER_GQL_USE_CASE = "get_dynamic_filter_gql_use_case";
+        String DYNAMIC_FILTER_GQL_REPOSITORY = "get_dynamic_filter_gql_repository";
     }
 }

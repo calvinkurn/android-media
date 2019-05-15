@@ -36,7 +36,6 @@ final class SearchProductFirstPageGqlRepository extends GqlRepository<SearchProd
 
         variables.put(KEY_QUERY, getQueryFromParameters(parameters));
         variables.put(KEY_PARAMS, UrlParamUtils.generateUrlParamString(parameters));
-        variables.put(KEY_SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_PRODUCT);
         variables.put(KEY_HEADLINE_PARAMS, createHeadlineParams(parameters));
 
         return variables;

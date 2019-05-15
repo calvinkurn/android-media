@@ -34,20 +34,20 @@ public class SearchPresenterTest {
 
     @Test(expected = RuntimeException.class)
     public void initiateSearch_NotInjected_ShouldThrowError() {
-        searchPresenter.initiateSearch(new HashMap<>(), false);
+        searchPresenter.initiateSearch(new HashMap<>());
     }
 
     @Test(expected = RuntimeException.class)
     public void initiateSearch_NoListener_ShouldThrowError() {
         searchPresenter.initiateSearchModelUseCase = initiateSearchModelUseCase;
-        searchPresenter.initiateSearch(new HashMap<>(), false);
+        searchPresenter.initiateSearch(new HashMap<>());
     }
 
     @Test
     public void initiateSearch_GivenNulls_ShouldNotExecuteUseCase() {
         searchPresenter.initiateSearchModelUseCase = initiateSearchModelUseCase;
         searchPresenter.setInitiateSearchListener(mock(InitiateSearchListener.class));
-        searchPresenter.initiateSearch(null, false);
+        searchPresenter.initiateSearch(null);
 
         verify(initiateSearchModelUseCase, never()).execute(any(RequestParams.class), any(InitiateSearchSubscriber.class));
     }
@@ -58,7 +58,7 @@ public class SearchPresenterTest {
         searchPresenter.setInitiateSearchListener(mock(InitiateSearchListener.class));
         doNothing().when(initiateSearchModelUseCase).execute(any(RequestParams.class), any(InitiateSearchSubscriber.class));
 
-        searchPresenter.initiateSearch(new HashMap<>(), false);
+        searchPresenter.initiateSearch(new HashMap<>());
 
         verify(initiateSearchModelUseCase).execute(any(RequestParams.class), any(InitiateSearchSubscriber.class));
     }
@@ -78,6 +78,16 @@ public class SearchPresenterTest {
         searchPresenter.onPause();
 
         verify(initiateSearchModelUseCase).unsubscribe();
+    }
+
+    @Test
+    public void onResume() {
+        searchPresenter.onResume();
+    }
+
+    @Test
+    public void onDestroy() {
+        searchPresenter.onDestroy();
     }
 
     @After

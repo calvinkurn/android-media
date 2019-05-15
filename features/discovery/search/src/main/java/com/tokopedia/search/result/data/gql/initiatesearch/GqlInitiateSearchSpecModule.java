@@ -17,7 +17,7 @@ import dagger.Provides;
 
 @SearchScope
 @Module
-public class GqlInitiateSearchModule {
+public class GqlInitiateSearchSpecModule {
 
     @SearchScope
     @Provides

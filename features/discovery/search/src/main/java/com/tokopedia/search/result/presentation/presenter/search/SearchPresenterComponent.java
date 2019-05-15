@@ -9,7 +9,6 @@ import dagger.Component;
 
 @SearchScope
 @Component(modules = {
-        InitiateSearchRepositoryModule.class,
         InitiateSearchUseCaseModule.class
 }, dependencies = BaseAppComponent.class)
 public interface SearchPresenterComponent {

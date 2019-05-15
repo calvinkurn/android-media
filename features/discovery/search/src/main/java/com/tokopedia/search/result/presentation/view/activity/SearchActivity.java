@@ -40,7 +40,6 @@ import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
@@ -51,6 +50,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchContract;
+import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragment;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -340,7 +340,7 @@ public class SearchActivity extends BaseActivity
             public void onHandleResponseError() {
                 NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
                     if(searchParameter == null) return;
-                    SearchActivity.this.performProductSearch(searchParameter.getSearchQuery());
+                    SearchActivity.this.performProductSearch("");
                 });
             }
 
@@ -672,7 +672,7 @@ public class SearchActivity extends BaseActivity
         onSearchingStart();
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
 
-        searchPresenter.initiateSearch(searchParameter.getSearchParameterMap(), getInitiateSearchListener());
+        searchPresenter.initiateSearch(searchParameter.getSearchParameterMap());
     }
 
     private void updateSearchParameterBeforeSearch(String queryParams) {

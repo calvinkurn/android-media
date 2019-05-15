@@ -7,6 +7,7 @@ import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.json.JSONArray;
@@ -53,6 +54,8 @@ public interface ProductListSectionContract {
 
         void setEmptyProduct();
 
+        Map<String, Object> getSearchParameterMap();
+
         void backToTop();
 
         List<Option> getQuickFilterOptions(DataValue dynamicFilterModel);
@@ -90,14 +93,20 @@ public interface ProductListSectionContract {
         int getLastProductItemPositionFromCache();
 
         void updateScrollListener();
+
+        boolean isAnyFilterActive();
+
+        Map<String, String> getAdditionalParamsMap();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
         void setWishlistActionListener(WishListActionListener wishlistActionListener);
 
+        void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener);
+
         void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams);
 
-        void loadData(Map<String, Object> searchParameter, boolean isForceSearch, Map<String, String> additionalParams, boolean isFirstTimeLoad);
+        void loadData(Map<String, Object> searchParameter, Map<String, String> additionalParams, boolean isFirstTimeLoad);
 
         void handleWishlistButtonClicked(final ProductItemViewModel productItem);
     }

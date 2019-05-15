@@ -13,9 +13,9 @@ public interface ProductListener extends EmptyStateListener {
 
     void onSuggestionClicked(String suggestedQuery);
 
-    void onSearchGuideClicked(String keyword);
+    void onSearchGuideClicked(String queryParams);
 
-    void onRelatedSearchClicked(String keyword);
+    void onRelatedSearchClicked(String queryParams, String keyword);
 
     void onQuickFilterSelected(Option option);
 

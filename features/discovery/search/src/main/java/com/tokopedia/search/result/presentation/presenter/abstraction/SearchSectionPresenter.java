@@ -12,27 +12,9 @@ public abstract class SearchSectionPresenter<T extends SearchSectionContract.Vie
         extends BaseDaggerPresenter<T>
         implements SearchSectionContract.Presenter<T> {
 
-    @Override
-    public void requestDynamicFilter() {
-        requestDynamicFilter(new HashMap<>());
-    }
-
-    @Override
-    public void requestDynamicFilter(HashMap<String, String> additionalParams) {
-        if (getView() == null) {
-            return;
-        }
-        RequestParams params = getDynamicFilterParam();
-        params = enrichWithFilterAndSortParams(params);
-        params = enrichWithAdditionalParams(params, additionalParams);
-        removeDefaultCategoryParam(params);
-        getFilterFromNetwork(params);
-    }
-
-    protected RequestParams enrichWithAdditionalParams(RequestParams requestParams,
+    protected void enrichWithAdditionalParams(RequestParams requestParams,
                                                        Map<String, String> additionalParams) {
         requestParams.putAllString(additionalParams);
-        return requestParams;
     }
 
     protected RequestParams enrichWithFilterAndSortParams(RequestParams requestParams) {
@@ -50,13 +32,4 @@ public abstract class SearchSectionPresenter<T extends SearchSectionContract.Vie
         }
         return requestParams;
     }
-
-    protected void removeDefaultCategoryParam(RequestParams params) {
-        if (params.getString(SearchApiConst.SC, "").equals(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SC)) {
-            params.clearValue(SearchApiConst.SC);
-        }
-    }
-
-    protected abstract RequestParams getDynamicFilterParam();
-    protected abstract void getFilterFromNetwork(RequestParams requestParams);
 }
