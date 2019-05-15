@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ShopListLoadMoreListener {
 
-    void onSuccess(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage);
-    void onFailed();
+//    void onSuccess(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage);
+//    void onFailed();
 }
