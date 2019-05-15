@@ -93,6 +93,7 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.product.detail.ProductDetailRouter;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -159,7 +160,6 @@ import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
-import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
 import com.tokopedia.events.EventModuleRouter;
@@ -1810,8 +1810,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void navigateToEditAddressActivityRequest(final Fragment fragment, final int requestCode, Token token) {
-        fragment.startActivityForResult(DistrictRecommendationActivity.createInstanceIntent(fragment.getActivity(),
+    public void navigateToDistrictRecommendation(final Fragment fragment, final int requestCode, Token token) {
+        fragment.startActivityForResult(DistrictRecommendationActivity.newInstance(fragment.getActivity(),
                 token),
                 requestCode);
     }
@@ -2655,7 +2655,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.logisticdata.data.entity.address.Token token, boolean isFromMarketplaceCart) {
+    public Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart) {
         if (isFromMarketplaceCart)
             return DistrictRecommendationActivity.createInstanceFromMarketplaceCart(activity, new TokenMapper().convertTokenModel(token));
         else

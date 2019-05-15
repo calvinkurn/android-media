@@ -5,9 +5,9 @@ package com.tokopedia.logisticaddaddress;
  */
 public class AddressConstants {
 
-    public static final String SCREEN_ADD_ADDRESS_FORM = "Add Address Form";
+    public static final String SCREEN_ADD_ADDRESS_FORM = "Add DistrictRecommendationAddress Form";
 
-    public static final String SCREEN_MANAGE_ADDRESS = "People Edit Address";
+    public static final String SCREEN_MANAGE_ADDRESS = "People Edit DistrictRecommendationAddress";
 
     public static final int REQUEST_CODE = 0x12;
     public static final int ADD_ADDRESS_REQUESTCODE = 0x1;

@@ -2,8 +2,8 @@ package com.tokopedia.shop.open.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.shop.open.domain.interactor.ShopOpenSaveLocationUseCase;

@@ -43,7 +43,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
 
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
     public static final String EXTRA_IS_FROM_MARKETPLACE_CART = "EXTRA_IS_FROM_MARKETPLACE_CART";
-    public static final String SCREEN_ADDRESS_GEOLOCATION = "Add Geolocation Address page";
+    public static final String SCREEN_ADDRESS_GEOLOCATION = "Add Geolocation DistrictRecommendationAddress page";
 
     private Bundle mBundle;
     private boolean isFromMarketPlace = false;
@@ -53,7 +53,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
     @Inject UserSession mUser;
 
     /**
-     * Usage = Address // Address Tx // Shipment // ShopOpen // Seller
+     * Usage = DistrictRecommendationAddress // DistrictRecommendationAddress Tx // Shipment // ShopOpen // Seller
      *
      * @param locationPass          please get from common module logistic_data
      * @param isFromMarketPlaceCart true if you are from marketplace cart

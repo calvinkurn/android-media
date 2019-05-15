@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.district_recommendation.R;
+import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
@@ -34,6 +35,10 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
         Intent intent = new Intent(activity, DistrictRecommendationActivity.class);
         intent.putExtra(ARGUMENT_DATA_TOKEN, token);
         return intent;
+    }
+
+    public static Intent newInstance(Activity activity, com.tokopedia.logisticdata.data.entity.address.Token token) {
+        return createInstanceIntent(activity, new TokenMapper().convertTokenModel(token));
     }
 
     @Override

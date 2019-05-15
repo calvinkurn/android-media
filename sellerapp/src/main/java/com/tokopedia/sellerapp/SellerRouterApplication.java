@@ -81,7 +81,6 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
@@ -109,6 +108,7 @@ import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
@@ -929,8 +929,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void navigateToEditAddressActivityRequest(final Fragment fragment, final int requestCode, Token token) {
-        fragment.startActivityForResult(DistrictRecommendationActivity.createInstanceIntent(fragment.getActivity(),
+    public void navigateToDistrictRecommendation(final Fragment fragment, final int requestCode, Token token) {
+        fragment.startActivityForResult(DistrictRecommendationActivity.newInstance(fragment.getActivity(),
                 token),
                 requestCode);
     }
