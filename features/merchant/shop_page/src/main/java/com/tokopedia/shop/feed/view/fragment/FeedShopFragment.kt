@@ -1,4 +1,4 @@
-package com.tokopedia.shop.feed.fragment
+package com.tokopedia.shop.feed.view.fragment
 
 import android.app.Activity
 import android.content.Intent
