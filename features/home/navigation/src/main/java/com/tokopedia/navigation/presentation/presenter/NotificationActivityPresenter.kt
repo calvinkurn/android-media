@@ -20,7 +20,7 @@ class NotificationActivityPresenter @Inject constructor(
         , NotificationActivityContract.Presenter {
 
     override fun getTotalUnreadCounter(onSuccessGetTotalUnreadCounter: (NotificationUpdateTotalUnread) -> Unit) {
-        getNotificationTotalUnreadUseCase.execute(GetNotificationTotalUnreadSubscriber(onSuccessGetTotalUnreadCounter))
+//        getNotificationTotalUnreadUseCase.execute(GetNotificationTotalUnreadSubscriber(onSuccessGetTotalUnreadCounter))
     }
 
     override fun getUpdateUnreadCounter(onSuccess: (NotificationUpdateUnread) -> Unit) {
