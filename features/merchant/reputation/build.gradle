@@ -55,9 +55,6 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.maps
 
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
-
     implementation project(rootProject.ext.libraries.core_legacy)
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
