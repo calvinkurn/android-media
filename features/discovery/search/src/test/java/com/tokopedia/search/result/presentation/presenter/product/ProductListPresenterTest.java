@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.search.result.domain.model.SearchProductModel;
+import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -45,6 +46,7 @@ public class ProductListPresenterTest {
     public void setUp() {
         productListPresenter = new ProductListPresenter();
 
+        productListPresenter.attachView(mock(ProductListSectionContract.View.class));
         productListPresenter.searchProductFirstPageUseCase = searchProductFirstPageUseCase;
         productListPresenter.searchProductLoadMoreUseCase = searchProductLoadMoreUseCase;
     }

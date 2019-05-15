@@ -169,6 +169,7 @@ final class ProductListPresenter
 
     @Override
     public void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams) {
+        checkViewAttached();
         if(searchParameter == null || additionalParams == null) return;
 
         RequestParams requestParams = createInitializeSearchParam(searchParameter);
@@ -438,12 +439,13 @@ final class ProductListPresenter
 
     @Override
     public void loadData(Map<String, Object> searchParameter, Map<String, String> additionalParams, boolean isFirstTimeLoad) {
-        super.checkViewAttached();
+        checkViewAttached();
         if(searchParameter == null || additionalParams == null) return;
 
         RequestParams requestParams = createInitializeSearchParam(searchParameter);
         enrichWithRelatedSearchParam(requestParams);
-        if (isViewAttached() && getView().isAnyFilterActive()) {
+
+        if (checkShouldEnrichWithAdditionalParams(additionalParams)) {
             enrichWithAdditionalParams(requestParams, additionalParams);
         }
 
@@ -451,6 +453,10 @@ final class ProductListPresenter
         searchProductFirstPageUseCase.unsubscribe();
 
         searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(isFirstTimeLoad));
+    }
+
+    private boolean checkShouldEnrichWithAdditionalParams(Map<String, String> additionalParams) {
+        return getView().isAnyFilterActive() && additionalParams != null;
     }
 
     // TODO:: Create a new class that extends Subscriber<SearchProductModel> for easier unit testing. See InitiateSearchSubscriber for reference.

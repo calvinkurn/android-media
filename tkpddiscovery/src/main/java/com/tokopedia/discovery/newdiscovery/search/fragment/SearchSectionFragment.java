@@ -32,7 +32,6 @@ import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
@@ -171,7 +170,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         isUsingBottomSheetFilter = remoteConfig.getBoolean(
                 RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER,
-                true) && (this instanceof ProductListFragment);
+                true);
     }
 
     @Override
