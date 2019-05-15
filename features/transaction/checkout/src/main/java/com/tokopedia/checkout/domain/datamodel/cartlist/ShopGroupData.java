@@ -119,7 +119,11 @@ public class ShopGroupData implements Parcelable {
             cartItemHolderData.setEditableRemark(false);
             cartItemHolderData.setErrorFormItemValidationMessage("");
             cartItemHolderData.setEditableRemark(false);
-            cartItemHolderData.setSelected(cartItemData.getOriginData().isCheckboxState() || !cartItemData.isError());
+            if (cartItemData.isError()) {
+                cartItemHolderData.setSelected(false);
+            } else {
+                cartItemHolderData.setSelected(cartItemData.getOriginData().isCheckboxState());
+            }
             cartItemHolderDataList.add(cartItemHolderData);
         }
     }
@@ -268,15 +272,25 @@ public class ShopGroupData implements Parcelable {
         this.fulfillmentName = fulfillmentName;
     }
 
-    public boolean isHasPromoList() { return hasPromoList; }
+    public boolean isHasPromoList() {
+        return hasPromoList;
+    }
 
-    public void setHasPromoList(boolean hasPromoList) { this.hasPromoList = hasPromoList; }
+    public void setHasPromoList(boolean hasPromoList) {
+        this.hasPromoList = hasPromoList;
+    }
 
-    public String getCartString() { return cartString; }
+    public String getCartString() {
+        return cartString;
+    }
 
-    public void setCartString(String cartString) { this.cartString = cartString; }
+    public void setCartString(String cartString) {
+        this.cartString = cartString;
+    }
 
-    public VoucherOrdersItemData getVoucherOrdersItemData() { return voucherOrdersItemData; }
+    public VoucherOrdersItemData getVoucherOrdersItemData() {
+        return voucherOrdersItemData;
+    }
 
     public void setVoucherOrdersItemData(VoucherOrdersItemData voucherOrdersItemData) {
         this.voucherOrdersItemData = voucherOrdersItemData;

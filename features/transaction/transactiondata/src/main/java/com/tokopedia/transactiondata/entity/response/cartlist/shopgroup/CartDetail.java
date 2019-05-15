@@ -27,7 +27,7 @@ public class CartDetail {
     private Product product = new Product();
     @SerializedName("checkbox_state")
     @Expose
-    private boolean checkboxState;
+    private boolean checkboxState = false;
 
     public int getCartId() {
         return cartId;
