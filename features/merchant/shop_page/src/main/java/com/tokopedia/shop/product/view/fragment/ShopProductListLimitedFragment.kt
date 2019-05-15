@@ -78,7 +78,6 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductPromoViewHo
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
-import com.tokopedia.shop.product.view.listener.ShopProductListView
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel
 import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel
 import com.tokopedia.shop.product.view.model.ShopMerchantVoucherViewModel
@@ -108,7 +107,7 @@ import kotlin.collections.ArrayList
  */
 
 class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
-        ShopProductListView, WishListActionListener, BaseEmptyViewHolder.Callback,
+        WishListActionListener, BaseEmptyViewHolder.Callback,
         ShopProductPromoViewHolder.PromoViewHolderListener, ShopProductClickedListener,
         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener,
         ShopCarouselSeeAllClickedListener, MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener,
@@ -117,10 +116,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: ShopProductLimitedViewModel
-
-
-    /*@Inject
-    lateinit var shopProductLimitedListPresenter: ShopProductLimitedListPresenter*/
 
     var shopPageTracking: ShopPageTrackingBuyer? = null
     lateinit var merchantVoucherListPresenter: MerchantVoucherListPresenter
@@ -136,7 +131,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     private val sortName = Integer.toString(Integer.MIN_VALUE)
     private var recyclerView: RecyclerView? = null
 
-    var selectedEtalaseId: String? = null
+    var selectedEtalaseId: String = ""
         private set
     private var selectedEtalaseName: String = ""
 
@@ -145,8 +140,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     private val shopProductAdapter: ShopProductAdapter by lazy { createAdapterInstance() as ShopProductAdapter }
     private val gridLayoutManager: GridLayoutManager by lazy { recyclerViewLayoutManager as GridLayoutManager }
     private var needReloadData: Boolean = false
-    private var highlightEtalaseViewModelList: MutableList<ShopEtalaseViewModel>? = null
-    private var shopEtalaseViewModelList: List<ShopEtalaseViewModel>? = null
     private var needLoadVoucher: Boolean = false
 
     private var shopId: String? = null
@@ -201,7 +194,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         savedInstanceState?.let {
-            selectedEtalaseId = it.getString(SAVED_SELECTED_ETALASE_ID)
+            selectedEtalaseId = it.getString(SAVED_SELECTED_ETALASE_ID) ?: ""
             selectedEtalaseName = it.getString(SAVED_SELECTED_ETALASE_NAME) ?: ""
             shopId = it.getString(SAVED_SHOP_ID)
             isGoldMerchant = it.getBoolean(SAVED_SHOP_IS_GOLD_MERCHANT)
@@ -220,7 +213,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         merchantVoucherListPresenter.attachView(this)
 
         attribution = arguments?.getString(SHOP_ATTRIBUTION, "") ?: ""
-        //shopProductLimitedListPresenter.attachView(this, this)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopProductLimitedViewModel::class.java)
     }
@@ -317,12 +309,10 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
             showLoading()
             shopId = it.shopCore.shopID
-            if (shopEtalaseViewModelList == null || shopEtalaseViewModelList!!.size == 0) {
-                //load etalase list first
+            if (viewModel.isEtalaseEmpty){
                 viewModel.getShopEtalase(shopId!!)
             } else {
                 loadData(defaultInitialPage)
-
                 if (needLoadEtalaseHighlight) {
                     loadEtalaseHighLight()
                 }
@@ -357,14 +347,14 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun loadData(page: Int) {
-        if (shopInfo != null && shopEtalaseViewModelList!!.isNotEmpty()) {
+        if (shopInfo != null && !viewModel.isEtalaseEmpty) {
             viewModel.getShopProduct(shopInfo!!.shopCore.shopID,
-                    page, ShopPageConstant.DEFAULT_PER_PAGE, 0, selectedEtalaseId!!,
+                    page, ShopPageConstant.DEFAULT_PER_PAGE, 0, selectedEtalaseId,
                     "", false)
         }
     }
 
-    override fun renderShopProductPromo(shopProductPromoViewModel: ShopProductPromoViewModel) {
+    private fun renderShopProductPromo(shopProductPromoViewModel: ShopProductPromoViewModel) {
         shopProductAdapter.setShopProductPromoViewModel(shopProductPromoViewModel)
     }
 
@@ -483,7 +473,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         onErrorAddToWishList(MessageErrorException(errorMessage))
     }
 
-    override fun onErrorAddToWishList(e: Throwable) {
+    private fun onErrorAddToWishList(e: Throwable) {
         activity?.let {
             if (viewModel.isLogin) {
                 val intent = (it.application as ShopModuleRouter).getLoginIntent(it)
@@ -506,7 +496,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         shopProductAdapter.updateWishListStatus(productId, false)
     }
 
-    override fun renderProductList(list: List<ShopProductViewModel>, hasNextPage: Boolean) {
+    private fun renderProductList(list: List<ShopProductViewModel>, hasNextPage: Boolean) {
         if (list.isNotEmpty() && shopInfo != null) {
             shopPageTracking?.impressionProductList(
                     isOwner,
@@ -563,38 +553,44 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
     }
 
-    override fun onSuccessGetEtalaseHighlight(list: List<List<ShopProductViewModel>>) {
-        val etalaseHighlightCarouselViewModels = ArrayList<EtalaseHighlightCarouselViewModel>()
-        val customDimensionShopPageAttribution = CustomDimensionShopPageAttribution
-                .create(shopInfo!!.shopCore.shopID,
-                        shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1, null, attribution)
+    private fun onSuccessGetEtalaseHighlight(list: List<List<ShopProductViewModel>>) {
+        shopInfo?.let {
+            val etalaseHighlightCarouselViewModels = ArrayList<EtalaseHighlightCarouselViewModel>()
+            val customDimensionShopPageAttribution = CustomDimensionShopPageAttribution
+                    .create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
+                            it.goldOS.isGold == 1, null, attribution)
 
-        list.forEachIndexed { index, listItem ->
-            etalaseHighlightCarouselViewModels.add(
-                    EtalaseHighlightCarouselViewModel(listItem, highlightEtalaseViewModelList!![index]))
-            if (shopInfo != null && listItem.isNotEmpty()) {
-                shopPageTracking?.impressionProductList(isOwner,
-                        ListTitleTypeDef.HIGHLIGHTED,
-                        highlightEtalaseViewModelList!![index].etalaseName,
-                        customDimensionShopPageAttribution,
-                        listItem, 0, shopInfo!!.shopCore.shopID,
-                        shopInfo!!.shopCore.name)
+
+            viewModel.etalaseHighLight.value?.let {highlights ->
+                list.forEachIndexed { index, listItem ->
+                    etalaseHighlightCarouselViewModels.add(
+                            EtalaseHighlightCarouselViewModel(listItem, highlights[index]))
+                    if (listItem.isNotEmpty()) {
+                        shopPageTracking?.impressionProductList(isOwner,
+                                ListTitleTypeDef.HIGHLIGHTED,
+                                highlights[index].etalaseName,
+                                customDimensionShopPageAttribution,
+                                listItem, 0, shopInfo!!.shopCore.shopID,
+                                shopInfo!!.shopCore.name)
+                    }
+                }
             }
-        }
 
-        shopProductAdapter.shopProductEtalaseHighlightViewModel = ShopProductEtalaseHighlightViewModel(etalaseHighlightCarouselViewModels)
-        shopProductAdapter.refreshSticky()
+            shopProductAdapter.shopProductEtalaseHighlightViewModel =
+                    ShopProductEtalaseHighlightViewModel(etalaseHighlightCarouselViewModels)
+            shopProductAdapter.refreshSticky()
+        }
     }
 
-    override fun onErrorGetEtalaseHighlight(e: Throwable) {
+    private fun onErrorGetEtalaseHighlight(e: Throwable) {
         shopProductAdapter.shopProductEtalaseHighlightViewModel = null
     }
 
-    override fun onErrorGetProductFeature(e: Throwable) {
+    private fun onErrorGetProductFeature(e: Throwable) {
         shopProductAdapter.shopProductFeaturedViewModel = null
     }
 
-    override fun onSuccessGetProductFeature(list: List<ShopProductViewModel>) {
+    private fun onSuccessGetProductFeature(list: List<ShopProductViewModel>) {
         shopProductAdapter.shopProductFeaturedViewModel = ShopProductFeaturedViewModel(list)
         if (list.isNotEmpty()) {
             shopPageTracking?.impressionProductList(
@@ -622,9 +618,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
     }
 
-    override fun onSuccessGetEtalaseListByShop(shopEtalaseModelList: ArrayList<ShopEtalaseViewModel>?) {
+    private fun onSuccessGetEtalaseListByShop(shopEtalaseModelList: ArrayList<ShopEtalaseViewModel>?) {
         //default select first index as selected.
-        this.shopEtalaseViewModelList = shopEtalaseModelList
         var etalaseBadge: String? = null
 
         if (TextUtils.isEmpty(selectedEtalaseId) &&
@@ -639,13 +634,13 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
         // update the adapter
         val shopEtalaseModelListToShow: List<ShopEtalaseViewModel>?
-        if (shopEtalaseModelList != null && shopEtalaseModelList.size > ShopPageConstant.ETALASE_TO_SHOW) {
+        if (shopEtalaseModelList != null && shopEtalaseModelList.size > ETALASE_TO_SHOW) {
             shopEtalaseModelListToShow = shopEtalaseModelList.subList(0, ETALASE_TO_SHOW)
         } else {
             shopEtalaseModelListToShow = shopEtalaseModelList
         }
-        shopProductAdapter!!.setShopEtalase(ShopProductEtalaseListViewModel(shopEtalaseModelListToShow, selectedEtalaseId))
-        shopProductAdapter!!.setShopEtalaseTitle(selectedEtalaseName, etalaseBadge)
+        shopProductAdapter.setShopEtalase(ShopProductEtalaseListViewModel(shopEtalaseModelListToShow, selectedEtalaseId))
+        shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName, etalaseBadge)
 
         loadData(defaultInitialPage)
 
@@ -654,20 +649,11 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private fun loadEtalaseHighLight() {
         // load etalase highlight
-        highlightEtalaseViewModelList = ArrayList()
-        if (shopEtalaseViewModelList != null) {
-            for (shopEtalaseViewModel in shopEtalaseViewModelList!!) {
-                if (shopEtalaseViewModel.isHighlight) {
-                    highlightEtalaseViewModelList!!.add(shopEtalaseViewModel)
-                }
-            }
-        }
         shopId = shopInfo!!.shopCore.shopID
-        viewModel.getShopProductsEtalaseHighlight(shopId!!,
-                highlightEtalaseViewModelList ?: listOf())
+        viewModel.getShopProductsEtalaseHighlight(shopId!!)
     }
 
-    override fun onErrorGetEtalaseListByShop(e: Throwable) {
+    private fun onErrorGetEtalaseListByShop(e: Throwable) {
         shopProductAdapter.setShopEtalase(null)
         shopProductAdapter.setShopEtalaseTitle(null, null)
         shopProductAdapter.shopProductEtalaseHighlightViewModel = null
