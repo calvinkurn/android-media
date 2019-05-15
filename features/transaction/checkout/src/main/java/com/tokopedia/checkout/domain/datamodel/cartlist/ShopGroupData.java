@@ -16,6 +16,7 @@ import java.util.List;
 public class ShopGroupData implements Parcelable {
 
     private List<CartItemHolderData> cartItemHolderDataList = new ArrayList<>();
+    private boolean isChecked;
     private boolean isError;
     private String errorTitle;
     private String errorDescription;
@@ -44,6 +45,7 @@ public class ShopGroupData implements Parcelable {
 
     protected ShopGroupData(Parcel in) {
         cartItemHolderDataList = in.createTypedArrayList(CartItemHolderData.CREATOR);
+        isChecked = in.readByte() != 0;
         isError = in.readByte() != 0;
         errorTitle = in.readString();
         errorDescription = in.readString();
@@ -69,6 +71,7 @@ public class ShopGroupData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(cartItemHolderDataList);
+        dest.writeByte((byte) (isChecked ? 1 : 0));
         dest.writeByte((byte) (isError ? 1 : 0));
         dest.writeString(errorTitle);
         dest.writeString(errorDescription);
@@ -296,4 +299,11 @@ public class ShopGroupData implements Parcelable {
         this.voucherOrdersItemData = voucherOrdersItemData;
     }
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 }

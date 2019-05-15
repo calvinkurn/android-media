@@ -300,10 +300,11 @@ public class CartMapper implements ICartMapper {
                 cartItemDataList.add(cartItemData);
             }
             shopGroupData.setCartItemDataList(cartItemDataList);
+            shopGroupData.setChecked(shopGroup.isCheckboxState());
             shopGroupDataList.add(shopGroupData);
         }
         cartListData.setShopGroupDataList(shopGroupDataList);
-        cartListData.setAllSelected(true);
+        cartListData.setAllSelected(cartDataListResponse.isGlobalCheckboxState());
         cartListData.setPromoCouponActive(cartDataListResponse.getIsCouponActive() == 1);
 
         CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
