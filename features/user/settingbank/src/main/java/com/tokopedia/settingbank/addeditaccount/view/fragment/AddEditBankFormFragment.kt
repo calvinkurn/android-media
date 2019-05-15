@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TkpdHintTextInputLayout
-import com.tokopedia.settingbank.BankRouter
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.di.AddEditBankDependencyInjector
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity

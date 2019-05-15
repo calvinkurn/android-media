@@ -26,6 +26,7 @@ public class Product {
     public static final String KEY_LIST = "list";
     public static final String KEY_DIMENSION_38 = "dimension38";
     public static final String KEY_DIMENSION_40 = "dimension40";
+    public static final String KEY_DIMENSION_54 = "dimension54";
     public static final String KEY_ATTRIBUTION = "attribution";
     public static final String KEY_COUPON = "coupon";
 
@@ -69,6 +70,10 @@ public class Product {
 
     public void setDimension40(Object data) {
         Product.put(KEY_DIMENSION_40, data);
+    }
+
+    public void setDimension54(Object data) {
+        Product.put(KEY_DIMENSION_54, data);
     }
 
     public void setListName(Object data) {

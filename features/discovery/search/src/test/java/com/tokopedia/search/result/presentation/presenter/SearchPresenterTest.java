@@ -28,7 +28,7 @@ public class SearchPresenterTest {
     // Should also make sure the GraphQL method is not called. Can only be tested when the Gql calls is not static anymore
     @Test
     public void initiateSearch_GivenNulls_ShouldNotError() {
-        searchPresenter.initiateSearch(null, false, null);
+        searchPresenter.initiateSearch(null, null);
     }
 
     @After

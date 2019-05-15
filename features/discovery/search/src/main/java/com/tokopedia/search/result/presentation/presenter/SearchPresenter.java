@@ -43,10 +43,10 @@ final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> imp
     }
 
     @Override
-    public void initiateSearch(Map<String, Object> searchParameter, boolean isForceSearch, InitiateSearchListener initiateSearchListener) {
+    public void initiateSearch(Map<String, Object> searchParameter, InitiateSearchListener initiateSearchListener) {
         if(searchParameter == null || initiateSearchListener == null) return;
 
-        RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, isForceSearch);
+        RequestParams requestParams = createInitiateSearchRequestParams(searchParameter);
 
         GqlSearchHelper.initiateSearch(
                 gqlInitiateSearchSpec.getQuery(),
@@ -56,15 +56,14 @@ final class SearchPresenter extends BaseDaggerPresenter<SearchContract.View> imp
         );
     }
 
-    private RequestParams createInitiateSearchRequestParams(Map<String, Object> searchParameter, boolean isForceSearch) {
+    private RequestParams createInitiateSearchRequestParams(Map<String, Object> searchParameter) {
         RequestParams requestParams = RequestParams.create();
-
-        requestParams.putAll(searchParameter);
 
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putBoolean(SearchApiConst.REFINED, isForceSearch);
         requestParams.putBoolean(SearchApiConst.RELATED, true);
+
+        requestParams.putAll(searchParameter);
 
         return requestParams;
     }

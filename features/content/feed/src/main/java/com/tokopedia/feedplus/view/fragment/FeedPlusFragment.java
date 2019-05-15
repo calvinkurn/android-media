@@ -85,7 +85,7 @@ import com.tokopedia.feedplus.view.viewmodel.RetryModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.kol.analytics.PostTagAnalytics;
+import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
 import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
@@ -112,8 +112,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.feedplus.view.FeedPlusConstant.KEY_FEED;
-import static com.tokopedia.feedplus.view.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
+import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED;
+import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
 import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED;
@@ -1071,14 +1071,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onUserNotLogin() {
-        finishLoading();
-        adapter.clearData();
-        adapter.unsetEndlessScrollListener();
-        adapter.showUserNotLogin();
-    }
-
-    @Override
     public void onGoToLogin() {
         if (getActivity() != null) {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
@@ -1369,15 +1361,21 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type,
                                     boolean isFollow) {
-        if (type.equals(FollowCta.AUTHOR_USER)) {
-            if (isFollow) {
-                onUnfollowKolClicked(positionInFeed, getUserIdInt());
-            } else {
-                onFollowKolClicked(positionInFeed, getUserIdInt());
-            }
+        if (userSession.isLoggedIn()) {
+            if (type.equals(FollowCta.AUTHOR_USER)) {
+                int userIdInt = getUserIdInt();
 
-        } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
-            presenter.toggleFavoriteShop(positionInFeed, id);
+                if (isFollow) {
+                    onUnfollowKolClicked(positionInFeed, userIdInt);
+                } else {
+                    onFollowKolClicked(positionInFeed, userIdInt);
+                }
+
+            } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
+                presenter.toggleFavoriteShop(positionInFeed, id);
+            }
+        } else {
+            onGoToLogin();
         }
     }
 
@@ -1393,7 +1391,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
                 @Override
                 public void onReportClick() {
-                    goToContentReport(postId);
+                    if (userSession.isLoggedIn()) {
+                        goToContentReport(postId);
+                    } else {
+                        onGoToLogin();
+                    }
                 }
 
                 @Override

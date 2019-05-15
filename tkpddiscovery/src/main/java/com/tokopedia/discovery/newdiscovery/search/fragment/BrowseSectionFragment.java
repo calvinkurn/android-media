@@ -452,10 +452,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_get_dynamic_filter));
     }
 
-    public void performNewProductSearch(String query, boolean forceSearch) {
-        redirectionListener.performNewProductSearch(query, forceSearch);
-    }
-
     public void showSearchInputView() {
         redirectionListener.showSearchInputView();
     }
