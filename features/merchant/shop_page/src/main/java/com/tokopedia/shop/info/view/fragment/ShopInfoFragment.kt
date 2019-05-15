@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeedV2
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
@@ -242,13 +244,10 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
     override fun onEmptyContentItemTextClicked() {}
 
     override fun onEmptyButtonClicked() {
-        val app = activity?.application
-        if (app is ShopModuleRouter) {
-            shopInfo?.run {
-                shopPageTracking.clickAddNote(CustomDimensionShopPage.create(shopInfo))
-            }
-            app.goToEditShopNote(activity)
+        shopInfo?.run {
+            shopPageTracking.clickAddNote(CustomDimensionShopPage.create(shopInfo))
         }
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES)
     }
 
     override fun onNoteClicked(position: Long, shopNoteViewModel: ShopNoteViewModel) {

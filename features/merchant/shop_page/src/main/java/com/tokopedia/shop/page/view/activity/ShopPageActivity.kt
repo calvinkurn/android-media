@@ -549,9 +549,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun openShop() {
-        if (application is ShopModuleRouter) {
-            (application as ShopModuleRouter).goToEditShop(this)
-        }
+        shopPageTracking.sendOpenShop();
+        RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
     }
 
 
