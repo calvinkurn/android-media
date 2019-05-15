@@ -1,3 +1,4 @@
+include ':onboarding'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
