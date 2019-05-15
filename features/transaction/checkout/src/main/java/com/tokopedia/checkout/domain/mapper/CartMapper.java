@@ -79,7 +79,7 @@ public class CartMapper implements ICartMapper {
                 }
             }
         }
-        cartListData.setError(!TextUtils.isEmpty(errorMessage) || hasError);
+        cartListData.setError(hasError);
         cartListData.setErrorMessage(errorMessage);
         if (cartListData.isError()) {
             cartListData.setCartTickerErrorData(
