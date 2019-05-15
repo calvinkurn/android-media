@@ -1,2 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.webview"/>
+    package="com.tokopedia.webview">
+
+    <application android:label="@string/app_name">
+        <activity
+            android:name=".BaseSimpleWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+    </application>
+
+</manifest>

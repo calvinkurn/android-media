@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_16">
+
+    <com.tokopedia.design.image.SquareImageView
+        android:id="@+id/icon"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/type"
+        app:layout_constraintBottom_toBottomOf="@+id/type"
+        tools:src="@drawable/dot_grey" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/dp_20"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
+        android:textColor="@color/Neutral_N400"
+        app:layout_constraintLeft_toRightOf="@id/icon"
+        android:textSize="@dimen/sp_12"
+        android:includeFontPadding="false"
+        tools:text="TextView"
+        android:gravity="center"/>
+
+
+    <com.tokopedia.design.image.SquareImageView
+        android:id="@+id/dot"
+        android:layout_width="@dimen/dp_3"
+        android:layout_height="@dimen/dp_3"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
+        android:src="@drawable/dot_grey"
+        android:tint="@color/Neutral_N200"
+        app:layout_constraintStart_toEndOf="@id/type"
+        app:layout_constraintBottom_toBottomOf="@+id/type"
+        app:layout_constraintTop_toTopOf="@+id/type" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
+        android:textColor="@color/Neutral_N200"
+        android:textSize="@dimen/sp_12"
+        android:includeFontPadding="false"
+        app:layout_constraintLeft_toRightOf="@id/dot"
+        app:layout_constraintBottom_toBottomOf="@+id/type"
+        app:layout_constraintTop_toTopOf="@+id/type"
+        tools:text="10.00" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:textColor="@color/Green_G500"
+        android:background="@drawable/bg_rounded_corner"
+        android:textSize="@dimen/sp_10"
+        android:textStyle="bold"
+        android:text="@string/seller_label"
+        android:includeFontPadding="false"
+        android:minHeight="@dimen/dp_20"
+        android:gravity="center"
+        app:layout_constraintLeft_toRightOf="@id/time"
+        app:layout_constraintBottom_toBottomOf="@+id/type"
+        app:layout_constraintTop_toTopOf="@+id/type" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/title"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_8"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:maxLines="2"
+        android:textColor="@color/charcoal_grey_88"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/type"
+        tools:text="Hari Terakhir Promo Cashback untuk Dapat Ekstra Lebih" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/body"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_2"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:maxLines="2"
+        android:textColor="@color/charcoal_grey_40"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toStartOf="@+id/image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        tools:text="Spesial untuk Anda! Ekstra cashback 25% Rp 250.000" />
+
+
+    <com.tokopedia.design.image.RoundedCornerImageView
+        android:id="@+id/image"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:scaleType="centerCrop"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/title"
+        tools:src="@tools:sample/avatars" />
+
+
+</android.support.constraint.ConstraintLayout>

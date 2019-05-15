@@ -250,6 +250,7 @@ public class CartMapper implements ICartMapper {
                 cartItemData.setOriginData(cartItemDataOrigin);
                 cartItemData.setUpdatedData(cartItemDataUpdated);
                 cartItemData.setErrorData(cartItemMessageErrorData);
+                cartItemData.setFulfillment(shopGroup.isFulFillment());
 
                 cartItemData.setSingleChild(shopGroup.getCartDetails().size() == 1);
 
@@ -549,6 +550,8 @@ public class CartMapper implements ICartMapper {
             autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
             cartListData.setAutoApplyStackData(autoApplyStackData);
         }
+
+        cartListData.setShowOnboarding(cartDataListResponse.isShowOnboarding());
 
         return cartListData;
 
