@@ -805,6 +805,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                  String activityType) {
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.likeKol(id, rowNumber, this);
+            trackCardPostElementClick(rowNumber, FeedAnalytics.Element.LIKE);
         } else {
             onGoToLogin();
         }
@@ -815,6 +816,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                    String activityType) {
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.unlikeKol(id, rowNumber, this);
+            trackCardPostElementClick(rowNumber, FeedAnalytics.Element.UNLIKE);
         } else {
             onGoToLogin();
         }
@@ -825,6 +827,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                  String activityType) {
         Intent intent = KolCommentActivity.getCallingIntentFromFeed(getContext(), id, rowNumber);
         startActivityForResult(intent, OPEN_KOL_COMMENT);
+        trackCardPostElementClick(rowNumber, FeedAnalytics.Element.COMMENT);
     }
 
     @Override
@@ -1361,16 +1364,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl) {
         onGoToLink(redirectUrl);
 
-        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
-            DynamicPostViewModel model
-                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.AVATAR,
-                    redirectUrl
-            );
-        }
+        trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.AVATAR);
     }
 
     @Override
@@ -1391,17 +1385,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
             presenter.toggleFavoriteShop(positionInFeed, id);
-        }
-
-        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
-            DynamicPostViewModel model
-                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.FOLLOW,
-                    ""
-            );
         }
     }
 
@@ -1456,16 +1439,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             doShare(String.format("%s %s", description, url), title);
         }
 
-        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
-            DynamicPostViewModel model
-                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.SHARE,
-                    url
-            );
-        }
+        trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE);
     }
 
     private void doShare(String body, String title) {
@@ -1480,17 +1454,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onFooterActionClick(int positionInFeed, @NonNull String redirectUrl) {
         onGoToLink(redirectUrl);
-
-        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
-            DynamicPostViewModel model
-                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.TAG,
-                    redirectUrl
-            );
-        }
+        trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.TAG);
     }
 
     @Override
@@ -1740,11 +1704,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private void trackCardPostClick(int positionInFeed, TrackingPostModel trackingPostModel,
-                                    String element, String redirectUrl) {
-        trackCardPostClick(positionInFeed, -1, trackingPostModel, element, redirectUrl);
-    }
-
     private void trackCardPostClick(int positionInFeed, int contentPosition,
                                     TrackingPostModel trackingPostModel, String element,
                                     String redirectUrl) {
@@ -1813,6 +1772,21 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 adapterPosition,
                 userId
         );
+    }
+
+    private void trackCardPostElementClick(int positionInFeed, String element) {
+        if (adapter.getlist().size() > positionInFeed
+                && adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            TrackingPostModel trackingPostModel = ((DynamicPostViewModel)
+                    adapter.getlist().get(positionInFeed)).getTrackingPostModel();
+
+            analytics.eventCardPostElementClick(
+                    element,
+                    trackingPostModel.getActivityName(),
+                    trackingPostModel.getMediaType(),
+                    String.valueOf(trackingPostModel.getPostId())
+            );
+        }
     }
 
     private void showAfterPostToaster() {

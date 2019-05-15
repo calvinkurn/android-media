@@ -1,10 +1,10 @@
 package com.tokopedia.feedplus.view.analytics;
 
-import android.app.Activity;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -16,11 +16,8 @@ import javax.inject.Inject;
 
 import static com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking.Event.PROMO_CLICK;
 import static com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking.Event.PROMO_VIEW;
-import static com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel.SCREEN_UNIFY_HOME_FEED;
 import static com.tokopedia.kol.analytics.KolEventTracking.Category.CONTENT_FEED;
 import static com.tokopedia.kol.analytics.KolEventTracking.Category.CONTENT_FEED_TIMELINE;
-
-import com.tokopedia.track.TrackApp;
 
 /**
  * @author by nisie on 10/3/18.
@@ -66,9 +63,13 @@ public class FeedAnalytics {
         String TAG = "tag";
         String SHARE = "share";
         String FOLLOW = "follow";
+        String UNFOLLOW = "unfollow";
         String OPTION = "option ";
         String VIDEO = "video";
         String PRODUCT = "product";
+        String LIKE = "like";
+        String UNLIKE = "unlike";
+        String COMMENT = "comment";
     }
 
     public void trackScreen(String screenName) {
@@ -179,7 +180,6 @@ public class FeedAnalytics {
                                       String bannerUrl, String applink, int postId,
                                       int bannerPosition, int userId) {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
-        //TODO milhamj change TODO
         promotionList.add(new FeedEnhancedTracking.Promotion(
                 postId,
                 String.format("%s - %s - %s", CONTENT_FEED, activityName, mediaType),
@@ -188,7 +188,7 @@ public class FeedAnalytics {
                 bannerPosition,
                 "",
                 postId,
-                String.format("%s - %s", templateType, "TODO")
+                templateType
         ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceView(
@@ -204,7 +204,6 @@ public class FeedAnalytics {
                                  String bannerUrl, String applink, int totalBanner, int postId,
                                  int bannerPosition, int userId) {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
-        //TODO milhamj change TODO
         promotionList.add(new FeedEnhancedTracking.Promotion(
                 postId,
                 String.format("%s - %s - %s", CONTENT_FEED, activityName, mediaType),
@@ -213,7 +212,7 @@ public class FeedAnalytics {
                 bannerPosition,
                 String.valueOf(totalBanner),
                 postId,
-                String.format("%s - %s", templateType, "TODO")
+                templateType
         ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceClick(
@@ -282,6 +281,16 @@ public class FeedAnalytics {
                         promotionList,
                         userId
                 )
+        );
+    }
+
+    public void eventCardPostElementClick(String element, String activityName, String mediaType,
+                                          String activityId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_FEED,
+                CONTENT_FEED_TIMELINE,
+                String.format("click %s - %s - %s", element, activityName, mediaType),
+                activityId
         );
     }
 
