@@ -119,6 +119,9 @@ public interface ApplinkConst {
     String EVENTS_ORDER = "tokopedia://events/order";
     String DEALS_ORDER = "tokopedia://deals/order";
     String FLIGHT_ORDER = "tokopedia://pesawat/order";
+    String GIFT_CARDS_ORDER = "tokopedia://giftcards/order";
+    String INSURANCE_ORDER = "tokopedia://insurance/order";
+    String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
 
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
@@ -277,4 +280,7 @@ public interface ApplinkConst {
         String PARAM_URL = "url";
     }
 
+    interface Profile {
+        String PARAM_USER_ID = "{user_id}";
+    }
 }

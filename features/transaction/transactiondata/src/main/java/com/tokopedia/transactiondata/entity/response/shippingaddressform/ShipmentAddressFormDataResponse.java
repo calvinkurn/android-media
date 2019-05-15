@@ -74,6 +74,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("global_coupon_attr")
     @Expose
     private GlobalCouponAttr globalCouponAttr;
+    @SerializedName("is_show_onboarding")
+    @Expose
+    private boolean isShowOnboarding;
 
     public AutoapplyV2 getAutoapplyV2() {
         return autoapplyV2;
@@ -147,4 +150,8 @@ public class ShipmentAddressFormDataResponse {
     public AutoapplyStack getAutoapplyStack() { return autoapplyStack; }
 
     public GlobalCouponAttr getGlobalCouponAttr() { return globalCouponAttr; }
+
+    public boolean isShowOnboarding() {
+        return isShowOnboarding;
+    }
 }

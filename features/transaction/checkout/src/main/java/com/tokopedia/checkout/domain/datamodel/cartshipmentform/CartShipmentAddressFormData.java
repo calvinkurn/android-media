@@ -21,8 +21,8 @@ public class CartShipmentAddressFormData implements Parcelable {
     private boolean hasError;
     private boolean isError;
     private String errorMessage;
-
     private int errorCode;
+    private boolean isShowOnboarding;
     private boolean isMultiple;
     private List<GroupAddress> groupAddress = new ArrayList<>();
     private String keroToken;
@@ -191,6 +191,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         isHidingCourier = hidingCourier;
     }
 
+    public boolean isShowOnboarding() {
+        return isShowOnboarding;
+    }
+
+    public void setShowOnboarding(boolean showOnboarding) {
+        isShowOnboarding = showOnboarding;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -199,6 +207,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         isError = in.readByte() != 0;
         errorMessage = in.readString();
         errorCode = in.readInt();
+        isShowOnboarding = in.readByte() != 0;
         isMultiple = in.readByte() != 0;
         groupAddress = in.createTypedArrayList(GroupAddress.CREATOR);
         keroToken = in.readString();
@@ -219,6 +228,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeByte((byte) (isError ? 1 : 0));
         dest.writeString(errorMessage);
         dest.writeInt(errorCode);
+        dest.writeByte((byte) (isShowOnboarding ? 1 : 0));
         dest.writeByte((byte) (isMultiple ? 1 : 0));
         dest.writeTypedList(groupAddress);
         dest.writeString(keroToken);

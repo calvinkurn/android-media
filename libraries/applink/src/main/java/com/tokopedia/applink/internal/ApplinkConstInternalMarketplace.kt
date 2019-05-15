@@ -14,6 +14,13 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MARKETPLACE}"
 
+    // StoreSettingActivity
+    @JvmField
+    val STORE_SETTING = "$INTERNAL_MARKETPLACE/store-setting"
+
+    // QrScannerActivity
+    @JvmField
+    val QR_SCANNEER = "$INTERNAL_MARKETPLACE/qr-scanner"
 
     // IntermediaryActivity
     @JvmField

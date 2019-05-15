@@ -10,6 +10,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddr
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
@@ -120,7 +121,7 @@ public interface ShipmentContract {
 
         void setCourierPromoApplied(int itemPosition);
 
-        void proceedCod(android.view.View view);
+        void proceedCod();
 
         void showBottomSheetError(String htmlMessage);
 
@@ -152,7 +153,7 @@ public interface ShipmentContract {
     interface AnalyticsActionListener {
         void sendAnalyticsChoosePaymentMethodSuccess();
 
-        void sendAnalyticsChoosePaymentMethodFailed();
+        void sendAnalyticsChoosePaymentMethodFailed(String errorMessage);
 
         @Deprecated
         void sendAnalyticsChoosePaymentMethodCourierNotComplete();
@@ -221,14 +222,15 @@ public interface ShipmentContract {
 
         void sendAnalyticsOnDisplayLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId);
 
-        void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration, boolean isCod);
+        void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration, boolean isCod, String shippingPriceMin, String shippingPriceHigh);
 
         void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId, boolean isCod);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment, boolean isTradeIn,
+        void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
+                                            boolean isTradeIn, boolean skipUpdateOnboardingState,
                                             String cornerId, String deviceId);
 
         void processReloadCheckoutPageFromMultipleAddress(PromoStackingData promoStackingData,
@@ -321,6 +323,10 @@ public interface ShipmentContract {
 
         ShipmentDonationModel getShipmentDonationModel();
 
+        void setShipmentButtonPaymentModel(ShipmentButtonPaymentModel shipmentButtonPaymentModel);
+
+        ShipmentButtonPaymentModel getShipmentButtonPaymentModel();
+
         void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState,
                                                int itemPosition);
 
@@ -339,6 +345,8 @@ public interface ShipmentContract {
         void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
         Token getKeroToken();
+
+        boolean isShowOnboarding();
     }
 
 }

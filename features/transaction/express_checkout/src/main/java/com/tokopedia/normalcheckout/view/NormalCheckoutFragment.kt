@@ -645,7 +645,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     selectedVariantId ?: "",
                     this, quantity,
                     shopId, shopType, shopName, cartId,
-                    trackerAttribution, trackerListName)
+                    trackerAttribution, trackerListName,
+                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment?: false)
             }
             activity?.run {
                 if (isOcs) {
@@ -698,7 +699,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     selectedVariantId ?: "",
                     this, quantity,
                     shopId, shopType, shopName, cartId,
-                    trackerAttribution, trackerListName)
+                    trackerAttribution, trackerListName,
+                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment?: false)
             }
         }, onRetryWhenError = {
             addToCart()
