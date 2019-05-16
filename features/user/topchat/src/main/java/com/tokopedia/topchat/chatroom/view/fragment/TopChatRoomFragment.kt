@@ -495,17 +495,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onSendClicked(message: String, generateStartTime: String) {
-        productPreview?.let{
-            presenter.sendProductAttachment(messageId, it.generateResultProduct(),
-                    SendableViewModel.generateStartTime(), opponentId)
-            clearProductPreview()
-        }
-        presenter.sendMessage(messageId, message, generateStartTime, "", onSendingMessage(
-                message, generateStartTime
-        ))
+        presenter.sendMessage(
+                messageId, message, generateStartTime, "",
+                onSendingMessage(message, generateStartTime), productPreview
+        )
     }
 
-    private fun clearProductPreview() {
+    override fun clearProductPreview() {
         (viewState as? TopChatViewState)?.clearProductPreview()
     }
 
