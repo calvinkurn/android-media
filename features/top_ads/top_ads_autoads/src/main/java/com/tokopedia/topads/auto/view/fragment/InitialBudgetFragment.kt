@@ -65,10 +65,6 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         return R.layout.layout_start_daily_budget
     }
 
-    override fun setUpView(view: View?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun setListener() {
         super.setListener()
         start_manual_ads_btn.setOnClickListener(this)

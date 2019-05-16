@@ -10,37 +10,26 @@ import android.widget.Switch
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsInfoSheet
+import kotlinx.android.synthetic.main.layout_setting_daily_budget_ads.*
 
 /**
  * Author errysuprayogi on 09,May,2019
  */
 class SettingBudgetAdsFragment : DailyBudgetFragment() {
 
-    private lateinit var infoBtn: ImageView
-    private lateinit var budgetContainer: View
-    private lateinit var switchBudget: Switch
-    private lateinit var saveBtn: Button
-
     override fun getLayoutId(): Int {
         return R.layout.layout_setting_daily_budget_ads
     }
 
-    override fun setUpView(view: View) {
-        infoBtn = view.findViewById(R.id.btn_info)
-        budgetContainer = view.findViewById(R.id.budget_container)
-        switchBudget = view.findViewById(R.id.switch_ads)
-        saveBtn = view.findViewById(R.id.save)
-    }
-
     override fun setListener() {
         super.setListener()
-        infoBtn.setOnClickListener {
+        btn_info.setOnClickListener {
             SettingAutoAdsInfoSheet.newInstance(context!!).show()
         }
-        saveBtn.setOnClickListener {
+        save.setOnClickListener {
             startActivity(Intent(context, ConfirmationDialogActivity::class.java))
         }
-        switchBudget.setOnCheckedChangeListener { buttonView, isChecked ->
+        switch_ads.setOnCheckedChangeListener { buttonView, isChecked ->
             if(isChecked){
                 showBudgetContainer()
             } else{
@@ -50,13 +39,13 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
     }
 
     private fun showBudgetContainer() {
-        budgetContainer.visibility = View.VISIBLE
-        seekBar.visibility = View.VISIBLE
+        budget_container.visibility = View.VISIBLE
+        seekbar.visibility = View.VISIBLE
     }
 
     private fun hideBudgetContainer() {
-        budgetContainer.visibility = View.GONE
-        seekBar.visibility = View.GONE
+        budget_container.visibility = View.GONE
+        seekbar.visibility = View.GONE
     }
 
     override fun initInjector() {
