@@ -17,7 +17,7 @@ import com.tokopedia.onboarding.listener.CustomAnimationPageTransformer
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import javax.inject.Inject
-import com.tokopedia.onboarding.R
+import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 
 /**
  * @author by stevenfredian on 14/05/19.
@@ -87,7 +87,7 @@ class OnboardingActivity : BaseSimpleActivity() {
         fragmentList.add(OnboardingFragment.createInstance(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB1_TTL, R.string.nonb_1_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB1_DESC, R.string.nonb_1_desc),
-                "onboarding1.json",
+                "onboard1.json",
                 ContextCompat.getColor(applicationContext, R.color.green_nob),
                 0
         ))
@@ -96,7 +96,7 @@ class OnboardingActivity : BaseSimpleActivity() {
         fragmentList.add(OnboardingFragment.createInstance(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB2_TTL, R.string.nonb_2_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB2_DESC, R.string.nonb_2_desc),
-                "onboarding2.json",
+                "onboard2.json",
                 ContextCompat.getColor(applicationContext, R.color.blue_nob),
                 1
         ))
@@ -105,7 +105,7 @@ class OnboardingActivity : BaseSimpleActivity() {
         fragmentList.add(OnboardingFragment.createInstance(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB3_TTL, R.string.nonb_3_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB3_DESC, R.string.nonb_3_desc),
-                "onboarding3.json",
+                "onboard3.json",
                 ContextCompat.getColor(applicationContext, R.color.orange_nob),
                 2
         ))
@@ -114,7 +114,7 @@ class OnboardingActivity : BaseSimpleActivity() {
         fragmentList.add(OnboardingFragment.createInstance(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB4_TTL, R.string.nonb_4_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB4_DESC, R.string.nonb_4_desc),
-                "onboarding4.json",
+                "onboard4.json",
                 ContextCompat.getColor(applicationContext, R.color.green_nob),
                 3
         ))
@@ -123,7 +123,7 @@ class OnboardingActivity : BaseSimpleActivity() {
         fragmentList.add(OnboardingFragment.createInstance(
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB5_TTL, R.string.nonb_5_title),
                 getMessageFromRemoteConfig(RemoteConfigKey.NONB5_DESC, R.string.nonb_5_desc),
-                "onboarding5.json",
+                "onboard5.json",
                 ContextCompat.getColor(applicationContext, R.color.blue_nob),
                 4
         ))
