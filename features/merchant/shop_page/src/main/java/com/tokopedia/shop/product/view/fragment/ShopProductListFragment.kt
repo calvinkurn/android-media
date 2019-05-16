@@ -531,7 +531,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
     private fun onErrorAddToWishList(e: Throwable) {
         if (!viewModel.isLogin) {
-            val intent = (activity?.application as? ShopModuleRouter)?.getLoginIntent(activity)
+            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_USER_LOGIN)
             return
         }

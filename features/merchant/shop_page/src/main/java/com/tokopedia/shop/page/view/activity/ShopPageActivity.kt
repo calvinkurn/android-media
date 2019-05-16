@@ -29,6 +29,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -114,6 +116,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         private const val VIEW_ERROR = 3
 
         private const val PAGE_LIMIT = 2
+
+        private const val SOURCE_SHOP = "shop"
 
         @JvmStatic
         fun createIntent(context: Context, shopId: String) = Intent(context, ShopPageActivity::class.java)
@@ -439,7 +443,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private fun onErrorToggleFavourite(e: Throwable) {
         shopPageViewHolder.updateFavoriteButton()
         if (e is UserNotLoginException) {
-            val intent = (application as ShopModuleRouter).getLoginIntent(this)
+            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODER_USER_LOGIN)
             return
         }
@@ -449,10 +453,16 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private fun onSuccessGetFeedWhitelist(isWhitelist: Boolean, createPostUrl: String) {
         this.isShowFeed = isWhitelist
         this.createPostUrl = createPostUrl
-        if (isShowFeed && (application as ShopModuleRouter).isFeedShopPageEnabled()) {
+        if (isShowFeed && isFeedShopPageEnabled) {
             addFeed()
         }
     }
+
+    private val isFeedShopPageEnabled: Boolean
+        get() {
+            val keyApp = if (GlobalConfig.isCustomerApp()) "mainapp" else "sellerapp"
+            return remoteConfig.getBoolean("${keyApp}_enable_feed_shop_page", java.lang.Boolean.TRUE)
+        }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -494,9 +504,16 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.clickMessageSeller(CustomDimensionShopPage.create(it.shopCore.shopID,
                     it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
 
-            (application as ShopModuleRouter).goToChatSeller(this@ShopPageActivity, it.shopCore.shopID,
-                    MethodChecker.fromHtml(it.shopCore.name).toString(), it.shopAssets.avatar)
+            if (shopViewModel.isUserSessionActive) {
+                shopPageTracking.eventShopSendChat()
+                val intent = RouteManager.getIntent(this, ApplinkConst.TOPCHAT_ASKSELLER,
+                        it.shopCore.shopID, "", SOURCE_SHOP, it.shopCore.name, it.shopAssets.avatar)
+                startActivity(intent)
+            } else {
+                startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
+            }
         }
+
     }
 
     override fun goToManageShop() {
@@ -504,7 +521,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.clickManageShop(CustomDimensionShopPage.create(it.shopCore.shopID,
                     it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
         }
-        (application as ShopModuleRouter).goToManageShop(this)
+
+        val intent = RouteManager.getIntent(this,
+                if (GlobalConfig.isCustomerApp()) ApplinkConsInternalHome.MANAGE_SHOP
+                else ApplinkConsInternalHome.MANAGE_SHOP_SELLERAPP_TEMP) ?: return
+        startActivity(intent)
     }
 
     override fun toggleFavorite(isFavourite: Boolean) {
@@ -548,9 +569,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun openShop() {
-        if (application is ShopModuleRouter) {
-            (application as ShopModuleRouter).goToEditShop(this)
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) ?: return
+        if (GlobalConfig.isCustomerApp()){
+            shopPageTracking.sendGeneralManageShop()
         }
+        startActivity(intent)
     }
 
     override fun requestOpenShop() {

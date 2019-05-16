@@ -13,30 +13,5 @@ public interface ShopModuleRouter {
 
     Fragment getKolPostShopFragment(String shopId, String createPostUrl);
 
-    void goToEditShop(Context context);
-
-    void goToManageShop(Context context);
-
-    void goToEditShopNote(Context context);
-
-    void goToManageShipping(Context context);
-
-    void goToChatSeller(Context context, String shopId, String shopName, String avatar);
-
     void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel);
-
-    void goToWebview(Context context, String url);
-
-    void goToProfileShop(Context context, String userId);
-
-    void goToShopReview(Context context, String shopId, String shopDomain);
-
-    void goToShopDiscussion(Context context, String shopId);
-
-    Intent getLoginIntent(Context context);
-
-    Intent getTopProfileIntent(Context context, String userId);
-
-    boolean isFeedShopPageEnabled();
-
 }

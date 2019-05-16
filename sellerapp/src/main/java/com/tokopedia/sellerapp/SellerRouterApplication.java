@@ -352,7 +352,6 @@ public abstract class SellerRouterApplication extends MainApplication
         EtalaseUtils.clearEtalaseCache(getApplicationContext());
     }
 
-    @Override
     public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
         return ProductEditActivity.Companion.createInstance(context, productId);
     }
@@ -580,18 +579,10 @@ public abstract class SellerRouterApplication extends MainApplication
         ScreenTracking.screen(this, screenName);
     }
 
-    @Override
     public void goToWebview(Context context, String url) {
         Intent intent = new Intent(this, BannerWebView.class);
         intent.putExtra(BannerWebView.EXTRA_URL, url);
         context.startActivity(intent);
-    }
-
-    @Override
-    public void goToProfileShop(Context context, String userId) {
-        context.startActivity(
-                getTopProfileIntent(context, userId)
-        );
     }
 
     @Override
@@ -805,6 +796,7 @@ public abstract class SellerRouterApplication extends MainApplication
         return getShopComponent().getShopInfoUseCase();
     }
 
+    @Override
     public void goToAddProduct(Activity activity) {
         if (activity != null) {
             activity.startActivity(new Intent(activity, ProductAddNameCategoryActivity.class));
@@ -1005,33 +997,9 @@ public abstract class SellerRouterApplication extends MainApplication
         new DefaultShare(activity, shareData).show();
     }
 
-    @Override
-    public void goToManageShop(Context context) {
-        context.startActivity(getIntentManageShop(context));
-    }
-
-    @Override
-    public void goToEditShopNote(Context context) {
-        Intent intent = ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
-        context.startActivity(intent);
-    }
-
-    @Override
     public void goToAddProduct(Context context) {
         if (context != null && context instanceof Activity) {
             context.startActivity(new Intent(context, ProductAddNameCategoryActivity.class));
-        }
-    }
-
-    @Override
-    public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
-        if (getSession().isLoggedIn()) {
-            UnifyTracking.eventShopSendChat();
-            Intent intent = getAskSellerIntent(this, shopId, shopName, TkpdInboxRouter.SHOP, avatar);
-            context.startActivity(intent);
-        } else {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
-            ((Activity) context).startActivityForResult(intent, 100);
         }
     }
 
@@ -1169,20 +1137,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return SellerOrderListActivity.getInstance(context);
     }
 
-    @Override
-    public void goToShopReview(Context context, String shopId, String shopDomain) {
-        SessionHandler sessionHandler = new SessionHandler(this);
-        ReputationTracking tracking = new ReputationTracking(this);
-        tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, sessionHandler.getShopID().equals(shopId));
-        context.startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
-    }
-
-    @Override
-    public void goToManageShipping(Context context) {
-        context.startActivity(new Intent(context, EditShippingActivity.class));
-    }
-
-    @Override
     public void goToEditShop(Context context) {
         Intent intent = ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
         context.startActivity(intent);
@@ -1285,17 +1239,14 @@ public abstract class SellerRouterApplication extends MainApplication
                 hasOriginalVariantLevel1, hasOriginalVariantLevel2, hasWholesale);
     }
 
-    @Override
     public Intent getManageProductIntent(Context context) {
         return new Intent(context, ProductManageActivity.class);
     }
 
-    @Override
     public Intent createIntentProductEtalase(Context context, int etalaseId) {
         return EtalasePickerActivity.createInstance(context, etalaseId);
     }
 
-    @Override
     public Intent getCategoryPickerIntent(Context context, int categoryId) {
         return CategoryPickerActivity.createIntent(context, categoryId);
     }
@@ -1339,11 +1290,6 @@ public abstract class SellerRouterApplication extends MainApplication
                         reviewId
                 )
         ));
-    }
-
-    @Override
-    public void goToShopDiscussion(Context context, String shopId) {
-        context.startActivity(ShopTalkActivity.Companion.createIntent(context, shopId));
     }
 
     @Override
@@ -1461,11 +1407,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getKolPostShopFragment(String shopId, String createPostUrl) {
         return KolPostShopFragment.newInstance(shopId, createPostUrl);
-    }
-
-    @Override
-    public boolean isFeedShopPageEnabled() {
-        return remoteConfig.getBoolean("sellerapp_enable_feed_shop_page", Boolean.TRUE);
     }
 
     @Override
@@ -1696,11 +1637,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public com.tokopedia.iris.Iris getIris() {
         return null;
-    }
-
-    @Override
-    public void openImagePreviewFromChat(@NotNull Context context, @NotNull ArrayList<String> listImage, @NotNull ArrayList<String> imageDesc, @NotNull String title, @NotNull String date) {
-
     }
 
     public String getContactUsBaseURL() {

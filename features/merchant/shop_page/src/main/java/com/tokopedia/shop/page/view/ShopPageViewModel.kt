@@ -36,6 +36,9 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
+    val isUserSessionActive: Boolean
+        get() = userSessionInterface.isLoggedIn
+
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
     val whiteListResp =  MutableLiveData<Pair<Boolean, String>>()
     val shopBadgeResp = MutableLiveData<Pair<Boolean, ShopBadge>>()

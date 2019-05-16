@@ -475,7 +475,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     private fun onErrorAddToWishList(e: Throwable) {
         activity?.let {
             if (viewModel.isLogin) {
-                val intent = (it.application as ShopModuleRouter).getLoginIntent(it)
+                val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
                 startActivityForResult(intent, REQUEST_CODE_USER_LOGIN)
                 return
             }
@@ -678,7 +678,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             // Need to login
             if (!urlProceed) {
                 urlNeedTobBeProceed = url
-                val intent = (it.application as ShopModuleRouter).getLoginIntent(activity)
+                val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
                 startActivityForResult(intent, REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW)
             }
         }

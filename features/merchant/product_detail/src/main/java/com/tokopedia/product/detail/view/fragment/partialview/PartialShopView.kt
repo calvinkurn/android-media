@@ -66,7 +66,6 @@ class PartialShopView private constructor(private val view: View, private val cl
             shop_ava.setOnClickListener(this@PartialShopView)
             btn_favorite.setOnClickListener(this@PartialShopView)
             send_msg_shop.setOnClickListener(this@PartialShopView)
-            shop
             visible()
         }
     }

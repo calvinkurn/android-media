@@ -14,6 +14,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -160,10 +163,8 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun goToManageLogistic() {
-        val app = activity?.application ?: return
-        if (app is ShopModuleRouter) {
-            app.goToManageShipping(activity)
-        }
+        val shippingIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SHIPPING_SETTING) ?: return
+        startActivity(shippingIntent)
     }
 
     private fun displayShopStatistics(shopStatisticsResp: ShopStatisticsResp) {
@@ -193,15 +194,14 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun gotoShopDiscussion() {
-        if (activity?.application is ShopModuleRouter) {
-            shopInfo?.run {
-                val shopId = shopCore.shopID
-                shopPageTracking.clickDiscussion(
-                        shopViewModel.isMyShop(shopId),
-                        CustomDimensionShopPage.create(shopId, goldOS.isOfficial == 1, goldOS.isGold == 1))
+        shopInfo?.run {
+            val shopId = shopCore.shopID
+            shopPageTracking.clickDiscussion(
+                    shopViewModel.isMyShop(shopId),
+                    CustomDimensionShopPage.create(shopId, goldOS.isOfficial == 1, goldOS.isGold == 1))
 
-                (activity?.application as? ShopModuleRouter)?.goToShopDiscussion(activity, shopId)
-            }
+            val talkIntent = RouteManager.getIntent(context, ApplinkConst.SHOP_TALK, shopId) ?: return@run
+            startActivity(talkIntent)
         }
     }
 
@@ -229,9 +229,9 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
                     CustomDimensionShopPage.create(shopId, goldOS.isOfficial == 1,
                             goldOS.isGold == 1))
 
-            if (activity?.application is ShopModuleRouter) {
-                (activity?.application as? ShopModuleRouter)?.goToShopReview(activity, shopId, shopCore.domain)
-            }
+            shopPageTracking.clickReviewMore(shopId, shopViewModel.isMyShop(shopId))
+            val intent = RouteManager.getIntent(activity, ApplinkConst.SHOP_REVIEW, shopId) ?: return@run
+            startActivity(intent)
         }
     }
 
@@ -270,14 +270,12 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     override fun onEmptyContentItemTextClicked() {}
 
     override fun onEmptyButtonClicked() {
-        val app = activity?.application
-        if (app is ShopModuleRouter) {
-            shopInfo?.run {
-                shopPageTracking.clickAddNote(CustomDimensionShopPage
-                        .create(shopCore.shopID, goldOS.isOfficial == 1, goldOS.isGold == 1))
-            }
-            app.goToEditShopNote(activity)
+        shopInfo?.run {
+            shopPageTracking.clickAddNote(CustomDimensionShopPage
+                    .create(shopCore.shopID, goldOS.isOfficial == 1, goldOS.isGold == 1))
         }
+        val noteIntent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.SHOP_NOTE_SETTING) ?: return
+        startActivity(noteIntent)
     }
 
     override fun onNoteClicked(position: Long, shopNoteViewModel: ShopNoteViewModel) {
