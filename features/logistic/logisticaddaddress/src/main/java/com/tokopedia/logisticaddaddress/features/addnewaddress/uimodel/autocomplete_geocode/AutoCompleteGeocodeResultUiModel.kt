@@ -6,6 +6,7 @@ import android.os.Parcelable
 /**
  * Created by fwidjaja on 2019-05-14.
  */
+@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 data class AutoCompleteGeocodeResultUiModel (
         var name: String = "",
         var placeId: String = "",

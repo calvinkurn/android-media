@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.domain
+package com.tokopedia.logisticaddaddress.domain.mapper
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete_geocode.AutocompleteGeocodeResponse

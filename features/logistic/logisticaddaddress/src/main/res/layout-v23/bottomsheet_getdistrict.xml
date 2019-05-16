@@ -30,7 +30,6 @@
             tools:text="Jalan Taman Siswa"/>
 
         <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"

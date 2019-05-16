@@ -2,7 +2,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.aut
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
-import com.tokopedia.logisticaddaddress.domain.AutoCompleteGeocodeMapper
+import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteGeocodeMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AutocompleteGeocodeUseCase
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject

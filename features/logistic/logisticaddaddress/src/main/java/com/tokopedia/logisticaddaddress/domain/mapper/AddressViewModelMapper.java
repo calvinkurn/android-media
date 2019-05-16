@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.domain;
+package com.tokopedia.logisticaddaddress.domain.mapper;
 
 import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;

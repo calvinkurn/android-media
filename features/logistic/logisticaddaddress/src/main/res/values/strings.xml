@@ -67,4 +67,5 @@
     <string name="current_location">Current Location</string>
     <string name="tv_current_location_text">Gunakan lokasi saya saat ini</string>
     <string name="use_points_of_interest">Mau gunakan lokasi ini?</string>
+    <string name="et_detail_address_hint">Tulis No. Rumah, Blok, RT/RW</string>
 </resources>

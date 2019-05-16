@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.logisticaddaddress.domain.AutoCompleteGeocodeMapper
+import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteGeocodeMapper
 import rx.Subscriber
 
 /**

@@ -17,7 +17,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
-import com.tokopedia.logisticaddaddress.domain.usecase.AutocompleteGeocodeUseCase
 import javax.inject.Inject
 
 /**

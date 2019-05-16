@@ -26,10 +26,9 @@ import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.DaggerManageAddressComponent;
 import com.tokopedia.logisticaddaddress.di.ManageAddressModule;
-import com.tokopedia.logisticaddaddress.domain.AddressViewModelMapper;
+import com.tokopedia.logisticaddaddress.domain.mapper.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressFragment;
-import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressActivity;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 

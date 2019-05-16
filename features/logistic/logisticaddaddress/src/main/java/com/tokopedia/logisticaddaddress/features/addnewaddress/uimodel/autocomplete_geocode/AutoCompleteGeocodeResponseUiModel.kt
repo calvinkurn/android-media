@@ -11,9 +11,8 @@ data class AutoCompleteGeocodeResponseUiModel (
         var data: AutoCompleteGeocodeDataUiModel = AutoCompleteGeocodeDataUiModel()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readParcelable(AutoCompleteGeocodeDataUiModel::class.java.classLoader)) {
-    }
+            parcel.readString() ?: "",
+            parcel.readParcelable(AutoCompleteGeocodeDataUiModel::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(status)
