@@ -928,7 +928,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                                            selectedServiceId: Int,
                                            selectedServiceName: String,
                                            flagNeedToSetPinpoint: Boolean,
-                                           hasCourierPromo: Boolean,
                                            isClearPromo: Boolean) {
         if (shippingCourierViewModels != null) {
             val summaryViewModel = fragmentViewModel.getSummaryViewModel()
@@ -957,10 +956,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun onShippingDurationButtonCloseClicked() {
         shippingDurationBottomsheet.dismiss()
-    }
-
-    override fun onShippingDurationButtonShowCaseDoneClicked() {
-
     }
 
     override fun onShowDurationListWithCourierPromo(isCourierPromo: Boolean, duration: String?) {

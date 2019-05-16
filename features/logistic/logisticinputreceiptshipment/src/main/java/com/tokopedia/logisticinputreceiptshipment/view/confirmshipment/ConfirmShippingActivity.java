@@ -221,6 +221,12 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
         orderDetailData = extras.getParcelable(EXTRA_ORDER_DETAIL_DATA);
     }
 
+    @Override
+    protected void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void initView() {

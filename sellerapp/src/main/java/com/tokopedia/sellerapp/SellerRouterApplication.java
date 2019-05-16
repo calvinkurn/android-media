@@ -16,7 +16,6 @@ import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
-import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
@@ -32,7 +31,6 @@ import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.changepassword.ChangePasswordRouter;
-import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
@@ -112,7 +110,6 @@ import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -169,7 +166,6 @@ import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.settingbank.BankRouter;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
@@ -243,12 +239,12 @@ import com.tokopedia.cpm.CharacterPerMinuteInterface;
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
-        ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
+        ReputationRouter, LogisticRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
-        ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
+        ApplinkRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
         NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
-        BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
-        PaymentSettingRouter, TalkRouter, ChangePhoneNumberRouter, PhoneVerificationRouter,
+        ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
+        PaymentSettingRouter, TalkRouter, PhoneVerificationRouter,
         TopAdsDashboardRouter,
         TopAdsManagementRouter,
         BroadcastMessageRouter,
@@ -1138,11 +1134,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getChangePhoneNumberRequestIntent(Context context, String userId, String oldPhoneNumber) {
-        return ChangeInactiveFormRequestActivity.createIntentWithUserId(context, userId, oldPhoneNumber);
-    }
-
-    @Override
     public Intent getCartIntent(Activity activity) {
         return null;
     }
@@ -1215,11 +1206,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public boolean isIndicatorVisible() {
         return false; //Sellerapp dont have groupchat therefore always set false to indicator
-    }
-
-    @Override
-    public boolean isLoginInactivePhoneLinkEnabled() {
-        return false;
     }
 
     @Override

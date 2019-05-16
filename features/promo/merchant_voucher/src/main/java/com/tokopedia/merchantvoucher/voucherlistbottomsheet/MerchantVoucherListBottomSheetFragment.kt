@@ -332,7 +332,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     private fun hideKeyboard() {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
+        (inputMethodManager as InputMethodManager?)?.hideSoftInputFromWindow(view?.windowToken, 0);
     }
 
 }

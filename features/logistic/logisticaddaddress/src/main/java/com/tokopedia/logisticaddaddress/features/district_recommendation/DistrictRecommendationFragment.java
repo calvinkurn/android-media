@@ -124,7 +124,11 @@ public class DistrictRecommendationFragment
                     searchInputView.getSearchText().length() >= MINIMUM_SEARCH_KEYWORD_CHAR) {
                 hideMessageSection();
                 Token token = getArguments().getParcelable(ARGUMENT_DATA_TOKEN);
-                presenter.loadData(searchInputView.getSearchText(), token, page);
+                if (token != null) {
+                    presenter.loadData(searchInputView.getSearchText(), token, page);
+                } else {
+                    showNoResultMessage();
+                }
             } else {
                 showMessageSection();
                 showInitialLoadMessage();
