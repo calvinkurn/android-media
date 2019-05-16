@@ -585,7 +585,7 @@ public class HotlistFragment extends BrowseSectionFragment
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
                 updateDepartmentId(getFlagFilterHelper().getCategoryId());
-                reloadData();
+//                reloadData();
                 showSelectedFilters(getSelectedFilter());
             }
         }
@@ -1143,11 +1143,15 @@ public class HotlistFragment extends BrowseSectionFragment
             eventLabel = "true";
         }
         eventLabel = filterKey + " - " + filterValue + " - " + eventLabel;
+        String id = "";
+        if (queryModel != null && !TextUtils.isEmpty(queryModel.getCategoryID())) {
+            id = queryModel.getCategoryID();
+        }
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Event.HOTLIST_PAGE,
-                "quick filter" + " - " + getScreenName(),
+                "quick filter" + " - " + getScreenName() + " - " + id,
                 eventLabel
         ).getEvent());
         reloadData();

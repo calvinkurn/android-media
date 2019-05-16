@@ -558,7 +558,7 @@ public class ProductFragment extends BrowseSectionFragment
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
                 updateDepartmentId(getFlagFilterHelper().getCategoryId());
-                reloadData();
+//                reloadData();
                 showSelectedFilters(getSelectedFilter());
             }
         }
@@ -712,11 +712,15 @@ public class ProductFragment extends BrowseSectionFragment
             eventLabel = "true";
         }
         eventLabel = filterKey + " - " + filterValue + " - " + eventLabel;
+        String categoryID = "";
+        if (!TextUtils.isEmpty(productViewModel.getCategoryHeaderModel().getRootCategoryId())) {
+            categoryID = productViewModel.getCategoryHeaderModel().getRootCategoryId();
+        }
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Event.CATEGORY,
-                "quick filter" + " - " + getScreenName(),
+                "quick filter" + " - " + getScreenName()+ categoryID,
                 eventLabel
         ).getEvent());
         reloadData();
