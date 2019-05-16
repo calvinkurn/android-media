@@ -48,19 +48,11 @@ public interface SearchConstant {
         String KEY_PARAMS = "params";
         String KEY_SOURCE = "source";
         String KEY_HEADLINE_PARAMS = "headline_params";
-
-        String GQL_INITIATE_SEARCH = "gql_initiate_search";
-        String GQL_SEARCH_PRODUCT_FIRST_PAGE = "gql_search_product_first_page";
-        String GQL_SEARCH_PRODUCT_LOAD_MORE = "gql_search_product_load_more";
-        String GQL_DYNAMIC_FILTER_SPEC = "gql_dynamic_filter_spec";
-        String GQL_DYNAMIC_FILTER_RESPONSE_REPOSITORY = "gql_dynamic_filter_response_repository";
     }
 
     interface SearchProduct {
         String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
-        String SEARCH_PRODUCT_FIRST_PAGE_REPOSITORY = "search_product_first_page_repository";
-        String SEARCH_PRODUCT_LOAD_MORE_REPOSITORY = "search_product_load_more_repository";
         String PARAMETER_ROWS = "8";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";

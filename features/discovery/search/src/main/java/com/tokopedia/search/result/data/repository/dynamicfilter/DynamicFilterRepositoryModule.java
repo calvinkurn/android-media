@@ -18,27 +18,9 @@ import dagger.Provides;
 
 @SearchScope
 @Module(includes = {
-        GqlDynamicFilterSpecModule.class,
         DynamicFilterDataSourceModule.class
 })
 public class DynamicFilterRepositoryModule {
-
-    @SearchScope
-    @Provides
-    @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_GQL_REPOSITORY)
-    Repository<DynamicFilterModel> provideDynamicFilterModelGqlRepository(
-            @Named(SearchConstant.GQL.GQL_DYNAMIC_FILTER_RESPONSE_REPOSITORY) GqlRepository<GqlDynamicFilterResponse> gqlDynamicFilterResponseRepository
-    ) {
-        return new DynamicFilterGqlRepository(gqlDynamicFilterResponseRepository);
-    }
-
-    @SearchScope
-    @Provides
-    @Named(SearchConstant.GQL.GQL_DYNAMIC_FILTER_RESPONSE_REPOSITORY)
-    GqlRepository<GqlDynamicFilterResponse> provideGqlDynamicFilterReponseRepository(
-            @Named(SearchConstant.GQL.GQL_DYNAMIC_FILTER_SPEC) GqlSpecification specification) {
-        return new GqlRepository<>(specification);
-    }
 
     @SearchScope
     @Provides
