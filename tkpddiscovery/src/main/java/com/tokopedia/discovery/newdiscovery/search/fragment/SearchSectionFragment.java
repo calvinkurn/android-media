@@ -457,18 +457,13 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     public void getDynamicFilter() {
         if (canRequestDynamicFilter()) {
             isGettingDynamicFilter = true;
-            requestDynamicFilter();
+            getPresenter().requestDynamicFilter();
         }
     }
 
     private boolean canRequestDynamicFilter() {
         return !isFilterDataAvailable()
                 && !isGettingDynamicFilter;
-    }
-
-    //TODO will be removed after catalog and shop already migrated also to Gql
-    protected void requestDynamicFilter() {
-        getPresenter().requestDynamicFilter();
     }
 
     @Override
@@ -507,8 +502,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_get_dynamic_filter));
     }
 
-    public void performNewProductSearch(String query, boolean forceSearch) {
-        redirectionListener.performNewProductSearch(query, forceSearch);
+    public void performNewProductSearch(String queryParams) {
+        redirectionListener.performNewProductSearch(queryParams);
     }
 
     public void showSearchInputView() {
@@ -603,10 +598,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     public void onBottomSheetHide() {
         SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
-    }
-
-    protected boolean isUsingBottomSheetFilter() {
-        return isUsingBottomSheetFilter;
     }
 
     protected void removeSelectedFilter(String uniqueId) {

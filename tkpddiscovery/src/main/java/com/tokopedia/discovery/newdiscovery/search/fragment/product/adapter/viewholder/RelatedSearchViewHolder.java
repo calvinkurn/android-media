@@ -101,8 +101,8 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchMod
                 @Override
                 public void onClick(View view) {
                     Uri uri = Uri.parse(item.getUrl());
-                    String query = uri.getQueryParameter(BrowseApi.Q);
-                    itemClickListener.onRelatedSearchClicked(query);
+                    String keyword = uri.getQueryParameter(BrowseApi.Q);
+                    itemClickListener.onRelatedSearchClicked(uri.getEncodedQuery(), keyword);
                 }
             });
         }
