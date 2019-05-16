@@ -37,7 +37,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation'com.tokopedia.cache_manager:cache_manager'
+    implementation 'com.tokopedia.cache_manager:cache_manager'
     implementation project(rootProject.ext.features.loyaltyCommon)
 
     implementation rootProject.ext.debugToolsDependencies.chuck

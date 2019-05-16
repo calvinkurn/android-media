@@ -37,7 +37,7 @@ dependencies {
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.libraries.youtubeutil)
-    implementation'com.tokopedia.cache_manager:cache_manager'
+    implementation 'com.tokopedia.cache_manager:cache_manager'
 
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.design)

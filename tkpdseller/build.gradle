@@ -33,7 +33,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation'com.tokopedia.cache_manager:cache_manager'
+    implementation 'com.tokopedia.cache_manager:cache_manager'
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.userSession)

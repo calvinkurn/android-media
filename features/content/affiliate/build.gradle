@@ -47,7 +47,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation'com.tokopedia.cache_manager:cache_manager'
+    implementation 'com.tokopedia.cache_manager:cache_manager'
     implementation project(rootProject.ext.libraries.videoUploader)
 
     implementation rootProject.ext.miscDependencies.dagger

@@ -27,7 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.imagePreview)
-    implementation'com.tokopedia.cache_manager:cache_manager'
+    implementation 'com.tokopedia.cache_manager:cache_manager'
     implementation project(rootProject.ext.libraries.track)
     
     implementation project(rootProject.ext.features.tradeIn)
