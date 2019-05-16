@@ -34,8 +34,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         fun getCallingApplinkSearchIntent(context: Context, bundle: Bundle): Intent = Intent(context, HomeRecommendationActivity::class.java).apply{
             putExtra(PRODUCT_ID, bundle.getString(DEEP_LINK_URI))
         }
-
-
+        
         @JvmStatic
         fun newInstance(context: Context, productId: String) = Intent(context, HomeRecommendationActivity::class.java).apply {
             putExtra(PRODUCT_ID, productId)

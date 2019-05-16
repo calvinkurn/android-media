@@ -230,7 +230,7 @@ ext {
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
-
+            
             challenges                      : ":features:im:challenges",
 //            challenges                    : ":features:im:challenges_no_op",
 

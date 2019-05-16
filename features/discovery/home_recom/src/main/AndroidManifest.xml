@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.tokopedia.home_recom">
-    <application android:label="@string/app_name">
+    <application>
         <activity
-            android:name="com.tokopedia.home_recom.HomeRecommendationActivity"
+            android:name=".HomeRecommendationActivity"
             android:label="@string/home_recommendation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
