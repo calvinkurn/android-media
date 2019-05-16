@@ -9,6 +9,7 @@ import com.tokopedia.search.result.network.service.BrowseApi;
 import com.tokopedia.search.result.network.service.BrowseApiModule;
 
 import dagger.Module;
+import dagger.Provides;
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -19,6 +20,8 @@ import rx.functions.Func1;
 })
 public class SearchShopDataSourceModule {
 
+    @SearchScope
+    @Provides
     SearchShopDataSource provideSearchShopDataSource(@AceQualifier BrowseApi browseApi,
                                                      Func1<Response<SearchShopResponse>, SearchShopModel> searchShopMapper) {
         return new SearchShopDataSource(browseApi, searchShopMapper);
