@@ -1,14 +1,14 @@
-package com.tokopedia.topads.auto.constant;
+package com.tokopedia.topads.auto.internal;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.topads.auto.constant.TopAdsWidgetStatus.STATUS_ACTIVE;
-import static com.tokopedia.topads.auto.constant.TopAdsWidgetStatus.STATUS_INACTIVE;
-import static com.tokopedia.topads.auto.constant.TopAdsWidgetStatus.STATUS_IN_PROGRESS;
-import static com.tokopedia.topads.auto.constant.TopAdsWidgetStatus.STATUS_NOT_DELIVERED;
+import static com.tokopedia.topads.auto.internal.TopAdsWidgetStatus.STATUS_ACTIVE;
+import static com.tokopedia.topads.auto.internal.TopAdsWidgetStatus.STATUS_INACTIVE;
+import static com.tokopedia.topads.auto.internal.TopAdsWidgetStatus.STATUS_IN_PROGRESS;
+import static com.tokopedia.topads.auto.internal.TopAdsWidgetStatus.STATUS_NOT_DELIVERED;
 
 /**
  * Author errysuprayogi on 14,May,2019

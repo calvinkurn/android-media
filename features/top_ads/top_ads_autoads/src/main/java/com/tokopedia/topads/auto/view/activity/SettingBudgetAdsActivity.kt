@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.topads.auto.view.fragment.SettingBudgetAdsFragment
+import com.tokopedia.topads.auto.view.fragment.budget.SettingBudgetAdsFragment
 
 /**
  * Author errysuprayogi on 09,May,2019

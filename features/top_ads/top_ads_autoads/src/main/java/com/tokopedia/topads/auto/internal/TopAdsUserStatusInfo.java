@@ -1,14 +1,14 @@
-package com.tokopedia.topads.auto.constant;
+package com.tokopedia.topads.auto.internal;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.topads.auto.constant.TopAdsUserStatusInfo.AUTOADS_USER;
-import static com.tokopedia.topads.auto.constant.TopAdsUserStatusInfo.MANUAL_USER;
-import static com.tokopedia.topads.auto.constant.TopAdsUserStatusInfo.NO_ADS;
-import static com.tokopedia.topads.auto.constant.TopAdsUserStatusInfo.NO_PRODUCT;
+import static com.tokopedia.topads.auto.internal.TopAdsUserStatusInfo.AUTOADS_USER;
+import static com.tokopedia.topads.auto.internal.TopAdsUserStatusInfo.MANUAL_USER;
+import static com.tokopedia.topads.auto.internal.TopAdsUserStatusInfo.NO_ADS;
+import static com.tokopedia.topads.auto.internal.TopAdsUserStatusInfo.NO_PRODUCT;
 
 /**
  * Author errysuprayogi on 14,May,2019

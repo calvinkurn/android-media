@@ -1,14 +1,14 @@
-package com.tokopedia.topads.auto.data
+package com.tokopedia.topads.auto.data.entity
 
 import com.google.gson.annotations.SerializedName
 
 /**
  * Author errysuprayogi on 15,May,2019
  */
-class TopAdsAutoAdsInfo {
+data class TopAdsAutoAdsInfo (
 
     @SerializedName("reason")
-    var reason: String = ""
+    val reason: String = "",
     @SerializedName("message")
-    var message: String = ""
-}
+    val message: String = ""
+)

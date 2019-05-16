@@ -1,18 +1,18 @@
-package com.tokopedia.topads.auto.data
+package com.tokopedia.topads.auto.data.entity
 
 import com.google.gson.annotations.SerializedName
 
 /**
  * Author errysuprayogi on 15,May,2019
  */
-class BidInfoEstimationData {
+data class BidInfoEstimationData (
 
     @SerializedName("min_bid")
-    var minBid: Int = 0
+    val minBid: Int = 0,
     @SerializedName("min_bid_fmt")
-    var minBidFmt: String = ""
+    val minBidFmt: String = "",
     @SerializedName("max_bid")
-    var maxBid: Int = 0
+    val maxBid: Int = 0,
     @SerializedName("max_bid_fmt")
-    var maxBidFmt: String = ""
-}
+    val maxBidFmt: String = ""
+)

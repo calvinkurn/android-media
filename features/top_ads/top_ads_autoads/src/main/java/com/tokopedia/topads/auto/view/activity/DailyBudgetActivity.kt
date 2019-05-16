@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.topads.auto.view.fragment.InitialBudgetFragment
+import com.tokopedia.topads.auto.view.fragment.budget.InitialBudgetFragment
 
 /**
  * Author errysuprayogi on 07,May,2019

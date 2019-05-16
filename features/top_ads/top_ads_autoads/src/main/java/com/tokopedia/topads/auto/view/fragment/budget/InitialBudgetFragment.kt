@@ -1,4 +1,4 @@
-package com.tokopedia.topads.auto.view.fragment
+package com.tokopedia.topads.auto.view.fragment.budget
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,7 +13,6 @@ import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.view.activity.AutoAdsActivatedActivity
 import com.tokopedia.topads.auto.view.widget.InfoAutoAdsSheet
 import com.tokopedia.topads.auto.view.widget.ManualAdsConfirmationSheet
-import kotlinx.android.synthetic.main.layout_start_daily_budget.*
 
 /**
  * Author errysuprayogi on 14,May,2019

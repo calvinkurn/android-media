@@ -6,8 +6,8 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.topads.auto.data.TopAdsShopInfo;
-import com.tokopedia.topads.auto.repository.AutoAdsRepository;
+import com.tokopedia.topads.auto.data.network.response.TopAdsShopInfoResponse;
+import com.tokopedia.topads.auto.data.repository.AutoAdsRepository;
 
 /**
  * Author errysuprayogi on 15,May,2019
@@ -15,7 +15,7 @@ import com.tokopedia.topads.auto.repository.AutoAdsRepository;
 public class TopAdsInfoViewModel extends AndroidViewModel {
 
     private AutoAdsRepository repository;
-    private MutableLiveData<TopAdsShopInfo> shopInfo;
+    private MutableLiveData<TopAdsShopInfoResponse> shopInfo;
 
     public TopAdsInfoViewModel(@NonNull Application application) {
         super(application);
@@ -26,7 +26,7 @@ public class TopAdsInfoViewModel extends AndroidViewModel {
         shopInfo = repository.getAdsShopInfo();
     }
 
-    public LiveData<TopAdsShopInfo> getShopInfo() {
+    public LiveData<TopAdsShopInfoResponse> getShopInfo() {
         return shopInfo;
     }
 }

@@ -1,22 +1,22 @@
-package com.tokopedia.topads.auto.data
+package com.tokopedia.topads.auto.data.entity
 
 import com.google.gson.annotations.SerializedName
 
 /**
  * Author errysuprayogi on 15,May,2019
  */
-class TopAdsAutoAdsData {
+data class TopAdsAutoAdsData (
 
     @SerializedName("shop_id")
-    var shopId: Int = 0
+    val shopId: Int = 0,
     @SerializedName("status")
-    var status: Int = 0
+    val status: Int = 0,
     @SerializedName("status_desc")
-    var statusDesc: String? = null
+    val statusDesc: String = "",
     @SerializedName("daily_budget")
-    var dailyBudget: Int = 0
+    val dailyBudget: Int = 0,
     @SerializedName("daily_usage")
-    var dailyUsage: Int = 0
+    val dailyUsage: Int = 0,
     @SerializedName("info")
-    var adsInfo: TopAdsAutoAdsInfo = TopAdsAutoAdsInfo()
-}
+    val adsInfo: TopAdsAutoAdsInfo = TopAdsAutoAdsInfo()
+)

@@ -1,4 +1,4 @@
-package com.tokopedia.topads.auto.view.fragment
+package com.tokopedia.topads.auto.view.fragment.budget
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -20,9 +20,10 @@ import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.seller.common.widget.PrefixEditText
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.R
+import com.tokopedia.topads.auto.data.network.datasource.AutoAdsNetworkDataSourceImpl
+import com.tokopedia.topads.auto.data.repository.AutoTopAdsRepositoyImpl
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar
-import com.tokopedia.topads.auto.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
 
 /**
@@ -34,6 +35,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     lateinit var priceEditText: PrefixEditText
     lateinit var budgetViewModel: DailyBudgetViewModel
     lateinit var budgetInputLayout: TextInputLayout
+    lateinit var factory: DailyBudgetViewModelFactory
 
     abstract fun getLayoutId(): Int
 
@@ -42,31 +44,47 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        budgetViewModel = ViewModelProviders.of(this).get(DailyBudgetViewModel::class.java)
+        factory = DailyBudgetViewModelFactory(context!!, AutoTopAdsRepositoyImpl(AutoAdsNetworkDataSourceImpl()))
+        budgetViewModel = ViewModelProviders.of(this, factory).get(DailyBudgetViewModel::class.java)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        budgetViewModel.bidInfo.observe(this, Observer { topadsBidInfo ->
-            val bidInfo = topadsBidInfo!!.data[0]
-            seekBar.range = Range(bidInfo.minBid, bidInfo.maxBid, bidInfo.minBid)
-            seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    priceRange.text = budgetViewModel.getPotentialImpression(bidInfo.minBid.toDouble(),
-                            bidInfo.maxBid.toDouble(), progress.toDouble())
-                    priceEditText.setText(progress.toString())
-                }
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                priceRange.text = budgetViewModel.getPotentialImpression(10000.toDouble(),
+                        20000.toDouble(), progress.toDouble())
+                priceEditText.setText(progress.toString())
+            }
 
-                override fun onStartTrackingTouch(seekBar: SeekBar) {
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
 
-                }
+            }
 
-                override fun onStopTrackingTouch(seekBar: SeekBar) {
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
 
-                }
-            })
+            }
         })
+//        budgetViewModel.bidInfo.observe(this, Observer { topadsBidInfo ->
+//            val bidInfo = topadsBidInfo!!.data[0]
+//            seekBar.range = Range(bidInfo.minBid, bidInfo.maxBid, bidInfo.minBid)
+//            seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+//                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+//                    priceRange.text = budgetViewModel.getPotentialImpression(bidInfo.minBid.toDouble(),
+//                            bidInfo.maxBid.toDouble(), progress.toDouble())
+//                    priceEditText.setText(progress.toString())
+//                }
+//
+//                override fun onStartTrackingTouch(seekBar: SeekBar) {
+//
+//                }
+//
+//                override fun onStopTrackingTouch(seekBar: SeekBar) {
+//
+//                }
+//            })
+//        })
 
     }
 
@@ -76,6 +94,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
         budgetInputLayout = view.findViewById(R.id.input_layout_budget_price)
         priceEditText = view.findViewById(R.id.edit_text_max_price)
         seekBar = view.findViewById(R.id.seekbar)
+        setUpView(view)
         setListener()
         return view
     }

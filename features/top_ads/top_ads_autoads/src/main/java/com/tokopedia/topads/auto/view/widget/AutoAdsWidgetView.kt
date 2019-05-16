@@ -2,7 +2,6 @@ package com.tokopedia.topads.auto.view.widget
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
@@ -11,7 +10,7 @@ import android.view.View
 import android.widget.TextView
 
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.constant.TopAdsWidgetStatus
+import com.tokopedia.topads.auto.internal.TopAdsWidgetStatus
 import com.tokopedia.topads.auto.view.activity.SettingBudgetAdsActivity
 
 /**

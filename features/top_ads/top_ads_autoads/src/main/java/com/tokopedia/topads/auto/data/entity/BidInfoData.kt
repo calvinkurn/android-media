@@ -1,37 +1,37 @@
-package com.tokopedia.topads.auto.data
+package com.tokopedia.topads.auto.data.entity
 
 import com.google.gson.annotations.SerializedName
 
 /**
  * Author errysuprayogi on 15,May,2019
  */
-class BidInfoData {
+data class BidInfoData (
 
     @SerializedName("id")
-    var id: Int = 0
+    val id: Int = 0,
     @SerializedName("suggestion_bid")
-    var suggestionBid: Int = 0
+    val suggestionBid: Int = 0,
     @SerializedName("suggestion_bid_fmt")
-    var suggestionBidFmt: String = ""
+    val suggestionBidFmt: String = "",
     @SerializedName("min_bid")
-    var minBid: Int = 0
+    val minBid: Int = 0,
     @SerializedName("min_bid_fmt")
-    var minBidFmt: String = ""
+    val minBidFmt: String = "",
     @SerializedName("max_bid")
-    var maxBid: Int = 0
+    val maxBid: Int = 0,
     @SerializedName("max_bid_fmt")
-    var maxBidFmt: String = ""
+    val maxBidFmt: String = "",
     @SerializedName("multiplier")
-    var multiplier: Int = 0
+    val multiplier: Int = 0,
     @SerializedName("min_daily_budget")
-    var minDailyBudget: Int = 0
+    val minDailyBudget: Int = 0,
     @SerializedName("min_daily_budget_fmt")
-    var minDailyBudgetFmt: String = ""
+    val minDailyBudgetFmt: String = "",
     @SerializedName("max_daily_budget")
-    var maxDailyBudget: Int = 0
+    val maxDailyBudget: Int = 0,
     @SerializedName("max_daily_budget_fmt")
-    var maxDailyBudgetFmt: String = ""
+    val maxDailyBudgetFmt: String = "",
     @SerializedName("estimation")
-    var estimation: BidInfoEstimationData = BidInfoEstimationData()
+    val estimation: BidInfoEstimationData = BidInfoEstimationData()
 
-}
+)
