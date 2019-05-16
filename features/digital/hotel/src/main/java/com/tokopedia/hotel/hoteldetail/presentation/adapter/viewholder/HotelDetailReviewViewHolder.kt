@@ -2,7 +2,9 @@ package com.tokopedia.hotel.hoteldetail.presentation.adapter.viewholder
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import kotlinx.android.synthetic.main.item_hotel_detail_review.view.*
 
 /**
@@ -10,13 +12,14 @@ import kotlinx.android.synthetic.main.item_hotel_detail_review.view.*
  */
 class HotelDetailReviewViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
-    fun bind(element: String) {
+    fun bind(element: HotelReview) {
         with(itemView) {
-            tv_review_title.text = "Sangat Baik"
-            tv_review_description.text = "Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut."
-            tv_review_reviewer.text = "Username"
-            tv_review_score.text = "8,6"
-            tv_review_date.text = "01 Mei 2019"
+            tv_review_title.text = element.headline
+            tv_review_description.text = element.pros
+            tv_review_reviewer.text = element.reviewerName
+            tv_review_score.text = element.score.toString()
+            tv_review_date.text = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil
+                    .stringToDate(TravelDateUtil.YYYY_MM_DD, element.createTime))
         }
     }
 

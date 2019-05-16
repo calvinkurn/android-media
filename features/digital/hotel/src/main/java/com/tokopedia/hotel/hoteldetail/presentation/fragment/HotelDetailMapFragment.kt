@@ -1,7 +1,8 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailMapActivity
 import kotlinx.android.synthetic.main.fragment_hotel_detail_map.*
@@ -18,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_hotel_detail_map.*
 /**
  * @author by furqan on 29/04/19
  */
-class HotelDetailMapFragment : Fragment(), OnMapReadyCallback {
+class HotelDetailMapFragment : TkpdBaseV4Fragment(), OnMapReadyCallback {
 
     private lateinit var googleMap: GoogleMap
 
@@ -50,6 +52,8 @@ class HotelDetailMapFragment : Fragment(), OnMapReadyCallback {
         this.googleMap = googleMap
         setGoogleMap()
     }
+
+    override fun getScreenName(): String = ""
 
     private fun initHotelLocationMap() {
         if (map_view != null) {
@@ -85,6 +89,12 @@ class HotelDetailMapFragment : Fragment(), OnMapReadyCallback {
                 // it's used to override default function of OnMapClickListener
                 // which is navigate to default Google Map Apps
             }
+        }
+
+        iv_go_to_gmap.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse(getString(R.string.hotel_google_map_intent_link, latitude, longitude, propertyName))
+            })
         }
     }
 
