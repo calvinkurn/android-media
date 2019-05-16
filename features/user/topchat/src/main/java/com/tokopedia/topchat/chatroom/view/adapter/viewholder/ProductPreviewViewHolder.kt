@@ -71,8 +71,17 @@ class ProductPreviewViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemVi
 
     private fun getBackgroundDrawable(hexColor: String): Drawable? {
         val backgroundDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.circle_color_variant_indicator)
+
+        if (isWhiteColor(hexColor)) {
+            return backgroundDrawable
+        }
+
         backgroundDrawable?.colorFilter = PorterDuffColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.SRC_ATOP)
         return backgroundDrawable
+    }
+
+    private fun isWhiteColor(hexColor: String): Boolean {
+        return hexColor == "#ffffff" || hexColor == "#fff"
     }
 
 }
