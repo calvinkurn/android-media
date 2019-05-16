@@ -16,6 +16,9 @@ buildCache {
 }
 include ':libraries:inappupdate'
 
+include ":libraries:core_legacy", ':libraries:track', ':tkpdabstraction', ':tkpddesign', ':libraries:user_session', ':features:common:resources_common'
+include ':libraries:analytics', ':libraries:graphql', ':features:transaction:transactionanalytics', ':libraries:global_config', ':libraries:iris'
+include ':libraries:network', ':libraries:kotlin_extensions', ':libraries:cpm', ':libraries:remote_config'
 includeBuild('libraries/composite_build'){
     dependencySubstitution {
         substitute module('com.tokopedia.cache_manager:cache_manager') with project(':cache_manager')
