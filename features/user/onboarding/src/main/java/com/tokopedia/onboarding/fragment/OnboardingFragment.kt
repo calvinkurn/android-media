@@ -13,13 +13,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.animation.OnboardingAnimation.appearText
 import com.tokopedia.onboarding.animation.OnboardingAnimation.slideReverseX
 import com.tokopedia.onboarding.listener.CustomAnimationPageTransformerDelegate
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import com.tokopedia.onboarding.R
 
 /**
  * @author by stevenfredian on 14/05/19.
@@ -103,8 +103,9 @@ class OnboardingFragment : BaseDaggerFragment(),
                               container: ViewGroup?,
                               savedInstanceState: Bundle?)
             : View? {
-        val defaultView = inflater.inflate(R.layout.base_onboarding_fragment, container, false)
-        val main = defaultView.findViewById(R.id.main)
+        val defaultView: View = inflater.inflate(R.layout.base_onboarding_fragment, container,
+                false)
+        val main: View = defaultView.findViewById(R.id.main)
         main.setBackgroundColor(bgColor)
 
         lottieAnimationView = defaultView.findViewById(R.id.animation_view)
