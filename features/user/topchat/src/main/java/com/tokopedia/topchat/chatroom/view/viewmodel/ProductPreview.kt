@@ -13,7 +13,7 @@ class ProductPreview(
         val url: String
 ) {
     fun noProductPreview(): Boolean {
-        return name.isEmpty() || imageUrl.isEmpty() || price.isEmpty()
+        return name.isEmpty() || imageUrl.isEmpty() || price.isEmpty() || id.isEmpty()
     }
 
     fun doesNotHaveVariant(): Boolean {

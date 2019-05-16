@@ -170,6 +170,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         productPreview = ProductPreview(productId, productImageUrl, productName, productPrice,
                 productColorVariant, productColorHexVariant, productSizeVariant, source)
 
+        productPreview?.let {
+            if (it.noProductPreview()) {
+                onEmptyProductPreview()
+            }
+        }
+
         initProductPreviewLayoutIfExist()
     }
 
