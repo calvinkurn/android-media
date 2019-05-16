@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -137,7 +138,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private var remoteConfig: RemoteConfig? = null
 
-    private val shopProductAdapter: ShopProductAdapter by lazy { createAdapterInstance() as ShopProductAdapter }
+    private val shopProductAdapter: ShopProductAdapter by lazy { adapter as ShopProductAdapter }
     private val gridLayoutManager: GridLayoutManager by lazy { recyclerViewLayoutManager as GridLayoutManager }
     private var needReloadData: Boolean = false
     private var needLoadVoucher: Boolean = false
@@ -151,8 +152,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             if (TextUtils.isEmpty(selectedEtalaseId)) {
                 return true
             }
-            val etalaseViewModelList = shopProductAdapter?.shopProductEtalaseListViewModel?.etalaseModelList ?: return false
-            return etalaseViewModelList.size > 0 && etalaseViewModelList[0].etalaseId.equals(selectedEtalaseId!!, ignoreCase = true)
+            val etalaseViewModelList = shopProductAdapter.shopProductEtalaseListViewModel?.etalaseModelList ?: return false
+            return etalaseViewModelList.size > 0 && etalaseViewModelList[0].etalaseId.equals(selectedEtalaseId, ignoreCase = true)
         }
 
     override val isOwner: Boolean
@@ -546,6 +547,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             isLoadingInitialData = false
         }
         shopProductAdapter.notifyDataSetChanged()
+        Log.e("TADA", "${shopProductAdapter.itemCount}")
         shopProductAdapter.refreshSticky()
         if (activity is ShopPageActivity) {
             (activity as? ShopPageActivity)?.stopPerformanceMonitor()
