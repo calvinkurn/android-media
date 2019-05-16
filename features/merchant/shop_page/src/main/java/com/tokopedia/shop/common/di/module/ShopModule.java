@@ -1,18 +1,11 @@
 package com.tokopedia.shop.common.di.module;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
 import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.di.ShopQualifier;
 import com.tokopedia.shop.common.di.ShopWSQualifier;
 import com.tokopedia.shop.common.di.scope.ShopScope;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
-import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -35,17 +28,5 @@ public class ShopModule {
     @Provides
     public ShopWSApi provideShopWsApi(@ShopWSQualifier Retrofit retrofit) {
         return retrofit.create(ShopWSApi.class);
-    }
-
-    @ShopScope
-    @Provides
-    public GetShopInfoByDomainUseCase provideGetShopInfoByDomainUseCase(ShopCommonRepository shopCommonRepository) {
-        return new GetShopInfoByDomainUseCase(shopCommonRepository);
-    }
-
-    @ShopScope
-    @Provides
-    public ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase( @ApplicationContext Context context) {
-        return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
     }
 }

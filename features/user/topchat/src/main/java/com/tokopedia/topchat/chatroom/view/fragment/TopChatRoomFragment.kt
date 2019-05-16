@@ -38,9 +38,11 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
+import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -399,8 +401,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             strings.add(imageUrl)
             val topChatRouter = (it.applicationContext as TopChatRouter)
 
-            topChatRouter.openImagePreviewFromChat(it, strings, ArrayList(),
-                    opponentName, replyTime)
+            it.startActivity(ImagePreviewActivity.getCallingIntent(it,
+                    strings,
+                    null, 0))
         }
 
     }
@@ -610,7 +613,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 product.productUrl,
                 product.productImageThumbnail,
                 SendableViewModel.generateStartTime(),
-                false)
+                false,
+                shopId)
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
@@ -651,16 +655,43 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         activity?.let {
             val router = (it.application as TopChatRouter)
-            presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(),
-                    element.shopId)
+            val shopName = (arguments?.get(ApplinkConst.Chat.PARAM_HEADER) as ChatRoomHeaderViewModel).name
+            analytics.eventClickBuyProductAttachment(
+                    element.blastId.toString(),
+                    element.productName,
+                    element.productId.toString(),
+                    element.productPrice,
+                    1,
+                    element.shopId.toString(),
+                    shopName
+            )
+            var shopId = this.shopId
+            if(shopId == 0) {
+                shopId = element.shopId
+            }
+            presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(), shopId)
         }
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         activity?.let {
             val router = (it.application as TopChatRouter)
+            val shopName = (arguments?.get(ApplinkConst.Chat.PARAM_HEADER) as ChatRoomHeaderViewModel).name
+            analytics.eventClickAddToCartProductAttachment(
+                    element.blastId.toString(),
+                    element.productName,
+                    element.productId.toString(),
+                    element.productPrice,
+                    1,
+                    element.shopId.toString(),
+                    shopName
+            )
+            var shopId = this.shopId
+            if(shopId == 0) {
+                shopId = element.shopId
+            }
             presenter.addProductToCart(router, element, onError(), onSuccessAddToCart(),
-                    element.shopId)
+                    shopId)
         }
     }
 
@@ -690,6 +721,24 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         val intent = RouteManager.getIntent(activity, ApplinkConst.SHOP.replace("{shop_id}", shopId
                 .toString()))
         startActivityForResult(intent, REQUEST_GO_TO_SHOP)
+    }
+
+    override fun followUnfollowShop(actionFollow: Boolean) {
+        analytics.eventFollowUnfollowShop(actionFollow, shopId.toString())
+        presenter.followUnfollowShop(shopId.toString(), onErrorFollowUnfollowShop(), onSuccessFollowUnfollowShop())
+    }
+
+    private fun onErrorFollowUnfollowShop(): (Throwable) -> Unit {
+        return {
+            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
+        }
+    }
+    private fun onSuccessFollowUnfollowShop(): (Boolean) -> Unit {
+        return {
+            if(it) {
+                getViewState().isShopFollowed = !getViewState().isShopFollowed
+            }
+        }
     }
 
     override fun onDeleteConversation() {
@@ -741,7 +790,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun getChatReportUrl() = "https://m.tokopedia.com/chat/report/$messageId"
+    private fun getChatReportUrl() = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"
 
     override fun onDualAnnouncementClicked(redirectUrl: String, attachmentId: String, blastId: Int) {
         analytics.trackClickImageAnnouncement(blastId.toString(), attachmentId)

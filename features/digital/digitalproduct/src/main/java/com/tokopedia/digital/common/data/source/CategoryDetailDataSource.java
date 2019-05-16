@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalCache;
@@ -125,8 +126,9 @@ public class CategoryDetailDataSource {
     private Observable<ProductDigitalData> getCategoryAndFavDataFromLocal(String categoryId) {
         RechargeResponseEntity digitalCategoryDetailEntity;
         try {
+            // currently, DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV is saved via CacheManager library
             digitalCategoryDetailEntity = CacheUtil.convertStringToModel(
-                    cacheManager.get(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId),
+                    PersistentCacheManager.instance.getString(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId),
                     new TypeToken<RechargeResponseEntity>() {
                     }.getType());
         } catch (RuntimeException e) {
@@ -172,12 +174,12 @@ public class CategoryDetailDataSource {
 
     private Action1<RechargeResponseEntity> saveCategoryDetailAndFavToCache(final String categoryId) {
         return digitalCategoryDetailEntity -> {
-            cacheManager.save(
+            PersistentCacheManager.instance.put(
                     DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId,
                     CacheUtil.convertModelToString(digitalCategoryDetailEntity,
                             new TypeToken<RechargeResponseEntity>() {
                             }.getType()),
-                    900
+                    900_000
             );
         };
     }
