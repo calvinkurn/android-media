@@ -277,6 +277,7 @@ public interface ApplinkConst {
         String PRODUCT_PREVIEW_IMAGE_URL = "product_preview_image_url";
         String PRODUCT_PREVIEW_NAME = "product_preview_name";
         String PRODUCT_PREVIEW_PRICE = "product_preview_price";
+        String PRODUCT_PREVIEW_URL = "product_preview_url";
         String PRODUCT_PREVIEW_COLOR_VARIANT = "product_preview_color";
         String PRODUCT_PREVIEW_HEX_COLOR_VARIANT = "product_preview_hex_color";
         String PRODUCT_PREVIEW_SIZE_VARIANT = "product_preview_size";

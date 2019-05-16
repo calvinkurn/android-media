@@ -1463,6 +1463,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         val productImageUrl = getProductImageUrl()
         val productName = getProductName()
         val productPrice = getProductPrice()
+        val productUrl = getProductUrl()
         val productColorVariant = variants?.get("colour")?.get("value")
         val productColorHexVariant = variants?.get("colour")?.get("hex")
         val productSizeVariant = variants?.get("size")?.get("value")
@@ -1471,6 +1472,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, productImageUrl)
             putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, productName)
             putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, productPrice)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, productUrl)
             putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, productColorVariant)
             putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, productColorHexVariant)
             putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, productSizeVariant)
@@ -1488,6 +1490,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun getProductPrice(): String? {
         return productInfo?.basic?.price?.getCurrencyFormatted()
+    }
+
+    private fun getProductUrl(): String? {
+        return productInfo?.basic?.url
     }
 
     private fun mapSelectedProductVariants(): ArrayMap<String, ArrayMap<String, String>>? {

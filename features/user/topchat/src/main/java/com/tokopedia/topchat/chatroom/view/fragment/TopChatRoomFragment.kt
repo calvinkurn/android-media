@@ -164,11 +164,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         val productImageUrl = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, arguments, savedInstanceState)
         val productName = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, arguments, savedInstanceState)
         val productPrice = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, arguments, savedInstanceState)
+        val productUrl = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, arguments, savedInstanceState)
         val productColorVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, arguments, savedInstanceState)
         val productColorHexVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, arguments, savedInstanceState)
         val productSizeVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, arguments, savedInstanceState)
         productPreview = ProductPreview(productId, productImageUrl, productName, productPrice,
-                productColorVariant, productColorHexVariant, productSizeVariant, source)
+                productColorVariant, productColorHexVariant, productSizeVariant, productUrl)
 
         productPreview?.let {
             if (it.noProductPreview()) {
