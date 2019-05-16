@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.view.analytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
+import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -156,7 +157,7 @@ public class FeedAnalytics {
         else return MULTIPLE;
     }
 
-    public void eventBannerImpression(ArrayList<TrackingBannerModel> trackingBannerModels, int userId) {
+    public void eventBannerImpression(List<TrackingBannerModel> trackingBannerModels, int userId) {
         int firstPostId = trackingBannerModels.isEmpty() ? 0 : trackingBannerModels.get(0).getPostId();
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         for (TrackingBannerModel banner : trackingBannerModels) {
@@ -215,24 +216,27 @@ public class FeedAnalytics {
         );
     }
 
-    public void eventRecommendationImpression(String templateType, String activityName,
-                                              String authorName, String authorType, int authorId,
-                                              int cardPosition, int userId) {
+    public void eventRecommendationImpression(List<TrackingRecommendationModel> trackingList,
+                                              int userId) {
+        int firstAuthorId = trackingList.isEmpty() ? 0 : trackingList.get(0).getAuthorId();
+        String firstAuthorType = trackingList.isEmpty() ? "" : trackingList.get(0).getAuthorType();
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
-        promotionList.add(new FeedEnhancedTracking.Promotion(
-                authorId,
-                String.format("/content feed - %s - %s", activityName, authorType),
-                authorName,
-                "",
-                cardPosition,
-                "",
-                0,
-                templateType
-        ));
+        for (TrackingRecommendationModel tracking : trackingList) {
+            promotionList.add(new FeedEnhancedTracking.Promotion(
+                    tracking.getAuthorId(),
+                    String.format("/content feed - %s - %s", tracking.getActivityName(), tracking.getAuthorType()),
+                    tracking.getAuthorName(),
+                    "",
+                    tracking.getCardPosition(),
+                    "",
+                    0,
+                    tracking.getTemplateType()
+            ));
+        }
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceView(
-                        String.format("impression - %s recommendation", authorType),
-                        String.valueOf(authorId),
+                        String.format("impression - %s recommendation", firstAuthorType),
+                        String.valueOf(firstAuthorId),
                         promotionList,
                         userId
                 )
@@ -264,23 +268,26 @@ public class FeedAnalytics {
         );
     }
 
-    public void eventTopadsRecommendationImpression(String templateType, int adId, int authorId,
-                                                    int cardPosition, int userId) {
+    public void eventTopadsRecommendationImpression(List<TrackingRecommendationModel> trackingList,
+                                                    int userId) {
+        int firstAuthorId = trackingList.isEmpty() ? 0 : trackingList.get(0).getAuthorId();
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
-        promotionList.add(new FeedEnhancedTracking.Promotion(
-                authorId,
-                "/content feed - topads - shop",
-                "",
-                "",
-                cardPosition,
-                "",
-                adId,
-                templateType
-        ));
+        for (TrackingRecommendationModel tracking : trackingList) {
+            promotionList.add(new FeedEnhancedTracking.Promotion(
+                    tracking.getAuthorId(),
+                    "/content feed - topads - shop",
+                    "",
+                    "",
+                    tracking.getCardPosition(),
+                    "",
+                    tracking.getAdId(),
+                    tracking.getTemplateType()
+            ));
+        }
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceView(
                         "impression - topads shop recommendation",
-                        String.valueOf(authorId),
+                        String.valueOf(firstAuthorId),
                         promotionList,
                         userId
                 )
@@ -408,7 +415,7 @@ public class FeedAnalytics {
         );
     }
 
-    public void eventProductGridImpression(ArrayList<ProductEcommerce> productList,
+    public void eventProductGridImpression(List<ProductEcommerce> productList,
                                            String activityName, int postId, int userId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
@@ -499,7 +506,7 @@ public class FeedAnalytics {
         );
     }
 
-    public void eventDetailProductImpression(ArrayList<ProductEcommerce> productList, int userId) {
+    public void eventDetailProductImpression(List<ProductEcommerce> productList, int userId) {
         String firstProductId = productList.isEmpty() ? "0" : productList.get(0).getProductId();
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
@@ -534,7 +541,7 @@ public class FeedAnalytics {
         );
     }
 
-    private HashMap<String, Object> getProductEcommerceImpressions(ArrayList<ProductEcommerce> productList,
+    private HashMap<String, Object> getProductEcommerceImpressions(List<ProductEcommerce> productList,
                                                                    String list) {
         ArrayList<Object> products = new ArrayList<>();
         for (ProductEcommerce product : productList) {

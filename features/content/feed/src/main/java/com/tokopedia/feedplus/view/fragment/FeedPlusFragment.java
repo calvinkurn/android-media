@@ -1660,35 +1660,20 @@ public class FeedPlusFragment extends BaseDaggerFragment
             } else if (visitable instanceof FeedRecommendationViewModel) {
                 FeedRecommendationViewModel recommendationViewModel
                         = (FeedRecommendationViewModel) visitable;
-
+                ArrayList<TrackingRecommendationModel> trackingList = new ArrayList<>();
                 for (RecommendationCardViewModel card : recommendationViewModel.getCards()) {
-
-                    TrackingRecommendationModel trackingRecommendationModel
-                            = card.getTrackingRecommendationModel();
-                    analytics.eventRecommendationImpression(
-                            trackingRecommendationModel.getTemplateType(),
-                            trackingRecommendationModel.getActivityName(),
-                            trackingRecommendationModel.getAuthorName(),
-                            trackingRecommendationModel.getAuthorType(),
-                            trackingRecommendationModel.getAuthorId(),
-                            trackingRecommendationModel.getCardPosition(),
-                            userId
-                    );
+                    trackingList.add(card.getTrackingRecommendationModel());
                 }
+                analytics.eventRecommendationImpression(
+                        trackingList,
+                        userId
+                );
             } else if (visitable instanceof TopadsShopViewModel) {
                 TopadsShopViewModel topadsShopViewModel = (TopadsShopViewModel) visitable;
-
-                for (TrackingRecommendationModel trackingRecommendationModel
-                        : topadsShopViewModel.getTrackingList()) {
-
-                    analytics.eventTopadsRecommendationImpression(
-                            trackingRecommendationModel.getTemplateType(),
-                            trackingRecommendationModel.getAdId(),
-                            trackingRecommendationModel.getAuthorId(),
-                            trackingRecommendationModel.getCardPosition(),
-                            userId
-                    );
-                }
+                analytics.eventTopadsRecommendationImpression(
+                        topadsShopViewModel.getTrackingList(),
+                        userId
+                );
             }
         }
     }
