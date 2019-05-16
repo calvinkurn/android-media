@@ -1438,15 +1438,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE);
     }
 
-    private void doShare(String body, String title) {
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
-        startActivity(
-                Intent.createChooser(sharingIntent, title)
-        );
-    }
-
     @Override
     public void onFooterActionClick(int positionInFeed, @NonNull String redirectUrl) {
         onGoToLink(redirectUrl);
@@ -1576,6 +1567,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
             trackCardPostClick(positionInFeed, model.getTrackingPostModel());
         }
+    }
+
+    private void doShare(String body, String title) {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
+        startActivity(
+                Intent.createChooser(sharingIntent, title)
+        );
     }
 
     private void goToContentReport(int contentId) {

@@ -219,7 +219,7 @@ public class FeedAnalytics {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
                 authorId,
-                String.format("/content feed - %s - profile", activityName),
+                String.format("/content feed - %s - %s", activityName, authorType),
                 authorName,
                 "",
                 cardPosition,
@@ -244,7 +244,7 @@ public class FeedAnalytics {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
                 authorId,
-                String.format("/content feed - %s - profile", activityName),
+                String.format("/content feed - %s - %s", activityName, authorType),
                 authorName,
                 "",
                 cardPosition,
