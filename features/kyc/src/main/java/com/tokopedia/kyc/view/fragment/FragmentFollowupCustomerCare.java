@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.R;
@@ -63,9 +64,9 @@ public class FragmentFollowupCustomerCare extends BaseDaggerFragment implements
     }
 
     private void executeBackToApp(){
-//        ((ApplinkRouter) getContext().getApplicationContext()).goToApplinkActivity(getContext(), "tokopedia://webview?url=https://www.tokopedia.com/ovo");
         getActivity().finish();
-        getActivity().startActivity(((KYCRouter) getContext().getApplicationContext()).getRefreshWebPageIntent(getContext(), true));
+        PersistentCacheManager cacheManager = new PersistentCacheManager(getContext(), "");
+        cacheManager.put("reload_webview", 1);
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,

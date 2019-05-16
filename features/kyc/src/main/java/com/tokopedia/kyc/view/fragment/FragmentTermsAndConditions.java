@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -283,7 +284,19 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     @Override
     public void failure(ConfirmSubmitResponse data) {
         if(activityListener != null) {
-            activityListener.addReplaceFragmentWithCustAnim(ErrorKycConfirmation.newInstance(),
+            ErrorKycConfirmation errorKycConfirmation = ErrorKycConfirmation.newInstance();
+            if(data != null && data.getConfirmSubmitResponse() != null
+                    && data.getConfirmSubmitResponse().getErrors() != null &&
+                    data.getConfirmSubmitResponse().getErrors().size() > 0){
+                String errorMessage = data.
+                        getConfirmSubmitResponse().getErrors().get(0).get(Constants.Keys.MESSAGE);
+                if(!TextUtils.isEmpty(errorMessage)){
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constants.Keys.MESSAGE, errorMessage);
+                    errorKycConfirmation.setArguments(bundle);
+                }
+            }
+            activityListener.addReplaceFragmentWithCustAnim(errorKycConfirmation,
                     true, ErrorKycConfirmation.TAG, R.anim.enter_from_bottom_to_top, R.anim.exit_from_top_to_bottom);
         }
     }

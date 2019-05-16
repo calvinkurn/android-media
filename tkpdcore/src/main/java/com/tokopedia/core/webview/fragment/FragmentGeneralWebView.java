@@ -605,7 +605,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     public void reloadPage(){
-        WebViewGeneral.loadAuthUrl(!url.contains(SEAMLESS)
-                ? URLGenerator.generateURLSessionLogin(url, getActivity()) : url);
+        WebViewGeneral.reload();
     }
 }

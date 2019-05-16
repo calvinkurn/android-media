@@ -4,10 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.kyc.Constants;
@@ -20,6 +22,7 @@ public class ErrorKycConfirmation extends BaseDaggerFragment
     private ActivityListener activityListener;
     public static String TAG = "error_kyc_confirm";
     private Button tryAgain;
+    private TextView errorDesc;
 
     @Override
     protected void initInjector() {
@@ -42,6 +45,7 @@ public class ErrorKycConfirmation extends BaseDaggerFragment
         if(activityListener != null) {
             activityListener.setHeaderTitle(Constants.Values.OVO);
         }
+        setErrorDesc();
     }
 
     @Override
@@ -60,6 +64,9 @@ public class ErrorKycConfirmation extends BaseDaggerFragment
                 activityListener.addReplaceFragment(FragmentUpgradeToOvo.newInstance(), true, FragmentUpgradeToOvo.TAG);
             }
         }
+        else if(i == R.id.cancel_btn){
+            getActivity().finish();
+        }
     }
 
 
@@ -69,6 +76,14 @@ public class ErrorKycConfirmation extends BaseDaggerFragment
         View view = inflater.inflate(R.layout.error_kyc, container, false);
         tryAgain = view.findViewById(R.id.try_again);
         tryAgain.setOnClickListener(this::onClick);
+        errorDesc = view.findViewById(R.id.error_desc);
         return view;
+    }
+
+    private void setErrorDesc(){
+        String msg = getArguments().getString(Constants.Keys.MESSAGE, "");
+        if(!TextUtils.isEmpty(msg)){
+            errorDesc.setText(msg);
+        }
     }
 }

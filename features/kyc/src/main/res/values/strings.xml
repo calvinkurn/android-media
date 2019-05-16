@@ -21,7 +21,7 @@
     <string name="atn">Perhatian</string>
     <string name="ovo_lvl_upgrd_fail">Upgrade OVO Premier Anda gagal diproses</string>
     <string name="dnt_wry">Jangan khawatir, kamu bisa mengulang proses peningkatan level akun OVO dengan mengeklik tombol di bawah ini</string>
-    <string name="upgrd_now">Upgrade OVO Sekarang</string>
+    <string name="upgrd_now">Upgrade Sekarang</string>
     <string name="rtrn_mnpg">Kembali Ke Halama Utama</string>
     <string name="ulng_fto">ULANGI FOTO</string>
     <string name="ulng">Ulangi</string>
@@ -45,8 +45,8 @@
     <string name="aplikasi_ovo">Aplikasi OVO Premier kamu sedang diproses</string>
     <string name="liht_sel">Lihat Selengkapnya</string>
     <string name="gnkn">GUNAKAN</string>
-    <string name="hore_kamu">Hore! Kamu Bergabung ke OVO Premier</string>
-    <string name="satny_nkmt">Saatnya nikmati keuntungan dari OVO Premier:</string>
+    <string name="hore_kamu">Selamat!\nUpgrade ke OVO Premier Berhasil</string>
+    <string name="satny_nkmt">Saatnya nikmati keuntungan dari <b>OVO Premier:</b></string>
     <string name="bts_sld">Batas saldo OVO Cash Rp10.000.000</string>
     <string name="tnsfr_k_antr">Transfer ke antar pengguna OVO Cash</string>
     <string name="bbs_bia">Bebas biaya transfer ke rekening bank</string>

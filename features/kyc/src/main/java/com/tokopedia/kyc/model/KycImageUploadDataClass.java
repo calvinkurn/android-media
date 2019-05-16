@@ -2,6 +2,9 @@ package com.tokopedia.kyc.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+import java.util.Map;
+
 public class KycImageUploadDataClass {
 
     @SerializedName("document_type")
@@ -10,6 +13,16 @@ public class KycImageUploadDataClass {
     private int documentId = -1;
     @SerializedName("kyc_request_id")
     private int kycRequestId = -1;
+    @SerializedName("errors")
+    private List<Map<String, String>> errors;
+
+    public List<Map<String, String>> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(List<Map<String, String>> errors) {
+        this.errors = errors;
+    }
 
     public String getDocumentType() {
         return documentType;
