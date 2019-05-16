@@ -15,10 +15,13 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
@@ -49,8 +52,11 @@ import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
+import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
+import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -72,7 +78,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         VideoViewHolder.VideoViewListener, FeedShopContract.View {
 
     private lateinit var createPostUrl: String
-    private lateinit var emptyResultViewModel: EmptyResultViewModel
     private lateinit var shopId: String
     private var isLoading = false
 
@@ -86,6 +91,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         private const val YOUTUBE_URL = "{youtube_url}"
         private const val TEXT_PLAIN = "text/plain"
         private val CREATE_POST = 888
+        private val OPEN_DETAIL = 54
         private const val LOGIN_CODE = 1383
         private const val LOGIN_FOLLOW_CODE = 1384
         private const val OPEN_CONTENT_REPORT = 1130
@@ -141,6 +147,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 this,
                 this,
                 this,
+                this,
                 userSession)
     }
 
@@ -158,6 +165,26 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 .inject(this)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when(requestCode) {
+                OPEN_CONTENT_REPORT -> {
+                    if (data!!.getBooleanExtra(ContentReportActivity.RESULT_SUCCESS, false)) {
+                        onSuccessReportContent()
+                    } else {
+                        onErrorReportContent(
+                                data.getStringExtra(ContentReportActivity.RESULT_ERROR_MSG)
+                        )
+                    }
+                }
+                OPEN_DETAIL -> {
+                    showSnackbar(data!!.getStringExtra("message"))
+                }
+            }
+        }
+    }
+
     override fun loadData(page: Int) {
         if (shopId.isNotEmpty() && !isLoading) {
             isLoading = true
@@ -169,16 +196,28 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String) {
+    override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain) {
         val dataList = ArrayList<Visitable<*>>()
         isLoading = false
         if (element.isNotEmpty()) {
             //todo : add create post widget if shop is self shop
-            renderList(element, lastCursor.isNotEmpty())
+            if (shopId.equals(userSession.shopId)) {
+                dataList.add(0, WhitelistViewModel(whitelistDomain))
+            }
+            dataList.addAll(element)
+            renderList(dataList, lastCursor.isNotEmpty())
         } else {
             dataList.add(getEmptyResultViewModel())
             renderList(dataList)
         }
+    }
+
+    override fun onWhitelistClicked(element: WhitelistViewModel) {
+        goToCreatePost()
+    }
+
+    override fun onEmptyFeedButtonClicked() {
+        goToCreatePost()
     }
 
     override fun onSuccessGetFeed(visitables: List<Visitable<*>>, lastCursor: String) {
@@ -574,27 +613,28 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         RouteManager.route(getActivity(), ApplinkConst.LOGIN);
     }
 
-    private fun getEmptyResultViewModel(): EmptyResultViewModel {
-        if (emptyResultViewModel == null) {
-            emptyResultViewModel = EmptyResultViewModel()
-            emptyResultViewModel.setIconRes(com.tokopedia.kol.R.drawable.ic_empty_shop_feed)
-            emptyResultViewModel.setTitle(getString(com.tokopedia.kol.R.string.empty_own_feed_title))
-            emptyResultViewModel.setContent(getString(com.tokopedia.kol.R.string.empty_own_feed_subtitle))
+    private fun getEmptyResultViewModel(): EmptyFeedShopViewModel {
+       return EmptyFeedShopViewModel()
+    }
 
-            if (!TextUtils.isEmpty(createPostUrl)) {
-                emptyResultViewModel.setButtonTitle(getString(com.tokopedia.kol.R.string.empty_own_feed_button))
-                emptyResultViewModel.setCallback(object : BaseEmptyViewHolder.Callback {
-                    override fun onEmptyContentItemTextClicked() {
+    private fun onSuccessReportContent() {
+        ToasterNormal
+                .make(view,
+                        getString(R.string.feed_content_reported),
+                        BaseToaster.LENGTH_LONG)
+                .setAction(R.string.label_close) { v -> }
+                .show()
+    }
 
-                    }
+    private fun onErrorReportContent(errorMsg: String) {
+        ToasterError
+                .make(view, errorMsg, BaseToaster.LENGTH_LONG)
+                .setAction(R.string.label_close) { v -> }
+                .show()
+    }
 
-                    override fun onEmptyButtonClicked() {
-                        goToCreatePost()
-                    }
-                })
-            }
-        }
-        return emptyResultViewModel
+    private fun showSnackbar(s: String) {
+        NetworkErrorHelper.showSnackbar(activity, s)
     }
 
     private fun doShare(link: String, formatString: String, shareTitle: String) {

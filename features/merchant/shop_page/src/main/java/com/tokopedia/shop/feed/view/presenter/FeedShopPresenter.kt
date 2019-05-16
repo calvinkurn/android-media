@@ -15,6 +15,8 @@ import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.shop.feed.domain.DynamicFeedShopDomain
+import com.tokopedia.shop.feed.domain.usecase.GetFeedShopFirstUseCase
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import rx.Subscriber
 import javax.inject.Inject
@@ -23,7 +25,7 @@ import javax.inject.Inject
  * @author by yfsx on 08/05/19.
  */
 class FeedShopPresenter @Inject constructor(
-        private val getDynamicFeedFirstUseCase: GetDynamicFeedUseCase,
+        private val getDynamicFeedFirstUseCase: GetFeedShopFirstUseCase,
         private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
         private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
         private val likeKolPostUseCase: LikeKolPostUseCase,
@@ -54,11 +56,11 @@ class FeedShopPresenter @Inject constructor(
             cursor = ""
             getDynamicFeedFirstUseCase.execute(
                     GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_SHOP, shopId),
-                    object : Subscriber<DynamicFeedDomainModel>() {
-                        override fun onNext(t: DynamicFeedDomainModel?) {
+                    object : Subscriber<DynamicFeedShopDomain>() {
+                        override fun onNext(t: DynamicFeedShopDomain?) {
                             t?.let {
-                                cursor = t.cursor
-                                view.onSuccessGetFeedFirstPage(t.postList, t.cursor)
+                                cursor = t.dynamicFeedDomainModel.cursor
+                                view.onSuccessGetFeedFirstPage(t.dynamicFeedDomainModel.postList, t.dynamicFeedDomainModel.cursor, t.whitelistDomain)
                             }
                         }
 

@@ -7,7 +7,7 @@ import android.support.v4.util.SparseArrayCompat
 import android.support.v4.view.PagerAdapter
 import android.view.ViewGroup
 import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.feed.fragment.FeedShopFragment
+import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
 import com.tokopedia.shop.page.view.activity.ShopPageActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment

@@ -42,7 +42,7 @@ import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
-import com.tokopedia.shop.feed.fragment.FeedShopFragment
+import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
 import com.tokopedia.shop.page.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.page.di.module.ShopPageModule

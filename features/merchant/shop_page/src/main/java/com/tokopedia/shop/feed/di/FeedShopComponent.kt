@@ -1,7 +1,7 @@
 package com.tokopedia.shop.feed.di
 
 import com.tokopedia.kol.common.di.KolComponent
-import com.tokopedia.shop.feed.fragment.FeedShopFragment
+import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import dagger.Component
 
 /**

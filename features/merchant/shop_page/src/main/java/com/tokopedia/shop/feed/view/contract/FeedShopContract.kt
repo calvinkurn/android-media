@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.shop.feed.domain.WhitelistDomain
+import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSession
 
 /**
@@ -11,7 +13,7 @@ import com.tokopedia.user.session.UserSession
  */
 interface FeedShopContract {
     interface View : BaseListViewListener<Visitable<*>> {
-        fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String)
+        fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain)
 
         fun onSuccessGetFeed(visitables: List<Visitable<*>>, lastCursor: String)
 
@@ -26,6 +28,10 @@ interface FeedShopContract {
         fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int)
 
         fun getUserSession(): UserSession
+
+        fun onWhitelistClicked(element: WhitelistViewModel)
+
+        fun onEmptyFeedButtonClicked()
     }
 
     interface Presenter : CustomerPresenter<View> {

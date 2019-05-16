@@ -21,12 +21,18 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.shop.feed.view.adapter.holder.EmptyFeedShopViewHolder
+import com.tokopedia.shop.feed.view.adapter.holder.WhitelistViewHolder
+import com.tokopedia.shop.feed.view.contract.FeedShopContract
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
+import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author by yfsx on 08/05/19.
  */
-class FeedShopFactoryImpl(private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
+class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
+                          private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
                           private val bannerListener: BannerAdapter.BannerItemListener,
                           private val topadsShopListener: TopadsShopViewHolder.TopadsShopListener,
                           private val recommendationCardListener: RecommendationCardAdapter.RecommendationCardListener,
@@ -37,7 +43,7 @@ class FeedShopFactoryImpl(private val dynamicPostListener: DynamicPostViewHolder
                           private val gridItemListener: GridPostAdapter.GridItemListener,
                           private val videoViewListener: VideoViewHolder.VideoViewListener,
                           private val userSession : UserSessionInterface):
-        BaseAdapterTypeFactory(), DynamicFeedTypeFactory {
+        BaseAdapterTypeFactory(), DynamicFeedTypeFactory, FeedShopTypeFactory {
 
     override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
         return DynamicPostViewHolder.LAYOUT
@@ -53,6 +59,14 @@ class FeedShopFactoryImpl(private val dynamicPostListener: DynamicPostViewHolder
 
     override fun type(topadsShopViewModel: TopadsShopViewModel): Int {
         return TopadsShopViewHolder.LAYOUT
+    }
+
+    override fun type(whitelistViewModel: WhitelistViewModel): Int {
+        return WhitelistViewHolder.LAYOUT
+    }
+
+    override fun type(emptyFeedShopViewModel: EmptyFeedShopViewModel): Int {
+        return EmptyFeedShopViewHolder.LAYOUT
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -74,6 +88,10 @@ class FeedShopFactoryImpl(private val dynamicPostListener: DynamicPostViewHolder
                 BannerViewHolder(parent, bannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             TopadsShopViewHolder.LAYOUT ->
                 TopadsShopViewHolder(parent, topadsShopListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+            WhitelistViewHolder.LAYOUT ->
+                WhitelistViewHolder(parent, mainView) as AbstractViewHolder<Visitable<*>>
+            EmptyFeedShopViewHolder.LAYOUT ->
+                EmptyFeedShopViewHolder(parent, mainView) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
 
         }
