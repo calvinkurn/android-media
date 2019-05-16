@@ -396,8 +396,7 @@ public class FeedAnalytics {
         );
     }
 
-    public void eventProductGridImpression(String productName, String productId,
-                                           String productPrice, int productPosition,
+    public void eventProductGridImpression(ArrayList<ProductEcommerce> productList,
                                            String activityName, int postId, int userId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
@@ -408,18 +407,14 @@ public class FeedAnalytics {
                         KEY_USER_ID, userId,
                         KEY_USER_ID_MOD, userId % 50,
                         EVENT_ECOMMERCE, getProductEcommerceImpressions(
-                                productName,
-                                productId,
-                                "/feed - system generated content",
-                                formatStringToInt(productPrice),
-                                productPosition
+                                productList,
+                                "/feed - system generated content"
                         )
                 )
         );
     }
 
-    public void eventProductGridClick(String productName, String productId,
-                                      String productPrice, int productPosition,
+    public void eventProductGridClick(ProductEcommerce product,
                                       String activityName, int postId, int userId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
@@ -430,11 +425,8 @@ public class FeedAnalytics {
                         KEY_USER_ID, userId,
                         KEY_USER_ID_MOD, userId % 50,
                         EVENT_ECOMMERCE, getProductEcommerceClick(
-                                productName,
-                                productId,
-                                "/feed - system generated content",
-                                formatStringToInt(productPrice),
-                                productPosition
+                                product,
+                                "/feed - system generated content"
                         )
                 )
         );
@@ -495,74 +487,68 @@ public class FeedAnalytics {
         );
     }
 
-    public void eventDetailProductImpression(String productName, String productId,
-                                             String productPrice, int productPosition, int userId) {
+    public void eventDetailProductImpression(ArrayList<ProductEcommerce> productList, int userId) {
+        String firstProductId = productList.isEmpty() ? "0" : productList.get(0).getProductId();
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, PRODUCT_VIEW,
                         EVENT_CATEGORY, CONTENT_FEED_TIMELINE_DETAIL,
                         EVENT_ACTION, "impression product",
-                        EVENT_LABEL, productId,
+                        EVENT_LABEL, firstProductId,
                         KEY_USER_ID, userId,
                         KEY_USER_ID_MOD, userId % 50,
                         EVENT_ECOMMERCE, getProductEcommerceImpressions(
-                                productName,
-                                productId,
-                                "/feed detail - product list",
-                                formatStringToInt(productPrice),
-                                productPosition
+                                productList,
+                                "/feed detail - product list"
                         )
                 )
         );
     }
 
-    public void eventDetailProductClick(String productName, String productId,
-                                        String productPrice, int productPosition, int userId) {
+    public void eventDetailProductClick(ProductEcommerce product, int userId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, PRODUCT_CLICK,
                         EVENT_CATEGORY, CONTENT_FEED_TIMELINE_DETAIL,
                         EVENT_ACTION, "click product",
-                        EVENT_LABEL, productId,
+                        EVENT_LABEL, product.getProductId(),
                         KEY_USER_ID, userId,
                         KEY_USER_ID_MOD, userId % 50,
                         EVENT_ECOMMERCE, getProductEcommerceClick(
-                                productName,
-                                productId,
-                                "/feed detail - product list",
-                                formatStringToInt(productPrice),
-                                productPosition
+                                product,
+                                "/feed detail - product list"
                         )
                 )
         );
     }
 
-    private HashMap<String, Object> getProductEcommerceImpressions(
-            String productName, String productId, String list, int productPrice, int position) {
-        HashMap<String, Object> ecommerceItem = new HashMap<>();
-        ecommerceItem.put("name", productName);
-        ecommerceItem.put("id", productId);
-        ecommerceItem.put("price", productPrice);
-        ecommerceItem.put("list", list);
-        ecommerceItem.put("position", position);
-
-        ArrayList<Object> listEcommerce = new ArrayList<>();
-        listEcommerce.add(ecommerceItem);
+    private HashMap<String, Object> getProductEcommerceImpressions(ArrayList<ProductEcommerce> productList,
+                                                                   String list) {
+        ArrayList<Object> products = new ArrayList<>();
+        for (ProductEcommerce product : productList) {
+            HashMap<String, Object> productItem = new HashMap<>();
+            productItem.put("name", product.getProductName());
+            productItem.put("id", product.getProductId());
+            productItem.put("price", formatStringToInt(product.getProductPrice()));
+            productItem.put("list", list);
+            productItem.put("position", product.getPosition());
+            products.add(productItem);
+        }
 
         HashMap<String, Object> ecommerce = new HashMap<>();
         ecommerce.put("currencyCode", "IDR");
-        ecommerce.put("impressions", listEcommerce);
+        ecommerce.put("impressions", products);
         return ecommerce;
     }
 
-    private HashMap<String, Object> getProductEcommerceClick(
-            String productName, String productId, String list, int productPrice, int position) {
+    private HashMap<String, Object> getProductEcommerceClick(ProductEcommerce product,
+                                                             String list) {
         HashMap<String, Object> productItem = new HashMap<>();
-        productItem.put("name", productName);
-        productItem.put("id", productId);
-        productItem.put("price", productPrice);
+        productItem.put("name", product.getProductName());
+        productItem.put("id", product.getProductId());
+        productItem.put("price", formatStringToInt(product.getProductPrice()));
         productItem.put("list", list);
-        productItem.put("position", position);
+        productItem.put("position", product.getPosition());
 
         ArrayList<Object> products = new ArrayList<>();
         products.add(productItem);

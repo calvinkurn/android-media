@@ -29,6 +29,7 @@ import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetail
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapter;
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
+import com.tokopedia.feedplus.view.analytics.ProductEcommerce;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
@@ -374,17 +375,16 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                 && getActivity().getApplicationContext() != null
                 && getArguments() != null
                 && getActivity().getApplicationContext() instanceof FeedModuleRouter) {
-
             getActivity().startActivityForResult(
                     getProductIntent(String.valueOf(feedDetailViewModel.getProductId())),
                     REQUEST_OPEN_PDP
             );
 
             analytics.eventDetailProductClick(
-                    feedDetailViewModel.getName(),
-                    String.valueOf(feedDetailViewModel.getProductId()),
-                    feedDetailViewModel.getPrice(),
-                    adapterPosition,
+                    new ProductEcommerce(String.valueOf(feedDetailViewModel.getProductId()),
+                            feedDetailViewModel.getName(),
+                            feedDetailViewModel.getPrice(),
+                            adapterPosition),
                     getUserIdInt()
             );
         }
@@ -453,18 +453,19 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     private void trackImpression(ArrayList<Visitable> listDetail) {
+        ArrayList<ProductEcommerce> productList = new ArrayList<>();
         for (int position = 0; position < listDetail.size(); position++) {
             if (listDetail.get(position) instanceof FeedDetailViewModel) {
                 FeedDetailViewModel model = (FeedDetailViewModel) listDetail.get(position);
-                analytics.eventDetailProductImpression(
-                        model.getName(),
+                productList.add(new ProductEcommerce(
                         String.valueOf(model.getProductId()),
+                        model.getName(),
                         model.getPrice(),
-                        position,
-                        getUserIdInt()
-                );
+                        position
+                ));
             }
         }
+        analytics.eventDetailProductImpression(productList, getUserIdInt());
     }
 
     private int getUserIdInt() {

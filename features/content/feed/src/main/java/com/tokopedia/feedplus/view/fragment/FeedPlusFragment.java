@@ -37,6 +37,7 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
@@ -76,16 +77,17 @@ import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryI
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
+import com.tokopedia.feedplus.view.analytics.ProductEcommerce;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
 import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
@@ -1136,7 +1138,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void showBottomSheetCreatePost(WhitelistViewModel element) {
         if (getActivity() != null) {
-
             if (createPostBottomSheet == null) {
                 createPostBottomSheet = CloseableBottomSheetDialog.createInstance(getContext(),
                         () -> {
@@ -1548,10 +1549,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         = (GridPostViewModel) model.getContentList().get(contentPosition);
                 GridItemViewModel item = grid.getItemList().get(productPosition);
                 analytics.eventProductGridClick(
-                        item.getText(),
-                        item.getId(),
-                        item.getPrice(),
-                        productPosition,
+                        new ProductEcommerce(item.getId(),
+                               item.getText(),
+                               item.getPrice(),
+                               productPosition),
                         model.getTrackingPostModel().getActivityName(),
                         model.getTrackingPostModel().getPostId(),
                         getUserIdInt()
@@ -1693,18 +1694,22 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         if (postViewModel.getContentList().get(0) instanceof GridPostViewModel) {
             GridPostViewModel model = (GridPostViewModel) postViewModel.getContentList().get(0);
+            ArrayList<ProductEcommerce> productList = new ArrayList<>();
             for (int position = 0; position < model.getItemList().size(); position++) {
                 GridItemViewModel item = model.getItemList().get(position);
-                analytics.eventProductGridImpression(
-                        item.getText(),
-                        item.getId(),
-                        item.getPrice(),
-                        position,
-                        trackingPostModel.getActivityName(),
-                        trackingPostModel.getPostId(),
-                        userId
-                );
+                    productList.add(new ProductEcommerce(
+                            String.valueOf(item.getId()),
+                            item.getText(),
+                            item.getPrice(),
+                            position
+                    ));
             }
+            analytics.eventProductGridImpression(
+                    productList,
+                    trackingPostModel.getActivityName(),
+                    trackingPostModel.getPostId(),
+                    getUserIdInt()
+            );
         } else if (postViewModel.getContentList().get(0) instanceof PollContentViewModel) {
             PollContentViewModel model = (PollContentViewModel) postViewModel.getContentList().get(0);
             analytics.eventVoteImpression(
