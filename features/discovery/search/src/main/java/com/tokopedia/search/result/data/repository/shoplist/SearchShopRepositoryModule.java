@@ -7,6 +7,7 @@ import com.tokopedia.search.result.data.source.searchshop.SearchShopDataSourceMo
 import com.tokopedia.search.result.domain.model.SearchShopModel;
 
 import dagger.Module;
+import dagger.Provides;
 
 @SearchScope
 @Module(includes = {
@@ -14,6 +15,8 @@ import dagger.Module;
 })
 public class SearchShopRepositoryModule {
 
+    @SearchScope
+    @Provides
     Repository<SearchShopModel> provideSearchShopRepository(SearchShopDataSource searchShopDataSource) {
         return new SearchShopRepository(searchShopDataSource);
     }
