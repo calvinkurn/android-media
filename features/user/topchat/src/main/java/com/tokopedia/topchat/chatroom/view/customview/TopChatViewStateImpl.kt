@@ -476,5 +476,9 @@ class TopChatViewStateImpl(
         productPreviewAdapter.clearProductPreview()
     }
 
+    override fun focusOnReply() {
+        replyEditText.requestFocus()
+    }
+
 }
 

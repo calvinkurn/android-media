@@ -174,6 +174,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         productPreview?.let {
             if (it.noProductPreview()) {
                 onEmptyProductPreview()
+            } else {
+                (viewState as? TopChatViewState)?.focusOnReply()
             }
         }
 

@@ -24,4 +24,6 @@ interface TopChatViewState : BaseChatViewState {
     fun showProductPreview(productPreview: ProductPreview)
 
     fun clearProductPreview()
+
+    fun focusOnReply()
 }
