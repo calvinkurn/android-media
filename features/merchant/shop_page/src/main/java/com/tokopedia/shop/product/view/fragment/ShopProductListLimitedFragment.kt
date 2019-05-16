@@ -16,7 +16,6 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -547,7 +546,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             isLoadingInitialData = false
         }
         shopProductAdapter.notifyDataSetChanged()
-        Log.e("TADA", "${shopProductAdapter.itemCount}")
         shopProductAdapter.refreshSticky()
         if (activity is ShopPageActivity) {
             (activity as? ShopPageActivity)?.stopPerformanceMonitor()
