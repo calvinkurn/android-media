@@ -317,6 +317,16 @@ public class FeedAnalytics {
         );
     }
 
+    public void eventFollowCardPost(String action, String activityName, String activityId,
+                                    String mediaType) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_FEED,
+                CONTENT_FEED_TIMELINE,
+                String.format("click %s - %s - %s", action, activityName, mediaType),
+                activityId
+        );
+    }
+
     //#FEED015
     public void trackClickCreatePost(String userId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
