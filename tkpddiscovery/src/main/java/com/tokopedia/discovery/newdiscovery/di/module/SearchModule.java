@@ -11,8 +11,6 @@ import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductL
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListPresenterImpl;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -36,12 +34,6 @@ import dagger.Provides;
         AttributeModule.class
 })
 public class SearchModule {
-
-    @SearchScope
-    @Provides
-    ProductListPresenter provideProductListPresenter(@ApplicationContext Context context) {
-        return new ProductListPresenterImpl(context);
-    }
 
     @SearchScope
     @Provides

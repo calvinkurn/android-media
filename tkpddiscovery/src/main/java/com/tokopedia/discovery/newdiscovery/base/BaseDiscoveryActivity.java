@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_HAS_CATALOG;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
@@ -183,7 +184,12 @@ public class BaseDiscoveryActivity
 
             if(router != null) {
                 Intent searchActivityIntent = getSearchActivityIntent(router, productViewModel);
-                startActivity(searchActivityIntent);
+                if(isActivityCalledForResult()) {
+                    setResult(AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, searchActivityIntent);
+                }
+                else {
+                    startActivity(searchActivityIntent);
+                }
             }
         }
     }
@@ -195,6 +201,10 @@ public class BaseDiscoveryActivity
         searchActivityIntent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
 
         return searchActivityIntent;
+    }
+
+    private boolean isActivityCalledForResult() {
+        return getCallingActivity() != null;
     }
 
     private void prepareMoveToSearchActivityDuringOnResume(ProductViewModel productViewModel) {

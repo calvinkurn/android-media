@@ -32,7 +32,6 @@ import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
@@ -169,9 +168,15 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             this.redirectionListener = (RedirectionListener) context;
         }
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        isUsingBottomSheetFilter = remoteConfig.getBoolean(
-                RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER,
-                true) && (this instanceof ProductListFragment);
+
+        // Temporary Solution to set isUsingBottomSheetFilter always false
+        // Currently only ProductListPresenter used BottomSheetFilter,
+        // and ProductListPresenter already moved to new module, which does not extend this class anymore
+        //
+        // For permanent solution, this onAttach will be overridden by its children
+        // to determine whether it should use BottomSheetFilter or not
+        // Example, see ProductListFragment in search module
+        isUsingBottomSheetFilter = false;
     }
 
     @Override
