@@ -21,7 +21,6 @@ import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateUnread
 import com.tokopedia.navigation.presentation.adapter.NotificationFragmentAdapter
-import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
 import com.tokopedia.navigation.presentation.fragment.NotificationFragment
 import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
@@ -186,8 +185,6 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     private fun setCounterNotificationUpdate() {
         val defaultTitle = getString(R.string.title_notification_update)
         var counter: String = ""
-
-        updateCounter = 0
         if (updateCounter > 0) {
             counter = getString(R.string.title_counter_update_notification, updateCounter.toString())
         } else if (updateCounter > 99) {
