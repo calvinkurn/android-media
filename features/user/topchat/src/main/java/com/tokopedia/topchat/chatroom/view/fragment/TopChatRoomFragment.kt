@@ -93,7 +93,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
-    private lateinit var productPreview: ProductPreview
+    private var productPreview: ProductPreview? = null
     var indexFromInbox = -1
     var isMoveItemInboxToTop = false
 
@@ -376,8 +376,19 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     private fun initProductPreviewLayoutIfExist() {
-        if (view == null || productPreview.noProductPreview()) return
-        (viewState as? TopChatViewState)?.showProductPreview(productPreview)
+        if (hasProductPreview()) return
+        productPreview?.let {
+            (viewState as? TopChatViewState)?.showProductPreview(it)
+        }
+    }
+
+    private fun hasProductPreview(): Boolean {
+        if (productPreview == null) return false
+        return view == null || productPreview!!.noProductPreview()
+    }
+
+    override fun onEmptyProductPreview() {
+        productPreview = null
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {

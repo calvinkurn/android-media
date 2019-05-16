@@ -133,7 +133,7 @@
                 android:layout_marginTop="@dimen/dp_3"
                 android:visibility="gone"/>
 
-            <include layout="@layout/ask_attach_product"/>
+            <include layout="@layout/layout_product_preview"/>
 
             <RelativeLayout
                 android:id="@+id/reply_box"

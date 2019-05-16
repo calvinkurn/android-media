@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.customview
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.os.Parcelable
 import android.support.annotation.NonNull
 import android.support.constraint.ConstraintLayout
@@ -7,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -104,11 +107,30 @@ class TopChatViewStateImpl(
     }
 
     private fun initProductPreviewLayout() {
-        productPreviewAdapter = ProductPreviewAdapter()
+        productPreviewAdapter = ProductPreviewAdapter(onEmptyProductPreview())
         view.findViewById<RecyclerView>(R.id.rv_product_preview).apply {
             setHasFixedSize(true)
             adapter = productPreviewAdapter
         }
+    }
+
+    private fun onEmptyProductPreview(): () -> Unit {
+        return {
+            hideProductPreviewLayout()
+        }
+    }
+
+    private fun hideProductPreviewLayout() {
+        productPreviewContainer.animate()
+                .translationY(productPreviewContainer.height.toFloat())
+                .setDuration(300)
+                .alpha(0f)
+                .setInterpolator(AccelerateDecelerateInterpolator())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        productPreviewContainer.visibility = View.GONE
+                    }
+                })
     }
 
     override fun onSetCustomMessage(customMessage: String) {

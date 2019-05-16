@@ -15,7 +15,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
 
-class ProductPreviewViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+class ProductPreviewViewHolder(itemView: View?, private val itemListener: ItemListener)
+    : RecyclerView.ViewHolder(itemView) {
 
     private val productImage = itemView?.findViewById<ImageView>(R.id.iv_product)
     private val productName = itemView?.findViewById<TextView>(R.id.tv_product_name)
@@ -30,16 +31,18 @@ class ProductPreviewViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemVi
 
     private val closeButton = itemView?.findViewById<ImageView>(R.id.iv_close)
 
-    init {
-        closeButton?.setOnClickListener {
-
-        }
+    interface ItemListener {
+        fun closeItem(productPreview: ProductPreview, position: Int)
     }
 
-    fun bind(productPreview: ProductPreview) {
+    fun bind(productPreview: ProductPreview, position: Int) {
         ImageHandler.loadImageRounded(productImage?.context, productImage, productPreview.imageUrl, toDp(3))
         productName?.text = productPreview.name
         productPrice?.text = productPreview.price
+
+        closeButton?.setOnClickListener {
+            itemListener.closeItem(productPreview, position)
+        }
 
         if (productPreview.doesNotHaveVariant()) {
             hideVariantLayout()
