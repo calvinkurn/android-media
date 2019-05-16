@@ -270,6 +270,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     }
                     screenName = AppScreen.SCREEN_LOGIN;
                     break;
+                case DeepLinkChecker.HOME_RECOMMENDATION:
+                    openHomeRecommendation(linkSegment, uriData);
+                    screenName = AppScreen.SCREEN_SHOP_INFO;
+                    break;
                 case DeepLinkChecker.OTHER:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -590,6 +594,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 context.finish();
             }
         });
+    }
+
+    private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
+        if (linkSegment != null && linkSegment.size() > 0) {
+            Intent intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, linkSegment.get(1));
+            context.startActivity(intent);
+        }
     }
 
     private void openProduct(final List<String> linkSegment, final Uri uriData) {

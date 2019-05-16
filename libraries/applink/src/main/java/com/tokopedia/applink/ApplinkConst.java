@@ -12,6 +12,7 @@ public interface ApplinkConst {
     String HOME_FEED = "tokopedia://home/feed";
     String HOME_ACCOUNT = "tokopedia://home/account";
     String HOME_RECOMMENDATION = "tokopedia://home/recommendation";
+    String HOME_RECOMMENDATION_PAGE = "tokopedia://home-recommendation";
     String FEED = "tokopedia://feed";
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
     String HOME_CATEGORY = "tokopedia://home/category";
