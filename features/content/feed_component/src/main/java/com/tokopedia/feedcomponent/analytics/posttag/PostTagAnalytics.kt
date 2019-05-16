@@ -55,7 +55,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     }
 
     object Category {
-        const val CONTENT_FEED = "content feed"
+        const val CONTENT_FEED_TIMELINE = "content feed timeline"
         const val USER_PROFILE_SOCIALCOMMERCE = "user profile socialcommerce"
         const val MY_PROFILE_SOCIALCOMMERCE = "my profile socialcommerce"
         const val USER_PROFILE_SOCIALCOMMERCE_DETAIL = "user profile socialcommerce - content detail"
@@ -210,7 +210,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.FEED,
-                Category.CONTENT_FEED,
+                Category.CONTENT_FEED_TIMELINE,
                 postId,
                 postTag,
                 postTagPosition,
@@ -225,7 +225,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
             trackingModel: TrackingPostModel) {
         getBasicClickPostTagEvent(
                 Screen.FEED,
-                Category.CONTENT_FEED,
+                Category.CONTENT_FEED_TIMELINE,
                 postId,
                 postTag,
                 postTagPosition,
