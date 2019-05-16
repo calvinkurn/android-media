@@ -39,7 +39,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.omsApi)
     implementation project(rootProject.ext.features.loyalty)
-    implementation 'com.tokopedia.use_case:use_case'
+    implementation 'com.tokopedia.usecase:usecase:2.24'
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.travelCalendar)

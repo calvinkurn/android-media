@@ -24,7 +24,7 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
-    implementation 'com.tokopedia.use_case:use_case'
+    implementation 'com.tokopedia.usecase:usecase:2.24'
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.userSession)

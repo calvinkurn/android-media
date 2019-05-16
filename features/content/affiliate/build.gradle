@@ -43,7 +43,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation 'com.tokopedia.use_case:use_case'
+    implementation 'com.tokopedia.usecase:usecase:2.24'
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.analytics)

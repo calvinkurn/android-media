@@ -31,7 +31,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     
 
-    implementation 'com.tokopedia.use_case:use_case'
+    implementation 'com.tokopedia.usecase:usecase:2.24'
     implementation project(rootProject.ext.libraries.graphql)
     implementation 'com.tokopedia.cache_manager:cache_manager'
     implementation rootProject.ext.supportLibDependencies.constraintLayout

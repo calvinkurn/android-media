@@ -8,7 +8,7 @@ buildscript {
 }
 
 dependencies {
-    implementation 'com.tokopedia.use_case:use_case'
+    implementation 'com.tokopedia.usecase:usecase:2.24'
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.logisticdata)

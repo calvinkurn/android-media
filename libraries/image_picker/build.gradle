@@ -16,7 +16,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.exifinterface
 
-    implementation 'com.tokopedia.use_case:use_case'
+    implementation 'com.tokopedia.usecase:usecase:2.24'
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.design)

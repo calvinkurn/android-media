@@ -20,7 +20,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation 'com.tokopedia.use_case:use_case'
+    implementation 'com.tokopedia.usecase:usecase:2.24'
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.network)

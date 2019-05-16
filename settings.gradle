@@ -17,7 +17,7 @@ buildCache {
 includeBuild('libraries/composite_build'){
     dependencySubstitution {
         substitute module('com.tokopedia.cache_manager:cache_manager') with project(':cache_manager')
-        substitute module('com.tokopedia.use_case:use_case') with project(':use_case')
+        substitute module('com.tokopedia.usecase:usecase') with project(':use_case')
     }
 }
 apply from: "buildconfig/appcompile/compile-libraries.gradle"

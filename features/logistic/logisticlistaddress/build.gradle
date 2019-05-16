@@ -25,7 +25,7 @@ project.ext {
 
 dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation 'com.tokopedia.use_case:use_case'
+    implementation 'com.tokopedia.usecase:usecase:2.24'
     implementation project(rootProject.ext.libraries.applink)
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {

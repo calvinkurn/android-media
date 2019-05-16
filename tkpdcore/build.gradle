@@ -137,7 +137,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.stetho
 
     implementation rootProject.ext.analyticsDependencies.logentries
-    implementation 'com.tokopedia.use_case:use_case'
+    implementation 'com.tokopedia.usecase:usecase:2.24'
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.analytics)

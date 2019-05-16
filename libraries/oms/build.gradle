@@ -27,7 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
-    implementation 'com.tokopedia.use_case:use_case'
+    implementation 'com.tokopedia.usecase:usecase:2.24'
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.design)

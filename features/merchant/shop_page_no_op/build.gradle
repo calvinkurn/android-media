@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 dependencies {
-    implementation 'com.tokopedia.use_case:use_case'
+    implementation 'com.tokopedia.usecase:usecase:2.24'
     implementation project(rootProject.ext.libraries.cacheApi)
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch

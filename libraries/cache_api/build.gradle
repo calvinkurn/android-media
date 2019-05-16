@@ -30,7 +30,7 @@ buildscript {
 }
 
 dependencies {
-    implementation 'com.tokopedia.use_case:use_case'
+    implementation 'com.tokopedia.usecase:usecase:2.24'
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore

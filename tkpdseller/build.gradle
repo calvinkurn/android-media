@@ -58,7 +58,7 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation 'com.tokopedia.use_case:use_case'
+    implementation 'com.tokopedia.usecase:usecase:2.24'
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.applink)
