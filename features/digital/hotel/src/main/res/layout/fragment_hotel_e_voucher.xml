@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_green_e_voucher"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_16">
+
+            <com.tokopedia.hotel.common.presentation.widget.TicketView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tv_anchor1="@+id/ticket_head"
+                app:tv_circleRadius="@dimen/dp_8">
+
+                <LinearLayout
+                    android:id="@+id/ticket_head"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_hotel_ticket_top"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dp_16">
+
+                    <LinearLayout
+                        android:id="@+id/container_rating_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:gravity="center"
+                        android:text="Avissa Suites"
+                        app:fontSize="titleBig"
+                        app:textViewTheme="lightPrimary"
+                        app:weight="medium"
+                        tools:text="Avissa Suites" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:gravity="center"
+                        android:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat."
+                        app:fontSize="micro"
+                        tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat." />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:gravity="center"
+                        android:text="No. Telepon: 0231 204464"
+                        app:fontSize="micro"
+                        tools:text="No. Telepon: 0231 204464" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ticket_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ticket_head"
+                    android:background="@drawable/bg_hotel_ticket_bottom"
+                    android:orientation="vertical"
+                    android:paddingTop="@dimen/dp_16"
+                    android:paddingBottom="@dimen/dp_16">
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Menunggu Widget dari Resa yang di Booking"
+                        app:fontSize="micro"
+                        tools:text="No. Telepon: 0231 204464" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        android:background="@drawable/bg_hotel_ticket_divider"
+                        android:layerType="software" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:text="Nama Tamu"
+                        app:fontSize="micro"
+                        tools:text="Nama Tamu" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        android:text="Muhammad Furqan"
+                        app:fontSize="small"
+                        app:textViewTheme="lightPrimary"
+                        app:weight="medium"
+                        tools:text="Muhammad Furqan" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:text="Kode Booking"
+                        app:fontSize="micro"
+                        tools:text="Kode Booking" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        android:text="XYZABABA110"
+                        app:fontSize="small"
+                        app:textViewTheme="lightPrimary"
+                        app:weight="medium"
+                        tools:text="XYZABABA110" />
+
+                </LinearLayout>
+
+            </com.tokopedia.hotel.common.presentation.widget.TicketView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@drawable/bg_hotel_ticket_rounded"
+                android:orientation="vertical">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_16"
+                    android:text="DETAIL PESANAN"
+                    app:fontSize="micro"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium"
+                    tools:text="DETAIL PESANAN" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:text="Kamar Deluxe Double"
+                    app:fontSize="small"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium"
+                    tools:text="Kamar Deluxe Double" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:text="2 Kamar • 2 Tamu"
+                    app:fontSize="micro"
+                    tools:text="2 Kamar • 2 Tamu" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:text="Termasuk Sarapan, Refund Bersyarat"
+                    app:fontSize="micro"
+                    tools:text="Termasuk Sarapan, Refund Bersyarat" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:background="@drawable/bg_hotel_ticket_divider"
+                    android:layerType="software" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:text="Permintaan Khusus"
+                    app:fontSize="micro"
+                    tools:text="Permintaan Khusus" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:text="Saya ingin kamar yang view nya pantai, dingin, dan tambahan extra bed 2 yah mas tolong."
+                    app:fontSize="small"
+                    app:textViewTheme="lightPrimary"
+                    tools:text="Saya ingin kamar yang view nya pantai, dingin, dan tambahan extra bed 2 yah mas tolong." />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:text="Dana deposit, pajak wisata, dan biaya lainnya mungkin akan ditagihkan saat check-in."
+                    app:fontSize="micro"
+                    tools:text="Dana deposit, pajak wisata, dan biaya lainnya mungkin akan ditagihkan saat check-in." />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@drawable/bg_hotel_ticket_rounded"
+                android:orientation="vertical">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_16"
+                    android:text="KETENTUAN PEMBATALAN"
+                    app:fontSize="micro"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium"
+                    tools:text="KETENTUAN PEMBATALAN" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:text="Pembatalan gratis"
+                    app:fontSize="small"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium"
+                    tools:text="Pembatalan gratis" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:text="Untuk pengajuan pembatalan sebelum 20 November 2019, 21:00"
+                    app:fontSize="micro"
+                    tools:text="Untuk pengajuan pembatalan sebelum 20 November 2019, 21:00" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:text="Biaya pemesanan dikembalikan Rp 50.000.000"
+                    app:fontSize="small"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium"
+                    tools:text="Biaya pemesanan dikembalikan Rp 50.000.000" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:text="Untuk pengajuan pembatalan antara 24 November 2019, 21:00 - 30 November 2019, 21:00"
+                    app:fontSize="micro"
+                    tools:text="Untuk pengajuan pembatalan antara 24 November 2019, 21:00 - 30 November 2019, 21:00" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:text="Non-refundable"
+                    app:fontSize="small"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium"
+                    tools:text="Non-refundable" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:text="Untuk pengajuan pembatalan setelah 15 Desember 2019, 21:00 biaya pemesanan tidak bisa dikembalikan."
+                    app:fontSize="micro"
+                    tools:text="Untuk pengajuan pembatalan setelah 15 Desember 2019, 21:00 biaya pemesanan tidak bisa dikembalikan." />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_16"
+                    android:text="* Mengikuti waktu setempat."
+                    android:textSize="@dimen/sp_10"
+                    tools:text="* Mengikuti waktu setempat." />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_16">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Powered by:"
+                app:fontSize="micro"
+                tools:text="Powered by:" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Logo Booking"
+                app:fontSize="micro"
+                tools:text="Logo Booking" />
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

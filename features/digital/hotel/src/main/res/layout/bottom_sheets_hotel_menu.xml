@@ -18,8 +18,9 @@
         app:weight="medium" />
 
     <View
+        android:id="@+id/v_first_separator"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="@dimen/dp_1"
         android:background="@drawable/bg_line_separator" />
 
     <com.tokopedia.design.component.TextViewCompat
@@ -33,8 +34,9 @@
         app:weight="medium" />
 
     <View
+        android:id="@+id/v_second_separator"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="@dimen/dp_1"
         android:background="@drawable/bg_line_separator" />
 
     <com.tokopedia.design.component.TextViewCompat
