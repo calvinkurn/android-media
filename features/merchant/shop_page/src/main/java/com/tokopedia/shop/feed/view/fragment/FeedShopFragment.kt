@@ -155,7 +155,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return ""
     }
 
     override fun initInjector() {
@@ -200,7 +200,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         val dataList = ArrayList<Visitable<*>>()
         isLoading = false
         if (element.isNotEmpty()) {
-            //todo : add create post widget if shop is self shop
             if (shopId.equals(userSession.shopId)) {
                 dataList.add(0, WhitelistViewModel(whitelistDomain))
             }
@@ -231,19 +230,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onSuccessFollowKol() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onErrorFollowKol(errorMessage: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onSuccessDeletePost(rowNumber: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onLikeKolSuccess(rowNumber: Int, action: Int) {
@@ -361,15 +356,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             } else {
                 onFollowKolClicked(positionInFeed, userIdInt)
             }
-//            if (adapter.list[positionInFeed] is DynamicPostViewModel) {
-//                val model = adapter.list[positionInFeed] as DynamicPostViewModel
-//                trackCardPostClick(
-//                        positionInFeed,
-//                        model.trackingPostModel,
-//                        ProfileAnalytics.Element.FOLLOW,
-//                        ""
-//                )
-//            }
         }
     }
 
@@ -412,42 +398,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         activity?.let {
             doShare(url, String.format("%s %s", description, "%s"), title)
         }
-//        profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
-//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
-//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
-//            trackCardPostClick(
-//                    positionInFeed,
-//                    model.trackingPostModel,
-//                    ProfileAnalytics.Element.TAG,
-//                    redirectUrl
-//            )
-//        }
     }
 
     override fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int) {
         onGoToLink(redirectUrl)
-//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
-//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
-//            if (isOwner) {
-//                postTagAnalytics.trackClickPostTagProfileSelf(
-//                        model.id,
-//                        postTagItem,
-//                        itemPosition,
-//                        model.trackingPostModel
-//                )
-//            } else {
-//                postTagAnalytics.trackClickPostTagProfileOther(
-//                        model.id,
-//                        postTagItem,
-//                        itemPosition,
-//                        model.trackingPostModel
-//                )
-//            }
-//        }
     }
 
     override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>) {
@@ -465,16 +423,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
-//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
-//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
-//            trackCardPostClick(
-//                    positionInFeed,
-//                    contentPosition,
-//                    model.trackingPostModel,
-//                    ProfileAnalytics.Element.IMAGE,
-//                    redirectLink
-//            )
-//        }
     }
 
     override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {
@@ -508,46 +456,16 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     redirectUrl
             )
         }
-//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
-//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
-//            trackCardPostClick(
-//                    positionInFeed,
-//                    contentPosition,
-//                    model.trackingPostModel,
-//                    ProfileAnalytics.Element.VIDEO,
-//                    redirectUrl
-//            )
-//        }
     }
 
     override fun onPollOptionClick(positionInFeed: Int, contentPosition: Int, option: Int, pollId: String, optionId: String, isVoted: Boolean, redirectLink: String) {
         if (isVoted) {
             onGoToLink(redirectLink)
         }
-//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
-//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
-//            trackCardPostClick(
-//                    positionInFeed,
-//                    contentPosition,
-//                    model.trackingPostModel,
-//                    ProfileAnalytics.Element.OPTION + option,
-//                    redirectLink
-//            )
-//        }
     }
 
     override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
-//        if (adapter.list[positionInFeed] is DynamicPostViewModel) {
-//            val model = adapter.list[positionInFeed] as DynamicPostViewModel
-//            trackCardPostClick(
-//                    positionInFeed,
-//                    contentPosition,
-//                    model.trackingPostModel,
-//                    ProfileAnalytics.Element.PRODUCT,
-//                    redirectLink
-//            )
-//        }
     }
 
     override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String) {
