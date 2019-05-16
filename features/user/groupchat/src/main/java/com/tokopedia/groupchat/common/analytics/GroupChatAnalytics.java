@@ -67,8 +67,11 @@ public class GroupChatAnalytics {
     private static final String EVENT_ACTION_CLICK_HIDE_VIDEO = "click hide video";
     private static final String EVENT_ACTION_CLICK_SHOW_VIDEO = "click show video";
     private static final String EVENT_ACTION_CLICK_PAUSE_VIDEO = "click on pause video";
+    private static final String EVENT_ACTION_CLICK_INTERACTION_BUTTON = "click on love button";
+    private static final String EVENT_ACTION_VIEW_INTERACTION_BUTTON = "view on love button";
 
     private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
+    private static final String EVENT_NAME_VIEW_GROUPCHAT = "viewGroupChat";
     private static final String EVENT_NAME_CLICK_SHARE = "clickShare";
     public static final String EVENT_NAME_CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
     private static final String EVENT_NAME_PROMO_CLICK = "promoClick";
@@ -835,6 +838,22 @@ public class GroupChatAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_PAUSE_VIDEO,
+                channelId
+        ));
+    }
+
+    public void eventClickInteractionButton(@Nullable String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_INTERACTION_BUTTON,
+                channelId
+        ));
+    }
+
+    public void eventViewInteractionButton(@Nullable String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_VIEW_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_VIEW_INTERACTION_BUTTON,
                 channelId
         ));
     }

@@ -267,8 +267,9 @@ open class PlayViewStateImpl(
             analytics.eventClickShowVideoToggle(viewModel?.channelId)
         }
 
-
+        analytics.eventViewInteractionButton(viewModel?.channelId)
         interactionButton.setOnClickListener {
+            analytics.eventClickInteractionButton(viewModel?.channelId)
             interactionButton.playAnimation()
             shootOneInteractionButton(getRandomHeart(iconList), it)
         }
