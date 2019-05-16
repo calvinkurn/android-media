@@ -85,8 +85,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     && homeData.getDynamicHomeChannel().getChannels() != null
                     && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
                 int position = 1;
-                List<Object> legoAndCuratedAndSprintSaleBannerList = new ArrayList<>();
-
                 for (DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
                     if (channel.getLayout() != null) {
                         if(!homeData.isCache()) {
@@ -138,7 +136,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 );
                                 break;
                             case DynamicHomeChannel.Channels.LAYOUT_3_IMAGE:
-                            case DynamicHomeChannel.Channels.LAYOUT_ORGANIC:
                             case DynamicHomeChannel.Channels.LAYOUT_HERO:
                                 list.add(mappingDynamicChannel(
                                         channel,
@@ -181,6 +178,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                         list.size(),channel);
                                 break;
                             case DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO:
+                            case DynamicHomeChannel.Channels.LAYOUT_ORGANIC:
                                 list.add(mappingDynamicChannel(
                                         channel,
                                         channel.getEnhanceImpressionDynamicSprintLegoHomePage(),
