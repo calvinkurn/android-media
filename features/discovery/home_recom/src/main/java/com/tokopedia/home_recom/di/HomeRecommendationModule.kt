@@ -8,6 +8,7 @@ import dagger.Provides
 @Module
 class HomeRecommendationModule {
 
+    @HomeRecommendationScope
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 }
