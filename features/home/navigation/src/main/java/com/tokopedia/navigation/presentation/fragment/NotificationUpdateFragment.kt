@@ -1,6 +1,5 @@
 package com.tokopedia.navigation.presentation.fragment
 
-import android.content.Context
 import android.animation.LayoutTransition
 import android.graphics.Rect
 import android.os.Build
@@ -27,6 +26,7 @@ import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
+import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateFilterTypeFactoryImpl
@@ -49,6 +49,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     private var cursor = ""
     private var lastItem = 0
+    private var markAllReadCounter = 0L
 
     private lateinit var filterViewModel: ArrayList<NotificationUpdateFilterItemViewModel>
     private val selectedItemList = HashMap<Int, Int>()
@@ -74,6 +75,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         super.onViewCreated(view, savedInstanceState)
 
         presenter.getFilter(onSuccessGetFilter())
+        presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter())
 
         bottomActionView = view.findViewById(R.id.filterBtn)
         val recyclerView = super.getRecyclerView(view)
@@ -89,9 +91,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
 
         bottomActionView.setButton2OnClickListener {
-            analytics.trackMarkAllAsRead()
+            analytics.trackMarkAllAsRead(markAllReadCounter.toString())
             updateCounterTitle()
-//            bottomActionView.hideBav2()
+            bottomActionView.hideBav2()
             presenter.markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate())
         }
 
@@ -203,12 +205,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     override fun notifyBottomActionView(updateCounter: Long) {
         bottomActionView?.let {
-//            if (updateCounter == 0L) {
-//                it.hideBav2()
-//            } else {
-//                it.showBav2()
-//            }
-            it.showBav2()
+            if (updateCounter == 0L) {
+                it.hideBav2()
+            } else {
+                it.showBav2()
+            }
         }
     }
 
@@ -314,7 +315,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun updateCounterTitle() {
         activity?.let {
             if (it is NotificationActivityContract.View) {
-                (it as NotificationActivityContract.View).updateTotalUnreadCounter().invoke()
+                (it as NotificationActivityContract.View).updateNotificationUnreadCounter().invoke()
             }
         }
     }
@@ -322,7 +323,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun updateCounterTitleManual() {
         activity?.let {
             if (it is NotificationActivityContract.View) {
-                (it as NotificationActivityContract.View).updateTotalUnreadCounterManual()
+                (it as NotificationActivityContract.View).updateNotificationUnreadCounterManual()
             }
         }
     }
@@ -370,5 +371,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     private fun sendAnalyticsScrollBottom() {
         if(lastItem > 0) analytics.trackScrollBottom(lastItem.toString())
+    }
+
+    private fun onSuccessGetTotalUnreadCounter(): (NotificationUpdateTotalUnread) -> Unit {
+        return {
+            markAllReadCounter = it.pojo.notifUnreadInt
+        }
     }
 }
