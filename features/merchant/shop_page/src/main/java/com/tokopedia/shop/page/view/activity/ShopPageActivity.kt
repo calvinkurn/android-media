@@ -160,7 +160,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
 
-    override fun updateUIByShopName(shopName: String?) {
+    override fun updateUIByShopName(shopName: String) {
         searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_2,
                 MethodChecker.fromHtml(shopName).toString()))
     }

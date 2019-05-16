@@ -3,6 +3,10 @@ package com.tokopedia.shop.product.view.viewmodel
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
@@ -36,6 +40,7 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
                                                       private val getShopProductUseCase: GqlGetShopProductUseCase,
                                                       private val addWishListUseCase: AddWishListUseCase,
                                                       private val removeWishlistUseCase: RemoveWishListUseCase,
+                                                      private val gqlRepository: GraphqlRepository,
                                                       dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
 
     val isEtalaseEmpty: Boolean
@@ -123,24 +128,38 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
         launchCatchError(block = {
             productHighlightResp.value =
                     etalaseHighLight.map { ShopProductFilterInput(1, ShopPageConstant.ETALASE_HIGHLIGHT_COUNT,
-                            "", it.etalaseId) }
+                            "", it.etalaseId, getSort(it.etalaseId)) }
                         .map {
-                            getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, filterInput)
-                            getShopProductUseCase.isFromCacheFirst = !isForceRefresh
+                            val params = GqlGetShopProductUseCase.createParams(shopId, it)
+                            val cacheStrategy = GraphqlCacheStrategy
+                                    .Builder(if (isForceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
+                            val gqlRequest = GraphqlRequest(getShopProductUseCase.gqlQuery, ShopProduct.Response::class.java, params)
                             async(Dispatchers.IO) {
                                 try {
-                                    val resp = getShopProductUseCase.executeOnBackground()
-                                    if (resp.errors.isNotEmpty()){
-                                        null
-                                    } else {
-                                        resp.data.map { product -> product.toProductViewModel(isMyShop(shopId)) }
-                                    }
+                                    val resp = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+                                    if (resp.getError(ShopProduct.Response::class.java)?.isNotEmpty() != true){
+                                        val gqlProduct = resp.getData<ShopProduct.Response>(ShopProduct.Response::class.java).getShopProduct
+                                        if (gqlProduct.errors.isNotEmpty()){
+                                            null
+                                        } else {
+                                            gqlProduct.data.map { product -> product.toProductViewModel(isMyShop(shopId)) }
+                                        }
+                                    } else null
+
                                 } catch (t: Throwable){
                                     null
                                 }
                             }
                         }.map { it.await() }.filterNotNull();
         }){}
+    }
+
+    private fun getSort(etalaseId: String?): Int {
+        return when(etalaseId){
+            SOLD_ETALASE -> ORDER_BY_MOST_SOLD
+            DISCOUNT_ETALASE -> ORDER_BY_LAST_UPDATE
+            else -> 0
+        }
     }
 
     fun removeWishList(productId: String, listener: WishListActionListener) {
@@ -214,5 +233,12 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
             it.etalaseCount = count.toLong()
             it.etalaseBadge = badge
         }
+    }
+
+    companion object{
+        private const val SOLD_ETALASE = "sold"
+        private const val DISCOUNT_ETALASE = "discount"
+        private const val ORDER_BY_LAST_UPDATE = 3
+        private const val ORDER_BY_MOST_SOLD = 8
     }
 }

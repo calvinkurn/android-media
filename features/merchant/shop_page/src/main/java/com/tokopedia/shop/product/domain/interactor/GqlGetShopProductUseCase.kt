@@ -10,7 +10,7 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.view.model.ShopProductViewModel
 import com.tokopedia.usecase.coroutines.UseCase
 
-class GqlGetShopProductUseCase (private val gqlQuery: String,
+class GqlGetShopProductUseCase (val gqlQuery: String,
                                 private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopProduct.GetShopProduct>() {
 
     var params = mapOf<String, Any>()

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shop.product.di.scope.ShopProductScope
 import com.tokopedia.shop.product.view.viewmodel.ShopProductLimitedViewModel
+import com.tokopedia.shop.product.view.viewmodel.ShopProductListViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -21,5 +22,10 @@ abstract class ShopProductViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(ShopProductLimitedViewModel::class)
-    internal abstract fun shopInfoViewModel(viewModel: ShopProductLimitedViewModel): ViewModel
+    internal abstract fun shopProductLimitedViewModel(viewModel: ShopProductLimitedViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ShopProductListViewModel::class)
+    internal abstract fun shopProductViewModel(viewModel: ShopProductListViewModel): ViewModel
 }
