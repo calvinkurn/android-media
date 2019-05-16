@@ -29,8 +29,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingTop="@dimen/dp_16"
                     android:paddingLeft="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_16"
                     android:paddingRight="@dimen/dp_16">
 
                     <TextView
@@ -132,10 +132,11 @@
                     android:id="@+id/seekbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:layout_marginRight="@dimen/dp_4"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_16"
-                    android:progress="100000" />
+                    android:progressDrawable="@drawable/seekbar_progress"
+                    android:thumb="@drawable/seekbar_thumb" />
 
             </LinearLayout>
         </android.support.v7.widget.CardView>

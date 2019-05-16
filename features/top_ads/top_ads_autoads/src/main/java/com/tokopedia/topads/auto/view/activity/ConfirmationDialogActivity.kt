@@ -18,7 +18,7 @@ class ConfirmationDialogActivity : AppCompatActivity() {
             finish()
         }
         findViewById<View>(R.id.positive_button).setOnClickListener {
-            finishAffinity()
+            finish()
         }
     }
 }
