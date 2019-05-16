@@ -47,7 +47,7 @@ class ApiService(private val context: Context) {
                 .writeTimeout(10000, TimeUnit.MILLISECONDS)
                 .readTimeout(10000, TimeUnit.MILLISECONDS)
 
-        if (GlobalConfig.DEBUG) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(ChuckInterceptor(context))
         }
         return builder.build()
