@@ -1570,6 +1570,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     getActivity(),
                     postId));
         }
+
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            trackCardPostClick(positionInFeed, model.getTrackingPostModel());
+        }
     }
 
     private void goToContentReport(int contentId) {
