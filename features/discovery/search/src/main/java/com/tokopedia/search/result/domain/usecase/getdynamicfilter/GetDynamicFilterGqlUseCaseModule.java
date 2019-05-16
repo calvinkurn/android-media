@@ -11,8 +11,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.search.R;
-import com.tokopedia.search.result.data.gql.dynamicfilter.GqlDynamicFilterResponse;
-import com.tokopedia.search.result.data.mapper.DynamicFilterGqlMapperModule;
+import com.tokopedia.search.result.data.response.GqlDynamicFilterResponse;
+import com.tokopedia.search.result.data.mapper.dynamicfilter.DynamicFilterGqlMapperModule;
 import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Named;

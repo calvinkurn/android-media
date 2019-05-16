@@ -4,8 +4,8 @@ import com.tokopedia.discovery.common.Repository;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
-import com.tokopedia.search.result.data.source.DynamicFilterDataSource;
-import com.tokopedia.search.result.data.source.DynamicFilterDataSourceModule;
+import com.tokopedia.search.result.data.source.dynamicfilter.DynamicFilterDataSource;
+import com.tokopedia.search.result.data.source.dynamicfilter.DynamicFilterDataSourceModule;
 
 import javax.inject.Named;
 

@@ -1,12 +1,10 @@
 package com.tokopedia.search.result.presentation;
 
-import android.os.Bundle;
-
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.FavoriteActionListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
+import com.tokopedia.search.result.presentation.model.ShopViewModel;
+import com.tokopedia.search.result.presentation.view.listener.FavoriteActionListener;
 import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
-import com.tokopedia.search.result.presentation.view.listener.ShopListLoadMoreListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchShopListener;
 
 import java.util.Map;
 
@@ -15,7 +13,7 @@ public interface ShopListSectionContract {
     interface View extends SearchSectionContract.View {
         void logDebug(String tag, String message);
 
-        void launchLoginActivity(String productId);
+        void launchLoginActivity(String shopId);
 
         boolean isUserHasLogin();
 
@@ -39,8 +37,10 @@ public interface ShopListSectionContract {
 
         void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener);
 
-        void loadShop(Map<String, Object> searchParameter, ShopListLoadMoreListener loadMoreListener);
+        void setSearchShopListener(SearchShopListener searchShopListener);
 
-        void handleFavoriteButtonClicked(ShopViewModel.ShopItem shopItem, int adapterPosition);
+        void loadShop(Map<String, Object> searchParameter);
+
+        void handleFavoriteButtonClicked(ShopViewModel.ShopViewItem shopItem, int adapterPosition);
     }
 }

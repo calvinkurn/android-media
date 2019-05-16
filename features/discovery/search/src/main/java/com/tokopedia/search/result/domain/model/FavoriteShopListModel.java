@@ -10,13 +10,5 @@ public class FavoriteShopListModel {
 
     @SerializedName("data")
     @Expose
-    private List<String> favoriteShopList = new ArrayList<>();
-
-    public void setFavoriteShopList(List<String> favoriteShopList) {
-        this.favoriteShopList = favoriteShopList;
-    }
-
-    public List<String> getFavoriteShopList() {
-        return favoriteShopList;
-    }
+    public List<String> favoriteShopList = new ArrayList<>();
 }

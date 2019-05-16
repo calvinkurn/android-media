@@ -23,7 +23,7 @@ final class SearchShopUseCase extends UseCase<SearchShopModel> {
     private Repository<SearchShopModel> searchShopModelRepository;
     private Repository<FavoriteShopListModel> favoriteShopListModelRepository;
 
-    public SearchShopUseCase(Repository<SearchShopModel> searchShopModelRepository,
+    SearchShopUseCase(Repository<SearchShopModel> searchShopModelRepository,
                              Repository<FavoriteShopListModel> favoriteShopListModelRepository) {
         this.searchShopModelRepository = searchShopModelRepository;
         this.favoriteShopListModelRepository = favoriteShopListModelRepository;
@@ -40,7 +40,7 @@ final class SearchShopUseCase extends UseCase<SearchShopModel> {
         return searchShopModel -> {
             Observable<SearchShopModel> searchShopModelObservable = Observable.just(searchShopModel);
 
-            if(textIsEmpty(userId) || searchShopModel.getShopItemList().isEmpty()) {
+            if(textIsEmpty(userId) || searchShopModel.shopItemList.isEmpty()) {
                 return searchShopModelObservable;
             }
 
@@ -68,8 +68,8 @@ final class SearchShopUseCase extends UseCase<SearchShopModel> {
     private String getShopIdListAsString(SearchShopModel searchShopModel) {
         List<String> shopIdList = new ArrayList<>();
 
-        for(SearchShopModel.ShopItem shopItem : searchShopModel.getShopItemList()) {
-            shopIdList.add(shopItem.getShopId());
+        for(SearchShopModel.ShopItem shopItem : searchShopModel.shopItemList) {
+            shopIdList.add(shopItem.shopId);
         }
 
         return StringUtils.join(shopIdList, ",");
@@ -86,10 +86,10 @@ final class SearchShopUseCase extends UseCase<SearchShopModel> {
     private void enrichWithFavoriteData(SearchShopModel shopViewModel,
                                         FavoriteShopListModel favoriteCheckResultResponse) {
 
-        List<String> favoritedIdList = favoriteCheckResultResponse.getFavoriteShopList();
+        List<String> favoritedIdList = favoriteCheckResultResponse.favoriteShopList;
 
-        for (SearchShopModel.ShopItem shopItem : shopViewModel.getShopItemList()) {
-            shopItem.setFavorited(favoritedIdList.contains(shopItem.getShopId()));
+        for (SearchShopModel.ShopItem shopItem : shopViewModel.shopItemList) {
+            shopItem.isFavorited = favoritedIdList.contains(shopItem.shopId);
         }
     }
 }
