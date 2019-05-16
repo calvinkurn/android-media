@@ -407,7 +407,7 @@ public class FeedAnalytics {
                         EVENT_LABEL, postId,
                         KEY_USER_ID, userId,
                         KEY_USER_ID_MOD, userId % 50,
-                        getProductEcommerceImpressions(
+                        EVENT_ECOMMERCE, getProductEcommerceImpressions(
                                 productName,
                                 productId,
                                 "/feed - system generated content",
@@ -429,7 +429,7 @@ public class FeedAnalytics {
                         EVENT_LABEL, postId,
                         KEY_USER_ID, userId,
                         KEY_USER_ID_MOD, userId % 50,
-                        getProductEcommerceClick(
+                        EVENT_ECOMMERCE, getProductEcommerceClick(
                                 productName,
                                 productId,
                                 "/feed - system generated content",
@@ -505,7 +505,7 @@ public class FeedAnalytics {
                         EVENT_LABEL, productId,
                         KEY_USER_ID, userId,
                         KEY_USER_ID_MOD, userId % 50,
-                        getProductEcommerceImpressions(
+                        EVENT_ECOMMERCE, getProductEcommerceImpressions(
                                 productName,
                                 productId,
                                 "/feed detail - product list",
@@ -526,7 +526,7 @@ public class FeedAnalytics {
                         EVENT_LABEL, productId,
                         KEY_USER_ID, userId,
                         KEY_USER_ID_MOD, userId % 50,
-                        getProductEcommerceClick(
+                        EVENT_ECOMMERCE, getProductEcommerceClick(
                                 productName,
                                 productId,
                                 "/feed detail - product list",
