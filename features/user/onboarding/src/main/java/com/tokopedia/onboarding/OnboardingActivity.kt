@@ -30,10 +30,10 @@ class OnboardingActivity : BaseSimpleActivity() {
     private lateinit var pagerAdapter: OnboardingPagerAdapter
 
     @Inject
-    private lateinit var remoteConfig: RemoteConfig
+    lateinit var remoteConfig: RemoteConfig
 
     @Inject
-    private lateinit var analytics: OnboardingAnalytics
+    lateinit var analytics: OnboardingAnalytics
 
     companion object {
         fun createIntent(context: Context) = Intent(context, OnboardingActivity::class.java)
