@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter
@@ -21,6 +22,8 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
 
 
     private lateinit var adsConfirmationSheet: ManualAdsConfirmationSheet
+    private lateinit var btnStartManual: Button
+    private lateinit var btnStartAuto: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,10 +68,15 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         return R.layout.layout_start_daily_budget
     }
 
+    override fun setUpView(view: View) {
+        btnStartManual = view.findViewById(R.id.start_manual_ads_btn)
+        btnStartAuto = view.findViewById(R.id.start_autoads_btn)
+    }
+
     override fun setListener() {
         super.setListener()
-        start_manual_ads_btn.setOnClickListener(this)
-        start_autoads_btn.setOnClickListener(this)
+        btnStartManual.setOnClickListener(this)
+        btnStartAuto.setOnClickListener(this)
         adsConfirmationSheet.setActionListener(this)
     }
 

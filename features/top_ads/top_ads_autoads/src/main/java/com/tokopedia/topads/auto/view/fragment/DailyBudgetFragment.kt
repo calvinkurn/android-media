@@ -37,6 +37,9 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
 
     abstract fun getLayoutId(): Int
 
+    abstract fun setUpView(view: View)
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         budgetViewModel = ViewModelProviders.of(this).get(DailyBudgetViewModel::class.java)
