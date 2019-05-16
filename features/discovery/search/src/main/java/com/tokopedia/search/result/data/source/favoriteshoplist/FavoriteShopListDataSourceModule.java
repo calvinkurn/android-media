@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.data.source.favoriteshoplist;
 
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.di.qualifier.TomeQualifier;
 import com.tokopedia.search.result.data.mapper.favoriteshoplist.FavoriteShopListMapperModule;
 import com.tokopedia.search.result.domain.model.FavoriteShopListModel;
 import com.tokopedia.search.result.network.service.TomeApi;
