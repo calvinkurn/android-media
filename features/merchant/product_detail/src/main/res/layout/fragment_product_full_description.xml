@@ -100,7 +100,7 @@
             android:autoLink="all"
             android:longClickable="false"
             android:transitionName="@string/transition_description"
-            android:textIsSelectable="false"
+            android:textIsSelectable="true"
             android:lineSpacingExtra="@dimen/sp_6"
             tools:text="Pilihan tepat untuk dekorasi rumah minimalis modern Anda, atau untuk mengimbangi interior unik pilihan Anda. Tersedia dalam 4 pilihan warna, hitam, putih, biru, dan jingga. .."
             app:fontSize="small"
