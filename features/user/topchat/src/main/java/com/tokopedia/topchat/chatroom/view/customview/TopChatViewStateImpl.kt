@@ -450,5 +450,9 @@ class TopChatViewStateImpl(
         productPreviewAdapter.updateProduct(productPreview)
     }
 
+    override fun clearProductPreview() {
+        productPreviewAdapter.clearProductPreview()
+    }
+
 }
 

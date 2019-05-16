@@ -488,10 +488,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         productPreview?.let{
             presenter.sendProductAttachment(messageId, it.generateResultProduct(),
                     SendableViewModel.generateStartTime(), opponentId)
+            clearProductPreview()
         }
         presenter.sendMessage(messageId, message, generateStartTime, "", onSendingMessage(
                 message, generateStartTime
         ))
+    }
+
+    private fun clearProductPreview() {
+        (viewState as? TopChatViewState)?.clearProductPreview()
     }
 
     override fun addTemplateString(message: String?) {

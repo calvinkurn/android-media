@@ -22,4 +22,6 @@ interface TopChatViewState : BaseChatViewState {
                            onUnblockChatClicked: () -> Unit)
 
     fun showProductPreview(productPreview: ProductPreview)
+
+    fun clearProductPreview()
 }

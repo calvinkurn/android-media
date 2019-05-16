@@ -38,4 +38,10 @@ class ProductPreviewAdapter(val onEmptyProductPreview: () -> Unit) : RecyclerVie
     }
 
     private fun noProductPreview(): Boolean = products.isEmpty()
+
+    fun clearProductPreview() {
+        products.clear()
+        notifyDataSetChanged()
+        onEmptyProductPreview()
+    }
 }
