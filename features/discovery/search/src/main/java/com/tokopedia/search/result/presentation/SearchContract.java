@@ -16,6 +16,6 @@ public interface SearchContract {
         void onResume();
         void onDestroy();
 
-        void initiateSearch(Map<String, Object> searchParameter, boolean isForceSearch, InitiateSearchListener initiateSearchSubscriber);
+        void initiateSearch(Map<String, Object> searchParameter, InitiateSearchListener initiateSearchSubscriber);
     }
 }

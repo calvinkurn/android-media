@@ -30,7 +30,7 @@ public interface ExploreContract {
 
         void renderData(List<ExploreSectionViewModel> list);
 
-        Context getContext();
+        Context getViewContext();
     }
 
     interface Presenter extends CustomerPresenter<View> {

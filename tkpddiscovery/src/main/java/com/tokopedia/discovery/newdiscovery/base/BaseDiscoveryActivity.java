@@ -44,12 +44,10 @@ public class BaseDiscoveryActivity
 
     private static final String KEY_FORCE_SWIPE_TO_SHOP = "KEY_FORCE_SWIPE_TO_SHOP";
     private static final String KEY_TAB_POSITION = "KEY_TAB_POSITION";
-    private static final String KEY_FORCE_SEARCH = "KEY_FORCE_SEARCH";
     private static final String KEY_REQUEST_OS = "KEY_REQUEST_OS";
 
     private BaseDiscoveryContract.Presenter presenter;
     private boolean forceSwipeToShop;
-    private boolean forceSearch;
     private boolean requestOfficialStoreBanner;
     private int activeTabPosition;
 
@@ -67,7 +65,6 @@ public class BaseDiscoveryActivity
         if (savedInstanceState != null) {
             setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION, 0));
             setForceSwipeToShop(savedInstanceState.getBoolean(KEY_FORCE_SWIPE_TO_SHOP, false));
-            setForceSearch(savedInstanceState.getBoolean(KEY_FORCE_SEARCH, false));
             setRequestOfficialStoreBanner(savedInstanceState.getBoolean(KEY_REQUEST_OS, false));
         }
     }
@@ -93,16 +90,6 @@ public class BaseDiscoveryActivity
 
     public void setForceSwipeToShop(boolean forceSwipeToShop) {
         this.forceSwipeToShop = forceSwipeToShop;
-    }
-
-    @Override
-    public boolean isForceSearch() {
-        return forceSearch;
-    }
-
-    @Override
-    public void setForceSearch(boolean forceSearch) {
-        this.forceSearch = forceSearch;
     }
 
     @Override
@@ -306,7 +293,6 @@ public class BaseDiscoveryActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(KEY_FORCE_SEARCH, isForceSearch());
         outState.putBoolean(KEY_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
         outState.putBoolean(KEY_REQUEST_OS, isRequestOfficialStoreBanner());
         outState.putInt(KEY_TAB_POSITION, getActiveTabPosition());
@@ -315,7 +301,6 @@ public class BaseDiscoveryActivity
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        setForceSearch(savedInstanceState.getBoolean(KEY_FORCE_SEARCH));
         setForceSwipeToShop(savedInstanceState.getBoolean(KEY_FORCE_SWIPE_TO_SHOP));
         setRequestOfficialStoreBanner(savedInstanceState.getBoolean(KEY_REQUEST_OS));
         setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION));

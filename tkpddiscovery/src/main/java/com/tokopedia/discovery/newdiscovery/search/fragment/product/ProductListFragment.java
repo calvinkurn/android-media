@@ -51,6 +51,11 @@ import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
 import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -92,7 +97,6 @@ public class ProductListFragment extends SearchSectionFragment
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
 
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
-    private static final String EXTRA_IS_FORCE_SEARCH = "EXTRA_IS_FORCE_SEARCH";
     private static final String EXTRA_ADDITIONAL_PARAMS = "EXTRA_ADDITIONAL_PARAMS";
     private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
     private static int PRODUCT_POSITION = 2;
@@ -112,20 +116,19 @@ public class ProductListFragment extends SearchSectionFragment
     private Config topAdsConfig;
     private ProductListAdapter adapter;
     private ProductListTypeFactory productListTypeFactory;
-    private boolean isForceSearch;
     private String additionalParams = "";
     private boolean isFirstTimeLoad;
 
     private SimilarSearchManager similarSearchManager;
     private PerformanceMonitoring performanceMonitoring;
     private TrackingQueue trackingQueue;
+    private ShowCaseDialog showCaseDialog;
 
     private FilterController quickFilterController = new FilterController();
 
-    public static ProductListFragment newInstance(SearchParameter searchParameter, boolean isForceSearch) {
+    public static ProductListFragment newInstance(SearchParameter searchParameter) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        args.putBoolean(EXTRA_IS_FORCE_SEARCH, isForceSearch);
         ProductListFragment productListFragment = new ProductListFragment();
         productListFragment.setArguments(args);
         return productListFragment;
@@ -146,7 +149,6 @@ public class ProductListFragment extends SearchSectionFragment
     private void loadDataFromArguments() {
         if(getArguments() != null) {
             copySearchParameter(getArguments().getParcelable(EXTRA_SEARCH_PARAMETER));
-            isForceSearch = getArguments().getBoolean(EXTRA_IS_FORCE_SEARCH);
         }
     }
 
@@ -172,7 +174,6 @@ public class ProductListFragment extends SearchSectionFragment
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this, this);
-        presenter.setIsUsingFilterV4(isUsingBottomSheetFilter());
         return inflater.inflate(R.layout.fragment_base_discovery, null);
     }
 
@@ -299,6 +300,9 @@ public class ProductListFragment extends SearchSectionFragment
         adapter.clear();
 
         addProductList(list);
+        if (similarSearchManager.isSimilarSearchEnable()){
+            startShowCase();
+        }
     }
 
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
@@ -318,10 +322,7 @@ public class ProductListFragment extends SearchSectionFragment
     private void loadMoreProduct(final int startRow) {
         generateLoadMoreParameter(startRow);
 
-        HashMap<String, String> additionalParamsMap
-                = NetworkParamHelper.getParamMap(additionalParams);
-
-        presenter.loadMoreData(getSearchParameter(), additionalParamsMap);
+        presenter.loadMoreData(getSearchParameter(), getAdditionalParamsMap());
     }
 
     @Override
@@ -409,11 +410,6 @@ public class ProductListFragment extends SearchSectionFragment
 
         isFirstTimeLoad = true;
         reloadData();
-    }
-
-    @Override
-    protected void requestDynamicFilter() {
-
     }
 
     @Override
@@ -545,8 +541,8 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onSuggestionClicked(String suggestedQuery) {
-        performNewProductSearch(suggestedQuery, true);
+    public void onSuggestionClicked(String queryParams) {
+        performNewProductSearch(queryParams);
     }
 
     @Override
@@ -565,14 +561,14 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onSearchGuideClicked(String keyword) {
-        performNewProductSearch(keyword, true);
+    public void onSearchGuideClicked(String queryParams) {
+        performNewProductSearch(queryParams);
     }
 
     @Override
-    public void onRelatedSearchClicked(String keyword) {
+    public void onRelatedSearchClicked(String queryParams, String keyword) {
         SearchTracking.eventClickRelatedSearch(getContext(), getQueryKey(), keyword);
-        performNewProductSearch(keyword, true);
+        performNewProductSearch(queryParams);
     }
 
     @Override
@@ -746,16 +742,13 @@ public class ProductListFragment extends SearchSectionFragment
         initTopAdsParams();
         generateLoadMoreParameter(0);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
-        presenter.loadData(getSearchParameter(), isForceSearch, getAdditionalParamsMap(), isFirstTimeLoad);
+        presenter.loadData(getSearchParameter(), getAdditionalParamsMap(), isFirstTimeLoad);
         TopAdsGtmTracker.getInstance().clearDataLayerList();
     }
 
-    private HashMap<String, String> getAdditionalParamsMap() {
-        if (isFilterActive()) {
-            return NetworkParamHelper.getParamMap(additionalParams);
-        } else {
-            return new HashMap<>();
-        }
+    @Override
+    public HashMap<String, String> getAdditionalParamsMap() {
+        return NetworkParamHelper.getParamMap(additionalParams);
     }
 
     @Override
@@ -856,7 +849,9 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setAdditionalParams(String additionalParams) {
-        this.additionalParams = additionalParams;
+        if (!TextUtils.isEmpty(additionalParams)) {
+            this.additionalParams = additionalParams;
+        }
     }
 
     @Override
@@ -883,6 +878,11 @@ public class ProductListFragment extends SearchSectionFragment
         SearchTracking.trackEventImpressionGlobalNavWidgetItem(trackingQueue, dataLayerList, globalNavViewModel.getKeyword());
     }
 
+    @Override
+    public boolean isAnyFilterActive() {
+        return isFilterActive();
+    }
+
     public void sendMoEngageSearchAttempt(Context context, String keyword, boolean isResultFound, HashMap<String, String> category) {
         Map<String, Object> value = DataLayer.mapOf(
                 SearchEventTracking.MOENGAGE.KEYWORD, keyword,
@@ -893,5 +893,83 @@ public class ProductListFragment extends SearchSectionFragment
             value.put(SearchEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
         }
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
+    }
+
+
+
+    private boolean isShowCaseAllowed(String tag) {
+        if (getActivity() == null) {
+            return false;
+        }
+        return similarSearchManager.isSimilarSearchEnable() && !ShowCasePreference.hasShown(getActivity(), tag);
+    }
+
+
+    public void startShowCase() {
+        final String showCaseTag = ProductListFragment.class.getName();
+        if (!isShowCaseAllowed(showCaseTag)) {
+            return;
+        }
+        if (showCaseDialog != null) {
+            return;
+        }
+
+        final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
+
+        if (recyclerView == null)
+            return;
+
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getView() == null) {
+                    return;
+                }
+
+                View itemView = scrollToShowCaseItem();
+                if (itemView != null) {
+                    showCaseList.add(
+                            new ShowCaseObject(
+                                    itemView.findViewById(R.id.container),
+                                    getString(R.string.view_similar_item),
+                                    getString(R.string.press_to_see_similar),
+                                    ShowCaseContentPosition.BOTTOM));
+                }
+
+                if (showCaseList.isEmpty())
+                    return;
+
+                showCaseDialog = createShowCaseDialog();
+                showCaseDialog.show(getActivity(), showCaseTag, showCaseList);
+            }
+        }, 300);
+    }
+
+    private ShowCaseDialog createShowCaseDialog() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.item_top_ads_show_case)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .arrowWidth(R.dimen.arrow_width_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .textSizeRes(R.dimen.fontvs)
+                .finishStringRes(R.string.megerti)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .useSkipWord(false)
+                .build();
+    }
+
+
+    public View scrollToShowCaseItem() {
+        if (recyclerView.getAdapter().getItemCount() >= PRODUCT_POSITION) {
+            recyclerView.stopScroll();
+            recyclerView.getLayoutManager().scrollToPosition(PRODUCT_POSITION + PRODUCT_POSITION);
+            return ((GridLayoutManager) recyclerView.getLayoutManager()).findViewByPosition(PRODUCT_POSITION);
+        }
+        return null;
     }
 }

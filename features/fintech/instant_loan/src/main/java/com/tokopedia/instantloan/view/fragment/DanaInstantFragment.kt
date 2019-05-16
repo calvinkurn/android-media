@@ -21,6 +21,7 @@ import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
+import com.tokopedia.instantloan.network.InstantLoanUrl
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_OTP
 import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity
@@ -86,15 +87,9 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
         button_search_pinjaman.setOnClickListener { view1 -> searchLoanOnline() }
         il_learn_more.setOnClickListener{
-            //todo goto learn more page
+            RouteManager.route(mContext, String.format("%s?url=%s", ApplinkConst.WEBVIEW, InstantLoanUrl.COMMON_URL.INSTANT_LOAN_LEARN_MORE))
         }
     }
-
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
 
     override fun onAttachActivity(context: Context) {
         this.mContext = context

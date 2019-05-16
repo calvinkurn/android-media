@@ -35,7 +35,7 @@ public interface HomeContract {
 
         void hideLoading();
 
-        void setItems(List<Visitable> items);
+        void setItems(List<Visitable> items, int repositoryFlag);
 
         void updateHeaderItem(HeaderViewModel headerViewModel);
 
