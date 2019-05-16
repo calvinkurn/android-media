@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             val userName = editTextUser.text.toString().trim()
             val password = editTextPassword.text.toString()
             KeyboardHandler.hideSoftKeyboard(this)
-            val userSession = UserSession(application)
+            val userSession = UserSession(application.applicationContext)
             if (userSession.isLoggedIn) {
                 Toast.makeText(this@MainActivity, "already login", Toast.LENGTH_LONG).show()
             } else {

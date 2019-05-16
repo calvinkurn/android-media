@@ -96,6 +96,7 @@ dependencies {
     implementation "com.moengage:moe-push-firebase:3.2.00"
     implementation "com.moengage:inapp:3.2.02"
     implementation "com.moengage:moe-location-lib:5.2.02"
+    implementation "com.moengage:addon-messaging:3.2.01"
     implementation "com.moengage:addon-realtime-trigger:2.2.00"
     implementation "com.moengage:integration-verifier:1.0.00"
 }

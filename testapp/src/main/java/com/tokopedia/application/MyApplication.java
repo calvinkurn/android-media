@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
-import com.facebook.stetho.Stetho;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
@@ -67,7 +66,6 @@ public class MyApplication extends BaseMainApplication
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
         super.onCreate();
-        Stetho.initializeWithDefaults(this);
         FlowManager.init(new FlowConfig.Builder(this)
                 .build());
         FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
