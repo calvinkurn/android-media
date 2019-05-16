@@ -21,7 +21,7 @@ public class FavoriteShopListDataSourceModule {
     @SearchScope
     @Provides
     FavoriteShopListDataSource provideFavoriteShopListDataSource(
-            TomeApi tomeApi,
+            @TomeQualifier TomeApi tomeApi,
             Func1<Response<FavoriteShopListModel>, FavoriteShopListModel> favoriteShopListMapper,
             Func1<Throwable, Response<FavoriteShopListModel>> favoriteShopListErrorMapper
     ) {
