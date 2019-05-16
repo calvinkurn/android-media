@@ -1,7 +1,6 @@
 package com.tokopedia.shop.product.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -59,12 +58,7 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
     val etalaseResponse = MutableLiveData<Result<List<ShopEtalaseViewModel>>>()
     val productResponse = MutableLiveData<Result<Pair<Boolean, List<ShopProductViewModel>>>>()
     val productHighlightResp = MutableLiveData<List<List<ShopProductViewModel>>>()
-    val etalaseHighLight = Transformations.map(etalaseResponse){
-        when(it){
-            is Success -> it.data.filter { etalase -> etalase.isHighlight }
-            is Fail -> listOf()
-        }
-    }
+    val etalaseHighLight = mutableListOf<ShopEtalaseViewModel>()
 
     fun getFeaturedProduct(shopId: String, isForceRefresh: Boolean = false){
         getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(shopId.toInt())
@@ -83,7 +77,12 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
         val params = GetShopEtalaseByShopUseCase.createRequestParams(shopId, true, false, isMyShop(shopId))
         getShopEtalaseByShopUseCase.execute(params, object : Subscriber<ArrayList<ShopEtalaseModel>>() {
             override fun onNext(list: ArrayList<ShopEtalaseModel>?) {
-                list?.let { etalaseResponse.value = Success(it.map { item -> item.toViewModel() }) }
+                list?.let {
+                    etalaseHighLight.clear()
+                    etalaseHighLight.addAll(it.filter { etalase -> etalase.highlighted }
+                            .map { item -> item.toViewModel() })
+                    etalaseResponse.value = Success(it.map { item -> item.toViewModel() })
+                }
             }
 
             override fun onCompleted() {}
@@ -121,10 +120,10 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
     }
 
     fun getShopProductsEtalaseHighlight(shopId: String, isForceRefresh: Boolean = false){
-        val list = etalaseHighLight.value ?: listOf()
         launchCatchError(block = {
             productHighlightResp.value =
-                    list.map { ShopProductFilterInput(1, ShopPageConstant.ETALASE_HIGHLIGHT_COUNT, "", it.etalaseId) }
+                    etalaseHighLight.map { ShopProductFilterInput(1, ShopPageConstant.ETALASE_HIGHLIGHT_COUNT,
+                            "", it.etalaseId) }
                         .map {
                             getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, filterInput)
                             getShopProductUseCase.isFromCacheFirst = !isForceRefresh

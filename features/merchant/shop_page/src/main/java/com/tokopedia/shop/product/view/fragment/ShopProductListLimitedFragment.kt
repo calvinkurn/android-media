@@ -560,18 +560,16 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                             it.goldOS.isGold == 1, null, attribution)
 
 
-            viewModel.etalaseHighLight.value?.let {highlights ->
-                list.forEachIndexed { index, listItem ->
-                    etalaseHighlightCarouselViewModels.add(
-                            EtalaseHighlightCarouselViewModel(listItem, highlights[index]))
-                    if (listItem.isNotEmpty()) {
-                        shopPageTracking?.impressionProductList(isOwner,
-                                ListTitleTypeDef.HIGHLIGHTED,
-                                highlights[index].etalaseName,
-                                customDimensionShopPageAttribution,
-                                listItem, 0, shopInfo!!.shopCore.shopID,
-                                shopInfo!!.shopCore.name)
-                    }
+            list.forEachIndexed { index, listItem ->
+                etalaseHighlightCarouselViewModels.add(
+                        EtalaseHighlightCarouselViewModel(listItem, viewModel.etalaseHighLight[index]))
+                if (listItem.isNotEmpty()) {
+                    shopPageTracking?.impressionProductList(isOwner,
+                            ListTitleTypeDef.HIGHLIGHTED,
+                            viewModel.etalaseHighLight[index].etalaseName,
+                            customDimensionShopPageAttribution,
+                            listItem, 0, shopInfo!!.shopCore.shopID,
+                            shopInfo!!.shopCore.name)
                 }
             }
 
