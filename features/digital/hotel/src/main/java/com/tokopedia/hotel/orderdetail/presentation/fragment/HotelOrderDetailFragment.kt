@@ -35,7 +35,6 @@ import javax.inject.Inject
 import android.content.Intent.ACTION_DIAL
 import android.net.Uri
 import com.tokopedia.applink.RouteManager
-import java.net.URLEncoder
 
 
 /**
@@ -205,6 +204,10 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
                 buttonCompat.setTextColor(resources.getColor(R.color.grey_500))
             } else if (button.weight == 2) {
                 buttonCompat.buttonCompatType = ButtonCompat.TRANSACTION
+            }
+            buttonCompat.setOnClickListener {
+                if (button.uri.isNotBlank()) RouteManager.route(context, button.uri)
+                else if (button.uriWeb.isNotBlank()) RouteManager.route(context, button.uriWeb)
             }
             order_detail_footer_layout.addView(buttonCompat)
         }
