@@ -598,8 +598,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
         if (linkSegment != null && linkSegment.size() > 0) {
-            Intent intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, linkSegment.get(1));
-            context.startActivity(intent);
+            RouteManager.route(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, linkSegment.get(1));
         }
     }
 

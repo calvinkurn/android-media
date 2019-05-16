@@ -256,7 +256,8 @@ public class DeepLinkChecker {
                 && !isWalletOvo(linkSegment)
                 && !isKycTerms(linkSegment)
                 && !isProfile(linkSegment)
-                && !isSMCReferral(linkSegment);
+                && !isSMCReferral(linkSegment)
+                && !isHomeRecoomendation(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
