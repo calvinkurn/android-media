@@ -19,8 +19,20 @@ import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
 
     companion object{
+        private const val PRODUCT_ID = "PRODUCT_ID"
+
         @JvmStatic
-        fun getStartIntent(context: Context) = Intent(context, HomeRecommendationActivity::class.java)
+        fun createIntent(context: Context) = Intent(context, HomeRecommendationActivity::class.java)
+
+        @JvmStatic
+        fun createIntent(context: Context, bundle: Bundle) = Intent(context, HomeRecommendationActivity::class.java).apply {
+            putExtras(bundle)
+        }
+
+        @JvmStatic
+        fun createIntent(context: Context, productId: String) = Intent(context, HomeRecommendationActivity::class.java).apply {
+            putExtra(PRODUCT_ID, productId)
+        }
     }
 
     override fun getNewFragment(): Fragment {
