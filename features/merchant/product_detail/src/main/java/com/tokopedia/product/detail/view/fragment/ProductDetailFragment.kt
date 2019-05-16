@@ -1444,7 +1444,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoViewModel.isUserSessionActive()) {
                 val intent = RouteManager.getIntent(it,
                         ApplinkConst.TOPCHAT_ASKSELLER,
-                        shop.shopCore.shopID, product.basic.url,
+                        shop.shopCore.shopID, "",
                         "product", shop.shopCore.name, shop.shopAssets.avatar)
                 putChatProductInfoTo(intent)
                 startActivity(intent)
