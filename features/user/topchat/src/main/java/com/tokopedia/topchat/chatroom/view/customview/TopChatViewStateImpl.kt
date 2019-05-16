@@ -117,6 +117,7 @@ class TopChatViewStateImpl(
     private fun onEmptyProductPreview(): () -> Unit {
         return {
             hideProductPreviewLayout()
+            sendListener.onEmptyProductPreview()
         }
     }
 
