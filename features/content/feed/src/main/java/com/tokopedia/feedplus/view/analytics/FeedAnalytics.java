@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.view.analytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -155,24 +156,25 @@ public class FeedAnalytics {
         else return MULTIPLE;
     }
 
-    public void eventBannerImpression(String templateType, String activityName, String mediaType,
-                                      String bannerUrl, String applink, int postId,
-                                      int bannerPosition, int userId) {
+    public void eventBannerImpression(ArrayList<TrackingBannerModel> trackingBannerModels, int userId) {
+        int firstPostId = trackingBannerModels.isEmpty() ? 0 : trackingBannerModels.get(0).getPostId();
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
-        promotionList.add(new FeedEnhancedTracking.Promotion(
-                postId,
-                String.format("%s - %s - %s", CONTENT_FEED, activityName, mediaType),
-                bannerUrl,
-                applink,
-                bannerPosition,
-                "",
-                postId,
-                templateType
-        ));
+        for (TrackingBannerModel banner : trackingBannerModels) {
+            promotionList.add(new FeedEnhancedTracking.Promotion(
+                    banner.getPostId(),
+                    String.format("%s - %s - %s", CONTENT_FEED, banner.getActivityName(), banner.getMediaType()),
+                    banner.getBannerUrl(),
+                    banner.getApplink(),
+                    banner.getBannerPosition(),
+                    "",
+                    banner.getPostId(),
+                    banner.getTemplateType()
+            ));
+        }
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceView(
                         "impression banner",
-                        String.valueOf(postId),
+                        String.valueOf(firstPostId),
                         promotionList,
                         userId
                 )

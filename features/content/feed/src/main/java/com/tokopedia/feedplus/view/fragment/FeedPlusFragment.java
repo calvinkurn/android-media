@@ -1652,20 +1652,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
             } else if (visitable instanceof BannerViewModel) {
                 BannerViewModel bannerViewModel = (BannerViewModel) visitable;
-
-                for (BannerItemViewModel item : bannerViewModel.getItemViewModels()) {
-                    TrackingBannerModel trackingBannerModel = item.getTrackingBannerModel();
-                    analytics.eventBannerImpression(
-                            trackingBannerModel.getTemplateType(),
-                            trackingBannerModel.getActivityName(),
-                            trackingBannerModel.getMediaType(),
-                            trackingBannerModel.getBannerUrl(),
-                            trackingBannerModel.getApplink(),
-                            trackingBannerModel.getPostId(),
-                            trackingBannerModel.getBannerPosition(),
-                            userId
-                    );
+                ArrayList<TrackingBannerModel> trackingBannerModels = new ArrayList<>();
+                for (BannerItemViewModel banner : bannerViewModel.getItemViewModels()) {
+                    trackingBannerModels.add(banner.getTrackingBannerModel());
                 }
+                analytics.eventBannerImpression(trackingBannerModels, userId);
             } else if (visitable instanceof FeedRecommendationViewModel) {
                 FeedRecommendationViewModel recommendationViewModel
                         = (FeedRecommendationViewModel) visitable;
