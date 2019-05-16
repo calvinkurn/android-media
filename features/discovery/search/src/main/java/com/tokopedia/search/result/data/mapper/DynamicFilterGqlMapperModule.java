@@ -10,7 +10,7 @@ import rx.functions.Func1;
 
 @SearchScope
 @Module
-public class DynamicFilterMapperModule {
+public class DynamicFilterGqlMapperModule {
 
     @SearchScope
     @Provides

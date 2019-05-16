@@ -13,8 +13,10 @@ import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.search.di.module.CacheApiInterceptorModule;
 import com.tokopedia.search.di.module.FingerprintInterceptorModule;
+import com.tokopedia.search.di.module.SearchRetrofitBuilderModule;
 import com.tokopedia.search.di.module.TkpdBaseInterceptorModule;
 import com.tokopedia.search.di.qualifier.AceQualifier;
+import com.tokopedia.search.di.qualifier.SearchQualifier;
 import com.tokopedia.search.result.network.interceptor.DebugInterceptor;
 import com.tokopedia.search.result.network.interceptor.DebugInterceptorModule;
 import com.tokopedia.search.result.network.interceptor.TopAdsAuthInterceptor;
@@ -29,11 +31,12 @@ import retrofit2.Retrofit;
 
 @SearchScope
 @Module(includes = {
-        CacheApiInterceptorModule.class,
+        SearchRetrofitBuilderModule.class,
         TopAdsAuthInterceptorModule.class,
         FingerprintInterceptorModule.class,
+        TkpdBaseInterceptorModule.class,
         DebugInterceptorModule.class,
-        TkpdBaseInterceptorModule.class
+        CacheApiInterceptorModule.class
 })
 public class DynamicFilterServiceModule {
 
@@ -48,13 +51,13 @@ public class DynamicFilterServiceModule {
     @Provides
     @AceQualifier
     public Retrofit provideDynamicFilterRetrofit(@AceQualifier OkHttpClient okHttpClient,
-                                                 Retrofit.Builder retrofitBuilder) {
+                                                 @SearchQualifier Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(SearchConstant.BaseUrl.ACE_DOMAIN).client(okHttpClient).build();
     }
 
-    @AceQualifier
     @SearchScope
     @Provides
+    @AceQualifier
     public OkHttpClient provideOkHttpClientAceQualifier(@ApplicationContext Context context,
                                                         TopAdsAuthInterceptor topAdsAuthInterceptor,
                                                         FingerprintInterceptor fingerprintInterceptor,

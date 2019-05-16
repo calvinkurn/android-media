@@ -8,7 +8,7 @@ import com.tokopedia.network.constant.ResponseStatus;
 import retrofit2.Response;
 import rx.functions.Func1;
 
-class DynamicFilterMapper implements Func1<Response<String>, DynamicFilterModel> {
+final class DynamicFilterMapper implements Func1<Response<String>, DynamicFilterModel> {
 
     private final Gson gson;
 

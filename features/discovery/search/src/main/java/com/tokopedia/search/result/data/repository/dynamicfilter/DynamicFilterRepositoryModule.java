@@ -1,13 +1,9 @@
 package com.tokopedia.search.result.data.repository.dynamicfilter;
 
+import com.tokopedia.discovery.common.Repository;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.discovery.common.domain.Repository;
-import com.tokopedia.discovery.common.repository.gql.GqlRepository;
-import com.tokopedia.discovery.common.repository.gql.GqlSpecification;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
-import com.tokopedia.search.result.data.gql.dynamicfilter.GqlDynamicFilterResponse;
-import com.tokopedia.search.result.data.gql.dynamicfilter.GqlDynamicFilterSpecModule;
 import com.tokopedia.search.result.data.source.DynamicFilterDataSource;
 import com.tokopedia.search.result.data.source.DynamicFilterDataSourceModule;
 

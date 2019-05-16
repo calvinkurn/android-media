@@ -1,4 +1,10 @@
 package com.tokopedia.discovery.common;
 
-public class Repository {
+import java.util.Map;
+
+import rx.Observable;
+
+public interface Repository<T> {
+
+    Observable<T> query(Map<String, Object> parameters);
 }

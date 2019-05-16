@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.data.repository.dynamicfilter;
 
+import com.tokopedia.discovery.common.Repository;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.discovery.common.domain.Repository;
 import com.tokopedia.search.result.data.source.DynamicFilterDataSource;
 
 import java.util.Map;
