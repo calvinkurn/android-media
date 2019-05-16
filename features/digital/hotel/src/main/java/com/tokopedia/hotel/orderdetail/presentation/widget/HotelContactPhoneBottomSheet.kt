@@ -1,6 +1,5 @@
 package com.tokopedia.hotel.orderdetail.presentation.widget
 
-import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -24,6 +23,8 @@ class HotelContactPhoneBottomSheet: BottomSheets(){
 
     override fun initView(view: View) {
         view.minimumHeight = 0
+        updateHeight()
+
         recyclerView = view.findViewById(R.id.recycler_view)
 
         val contactAdapter = ContactAdapter(contactList, listener)
@@ -32,5 +33,4 @@ class HotelContactPhoneBottomSheet: BottomSheets(){
     }
 
     override fun title(): String = "Kontak Hotel"
-
 }

@@ -32,8 +32,10 @@ import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_payment_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_transaction_detail.*
 import javax.inject.Inject
-import android.content.Intent.ACTION_CALL
+import android.content.Intent.ACTION_DIAL
 import android.net.Uri
+import com.tokopedia.applink.RouteManager
+import java.net.URLEncoder
 
 
 /**
@@ -100,6 +102,10 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     fun renderTransactionDetail(orderDetail: HotelOrderDetail) {
 
         transaction_status.text = orderDetail.status.statusText
+        when(orderDetail.status.status) {
+            ORDER_STATUS_FAIL -> transaction_status.setTextColor(resources.getColor(R.color.red_pink))
+            ORDER_STATUS_SUCCESS -> transaction_status.setTextColor(resources.getColor(R.color.tkpd_main_green))
+        }
 
         var transactionDetailAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
         transaction_detail_title_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -110,7 +116,12 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         transactionDetailAdapter.notifyDataSetChanged()
 
         invoice_number.text = orderDetail.invoice.invoiceRefNum
-
+        invoice_see_button.visibility = if (orderDetail.invoice.invoiceUrl.isNotBlank()) View.VISIBLE else View.GONE
+        if (orderDetail.invoice.invoiceUrl.isNotBlank()) {
+            invoice_see_button.setOnClickListener {
+                RouteManager.route(context, orderDetail.invoice.invoiceUrl)
+            }
+        }
     }
 
     fun renderHotelDetail(propertyDetail: HotelTransportDetail.PropertyDetail) {
@@ -175,6 +186,9 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         helpText.setTextColor(resources.getColor(R.color.light_primary))
         helpText.text = Html.fromHtml(orderDetail.contactUs.helpText)
         helpText.gravity = Gravity.CENTER
+        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
+        helpText.layoutParams = params
         order_detail_footer_layout.addView(helpText)
 
         for (button in orderDetail.actionButtons) {
@@ -194,7 +208,6 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
             }
             order_detail_footer_layout.addView(buttonCompat)
         }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -203,7 +216,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
 
     override fun onClickCall(contactNumber: String) {
         Toast.makeText(context, contactNumber, Toast.LENGTH_SHORT).show()
-        val callIntent = Intent(ACTION_CALL)
+        val callIntent = Intent(ACTION_DIAL)
         callIntent.setData(Uri.parse("tel:${contactNumber}"))
         startActivity(callIntent)
     }
@@ -211,6 +224,8 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     companion object {
         fun getInstance(): HotelOrderDetailFragment = HotelOrderDetailFragment()
 
-        val TAG_CONTACT_INFO = "guestContactInfo"
+        const val TAG_CONTACT_INFO = "guestContactInfo"
+        const val ORDER_STATUS_SUCCESS = 700
+        const val ORDER_STATUS_FAIL = 600
     }
 }
