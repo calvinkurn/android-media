@@ -1480,6 +1480,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         val productColorHexVariant = variants?.get("colour")?.get("hex")
         val productSizeVariant = variants?.get("size")?.get("value")
         with(intent) {
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, productId)
             putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, productImageUrl)
             putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, productName)
             putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, productPrice)

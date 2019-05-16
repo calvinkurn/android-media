@@ -268,6 +268,7 @@ public interface ApplinkConst {
         String AVATAR = "avatar";
         String CUSTOM_SUBJECT = "customSubject";
         String PARAM_HEADER = "header";
+        String PRODUCT_PREVIEW_ID = "product_preview_id";
         String PRODUCT_PREVIEW_IMAGE_URL = "product_preview_image_url";
         String PRODUCT_PREVIEW_NAME = "product_preview_name";
         String PRODUCT_PREVIEW_PRICE = "product_preview_price";

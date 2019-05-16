@@ -158,14 +158,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     private fun initProductPreview(savedInstanceState: Bundle?) {
+        val productId = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, arguments, savedInstanceState)
         val productImageUrl = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, arguments, savedInstanceState)
         val productName = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, arguments, savedInstanceState)
         val productPrice = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, arguments, savedInstanceState)
         val productColorVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, arguments, savedInstanceState)
         val productColorHexVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, arguments, savedInstanceState)
         val productSizeVariant = getParamString(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, arguments, savedInstanceState)
-        productPreview = ProductPreview(productImageUrl, productName, productPrice,
-                productColorVariant, productColorHexVariant, productSizeVariant)
+        productPreview = ProductPreview(productId, productImageUrl, productName, productPrice,
+                productColorVariant, productColorHexVariant, productSizeVariant, source)
 
         initProductPreviewLayoutIfExist()
     }
@@ -484,6 +485,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onSendClicked(message: String, generateStartTime: String) {
+        productPreview?.let{
+            presenter.sendProductAttachment(messageId, it.generateResultProduct(),
+                    SendableViewModel.generateStartTime(), opponentId)
+        }
         presenter.sendMessage(messageId, message, generateStartTime, "", onSendingMessage(
                 message, generateStartTime
         ))
