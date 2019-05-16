@@ -18,20 +18,9 @@ import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
 
-    private var isFromDeeplink = false
-
     companion object{
         @JvmStatic
         fun getStartIntent(context: Context) = Intent(context, HomeRecommendationActivity::class.java)
-    }
-
-    object DeeplinkIntents{
-        @DeepLink(ApplinkConst.HOME_RECOMMENDATION_PAGE)
-        @JvmStatic
-        fun getStartIntent(context: Context, extras: Bundle): Intent{
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, uri.lastPathSegment) ?: Intent()
-        }
     }
 
     override fun getNewFragment(): Fragment {
