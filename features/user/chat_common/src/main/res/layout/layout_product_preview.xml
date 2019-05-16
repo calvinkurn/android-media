@@ -10,7 +10,8 @@
     android:paddingStart="@dimen/dp_5"
     android:paddingTop="@dimen/dp_3"
     android:paddingEnd="@dimen/dp_5"
-    android:paddingBottom="@dimen/dp_3">
+    android:paddingBottom="@dimen/dp_3"
+    android:visibility="gone">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_product_preview"
