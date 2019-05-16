@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics

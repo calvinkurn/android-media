@@ -9,10 +9,10 @@
     android:orientation="horizontal"
     android:padding="@dimen/dp_8">
 
-    <ImageView
-        android:layout_width="@dimen/dp_18"
-        android:layout_height="@dimen/dp_18"
-        app:srcCompat="@drawable/ic_logistic_logistic_fulfillment_normal_16" />
+    <!--<ImageView-->
+        <!--android:layout_width="@dimen/dp_18"-->
+        <!--android:layout_height="@dimen/dp_18"-->
+        <!--app:srcCompat="@drawable/ic_logistic_logistic_fulfillment_normal_16" />-->
 
     <TextView
         android:layout_width="wrap_content"
