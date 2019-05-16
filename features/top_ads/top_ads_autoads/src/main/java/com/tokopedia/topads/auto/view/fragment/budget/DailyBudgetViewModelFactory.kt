@@ -4,11 +4,12 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
 import com.tokopedia.topads.auto.data.repository.AutoTopAdsRepositoy
+import javax.inject.Inject
 
 /**
  * Author errysuprayogi on 16,May,2019
  */
-class DailyBudgetViewModelFactory(
+class DailyBudgetViewModelFactory @Inject constructor(
         private val context: Context,
         private val repositoy: AutoTopAdsRepositoy
 ): ViewModelProvider.NewInstanceFactory() {

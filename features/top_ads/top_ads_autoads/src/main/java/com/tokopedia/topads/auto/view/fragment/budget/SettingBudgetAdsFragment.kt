@@ -59,10 +59,6 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
         seekBar.visibility = View.GONE
     }
 
-    override fun initInjector() {
-
-    }
-
     override fun getScreenName(): String? {
         return null
     }

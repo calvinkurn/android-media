@@ -17,7 +17,7 @@
 
     <style name="AutoAdsText.Active" parent="@style/AutoAdsText">
         <item name="android:background">@drawable/bg_autoads_active</item>
-        <item name="android:textColor">@color/green</item>
+        <item name="android:textColor">@color/true_green</item>
     </style>
 
     <style name="AutoAdsText.Inprogress" parent="@style/AutoAdsText">

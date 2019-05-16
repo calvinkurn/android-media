@@ -25,9 +25,9 @@
                 android:layout_height="match_parent"
                 android:animateLayoutChanges="true"
                 android:orientation="vertical"
-                android:paddingLeft="@dimen/dp_14"
-                android:paddingTop="@dimen/dp_14"
-                android:paddingRight="@dimen/dp_16">
+                android:paddingLeft="@dimen/dp_12"
+                android:paddingTop="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_12">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -151,7 +151,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_4"
                         android:layout_marginRight="@dimen/dp_4"
-                        android:hint="@string/budget"
                         app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.Small">
 
                         <com.tokopedia.seller.common.widget.PrefixEditText
@@ -159,6 +158,8 @@
                             style="@style/EditText.Currency"
                             android:layout_width="wrap_content"
                             android:layout_marginBottom="@dimen/dp_10"
+                            android:minWidth="@dimen/dp_50"
+                            android:backgroundTint="@color/grey"
                             app:prefix="@string/title_currency_rp_space"
                             tools:text="100000" />
                     </android.support.design.widget.TextInputLayout>
@@ -170,9 +171,10 @@
                 android:id="@+id/seekbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:progressDrawable="@drawable/seekbar_progress"
+                android:layout_marginLeft="@dimen/dp_3"
+                android:layout_marginRight="@dimen/dp_3"
+                android:progress="50"
+                android:progressTint="@color/tkpd_main_green"
                 android:thumb="@drawable/seekbar_thumb" />
 
         </LinearLayout>

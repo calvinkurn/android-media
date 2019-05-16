@@ -1,18 +1,19 @@
 package com.tokopedia.topads.auto.view.fragment.budget
 
-import android.content.Context
 
+import android.content.Context
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.base.AutoAdsViewModel
 import com.tokopedia.topads.auto.data.repository.AutoTopAdsRepositoy
+import javax.inject.Inject
 
 /**
  * Author errysuprayogi on 09,May,2019
  */
-class DailyBudgetViewModel(
+class DailyBudgetViewModel @Inject constructor(
         private val context: Context,
         private val repository: AutoTopAdsRepositoy
-) : AutoAdsViewModel(repository){
+) : AutoAdsViewModel(repository) {
 
     fun getPotentialImpression(minBid: Double, maxBid: Double, bid: Double): String {
         return String.format("%,.0f - %,.0f", calculateImpression(maxBid, bid),

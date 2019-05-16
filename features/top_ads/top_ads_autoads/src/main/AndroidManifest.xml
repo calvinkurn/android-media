@@ -5,8 +5,9 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name">
+        <activity android:name=".view.activity.AutoAdsRouteActivity"></activity>
         <activity
-            android:name="com.tokopedia.topads.auto.view.activity.StartAutoAdsActivity"
+            android:name=".view.activity.StartAutoAdsActivity"
             android:label="@string/autoads_topads"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
@@ -17,16 +18,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.topads.auto.view.activity.DailyBudgetActivity"
+            android:name=".view.activity.DailyBudgetActivity"
             android:label="@string/autoads_pengaturan_iklan"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name="com.tokopedia.topads.auto.view.activity.AutoAdsActivatedActivity"
+            android:name=".view.activity.AutoAdsActivatedActivity"
             android:label="@string/autoads_iklan_otomatis"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name=".view.activity.InsufficientBalanceActivity"
             android:label="@string/tambah_kredit_topads"
@@ -46,7 +46,6 @@
             android:name=".view.activity.ConfirmationDialogActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.ActivityDialog" />
-
     </application>
 
 </manifest>

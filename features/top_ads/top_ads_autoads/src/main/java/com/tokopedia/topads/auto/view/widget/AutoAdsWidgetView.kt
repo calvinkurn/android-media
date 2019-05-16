@@ -82,7 +82,7 @@ class AutoAdsWidgetView : CardView {
             activeStatus.setTextAppearance(R.style.AutoAdsText_Active)
         } else{
             activeStatus.setBackgroundResource(R.drawable.bg_autoads_active)
-            activeStatus.setTextColor(ContextCompat.getColor(context, R.color.green))
+            activeStatus.setTextColor(ContextCompat.getColor(context, R.color.true_green))
         }
         activeStatus.setText(R.string.ads_active)
     }

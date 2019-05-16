@@ -2,12 +2,17 @@ package com.tokopedia.topads.auto.data.network.datasource
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.auto.data.network.response.TopAdsAutoAdsResponse
 import com.tokopedia.topads.auto.data.network.response.TopAdsShopInfoResponse
 import com.tokopedia.topads.auto.data.network.response.TopadsBidInfoResponse
 import com.tokopedia.topads.auto.internal.TopAdsPostAutoAdsParam
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class AutoAdsNetworkDataSourceImpl : AutoAdsNetworkDataSource {
+class AutoAdsNetworkDataSourceImpl @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                   private val userSessionInterface: UserSessionInterface,
+                                   private val rawQueries: Map<String, String>) : AutoAdsNetworkDataSource {
 
     private val mutableShopInfo = MutableLiveData<TopAdsShopInfoResponse>()
     private val mutableBidInfo = MutableLiveData<TopadsBidInfoResponse>()

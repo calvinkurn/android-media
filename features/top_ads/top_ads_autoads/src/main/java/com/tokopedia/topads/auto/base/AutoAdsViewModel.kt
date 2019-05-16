@@ -7,8 +7,7 @@ import com.tokopedia.topads.auto.data.repository.AutoTopAdsRepositoy
  * Author errysuprayogi on 16,May,2019
  */
 abstract class AutoAdsViewModel(
-        private val adsRepositoy: AutoTopAdsRepositoy
+        private val repositoy: AutoTopAdsRepositoy
 ) : ViewModel() {
-
 
 }

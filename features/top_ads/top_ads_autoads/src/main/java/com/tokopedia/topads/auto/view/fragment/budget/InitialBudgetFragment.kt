@@ -79,10 +79,6 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         adsConfirmationSheet.setActionListener(this)
     }
 
-    override fun initInjector() {
-
-    }
-
     override fun getScreenName(): String? {
         return null
     }

@@ -1,6 +1,8 @@
 package com.tokopedia.topads.auto.view.fragment.budget
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
@@ -13,6 +15,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.SeekBar
 import android.widget.TextView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -22,9 +25,11 @@ import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.network.datasource.AutoAdsNetworkDataSourceImpl
 import com.tokopedia.topads.auto.data.repository.AutoTopAdsRepositoyImpl
+import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
+import javax.inject.Inject
 
 /**
  * Author errysuprayogi on 07,May,2019
@@ -35,17 +40,25 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     lateinit var priceEditText: PrefixEditText
     lateinit var budgetViewModel: DailyBudgetViewModel
     lateinit var budgetInputLayout: TextInputLayout
+
+    @Inject
     lateinit var factory: DailyBudgetViewModelFactory
+
 
     abstract fun getLayoutId(): Int
 
     abstract fun setUpView(view: View)
 
+    override fun initInjector() {
+        getComponent(AutoAdsComponent::class.java).inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        factory = DailyBudgetViewModelFactory(context!!, AutoTopAdsRepositoyImpl(AutoAdsNetworkDataSourceImpl()))
-        budgetViewModel = ViewModelProviders.of(this, factory).get(DailyBudgetViewModel::class.java)
+
+        activity?.run {
+            budgetViewModel = ViewModelProviders.of(this, factory).get(DailyBudgetViewModel::class.java)
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
