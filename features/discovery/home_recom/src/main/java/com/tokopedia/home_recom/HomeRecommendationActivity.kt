@@ -20,17 +20,24 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
 
     companion object{
         private const val PRODUCT_ID = "PRODUCT_ID"
+        private const val DEEP_LINK_URI = "deep_link_uri"
 
         @JvmStatic
-        fun createIntent(context: Context) = Intent(context, HomeRecommendationActivity::class.java)
+        fun newInstance(context: Context) = Intent(context, HomeRecommendationActivity::class.java)
 
         @JvmStatic
-        fun createIntent(context: Context, bundle: Bundle) = Intent(context, HomeRecommendationActivity::class.java).apply {
+        fun newInstance(context: Context, bundle: Bundle) = Intent(context, HomeRecommendationActivity::class.java).apply {
             putExtras(bundle)
         }
 
+        @DeepLink(ApplinkConst.HOME_RECOMMENDATION_PAGE)
+        fun getCallingApplinkSearchIntent(context: Context, bundle: Bundle): Intent = Intent(context, HomeRecommendationActivity::class.java).apply{
+            putExtra(PRODUCT_ID, bundle.getString(DEEP_LINK_URI))
+        }
+
+
         @JvmStatic
-        fun createIntent(context: Context, productId: String) = Intent(context, HomeRecommendationActivity::class.java).apply {
+        fun newInstance(context: Context, productId: String) = Intent(context, HomeRecommendationActivity::class.java).apply {
             putExtra(PRODUCT_ID, productId)
         }
     }
