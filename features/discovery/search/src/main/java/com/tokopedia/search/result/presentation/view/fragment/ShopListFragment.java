@@ -108,6 +108,7 @@ public class ShopListFragment extends SearchSectionFragment
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
+        presenter.initInjector(this);
         presenter.setFavoriteActionListener(this);
         presenter.setRequestDynamicFilterListener(this);
         presenter.setSearchShopListener(this);
