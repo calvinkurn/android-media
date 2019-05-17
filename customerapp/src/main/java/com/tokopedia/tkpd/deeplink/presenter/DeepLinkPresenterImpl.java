@@ -45,6 +45,7 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
+import com.tokopedia.home_recom.HomeRecommendationActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.referral.view.activity.ReferralActivity;
@@ -598,7 +599,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
         if (linkSegment != null && linkSegment.size() > 0) {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, linkSegment.get(1));
+            context.startActivity(new Intent(context, HomeRecommendationActivity.class));
+//            RouteManager.route(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, linkSegment.get(1));
         }
     }
 
