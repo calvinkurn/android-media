@@ -23,12 +23,12 @@ class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommen
         return RecommendationCarouselDataModel.LAYOUT
     }
 
-    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
+    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when(type){
-            RecommendationScrollDataModel.LAYOUT -> RecommendationScrollViewHolder(parent)
-            ProductInfoDataModel.LAYOUT -> ProductInfoViewHolder(parent)
-            RecommendationCarouselDataModel.LAYOUT -> RecommendationCarouselViewHolder(parent)
-            else -> super.createViewHolder(parent, type)
+            RecommendationScrollDataModel.LAYOUT -> RecommendationScrollViewHolder(view)
+            ProductInfoDataModel.LAYOUT -> ProductInfoViewHolder(view)
+            RecommendationCarouselDataModel.LAYOUT -> RecommendationCarouselViewHolder(view)
+            else -> super.createViewHolder(view, type)
         }
     }
 

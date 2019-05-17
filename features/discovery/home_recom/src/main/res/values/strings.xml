@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">home_recom</string>
     <string name="home_recommendation">Rekomendasi</string>
+    <string name="add_to_cart">Tambah ke Keranjang</string>
+    <string name="review_count">(%d)</string>
 </resources>
