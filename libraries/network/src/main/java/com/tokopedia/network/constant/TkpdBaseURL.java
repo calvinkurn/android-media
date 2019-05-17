@@ -9,12 +9,12 @@ public class TkpdBaseURL {
 
     public static String LIVE_DOMAIN = TokopediaUrl.Companion.getInstance().getWS();
     public static String BASE_DOMAIN = LIVE_DOMAIN;
-    public static String WEB_DOMAIN = "https://www.tokopedia.com/";
+    public static String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getWEB();
     public static String CHAT_REPORT_URL = TokopediaUrl.Companion.getInstance().getMOBILEWEB() + "chat/report/";
     public static String BASE_CONTACT_US = TokopediaUrl.Companion.getInstance().getWEB() + "contact-us";
 
-    public static String TOKOPOINT_API_DOMAIN = "https://gw.tokopedia.com/tokopoints/api/";
-    public static String PROMO_API_DOMAIN = "https://www.tokopedia.com/promo/";
+    public static String TOKOPOINT_API_DOMAIN = TokopediaUrl.Companion.getInstance().getGW() + "tokopoints/api/";
+    public static String PROMO_API_DOMAIN = TokopediaUrl.Companion.getInstance().getWEB() + "promo/";
 
     public static class Product {
         public static final String V4_ACTION_PRODUCT = "v4/action/product/";

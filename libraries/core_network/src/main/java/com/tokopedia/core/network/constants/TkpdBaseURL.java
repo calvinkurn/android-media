@@ -9,14 +9,14 @@ import com.tokopedia.config.url.TokopediaUrl;
 @Deprecated
 public class TkpdBaseURL {
 
-    public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
+    public static final String URL_PROMO = TokopediaUrl.Companion.getInstance().getWEB() + "promo/";
     public static final String FLAG_APP = "?flag_app=1";
     public static String BASE_DOMAIN = TokopediaUrl.Companion.getInstance().getWS();
-    public static String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
-    public static String MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
-    public static String MERLIN_DOMAIN = "https://merlin.tokopedia.com/";
+    public static String TOPADS_DOMAIN = TokopediaUrl.Companion.getInstance().getTA();
+    public static String MOJITO_DOMAIN = TokopediaUrl.Companion.getInstance().getMOJITO();
+    public static String MERLIN_DOMAIN = TokopediaUrl.Companion.getInstance().getMERLIN();
     public static String GOOGLE_APIS = "https://www.googleapis.com";
-    public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
+    public static String ACCOUNTS_DOMAIN = TokopediaUrl.Companion.getInstance().getACCOUNTS();
     public static String INBOX_DOMAIN = TokopediaUrl.Companion.getInstance().getINBOX();
     public static String CHAT_DOMAIN = TokopediaUrl.Companion.getInstance().getCHAT();
     public static String JS_DOMAIN = TokopediaUrl.Companion.getInstance().getJS();
