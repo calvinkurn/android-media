@@ -85,7 +85,6 @@
     <string name="hotel_detail_map_marker_snippet">%1$s</string>
     <string name="hotel_detail_show_room_text">Lihat Kamar</string>
     <string name="hotel_detail_room_price_from">Harga /kamar/malam dari</string>
-    <!--<string name="hotel_detail_map_marker_title"><![CDATA[<strong>%1$s</strong> - %2$s]]></string>-->
 
     <string name="hotel_review_title">Ulasan</string>
     <string name="hotel_review_indonesia_not_found_title">Belum ada ulasan dari Indonesia</string>
@@ -110,6 +109,13 @@
     <string name="hotel_room_detail_breakfast">Makanan</string>
     <string name="hotel_room_detail_extra_bed">Extra bed</string>
     <string name="hotel_room_detail_price_info">Harga /kamar/malam</string>
+
     <string name="hotel_share_as_image">Bagikan sebagai gambar</string>
     <string name="hotel_share_as_pdf">Bagikan sebagai PDF</string>
+    <string name="hotel_share_file_name">Tokopedia_Hotel_%1$s.png</string>
+    <string name="hotel_share_folder_name">%1$s/tokopedia/screenshots</string>
+    <string name="hotel_share_title_email">Alamat E-mail</string>
+    <string name="hotel_share_add_email">Tambah E-mail</string>
+    <string name="hotel_share_empty_email_error">E-mail harus diisi</string>
+    <string name="hotel_share_format_email_error">Format e-mail salah</string>
 </resources>

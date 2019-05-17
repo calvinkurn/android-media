@@ -60,7 +60,7 @@ class HotelEVoucherActivity : HotelBaseActivity(), HotelMenuShareSheets.HotelSha
     }
 
     override fun onShareAsPdfClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (::fragment.isInitialized) fragment.shareAsPdf()
     }
 
     companion object {

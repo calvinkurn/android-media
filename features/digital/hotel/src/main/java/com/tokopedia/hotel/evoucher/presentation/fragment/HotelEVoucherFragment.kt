@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.evoucher.presentation.widget.HotelSharePdfBottomSheets
 import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
 import java.io.File
 import java.io.FileOutputStream
@@ -60,11 +61,11 @@ class HotelEVoucherFragment : TkpdBaseV4Fragment() {
         var uri: Uri? = null
         if (bitmap != null) {
             val root = Environment.getExternalStorageDirectory().toString()
-            val myDir = File("$root/screenshots")
+            val myDir = File(getString(R.string.hotel_share_folder_name, root))
             myDir.mkdirs()
             val currentTime = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.getCurrentCalendar().time)
-            val fname = "Tokopedia_Hotel_$currentTime.png"
-            val file = File(myDir, fname)
+            val filename = getString(R.string.hotel_share_file_name, currentTime)
+            val file = File(myDir, filename)
             if (file.exists()) file.delete()
             try {
                 val out = FileOutputStream(file)
@@ -89,7 +90,14 @@ class HotelEVoucherFragment : TkpdBaseV4Fragment() {
         }
     }
 
+    fun shareAsPdf() {
+        val shareAsPdfBottomSheets = HotelSharePdfBottomSheets()
+        shareAsPdfBottomSheets.show(activity!!.supportFragmentManager, TAG_SHARE_AS_PDF)
+    }
+
     companion object {
+
+        val TAG_SHARE_AS_PDF = "TAG_SHARE_AS_PDF"
 
         fun getInstance(): HotelEVoucherFragment = HotelEVoucherFragment()
 
