@@ -100,7 +100,9 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchVie
             textView.setOnClickListener(view -> {
                 Uri uri = Uri.parse(item.getUrl());
                 String keyword = uri.getQueryParameter(SearchApiConst.Q);
-                relatedSearchListener.onRelatedSearchClicked(uri.getEncodedQuery(), keyword);
+                if (relatedSearchListener != null) {
+                    relatedSearchListener.onRelatedSearchClicked(uri.getEncodedQuery(), keyword);
+                }
             });
         }
     }

@@ -81,7 +81,9 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         ));
         initQuickFilterRecyclerView();
         adsBannerView.setTopAdsBannerClickListener((position, applink, data) -> {
-            bannerAdsListener.onBannerAdsClicked(applink);
+            if (bannerAdsListener != null) {
+                bannerAdsListener.onBannerAdsClicked(applink);
+            }
             if (applink.contains(SHOP)) {
                 TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, position);
             } else {
@@ -128,12 +130,16 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             globalNavWidget.setData(element.getGlobalNavViewModel(), new GlobalNavWidget.ClickListener() {
                 @Override
                 public void onClickItem(GlobalNavViewModel.Item item) {
-                    globalNavWidgetListener.onGlobalNavWidgetClicked(item, element.getGlobalNavViewModel().getKeyword());
+                    if (globalNavWidgetListener != null) {
+                        globalNavWidgetListener.onGlobalNavWidgetClicked(item, element.getGlobalNavViewModel().getKeyword());
+                    }
                 }
 
                 @Override
                 public void onclickSeeAllButton(String applink, String url) {
-                    globalNavWidgetListener.onGlobalNavWidgetClickSeeAll(applink, url);
+                    if (globalNavWidgetListener != null) {
+                        globalNavWidgetListener.onGlobalNavWidgetClickSeeAll(applink, url);
+                    }
                 }
             });
             globalNavWidget.setVisibility(View.VISIBLE);
@@ -150,7 +156,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             if (!TextUtils.isEmpty(element.getSuggestionViewModel().getSuggestionText())) {
                 suggestionText.setText(Html.fromHtml(element.getSuggestionViewModel().getSuggestionText()));
                 suggestionText.setOnClickListener(v -> {
-                    if (!TextUtils.isEmpty(element.getSuggestionViewModel().getSuggestedQuery())) {
+                    if (suggestionListener != null && !TextUtils.isEmpty(element.getSuggestionViewModel().getSuggestedQuery())) {
                         suggestionListener.onSuggestionClicked(element.getSuggestionViewModel().getSuggestedQuery());
                     }
                 });
@@ -264,11 +270,18 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
             setBackgroundResource(option);
 
-            quickFilterText.setOnClickListener(view -> quickFilterListener.onQuickFilterSelected(option));
+            quickFilterText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (quickFilterListener != null) {
+                        quickFilterListener.onQuickFilterSelected(option);
+                    }
+                }
+            });
         }
 
         private void setBackgroundResource(Option option) {
-            if (quickFilterListener.isQuickFilterSelected(option)) {
+            if (quickFilterListener != null && quickFilterListener.isQuickFilterSelected(option)) {
                 quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
             } else {
                 quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
@@ -350,8 +363,10 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         public void bind(final GuidedSearchViewModel.Item item) {
             textView.setText(item.getKeyword());
             textView.setOnClickListener(view -> {
-                SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
-                guidedSearchListener.onSearchGuideClicked(Uri.parse(item.getUrl()).getEncodedQuery());
+                if (guidedSearchListener != null) {
+                    SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
+                    guidedSearchListener.onSearchGuideClicked(Uri.parse(item.getUrl()).getEncodedQuery());
+                }
             });
             imageView.setImageResource(BACKGROUND[getAdapterPosition() % 5]);
         }
