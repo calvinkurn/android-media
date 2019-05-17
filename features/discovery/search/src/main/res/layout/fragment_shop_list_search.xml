@@ -11,6 +11,10 @@
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
+            android:paddingTop="@dimen/dp_12"
+            android:clipToPadding="false"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_12"
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

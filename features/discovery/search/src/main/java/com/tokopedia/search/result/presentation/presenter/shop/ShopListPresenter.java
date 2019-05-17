@@ -86,12 +86,6 @@ final class ShopListPresenter
         }
     }
 
-//    private void launchLoginActivity(String shopId) {
-//        Bundle extras = new Bundle();
-//        extras.putString("shop_id", shopId);
-//        viewListener.launchLoginActivity(extras);
-//    }
-
     private RequestParams createToggleFavoriteShopRequestParam(String shopId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(SearchApiConst.SHOP_ID, shopId);

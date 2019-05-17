@@ -33,8 +33,6 @@ public class ToggleFavoriteActionSubscriber extends Subscriber<Boolean> {
         if (isSuccess)
             viewListener.onSuccessToggleFavorite(adapterPosition, targetFavoritedStatus);
         else
-            viewListener.onErrorToggleFavorite(
-//                    viewListener.getString(R.string.default_request_error_unknown),
-                    adapterPosition);
+            viewListener.onErrorToggleFavorite(adapterPosition);
     }
 }

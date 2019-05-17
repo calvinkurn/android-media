@@ -11,12 +11,12 @@ class SearchShopSubscriber(
 
     override fun onNext(searchShopModel: SearchShopModel?) {
         if(searchShopModel == null) {
-            searchShopListener.onFailed()
+            searchShopListener.onSearchShopFailed()
             return
         }
 
         val shopViewModel = ShopViewModelMapper().convertToShopViewModel(searchShopModel)
-        searchShopListener.onSuccess(shopViewModel.shopItemList, shopViewModel.isHasNextPage)
+        searchShopListener.onSearchShopSuccess(shopViewModel.shopItemList, shopViewModel.isHasNextPage)
     }
 
     override fun onCompleted() {
@@ -25,6 +25,6 @@ class SearchShopSubscriber(
 
     override fun onError(e: Throwable?) {
         e?.printStackTrace()
-        searchShopListener.onFailed()
+        searchShopListener.onSearchShopFailed()
     }
 }

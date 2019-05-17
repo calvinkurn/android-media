@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.presentation;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.discovery.common.data.DataValue;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
@@ -83,8 +82,6 @@ public interface ProductListSectionContract {
         void setFirstTimeLoad(boolean isFirstTimeLoad);
 
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
-
-        BaseAppComponent getBaseAppComponent();
 
         void clearLastProductItemPositionFromCache();
 

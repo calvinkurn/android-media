@@ -24,4 +24,6 @@
     <string name="label_shop_close">Tutup</string>
     <string name="label_following_shop">Following</string>
     <string name="label_follow_shop">Follow</string>
+    <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
+    <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
 </resources>

@@ -5,9 +5,9 @@ import com.tokopedia.search.result.presentation.model.ShopViewModel;
 import java.util.List;
 
 public interface SearchShopListener {
-    void onSuccess(List<ShopViewModel.ShopViewItem> shopItemList, boolean isHasNextPage);
+    void onSearchShopSuccess(List<ShopViewModel.ShopViewItem> shopViewItemList, boolean isHasNextPage);
 
-    void onFailed();
+    void onSearchShopFailed();
 
     void getDynamicFilter();
 }

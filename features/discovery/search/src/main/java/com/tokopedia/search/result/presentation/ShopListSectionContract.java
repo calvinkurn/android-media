@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation;
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.search.result.presentation.model.ShopViewModel;
 import com.tokopedia.search.result.presentation.view.listener.FavoriteActionListener;
 import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
@@ -24,12 +23,6 @@ public interface ShopListSectionContract {
         void enableFavoriteButton(int adapterPosition);
 
         String getQueryKey();
-
-        void backToTop();
-
-        BaseAppComponent getBaseAppComponent();
-
-        Map<String, Object> getSearchParameter();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
