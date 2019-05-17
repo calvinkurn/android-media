@@ -35,9 +35,6 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
     private val propertyTypeAdapter by lazy {
         HotelSearchFilterAdapter<Filter.FilterAccomodation>(HotelSearchFilterAdapter.MODE_MULTIPLE)
     }
-    private val preferenceAdapter by lazy {
-        HotelSearchFilterAdapter<Filter.FilterPreference>(HotelSearchFilterAdapter.MODE_MULTIPLE)
-    }
     override fun getScreenName(): String? = null
 
     override fun initInjector() {}
@@ -58,12 +55,12 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         setupStarFilter(filter.filterStar)
         setupPriceFilter(filter.price)
         setupAccomodationType(filter.accomodation)
-        setupPreference(filter.preferences)
         setupRating(filter.filterReview)
+        setupPayAtHotel()
         save_filter.button.setOnClickListener {
             selectedFilter.star = starAdapter.selectedItems.mapNotNull { it.toIntOrNull() }
-            selectedFilter.cancellationPolicies = preferenceAdapter.selectedItems.mapNotNull { it.toIntOrNull() }
             selectedFilter.propertyType = propertyTypeAdapter.selectedItems.mapNotNull { it.toIntOrNull() }
+            selectedFilter.paymentType = if (switch_pay_at_hotel.isChecked) PAYMENT_TYPE_PAY_AT_HOTEL else 0
             activity?.run {
                 setResult(Activity.RESULT_OK, Intent().apply {
                     val cacheManager = SaveInstanceCacheManager(this@run, true).also {
@@ -78,19 +75,15 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
             selectedFilter = ParamFilter()
             starAdapter.clearSelection()
             propertyTypeAdapter.clearSelection()
-            preferenceAdapter.clearSelection()
+            switch_pay_at_hotel.isChecked = false
             price_range_input_view.setData(filter.price.minPrice.toInt(), filter.price.maxPrice.toInt(),
                     filter.price.minPrice.toInt(), filter.price.maxPrice.toInt())
             rating_seekbar.progress = rating_seekbar.max
         }
     }
 
-    private fun setupPreference(preferences: List<Filter.FilterPreference>) {
-        filter_preference.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        filter_preference.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8),
-                LinearLayoutManager.HORIZONTAL))
-        filter_preference.adapter = preferenceAdapter
-        preferenceAdapter.updateItems(preferences, selectedFilter.cancellationPolicies.map { it.toString() }.toSet())
+    private fun setupPayAtHotel() {
+        switch_pay_at_hotel.isChecked = selectedFilter.paymentType == PAYMENT_TYPE_PAY_AT_HOTEL
     }
 
     private fun setupAccomodationType(accomodation: List<Filter.FilterAccomodation>) {
@@ -167,6 +160,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
 
     companion object {
         const val TAG = "Filter"
+        const val PAYMENT_TYPE_PAY_AT_HOTEL = 1
 
         fun createInstance(filterCacheId: String) = HotelSearchFilterFragment().also {
             it.arguments = Bundle().apply {

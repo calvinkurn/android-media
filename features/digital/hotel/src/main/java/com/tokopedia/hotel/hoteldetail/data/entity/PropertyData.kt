@@ -1,5 +1,7 @@
 package com.tokopedia.hotel.hoteldetail.data.entity
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -95,4 +97,84 @@ class PropertyData(@SerializedName("id")
                    val boost: Int = 0,
                    @SerializedName("cityId")
                    @Expose
-                   val cityId: Int = 0)
+                   val cityId: Int = 0) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            parcel.readInt(),
+            parcel.readInt(),
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readDouble(),
+            parcel.readDouble(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.createTypedArrayList(PropertyImageItem),
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readInt(),
+            parcel.readInt()) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
+        parcel.writeInt(regionId)
+        parcel.writeInt(districtId)
+        parcel.writeInt(typeId)
+        parcel.writeString(typeName)
+        parcel.writeString(name)
+        parcel.writeString(slug)
+        parcel.writeString(address)
+        parcel.writeString(zipCode)
+        parcel.writeString(email)
+        parcel.writeString(phoneNumber)
+        parcel.writeDouble(latitude)
+        parcel.writeDouble(longitude)
+        parcel.writeString(locationDescription)
+        parcel.writeString(locationImageStatic)
+        parcel.writeTypedList(images)
+        parcel.writeInt(isClosed)
+        parcel.writeString(checkInFrom)
+        parcel.writeString(checkinTo)
+        parcel.writeString(checkoutFrom)
+        parcel.writeString(checkoutTo)
+        parcel.writeInt(star)
+        parcel.writeString(description)
+        parcel.writeString(importantInformation)
+        parcel.writeString(welcomeMessage)
+        parcel.writeString(licenseNumber)
+        parcel.writeInt(chainId)
+        parcel.writeString(currency)
+        parcel.writeInt(boost)
+        parcel.writeInt(cityId)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<PropertyData> {
+        override fun createFromParcel(parcel: Parcel): PropertyData {
+            return PropertyData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<PropertyData?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

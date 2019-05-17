@@ -10,11 +10,11 @@ import kotlinx.android.synthetic.main.item_hotel_detail_main_facility.view.*
 /**
  * @author by furqan on 29/04/19
  */
-class HotelDetailMainFacilityViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+class HotelDetailMainFacilityViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(element: FacilityItem) {
         with(itemView) {
-            iv_main_facility_icon.loadImage(element.icon, R.drawable.ic_hotel_room)
+            iv_main_facility_icon.loadImage(element.iconUrl)
             tv_main_facility_description.text = element.name
         }
     }
