@@ -2583,17 +2583,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
-    @Override
-    public boolean isLoginInactivePhoneLinkEnabled() {
-        return remoteConfig.getBoolean("mainapp_login_inactive_phone_no_link", true)
-                && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
-    }
-
-    @Override
-    public Intent getChangePhoneNumberRequestIntent(Context context, String userId, String oldPhoneNumber) {
-        return ChangeInactiveFormRequestActivity.createIntentWithUserId(context, userId, oldPhoneNumber);
-    }
-
     /**
      * Global Nav Router
      */
