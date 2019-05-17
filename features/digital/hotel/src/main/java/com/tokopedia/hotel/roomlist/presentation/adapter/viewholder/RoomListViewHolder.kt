@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.roomlist.presentation.adapter.viewholder
 
+import android.text.Html
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
@@ -21,7 +22,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
         with(itemView) {
             val roomListModel = mapToRoomListModel(hotelRoom)
 
-            if (roomListModel.roomLeft > 0) {
+            if (roomListModel.available) {
 
                 room_description_layout.visibility = View.VISIBLE
                 room_full_layout.visibility = View.GONE
@@ -29,7 +30,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
                 setImageViewPager(roomListModel.images)
                 room_name_text_view.text = roomListModel.roomName
                 max_occupancy_text_view.text = roomListModel.occupancyText
-                bed_info_text_view.text = roomListModel.bedInfo
+                bed_info_text_view.text = "${Html.fromHtml(roomListModel.roomSize)} • ${roomListModel.bedInfo}"
                 room_price_text_view.text = roomListModel.price
                 pay_hotel_layout.visibility = if (roomListModel.payInHotel) View.VISIBLE else View.GONE
                 room_left_text_view.visibility = if (roomListModel.roomLeft <= 2) View.VISIBLE else View.GONE
@@ -73,7 +74,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
 
             for (i in 0..min(roomFacility.size, 1)) {
                 var textView = FacilityTextView(context)
-                textView.setIconAndText(roomFacility[i].icon, roomFacility[i].name)
+                textView.setIconAndText(roomFacility[i].iconUrl, roomFacility[i].name)
                 room_facility_recycler_view.addView(textView)
             }
         }
@@ -94,6 +95,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
         var roomListModel = RoomListModel()
         if (hotelRoom != null) {
             roomListModel.roomName = hotelRoom.roomInfo.name
+            roomListModel.roomSize = hotelRoom.roomInfo.size.toString()
             roomListModel.maxOccupancy = hotelRoom.occupancyInfo.maxOccupancy
             roomListModel.maxFreeChild = hotelRoom.occupancyInfo.maxFreeChild
             roomListModel.occupancyText = hotelRoom.occupancyInfo.occupancyText
@@ -106,6 +108,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
             roomListModel.creditCardInfo = hotelRoom.creditCardInfo.creditCardInfo
             if (hotelRoom.roomPrice.isNotEmpty()) roomListModel.price = hotelRoom.roomPrice[0].totalPrice
             roomListModel.roomLeft = hotelRoom.numberRoomLeft
+            roomListModel.available = hotelRoom.available
 
             val images: MutableList<String> = arrayListOf()
             for (item in hotelRoom.roomInfo.roomImages) {
