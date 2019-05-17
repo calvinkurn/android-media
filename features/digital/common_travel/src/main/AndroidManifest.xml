@@ -28,6 +28,12 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".presentation.activity.TravelContactDataActivity"
+            android:label="Data Kontak"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
     </application>
 
 </manifest>

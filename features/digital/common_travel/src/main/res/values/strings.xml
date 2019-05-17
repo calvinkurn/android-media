@@ -67,4 +67,11 @@
     <string name="travel_salutation_miss_string">Nn</string>
 
     <string name="travel_departure_trip_price_value"><![CDATA[<b>%s</b> /org]]></string>
+
+    <string name="travel_contact_data_name_title">Nama Lengkap</string>
+    <string name="travel_contact_data_email_title">Alamat E-mail</string>
+    <string name="travel_contact_data_phone_number_title">Nomor Telepon</string>
+    <string name="travel_contact_data_name_hint">Nama kamu</string>
+    <string name="travel_contact_data_email_hint">namakamu@contoh.com</string>
+    <string name="travel_contact_data_phone_number_hint">Minimum 9 digit</string>
 </resources>
