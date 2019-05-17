@@ -40,8 +40,12 @@ public class OrderListActivity extends BaseSimpleActivity
     private OrderListComponent orderListComponent;
     private OrderListInitContract.Presenter presenter;
 
-    @DeepLink({ApplinkConst.DEALS_ORDER, ApplinkConst.DIGITAL_ORDER,
-            ApplinkConst.EVENTS_ORDER})
+    @DeepLink({ApplinkConst.DEALS_ORDER,
+            ApplinkConst.DIGITAL_ORDER,
+            ApplinkConst.EVENTS_ORDER,
+            ApplinkConst.GIFT_CARDS_ORDER,
+            ApplinkConst.INSURANCE_ORDER,
+            ApplinkConst.MODAL_TOKO_ORDER})
     public static Intent getOrderListIntent(Context context, Bundle bundle) {
 
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();

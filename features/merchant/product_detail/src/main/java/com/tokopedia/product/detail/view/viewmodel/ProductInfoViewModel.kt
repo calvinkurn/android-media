@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.view.viewmodel
 import android.arch.lifecycle.MutableLiveData
 import android.text.TextUtils
 import android.util.SparseArray
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -47,9 +46,10 @@ import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
+import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
+import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
-import com.tokopedia.topads.sdk.domain.Xparams
-import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -75,7 +75,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val productVariantResp = MutableLiveData<Result<ProductVariant>>()
 
     val loadOtherProduct = MutableLiveData<RequestDataState<List<ProductOther>>>()
-    val loadTopAdsProduct = MutableLiveData<RequestDataState<TopAdsModel>>()
+    val loadTopAdsProduct = MutableLiveData<RequestDataState<RecommendationModel>>()
 
     var multiOrigin : WarehouseInfo = WarehouseInfo()
     val userId: String
@@ -330,24 +330,17 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private fun generateTopAdsParams(productInfo: ProductInfo): String {
-        val xparams = Xparams().apply {
-            product_id = productInfo.basic.id
-            product_name = productInfo.basic.name
-            source_shop_id = productInfo.basic.shopID
-            if (productInfo.category.detail.size > 2)
-                child_cat_id = productInfo.category.detail[2].id.toIntOrNull() ?: 0
-        }
+    private fun generateTopAdsParams(productInfo: ProductInfo): Map<String,Any> {
+        return mapOf(
+                TopAdsDisplay.KEY_USER_ID to userSessionInterface.userId.toInt(),
+                TopAdsDisplay.KEY_PAGE_NAME to TopAdsDisplay.DEFAULT_PAGE_NAME,
+                TopAdsDisplay.KEY_PAGE_NUMBER to TopAdsDisplay.DEFAULT_PAGE_NUMBER,
+                TopAdsDisplay.KEY_XDEVICE to TopAdsDisplay.DEFAULT_DEVICE,
+                TopAdsDisplay.KEY_XSOURCE to TopAdsDisplay.DEFAULT_SRC_PAGE,
+                TopAdsDisplay.KEY_PRODUCT_ID to productInfo.basic.id.toString()
+        )
 
-        return mapOf(TopAdsDisplay.KEY_ITEM to TopAdsDisplay.DEFAULT_TOTAL_ITEM,
-                TopAdsDisplay.KEY_DEVICE to TopAdsDisplay.DEFAULT_DEVICE,
-                PARAM_PAGE to 1,
-                TopAdsDisplay.KEY_SRC to TopAdsDisplay.DEFAULT_SRC_PAGE,
-                TopAdsDisplay.KEY_EP to TopAdsDisplay.DEFAULT_EP,
-                TopAdsDisplay.KEY_XPARAMS to Gson().toJson(xparams),
-                PARAM_USER_ID to userSessionInterface.userId).map { "${it.key}=${it.value}" }.joinToString("&")
     }
-
 
     private suspend fun getProductInfoP3(productInfo: ProductInfo, shopDomain: String,
                                          forceRefresh: Boolean, needRequestCod: Boolean, origin: String?)
@@ -495,7 +488,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         private const val PARAM_RATE_EST_WEIGHT = "weight"
 
         private const val PARAM_PAGE = "page"
-        private const val PARAM_USER_ID = "user_id"
         private const val PARAM_TOTAL = "total"
         private const val PARAM_CONDITION = "condition"
         private const val PARAM_PRODUCT_TITLE = "productTitle"
@@ -512,15 +504,16 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         private const val PARAMS_OTHER_PRODUCT_TEMPLATE = "device=android&source=other_product&shop_id=%d&-id=%d"
 
         object TopAdsDisplay {
-            const val DEFAULT_TOTAL_ITEM = 5
+            const val KEY_USER_ID = "userID"
+            const val KEY_PAGE_NAME = "pageName"
+            const val KEY_XDEVICE = "xDevice"
             const val DEFAULT_DEVICE = "android"
-            const val DEFAULT_SRC_PAGE = "pdp"
-            const val DEFAULT_EP = "product"
-            const val KEY_ITEM = "item"
-            const val KEY_DEVICE = "device"
-            const val KEY_SRC = "src"
-            const val KEY_EP = "ep"
-            const val KEY_XPARAMS = "xparams"
+            const val DEFAULT_SRC_PAGE = "recommen_pdp"
+            const val KEY_PRODUCT_ID = "productIDs"
+            const val KEY_XSOURCE = "xSource"
+            const val KEY_PAGE_NUMBER = "pageNumber"
+            const val DEFAULT_PAGE_NUMBER = 1
+            const val DEFAULT_PAGE_NAME = "pdp"
         }
 
         private object ParamAffiliate {
@@ -548,10 +541,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     (loadTopAdsProduct.value as? Loaded)?.data as? Success == null){
                 loadTopAdsProduct.value = Loading
                 doLoadTopAdsProduct(product.data.productInfo)
+
             } else null
 
             otherProductDef?.await()?.let { loadOtherProduct.value = it }
-            topAdsProductDef?.await()?.let { loadTopAdsProduct.value = it }
+            topAdsProductDef?.await()?.let {
+                val recommendationModel = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data?.get(0) ?: return@launch)
+                loadTopAdsProduct.value = Loaded(Success(recommendationModel))
+            }
             lazyNeedForceUpdate = false
         }
     }
@@ -573,15 +570,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     }
 
     private fun doLoadTopAdsProduct(productInfo: ProductInfo) = async(Dispatchers.IO) {
-        val topadsParams = mapOf(KEY_PARAM to generateTopAdsParams(productInfo))
-        val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISPLAY_ADS],
-                TopAdsDisplayResponse::class.java, topadsParams)
+        val topadsParams = generateTopAdsParams(productInfo)
+        val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT],
+                RecomendationEntity::class.java, topadsParams)
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (lazyNeedForceUpdate) CacheType.ALWAYS_CLOUD
                 else CacheType.CACHE_FIRST).build()
 
         try {
             Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
-                    .getSuccessData<TopAdsDisplayResponse>().result))
+                    .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data ?: emptyList()))
         } catch (t: Throwable){
             Loaded(Fail(t))
         }

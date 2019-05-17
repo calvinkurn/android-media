@@ -91,6 +91,8 @@ public interface OrderListDetailContract {
         void showErrorMessage(String message);
 
         void clearDynamicViews();
+
+        void askPermission();
     }
 
     interface Presenter extends CustomerPresenter<View> {

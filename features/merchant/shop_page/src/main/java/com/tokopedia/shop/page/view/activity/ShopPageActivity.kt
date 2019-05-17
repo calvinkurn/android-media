@@ -31,6 +31,9 @@ import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -42,7 +45,9 @@ import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.constant.ShopUrl
+import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
@@ -61,6 +66,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import kotlinx.android.synthetic.main.item_tablayout_new_badge.view.*
+import kotlinx.android.synthetic.main.partial_shop_page_header.*
 import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
@@ -395,6 +401,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                             goldOS.isGold == 1))
 
             shopViewModel.getFeedWhiteList(shopCore.shopID)
+
+            /*if (shopInfo.info.shopStatus != ShopStatusDef.OPEN) {
+                presenter.getModerateShopInfo()
+            }*/
         }
 
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
@@ -424,6 +434,21 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         errorTextView.text = ErrorHandler.getErrorMessage(this, e)
         errorButton.setOnClickListener { getShopInfo() }
         swipeToRefresh.isRefreshing = false
+    }
+
+    override fun onSuccessGetReputation(reputationSpeed: ReputationSpeed?) {
+
+    }
+
+    override fun onErrorGetReputation(e: Throwable?) {
+
+    }
+
+    override fun onSuccessGetModerateInfo(shopModerateRequestData: ShopModerateRequestData) {
+        val statusModerate = shopModerateRequestData.shopModerateRequestStatus.result.status
+        if (shopInfo != null && shopId != null) {
+            shopPageViewHolder.updateViewModerateStatus(statusModerate, shopInfo!!, presenter.isMyShop(shopId!!))
+        }
     }
 
     private fun onSuccessToggleFavourite(successValue: Boolean) {
@@ -576,8 +601,38 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         startActivity(intent)
     }
 
-    override fun requestOpenShop() {
 
+    override fun onErrorModerateListener(e: Throwable?) {
+        val errorMessage = if (e == null) {
+            context.getString(R.string.moderate_shop_error)
+        } else {
+            ErrorHandler.getErrorMessage(this, e)
+        }
+
+        ToasterError.make(window.decorView.rootView, errorMessage, BaseToaster.LENGTH_INDEFINITE)
+                .setAction(R.string.title_ok) { v ->
+
+                }
+                .show()
+    }
+
+    override fun onSuccessModerateListener() {
+        buttonActionAbnormal.visibility = View.GONE
+        ToasterNormal.make(window.decorView.rootView, getString(R.string.moderate_shop_success), BaseToaster.LENGTH_LONG)
+                .setAction(R.string.title_ok) { v ->
+
+                }
+                .show()
+    }
+
+    override fun getContext(): Context {
+        return this@ShopPageActivity
+    }
+
+    override fun requestOpenShop(shopId: Int, moderateNotes:String) {
+        if(moderateNotes.isNotEmpty()){
+            presenter.moderateShopRequest(shopId, moderateNotes)
+        }
     }
 
     override fun goToHowActivate() {
