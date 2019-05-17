@@ -1,10 +1,14 @@
 package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +29,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
@@ -48,6 +53,8 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -95,6 +102,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     LinearLayout paymentMethodInfo;
     FrameLayout progressBarLayout;
     private boolean isSingleButton;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
 
     @Override
@@ -450,6 +458,36 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void clearDynamicViews() {
 
+    }
+
+    @Override
+    public void askPermission() {
+        permissionCheckerHelper = new PermissionCheckerHelper();
+        permissionCheckerHelper.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, new PermissionCheckerHelper.PermissionCheckListener() {
+            @Override
+            public void onPermissionDenied(@NotNull String permissionText) {
+
+            }
+
+            @Override
+            public void onNeverAskAgain(@NotNull String permissionText) {
+
+            }
+
+            @Override
+            public void onPermissionGranted() {
+                presenter.permissionGrantedContinueDownload();
+            }
+        },"");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(getAppContext(), requestCode, permissions, grantResults);
+        }
     }
 
     @Override

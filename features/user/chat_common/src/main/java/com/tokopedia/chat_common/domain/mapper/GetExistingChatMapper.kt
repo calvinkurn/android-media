@@ -56,7 +56,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT,
                 "",
                 interlocutor.thumbnail,
-                interlocutor.status.timestamp,
+                interlocutor.status.timestampStr,
                 interlocutor.status.isOnline,
                 interlocutor.shopId
         )

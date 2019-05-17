@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.utils.RatingHelper;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.item.DeletableItemView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class ExpandableItemSelectedListAdapter extends
 
         public ViewHolder(View itemView) {
             super(itemView);
-            selectedItem = (DeletableItemView) itemView.findViewById(R.id.selected_item);
+            selectedItem = itemView.findViewById(R.id.selected_item);
         }
 
         public void bind(final Option option, final int position) {
@@ -66,14 +66,11 @@ public class ExpandableItemSelectedListAdapter extends
                 selectedItem.setItemName(option.getName());
             }
 
-            selectedItem.setOnDeleteListener(new DeletableItemView.OnDeleteListener() {
-                @Override
-                public void onDelete() {
-                    filterView.removeSelectedOption(option);
-                    selectedOptionsList.remove(position);
-                    notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, getItemCount());
-                }
+            selectedItem.setOnDeleteListener(() -> {
+                filterView.removeSelectedOption(option);
+                selectedOptionsList.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, getItemCount());
             });
         }
     }

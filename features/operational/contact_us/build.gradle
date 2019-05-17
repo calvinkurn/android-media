@@ -39,6 +39,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.cacheManager)
     implementation project(rootProject.ext.libraries.config)
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch

@@ -10,6 +10,9 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
+import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentButtonPaymentViewHolder;
+import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentDonationViewHolder;
+import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentNotifierViewHolder;
 
 /**
@@ -47,6 +50,13 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder instanceof CartTickerErrorViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_6);
+        } else if (viewHolder instanceof ShipmentDonationViewHolder) {
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
+        } else if (viewHolder instanceof ShipmentEmasViewHolder) {
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
+            outRect.top = (int) context.getResources().getDimension(R.dimen.dp_8);
+        } else if (viewHolder instanceof ShipmentButtonPaymentViewHolder) {
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder.getAdapterPosition() == parent.getAdapter().getItemCount() - 1) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_14);
         } else {

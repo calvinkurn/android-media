@@ -112,14 +112,14 @@ public class ShopGroupData implements Parcelable {
         return cartItemHolderDataList;
     }
 
-    public void setCartItemDataList(List<CartItemData> cartItemDataList, boolean isError) {
+    public void setCartItemDataList(List<CartItemData> cartItemDataList) {
         for (CartItemData cartItemData : cartItemDataList) {
             CartItemHolderData cartItemHolderData = new CartItemHolderData();
             cartItemHolderData.setCartItemData(cartItemData);
             cartItemHolderData.setEditableRemark(false);
             cartItemHolderData.setErrorFormItemValidationMessage("");
             cartItemHolderData.setEditableRemark(false);
-            cartItemHolderData.setSelected(!isError);
+            cartItemHolderData.setSelected(!cartItemData.isError());
             cartItemHolderDataList.add(cartItemHolderData);
         }
     }

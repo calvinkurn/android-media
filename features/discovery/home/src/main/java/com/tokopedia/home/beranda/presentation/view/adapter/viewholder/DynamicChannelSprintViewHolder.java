@@ -230,5 +230,4 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             return view.getContext();
         }
     }
-
 }

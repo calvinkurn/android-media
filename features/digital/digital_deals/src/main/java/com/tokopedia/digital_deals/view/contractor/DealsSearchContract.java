@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.usecase.RequestParams;
@@ -28,6 +29,10 @@ public class DealsSearchContract {
 
         void setTrendingDealsOrSuggestions(List<ProductItem> searchViewModels, boolean isTrendingDeals, String highlight, int count);
 
+        void setSuggestedBrands(List<Brand> brandList);
+
+        void showSuggestedDeals(List<ProductItem> items, boolean showList);
+
         void removeFooter();
 
         void addFooter();
@@ -39,6 +44,8 @@ public class DealsSearchContract {
         void goBack();
 
         void navigateToActivity(Intent intent);
+
+        void startLocationFragment(List<Location> locationList, boolean isTopLocations);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

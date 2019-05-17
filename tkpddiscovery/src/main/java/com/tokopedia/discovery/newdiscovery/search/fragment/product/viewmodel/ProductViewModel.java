@@ -3,11 +3,11 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.discovery.common.data.DataValue;
+import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
@@ -28,8 +28,6 @@ public class ProductViewModel implements Parcelable {
     private SuggestionModel suggestionModel;
     private int totalData;
     private int totalItem;
-    private SearchParameter searchParameter;
-    private boolean forceSearch;
     private boolean imageSearch;
     private DynamicFilterModel dynamicFilterModel;
     private GuidedSearchViewModel guidedSearchViewModel;
@@ -37,6 +35,8 @@ public class ProductViewModel implements Parcelable {
     private TopAdsModel adsModel;
     private CpmModel cpmModel;
     private RelatedSearchModel relatedSearchModel;
+    private SearchParameter searchParameter;
+    private GlobalNavViewModel globalNavViewModel;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -162,20 +162,20 @@ public class ProductViewModel implements Parcelable {
         return searchParameter;
     }
 
-    public boolean isForceSearch() {
-        return forceSearch;
-    }
-
-    public void setForceSearch(boolean forceSearch) {
-        this.forceSearch = forceSearch;
-    }
-
     public RelatedSearchModel getRelatedSearchModel() {
         return relatedSearchModel;
     }
 
     public void setRelatedSearchModel(RelatedSearchModel relatedSearchModel) {
         this.relatedSearchModel = relatedSearchModel;
+    }
+
+    public GlobalNavViewModel getGlobalNavViewModel() {
+        return globalNavViewModel;
+    }
+
+    public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
+        this.globalNavViewModel = globalNavViewModel;
     }
 
     public int getTotalItem() {
@@ -198,8 +198,6 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
         dest.writeInt(this.totalItem);
-        dest.writeParcelable(this.searchParameter, flags);
-        dest.writeByte(this.forceSearch ? (byte) 1 : (byte) 0);
         dest.writeByte(this.imageSearch ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.dynamicFilterModel, flags);
         dest.writeParcelable(this.guidedSearchViewModel, flags);
@@ -207,6 +205,8 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.adsModel, flags);
         dest.writeParcelable(this.cpmModel, flags);
         dest.writeParcelable(this.relatedSearchModel, flags);
+        dest.writeParcelable(this.searchParameter, flags);
+        dest.writeParcelable(this.globalNavViewModel, flags);
     }
 
     protected ProductViewModel(Parcel in) {
@@ -219,8 +219,6 @@ public class ProductViewModel implements Parcelable {
         this.suggestionModel = in.readParcelable(SuggestionModel.class.getClassLoader());
         this.totalData = in.readInt();
         this.totalItem = in.readInt();
-        this.searchParameter = in.readParcelable(SearchParameter.class.getClassLoader());
-        this.forceSearch = in.readByte() != 0;
         this.imageSearch = in.readByte() != 0;
         this.dynamicFilterModel = in.readParcelable(DynamicFilterModel.class.getClassLoader());
         this.guidedSearchViewModel = in.readParcelable(GuidedSearchViewModel.class.getClassLoader());
@@ -228,6 +226,8 @@ public class ProductViewModel implements Parcelable {
         this.adsModel = in.readParcelable(TopAdsModel.class.getClassLoader());
         this.cpmModel = in.readParcelable(CpmModel.class.getClassLoader());
         this.relatedSearchModel = in.readParcelable(RelatedSearchModel.class.getClassLoader());
+        this.searchParameter = in.readParcelable(SearchParameter.class.getClassLoader());
+        this.globalNavViewModel = in.readParcelable(GlobalNavViewModel.class.getClassLoader());
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {

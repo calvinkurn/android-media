@@ -19,6 +19,7 @@ import rx.functions.Func1;
 public class GetShipmentAddressFormUseCase extends UseCase<CartShipmentAddressFormData> {
     public static final String PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS
             = "PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS";
+    public static final String PARAM_SKIP_ONBOARDING_UPDATE_STATE = "so";
 
     private final ICartRepository cartRepository;
     private final IShipmentMapper shipmentMapper;

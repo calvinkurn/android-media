@@ -298,6 +298,11 @@ public interface ConstantTransactionAnalytics {
 
         String SUCCESS_DEFAULT = "success - default";
         String SUCCESS_NOT_DEFAULT = "success - not default";
+
+        String SEPARATOR = " - ";
+        String PROMO = "promo";
+        String NON_PROMO = "non promo";
+        String COD = "cod";
     }
 
     interface ScreenName {

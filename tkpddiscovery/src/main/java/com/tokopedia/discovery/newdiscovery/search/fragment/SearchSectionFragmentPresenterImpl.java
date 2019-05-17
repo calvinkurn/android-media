@@ -1,8 +1,11 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 
 import java.util.HashMap;
@@ -12,27 +15,25 @@ import java.util.HashMap;
  */
 
 public abstract class SearchSectionFragmentPresenterImpl<V extends SearchSectionFragmentView> extends BaseDaggerPresenter<V> implements SearchSectionFragmentPresenter<V> {
-    @Override
-    public void requestDynamicFilter() {
-        requestDynamicFilter(new HashMap<String, String>());
+
+    public AppComponent getComponent(Context context) {
+        return ((MainApplication) context).getAppComponent();
     }
 
     @Override
-    public void requestDynamicFilter(HashMap<String, String> additionalParams) {
+    public void requestDynamicFilter() {
         if (getView() == null) {
             return;
         }
         RequestParams params = getDynamicFilterParam();
         params = enrichWithFilterAndSortParams(params);
-        params = enrichWithAdditionalParams(params, additionalParams);
         removeDefaultCategoryParam(params);
         getFilterFromNetwork(params);
     }
 
-    protected RequestParams enrichWithAdditionalParams(RequestParams requestParams,
+    protected void enrichWithAdditionalParams(RequestParams requestParams,
                                                      HashMap<String, String> additionalParams) {
         requestParams.putAll(additionalParams);
-        return requestParams;
     }
 
     protected RequestParams enrichWithFilterAndSortParams(RequestParams requestParams) {

@@ -29,66 +29,69 @@ class NormalCheckoutTracking {
     fun eventClickAddToCartInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
                                      selectedVariantId: String,
                                      selectedProductInfo: ProductInfo,
-                                     qty:Int,
-                                     shopId:String? = NONE_OTHER,
-                                     shopType:String? = NONE_OTHER,
-                                     shopName:String? = NONE_OTHER,
-                                     cartId:String? = NONE_OTHER,
-                                     trackerAttribution:String?,
-                                     trackerListName:String?) {
+                                     qty: Int,
+                                     shopId: String? = NONE_OTHER,
+                                     shopType: String? = NONE_OTHER,
+                                     shopName: String? = NONE_OTHER,
+                                     cartId: String? = NONE_OTHER,
+                                     trackerAttribution: String?,
+                                     trackerListName: String?,
+                                     multiOrigin: Boolean) {
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
             "click - tambah ke keranjang on variants page",
             selectedVariantId, selectedProductInfo,
-            qty, shopId, shopType, shopName,cartId,
-            trackerAttribution, trackerListName)
+            qty, shopId, shopType, shopName, cartId,
+            trackerAttribution, trackerListName, multiOrigin)
     }
 
     fun eventClickBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
                                selectedVariantId: String,
                                selectedProductInfo: ProductInfo,
-                               qty:Int,
-                               shopId:String? = NONE_OTHER,
-                               shopType:String? = NONE_OTHER,
-                               shopName:String? = NONE_OTHER,
-                               cartId:String? = NONE_OTHER,
-                               trackerAttribution:String?,
-                               trackerListName:String?) {
+                               qty: Int,
+                               shopId: String? = NONE_OTHER,
+                               shopType: String? = NONE_OTHER,
+                               shopName: String? = NONE_OTHER,
+                               cartId: String? = NONE_OTHER,
+                               trackerAttribution: String?,
+                               trackerListName: String?,
+                               multiOrigin: Boolean) {
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
             "click - beli on variants page",
             selectedVariantId, selectedProductInfo,
             qty, shopId, shopType, shopName, cartId,
-            trackerAttribution, trackerListName)
+            trackerAttribution, trackerListName, multiOrigin)
     }
 
     fun eventClickBuyTradeIn(originalProductInfoAndVariant: ProductInfoAndVariant?,
                              selectedVariantId: String,
                              selectedProductInfo: ProductInfo,
-                             qty:Int,
-                             shopId:String? = NONE_OTHER,
-                             shopType:String? = NONE_OTHER,
-                             shopName:String? = NONE_OTHER,
-                             cartId:String? = NONE_OTHER,
-                             trackerAttribution:String?,
-                             trackerListName:String?) {
+                             qty: Int,
+                             shopId: String? = NONE_OTHER,
+                             shopType: String? = NONE_OTHER,
+                             shopName: String? = NONE_OTHER,
+                             cartId: String? = NONE_OTHER,
+                             trackerAttribution: String?,
+                             trackerListName: String?) {
         isTrackTradeIn = true
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
-                "click beli sekarang",
-                selectedVariantId, selectedProductInfo,
-                qty, shopId, shopType, shopName, cartId,
-                trackerAttribution, trackerListName)
+            "click beli sekarang",
+            selectedVariantId, selectedProductInfo,
+            qty, shopId, shopType, shopName, cartId,
+            trackerAttribution, trackerListName, false)
     }
 
     private fun eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
-                                          actionLabel: String,
-                                          selectedVariantId: String,
-                                          selectedProductInfo: ProductInfo,
-                                          qty:Int,
-                                          shopId:String? = NONE_OTHER,
-                                          shopType:String? = NONE_OTHER,
-                                          shopName:String? = NONE_OTHER,
-                                          cartId:String? = NONE_OTHER,
-                                          trackerAttribution:String?,
-                                          trackerListName:String?) {
+                                                  actionLabel: String,
+                                                  selectedVariantId: String,
+                                                  selectedProductInfo: ProductInfo,
+                                                  qty: Int,
+                                                  shopId: String? = NONE_OTHER,
+                                                  shopType: String? = NONE_OTHER,
+                                                  shopName: String? = NONE_OTHER,
+                                                  cartId: String? = NONE_OTHER,
+                                                  trackerAttribution: String?,
+                                                  trackerListName: String?,
+                                                  multiOrigin: Boolean) {
         if (originalProductInfoAndVariant == null) {
             isTrackTradeIn = false
             return
@@ -96,11 +99,10 @@ class NormalCheckoutTracking {
         var productVariantString = (originalProductInfoAndVariant.productVariant
             .getOptionListString(selectedVariantId)?.joinToString(" - ")
             ?: "non variant")
-        val category : String = if(isTrackTradeIn) {
+        val category: String = if (isTrackTradeIn) {
             productVariantString = ""
             HARGA_FINAL_TRADEIN
-        }
-        else
+        } else
             PRODUCT_DETAIL_PAGE
         TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
             mutableMapOf<String, Any>(
@@ -111,26 +113,27 @@ class NormalCheckoutTracking {
                 "ecommerce" to mutableMapOf<String, Any>(
                     "currencyCode" to "IDR",
                     "add" to mutableMapOf<String, Any>(
-                        "name" to selectedProductInfo.basic.name,
-                        "id" to selectedProductInfo.basic.id,
-                        "price" to selectedProductInfo.basic.price,
-                        "brand" to selectedProductInfo.brand.name,
-                        "category" to selectedProductInfo.category.detail.joinToString("/"),
-                        "variant" to productVariantString,
-                        "quantity" to qty,
-                        "shop_id" to (shopId ?: NONE_OTHER),
-                        "shop_type" to (shopType ?: NONE_OTHER),
-                        "shop_name" to (shopName ?: NONE_OTHER),
-                        "picture" to (selectedProductInfo.pictures?.get(0)?.urlOriginal ?: NONE_OTHER),
-                        "url" to selectedProductInfo.basic.url,
-                        "category_id" to selectedProductInfo.category.id,
-                        "cart_id" to (cartId ?: NONE_OTHER),
-                        "dimension38" to (trackerAttribution ?: NONE_OTHER)
-                    ).apply {
-                        if (trackerListName?.isNotEmpty() == true) {
-                            put("actionField", mutableMapOf("list" to trackerListName))
-                        }
-                    }
+                        "products" to arrayListOf(mutableMapOf(
+                            "name" to selectedProductInfo.basic.name,
+                            "id" to selectedProductInfo.basic.id,
+                            "price" to selectedProductInfo.basic.price.toDouble(),
+                            "brand" to selectedProductInfo.brand.name,
+                            "category" to selectedProductInfo.category.detail.map { it.name }.joinToString("/"),
+                            "variant" to productVariantString,
+                            "quantity" to qty,
+                            "shop_id" to (shopId ?: NONE_OTHER),
+                            "shop_type" to (shopType ?: NONE_OTHER),
+                            "shop_name" to (shopName ?: NONE_OTHER),
+                            "picture" to (selectedProductInfo.pictures?.get(0)?.urlOriginal
+                                ?: NONE_OTHER),
+                            "url" to selectedProductInfo.basic.url,
+                            "category_id" to selectedProductInfo.category.id,
+                            "dimension45" to (cartId ?: NONE_OTHER),
+                            "dimension38" to (trackerAttribution ?: NONE_OTHER),
+                            "dimension54" to getMultiOriginAttribution(multiOrigin)
+                        )),
+                        "actionField" to mutableMapOf("list" to (trackerListName ?: ""))
+                    )
                 )
             ))
         isTrackTradeIn = false
@@ -169,9 +172,9 @@ class NormalCheckoutTracking {
 
     fun eventAppsFlyerInitiateCheckout(productId: String,
                                        priceItem: String,
-                                quantity: Int,
-                                productName: String,
-                                category: String) {
+                                       quantity: Int,
+                                       productName: String,
+                                       category: String) {
         TrackApp.getInstance()?.appsFlyer?.sendEvent(
             AFInAppEventType.INITIATED_CHECKOUT,
             mutableMapOf<String, Any>(
@@ -199,5 +202,10 @@ class NormalCheckoutTracking {
                 AFInAppEventParameterName.PRICE to priceItem,
                 "category" to category
             ))
+    }
+
+    private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when(isMultiOrigin) {
+        true -> "tokopedia"
+        else -> "regular"
     }
 }
