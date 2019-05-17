@@ -317,6 +317,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     override fun onSwipeRefresh() {
         cursor = ""
+        presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter())
         super.onSwipeRefresh()
     }
 
@@ -362,6 +363,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun onSuccessGetTotalUnreadCounter(): (NotificationUpdateTotalUnread) -> Unit {
         return {
             markAllReadCounter = it.pojo.notifUnreadInt
+            notifyBottomActionView()
         }
     }
 }

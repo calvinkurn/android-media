@@ -108,7 +108,6 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
                 sendAnalytics(tab.position)
                 setTabSelectedView(tab.customView)
                 resetCircle(tab.customView)
-                presenter.clearNotifCounter()
                 if (tab.position == INDEX_NOTIFICATION_UPDATE) {
                     clearNotificationUpdateCounter()
                 }
