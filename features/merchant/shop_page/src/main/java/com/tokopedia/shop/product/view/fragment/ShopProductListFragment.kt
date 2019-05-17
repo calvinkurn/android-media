@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -612,6 +613,10 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                     selectedEtalaseName,
                     CustomDimensionShopPageProduct.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
                             it.goldOS.isGold == 1, shopProductViewModel.id))
+        }
+        if (!viewModel.isLogin){
+            onErrorAddToWishList(UserNotLoginException())
+            return
         }
         if (shopProductViewModel.isWishList) {
             viewModel.removeWishList(shopProductViewModel.id, this)

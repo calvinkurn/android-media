@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -138,7 +139,19 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     private var remoteConfig: RemoteConfig? = null
 
     private val shopProductAdapter: ShopProductAdapter by lazy { adapter as ShopProductAdapter }
-    private val gridLayoutManager: GridLayoutManager by lazy { recyclerViewLayoutManager as GridLayoutManager }
+    private val gridLayoutManager: GridLayoutManager by lazy {
+        GridLayoutManager(activity, GRID_SPAN_COUNT).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return if (shopProductAdapter.getItemViewType(position) == ShopProductViewHolder.GRID_LAYOUT) {
+                        LIST_SPAN_COUNT
+                    } else {
+                        GRID_SPAN_COUNT
+                    }
+                }
+            }
+        }
+    }
     private var needReloadData: Boolean = false
     private var needLoadVoucher: Boolean = false
 
@@ -358,16 +371,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        val gridLayoutManager = GridLayoutManager(activity, GRID_SPAN_COUNT)
-        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return if (shopProductAdapter!!.getItemViewType(position) == ShopProductViewHolder.GRID_LAYOUT) {
-                    LIST_SPAN_COUNT
-                } else {
-                    GRID_SPAN_COUNT
-                }
-            }
-        }
         return gridLayoutManager
     }
 
@@ -474,7 +477,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private fun onErrorAddToWishList(e: Throwable) {
         activity?.let {
-            if (viewModel.isLogin) {
+            if (!viewModel.isLogin || e is UserNotLoginException) {
                 val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
                 startActivityForResult(intent, REQUEST_CODE_USER_LOGIN)
                 return
@@ -751,6 +754,10 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                                 shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
                                 shopProductViewModel.id))
             }
+        }
+        if (!viewModel.isLogin){
+            onErrorAddToWishList(UserNotLoginException())
+            return
         }
         if (shopProductViewModel.isWishList) {
             viewModel.removeWishList(shopProductViewModel.id, this)
