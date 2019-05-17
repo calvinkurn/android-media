@@ -6,10 +6,7 @@ import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.text.Editable
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.TextWatcher
+import android.text.*
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +16,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.design.component.TextViewCompat
+import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelCartData
@@ -26,13 +25,19 @@ import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelPropertyData
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
+import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
+import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.HotelUtils
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.bottom_sheets_hotel_booking.view.*
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
 import kotlinx.android.synthetic.main.widget_hotel_room_duration.view.*
+import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
 
 
@@ -96,8 +101,17 @@ class HotelBookingFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_CART_ID)) {
+            cartId = savedInstanceState.getString(EXTRA_HOTEL_CART_ID)!!
+        }
+
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), cartId,
                 GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_cart))
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(EXTRA_HOTEL_CART_ID, cartId)
     }
 
     private fun initView() {
@@ -138,8 +152,10 @@ class HotelBookingFragment : BaseDaggerFragment() {
         if (property.rooms.isNotEmpty()) {
             tv_booking_room_info_title.text = property.rooms[0].roomName
 
-            tv_booking_room_info_pay_at_hotel.visibility = View.VISIBLE
-            tv_booking_room_info_pay_at_hotel.setDrawableLeft(R.drawable.ic_hotel_16)
+            if (property.rooms[0].isDirectPayment) {
+                tv_booking_room_info_pay_at_hotel.visibility = View.VISIBLE
+                tv_booking_room_info_pay_at_hotel.setDrawableLeft(R.drawable.ic_hotel_16)
+            }
             val spannableString = SpannableString(getString(R.string.hotel_booking_pay_at_hotel_label))
             spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
@@ -150,63 +166,65 @@ class HotelBookingFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun onTaxPolicyClicked() {
+        val hotelTaxPolicyBottomSheets = HotelBookingBottomSheets()
+        val textView = TextViewCompat(context!!)
+        textView.text = "Efektif tanggal 1 September 2017, setiap tamu hotel diluar warga negara Malaysia akan dikenakan pajak turis sebesar MYR 10 net./malam/orang pada hotel-hotel yang terdaftar di Pemerintah malaysia. Penambahan ini akan ditagihkan pada saat check-in. Mohon diperhatikan ketika tiba di hotel dan melakukan check-in. Deposit mungkin diwajibkan pihak hotel dengan menggunakan uang tunai."
+        hotelTaxPolicyBottomSheets.addContentView(textView)
+        hotelTaxPolicyBottomSheets.show(activity!!.supportFragmentManager, TAG_HOTEL_TAX_POLICY)
+    }
+
+    private fun onCancellationPolicyClicked(property: HotelPropertyData) {
+        if (property.rooms.isNotEmpty()) {
+            val hotelCancellationPolicyBottomSheets = HotelBookingBottomSheets()
+            hotelCancellationPolicyBottomSheets.title = getString(R.string.hotel_booking_cancellation_policy_title)
+
+            for (policy in property.rooms[0].cancellationPolicies.details) {
+                val policyView = InfoTextView(context!!)
+                policyView.setTitleAndDescription(policy.title, policy.content)
+                policyView.truncateDescription = false
+                policyView.resetMaxLineCount()
+                policyView.info_title.setFontSize(TextViewCompat.FontSize.SMALL)
+                policyView.info_container.setMargin(0,0,0, policyView.info_container.getDimens(R.dimen.dp_16))
+                hotelCancellationPolicyBottomSheets.addContentView(policyView)
+            }
+
+            hotelCancellationPolicyBottomSheets.show(activity!!.supportFragmentManager, TAG_HOTEL_CANCELLATION_POLICY)
+        }
+    }
+
     private fun setupRoomRequestForm() {
         if (roomRequest.isNotEmpty()) {
             showRequestForm()
             tv_room_request_input.setText(roomRequest)
-            updateRoomRequestCounter(roomRequest.length)
         } else {
             add_request_container.setOnClickListener {
                 showRequestForm()
             }
-            updateRoomRequestCounter(0)
         }
 
-        tv_room_request_char_count_error.text = getString(R.string.hotel_booking_request_char_count_error, roomRequestMaxCharCount)
-        tv_room_request_input.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
-
-            override fun afterTextChanged(s: Editable) {
-                val roomRequestCharCount = s.length
-                updateRoomRequestCounter(roomRequestCharCount)
-                toggleRoomRequestError(roomRequestCharCount > roomRequestMaxCharCount)
-            }
-        })
+        til_room_request.setLabel(getString(R.string.hotel_booking_request_form_title))
+        til_room_request.setErrorTextAppearance(R.style.ErrorTextAppearance)
+        til_room_request.counterMaxLength = roomRequestMaxCharCount
         tv_room_request_input.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 KeyboardHandler.hideSoftKeyboard(activity)
             }
         }
+        tv_room_request_input.addTextChangedListener(object : AfterTextWatcher() {
+            override fun afterTextChanged(s: Editable) {
+                when (s.length > roomRequestMaxCharCount) {
+                    true -> til_room_request.error = getString(R.string.hotel_booking_request_char_count_error, roomRequestMaxCharCount)
+                    false -> til_room_request.error = null
+                }
+
+            }
+        })
     }
 
     private fun showRequestForm() {
         add_request_container.visibility = View.GONE
         room_request_form_container.visibility = View.VISIBLE
-    }
-
-    private fun updateRoomRequestCounter(count: Int) {
-        tv_room_request_char_count.text = getString(R.string.hotel_booking_request_char_count, count, roomRequestMaxCharCount)
-    }
-
-    private fun toggleRoomRequestError(value: Boolean) {
-        when (value) {
-            true -> {
-                if (tv_room_request_char_count_error.visibility == View.INVISIBLE) {
-                    tv_room_request_char_count.visibility = View.INVISIBLE
-                    tv_room_request_char_count_error.visibility = View.VISIBLE
-                    tv_room_request_input.background.mutate().setColorFilter(ContextCompat.getColor(context!!, R.color.pink_property), PorterDuff.Mode.SRC_ATOP)
-                }
-            }
-            false -> {
-                if (tv_room_request_char_count.visibility == View.INVISIBLE) {
-                    tv_room_request_char_count.visibility = View.VISIBLE
-                    tv_room_request_char_count_error.visibility = View.INVISIBLE
-                    tv_room_request_input.background.mutate().colorFilter = null
-                }
-            }
-        }
     }
 
     private fun setupContactDetail(cart: HotelCartData) {
@@ -216,7 +234,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
         tv_contact_phone_number.text = getString(R.string.hotel_booking_contact_detail_phone_number,
                 contactData.phoneCode, contactData.phone)
 
-        radio_button_contact_guest.isChecked = guestName.isNotEmpty()
+        radio_button_contact_guest.isChecked = tv_guest_input.text.isNotEmpty()
         toggleShowGuestForm(radio_button_contact_guest.isChecked)
         radio_group_contact.setOnCheckedChangeListener { group, checkedId ->
             toggleShowGuestForm(radio_button_contact_guest.id == checkedId)
@@ -239,8 +257,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
     private fun toggleGuestFormError(value: Boolean) {
         when (value) {
-            true -> tv_guest_input.background.mutate().setColorFilter(ContextCompat.getColor(context!!, R.color.pink_property),
-                    PorterDuff.Mode.SRC_ATOP)
+            true -> tv_guest_input.background.mutate().setColorFilter(ContextCompat.getColor(context!!, R.color.pink_property), PorterDuff.Mode.SRC_ATOP)
             false -> tv_guest_input.background.mutate().colorFilter = null
         }
     }
@@ -263,16 +280,18 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
     private fun setupBookingButton() {
         booking_button.setOnClickListener {
-            if (validateRoomRequest() && validateGuestName()) {
-                val hotelCheckoutParam = HotelCheckoutParam(
-                    cartId = cartId,
-                    contact = hotelCart.cart.contact,
-                    guestName = tv_guest_input.text.toString(),
-                    promoCode = promoCode,
-                    specialRequest = roomRequest
-                )
-                bookingViewModel.checkoutCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_checkout), hotelCheckoutParam)
-            }
+//            if (validateRoomRequest() && validateGuestName()) {
+//                val hotelCheckoutParam = HotelCheckoutParam(
+//                    cartId = cartId,
+//                    contact = hotelCart.cart.contact,
+//                    guestName = tv_guest_input.text.toString(),
+//                    promoCode = promoCode,
+//                    specialRequest = roomRequest
+//                )
+//                bookingViewModel.checkoutCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_checkout), hotelCheckoutParam)
+//            }
+//            onCancellationPolicyClicked(hotelCart.property)
+            onTaxPolicyClicked()
         }
     }
 
@@ -294,6 +313,9 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
     companion object {
         const val ARG_CART_ID = "arg_cart_id"
+        const val EXTRA_HOTEL_CART_ID = "extra_hotel_cart_id"
+        const val TAG_HOTEL_CANCELLATION_POLICY = "hotel_cancellation_policy"
+        const val TAG_HOTEL_TAX_POLICY = "hotel_tax_policy"
         const val ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT = 250
 
         fun getInstance(cartId: String): HotelBookingFragment =

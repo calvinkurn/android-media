@@ -9,4 +9,8 @@
     <style name="TitlePageWhiteIndicator.Hotel">
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="ErrorTextAppearance">
+        <item name="android:textColor">@color/pink_property</item>
+    </style>
 </resources>

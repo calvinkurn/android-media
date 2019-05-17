@@ -57,6 +57,7 @@
             "isNeedDeposit": true,
             "isRefundAble": false,
             "isCCRequired": false,
+            "isDirectPayment": true,
             "importantNote": "Kamar ini menerapkan sistem deposit yang harus dibayar saat check-in",
             "paymentTerms": {
                 "name": "Non-refundable, Prepayment needed",

@@ -206,49 +206,24 @@
                     android:visibility="gone"
                     tools:visibility="visible">
 
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/tv_room_request_label"
+                    <com.tokopedia.design.text.TkpdHintTextInputLayout
+                        android:id="@+id/til_room_request"
+                        style="@style/HintTextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_4"
-                        android:text="@string/hotel_booking_request_form_title"
-                        app:fontSize="micro"
-                        app:textViewTheme="lightDisabled"/>
+                        android:layout_marginBottom="@dimen/dp_8"
+                        app:counterEnabled="true"
+                        app:counterOverflowTextAppearance="@style/ErrorTextAppearance">
 
-                    <com.tokopedia.design.component.EditTextCompat
-                        android:id="@+id/tv_room_request_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textMultiLine"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:hint="@string/hotel_booking_request_form_hint" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_8">
-
-                        <com.tokopedia.design.component.TextViewCompat
-                            android:id="@+id/tv_room_request_char_count"
+                        <com.tokopedia.design.component.EditTextCompat
+                            android:id="@+id/tv_room_request_input"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="end"
-                            app:fontSize="micro"
-                            app:textViewTheme="lightPrimary"
-                            tools:text="0/250" />
+                            android:inputType="textMultiLine"
+                            android:focusable="true"
+                            android:hint="@string/hotel_booking_request_form_hint" />
 
-                        <com.tokopedia.design.component.TextViewCompat
-                            android:id="@+id/tv_room_request_char_count_error"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="end"
-                            android:text="@string/hotel_booking_request_char_count_error"
-                            android:textColor="@color/pink_property"
-                            android:visibility="invisible"
-                            app:fontSize="micro" />
-
-                    </RelativeLayout>
+                    </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:id="@+id/tv_room_request_notice"
@@ -391,21 +366,21 @@
                     android:visibility="gone"
                     tools:visibility="visible" >
 
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/tv_guest_form_label"
+                    <com.tokopedia.design.text.TkpdHintTextInputLayout
+                        android:id="@+id/til_guest"
+                        style="@style/HintTextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_4"
-                        android:text="@string/hotel_booking_request_form_title"
-                        app:fontSize="micro"
-                        app:textViewTheme="lightDisabled"/>
+                        android:layout_marginBottom="@dimen/dp_8">
 
-                    <android.support.v7.widget.AppCompatAutoCompleteTextView
-                        android:id="@+id/tv_guest_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_4"
-                        android:hint="@string/hotel_booking_guest_form_hint" />
+                        <android.support.v7.widget.AppCompatAutoCompleteTextView
+                            android:id="@+id/tv_guest_input"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="true"
+                            android:hint="@string/hotel_booking_guest_form_hint" />
+
+                    </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:id="@+id/tv_guest_form_notice"
