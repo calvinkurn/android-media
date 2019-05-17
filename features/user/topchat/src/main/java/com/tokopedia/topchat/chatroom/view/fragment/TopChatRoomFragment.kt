@@ -622,8 +622,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     element.shopId.toString(),
                     shopName
             )
-            presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(),
-                    shopId)
+            var shopId = this.shopId
+            if(shopId == 0) {
+                shopId = element.shopId
+            }
+            presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(), shopId)
         }
     }
 
@@ -640,6 +643,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     element.shopId.toString(),
                     shopName
             )
+            var shopId = this.shopId
+            if(shopId == 0) {
+                shopId = element.shopId
+            }
             presenter.addProductToCart(router, element, onError(), onSuccessAddToCart(),
                     shopId)
         }

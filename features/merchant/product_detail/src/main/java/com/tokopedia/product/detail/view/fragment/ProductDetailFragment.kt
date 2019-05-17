@@ -1004,7 +1004,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             commission.text = pdpAffiliate.commissionValueDisplay
             btn_affiliate.setOnClickListener { onAffiliateClick(pdpAffiliate, false) }
             actionButtonView.gone()
-        } else {
+        } else if (!GlobalConfig.isSellerApp()) {
             base_btn_affiliate.gone()
             actionButtonView.byMeClick = this::onAffiliateClick
             actionButtonView.showByMe(true, pdpAffiliate)
