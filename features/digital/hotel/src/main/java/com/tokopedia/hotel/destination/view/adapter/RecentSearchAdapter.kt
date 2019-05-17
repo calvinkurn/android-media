@@ -46,12 +46,12 @@ class RecentSearchAdapter(val listener: RecentSearchListener): RecyclerView.Adap
         var textView: DeletableItemView = itemView.findViewById(R.id.autocomplete_chips_item)
 
         fun bind(data: RecentSearch, position: Int) {
-            textView.setItemName(data.name)
+            textView.setItemName(data.property.value)
             textView.setOnDeleteListener {
                 recentSearchList.removeAt(position)
                 notifyItemRemoved(position)
                 notifyItemRangeChanged(position, itemCount)
-                listener.onDeleteRecentSearchItem(data.name)
+                listener.onDeleteRecentSearchItem(data.uuid)
             }
             textView.setOnTextClickListener { listener.onItemClicked(data) }
         }

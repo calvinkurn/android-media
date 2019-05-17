@@ -101,7 +101,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         searchResultviewModel.liveSearchResult.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
-                is Fail -> onErrorGetResult(it.throwable)
+                is Fail -> showGetListError(it.throwable)
             }
         })
     }
@@ -139,13 +139,9 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun onErrorGetResult(throwable: Throwable) {
-        super.showGetListError(throwable)
-    }
-
     private fun onSuccessGetResult(data: PropertySearch) {
         bottom_action_view.visible()
-        super.renderList(data.properties)
+        super.renderList(data.properties, data.properties.size > 0)
         generateSortMenu(data.displayInfo.sort)
         initializeFilterClick(data.displayInfo.filter)
     }

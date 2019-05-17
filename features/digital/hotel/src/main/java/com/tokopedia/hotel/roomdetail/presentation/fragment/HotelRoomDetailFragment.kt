@@ -65,7 +65,7 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
         val manager = if (savedInstanceState == null) SaveInstanceCacheManager(activity!!,
                 arguments!!.getString(HotelRoomDetailActivity.EXTRA_SAVED_INSTANCE_ID)) else saveInstanceCacheManager
 
-        val hotelRoomDetailModel = manager.get(EXTRA_ROOM_DATA, HotelRoom::class.java, HotelRoomDetailModel())!!
+        val hotelRoomDetailModel = manager.get(EXTRA_ROOM_DATA, HotelRoomDetailModel::class.java, HotelRoomDetailModel())!!
         hotelRoom = hotelRoomDetailModel.hotelRoom
         addToCartParam = hotelRoomDetailModel.addToCartParam
     }

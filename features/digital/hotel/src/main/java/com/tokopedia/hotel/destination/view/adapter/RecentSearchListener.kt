@@ -7,7 +7,7 @@ import com.tokopedia.hotel.destination.data.model.RecentSearch
  */
 interface RecentSearchListener {
 
-    fun onDeleteRecentSearchItem(keyword: String)
+    fun onDeleteRecentSearchItem(uuid: String)
 
     fun onDeleteAllRecentSearch()
 

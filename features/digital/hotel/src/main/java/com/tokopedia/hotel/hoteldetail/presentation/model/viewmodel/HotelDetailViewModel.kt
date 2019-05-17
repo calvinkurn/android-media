@@ -8,6 +8,7 @@ import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDataParam
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
+import com.tokopedia.hotel.hoteldetail.presentation.model.HotelReviewParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.usecase.GetHotelRoomListUseCase
@@ -26,25 +27,27 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
     : BaseViewModel(dispatcher) {
 
     val hotelInfoResult = MutableLiveData<Result<PropertyDetailData>>()
+    val hotelReviewResult = MutableLiveData<Result<HotelReview.ReviewData>>()
     val roomListResult = MutableLiveData<Result<MutableList<HotelRoom>>>()
 
-    fun getHotelDetailData(hotelInfoQuery: String, roomListQuery: String, propertyId: Int, searchParam: HotelHomepageModel) {
+    fun getHotelDetailData(hotelInfoQuery: String, roomListQuery: String, hotelReviewQuery: String, propertyId: Int, searchParam: HotelHomepageModel) {
         launch {
             getHotelInfo(hotelInfoQuery, propertyId)
+            getHotelReview(hotelReviewQuery, propertyId)
             getRoomList(roomListQuery, searchParam)
         }
     }
 
-    suspend fun getHotelInfo(rawQuery: String, propertyId: Int) {
+    private suspend fun getHotelInfo(rawQuery: String, propertyId: Int) {
 
-        val requestParams = PropertyDataParam(propertyId)
-        val params = mapOf(PARAM_HOTEL_INFO_PROPERTY to requestParams)
+        val requestDetailParams = PropertyDataParam(propertyId)
+        val detailParams = mapOf(PARAM_HOTEL_INFO_PROPERTY to requestDetailParams)
 
         try {
             val hotelInfoData = async {
                 val response = withContext(Dispatchers.Default) {
-                    val graphqlRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_INFO, params)
-                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                    val detailRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_INFO, detailParams)
+                    graphqlRepository.getReseponse(listOf(detailRequest))
                             .getSuccessData<PropertyDetailData.Response>()
                 }
                 response
@@ -56,7 +59,28 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    suspend fun getRoomList(rawQuery: String, searchParam: HotelHomepageModel) {
+    private suspend fun getHotelReview(rawQuery: String, propertyId: Int) {
+
+        val requestReviewParams = HotelReviewParam(propertyId, DEFAULT_PAGE_REVIEW, DEFAULT_ROW_REVIEW, DEFAULT_SORT_BY_REVIEW, DEFAULT_SORT_ORDER)
+        val reviewParams = mapOf(PARAM_HOTEL_INFO_PROPERTY to requestReviewParams)
+
+        try {
+            val hotelReviewData = async {
+                val response = withContext(Dispatchers.Default) {
+                    val reviewRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_REVIEW, reviewParams)
+                    graphqlRepository.getReseponse(listOf(reviewRequest))
+                            .getSuccessData<HotelReview.Response>()
+                }
+                response
+            }
+
+            hotelReviewResult.value = Success(hotelReviewData.await().propertyReview)
+        } catch (t: Throwable) {
+            hotelReviewResult.value = Fail(t)
+        }
+    }
+
+    private suspend fun getRoomList(rawQuery: String, searchParam: HotelHomepageModel) {
         roomListResult.value = useCase.execute(rawQuery, HotelRoomListPageModel(
                 propertyId = searchParam.locId,
                 checkIn = searchParam.checkInDate,
@@ -68,7 +92,14 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
 
     companion object {
         const val PARAM_HOTEL_INFO_PROPERTY = "data"
+
+        const val DEFAULT_PAGE_REVIEW = 0
+        const val DEFAULT_ROW_REVIEW = 11
+        const val DEFAULT_SORT_BY_REVIEW = "score"
+        const val DEFAULT_SORT_ORDER = "desc"
+
         private val TYPE_HOTEL_INFO = PropertyDetailData.Response::class.java
+        private val TYPE_HOTEL_REVIEW = HotelReview.Response::class.java
     }
 
 }
