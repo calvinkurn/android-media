@@ -60,7 +60,7 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_airport_picker, container, false);
+        View view = inflater.inflate(R.layout.fragment_flight_phone_code, container, false);
         view.requestFocus();
         return view;
     }
