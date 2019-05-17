@@ -2,15 +2,18 @@ package com.tokopedia.hotel.booking.presentation.fragment
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
 import android.text.*
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -206,7 +209,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
         til_room_request.setLabel(getString(R.string.hotel_booking_request_form_title))
         til_room_request.setErrorTextAppearance(R.style.ErrorTextAppearance)
         til_room_request.counterMaxLength = roomRequestMaxCharCount
-        tv_room_request_input.setOnFocusChangeListener { _, hasFocus ->
+        til_room_request.editText.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 KeyboardHandler.hideSoftKeyboard(activity)
             }
@@ -240,10 +243,14 @@ class HotelBookingFragment : BaseDaggerFragment() {
             toggleShowGuestForm(radio_button_contact_guest.id == checkedId)
         }
 
-        tv_guest_input.setOnFocusChangeListener { _, hasFocus ->
+        til_guest.setLabel(getString(R.string.hotel_booking_guest_form_title))
+        til_guest.setErrorTextAppearance(R.style.ErrorTextAppearance)
+        til_guest.setHelperTextAppearance(R.style.HelperTextAppearance)
+        toggleGuestFormError(false)
+        til_guest.editText.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 KeyboardHandler.hideSoftKeyboard(activity)
-                toggleGuestFormError(tv_guest_input.text.isNullOrEmpty())
+                toggleGuestFormError(til_guest.editText.text.isNullOrEmpty())
             }
         }
     }
@@ -256,9 +263,16 @@ class HotelBookingFragment : BaseDaggerFragment() {
     }
 
     private fun toggleGuestFormError(value: Boolean) {
+        val noticeString = getString(R.string.hotel_booking_guest_form_notice)
         when (value) {
-            true -> tv_guest_input.background.mutate().setColorFilter(ContextCompat.getColor(context!!, R.color.pink_property), PorterDuff.Mode.SRC_ATOP)
-            false -> tv_guest_input.background.mutate().colorFilter = null
+            true -> {
+                til_guest.setHelper(null)
+                til_guest.setError(noticeString)
+            }
+            false -> {
+                til_guest.setHelper(noticeString)
+                til_guest.setError(null)
+            }
         }
     }
 

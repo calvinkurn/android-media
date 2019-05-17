@@ -371,7 +371,9 @@
                         style="@style/HintTextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_8">
+                        android:layout_marginBottom="@dimen/dp_8"
+                        app:helperEnabled="true"
+                        app:errorEnabled="true">
 
                         <android.support.v7.widget.AppCompatAutoCompleteTextView
                             android:id="@+id/tv_guest_input"
@@ -381,14 +383,6 @@
                             android:hint="@string/hotel_booking_guest_form_hint" />
 
                     </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/tv_guest_form_notice"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/hotel_booking_guest_form_notice"
-                        app:fontSize="micro"
-                        app:textViewTheme="lightSecondary"/>
 
                 </LinearLayout>
 

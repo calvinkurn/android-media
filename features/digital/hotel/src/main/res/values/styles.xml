@@ -13,4 +13,8 @@
     <style name="ErrorTextAppearance">
         <item name="android:textColor">@color/pink_property</item>
     </style>
+
+    <style name="HelperTextAppearance">
+        <item name="android:textColor">@color/light_secondary</item>
+    </style>
 </resources>
