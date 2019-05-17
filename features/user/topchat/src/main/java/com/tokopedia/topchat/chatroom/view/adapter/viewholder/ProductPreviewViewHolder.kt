@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -68,14 +69,11 @@ class ProductPreviewViewHolder(itemView: View?, private val itemListener: ItemLi
         productVariantContainer?.visibility = View.GONE
     }
 
-    private fun toDp(number: Int): Float {
-        return number * Resources.getSystem().displayMetrics.density + 0.5f
-    }
-
     private fun getBackgroundDrawable(hexColor: String): Drawable? {
         val backgroundDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.circle_color_variant_indicator)
 
         if (isWhiteColor(hexColor)) {
+            applyStrokeTo(backgroundDrawable)
             return backgroundDrawable
         }
 
@@ -87,4 +85,14 @@ class ProductPreviewViewHolder(itemView: View?, private val itemListener: ItemLi
         return hexColor == "#ffffff" || hexColor == "#fff"
     }
 
+    private fun applyStrokeTo(backgroundDrawable: Drawable?) {
+        if (backgroundDrawable is GradientDrawable) {
+            val strokeWidth = toDp(1)
+            backgroundDrawable.setStroke(strokeWidth.toInt(), ContextCompat.getColor(itemView.context, R.color.grey_300))
+        }
+    }
+
+    private fun toDp(number: Int): Float {
+        return number * Resources.getSystem().displayMetrics.density + 0.5f
+    }
 }
