@@ -9,14 +9,20 @@ import com.tokopedia.search.result.presentation.model.ShopViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.EmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.shop.GridShopItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.shop.ListShopItemViewHolder;
+import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.ShopListener;
 
 public class ShopListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implements ShopListTypeFactory {
 
-    private ShopListener itemClickListener;
+    private ShopListener shopListener;
+    private EmptyStateListener emptyStateListener;
 
-    public ShopListTypeFactoryImpl(ShopListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    public void setShopListener(ShopListener shopListener) {
+        this.shopListener = shopListener;
+    }
+
+    public void setEmptyStateListener(EmptyStateListener emptyStateListener) {
+        this.emptyStateListener = emptyStateListener;
     }
 
     @Override
@@ -42,11 +48,11 @@ public class ShopListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implem
         AbstractViewHolder viewHolder;
 
         if (type == ListShopItemViewHolder.LAYOUT) {
-            viewHolder = new ListShopItemViewHolder(view, itemClickListener);
+            viewHolder = new ListShopItemViewHolder(view, shopListener);
         } else if (type == GridShopItemViewHolder.LAYOUT) {
-            viewHolder = new GridShopItemViewHolder(view, itemClickListener);
+            viewHolder = new GridShopItemViewHolder(view, shopListener);
         } else if (type == EmptySearchViewHolder.LAYOUT) {
-            viewHolder = new EmptySearchViewHolder(view, itemClickListener, null);
+            viewHolder = new EmptySearchViewHolder(view, emptyStateListener, null);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

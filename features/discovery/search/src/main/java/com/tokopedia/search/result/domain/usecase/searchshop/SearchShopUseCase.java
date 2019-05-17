@@ -84,9 +84,10 @@ final class SearchShopUseCase extends UseCase<SearchShopModel> {
     }
 
     private void enrichWithFavoriteData(SearchShopModel shopViewModel,
-                                        FavoriteShopListModel favoriteCheckResultResponse) {
+                                        FavoriteShopListModel favoriteCheckResult) {
+        if(shopViewModel == null || favoriteCheckResult == null) return;
 
-        List<String> favoritedIdList = favoriteCheckResultResponse.favoriteShopList;
+        List<String> favoritedIdList = favoriteCheckResult.favoriteShopList;
 
         for (SearchShopModel.ShopItem shopItem : shopViewModel.shopItemList) {
             shopItem.isFavorited = favoritedIdList.contains(shopItem.shopId);
