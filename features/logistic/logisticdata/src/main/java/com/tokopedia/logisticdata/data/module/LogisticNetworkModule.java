@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.logisticdata.data.apiservice.InsuranceApi;
 import com.tokopedia.logisticdata.data.apiservice.MyShopOrderActApi;
 import com.tokopedia.logisticdata.data.apiservice.MyShopOrderApi;
@@ -235,7 +236,7 @@ public class LogisticNetworkModule {
             okHttpPeopleActApiBuilder.addInterceptor(debugInterceptor);
         }
         return new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.BASE_DOMAIN)
+                .baseUrl(TokopediaUrl.Companion.getInstance().getWS())
                 .addConverterFactory(tokopediaWsV4ResponseConverter)
                 .addConverterFactory(stringResponseConverter)
                 .addConverterFactory(gsonConverterFactory)
@@ -336,7 +337,7 @@ public class LogisticNetworkModule {
 
     ) {
         Retrofit.Builder retrofitOrderDetailApiBuilder = new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.BASE_DOMAIN)
+                .baseUrl(TokopediaUrl.Companion.getInstance().getWS())
                 .addConverterFactory(new GeneratedHostConverter())
                 .addConverterFactory(tokopediaWsV4ResponseConverter)
                 .addConverterFactory(stringResponseConverter)

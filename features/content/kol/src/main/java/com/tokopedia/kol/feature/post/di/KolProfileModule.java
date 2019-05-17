@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase;
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.feature.post.data.mapper.LikeKolPostMapper;
@@ -22,7 +23,6 @@ import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.presenter.KolPostDetailPresenter;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -94,7 +94,7 @@ public class KolProfileModule {
 
         return CommonNetwork.createRetrofit(
                 context,
-                TkpdBaseURL.TOPADS_DOMAIN,
+                TokopediaUrl.Companion.getInstance().getTA(),
                 (NetworkRouter) context,
                 userSession
         );

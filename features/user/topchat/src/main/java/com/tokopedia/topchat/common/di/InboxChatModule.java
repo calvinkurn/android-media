@@ -5,7 +5,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
@@ -16,9 +15,9 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.broadcast.message.common.domain.interactor.GetChatBlastSellerMetaDataUseCase;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.chat_common.network.ChatUrl;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
@@ -27,7 +26,6 @@ import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory;
 import com.tokopedia.topchat.chatlist.data.factory.SearchFactory;
@@ -246,7 +244,7 @@ public class InboxChatModule {
     @Provides
     Retrofit provideWsRetrofitDomain(OkHttpClient okHttpClient,
                                      Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN)
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS())
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
@@ -260,7 +258,7 @@ public class InboxChatModule {
     @Provides
     Retrofit provideTomeRetrofitDomain(OkHttpClient okHttpClient,
                                        Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN)
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getTOME())
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))

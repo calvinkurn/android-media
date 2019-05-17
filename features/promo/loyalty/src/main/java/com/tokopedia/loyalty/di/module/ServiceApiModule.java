@@ -13,11 +13,11 @@ import com.tokopedia.loyalty.di.qualifier.TxPaymentQualifier;
 import com.tokopedia.loyalty.domain.apiservice.DigitalApi;
 import com.tokopedia.loyalty.domain.apiservice.DigitalHmacAuthInterceptor;
 import com.tokopedia.loyalty.domain.apiservice.PromoApi;
+import com.tokopedia.loyalty.domain.apiservice.RetrofitFactory;
 import com.tokopedia.loyalty.domain.apiservice.TXPaymentVoucherApi;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointApi;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointAuthInterceptor;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointGqlApi;
-import com.tokopedia.loyalty.domain.apiservice.RetrofitFactory;
 import com.tokopedia.loyalty.domain.repository.IPromoRepository;
 import com.tokopedia.loyalty.domain.repository.IPromoResponseMapper;
 import com.tokopedia.loyalty.domain.repository.ITokoPointDBService;
@@ -136,7 +136,7 @@ public class ServiceApiModule {
         tkpdOkHttpBuilder.addInterceptor(new DigitalHmacAuthInterceptor(context, networkRouter, userSession, TkpdBaseURL.DigitalApi.HMAC_KEY));
         OkHttpClient okHttpClient = tkpdOkHttpBuilder.build();
 
-        return RetrofitFactory.createRetrofitDigitalConfig(TkpdBaseURL.DIGITAL_API_DOMAIN)
+        return RetrofitFactory.createRetrofitDigitalConfig(TokopediaUrl.Companion.getInstance().getPULSA_API())
                 .client(okHttpClient)
                 .build();
     }

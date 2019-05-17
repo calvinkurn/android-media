@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.logisticdata.data.apiservice.MapsApi;
 import com.tokopedia.logisticgeolocation.data.RetrofitInteractor;
 import com.tokopedia.logisticgeolocation.data.RetrofitInteractorImpl;
@@ -97,7 +98,7 @@ public class GeolocationModule {
         tkpdOkHttpBuilder.addInterceptor(tkpdAuthInterceptor);
         tkpdOkHttpBuilder.addInterceptor(fingerprintInterceptor);
         return new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.MAPS_DOMAIN)
+                .baseUrl(TokopediaUrl.Companion.getInstance().getGW())
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(stringResponseConverter)
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
