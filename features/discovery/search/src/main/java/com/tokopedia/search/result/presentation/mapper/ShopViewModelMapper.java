@@ -48,6 +48,7 @@ public class ShopViewModelMapper {
         shopItem.setShopTagLine(shop.shopTagLine);
         shopItem.setShopStatus(shop.shopStatus);
         shopItem.setOfficial(shop.isOfficial);
+        shopItem.setFavorited(shop.isFavorited);
 
         List<String> productImages = new ArrayList<>(shop.productImages);
         shopItem.setProductImages(productImages);
