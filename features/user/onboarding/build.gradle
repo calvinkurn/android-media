@@ -18,6 +18,7 @@ buildscript {
 }
 
 dependencies {
+    implementation rootProject.ext.miscDependencies.multiDex
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)
