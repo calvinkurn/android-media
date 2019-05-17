@@ -10,10 +10,6 @@ import java.util.Map;
 public interface ShopListSectionContract {
 
     interface View extends SearchSectionContract.View {
-        void logDebug(String tag, String message);
-
-        void launchLoginActivity(String shopId);
-
         boolean isUserHasLogin();
 
         String getUserId();

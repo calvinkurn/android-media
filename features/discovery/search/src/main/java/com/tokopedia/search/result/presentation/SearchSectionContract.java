@@ -30,6 +30,10 @@ public interface SearchSectionContract {
         void setTotalSearchResultCount(String formattedResultCount);
 
         BaseAppComponent getBaseAppComponent();
+
+        void logDebug(String tag, String message);
+
+        void launchLoginActivity(String shopId);
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T> {

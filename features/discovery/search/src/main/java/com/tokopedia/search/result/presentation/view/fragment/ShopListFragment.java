@@ -593,4 +593,9 @@ public class ShopListFragment
     public void logDebug(String tag, String message) {
         Log.d(tag, message);
     }
+
+    @Override
+    public boolean shouldSaveToLocalDynamicFilterDb() {
+        return true;
+    }
 }

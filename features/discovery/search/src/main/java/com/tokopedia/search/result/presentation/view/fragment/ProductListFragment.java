@@ -1018,4 +1018,9 @@ public class ProductListFragment
     public Map<String, Object> getSearchParameterMap() {
         return searchParameter.getSearchParameterMap();
     }
+
+    @Override
+    public boolean shouldSaveToLocalDynamicFilterDb() {
+        return false;
+    }
 }

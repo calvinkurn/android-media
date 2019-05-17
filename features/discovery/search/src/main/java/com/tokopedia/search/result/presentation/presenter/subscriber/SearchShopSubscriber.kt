@@ -5,8 +5,9 @@ import com.tokopedia.search.result.presentation.mapper.ShopViewModelMapper
 import com.tokopedia.search.result.presentation.view.listener.SearchShopListener
 import rx.Subscriber
 
-class SearchShopSubscriber(
-    private val searchShopListener : SearchShopListener
+class SearchShopSubscriber @JvmOverloads constructor(
+    private val searchShopListener : SearchShopListener,
+    private val shopViewModelMapper: ShopViewModelMapper = ShopViewModelMapper()
 ) : Subscriber<SearchShopModel>() {
 
     override fun onNext(searchShopModel: SearchShopModel?) {
@@ -15,7 +16,7 @@ class SearchShopSubscriber(
             return
         }
 
-        val shopViewModel = ShopViewModelMapper().convertToShopViewModel(searchShopModel)
+        val shopViewModel = shopViewModelMapper.convertToShopViewModel(searchShopModel)
         searchShopListener.onSearchShopSuccess(shopViewModel.shopItemList, shopViewModel.isHasNextPage)
     }
 
