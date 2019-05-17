@@ -33,7 +33,6 @@ import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpd
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateTypeFactoryImpl
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
 import com.tokopedia.navigation.presentation.presenter.NotificationUpdatePresenter
-import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
 import com.tokopedia.navigation.presentation.view.listener.NotificationSectionFilterListener
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
@@ -92,8 +91,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
         bottomActionView.setButton2OnClickListener {
             analytics.trackMarkAllAsRead(markAllReadCounter.toString())
-            updateCounterTitle()
-            bottomActionView.hideBav2()
             presenter.markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate())
         }
 
@@ -128,7 +125,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun onSuccessMarkAllReadNotificationUpdate(): () -> Unit {
         return {
             (adapter as NotificationUpdateAdapter).markAllAsRead()
-            updateCounterTitle()
+            markAllReadCounter = 0L
+            notifyBottomActionView()
         }
     }
 
@@ -203,9 +201,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         return labelFormat
     }
 
-    override fun notifyBottomActionView(updateCounter: Long) {
+    private fun notifyBottomActionView() {
         bottomActionView?.let {
-            if (updateCounter == 0L) {
+            if (markAllReadCounter == 0L) {
                 it.hideBav2()
             } else {
                 it.showBav2()
@@ -308,30 +306,18 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         analytics.trackClickNotifList(templateKey)
         presenter.markReadNotif(notifId)
         if (needToResetCounter) {
-            updateCounterTitleManual()
+            updateMarkAllReadCounter()
+            notifyBottomActionView()
         }
     }
 
-    private fun updateCounterTitle() {
-        activity?.let {
-            if (it is NotificationActivityContract.View) {
-                (it as NotificationActivityContract.View).updateNotificationUnreadCounter().invoke()
-            }
-        }
-    }
-
-    private fun updateCounterTitleManual() {
-        activity?.let {
-            if (it is NotificationActivityContract.View) {
-                (it as NotificationActivityContract.View).updateNotificationUnreadCounterManual()
-            }
-        }
+    private fun updateMarkAllReadCounter() {
+        markAllReadCounter -= 1
     }
 
     override fun onSwipeRefresh() {
         cursor = ""
         super.onSwipeRefresh()
-        updateCounterTitle()
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {

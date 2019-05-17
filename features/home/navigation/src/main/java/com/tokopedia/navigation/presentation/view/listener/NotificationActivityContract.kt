@@ -8,8 +8,6 @@ import com.tokopedia.navigation.domain.pojo.NotificationUpdateUnread
 interface NotificationActivityContract {
 
     interface View: CustomerView {
-        fun updateNotificationUnreadCounter(): () -> Unit
-        fun updateNotificationUnreadCounterManual()
     }
 
     interface Presenter: CustomerPresenter<View> {

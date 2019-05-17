@@ -73,7 +73,6 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
             }
             updateCounter = it.pojo.notifUnreadInt
             setCounterNotificationUpdate()
-            notifyNotificationUpdateBottomAction(updateCounter)
         }
     }
 
@@ -111,19 +110,15 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
                 resetCircle(tab.customView)
                 presenter.clearNotifCounter()
                 if (tab.position == INDEX_NOTIFICATION_UPDATE) {
-                    notifyNotificationUpdateBottomAction(updateCounter)
+                    clearNotificationUpdateCounter()
                 }
             }
         })
     }
 
-    private fun notifyNotificationUpdateBottomAction(updateCounter: Long) {
-        val notifUpdateFragment = fragmentAdapter?.getItem(INDEX_NOTIFICATION_UPDATE)
-        notifUpdateFragment?.let {
-            if (it is NotificationUpdateContract.View) {
-                it.notifyBottomActionView(updateCounter)
-            }
-        }
+    private fun clearNotificationUpdateCounter() {
+        updateCounter = 0
+        setCounterNotificationUpdate()
     }
 
     private fun sendAnalytics(position: Int) {
@@ -173,19 +168,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         return (application as BaseMainApplication).baseAppComponent
     }
 
-    override fun updateNotificationUnreadCounter(): () -> Unit {
-        return { presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter()) }
-    }
-
-    override fun updateNotificationUnreadCounterManual() {
-        updateCounter -= 1
-        setCounterNotificationUpdate()
-        notifyNotificationUpdateBottomAction(updateCounter)
-    }
-
     private fun setCounterNotificationUpdate() {
         val defaultTitle = getString(R.string.title_notification_update)
-        var counter: String = ""
+        var counter = ""
         if (updateCounter > 0) {
             counter = getString(R.string.title_counter_update_notification, updateCounter.toString())
         } else if (updateCounter > 99) {
