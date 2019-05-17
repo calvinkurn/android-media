@@ -36,6 +36,7 @@ import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -72,6 +73,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.showNormalToaster
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
@@ -85,6 +87,7 @@ import com.tokopedia.profile.view.adapter.viewholder.ProfileEmptyViewHolder
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.preference.ProfilePreference
+import com.tokopedia.profile.view.util.ShareBottomSheets
 import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 import com.tokopedia.profile.view.viewmodel.EmptyAffiliateViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
@@ -1030,8 +1033,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
             iv_action.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
             View.OnClickListener {
-                shareLink(element.link)
-                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
+//                shareLink(element.link)
+//                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
+                val linkerData = LinkerData()
+                linkerData.name = element.name
+                linkerData.imgUri = element.avatar
+                linkerData.uri = element.link
+                ShareBottomSheets().show(fragmentManager!!, linkerData)
 
             }
         } else {
