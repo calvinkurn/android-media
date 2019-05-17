@@ -399,7 +399,7 @@ public abstract class SearchSectionFragment
 
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalDiscovery.FILTER);
         intent.putExtra(EXTRA_FILTER_LIST, getScreenName());
-        intent.putExtra(EXTRA_FILTER_PARAMETER, searchParameter);
+        intent.putExtra(EXTRA_FILTER_PARAMETER, searchParameter.getSearchParameterHashMap());
 
         startActivityForResult(intent, getFilterRequestCode());
 
