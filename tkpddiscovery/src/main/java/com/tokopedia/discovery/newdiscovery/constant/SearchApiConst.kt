@@ -43,7 +43,6 @@ class SearchApiConst {
         const val UNIQUE_ID = "unique_id"
         const val RETURNABLES = "returnables"
         const val HOT_ID = "hot_id"
-        const val REFINED = "rf"
         const val RELATED = "related"
         const val PAGE = "page"
         const val PAGE_SIZE = "page_size"

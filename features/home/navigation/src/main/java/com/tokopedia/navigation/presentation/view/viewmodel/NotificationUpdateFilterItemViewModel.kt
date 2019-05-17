@@ -11,6 +11,11 @@ class NotificationUpdateFilterItemViewModel(
         var list: List<NotificationUpdateFilterSectionItemViewModel> = arrayListOf()
 ) : Visitable<NotificationUpdateFilterTypeFactory>, Parcelable {
 
+    enum class FilterType(val type: String) {
+        TYPE_ID("typeId"),
+        TAG_ID("tagId")
+    }
+
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),

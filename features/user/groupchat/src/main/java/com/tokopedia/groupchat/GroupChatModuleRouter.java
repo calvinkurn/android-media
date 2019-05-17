@@ -18,11 +18,6 @@ public interface GroupChatModuleRouter {
 
     Intent getLoginIntent(Context context);
 
-    void generateBranchLink(String channelId, String title, String contentMessage, String imgUrl,
-                            String
-            shareUrl, Activity activity, final ShareListener
-                                    listener);
-
     String getNotificationPreferenceConstant();
 
     public interface ShareListener {

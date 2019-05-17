@@ -35,12 +35,13 @@ class NormalCheckoutTracking {
                                      shopName: String? = NONE_OTHER,
                                      cartId: String? = NONE_OTHER,
                                      trackerAttribution: String?,
-                                     trackerListName: String?) {
+                                     trackerListName: String?,
+                                     multiOrigin: Boolean) {
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
             "click - tambah ke keranjang on variants page",
             selectedVariantId, selectedProductInfo,
             qty, shopId, shopType, shopName, cartId,
-            trackerAttribution, trackerListName)
+            trackerAttribution, trackerListName, multiOrigin)
     }
 
     fun eventClickBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
@@ -52,12 +53,13 @@ class NormalCheckoutTracking {
                                shopName: String? = NONE_OTHER,
                                cartId: String? = NONE_OTHER,
                                trackerAttribution: String?,
-                               trackerListName: String?) {
+                               trackerListName: String?,
+                               multiOrigin: Boolean) {
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
             "click - beli on variants page",
             selectedVariantId, selectedProductInfo,
             qty, shopId, shopType, shopName, cartId,
-            trackerAttribution, trackerListName)
+            trackerAttribution, trackerListName, multiOrigin)
     }
 
     fun eventClickBuyTradeIn(originalProductInfoAndVariant: ProductInfoAndVariant?,
@@ -75,7 +77,7 @@ class NormalCheckoutTracking {
             "click beli sekarang",
             selectedVariantId, selectedProductInfo,
             qty, shopId, shopType, shopName, cartId,
-            trackerAttribution, trackerListName)
+            trackerAttribution, trackerListName, false)
     }
 
     private fun eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
@@ -88,7 +90,8 @@ class NormalCheckoutTracking {
                                                   shopName: String? = NONE_OTHER,
                                                   cartId: String? = NONE_OTHER,
                                                   trackerAttribution: String?,
-                                                  trackerListName: String?) {
+                                                  trackerListName: String?,
+                                                  multiOrigin: Boolean) {
         if (originalProductInfoAndVariant == null) {
             isTrackTradeIn = false
             return
@@ -126,7 +129,8 @@ class NormalCheckoutTracking {
                             "url" to selectedProductInfo.basic.url,
                             "category_id" to selectedProductInfo.category.id,
                             "dimension45" to (cartId ?: NONE_OTHER),
-                            "dimension38" to (trackerAttribution ?: NONE_OTHER)
+                            "dimension38" to (trackerAttribution ?: NONE_OTHER),
+                            "dimension54" to getMultiOriginAttribution(multiOrigin)
                         )),
                         "actionField" to mutableMapOf("list" to (trackerListName ?: ""))
                     )
@@ -198,5 +202,10 @@ class NormalCheckoutTracking {
                 AFInAppEventParameterName.PRICE to priceItem,
                 "category" to category
             ))
+    }
+
+    private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when(isMultiOrigin) {
+        true -> "tokopedia"
+        else -> "regular"
     }
 }

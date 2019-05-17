@@ -5,5 +5,5 @@ package com.tokopedia.navigation.presentation.view.listener
  */
 interface NotificationUpdateItemListener {
 
-    fun itemClicked(notifId: String, adapterPosition: Int, needToResetCounter: Boolean)
+    fun itemClicked(notifId: String, adapterPosition: Int, needToResetCounter: Boolean, templateKey: String)
 }

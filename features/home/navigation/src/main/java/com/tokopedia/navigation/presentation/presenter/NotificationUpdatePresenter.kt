@@ -31,8 +31,13 @@ class NotificationUpdatePresenter @Inject constructor(
         for ((key, value) in selectedItemList) {
             val filterType = filterViewModel[key].filterType
             val filterItemId = filterViewModel[key].list[value].id.toIntOrZero()
+            val filterName = filterViewModel[key].list[value].text
             variables[filterType] = filterItemId
         }
+    }
+
+    override fun resetFilter() {
+        variables.clear()
     }
 
     override fun loadData(lastNotifId: String, onSuccessInitiateData: (NotificationUpdateViewModel) -> Unit, onErrorInitiateData: (Throwable) -> Unit) {

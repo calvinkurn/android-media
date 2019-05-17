@@ -73,6 +73,10 @@ public class TopAdsNetworkConstant {
     public static final String SUGGESTION_DATA_TYPE_SUMMARY = "summary";
     public static final String SOURCE_GROUP_AD_LIST = "top_ads_group_ad_list";
     public static final String SOURCE_NEW_COST_GROUP = "top_ads_new_cost_new_group";
+    public static final String SOURCE_EDIT_COST_GROUP = "top_ads_new_cost_edit_group";
     public static final String SOURCE_NEW_COST_WITHOUT_GROUP = "top_ads_new_cost_without_group";
+    public static final String BID_INFO_TYPE_PRODUCT = "product";
+    public static final String BID_INFO_TYPE_GROUP = "group";
+
     public static final String SHOP_ID = "shop_id";
 }

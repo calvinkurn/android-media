@@ -20,5 +20,6 @@ interface NotificationUpdateContract {
         fun clearNotifCounter()
         fun markReadNotif(notifId: String)
         fun markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate: () -> Unit)
+        fun resetFilter()
     }
 }

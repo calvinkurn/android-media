@@ -120,8 +120,6 @@ public interface FeedPlus {
 
         void updateFavoriteFromEmpty(String shopId);
 
-        void onUserNotLogin();
-
         void onGoToLogin();
 
         void onSuccessSendVote(int rowNumber, String optionId,
