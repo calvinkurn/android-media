@@ -302,6 +302,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         super.onViewCreated(view, savedInstanceState);
         initView();
         flightBookingReviewPresenter.onViewCreated();
+        flightBookingReviewPresenter.fetchTickerData();
         stopTrace();
     }
 
@@ -459,7 +460,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void trackingSuccessVoucher(String voucherName) {
+    public void trackingSuccessVoucher(String title, String voucherName) {
 
     }
 

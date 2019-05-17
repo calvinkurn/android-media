@@ -12,13 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.otaliastudios.cameraview.CameraView
+        <com.tokopedia.cameraview.CameraView
             android:id="@+id/camera_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:keepScreenOn="true"
-            app:cameraAudio="on"
             app:cameraCropOutput="false"
             app:cameraFacing="back"
             app:cameraFlash="off"

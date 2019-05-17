@@ -7,8 +7,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.router.InboxRouter;
@@ -25,6 +26,7 @@ import com.tokopedia.inbox.rescenter.create.service.CreateResCenterReceiver;
 import com.tokopedia.inbox.rescenter.create.service.CreateResCenterService;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.track.TrackApp;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_WEBVIEW_RESO_ENABLED_TOGGLE;
 
@@ -134,8 +136,13 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
 
     private static Intent getApplinkIntent(Context context, String orderId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
-            return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
-                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.RESO_CREATE, orderId));
+            if (GlobalConfig.isSellerApp()) {
+                return ((ResolutionRouter)context.getApplicationContext()).getSellerWebViewIntent(context,
+                        String.format(ResolutionUrl.RESO_CREATE, orderId));
+            } else {
+                return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
+                        String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_CREATE, orderId));
+            }
         }
         return null;
     }
@@ -237,7 +244,15 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
         } else {
             super.onBackPressed();
         }
-        UnifyTracking.eventCreateResoAbandon(this);
+        eventCreateResoAbandon();
+    }
+
+    public void eventCreateResoAbandon() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CREATE_RESO_ABANDON,
+                AppEventTracking.EventLabel.RESO_CREATE_ABANDON);
     }
 
     @Override

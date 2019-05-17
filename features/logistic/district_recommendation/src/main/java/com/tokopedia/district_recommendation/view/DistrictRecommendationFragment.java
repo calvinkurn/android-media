@@ -119,12 +119,16 @@ public class DistrictRecommendationFragment
 
     @Override
     public void loadData(int page) {
-        if (getArguments() != null) {
+        if (getActivity() != null && getArguments() != null && isAdded()) {
             if (!TextUtils.isEmpty(searchInputView.getSearchText()) &&
                     searchInputView.getSearchText().length() >= MINIMUM_SEARCH_KEYWORD_CHAR) {
                 hideMessageSection();
                 Token token = getArguments().getParcelable(ARGUMENT_DATA_TOKEN);
-                presenter.loadData(searchInputView.getSearchText(), token, page);
+                if (token != null) {
+                    presenter.loadData(searchInputView.getSearchText(), token, page);
+                } else {
+                    showNoResultMessage();
+                }
             } else {
                 showMessageSection();
                 showInitialLoadMessage();

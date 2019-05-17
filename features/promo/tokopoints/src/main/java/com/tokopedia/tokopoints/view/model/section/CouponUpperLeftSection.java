@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.model.section;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
 import java.util.Map;
 
 public class CouponUpperLeftSection {
@@ -9,7 +10,7 @@ public class CouponUpperLeftSection {
     private String backgroundColor;
 
     @SerializedName("textAttributes")
-    Map<String, String> textAttributes;
+    private List<TextAttributes> textAttributes;
 
     public String getBackgroundColor() {
         return backgroundColor;
@@ -19,11 +20,11 @@ public class CouponUpperLeftSection {
         this.backgroundColor = backgroundColor;
     }
 
-    public Map<String, String> getTextAttributes() {
+    public List<TextAttributes> getTextAttributes() {
         return textAttributes;
     }
 
-    public void setTextAttributes(Map<String, String> textAttributes) {
+    public void setTextAttributes(List<TextAttributes> textAttributes) {
         this.textAttributes = textAttributes;
     }
 }

@@ -59,7 +59,7 @@ public class EventFavouriteActivity extends EventBaseActivity implements EventFa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        eventsAnalytics = new EventsAnalytics(getApplicationContext());
+        eventsAnalytics = new EventsAnalytics();
         setLightToolbarStyle();
     }
 

@@ -31,6 +31,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.tokopointsNotification)
@@ -47,6 +48,9 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    
+    implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

@@ -11,10 +11,12 @@ public class SeeAllCommentsViewModel implements Visitable<KolPostDetailTypeFacto
 
     private int postId;
     private int totalComments;
+    private boolean showSeeMore;
 
-    public SeeAllCommentsViewModel(int postId, int totalComments) {
+    public SeeAllCommentsViewModel(int postId, int totalComments, boolean showSeeMore) {
         this.postId = postId;
         this.totalComments = totalComments;
+        this.showSeeMore = showSeeMore;
     }
 
     public int getPostId() {
@@ -31,6 +33,10 @@ public class SeeAllCommentsViewModel implements Visitable<KolPostDetailTypeFacto
 
     public void setTotalComments(int totalComments) {
         this.totalComments = totalComments;
+    }
+
+    public boolean isShowSeeMore() {
+        return showSeeMore;
     }
 
     @Override

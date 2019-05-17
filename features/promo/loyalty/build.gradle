@@ -37,6 +37,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.cacheManager)
     implementation project(rootProject.ext.features.loyaltyCommon)
 
     implementation rootProject.ext.debugToolsDependencies.chuck
@@ -65,6 +66,8 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation project(rootProject.ext.libraries.core_legacy)
+    
+    implementation project(rootProject.ext.libraries.track)
 }
 
 apply from: '../../../publish_local.gradle'

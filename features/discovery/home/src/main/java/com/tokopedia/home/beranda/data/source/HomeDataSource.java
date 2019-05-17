@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
+import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.constant.ConstantKey;
@@ -48,7 +49,7 @@ public class HomeDataSource {
         this.gson = gson;
     }
 
-    public Observable<List<Visitable>> getCache() {
+    public Observable<List<TrackedVisitable>> getCache() {
         return Observable.just(true).map(new Func1<Boolean, Response<GraphqlResponse<HomeData>>>() {
             @Override
             public Response<GraphqlResponse<HomeData>> call(Boolean aBoolean) {
@@ -65,7 +66,7 @@ public class HomeDataSource {
         }).map(homeMapper);
     }
 
-    public Observable<List<Visitable>> getHomeData() {
+    public Observable<List<TrackedVisitable>> getHomeData() {
         return homeDataApi.getHomeData(getRequestPayload())
                 .debounce(200, TimeUnit.MILLISECONDS)
                 .map(saveToCache())

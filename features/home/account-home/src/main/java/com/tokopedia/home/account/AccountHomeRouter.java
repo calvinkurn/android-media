@@ -72,4 +72,6 @@ public interface AccountHomeRouter {
     Intent getMitraToppersActivityIntent(Context context);
 
     Intent getAddPasswordIntent(Context context);
+
+    void setNewsletterEmailPref(Boolean newValue);
 }

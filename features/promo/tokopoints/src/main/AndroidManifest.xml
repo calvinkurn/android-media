@@ -4,11 +4,20 @@
 
     <application>
         <activity
-            android:name=".view.activity.TokoPointsHomeActivity"
+            android:name=".view.activity.TokoPointsHomeNewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/TokoPointTransparentStatus" />
         <activity
+            android:name=".view.activity.CouponListingStackedActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity
             android:name=".view.activity.CatalogListingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".view.activity.TokoPointsHomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity

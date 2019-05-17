@@ -7,9 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -80,7 +80,7 @@ public class MainToolbar extends Toolbar {
         btnNotification = findViewById(R.id.btn_notification);
         btnInbox = findViewById(R.id.btn_inbox);
         btnWishlist = findViewById(R.id.btn_wishlist);
-        EditText editTextSearch = findViewById(R.id.et_search);
+        TextView editTextSearch = findViewById(R.id.et_search);
 
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.MainToolbar, 0, 0);
@@ -108,8 +108,7 @@ public class MainToolbar extends Toolbar {
         btnWishlist.setOnClickListener(v -> {
             if (userSession.isLoggedIn()) {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .gotoWishlistPage(getContext()));
+                RouteManager.route(context, ApplinkConst.WISHLIST);
             } else {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
                 RouteManager.route(context, ApplinkConst.LOGIN);
@@ -119,8 +118,7 @@ public class MainToolbar extends Toolbar {
         btnInbox.setOnClickListener(v -> {
             if (userSession.isLoggedIn()) {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .gotoInboxMainPage(getContext()));
+                RouteManager.route(context, ApplinkConst.INBOX);
             } else {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
                 RouteManager.route(context, ApplinkConst.LOGIN);
@@ -129,8 +127,7 @@ public class MainToolbar extends Toolbar {
 
         editTextSearch.setOnClickListener(v -> {
             searchBarAnalytics.eventTrackingSearchBar();
-            getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                    .gotoSearchPage(getContext()));
+            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
         });
 
         btnNotification.setOnClickListener(v -> {

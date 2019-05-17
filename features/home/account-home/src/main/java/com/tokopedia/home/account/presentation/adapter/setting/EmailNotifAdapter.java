@@ -84,7 +84,7 @@ public class EmailNotifAdapter extends RecyclerView.Adapter<EmailNotifAdapter.Em
 
             itemView.setOnClickListener(view -> {
                 selectedSetting.put(items.get(getAdapterPosition()).getId(), !aSwitch.isChecked() ? SELECTED : NOT_SELECTED);
-                itemChangeListener.onItemChange(items.get(getAdapterPosition()).getId());
+                itemChangeListener.onItemChange(items.get(getAdapterPosition()).getId(), aSwitch.isChecked());
                 aSwitch.toggle();
             });
         }
@@ -101,6 +101,6 @@ public class EmailNotifAdapter extends RecyclerView.Adapter<EmailNotifAdapter.Em
     }
 
     public interface OnItemChangeListener {
-        void onItemChange(String key);
+        void onItemChange(String key, boolean newValue);
     }
 }

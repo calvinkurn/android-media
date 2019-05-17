@@ -35,10 +35,10 @@ dependencies {
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.discoveryCommon)
 
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.useCase)
@@ -97,6 +97,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.miscDependencies.chips
+    
+    implementation project(rootProject.ext.libraries.track)
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -104,6 +106,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation project(rootProject.ext.features.kolCommon)
+    implementation project(rootProject.ext.libraries.unifyPrinciples)
+    implementation rootProject.ext.analyticsDependencies.appsflyer
 }
 
 apply from: '../publish_local.gradle'

@@ -40,7 +40,8 @@ project.ext {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation project(rootProject.ext.libraries.track)
+    
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
@@ -76,6 +77,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.cacheManager)
     implementation rootProject.ext.firebase.config
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor

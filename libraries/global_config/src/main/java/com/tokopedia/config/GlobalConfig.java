@@ -22,6 +22,7 @@ public class GlobalConfig {
     public static String PREINSTALL_NAME = "";
     public static String PREINSTALL_DESC = "";
     public static String PREINSTALL_SITE = "";
+    public static String APPLICATION_ID = "";
 
     public static boolean isSellerApp(){
         return APPLICATION_TYPE == SELLER_APPLICATION;

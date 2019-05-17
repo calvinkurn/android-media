@@ -5,10 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-
-import java.util.Map;
-
 /**
  * Created by normansyahputa on 2/13/18.
  */
@@ -24,8 +20,6 @@ public interface ShopModuleRouter {
     void goToEditShopNote(Context context);
 
     void goToManageShipping(Context context);
-
-    void goToAddProduct(Context context);
 
     void goToChatSeller(Context context, String shopId, String shopName, String avatar);
 
@@ -45,5 +39,4 @@ public interface ShopModuleRouter {
 
     boolean isFeedShopPageEnabled();
 
-    void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed);
 }

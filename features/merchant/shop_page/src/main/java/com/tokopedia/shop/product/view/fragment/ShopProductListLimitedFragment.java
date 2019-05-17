@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -31,9 +30,9 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
@@ -47,6 +46,9 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity;
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter;
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView;
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
@@ -132,6 +134,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     public static final String SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant";
     public static final int NUM_VOUCHER_DISPLAY = 3;
 
+
     @Inject
     ShopProductLimitedListPresenter shopProductLimitedListPresenter;
 
@@ -147,11 +150,15 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     private ShopModuleRouter shopModuleRouter;
     private BottomActionView bottomActionView;
 
+    private ShopProductListFragment.OnShopProductListFragmentListener onShopProductListFragmentListener;
+
     private String sortName = Integer.toString(Integer.MIN_VALUE);
     private RecyclerView recyclerView;
 
     private String selectedEtalaseId;
     private String selectedEtalaseName;
+
+    private RemoteConfig remoteConfig;
 
     private ShopProductAdapter shopProductAdapter;
     private GridLayoutManager gridLayoutManager;
@@ -162,6 +169,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     private String shopId = null;
     private boolean isOfficialStore, isGoldMerchant;
+
 
     public static ShopProductListLimitedFragment createInstance(String shopAttribution) {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
@@ -193,7 +201,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             isOfficialStore = savedInstanceState.getBoolean(SAVED_SHOP_IS_OFFICIAL);
         }
         super.onCreate(savedInstanceState);
-        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getActivity().getApplication(),
+        shopPageTracking = new ShopPageTrackingBuyer(
                 new TrackingQueue(getContext()));
         MerchantVoucherComponent merchantVoucherComponent = DaggerMerchantVoucherComponent.builder()
                 .baseAppComponent(((BaseMainApplication) (getActivity().getApplication())).getBaseAppComponent())
@@ -680,6 +688,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             selectedEtalaseId = shopEtalaseViewModel.getEtalaseId();
             selectedEtalaseName = shopEtalaseViewModel.getEtalaseName();
             etalaseBadge = shopEtalaseViewModel.getEtalaseBadge();
+
+
         }
         // update the adapter
         List<ShopEtalaseViewModel> shopEtalaseModelListToShow;
@@ -731,7 +741,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         if (shopInfo != null) {
             shopPageTracking.clickZeroProduct(CustomDimensionShopPage.create(shopInfo));
         }
-        ((ShopModuleRouter) getActivity().getApplication()).goToAddProduct(getActivity());
+        RouteManager.route(getActivity(), ApplinkConst.PRODUCT_ADD);
     }
 
     @Override
@@ -760,6 +770,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         selectedEtalaseName = shopEtalaseViewModel.getEtalaseName();
         shopProductAdapter.setSelectedEtalaseId(selectedEtalaseId);
         shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName, shopEtalaseViewModel.getEtalaseBadge());
+
+        updateHintRemoteConfig(selectedEtalaseName);
+
         if (shopPageTracking != null) {
             shopId = shopInfo.getInfo().getShopId();
             shopPageTracking.clickEtalaseChip(
@@ -891,6 +904,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     if (shopProductAdapter.isEtalaseInChip(etalaseId)) {
                         this.selectedEtalaseId = etalaseId;
                         this.selectedEtalaseName = etalaseName;
+                        updateHintRemoteConfig(selectedEtalaseName);
+
                     } else {
                         if (shopInfo != null) {
                             Intent intent = ShopProductListActivity.createIntent(getActivity(),
@@ -1115,7 +1130,16 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
         shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
+        onShopProductListFragmentListener = (ShopProductListFragment.OnShopProductListFragmentListener) context;
+
+    }
+
+    private void updateHintRemoteConfig(String selectedEtalaseName){
+        if (!remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)){
+            onShopProductListFragmentListener.updateUIByEtalaseName(selectedEtalaseName);
+        }
     }
 
 

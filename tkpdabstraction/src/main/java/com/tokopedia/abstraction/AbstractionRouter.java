@@ -3,7 +3,6 @@ package com.tokopedia.abstraction;
 import android.app.Activity;
 import android.view.MotionEvent;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 
 import java.io.IOException;
@@ -34,16 +33,12 @@ public interface AbstractionRouter {
 
     void unregisterShake();
 
-    CacheManager getGlobalCacheManager();
-
     /**
-     * To send analytic, use Track Library
-     * val analytics = TrackApp.getInstance().getGTM()
-     * analytics.push(event)
+     * Use PersistentCacheManager library
      * @return
      */
     @Deprecated
-    AnalyticTracker getAnalyticTracker();
+    CacheManager getGlobalCacheManager();
 
     void logInvalidGrant(Response response);
 

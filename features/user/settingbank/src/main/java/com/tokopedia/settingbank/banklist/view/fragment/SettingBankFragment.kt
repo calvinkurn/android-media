@@ -11,10 +11,11 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.settingbank.BankRouter
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
@@ -71,8 +72,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (activity != null && activity!!.applicationContext != null) {
-            analyticTracker = SettingBankAnalytics.createInstance(
-                    (activity!!.applicationContext as BankRouter).getAnalyticTracker())
+            analyticTracker = SettingBankAnalytics.createInstance()
         }
     }
 
@@ -192,7 +192,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         adapter.changeMain(adapterPosition)
         linearLayoutManager.scrollToPosition(0)
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.success_set_main_bank_account))
-        activity?.setResult(Activity.RESULT_OK,  Intent())
+        activity?.setResult(Activity.RESULT_OK, Intent())
 
     }
 
@@ -236,11 +236,9 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
                         element.bankName!!,
                         adapterPosition
                 )), REQUEST_EDIT_BANK)
-            }else if (activity != null
-                    && activity!!.applicationContext is BankRouter
+            } else if (activity != null
                     && !presenter.isMsisdnVerified()) {
-                val intentPhoneVerification = (activity!!.applicationContext as BankRouter)
-                        .getPhoneVerificationActivityIntent(activity!!)
+                val intentPhoneVerification = RouteManager.getIntent(activity, ApplinkConst.PHONE_VERIFICATION)
                 startActivityForResult(intentPhoneVerification, REQUEST_PHONE_VERIFICATION)
             }
 
@@ -297,7 +295,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         }
 
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.success_delete_bank_account))
-        activity?.setResult(Activity.RESULT_OK,  Intent())
+        activity?.setResult(Activity.RESULT_OK, Intent())
     }
 
     override fun onErrorDeleteAccount(errorMessage: String) {
@@ -315,10 +313,8 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
             val intentBankForm = AddEditBankActivity.createIntentAddBank(activity!!)
             startActivityForResult(intentBankForm, REQUEST_ADD_BANK)
         } else if (activity != null
-                && activity!!.applicationContext is BankRouter
                 && !presenter.isMsisdnVerified()) {
-            val intentPhoneVerification = (activity!!.applicationContext as BankRouter)
-                    .getPhoneVerificationActivityIntent(activity!!)
+            val intentPhoneVerification = RouteManager.getIntent(activity, ApplinkConst.PHONE_VERIFICATION)
             startActivityForResult(intentPhoneVerification, REQUEST_PHONE_VERIFICATION)
         } else {
             showErrorAddAccount(reason)

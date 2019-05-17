@@ -47,7 +47,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_trade_in_promo"
+        app:layout_constraintTop_toBottomOf="@+id/tv_available_at"
         tools:visibility="visible">
 
         <com.tokopedia.design.component.TextViewCompat
@@ -143,6 +143,27 @@
         app:layout_constraintBottom_toTopOf="@id/product_name"
         app:layout_constraintVertical_bias="0"
         tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_available_at"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_4"
+        android:text="@string/available_at"
+        android:textColor="@color/black_70"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/product_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_trade_in_promo"
+        app:layout_constraintVertical_bias="0"
+        tools:visibility="visible" />
+
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/product_name"
@@ -246,9 +267,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="@dimen/dp_10"
-        android:drawablePadding="@dimen/dp_4"
         android:visibility="gone"
-        app:drawableRightCompat="@drawable/ic_official_store_product"
         app:fontSize="micro"
         app:layout_constraintLeft_toLeftOf="@+id/product_name"
         app:layout_constraintStart_toStartOf="@+id/product_name"

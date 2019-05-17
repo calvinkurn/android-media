@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.thankyou.view;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.bca.xco.widget.XCOEnum;
 import com.beloo.widget.chipslayoutmanager.util.log.Log;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.pms.common.Constant;

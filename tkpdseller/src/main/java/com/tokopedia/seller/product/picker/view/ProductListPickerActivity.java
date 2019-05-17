@@ -10,6 +10,7 @@ import android.view.View;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
@@ -159,7 +160,7 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
 
     @Override
     public ProductComponent getComponent() {
-        return ((SellerModuleRouter)getApplication()).getProductComponent();
+        return ProductEditItemComponentInstance.getComponent(getApplication());
     }
 
     public boolean isEmptyImageAllowedPick(ProductListPickerViewModel productListPickerViewModel) {

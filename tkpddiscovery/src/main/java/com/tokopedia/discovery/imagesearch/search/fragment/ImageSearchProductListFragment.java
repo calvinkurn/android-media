@@ -12,14 +12,13 @@ import android.view.ViewGroup;
 
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
@@ -32,6 +31,7 @@ import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductL
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenter;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
@@ -39,10 +39,11 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.item
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
@@ -131,7 +132,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private void loadDataFromSavedState(Bundle savedInstanceState) {
         productViewModel = savedInstanceState.getParcelable(EXTRA_PRODUCT_LIST);
-        setSearchParameter((SearchParameter) savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
+        setSearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
     }
 
     private void loadDataFromArguments() {
@@ -360,11 +361,15 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
-        if (getSearchParameter().getDepartmentId() != null &&
-                !getSearchParameter().getDepartmentId().isEmpty() &&
-                !getSearchParameter().getDepartmentId().equals("0")) {
-            adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getSearchParameter().getDepartmentId());
+
+        if (canGetDepartmentIdFromSearchParameter()) {
+            adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getSearchParameter().get(SearchApiConst.SC));
         }
+    }
+
+    private boolean canGetDepartmentIdFromSearchParameter() {
+        String departmentId = getSearchParameter().get(SearchApiConst.SC);
+        return !departmentId.isEmpty() && !departmentId.equals("0");
     }
 
     @Override
@@ -411,7 +416,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private void sendImageTrackingDataInChunks(List<Visitable> list) {
         if (list != null && list.size() > 0) {
-            String userId = userSession.isLoggedIn() ? userSession.getUserId() : "";
+            String userId = generateUserId();
             List<Object> dataLayerList = new ArrayList<>();
             for (int j = 0; j < list.size(); ) {
                 int count = 0;
@@ -467,25 +472,28 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void loadMoreProduct(final int startRow) {
-        SearchParameter searchParameter
-                = generateLoadMoreParameter(startRow, productViewModel.getQuery());
+        SearchParameter searchParameter =
+                generateLoadMoreParameter(startRow, productViewModel.getQuery());
+
         HashMap<String, String> additionalParams
                 = NetworkParamHelper.getParamMap(productViewModel.getAdditionalParams());
+
         presenter.loadMoreData(searchParameter, additionalParams);
     }
 
     private SearchParameter generateLoadMoreParameter(int startRow, String query) {
         SearchParameter searchParameter = getSearchParameter();
-        searchParameter.setUniqueID(generateUniqueId());
-        searchParameter.setUserID(generateUserId());
-        searchParameter.setQueryKey(query);
-        searchParameter.setStartRow(startRow);
-        searchParameter.setDepartmentId(getSearchParameter().getDepartmentId());
+        searchParameter.set(SearchApiConst.UNIQUE_ID, generateUniqueId());
+        searchParameter.set(SearchApiConst.USER_ID, generateUserId());
+        searchParameter.setSearchQuery(query);
+        searchParameter.set(SearchApiConst.START, String.valueOf(startRow));
+        searchParameter.set(SearchApiConst.SC, getSearchParameter().get(SearchApiConst.SC));
+
         return searchParameter;
     }
 
     private String generateUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : null;
+        return userSession.isLoggedIn() ? userSession.getUserId() : "0";
     }
 
     private String generateUniqueId() {
@@ -544,6 +552,11 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private void showSearchInputView() {
         redirectionListener.showSearchInputView();
+    }
+
+    @Override
+    public List<Option> getSelectedFilterAsOptionList() {
+        return null;
     }
 
     @Override
@@ -615,6 +628,16 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     }
 
+    @Override
+    public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
+
+    }
+
+    @Override
+    public void onGlobalNavWidgetClickSeeAll(String applink, String url) {
+
+    }
+
     public void onLongClick(ProductItem item, int adapterPosition) {
         SimilarSearchManager.getInstance(getContext()).startSimilarSearchIfEnable(getQueryKey(),item);
     }
@@ -633,13 +656,18 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onSearchGuideClicked(String keyword) {
+    public void onSearchGuideClicked(String queryParams) {
 
     }
 
     @Override
-    public void onRelatedSearchClicked(String keyword) {
+    public void onRelatedSearchClicked(String queryParams, String keyword) {
 
+    }
+
+    @Override
+    public boolean isQuickFilterSelected(Option option) {
+        return false;
     }
 
     @Override
@@ -653,8 +681,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void sendItemClickTrackingEvent(ProductItem item) {
-        String userId = userSession.isLoggedIn() ?
-                userSession.getUserId() : "";
+        String userId = generateUserId();
 
         SearchTracking.trackEventClickImageSearchResultProduct(
                 getActivity(), item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);

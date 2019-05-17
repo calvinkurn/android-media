@@ -2,16 +2,16 @@ package com.tokopedia.kol.common.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.common.data.source.KolAuthInterceptor;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.common.network.KolUrl;
+import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract;
+import com.tokopedia.kol.feature.video.view.presenter.VideoDetailPresenter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.user.session.UserSession;
@@ -39,14 +39,14 @@ public class KolModule {
 
     @KolScope
     @Provides
-    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
-        return new UserSession(context);
+    VideoDetailContract.Presenter provideVideoDetailPresenter(VideoDetailPresenter presenter) {
+        return presenter;
     }
 
     @KolScope
     @Provides
-    public AnalyticTracker provideAnalyticTracker(AbstractionRouter abstractionRouter) {
-        return abstractionRouter.getAnalyticTracker();
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @KolScope
@@ -101,10 +101,7 @@ public class KolModule {
     @Provides
     @KolChuckQualifier
     public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        if (context instanceof KolRouter) {
-            return ((KolRouter) context).getChuckInterceptor();
-        }
-        throw new RuntimeException("App should implement " + KolRouter.class.getSimpleName());
+        return new ChuckInterceptor(context);
     }
 
 }

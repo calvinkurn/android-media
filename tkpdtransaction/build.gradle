@@ -25,6 +25,8 @@ project.ext {
 }
 
 dependencies {
+    
+    implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.transactiondata)
@@ -54,6 +56,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.cacheManager)
 
     implementation rootProject.ext.networkDependencies.glide
 

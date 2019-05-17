@@ -16,8 +16,8 @@ import android.widget.TextView;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.widgets.DividerItemDecoration;
+import com.tokopedia.discovery.common.data.Sort;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,6 +89,7 @@ public class SortProductActivity extends TActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this));
         recyclerView.setAdapter(adapter);
+
     }
 
     private void generateSelectedKeyValue(HashMap<String, String> selectedSort) {

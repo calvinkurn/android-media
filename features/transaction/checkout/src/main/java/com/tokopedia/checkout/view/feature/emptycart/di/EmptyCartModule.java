@@ -9,6 +9,7 @@ import com.tokopedia.checkout.view.di.scope.CartListScope;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartContract;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartPresenter;
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -57,15 +58,21 @@ public class EmptyCartModule {
 
     @Provides
     @EmptyCartScope
+    ClearCacheAutoApplyStackUseCase provideClearAutoApplyUseCase() {
+        return new ClearCacheAutoApplyStackUseCase(emptyCartFragment.getContext());
+    }
+
+    @Provides
+    @EmptyCartScope
     EmptyCartContract.Presenter provideShipmentPresenter(GetCartListUseCase getCartListUseCase,
                                                          GetWishlistUseCase getWishlistUseCase,
                                                          GetRecentViewUseCase getRecentViewUseCase,
-                                                         CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                                                          CartApiRequestParamGenerator cartApiRequestParamGenerator,
+                                                         ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                                                          CompositeSubscription compositeSubscription,
                                                          UserSessionInterface userSessionInterface) {
         return new EmptyCartPresenter(getCartListUseCase, getWishlistUseCase, getRecentViewUseCase,
-                cancelAutoApplyCouponUseCase, cartApiRequestParamGenerator, compositeSubscription,
+                clearCacheAutoApplyStackUseCase, cartApiRequestParamGenerator, compositeSubscription,
                 userSessionInterface);
     }
 

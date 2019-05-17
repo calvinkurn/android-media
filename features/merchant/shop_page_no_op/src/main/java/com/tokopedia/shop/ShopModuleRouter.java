@@ -21,8 +21,6 @@ public interface ShopModuleRouter {
 
     void goToManageShipping(Context context);
 
-    void goToAddProduct(Context context);
-
     void goToChatSeller(Context context, String shopId, String shopName, String avatar);
 
     void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel);
@@ -45,5 +43,4 @@ public interface ShopModuleRouter {
 
     boolean isFeedShopPageEnabled();
 
-    void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed);
 }

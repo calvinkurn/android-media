@@ -27,15 +27,16 @@ class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: N
         view.showLoading()
         notifCenterUseCase.execute(
                 NotifCenterUseCase.getRequestParams(filterId, lastNotifId),
-                NotifCenterSubscriber(view, dateUtil)
+                NotifCenterSubscriber(view, dateUtil, true)
         )
     }
 
-    override fun fetchDataWithoutCache() {
+    override fun fetchSingleData(it: String) {
         view.showLoading()
-        notifCenterUseCase.executeNoCache(
-                NotifCenterUseCase.getRequestParams(filterId, lastNotifId),
-                NotifCenterSubscriber(view, dateUtil)
+        lastNotifId = it
+        notifCenterUseCase.executeSingle(
+                NotifCenterUseCase.getRequestParamsSingle(it),
+                NotifCenterSubscriber(view, dateUtil, false)
         )
     }
 
