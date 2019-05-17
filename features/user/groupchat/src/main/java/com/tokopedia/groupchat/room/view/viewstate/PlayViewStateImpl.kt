@@ -503,6 +503,7 @@ open class PlayViewStateImpl(
                 loadingView.hide()
                 errorView.show()
                 setToolbarWhite()
+                showLoginButton(false)
             }
         }
 
