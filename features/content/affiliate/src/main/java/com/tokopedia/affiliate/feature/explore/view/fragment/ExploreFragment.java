@@ -497,16 +497,16 @@ public class ExploreFragment
 
     @Override
     public void onProductClicked(ExploreCardViewModel model, int adapterPosition) {
-//        trackProductClick(model, adapterPosition);
-//        if (getContext() != null && isCanDoAction) {
-//            Intent intent = RouteManager.getIntent(getContext(),
-//                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL, model.getProductId());
-//            intent.putExtra("is_from_explore_affiliate", true);
-//            startActivity(intent);
-//        }
-//        isCanDoAction = false;
-
-        onBymeClicked(model);
+        trackProductClick(model, adapterPosition);
+        if (getContext() != null && isCanDoAction) {
+            Intent intent = RouteManager.getIntent(
+                    getContext(),
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL, model.getProductId()
+            );
+            intent.putExtra("is_from_explore_affiliate", true);
+            startActivityForResult(intent, REQUEST_CREATE_POST);
+        }
+        isCanDoAction = false;
     }
 
     @Override

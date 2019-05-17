@@ -20,29 +20,29 @@ public class InstabugInitalize {
     private static final String INSTABUG_BETA_KEY = "38a02b4e225b94a07d2cc2e2019445b7";
 
     public static void init(Application application) {
-//        new Instabug.Builder(application, INSTABUG_BETA_KEY)
-//                .setInvocationEvents(InstabugInvocationEvent.SCREENSHOT_GESTURE)
-//                .build();
-//
-//        Instabug.setColorTheme(InstabugColorTheme.InstabugColorThemeLight);
-//        Instabug.setWelcomeMessageState(WelcomeMessage.State.DISABLED);
-//
-//        //To show instabug debug logs if necessary
-//        Instabug.setDebugEnabled(true);
-//
-//        //Settings custom strings to replace instabug's strings
-//        InstabugCustomTextPlaceHolder placeHolder = new InstabugCustomTextPlaceHolder();
-//        placeHolder.set(InstabugCustomTextPlaceHolder.Key.REPORT_FEEDBACK, "Send Feedback");
-//        placeHolder.set(InstabugCustomTextPlaceHolder.Key.REPORT_BUG, "Send Bug Report");
-//
-//        Instabug.setCustomTextPlaceHolders(placeHolder);
-//
-//        //setting user attributes
-//        Instabug.setUserAttribute("USER_TYPE", "instabug user");
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            Instabug.setAutoScreenRecordingEnabled(true);
-//        }
+        new Instabug.Builder(application, INSTABUG_BETA_KEY)
+                .setInvocationEvents(InstabugInvocationEvent.SCREENSHOT_GESTURE)
+                .build();
+
+        Instabug.setColorTheme(InstabugColorTheme.InstabugColorThemeLight);
+        Instabug.setWelcomeMessageState(WelcomeMessage.State.DISABLED);
+
+        //To show instabug debug logs if necessary
+        Instabug.setDebugEnabled(true);
+
+        //Settings custom strings to replace instabug's strings
+        InstabugCustomTextPlaceHolder placeHolder = new InstabugCustomTextPlaceHolder();
+        placeHolder.set(InstabugCustomTextPlaceHolder.Key.REPORT_FEEDBACK, "Send Feedback");
+        placeHolder.set(InstabugCustomTextPlaceHolder.Key.REPORT_BUG, "Send Bug Report");
+
+        Instabug.setCustomTextPlaceHolders(placeHolder);
+
+        //setting user attributes
+        Instabug.setUserAttribute("USER_TYPE", "instabug user");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Instabug.setAutoScreenRecordingEnabled(true);
+        }
     }
 
     public static void dispatchTouchEvent(Activity context, MotionEvent ev) {
