@@ -24,6 +24,7 @@ import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
+import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavWidgetListener;
 import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
@@ -47,7 +48,6 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private RecyclerView quickFilterListView;
     private TopAdsBannerView adsBannerView;
     private Context context;
-    private ProductListener productListener;
     private SuggestionListener suggestionListener;
     private QuickFilterListener quickFilterListener;
     private GlobalNavWidgetListener globalNavWidgetListener;
@@ -56,14 +56,14 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private GuidedSearchAdapter guidedSearchAdapter;
     private GlobalNavWidget globalNavWidget;
 
-    public HeaderViewHolder(View itemView, ProductListener productListener,
+    public HeaderViewHolder(View itemView,
                             SuggestionListener suggestionListener,
                             QuickFilterListener quickFilterListener,
                             GuidedSearchListener guidedSearchListener,
-                            GlobalNavWidgetListener globalNavWidgetListener) {
+                            GlobalNavWidgetListener globalNavWidgetListener,
+                            BannerAdsListener bannerAdsListener) {
         super(itemView);
         context = itemView.getContext();
-        this.productListener = productListener;
         this.suggestionListener = suggestionListener;
         this.quickFilterListener = quickFilterListener;
         this.globalNavWidgetListener = globalNavWidgetListener;
@@ -81,7 +81,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         ));
         initQuickFilterRecyclerView();
         adsBannerView.setTopAdsBannerClickListener((position, applink, data) -> {
-            productListener.onBannerAdsClicked(applink);
+            bannerAdsListener.onBannerAdsClicked(applink);
             if (applink.contains(SHOP)) {
                 TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, position);
             } else {

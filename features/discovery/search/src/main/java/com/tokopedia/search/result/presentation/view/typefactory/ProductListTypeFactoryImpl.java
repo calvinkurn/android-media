@@ -18,6 +18,8 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RelatedSearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
+import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
+import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavWidgetListener;
 import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
@@ -34,6 +36,8 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     private final RelatedSearchListener relatedSearchListener;
     private final QuickFilterListener quickFilterListener;
     private final GlobalNavWidgetListener globalNavWidgetListener;
+    private final BannerAdsListener bannerAdsListener;
+    private final EmptyStateListener emptyStateListener;
     private final Config topAdsConfig;
     private final String searchQuery;
 
@@ -43,6 +47,8 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
                                       RelatedSearchListener relatedSearchListener,
                                       QuickFilterListener quickFilterListener,
                                       GlobalNavWidgetListener globalNavWidgetListener,
+                                      BannerAdsListener bannerAdsListener,
+                                      EmptyStateListener emptyStateListener,
                                       Config config, String searchQuery) {
 
         this.productListener = productListener;
@@ -51,6 +57,8 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         this.relatedSearchListener = relatedSearchListener;
         this.quickFilterListener = quickFilterListener;
         this.globalNavWidgetListener = globalNavWidgetListener;
+        this.bannerAdsListener = bannerAdsListener;
+        this.emptyStateListener = emptyStateListener;
         this.topAdsConfig = config;
         this.searchQuery = searchQuery;
     }
@@ -105,11 +113,10 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         } else if (type == BigGridProductItemViewHolder.LAYOUT) {
             viewHolder = new BigGridProductItemViewHolder(view, productListener);
         } else if(type == HeaderViewHolder.LAYOUT){
-            viewHolder = new HeaderViewHolder(view,
-                    productListener, suggestionListener, quickFilterListener,
-                    guidedSearchListener, globalNavWidgetListener);
+            viewHolder = new HeaderViewHolder(view, suggestionListener, quickFilterListener,
+                    guidedSearchListener, globalNavWidgetListener, bannerAdsListener);
         } else if (type == EmptySearchViewHolder.LAYOUT) {
-            viewHolder = new EmptySearchViewHolder(view, productListener, topAdsConfig);
+            viewHolder = new EmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, topAdsConfig);
         } else if (type == GuidedSearchViewHolder.LAYOUT) {
             viewHolder = new GuidedSearchViewHolder(view, guidedSearchListener);
         } else if (type == TopAdsViewHolder.LAYOUT) {

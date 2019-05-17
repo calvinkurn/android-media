@@ -47,6 +47,8 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
+import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
+import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavWidgetListener;
 import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
@@ -100,6 +102,8 @@ public class ProductListFragment
         RelatedSearchListener,
         QuickFilterListener,
         GlobalNavWidgetListener,
+        BannerAdsListener,
+        EmptyStateListener,
         WishListActionListener {
 
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
@@ -231,6 +235,7 @@ public class ProductListFragment
                 .build();
     }
 
+    @Override
     public String getRegistrationId() {
         if(getActivity() == null || getActivity().getApplicationContext() == null) return "";
 
@@ -240,8 +245,10 @@ public class ProductListFragment
 
     private void setupAdapter() {
         productListTypeFactory = new ProductListTypeFactoryImpl(
-                this, this, this,
-                this, this, this,
+                this, this,
+                this, this,
+                this, this,
+                this, this,
                 topAdsConfig, getQueryKey());
         adapter = new ProductListAdapter(getActivity(), this, productListTypeFactory);
         recyclerView.setLayoutManager(getGridLayoutManager());
