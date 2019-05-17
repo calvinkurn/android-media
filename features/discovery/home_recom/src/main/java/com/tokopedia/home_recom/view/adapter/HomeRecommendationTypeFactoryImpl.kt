@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_recom.model.dataModel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.dataModel.RecommendationCarouselDataModel
 import com.tokopedia.home_recom.model.dataModel.RecommendationScrollDataModel
+import com.tokopedia.home_recom.view.viewHolder.ProductInfoViewHolder
+import com.tokopedia.home_recom.view.viewHolder.RecommendationCarouselViewHolder
 import com.tokopedia.home_recom.view.viewHolder.RecommendationScrollViewHolder
 
 class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory{
@@ -24,6 +26,8 @@ class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommen
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when(type){
             RecommendationScrollDataModel.LAYOUT -> RecommendationScrollViewHolder(parent)
+            ProductInfoDataModel.LAYOUT -> ProductInfoViewHolder(parent)
+            RecommendationCarouselDataModel.LAYOUT -> RecommendationCarouselViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

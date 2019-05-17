@@ -8,7 +8,7 @@ class RecommendationScrollDataModel(
 ) : BaseHomeRecommendationDataModel {
 
     companion object{
-        val LAYOUT = R.layout.fragment_product_info
+        val LAYOUT = R.layout.fragment_recommendation_scroll
     }
 
     override fun type(typeFactory: HomeRecommendationTypeFactory): Int = typeFactory.type(this)
