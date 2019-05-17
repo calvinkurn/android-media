@@ -42,9 +42,7 @@ object DeeplinkMapper {
         if (applinkDigital.isNotEmpty()) {
             return applinkDigital
         }
-        return when (deeplink) {
-            else -> ""
-        }
+        return ""
     }
 
     /**
