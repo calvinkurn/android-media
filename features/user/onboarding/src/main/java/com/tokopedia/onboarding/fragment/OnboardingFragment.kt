@@ -77,8 +77,7 @@ class OnboardingFragment : BaseDaggerFragment(),
     lateinit var main: View
 
     override fun getScreenName(): String {
-        val pageNumber = position + 1
-        return OnboardingAnalytics.SCREEN_ONBOARDING + pageNumber
+       return ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

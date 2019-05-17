@@ -4,29 +4,38 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.TaskStackBuilder
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.text.TextUtils
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.onboarding.adapter.OnboardingPagerAdapter
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
+import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 import com.tokopedia.onboarding.fragment.OnboardingFragment
 import com.tokopedia.onboarding.listener.CustomAnimationPageTransformer
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 
 /**
  * @author by stevenfredian on 14/05/19.
  * For navigate: use ApplinkConstInternalMarketplace.ONBOARDING
  */
 
-class OnboardingActivity : BaseSimpleActivity() {
+class OnboardingActivity : BaseActivity() {
 
     lateinit var viewPager: ViewPager
+    lateinit var indicator: ViewGroup
     private lateinit var pagerAdapter: OnboardingPagerAdapter
 
     @Inject
@@ -35,24 +44,28 @@ class OnboardingActivity : BaseSimpleActivity() {
     @Inject
     lateinit var analytics: OnboardingAnalytics
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    val indicatorNormal: Int = R.drawable.indicator_onboarding_unfocused
+    val indicatorFocused: Int = R.drawable.indicator_onboarding_focused
+
+    lateinit var loginButton: ButtonCompat
+    lateinit var registerButton: ButtonCompat
+    lateinit var skipButton: TextView
+
+
+    protected var indicatorItems = java.util.ArrayList<ImageView>()
+
     companion object {
         fun createIntent(context: Context) = Intent(context, OnboardingActivity::class.java)
     }
 
-    override fun onStart() {
-        super.onStart()
-        //TODO
-//        analytics.sendScreen(this, screenName)
-    }
-
-    override fun getLayoutRes(): Int {
-        return R.layout.base_onboarding_activity
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initView()
+        setContentView(R.layout.base_onboarding_activity)
         initInjector()
+        initView()
         trackPreinstall()
     }
 
@@ -72,13 +85,98 @@ class OnboardingActivity : BaseSimpleActivity() {
 
     private fun initView() {
         viewPager = findViewById(R.id.pager_onboarding)
+        loginButton = findViewById(R.id.btnLogin)
+        registerButton = findViewById(R.id.btnRegister)
+        skipButton = findViewById(R.id.skip)
+
         val fragmentList = addFragments()
 
         viewPager.setPageTransformer(false, CustomAnimationPageTransformer())
         viewPager.offscreenPageLimit = 1
         pagerAdapter = OnboardingPagerAdapter(supportFragmentManager, fragmentList)
         viewPager.adapter = pagerAdapter
-        viewPager.currentItem = 1
+
+        addIndicator(fragmentList)
+        setListener()
+
+    }
+
+    private fun setListener() {
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                setIndicator(position)
+
+                analytics.sendScreen(position)
+
+            }
+        })
+
+        loginButton.setOnClickListener {
+            startActivityWithBackTask(ApplinkConst.LOGIN)
+        }
+
+        registerButton.setOnClickListener {
+            startActivityWithBackTask(ApplinkConst.REGISTER)
+        }
+
+        skipButton.setOnClickListener {
+            analytics.eventOnboardingSkip(applicationContext, viewPager.currentItem + 1)
+            finishOnboarding()
+            RouteManager.route(this, ApplinkConst.HOME)
+        }
+    }
+
+    private fun startActivityWithBackTask(applink: String) {
+        finishOnboarding()
+        val taskStackBuilder = TaskStackBuilder.create(this)
+        val homeIntent = RouteManager.getIntent(this, ApplinkConst.HOME)
+        taskStackBuilder.addNextIntent(homeIntent)
+        val registerIntent = RouteManager.getIntent(this, applink)
+        taskStackBuilder.addNextIntent(registerIntent)
+        taskStackBuilder.startActivities()
+    }
+
+    private fun finishOnboarding() {
+        userSession.setFirstTimeUserOnboarding(false)
+        finish()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishOnboarding()
+    }
+
+    private fun setIndicator(position: Int) {
+        for (i in indicatorItems.indices) {
+            if (position != i) {
+                indicatorItems[i].setImageResource(indicatorNormal)
+            } else {
+                indicatorItems[i].setImageResource(indicatorFocused)
+            }
+        }
+    }
+
+    private fun addIndicator(fragmentList: ArrayList<Fragment>) {
+        indicator = findViewById(R.id.indicator_container)
+
+        for (count in fragmentList.indices) {
+            val pointView = ImageView(this)
+            pointView.setPadding(5, 0, 5, 0)
+            if (count == 0) {
+                pointView.setImageResource(indicatorFocused)
+            } else {
+                pointView.setImageResource(indicatorNormal)
+            }
+            indicatorItems.add(pointView)
+            indicator.addView(pointView)
+        }
     }
 
     private fun addFragments(): ArrayList<Fragment> {
@@ -138,8 +236,4 @@ class OnboardingActivity : BaseSimpleActivity() {
         return msg
     }
 
-    //Not used
-    override fun getNewFragment(): Fragment {
-        return Fragment()
-    }
 }

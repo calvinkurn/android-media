@@ -16,6 +16,9 @@
 
     <string name="title_skip_2">Lewati</string>
     <string name="title_activity_login">Masuk</string>
+    <string name="skip">Lewati</string>
+    <string name="register">Daftar</string>
+    <string name="login">Masuk</string>
 
     <!-- END NEW ON BOARDING RELATED STRING RESOURCE -->
 </resources>
