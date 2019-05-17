@@ -19,7 +19,7 @@ import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
 
     companion object{
-        private const val PRODUCT_ID = "PRODUCT_ID"
+        const val PRODUCT_ID = "PRODUCT_ID"
         private const val DEEP_LINK_URI = "deep_link_uri"
 
         @JvmStatic
