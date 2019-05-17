@@ -470,7 +470,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun doesNotHaveMessageToSend(productPreview: ProductPreview?, sendMessage: String): Boolean {
-        return productPreview == null && isValidReply(sendMessage)
+        return productPreview == null && !isValidReply(sendMessage)
     }
 
     private fun hasProductPreview(productPreview: ProductPreview?): Boolean {
