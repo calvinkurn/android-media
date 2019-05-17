@@ -19,6 +19,7 @@ import com.tokopedia.instantloan.InstantLoanComponentInstance
 import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
+import com.tokopedia.instantloan.data.model.response.GqlFilterData
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
 import com.tokopedia.instantloan.network.InstantLoanUrl
@@ -331,6 +332,10 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
                         resources.getString(R.string.login_to_proceed))
             }
         }
+    }
+
+    override fun setFilterDataForOnlineLoan(gqlFilterData: GqlFilterData) {
+
     }
 
     override fun onDestroyView() {

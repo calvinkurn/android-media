@@ -34,7 +34,6 @@ import com.tokopedia.instantloan.network.InstantLoanUrl
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.HELP_URL
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.PAYMENT_METHODS_URL
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.SUBMISSION_HISTORY_URL
-import com.tokopedia.instantloan.network.test
 import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.adapter.*
 import com.tokopedia.instantloan.view.contractor.BannerContractor

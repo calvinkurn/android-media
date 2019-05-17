@@ -4,6 +4,7 @@ import android.content.Context
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.instantloan.data.model.response.GqlFilterData
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
 
@@ -17,6 +18,8 @@ interface InstantLoanContractor {
         fun onSuccessLoanProfileStatus(status: UserProfileLoanEntity)
 
         fun setUserOnGoingLoanStatus(status: Boolean, loanId: Int)
+
+        fun setFilterDataForOnlineLoan(gqlFilterData: GqlFilterData)
 
         fun onErrorLoanProfileStatus(onErrorLoanProfileStatus: String)
 
@@ -49,6 +52,8 @@ interface InstantLoanContractor {
 
         fun isUserLoggedIn(): Boolean
         fun initialize()
+
+        fun getFilterData()
 
         fun getLoanProfileStatus()
 

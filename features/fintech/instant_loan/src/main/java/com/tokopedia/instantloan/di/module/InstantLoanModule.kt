@@ -3,6 +3,7 @@ package com.tokopedia.instantloan.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.instantloan.di.scope.InstantLoanScope
+import com.tokopedia.instantloan.domain.interactor.GetFilterDataUseCase
 import com.tokopedia.instantloan.domain.interactor.GetLendingDataUseCase
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase
@@ -23,6 +24,11 @@ class InstantLoanModule {
     @Provides
     fun provideGetLendingDataUseCase(@ApplicationContext context: Context) : GetLendingDataUseCase {
         return GetLendingDataUseCase(context)
+    }
+
+    @Provides
+    fun provideGetFilterDataUseCase(@ApplicationContext context: Context) : GetFilterDataUseCase {
+        return GetFilterDataUseCase(context)
     }
 
     @Provides

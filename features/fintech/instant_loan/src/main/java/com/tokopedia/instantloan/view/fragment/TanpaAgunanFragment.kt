@@ -1,8 +1,6 @@
 package com.tokopedia.instantloan.view.fragment
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,16 +15,14 @@ import com.tokopedia.instantloan.InstantLoanComponentInstance
 import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
-import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
-import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
-import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.LOAN_AMOUNT_QUERY_PARAM
-import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_NO_COLLATERAL
+import com.tokopedia.instantloan.data.model.response.*
 import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor
 import com.tokopedia.instantloan.view.fragment.DanaInstantFragment.Companion.LOGIN_REQUEST_CODE
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.content_tanpa_agunan.*
+import java.util.*
 import javax.inject.Inject
 
 
@@ -40,6 +36,11 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     @Inject
     lateinit var userSession: UserSession
 
+    private lateinit var loanPeriodLabelTV: TextView
+    private lateinit var loanPeriodValueTV: TextView
+
+    private lateinit var loanPeriodMonthList: ArrayList<LoanPeriodMonth>
+    private lateinit var loanPeriodYearList: ArrayList<LoanPeriodYear>
     private var mCurrentTab: Int = 0
     private var mContext: Context? = null
 
@@ -83,6 +84,16 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     }
 
     private fun initView(view: View) {
+
+        presenter.getFilterData()
+
+        loanPeriodLabelTV = spinner_label_nominal.findViewById(R.id.tv_label_text)
+        loanPeriodValueTV = spinner_value_nominal.findViewById(R.id.tv_label_text)
+
+        spinner_label_nominal.setOnClickListener {
+
+
+        }
         /*text_value_amount.text = resources.getStringArray(R.array.values_amount)[mCurrentTab]
         text_value_duration.text = resources.getStringArray(R.array.values_duration)[mCurrentTab]
         text_value_processing_time.text = resources.getStringArray(R.array.values_processing_time)[mCurrentTab]
@@ -120,6 +131,43 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
             }
         }
     }*/
+
+    override fun setFilterDataForOnlineLoan(gqlFilterData: GqlFilterData) {
+
+        prepareLoanPeriodTypeList()
+        prepareLoanPeriodListMonth(gqlFilterData.gqlLoanPeriodResponse.loanMonth.min, gqlFilterData.gqlLoanPeriodResponse.loanMonth.max)
+        prepareLoanPeriodListYear(gqlFilterData.gqlLoanPeriodResponse.loanYear.min, gqlFilterData.gqlLoanPeriodResponse.loanYear.max)
+
+        gqlFilterData.gqlLoanAmountResponse.sortBy { it.value }
+        loanPeriodLabelTV.text = ""
+    }
+
+    private fun prepareLoanPeriodTypeList() {
+
+
+    }
+
+    private fun prepareLoanPeriodListYear(min: Int, max: Int) {
+
+        var loanPeriodYear: LoanPeriodYear
+        var i = 0
+        for (value in min..max) {
+            loanPeriodYear = LoanPeriodYear(value.toString() + " Year", value.toString(), i++)
+            loanPeriodYearList.add(loanPeriodYear)
+        }
+
+    }
+
+    private fun prepareLoanPeriodListMonth(min: Int, max: Int) {
+
+        var loamPeriodMonth: LoanPeriodMonth
+        var i = 0
+        for (value in min..max) {
+            loamPeriodMonth = LoanPeriodMonth(value.toString() + " Month", value.toString(), i++)
+            i++
+            loanPeriodMonthList.add(loamPeriodMonth)
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

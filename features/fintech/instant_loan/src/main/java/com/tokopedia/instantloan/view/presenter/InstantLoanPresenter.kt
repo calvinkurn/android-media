@@ -5,7 +5,10 @@ import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.instantloan.constant.DeviceDataKeys
+import com.tokopedia.instantloan.data.model.response.GqlFilterDataResponse
+import com.tokopedia.instantloan.data.model.response.GqlLendingDataResponse
 import com.tokopedia.instantloan.data.model.response.ResponsePhoneData
 import com.tokopedia.instantloan.data.model.response.ResponseUserProfileStatus
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager
@@ -14,6 +17,7 @@ import com.tokopedia.instantloan.ddcollector.PermissionResultCallback
 import com.tokopedia.instantloan.ddcollector.account.Account
 import com.tokopedia.instantloan.ddcollector.app.Application
 import com.tokopedia.instantloan.ddcollector.bdd.BasicDeviceData
+import com.tokopedia.instantloan.domain.interactor.GetFilterDataUseCase
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor
@@ -25,6 +29,7 @@ import javax.inject.Inject
 
 class InstantLoanPresenter @Inject
 constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCase,
+            private val mGetFilterDataUseCase: GetFilterDataUseCase,
             private val mPostPhoneDataUseCase: PostPhoneDataUseCase) :
         BaseDaggerPresenter<InstantLoanContractor.View>(), InstantLoanContractor.Presenter {
 
@@ -53,6 +58,37 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
     }
 
     override fun initialize() {
+
+    }
+
+    override fun detachView() {
+        mGetLoanProfileStatusUseCase.unsubscribe()
+        mGetFilterDataUseCase.unsubscribe()
+        mPostPhoneDataUseCase.unsubscribe()
+        super.detachView()
+    }
+
+    override fun getFilterData() {
+
+        mGetFilterDataUseCase.execute(object : Subscriber<GraphqlResponse>() {
+            override fun onNext(graphqlResponse: GraphqlResponse?) {
+                if (isViewNotAttached) {
+                    return
+                }
+                val gqlFilterDataResponse = graphqlResponse?.getData(GqlFilterDataResponse::class.java) as GqlFilterDataResponse
+                view.setFilterDataForOnlineLoan(gqlFilterDataResponse.gqlFilterData)
+
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+            }
+
+        })
 
     }
 
