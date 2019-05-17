@@ -8,7 +8,7 @@ import com.tokopedia.topupbills.telco.view.model.DigitalProductTelcoItem
 /**
  * Created by nabillasabbaha on 09/05/19.
  */
-class DigitalTelcoProductAdapter(val productTabList: List<DigitalProductTelcoItem>, fm: FragmentManager)
+class DigitalTelcoProductTabAdapter(val productTabList: List<DigitalProductTelcoItem>, fm: FragmentManager)
     : FragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {

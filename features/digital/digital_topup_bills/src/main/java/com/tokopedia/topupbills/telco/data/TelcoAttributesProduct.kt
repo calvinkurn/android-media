@@ -1,5 +1,7 @@
 package com.tokopedia.topupbills.telco.data
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -33,5 +35,51 @@ class TelcoAttributesProduct(
         val status: Int,
         @SerializedName("detail_compact")
         @Expose
-        val detailCompact: String
-)
+        val detailCompact: String,
+        @SerializedName("promo")
+        @Expose
+        val promo: TelcoPromo,
+        var selected: Boolean = false)
+    : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readInt(),
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readParcelable(TelcoPromo::class.java.classLoader)) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(desc)
+        parcel.writeString(detail)
+        parcel.writeString(detailUrl)
+        parcel.writeString(detailUrlText)
+        parcel.writeString(info)
+        parcel.writeString(price)
+        parcel.writeInt(pricePlain)
+        parcel.writeInt(status)
+        parcel.writeString(detailCompact)
+        parcel.writeParcelable(promo, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<TelcoAttributesProduct> {
+        override fun createFromParcel(parcel: Parcel): TelcoAttributesProduct {
+            return TelcoAttributesProduct(parcel)
+        }
+
+        override fun newArray(size: Int): Array<TelcoAttributesProduct?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}

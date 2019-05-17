@@ -21,14 +21,15 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.covertContactUriToContactData
-import com.tokopedia.topupbills.telco.data.TelcoComponentData
-import com.tokopedia.topupbills.telco.data.TelcoRechargeComponentData
-import com.tokopedia.topupbills.telco.data.constant.DataCollectionType
+import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
+import com.tokopedia.topupbills.telco.data.TelcoCustomData
+import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
+import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalProductTelcoItem
 import com.tokopedia.topupbills.telco.view.model.DigitalPromo
 import com.tokopedia.topupbills.telco.view.model.DigitalRecentNumber
-import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoViewModel
+import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalBaseClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
@@ -45,7 +46,7 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
     private lateinit var promoListView: DigitalPromoListWidget
     private lateinit var viewPager: ViewPager
     private lateinit var tabLayout: TabLayout
-    private lateinit var telcoRechargeData: TelcoRechargeComponentData
+    private lateinit var telcoCustomData: TelcoCustomComponentData
     private val recentNumbers = mutableListOf<DigitalRecentNumber>()
     private val promoList = mutableListOf<DigitalPromo>()
 
@@ -54,7 +55,7 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
-    private lateinit var viewModel: DigitalTelcoViewModel
+    private lateinit var customViewModel: DigitalTelcoCustomViewModel
 
     override fun onStart() {
         context?.let {
@@ -67,7 +68,7 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            viewModel = viewModelProvider.get(DigitalTelcoViewModel::class.java)
+            customViewModel = viewModelProvider.get(DigitalTelcoCustomViewModel::class.java)
         }
     }
 
@@ -95,52 +96,45 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        telcoRechargeData = TelcoRechargeComponentData(TelcoComponentData(kotlin.collections.mutableListOf()))
+        telcoCustomData = TelcoCustomComponentData(TelcoCustomData(kotlin.collections.mutableListOf()))
 
         renderInputNumber()
         renderRecentTransactions()
         renderPromoList()
-        renderViewPager()
         getInputFilterDataCollections()
     }
 
     fun getInputFilterDataCollections() {
         var mapParam = HashMap<String, kotlin.Any>()
-        mapParam.put("data", DataCollectionType.CUSTOM)
-        mapParam.put("componentID", 5)
-        viewModel.getRechargeCollections(GraphqlHelper.loadRawString(resources, R.raw.query_digital_data_collection), mapParam,
-                this::onSuccessInputFilter, this::onErrorInputFilter)
+        mapParam.put("componentID", TelcoComponentType.CLIENT_NUMBER)
+        customViewModel.getCustomData(GraphqlHelper.loadRawString(resources, R.raw.query_custom_digital_telco), mapParam,
+                this::onSuccessCustomData, this::onErrorCustomData)
     }
 
-    fun onSuccessInputFilter(telcoData: TelcoRechargeComponentData) {
-        this.telcoRechargeData = telcoData
+    fun onSuccessCustomData(telcoData: TelcoCustomComponentData) {
+        this.telcoCustomData = telcoData
         renderProductListFromInputfilter()
     }
 
     fun renderProductListFromInputfilter() {
         val prefixClientNumber = telcoClientNumberWidget.getInputNumber().substring(0, 4)
         try {
-            val dataFound = this.telcoRechargeData.rechargeComponentData.dataCollections.filter {
+            val dataFound = this.telcoCustomData.rechargeCustomData.customDataCollections.filter {
                 it.value.equals(prefixClientNumber)
             }.single()
-            Toast.makeText(activity, dataFound.operator.attributes.name, Toast.LENGTH_SHORT).show()
-        } catch (exception: Exception){
+
+            renderViewPager(dataFound.operator.id)
+            recentNumbersView.visibility = View.GONE
+            promoListView.visibility = View.GONE
+            tabLayout.visibility = View.VISIBLE
+            viewPager.visibility = View.VISIBLE
+        } catch (exception: Exception) {
             Toast.makeText(activity, "error exception", Toast.LENGTH_SHORT).show()
         }
-//        viewModel.getRechargeCollections(GraphqlHelper.loadRawString(resources, R.raw.query_digital_data_collection), mapOf(),
-//                this::onSuccessProductList, this::onErrorProductList)
     }
 
-    fun onErrorInputFilter(throwable: Throwable) {
-
-    }
-
-    fun onSuccessProductList(telcoData: TelcoRechargeComponentData) {
-
-    }
-
-    fun onErrorProductList(throwable: Throwable) {
-
+    fun onErrorCustomData(throwable: Throwable) {
+        Toast.makeText(activity, "input filter " + throwable.message, Toast.LENGTH_SHORT).show()
     }
 
     fun renderInputNumber() {
@@ -170,21 +164,19 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
             }
 
             override fun renderProductList() {
-                telcoRechargeData.rechargeComponentData.dataCollections.isEmpty()?.let {
+                telcoCustomData.rechargeCustomData.customDataCollections.isEmpty()?.let {
                     if (it) {
                         getInputFilterDataCollections()
                     } else {
                         renderProductListFromInputfilter()
                     }
                 }
-                recentNumbersView.visibility = View.GONE
-                promoListView.visibility = View.GONE
-                viewPager.visibility = View.VISIBLE
             }
 
             override fun clearAutoComplete() {
                 recentNumbersView.visibility = View.VISIBLE
                 promoListView.visibility = View.VISIBLE
+                tabLayout.visibility = View.GONE
                 viewPager.visibility = View.GONE
             }
         })
@@ -201,41 +193,22 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         }
     }
 
-    fun renderRecentTransactions() {
-        recentNumbersView.setListener(object : DigitalRecentTransactionWidget.ActionListener {
-            override fun onClickRecentNumber(digitalRecentNumber: DigitalRecentNumber) {
-                Toast.makeText(activity, digitalRecentNumber.clientNumber, Toast.LENGTH_LONG).show()
-            }
-        })
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 1", "081723823112", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 2", "082313134234", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 3", "081342424234", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 4", "087823173712", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 5", "082343432423", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 6", "081231313233", "", "", 316, "Simpati"))
-        recentNumbersView.setRecentNumbers(recentNumbers)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        context?.run {
+            permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
+        }
     }
 
-    fun renderPromoList() {
-        promoListView.setListener(object : DigitalPromoListWidget.ActionListener {
-            override fun onCopiedPromoCode(voucherCode: String) {
-                Toast.makeText(activity, "Kode voucher telah di copy ke clipboard", Toast.LENGTH_LONG).show()
-            }
-        })
-        promoList.add(DigitalPromo("1", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLALA", false, ""))
-        promoList.add(DigitalPromo("2", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLELE", false, ""))
-        promoList.add(DigitalPromo("3", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLILI", false, ""))
-        promoList.add(DigitalPromo("4", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLULU", false, ""))
-        promoList.add(DigitalPromo("5", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLOLO", false, ""))
-        promoListView.setPromoList(promoList)
-    }
-
-    fun renderViewPager() {
+    fun renderViewPager(operatorId: String) {
         val listProductTab = mutableListOf<DigitalProductTelcoItem>()
-        listProductTab.add(DigitalProductTelcoItem(DigitalTelcoProductFragment.newInstance(), "Pulsa"))
-        listProductTab.add(DigitalProductTelcoItem(DigitalTelcoProductFragment.newInstance(), "Paket Data"))
-        listProductTab.add(DigitalProductTelcoItem(DigitalTelcoProductFragment.newInstance(), "Roaming"))
-        val pagerAdapter = com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductAdapter(listProductTab, childFragmentManager)
+        listProductTab.add(DigitalProductTelcoItem(DigitalTelcoProductFragment.newInstance(
+                TelcoComponentType.PRODUCT_PULSA, operatorId, TelcoProductType.PRODUCT_GRID), "Pulsa"))
+        listProductTab.add(DigitalProductTelcoItem(DigitalTelcoProductFragment.newInstance(
+                TelcoComponentType.PRODUCT_PAKET_DATA, operatorId, TelcoProductType.PRODUCT_LIST), "Paket Data"))
+        listProductTab.add(DigitalProductTelcoItem(DigitalTelcoProductFragment.newInstance(
+                TelcoComponentType.PRODUCT_ROAMING, operatorId, TelcoProductType.PRODUCT_LIST), "Roaming"))
+        val pagerAdapter = com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
         tabLayout.setupWithViewPager(viewPager)
     }
@@ -255,15 +228,39 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        context?.run {
-            permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
-        }
+    //TODO IMPLEMENT API
+    fun renderRecentTransactions() {
+        recentNumbersView.setListener(object : DigitalRecentTransactionWidget.ActionListener {
+            override fun onClickRecentNumber(digitalRecentNumber: DigitalRecentNumber) {
+                Toast.makeText(activity, digitalRecentNumber.clientNumber, Toast.LENGTH_LONG).show()
+            }
+        })
+        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 1", "081723823112", "", "", 316, "Simpati"))
+        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 2", "082313134234", "", "", 316, "Simpati"))
+        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 3", "081342424234", "", "", 316, "Simpati"))
+        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 4", "087823173712", "", "", 316, "Simpati"))
+        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 5", "082343432423", "", "", 316, "Simpati"))
+        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 6", "081231313233", "", "", 316, "Simpati"))
+        recentNumbersView.setRecentNumbers(recentNumbers)
+    }
+
+    //TODO IMPLEMENT API
+    fun renderPromoList() {
+        promoListView.setListener(object : DigitalPromoListWidget.ActionListener {
+            override fun onCopiedPromoCode(voucherCode: String) {
+                Toast.makeText(activity, "Kode voucher telah di copy ke clipboard", Toast.LENGTH_LONG).show()
+            }
+        })
+        promoList.add(DigitalPromo("1", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLALA", false, ""))
+        promoList.add(DigitalPromo("2", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLELE", false, ""))
+        promoList.add(DigitalPromo("3", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLILI", false, ""))
+        promoList.add(DigitalPromo("4", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLULU", false, ""))
+        promoList.add(DigitalPromo("5", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLOLO", false, ""))
+        promoListView.setPromoList(promoList)
     }
 
     override fun onDestroy() {
-        viewModel.clear()
+        customViewModel.clear()
         super.onDestroy()
     }
 

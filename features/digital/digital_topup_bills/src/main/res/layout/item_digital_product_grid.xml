@@ -8,6 +8,7 @@
     app:cardElevation="@dimen/dp_2">
 
     <LinearLayout
+        android:id="@+id/layout_product"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -41,7 +42,7 @@
             android:layout_marginBottom="@dimen/dp_4"
             android:gravity="center_horizontal"
             android:lines="1"
-            android:text="Pulsa 40.000"
+            tools:text="Pulsa 40.000"
             android:textAlignment="center"
             android:textColor="@color/digital_title_header_non_active"
             android:textSize="@dimen/sp_10"

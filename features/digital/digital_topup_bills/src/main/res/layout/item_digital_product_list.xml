@@ -8,6 +8,7 @@
     app:cardElevation="@dimen/dp_2">
 
     <RelativeLayout
+        android:id="@+id/layout_product"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/dp_10">
