@@ -54,7 +54,7 @@ public abstract class KeroService<T> {
             String path = baseUrl.substring(baseUrl.indexOf("v4"));
             SharedPreferences pref = CoreNetworkApplication.getAppContext()
                     .getSharedPreferences("DOMAIN_WS_4", Context.MODE_PRIVATE);
-            baseUrl = pref.getString("DOMAIN_WS4", TokopediaUrl.Companion.getInstance().getWEB()) + path;
+            baseUrl = pref.getString("DOMAIN_WS4", TokopediaUrl.Companion.getInstance().getWS()) + path;
         }
         return baseUrl;
     }

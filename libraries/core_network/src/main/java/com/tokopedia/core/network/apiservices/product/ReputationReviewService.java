@@ -20,7 +20,7 @@ public class ReputationReviewService extends AuthService<ReputationReviewApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TokopediaUrl.Companion.getInstance().getWEB();
+        return TokopediaUrl.Companion.getInstance().getWS();
     }
 
     @Override

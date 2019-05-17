@@ -108,7 +108,7 @@ public class AddFavoriteShopService extends IntentService {
 
     private Retrofit getWsV4Retrofit(OkHttpClient okHttpClient,
                                      Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWEB()).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS()).client(okHttpClient).build();
     }
 
     public Retrofit.Builder getRetrofitBuilder(GeneratedHostConverter generatedHostConverter,

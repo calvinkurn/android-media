@@ -18,7 +18,7 @@ public class ContactUsWsService extends AuthService<ContactUsApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TokopediaUrl.Companion.getInstance().getWEB();
+        return TokopediaUrl.Companion.getInstance().getWS();
     }
 
     @Override

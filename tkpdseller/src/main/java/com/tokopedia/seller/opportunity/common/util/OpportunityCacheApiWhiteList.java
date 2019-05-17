@@ -28,7 +28,7 @@ public class OpportunityCacheApiWhiteList {
         List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
 
         // Opportunity category
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TokopediaUrl.Companion.getInstance().getWEB(), OpportunityConstant.PATH_GET_CATEGORY, ONE_DAY));
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TokopediaUrl.Companion.getInstance().getWS(), OpportunityConstant.PATH_GET_CATEGORY, ONE_DAY));
 
         return cacheApiWhiteList;
     }

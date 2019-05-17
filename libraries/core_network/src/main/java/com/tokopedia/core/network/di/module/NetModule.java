@@ -48,7 +48,7 @@ public class NetModule {
     @Provides
     public Retrofit provideWsV4Retrofit(@DefaultAuth OkHttpClient okHttpClient,
                                         Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWEB()).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS()).client(okHttpClient).build();
     }
 
     @WsV4QualifierWithErrorHander
@@ -56,7 +56,7 @@ public class NetModule {
     @Provides
     public Retrofit provideWsV4RetrofitWithErrorHandler(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
                                                         Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWEB()).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS()).client(okHttpClient).build();
     }
 
     @AceQualifier
@@ -159,7 +159,7 @@ public class NetModule {
     @Provides
     public Retrofit provideUploadWsV4Retrofit(@UploadWsV4Auth OkHttpClient okHttpClient,
                                               Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWEB()).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS()).client(okHttpClient).build();
     }
 
     @TopAdsQualifier

@@ -575,7 +575,7 @@ public class DataManagerImpl implements DataManager {
 
             dataReceiver.getSubscription().add(
                     RetrofitUtils
-                            .createRetrofit(TokopediaUrl.Companion.getInstance().getWEB())
+                            .createRetrofit(TokopediaUrl.Companion.getInstance().getWS())
                             .create(AddressApi.class)
                             .getShippingCity(
                                     NetworkCalculator.getContentMd5(networkCalculator),

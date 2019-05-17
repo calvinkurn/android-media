@@ -48,7 +48,7 @@ public class ReactNetworkDependencies {
     }
 
     private Retrofit provideRetrofitNoAuth() {
-        return RetrofitFactory.createBasicRetrofit(TokopediaUrl.Companion.getInstance().getWEB())
+        return RetrofitFactory.createBasicRetrofit(TokopediaUrl.Companion.getInstance().getWS())
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(provideOkHttpRetryPolicy())
                         .buildClientNoAuth())
@@ -56,7 +56,7 @@ public class ReactNetworkDependencies {
     }
 
     private Retrofit provideRetrofitDefaultAuth() {
-        return RetrofitFactory.createBasicRetrofit(TokopediaUrl.Companion.getInstance().getWEB())
+        return RetrofitFactory.createBasicRetrofit(TokopediaUrl.Companion.getInstance().getWS())
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(provideOkHttpRetryPolicy())
                         .buildClientDefaultAuth())
@@ -64,7 +64,7 @@ public class ReactNetworkDependencies {
     }
 
     private Retrofit provideRetrofitAuth() {
-        return RetrofitFactory.createBasicRetrofit(TokopediaUrl.Companion.getInstance().getWEB())
+        return RetrofitFactory.createBasicRetrofit(TokopediaUrl.Companion.getInstance().getWS())
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(provideOkHttpRetryPolicy())
                         .buildClientDynamicAuth())

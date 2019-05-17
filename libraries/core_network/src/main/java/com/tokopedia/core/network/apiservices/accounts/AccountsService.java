@@ -58,7 +58,7 @@ public class AccountsService {
     protected String getBaseUrl(String webService) {
         switch (webService) {
             case WS:
-                return TokopediaUrl.Companion.getInstance().getWEB();
+                return TokopediaUrl.Companion.getInstance().getWS();
             case ACCOUNTS:
                 return TokopediaUrl.Companion.getInstance().getACCOUNTS();
             default:

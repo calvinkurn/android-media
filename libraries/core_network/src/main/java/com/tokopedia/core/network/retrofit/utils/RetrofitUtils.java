@@ -39,11 +39,11 @@ public class RetrofitUtils {
     public static final int DEFAULT_TIMEOUT = 120;
 
     public static Retrofit createRetrofitWIthProxy(String urlProxy, int port) {
-        return createRetrofit(TokopediaUrl.Companion.getInstance().getWEB(), urlProxy, port, DEFAULT_TIMEOUT, false);
+        return createRetrofit(TokopediaUrl.Companion.getInstance().getWS(), urlProxy, port, DEFAULT_TIMEOUT, false);
     }
 
     public static Retrofit createRetrofit() {
-        return createRetrofit(TokopediaUrl.Companion.getInstance().getWEB());
+        return createRetrofit(TokopediaUrl.Companion.getInstance().getWS());
     }
 
     public static Retrofit createRetrofitV4(String url) {
@@ -52,7 +52,7 @@ public class RetrofitUtils {
             String path = baseUrl.substring(baseUrl.indexOf("v4"));
             SharedPreferences pref = CoreNetworkApplication.getAppContext()
                     .getSharedPreferences("DOMAIN_WS_4", Context.MODE_PRIVATE);
-            baseUrl = pref.getString("DOMAIN_WS4", TokopediaUrl.Companion.getInstance().getWEB()) + path;
+            baseUrl = pref.getString("DOMAIN_WS4", TokopediaUrl.Companion.getInstance().getWS()) + path;
         }
         return createRetrofit(baseUrl);
     }

@@ -22,7 +22,7 @@ public class OrderDetailService extends AuthService<OrderDetailApi>{
 
     @Override
     protected String getBaseUrl() {
-        return TokopediaUrl.Companion.getInstance().getWEB();
+        return TokopediaUrl.Companion.getInstance().getWS();
     }
 
     @Override
