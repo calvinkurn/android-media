@@ -261,6 +261,13 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             }
         })
 
+        shopViewModel.shopModerateResp.observe(this, Observer {shopModerate ->
+            when(shopModerate){
+                is Success -> onSuccessGetModerateInfo(shopModerate.data)
+                is Fail -> onErrorModerateListener(shopModerate.throwable)
+            }
+        })
+
         getShopInfo()
     }
 
@@ -402,9 +409,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
             shopViewModel.getFeedWhiteList(shopCore.shopID)
 
-            /*if (shopInfo.info.shopStatus != ShopStatusDef.OPEN) {
-                presenter.getModerateShopInfo()
-            }*/
+            if (shopInfo.statusInfo.shopStatus != ShopStatusDef.OPEN) {
+                shopViewModel.getModerateShopInfo()
+            }
         }
 
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
@@ -436,18 +443,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun onSuccessGetReputation(reputationSpeed: ReputationSpeed?) {
-
-    }
-
-    override fun onErrorGetReputation(e: Throwable?) {
-
-    }
-
-    override fun onSuccessGetModerateInfo(shopModerateRequestData: ShopModerateRequestData) {
+    private fun onSuccessGetModerateInfo(shopModerateRequestData: ShopModerateRequestData) {
         val statusModerate = shopModerateRequestData.shopModerateRequestStatus.result.status
-        if (shopInfo != null && shopId != null) {
-            shopPageViewHolder.updateViewModerateStatus(statusModerate, shopInfo!!, presenter.isMyShop(shopId!!))
+        (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+            shopPageViewHolder.updateViewModerateStatus(statusModerate, it, shopViewModel.isMyShop(it.shopCore.shopID))
         }
     }
 
@@ -548,7 +547,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
 
         val intent = RouteManager.getIntent(this,
-                if (GlobalConfig.isCustomerApp()) ApplinkConsInternalHome.MANAGE_SHOP
+                if (GlobalConfig.isCustomerApp()) ApplinkConstInternalMarketplace.STORE_SETTING
                 else ApplinkConsInternalHome.MANAGE_SHOP_SELLERAPP_TEMP) ?: return
         startActivity(intent)
     }
@@ -602,36 +601,28 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
 
-    override fun onErrorModerateListener(e: Throwable?) {
+    private fun onErrorModerateListener(e: Throwable?) {
         val errorMessage = if (e == null) {
-            context.getString(R.string.moderate_shop_error)
+            getString(R.string.moderate_shop_error)
         } else {
             ErrorHandler.getErrorMessage(this, e)
         }
 
         ToasterError.make(window.decorView.rootView, errorMessage, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(R.string.title_ok) { v ->
-
-                }
+                .setAction(R.string.title_ok) {}
                 .show()
     }
 
-    override fun onSuccessModerateListener() {
+    private fun onSuccessModerateListener() {
         buttonActionAbnormal.visibility = View.GONE
         ToasterNormal.make(window.decorView.rootView, getString(R.string.moderate_shop_success), BaseToaster.LENGTH_LONG)
-                .setAction(R.string.title_ok) { v ->
-
-                }
+                .setAction(R.string.title_ok) {}
                 .show()
-    }
-
-    override fun getContext(): Context {
-        return this@ShopPageActivity
     }
 
     override fun requestOpenShop(shopId: Int, moderateNotes:String) {
         if(moderateNotes.isNotEmpty()){
-            presenter.moderateShopRequest(shopId, moderateNotes)
+            shopViewModel.moderateShopRequest(shopId, moderateNotes, this::onSuccessModerateListener, this::onErrorModerateListener)
         }
     }
 

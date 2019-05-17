@@ -11,12 +11,15 @@ import com.tokopedia.kolcommon.data.pojo.Whitelist
 import com.tokopedia.kolcommon.data.pojo.WhitelistQuery
 import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
+import com.tokopedia.shop.page.domain.interactor.GetModerateShopUseCase
+import com.tokopedia.shop.page.domain.interactor.RequestModerateShopUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -32,6 +35,8 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
                                             private val getWhitelistUseCase: GetWhitelistUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
                                             private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
+                                            private val getModerateShopUseCase: GetModerateShopUseCase,
+                                            private val requestModerateShopUseCase: RequestModerateShopUseCase,
                                             dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
@@ -42,6 +47,7 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
     val whiteListResp =  MutableLiveData<Pair<Boolean, String>>()
     val shopBadgeResp = MutableLiveData<Pair<Boolean, ShopBadge>>()
+    val shopModerateResp = MutableLiveData<Result<ShopModerateRequestData>>()
 
     fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false){
         val id = shopId?.toIntOrNull() ?: 0
@@ -109,9 +115,42 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
         }
     }
 
+    fun getModerateShopInfo(){
+        getModerateShopUseCase.execute(object : Subscriber<ShopModerateRequestData>() {
+            override fun onNext(t: ShopModerateRequestData?) {
+                t?.let { shopModerateResp.value = Success(it) }
+            }
+
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable?) { e?.let { shopModerateResp.value = Fail(it) }}
+
+        })
+    }
+
+    fun moderateShopRequest(shopId: Int, moderateNotes:String, onSuccess: ()-> Unit, onError: (Throwable?) -> Unit){
+        requestModerateShopUseCase.execute(
+                RequestModerateShopUseCase.createRequestParams(shopId,moderateNotes),
+                object : Subscriber<Boolean>() {
+                    override fun onNext(t: Boolean?) {
+                        if (t == true) {
+                            onSuccess()
+                        } else {
+                            onError(null)
+                        }
+                    }
+
+                    override fun onCompleted() {}
+
+                    override fun onError(e: Throwable?) { onError(e)}
+                })
+    }
+
     override fun clear() {
         super.clear()
         getWhitelistUseCase.unsubscribe()
         toggleFavouriteShopUseCase.unsubscribe()
+        getModerateShopUseCase.unsubscribe()
+        requestModerateShopUseCase.unsubscribe()
     }
 }

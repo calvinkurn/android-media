@@ -744,7 +744,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
     override fun onPause() {
         super.onPause()
-        shopPageTracking!!.sendAllTrackingQueue()
+        shopPageTracking?.sendAllTrackingQueue()
     }
 
     override fun initInjector() {

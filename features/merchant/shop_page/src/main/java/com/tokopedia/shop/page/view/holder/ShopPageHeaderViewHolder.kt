@@ -116,7 +116,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             R.string.shop_page_header_shop_in_moderation
         }
         var description = view.context.getString(R.string.shop_page_header_shop_in_moderation_desc)
-        val shopId = shopInfo.info.shopId.toInt()
+        val shopId = shopInfo.shopCore.shopID.toInt()
 
         if (!isMyShop) {
             title = if (isPermanent) {
