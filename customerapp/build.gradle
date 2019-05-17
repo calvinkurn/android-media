@@ -412,7 +412,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.omsApi)
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
@@ -566,7 +566,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.referral)
-    implementation 'com.tokopedia.cache_manager:cache_manager'
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.features.kyc)
 }
 

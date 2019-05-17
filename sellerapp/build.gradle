@@ -249,7 +249,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.datePickerRange)
@@ -263,7 +263,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.track)
-    implementation 'com.tokopedia.cache_manager:cache_manager'
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.core)

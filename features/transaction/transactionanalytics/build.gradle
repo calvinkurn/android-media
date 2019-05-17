@@ -25,7 +25,7 @@ project.ext {
 dependencies {
     
     implementation project(rootProject.ext.libraries.track)
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
 
     implementation rootProject.ext.playServicesDependencies.analytics

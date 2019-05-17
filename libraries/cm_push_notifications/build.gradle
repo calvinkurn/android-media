@@ -37,7 +37,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.config)
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.firebase.messaging
 
     implementation project(rootProject.ext.libraries.track)

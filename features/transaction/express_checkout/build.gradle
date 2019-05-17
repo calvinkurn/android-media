@@ -17,7 +17,7 @@ buildscript {
 dependencies {
     
     implementation project(rootProject.ext.libraries.track)
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.graphql)
@@ -27,7 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.imagePreview)
-    implementation 'com.tokopedia.cache_manager:cache_manager'
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
     
     implementation project(rootProject.ext.features.tradeIn)

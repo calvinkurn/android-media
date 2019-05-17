@@ -31,7 +31,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.core)
 
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.fingerprint)

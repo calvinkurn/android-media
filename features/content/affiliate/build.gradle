@@ -43,11 +43,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation 'com.tokopedia.cache_manager:cache_manager'
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.videoUploader)
 
     implementation rootProject.ext.miscDependencies.dagger

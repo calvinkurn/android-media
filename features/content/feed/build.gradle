@@ -55,7 +55,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.reactNative)
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.libraries.applink)

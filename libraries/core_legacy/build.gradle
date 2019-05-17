@@ -73,11 +73,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
 
     implementation project(rootProject.ext.features.transactionanalytics)
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.iris)
-    implementation 'com.tokopedia.cache_manager:cache_manager'
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.firebase.config
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor

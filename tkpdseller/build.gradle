@@ -33,7 +33,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation 'com.tokopedia.cache_manager:cache_manager'
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.userSession)
@@ -58,7 +58,7 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.applink)

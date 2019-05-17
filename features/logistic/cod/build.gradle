@@ -36,7 +36,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.graphql)
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactionanalytics)

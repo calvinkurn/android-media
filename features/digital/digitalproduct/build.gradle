@@ -37,12 +37,12 @@ dependencies {
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.libraries.youtubeutil)
-    implementation 'com.tokopedia.cache_manager:cache_manager'
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.libraries.network)

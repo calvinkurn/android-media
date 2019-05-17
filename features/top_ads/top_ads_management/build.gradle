@@ -23,7 +23,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.williamchart)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.applink)
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.cacheApi)

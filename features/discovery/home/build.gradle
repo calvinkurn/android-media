@@ -39,7 +39,7 @@ dependencies {
         transitive = true
     }
     implementation project(rootProject.ext.libraries.core_legacy)
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.banner)
 
@@ -60,7 +60,7 @@ dependencies {
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.resourcesCommon)
 
-    implementation 'com.tokopedia.usecase:usecase:2.24'
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.cacheApi)

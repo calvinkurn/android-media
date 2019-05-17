@@ -15,7 +15,7 @@ buildscript {
 project.ext {
     artifactId = 'usecase'
     groupId = 'com.tokopedia.usecase'
-    versionName = "2.24"
+    versionName = "1.0.0.1"
     artifactName ="use_case"
 }
 

@@ -14,10 +14,12 @@ buildCache {
         }
     }
 }
-includeBuild('libraries/composite_build'){
-    dependencySubstitution {
-        substitute module('com.tokopedia.cache_manager:cache_manager') with project(':cache_manager')
-        substitute module('com.tokopedia.usecase:usecase') with project(':use_case')
+if (file("/libraries/composite_build/.composite-enable").exists()) {
+    includeBuild('libraries/composite_build') {
+        dependencySubstitution {
+            substitute module('com.tokopedia.cache_manager:cache_manager') with project(':cache_manager')
+            substitute module('com.tokopedia.usecase:usecase') with project(':use_case')
+        }
     }
 }
 apply from: "buildconfig/appcompile/compile-libraries.gradle"
