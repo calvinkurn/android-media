@@ -68,10 +68,6 @@ dependencies {
 
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
 
-    annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
-
     implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation rootProject.ext.networkDependencies.glide
