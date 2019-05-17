@@ -63,12 +63,6 @@ class ShareAdapter(@NonNull var mActivities : List<ResolveInfo>, @NonNull var mP
             type = activity.activityInfo.packageName
         }
 
-        if (resources != null)
-            holder.itemView.iconView.setImageDrawable(resources)
-
-        if (title.length > 0)
-            holder.itemView.labelView.text = title
-
         holder.bindItem(resources, title, type, onItemClickListener)
     }
 
