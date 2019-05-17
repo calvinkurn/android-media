@@ -55,6 +55,7 @@ public class TopChatAnalytics {
 
         String EVENT_NAME_CLICK_INBOXCHAT = "clickInboxChat";
         String EVENT_NAME_PRODUCT_CLICK = "productClick";
+        String EVENT_NAME_ATC = "addToCart";
 
     }
 
@@ -74,6 +75,8 @@ public class TopChatAnalytics {
         public static final String CLICK_THUMBNAIL = "click on thumbnail";
         public static final String CLICK_COPY_VOUCHER_THUMBNAIL = "click copy on shop voucher thumbnail";
         public static final String CLICK_VOUCHER_THUMBNAIL = "click shop voucher thumbnail";
+        public static final String CLICK_ATC_PRODUCT_THUMBNAIL ="click atc on product thumbnail";
+        public static final String CLICK_BUY_PRODUCT_THUMBNAIL ="click buy on product thumbnail";
 
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
 
@@ -258,5 +261,75 @@ public class TopChatAnalytics {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 AttachProductAnalytics.getEventClickChatAttachedProductImage().getEvent()
         );
+    }
+
+
+    public void eventClickAddToCartProductAttachment(String blastId, String productName, String productId, String productPrice, int quantity, String shopId, String shopName) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT_NAME, Name.EVENT_NAME_ATC,
+                EVENT_CATEGORY, Category.CHAT_DETAIL,
+                EVENT_ACTION, Action.CLICK_ATC_PRODUCT_THUMBNAIL,
+                EVENT_LABEL, String.format("%s - %s", getField(blastId), String.valueOf(blastId)),
+                ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
+                        "click", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", String.format("/%s", getField(blastId))),
+                                "products", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "name", productName,
+                                                "id", productId,
+                                                "price", productPrice,
+                                                "quantity", quantity,
+                                                "shop_id", shopId,
+                                                "shop_type", "",
+                                                "shop_name", shopName,
+                                                "category_id", "",
+                                                "dimension45", ""
+                                        )
+                                )
+                        )
+                )
+        ));
+    }
+
+    public void eventClickBuyProductAttachment(String blastId, String productName, String productId, String productPrice, int quantity, String shopId, String shopName) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT_NAME, Name.EVENT_NAME_ATC,
+                EVENT_CATEGORY, Category.CHAT_DETAIL,
+                EVENT_ACTION, Action.CLICK_BUY_PRODUCT_THUMBNAIL,
+                EVENT_LABEL, String.format("%s - %s", getField(blastId), String.valueOf(blastId)),
+                ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
+                        "click", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", String.format("/%s", getField(blastId))),
+                                "products", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "name", productName,
+                                                "id", productId,
+                                                "price", productPrice,
+                                                "quantity", quantity,
+                                                "shop_id", shopId,
+                                                "shop_type", "",
+                                                "shop_name", shopName,
+                                                "category_id", "",
+                                                "dimension45", ""
+                                        )
+                                )
+                        )
+                )
+        ));
+    }
+
+    public String getField(String blastId) {
+        Long blastIdNum = Long.valueOf(blastId);
+        if(blastIdNum == 0) {
+            return "chat";
+        } else if (blastIdNum == -1) {
+            return "drop price alert";
+        } else if (blastIdNum == -2) {
+            return "limited stock";
+        } else if(blastIdNum > 0) {
+            return "broadcast";
+        } else {
+            return "chat";
+        }
     }
 }

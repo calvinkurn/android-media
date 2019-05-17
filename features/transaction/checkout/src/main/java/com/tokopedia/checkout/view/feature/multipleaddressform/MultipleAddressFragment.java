@@ -194,7 +194,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                 setNewShipmentRecipientAddress(dataList, newAddress, childPosition, parentPosition);
 
                 // Re-setup recycler view adapter to prevent crash if don't keep activities is on
-                setRecyclerViewAdapter(dataList, parentPosition, false);
+                setRecyclerViewAdapter(dataList, parentPosition, false, false);
             } else if (requestCode == TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT) {
                 ArrayList<MultipleAddressAdapterData> dataList = data.getParcelableArrayListExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_DATA_LIST);
                 RecipientAddressModel newAddress = data.getParcelableExtra(CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
@@ -234,7 +234,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                 }
 
                 // Re-setup recycler view adapter to prevent crash if don't keep activities is on
-                setRecyclerViewAdapter(dataList, parentPosition, false);
+                setRecyclerViewAdapter(dataList, parentPosition, false, false);
             }
         }
     }
@@ -289,7 +289,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     public void renderCartData(CartListData cartListData) {
-        setRecyclerViewAdapter(initiateAdapterData(cartListData), 0, true);
+        setRecyclerViewAdapter(initiateAdapterData(cartListData), 0, true, cartListData.isShowOnboarding());
     }
 
     @Override
@@ -413,8 +413,13 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
-            presenter.setCartListData(savedInstanceState.getParcelable(CartListData.class.getSimpleName()));
-            renderCartData(presenter.getCartListData());
+            CartListData cartListData = savedInstanceState.getParcelable(CartListData.class.getSimpleName());
+            if (cartListData != null) {
+                presenter.setCartListData(cartListData);
+                renderCartData(presenter.getCartListData());
+            } else {
+                presenter.processGetCartList(getArguments().getString(CART_IDS_EXTRA));
+            }
         }
     }
 
@@ -430,8 +435,8 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         rvOrderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-    private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData, int itemPosition, boolean isInitialSetup) {
-        multipleAddressAdapter = new MultipleAddressAdapter(addressData, this);
+    private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData, int itemPosition, boolean isInitialSetup, boolean isShowOnboarding) {
+        multipleAddressAdapter = new MultipleAddressAdapter(addressData, this, isShowOnboarding);
         rvOrderAddressList.setAdapter(multipleAddressAdapter);
         if (isInitialSetup) {
             rvOrderAddressList.addItemDecoration(new CartItemDecoration());
