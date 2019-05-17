@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.transaction.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.purchase.adapter.MessageAdapter;
 import com.tokopedia.seller.purchase.detail.activity.BookingCodeActivity;
 import com.tokopedia.seller.purchase.detail.activity.BookingCodeContract;

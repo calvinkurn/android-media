@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.transaction.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.purchase.detail.model.history.viewmodel.OrderHistoryListData;
 
 import java.util.List;

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.common.fragment.RejectOrderBuyerRequest;
 
 /**
  * Created by kris on 1/2/18. Tokopedia

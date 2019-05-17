@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.TkpdFragment;
-import com.tokopedia.transaction.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 
 import static com.tokopedia.seller.purchase.detail.fragment.RejectOrderEmptyVarianFragment.FRAGMENT_EDIT_EMPTY_VARIAN_REQUEST_CODE;

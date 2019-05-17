@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.TkpdFragment;
-import com.tokopedia.transaction.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 
 /**

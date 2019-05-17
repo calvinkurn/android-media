@@ -21,7 +21,6 @@ import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDe
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OmsDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
-import com.tokopedia.seller.purchase.detail.fragment.RejectOrderBuyerRequest;
 import com.tokopedia.user.session.UserSession;
 
 /**

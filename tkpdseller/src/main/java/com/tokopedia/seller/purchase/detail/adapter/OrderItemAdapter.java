@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.transaction.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.purchase.detail.activity.OrderDetailView;
 import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
 

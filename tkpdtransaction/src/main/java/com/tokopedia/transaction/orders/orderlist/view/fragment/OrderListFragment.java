@@ -41,7 +41,7 @@ import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
-import com.tokopedia.seller.purchase.interactor.TxOrderNetInteractor;
+import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

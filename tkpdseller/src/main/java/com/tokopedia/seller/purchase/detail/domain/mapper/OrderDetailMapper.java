@@ -10,7 +10,7 @@ import com.tokopedia.transaction.common.data.order.CourierViewModel;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
-import com.tokopedia.transaction.exception.ResponseRuntimeException;
+import com.tokopedia.transaction.common.exception.ResponseRuntimeException;
 import com.tokopedia.seller.purchase.detail.model.detail.response.Buttons;
 import com.tokopedia.seller.purchase.detail.model.detail.response.OnlineBooking;
 import com.tokopedia.seller.purchase.detail.model.detail.response.OrderDetailResponse;

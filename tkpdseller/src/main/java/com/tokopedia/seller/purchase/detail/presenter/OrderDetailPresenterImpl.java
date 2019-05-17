@@ -16,12 +16,12 @@ import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.transaction.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
 import com.tokopedia.seller.purchase.detail.activity.OrderDetailView;
 import com.tokopedia.seller.purchase.detail.interactor.OrderDetailInteractor;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
-import com.tokopedia.seller.purchase.detail.model.buyagain.ResponseBuyAgain;
+import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
 import com.tokopedia.seller.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.seller.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 

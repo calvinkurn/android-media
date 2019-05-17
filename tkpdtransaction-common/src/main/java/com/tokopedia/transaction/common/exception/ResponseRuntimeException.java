@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.exception;
+package com.tokopedia.transaction.common.exception;
 
 /**
  * Created by nabilla on 5/31/17.

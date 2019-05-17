@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.purchase.detail.model.rejectorder.EmptyProductEditable;
 
 import java.util.ArrayList;

@@ -59,7 +59,7 @@ import com.tokopedia.seller.purchase.detail.dialog.AcceptPartialOrderDialog;
 import com.tokopedia.seller.purchase.detail.dialog.ComplaintDialog;
 import com.tokopedia.seller.purchase.detail.dialog.FinishOrderDialog;
 import com.tokopedia.seller.purchase.detail.fragment.CancelOrderFragment;
-import com.tokopedia.seller.purchase.detail.fragment.CancelSearchFragment;
+import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
 import com.tokopedia.seller.purchase.detail.fragment.CancelShipmentFragment;
 import com.tokopedia.seller.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.seller.purchase.detail.fragment.RejectOrderFragment;
@@ -71,8 +71,10 @@ import com.tokopedia.seller.purchase.detail.presenter.OrderDetailPresenterImpl;
 import com.tokopedia.seller.purchase.utils.OrderDetailAnalytics;
 import com.tokopedia.seller.purchase.utils.OrderDetailConstant;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -1010,8 +1012,10 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void rejectOrderBuyerRequest(TKPDMapParam<String, String> rejectParam) {
-        presenter.rejectOrderGenericReason(this, rejectParam);
+    public void rejectOrderBuyerRequest(Map<String, String> rejectParam) {
+        TKPDMapParam<String, String> rejectParamFinal = new TKPDMapParam<>();
+        rejectParamFinal.putAll(rejectParam);
+        presenter.rejectOrderGenericReason(this, rejectParamFinal);
     }
 
     @Override

@@ -1,5 +1,5 @@
 
-package com.tokopedia.seller.purchase.detail.model.buyagain;
+package com.tokopedia.transaction.common.sharedata.buyagain;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

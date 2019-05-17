@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.tokopedia.core.network.apiservices.transaction.CreditCardAuthService;
 import com.tokopedia.core.network.apiservices.transaction.CreditCardVaultService;
 import com.tokopedia.network.constant.ErrorNetMessage;
-import com.tokopedia.transaction.exception.ResponseRuntimeException;
+import com.tokopedia.transaction.common.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.others.creditcard.CreditCardModel;
 import com.tokopedia.transaction.others.creditcard.CreditCardModelItem;
 import com.tokopedia.transaction.others.creditcard.CreditCardResponse;

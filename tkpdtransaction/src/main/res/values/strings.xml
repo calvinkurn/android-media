@@ -22,7 +22,7 @@
     <string name="title_status">Status</string>
     <string name="toko_cash_info">TokoCash</string>
 
-    <string name="item_place_holder"># item</string>
+
 
     <string name="tkpdtransaction_label_payment_setting">Kartu Kredit</string>
     <string name="label_error_reason_must_fill">Alasan harus diisi</string>
@@ -97,7 +97,6 @@
     <string name="bca_one_click">BCA OneKlik</string>
     <string name="title_register">Daftar</string>
     <string name="title_delete">Hapus</string>
-    <string name="title_change">Ubah</string>
     <string name="title_cancel">Batal</string>
     <string name="parameter_klik">Klik</string>
     <string name="parameter_kartu">Kartu</string>
@@ -127,50 +126,15 @@
     <string name="title_preorder_proccess_time">Waktu Proses: </string>
     <string name="title_use_promo_code">Gunakan Kode Promo</string>
     <string name="title_use_promo_code_and_voucher">Gunakan Kode Promo atau Kupon</string>
-    <string name="text_complaint_dialog">Apakah Pesanan dari toko %s bermasalah? \n\n\nKlik <b>Ya</b> untuk komplain barang yang berkendala atau belum sampai.\nKlik <b>Kembali</b> untuk membatalkan aksi ini</string>
 
-    <string name="button_order_detail_accept_order">Terima Pesanan</string>
-    <string name="button_order_detail_accept_order_partially">Terima Sebagian</string>
-    <string name="button_order_detail_change_courier">Ganti Kurir</string>
-    <string name="button_order_detail_request_pickup">Request Pickup</string>
-    <string name="button_order_detail_confirm">Konfirmasi</string>
-    <string name="button_order_detail_confirm_request_pickup">Konfirmasi Request Pickup</string>
-    <string name="button_order_detail_finish">Selesai</string>
-    <string name="button_order_detail_change_awb">Ganti Resi</string>
-    <string name="button_order_detail_view_complaint">Lihat Komplain</string>
-    <string name="button_order_detail_confirm_shipping">Konfirmasi</string>
-    <string name="button_order_detail_confirm_shipping_alternative">Konfirmasi/Ganti Kurir</string>
-    <string name="button_order_detail_track">Lacak</string>
-    <string name="button_order_detail_ask_seller">Tanya Penjual</string>
-    <string name="button_order_detail_ask_buyer">Tanya Pembeli</string>
-    <string name="button_order_detail_reject_order">Tolak Pesanan</string>
-    <string name="button_order_detail_reject_shipment">Tolak Pengiriman</string>
-    <string name="button_order_detail_request_cancel">Ajukan Pembatalan</string>
-    <string name="button_order_detail_complaint">Komplain</string>
-    <string name="button_order_detail_cancel_chance">Batalkan Pencarian</string>
-    <string name="title_cancellation_notes">Tulis Keterangan Anda di sini</string>
-    <string name="title_cancel_shipment_notes">Tulis alasan pembatalan</string>
-    <string name="sub_title_cancel_shipment_notes">Per 10 Mei 2018, diterapkan sistem penalti reputasi toko baru bagi penjual yang membatalkan pesanan saat pengiriman, sebesar: \n\n
-        -1 poin untuk penjual tanpa Badge \n
-        -3 poin untuk Badge Bronze \n
-        -8 poin untuk Badge Silver \n
-        -10 poin untuk Badge Gold \n
-        -15 poin untuk Badge Diamond</string>
-    <string name="label_cancel_shipment_notes">Alasan Pembatalan</string>
-    <string name="label_explanation">Keterangan</string>
-    <string name="label_awb_number">Nomor Resi</string>
-    <string name="title_replacement_cancellation">Pilih Alasan Pembatalan: </string>
-    <string name="title_replacement_reason_1">Saya hanya berbelanja dari toko yang saya percaya</string>
-    <string name="title_replacement_reason_2">Pencarian toko pengganti memakan waktu yang lama</string>
-    <string name="title_replacement_reason_3">Saya sudah menemukan barang dari toko lain</string>
+
+
+
     <string name="title_replacement_other_reason">Lainnya</string>
     <string name="error_replacement_reason">Mohon Pilih Alasan Pembatalan</string>
     <string name="error_no_courier_chosen">Mohon Pilih Kurir</string>
-    <string name="error_no_change_price_weight">Mohon Ubah Harga dan Berat Produk</string>
 
-    <string name="title_change_awb_instruction">Mohon ubah nomor resi hanya jika resi Anda Invalid</string>
-    <string name="sub_title_change_awb_instruction">Karena kami tidak akan memproses resi invalid</string>
-    <string name="label_empty_stock">Stock Kosong</string>
+
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
     <string name="title_confirm_courier_page">Anda dapat mengganti pengiriman menjadi kurir reguler</string>
     <string name="subtitle_confirm_courier_page">Dengan persetujuan dari Pembeli</string>
@@ -192,7 +156,6 @@
     <string name="label_select_service">Tipe Pesanan</string>
     <string name="label_select_courier">Kurir Pengiriman</string>
 
-    <string name="label_change_weight_price">Ubah harga/berat</string>
 
 
     <string name="apply">Terapkan</string>
@@ -264,15 +227,11 @@ Anda di sini.</string>
     <string name="tkpdtransaction_label_tx_delivered">Sampai Tujuan</string>
 
 
-    <string name="barcode_helper">Tunjukkan barcode atau kode booking kepada petugas di gerai kurir saat mengirim barang.</string>
-    <string name="message_label">Informasi tambahan mengenai sistem kode booking</string>
     <string name="title_booking_code_detail">Detail Kode Booking</string>
-    <string name="booking_code_copied_notif">Kode booking berhasil disalin</string>
-    <string name="barcode_label_one">Kode booking pengiriman</string>
-    <string name="barcode_label_two">(tap untuk perbesar)</string>
-    <string name="barcode_image_content_description">Barcode Image</string>
 
-    <string name="button_order_detail_buy_again">Beli Lagi</string>
+
+
+
     <string name="filter">Filter</string>
     <string name="try_again">Belanja Sekarang</string>
     <string name="detail_product">Detail Pengiriman</string>

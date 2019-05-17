@@ -6,7 +6,7 @@ import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.exception.ResponseRuntimeException;
+import com.tokopedia.transaction.common.exception.ResponseRuntimeException;
 import com.tokopedia.seller.purchase.network.MyShopOrderActService;
 import com.tokopedia.seller.purchase.network.ProductChangeService;
 import com.tokopedia.seller.purchase.detail.domain.mapper.OrderDetailMapper;

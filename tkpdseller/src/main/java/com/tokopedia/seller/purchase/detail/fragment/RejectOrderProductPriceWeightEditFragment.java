@@ -19,7 +19,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.transaction.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 
 import java.util.ArrayList;

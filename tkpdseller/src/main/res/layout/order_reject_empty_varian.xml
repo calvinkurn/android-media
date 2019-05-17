@@ -24,10 +24,10 @@
         android:layout_height="match_parent"
         android:layout_above="@id/reject_order_confirm_button"
         android:orientation="vertical"
-        android:paddingEnd="@dimen/side_padding"
-        android:paddingLeft="@dimen/side_padding"
-        android:paddingRight="@dimen/side_padding"
-        android:paddingStart="@dimen/side_padding">
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16">
 
         <LinearLayout
             android:id="@+id/product_layout"

@@ -1,6 +1,7 @@
-package com.tokopedia.seller.purchase.detail.fragment;
+package com.tokopedia.transaction.common.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -16,15 +17,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.app.TkpdFragment;
-import com.tokopedia.seller.R;
+
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.transaction.common.R;
 
 /**
  * Created by kris on 11/29/17. Tokopedia
  */
 
-public class CancelSearchFragment extends TkpdFragment {
+public class CancelSearchFragment extends Fragment {
 
     private CancelSearchReplacementListener listener;
 
@@ -42,7 +43,6 @@ public class CancelSearchFragment extends TkpdFragment {
     private RelativeLayout layoutCancelSearch;
     private TextView submitButton;
 
-    @Override
     protected String getScreenName() {
         return null;
     }
@@ -225,7 +225,7 @@ public class CancelSearchFragment extends TkpdFragment {
                 } else if (otherReasonRadioButton.isChecked()) {
                     if (otherReasonField.getText().toString().isEmpty()) {
                         otherReasonField.setError(getActivity()
-                                .getString(com.tokopedia.core2.R.string.error_note_empty));
+                                .getString(R.string.error_note_empty));
                     } else {
                         listener.cancelSearch(
                                 getArguments().getString(ORDER_ID_ARGUMENT),

@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Tulis Keterangan Anda di sini"
-            android:textSize="@dimen/text_size_large"
+            android:textSize="@dimen/sp_18"
             android:textStyle="bold" />
 
 

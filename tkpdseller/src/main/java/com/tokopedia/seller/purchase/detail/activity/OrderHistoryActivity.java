@@ -10,7 +10,7 @@ import android.view.View;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.transaction.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.purchase.detail.adapter.OrderHistoryAdapter;
 import com.tokopedia.seller.purchase.detail.customview.OrderHistoryStepperLayout;
 import com.tokopedia.seller.purchase.detail.di.DaggerOrderHistoryComponent;

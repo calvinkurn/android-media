@@ -1,6 +1,7 @@
-package com.tokopedia.seller.purchase.detail.fragment;
+package com.tokopedia.transaction.common.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,15 +12,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.tokopedia.core.app.TkpdFragment;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.seller.R;
+import com.tokopedia.transaction.common.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by kris on 1/11/18. Tokopedia
  */
 
-public class RejectOrderBuyerRequest extends TkpdFragment{
+public class RejectOrderBuyerRequest extends Fragment {
 
     private static final String ORDER_ID_ARGUMENT = "ORDER_ID_ARGUMENT";
 
@@ -34,7 +36,7 @@ public class RejectOrderBuyerRequest extends TkpdFragment{
         return fragment;
     }
 
-    @Override
+
     protected String getScreenName() {
         return null;
     }
@@ -74,11 +76,11 @@ public class RejectOrderBuyerRequest extends TkpdFragment{
                 if (notesField.getText().toString().isEmpty()) {
                     notesTextInputLayout.setError(
                             getActivity()
-                                    .getString(com.tokopedia.core2.R.string.error_note_empty)
+                                    .getString(R.string.error_note_empty)
                     );
                 } else {
                     if (getArguments() != null) {
-                        TKPDMapParam<String, String> rejectParam = new TKPDMapParam<>();
+                        HashMap<String, String> rejectParam = new HashMap<>();
                         rejectParam.put("order_id", getArguments().getString(ORDER_ID_ARGUMENT));
                         rejectParam.put("reason", notesField.getText().toString());
                         rejectParam.put("reason_code", "8");
@@ -90,7 +92,7 @@ public class RejectOrderBuyerRequest extends TkpdFragment{
     }
 
     public interface RejectOrderBuyerRequestListener {
-        void rejectOrderBuyerRequest(TKPDMapParam<String, String> rejectParam);
+        void rejectOrderBuyerRequest(Map<String, String> rejectParam);
     }
 
 }
