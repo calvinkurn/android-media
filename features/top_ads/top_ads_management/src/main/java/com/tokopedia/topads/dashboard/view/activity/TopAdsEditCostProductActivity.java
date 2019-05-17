@@ -16,9 +16,10 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditScheduleExistingGr
  */
 
 public class TopAdsEditCostProductActivity extends BaseSimpleActivity implements HasComponent<AppComponent> {
-    public static Intent createIntent(Context context, String adId){
+    public static Intent createIntent(Context context, String adId, int productId){
         Intent intent = new Intent(context, TopAdsEditCostProductActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_PRODUCT_ID, productId);
         return intent;
     }
 
@@ -34,10 +35,12 @@ public class TopAdsEditCostProductActivity extends BaseSimpleActivity implements
             return fragment;
         }else{
             String adId = null;
+            int productId = 0;
             if (getIntent() != null && getIntent().getExtras() != null) {
                 adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
+                productId = getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_PRODUCT_ID, 0);
             }
-            fragment = TopAdsEditCostWithoutGroupFragment.createInstance(adId);
+            fragment = TopAdsEditCostWithoutGroupFragment.createInstance(adId, productId);
             return fragment;
         }
     }
