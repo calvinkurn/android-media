@@ -1043,17 +1043,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderChangeAddressSuccess(RecipientAddressModel selectedAddress) {
-        if (shipmentAdapter.hasAppliedPromoStackCode()) {
-            setCornerId(selectedAddress.getCornerId());
-            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), isTradeIn(), true, selectedAddress.getCornerId(), getDeviceId());
-        }
+//        if (shipmentAdapter.hasAppliedPromoStackCode()) {
+//            setCornerId(selectedAddress.getCornerId());
+//            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), isTradeIn(), true, selectedAddress.getCornerId(), getDeviceId());
+//        }
+        // Perlu cek untuk case disabling cod after choosing corner address
         if (!TextUtils.isEmpty(selectedAddress.getCornerId()) && shipmentPresenter.getCodData() != null) {
             shipmentAdapter.removeNotifierData();
             shipmentPresenter.getShipmentButtonPaymentModel().setCod(false);
             onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
         }
-        shipmentPresenter.setRecipientAddressModel(selectedAddress);
-        shipmentAdapter.updateSelectedAddress(selectedAddress);
+//        shipmentPresenter.setRecipientAddressModel(selectedAddress);
+//        shipmentAdapter.updateSelectedAddress(selectedAddress);
+        shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), isTradeIn(), true, selectedAddress.getCornerId(), getDeviceId());
         courierBottomsheet = null;
         onCartDataDisableToCheckout(null);
     }

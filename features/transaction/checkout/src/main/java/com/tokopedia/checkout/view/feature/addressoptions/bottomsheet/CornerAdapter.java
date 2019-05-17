@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.feature.addressoptions.cornerbtmsheet;
+package com.tokopedia.checkout.view.feature.addressoptions.bottomsheet;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
