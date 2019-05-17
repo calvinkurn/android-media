@@ -28,7 +28,7 @@ class ChipAdapter(val list: List<String>, val listener: OnClickListener,
             chips.text = list.get(position)
             chips.isSelected = false
             chips.setOnClickListener {
-                if (selectOnlyOneChip) onResetChipListener.onResetChip()
+                if (selectOnlyOneChip && !chips.isSelected) onResetChipListener.onResetChip()
                 chips.isSelected = !chips.isSelected
                 if (selectedColor != 0) {
                     if (chips.isSelected) setTextColor(selectedColor)
