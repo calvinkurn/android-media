@@ -2087,7 +2087,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         new DefaultShare(activity, shareData).show();
     }
 
-    @Override
     public void goToManageShop(Context context) {
         context.startActivity(StoreSettingActivity.createIntent(context));
     }
