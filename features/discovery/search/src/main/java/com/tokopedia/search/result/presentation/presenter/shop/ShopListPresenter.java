@@ -27,7 +27,6 @@ import javax.inject.Named;
 final class ShopListPresenter
         extends SearchSectionPresenter<ShopListSectionContract.View>
         implements ShopListSectionContract.Presenter {
-
     @Inject
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_USE_CASE)
     UseCase<SearchShopModel> searchShopUseCase;
@@ -88,7 +87,7 @@ final class ShopListPresenter
 
     private RequestParams createToggleFavoriteShopRequestParam(String shopId) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(SearchApiConst.SHOP_ID, shopId);
+        requestParams.putString(SearchConstant.SearchShop.TOGGLE_FAVORITE_SHOP_ID, shopId);
         return requestParams;
     }
 

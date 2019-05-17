@@ -90,5 +90,6 @@ public interface SearchConstant {
     interface SearchShop {
         String SEARCH_SHOP_USE_CASE = "search_shop_use_case";
         String TOGGLE_FAVORITE_SHOP_USE_CASE = "toggle_favorite_shop_use_case";
+        String TOGGLE_FAVORITE_SHOP_ID = "SHOP_ID";
     }
 }
