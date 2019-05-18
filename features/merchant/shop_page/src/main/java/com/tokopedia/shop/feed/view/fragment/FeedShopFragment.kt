@@ -211,6 +211,18 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
+    override fun onSuccessGetFeedNotLoginFirstPage(element: List<Visitable<*>>, lastCursor: String) {
+        val dataList = ArrayList<Visitable<*>>()
+        isLoading = false
+        if (element.isNotEmpty()) {
+            dataList.addAll(element)
+            renderList(dataList, lastCursor.isNotEmpty())
+        } else {
+            dataList.add(getEmptyResultViewModel())
+            renderList(dataList)
+        }
+    }
+
     override fun onWhitelistClicked(element: WhitelistViewModel) {
         goToCreatePost()
     }
@@ -440,7 +452,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int, id: String, type: String, isFollow: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onActionRedirect(redirectUrl: String) {
@@ -469,9 +480,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String) {
-        startActivity(VideoDetailActivity.getInstance(
-                activity!!,
-                postId))
+        activity?.let {
+            startActivity(VideoDetailActivity.getInstance(
+                    it,
+                    postId))
+        }
     }
 
     fun updateShopInfo(shopInfo: ShopInfo) {

@@ -15,6 +15,8 @@ interface FeedShopContract {
     interface View : BaseListViewListener<Visitable<*>> {
         fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain)
 
+        fun onSuccessGetFeedNotLoginFirstPage(element: List<Visitable<*>>, lastCursor: String)
+
         fun onSuccessGetFeed(visitables: List<Visitable<*>>, lastCursor: String)
 
         fun updateCursor(cursor: String)

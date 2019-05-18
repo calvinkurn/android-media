@@ -72,39 +72,15 @@ class GetFeedShopFirstUseCase
             return null
         else {
             val domain = WhitelistDomain()
-            domain.error = (if (query.whitelist.error != null)
-                query.whitelist.error
-            else
-                "")
-            domain.url = (if (query.whitelist.url != null)
-                query.whitelist.url
-            else
-                "")
+            domain.error = query.whitelist.error ?: ""
+            domain.url = query.whitelist.url ?: ""
             domain.isWhitelist = (query.whitelist.isWhitelist)
-            domain.title = (if (query.whitelist.title != null)
-                query.whitelist.title
-            else
-                "")
-            domain.desc = (if (query.whitelist.description != null)
-                query.whitelist.description
-            else
-                "")
-            domain.titleIdentifier = (if (query.whitelist.titleIdentifier != null)
-                query.whitelist.titleIdentifier
-            else
-                "")
-            domain.postSuccessMessage = (if (query.whitelist.postSuccessMessage != null)
-                query.whitelist.postSuccessMessage
-            else
-                "")
-            domain.image = (if (query.whitelist.imageUrl != null)
-                query.whitelist.imageUrl
-            else
-                "")
-            domain.authors = (if (query.whitelist.authors != null)
-                query.whitelist.authors
-            else
-                ArrayList())
+            domain.title = query.whitelist.title ?: ""
+            domain.desc = query.whitelist.description ?: ""
+            domain.titleIdentifier = query.whitelist.titleIdentifier ?: ""
+            domain.postSuccessMessage = query.whitelist.postSuccessMessage ?: ""
+            domain.image = query.whitelist.imageUrl ?: query.whitelist.imageUrl
+            domain.authors = query.whitelist.authors ?: ArrayList()
             return domain
         }
     }

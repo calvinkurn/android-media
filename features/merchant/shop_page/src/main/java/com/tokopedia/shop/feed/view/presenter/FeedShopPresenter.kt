@@ -52,8 +52,8 @@ class FeedShopPresenter @Inject constructor(
     }
 
     override fun getFeedFirstPage(shopId: String) {
-        if (isViewAttached) {
-            cursor = ""
+        cursor = ""
+        if (!getUserId().equals("0")) {
             getDynamicFeedFirstUseCase.execute(
                     GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_SHOP, shopId),
                     object : Subscriber<DynamicFeedShopDomain>() {
@@ -68,18 +68,17 @@ class FeedShopPresenter @Inject constructor(
                         }
 
                         override fun onError(e: Throwable?) {
-                            if (GlobalConfig.isAllowDebuggingTools()) {
-                                e?.printStackTrace()
+                            if (isViewAttached) {
+
+                                if (GlobalConfig.isAllowDebuggingTools()) {
+                                    e?.printStackTrace()
+                                }
+                                view.showGetListError(e)
                             }
-                            view.showGetListError(e)
                         }
                     }
             )
-        }
-    }
-
-    override fun getFeed(shopId: String) {
-        if (isViewAttached) {
+        } else {
             getDynamicFeedUseCase.execute(
                     GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_SHOP, shopId),
                     object : Subscriber<DynamicFeedDomainModel>() {
@@ -93,24 +92,53 @@ class FeedShopPresenter @Inject constructor(
                         }
 
                         override fun onError(e: Throwable?) {
-                            if (GlobalConfig.isAllowDebuggingTools()) {
-                                e?.printStackTrace()
+                            if (isViewAttached) {
+                                if (GlobalConfig.isAllowDebuggingTools()) {
+                                    e?.printStackTrace()
+                                }
+                                view.showGetListError(e)
                             }
-                            view.showGetListError(e)
                         }
                     }
             )
         }
     }
 
+    override fun getFeed(shopId: String) {
+        getDynamicFeedUseCase.execute(
+                GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_SHOP, shopId),
+                object : Subscriber<DynamicFeedDomainModel>() {
+                    override fun onNext(t: DynamicFeedDomainModel?) {
+                        t?.let {
+                            view.onSuccessGetFeed(t.postList, t.cursor)
+                        }
+                    }
+
+                    override fun onCompleted() {
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        if (isViewAttached) {
+                            if (GlobalConfig.isAllowDebuggingTools()) {
+                                e?.printStackTrace()
+                            }
+                            view.showGetListError(e)
+                        }
+                    }
+                }
+        )
+    }
+
     override fun followKol(id: Int) {
-        if (isViewAttached) {
-            followKolPostGqlUseCase.clearRequest()
-            followKolPostGqlUseCase.addRequest(
-                    followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_FOLLOW)
-            )
-            followKolPostGqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
-                override fun onError(throwable: Throwable?) {
+        followKolPostGqlUseCase.clearRequest()
+        followKolPostGqlUseCase.addRequest(
+                followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_FOLLOW)
+        )
+        followKolPostGqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
+
+            override fun onError(throwable: Throwable?) {
+
+                if (isViewAttached) {
                     if (GlobalConfig.isAllowDebuggingTools()) {
                         throwable?.printStackTrace()
                     }
@@ -118,45 +146,46 @@ class FeedShopPresenter @Inject constructor(
                             ErrorHandler.getErrorMessage(view.context, throwable)
                     )
                 }
+            }
 
-                override fun onCompleted() {
+            override fun onCompleted() {
+            }
+
+            override fun onNext(response: GraphqlResponse) {
+                val query: FollowKolQuery? = response.getData(FollowKolQuery::class.java)
+
+                if (query == null) {
+                    onError(RuntimeException())
+                    return
+                }
+                if (!TextUtils.isEmpty(query.data.error)) {
+                    view.onErrorFollowKol(query.data.error)
+                    return
                 }
 
-                override fun onNext(response: GraphqlResponse) {
-                    val query: FollowKolQuery? = response.getData(FollowKolQuery::class.java)
-
-                    if (query == null) {
-                        onError(RuntimeException())
-                        return
-                    }
-                    if (!TextUtils.isEmpty(query.data.error)) {
-                        view.onErrorFollowKol(query.data.error)
-                        return
-                    }
-
-                    val isSuccess = query.data.data.status == FOLLOW_SUCCESS
-                    if (isSuccess) {
-                        view.onSuccessFollowKol()
-                    } else {
-                        view.onErrorFollowKol(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
-                    }
+                val isSuccess = query.data.data.status == FOLLOW_SUCCESS
+                if (isSuccess) {
+                    view.onSuccessFollowKol()
+                } else {
+                    view.onErrorFollowKol(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
                 }
-            })
-        }
+            }
+        })
     }
 
     override fun unfollowKol(id: Int) {
-        if (isViewAttached) {
-            followKolPostGqlUseCase.clearRequest()
-            followKolPostGqlUseCase.addRequest(
-                    followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
-            )
-            followKolPostGqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
-                override fun onCompleted() {
+        followKolPostGqlUseCase.clearRequest()
+        followKolPostGqlUseCase.addRequest(
+                followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
+        )
+        followKolPostGqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
+            override fun onCompleted() {
 
-                }
+            }
 
-                override fun onError(throwable: Throwable?) {
+            override fun onError(throwable: Throwable?) {
+
+                if (isViewAttached) {
                     if (GlobalConfig.isAllowDebuggingTools()) {
                         throwable?.printStackTrace()
                     }
@@ -164,28 +193,28 @@ class FeedShopPresenter @Inject constructor(
                             ErrorHandler.getErrorMessage(view.context, throwable)
                     )
                 }
+            }
 
-                override fun onNext(response: GraphqlResponse) {
-                    val query: FollowKolQuery? = response.getData(FollowKolQuery::class.java)
+            override fun onNext(response: GraphqlResponse) {
+                val query: FollowKolQuery? = response.getData(FollowKolQuery::class.java)
 
-                    if (query == null) {
-                        onError(RuntimeException())
-                        return
-                    }
-                    if (!TextUtils.isEmpty(query.data.error)) {
-                        view.onErrorFollowKol(query.data.error)
-                        return
-                    }
-
-                    val isSuccess = query.data.data.status == FOLLOW_SUCCESS
-                    if (isSuccess) {
-                        view.onSuccessFollowKol()
-                    } else {
-                        view.onErrorFollowKol(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
-                    }
+                if (query == null) {
+                    onError(RuntimeException())
+                    return
                 }
-            })
-        }
+                if (!TextUtils.isEmpty(query.data.error)) {
+                    view.onErrorFollowKol(query.data.error)
+                    return
+                }
+
+                val isSuccess = query.data.data.status == FOLLOW_SUCCESS
+                if (isSuccess) {
+                    view.onSuccessFollowKol()
+                } else {
+                    view.onErrorFollowKol(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                }
+            }
+        })
     }
 
     override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
@@ -207,30 +236,31 @@ class FeedShopPresenter @Inject constructor(
     }
 
     override fun deletePost(id: Int, rowNumber: Int) {
-        if (isViewAttached) {
-            deletePostUseCase.execute(
-                    DeletePostUseCase.createRequestParams(id.toString()),
-                    object : Subscriber<Boolean>() {
-                        override fun onNext(isSuccess: Boolean?) {
-                            if (isSuccess == null || isSuccess.not()) {
-                                onError(RuntimeException())
-                                return
-                            }
-                            view.onSuccessDeletePost(rowNumber)
+        deletePostUseCase.execute(
+                DeletePostUseCase.createRequestParams(id.toString()),
+                object : Subscriber<Boolean>() {
+                    override fun onNext(isSuccess: Boolean?) {
+                        if (isSuccess == null || isSuccess.not()) {
+                            onError(RuntimeException())
+                            return
                         }
+                        view.onSuccessDeletePost(rowNumber)
+                    }
 
-                        override fun onCompleted() {
-                        }
+                    override fun onCompleted() {
+                    }
 
-                        override fun onError(e: Throwable?) {
+                    override fun onError(e: Throwable?) {
+                        if (isViewAttached) {
+
                             if (GlobalConfig.isAllowDebuggingTools()) {
                                 e?.printStackTrace()
                             }
                             view.onErrorDeletePost(ErrorHandler.getErrorMessage(view.context, e), id, rowNumber)
                         }
                     }
-            )
-        }
+                }
+        )
     }
 
     override fun trackPostClick(uniqueTrackingId: String, redirectLink: String) {
