@@ -36,6 +36,10 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String checksum;
     private String ut;
     private String blackboxInfo;
+    private Boolean isNow;
+    private int priorityPrice;
+    private String priorityInnactiveMessage;
+    private String priorityFormattedPrice;
 
     public CourierItemData() {
     }
@@ -260,6 +264,38 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.logPromoMsg = logPromoMsg;
     }
 
+    public Boolean getNow() {
+        return isNow;
+    }
+
+    public void setNow(Boolean now) {
+        isNow = now;
+    }
+
+    public int getPriorityPrice() {
+        return priorityPrice;
+    }
+
+    public void setPriorityPrice(int priorityPrice) {
+        this.priorityPrice = priorityPrice;
+    }
+
+    public String getPriorityInnactiveMessage() {
+        return priorityInnactiveMessage;
+    }
+
+    public void setPriorityInnactiveMessage(String priorityInnactiveMessage) {
+        this.priorityInnactiveMessage = priorityInnactiveMessage;
+    }
+
+    public String getPriorityFormattedPrice() {
+        return priorityFormattedPrice;
+    }
+
+    public void setPriorityFormattedPrice(String priorityFormattedPrice) {
+        this.priorityFormattedPrice = priorityFormattedPrice;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -295,6 +331,10 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeString(this.checksum);
         dest.writeString(this.ut);
         dest.writeString(this.blackboxInfo);
+        dest.writeByte(this.isNow ?(byte) 1 : (byte) 0);
+        dest.writeInt(this.priorityPrice);
+        dest.writeString(this.priorityInnactiveMessage);
+        dest.writeString(this.priorityFormattedPrice);
     }
 
     protected CourierItemData(Parcel in) {
@@ -326,6 +366,10 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.checksum = in.readString();
         this.ut = in.readString();
         this.blackboxInfo = in.readString();
+        this.isNow = in.readByte() != 0;
+        this.priorityPrice = in.readInt();
+        this.priorityInnactiveMessage = in.readString();
+        this.priorityFormattedPrice = in.readString();
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {

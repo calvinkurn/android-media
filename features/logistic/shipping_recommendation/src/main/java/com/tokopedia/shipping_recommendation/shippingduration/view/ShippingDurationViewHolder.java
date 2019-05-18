@@ -1,9 +1,13 @@
 package com.tokopedia.shipping_recommendation.shippingduration.view;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -36,6 +40,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvDurationHeaderInfo;
     private RelativeLayout rlContent;
     private TextView tvPromoPotency;
+    private TextView tvOrderPrioritas;
 
     private int cartPosition;
     private ShippingDurationAdapter adapter;
@@ -49,6 +54,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         this.adapter = adapter;
         this.hasCourierPromo = hasCourierPromo;
 
+        tvOrderPrioritas = itemView.findViewById(R.id.tv_order_prioritas);
         tvError = itemView.findViewById(R.id.tv_error);
         tvDuration = itemView.findViewById(R.id.tv_duration);
         tvPrice = itemView.findViewById(R.id.tv_price);
@@ -88,7 +94,19 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             } else {
                 tvTextDesc.setVisibility(View.GONE);
             }
+
+            if (shippingDurationViewModel.getServiceData().getOrderPriority().getNow()) {
+                String orderPrioritasTxt = itemView.getContext().getString(R.string.order_prioritas);
+                SpannableString orderPrioritasLabel = new SpannableString(orderPrioritasTxt);
+                orderPrioritasLabel.setSpan(new StyleSpan(Typeface.BOLD),16,orderPrioritasTxt.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                tvOrderPrioritas.setText(orderPrioritasLabel);
+                tvOrderPrioritas.setVisibility(View.VISIBLE);
+            }else {
+                tvOrderPrioritas.setVisibility(View.GONE);
+            }
+
         }
+
 
         tvDuration.setText(shippingDurationViewModel.getServiceData().getServiceName());
         imgCheck.setVisibility(shippingDurationViewModel.isSelected() ? View.VISIBLE : View.GONE);

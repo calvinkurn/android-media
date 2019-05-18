@@ -35,6 +35,7 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentInsuranceT
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.merchantvoucher.common.widget.LogisticVoucherView;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
@@ -582,6 +583,28 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public void setSelectedPriority(int cartItemPosition,ServiceData serviceData) {
+        ShipmentCartItemModel shipmentCartItemModel = null;
+        Object currentShipmentData = shipmentDataList.get(cartItemPosition);
+        if (currentShipmentData instanceof ShipmentCartItemModel) {
+            shipmentCartItemModel = (ShipmentCartItemModel) currentShipmentData;
+            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                //orderpriority
+                mapperOrderPriority(serviceData, shipmentCartItemModel);
+            } else {
+                //oprderpriority
+                mapperOrderPriority(serviceData, shipmentCartItemModel);
+            }
+        }
+    }
+
+    private void mapperOrderPriority(ServiceData serviceData, ShipmentCartItemModel shipmentCartItemModel) {
+        shipmentCartItemModel.setNow(serviceData.getOrderPriority().getNow());
+        shipmentCartItemModel.setPriorityInactiveMessage(serviceData.getOrderPriority().getInactiveMessage());
+        shipmentCartItemModel.setPriorityPrice(serviceData.getOrderPriority().getPrice());
+        shipmentCartItemModel.setPriorityFormattedPrice(serviceData.getOrderPriority().getFormattedPrice());
+    }
+
     public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData newCourierItemData) {
         ShipmentCartItemModel shipmentCartItemModel = null;
         Object currentShipmentData = shipmentDataList.get(position);
@@ -1089,6 +1112,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public PromoStackingData getPromoGlobalStackData() {
         return promoGlobalStackData;
     }
+
 
     public static class RequestData {
 

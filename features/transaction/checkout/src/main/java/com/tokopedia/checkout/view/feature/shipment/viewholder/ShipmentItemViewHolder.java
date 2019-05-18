@@ -209,6 +209,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvLogPromoErr;
     private TextView tvSelectedPriceOnly;
 
+    // order prioritas
+    private CheckBox checkBoxPriority;
+    private ImageView imgPriority;
+    private TextView tvPrioritasTicker;
+    private LinearLayout llPrioritasTicker;
+    private LinearLayout llPrioritas;
+
+
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
     }
@@ -320,6 +328,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         rlProductInfo = itemView.findViewById(R.id.rl_product_info);
         flDisableContainer = itemView.findViewById(R.id.fl_disable_container);
 
+        //priority
+        llPrioritas = itemView.findViewById(R.id.ll_prioritas);
+        imgPriority = itemView.findViewById(R.id.img_prioritas_info);
+        checkBoxPriority = itemView.findViewById(R.id.cb_prioritas);
+        llPrioritasTicker = itemView.findViewById(R.id.ll_prioritas_ticker);
+        tvPrioritasTicker = itemView.findViewById(R.id.tv_prioritas_ticker);
+
         // robinhood III
         llCourierBlackboxStateLoading = itemView.findViewById(R.id.ll_courier_blackbox_state_loading);
         llSelectShipmentBlackbox = itemView.findViewById(R.id.ll_select_shipment_blackbox);
@@ -381,6 +396,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderFulfillment(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderShippingType(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
+        renderPrioritas(shipmentCartItemModel);
         renderInsurance(shipmentCartItemModel);
         renderDropshipper(recipientAddressModel != null && recipientAddressModel.isCornerAddress());
         renderCostDetail(shipmentCartItemModel);
@@ -1019,6 +1035,31 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             textInputLayoutShipperName.setErrorEnabled(false);
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperNameValid(true);
             mActionListener.onCartDataEnableToCheckout();
+        }
+    }
+
+    private void renderPrioritas(final ShipmentCartItemModel shipmentCartItemModel) {
+        List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
+
+        if (getAdapterPosition() != RecyclerView.NO_POSITION && shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+            shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+
+            if (!cartItemModelList.remove(FIRST_ELEMENT).isPreOrder()) {
+                checkBoxPriority.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+
+                        }
+                    }
+                });
+            }
+
+            final CourierItemData courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
+            if (!courierItemData.getNow()) {
+                llPrioritas.setVisibility(View.GONE);
+                llPrioritasTicker.setVisibility(View.GONE);
+            }
         }
     }
 

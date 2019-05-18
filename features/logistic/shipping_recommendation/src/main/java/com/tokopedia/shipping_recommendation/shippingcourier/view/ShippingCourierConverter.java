@@ -33,6 +33,10 @@ public class ShippingCourierConverter {
                 courierItemData.setUsePinPoint(true);
             }
         }
+        courierItemData.setNow(shippingCourierViewModel.getServiceData().getOrderPriority().getNow());
+        courierItemData.setPriorityPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getPrice());
+        courierItemData.setPriorityFormattedPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getFormattedPrice());
+        courierItemData.setPriorityInnactiveMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getInactiveMessage());
         courierItemData.setAllowDropshiper(shippingCourierViewModel.isAllowDropshipper());
         courierItemData.setAdditionalPrice(shippingCourierViewModel.getAdditionalFee());
         courierItemData.setPromoCode(shippingCourierViewModel.getProductData().getPromoCode());
