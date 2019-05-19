@@ -71,15 +71,10 @@ class ShareAdapter(@NonNull var mActivities : List<ResolveInfo>, @NonNull var mP
         return mActivities.size + 2 // for salin link and lainnya
     }
 
-    class ShareViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ShareViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private lateinit var iconView: ImageView
-        private lateinit var labelView: TextView
-
-        init {
-            iconView = itemView.findViewById(R.id.iconView)
-            labelView = itemView.findViewById(R.id.labelView)
-        }
+        private var iconView: ImageView = view.findViewById(R.id.iconView)
+        private var labelView: TextView = view.findViewById(R.id.labelView)
 
         fun bindItem(resource: Drawable?, title: CharSequence?, type: String?, clickListener: OnItemClickListener?) {
             resource.let {
