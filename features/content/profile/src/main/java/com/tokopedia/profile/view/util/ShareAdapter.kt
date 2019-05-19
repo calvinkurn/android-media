@@ -9,8 +9,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import com.tokopedia.profile.R
-import kotlinx.android.synthetic.main.item_share.view.*
 
 /**
  * @author by yfsx on 17/05/19.
@@ -49,12 +50,12 @@ class ShareAdapter(@NonNull var mActivities : List<ResolveInfo>, @NonNull var mP
         val resources: Drawable?
 
         if (isPositionCopy(position)) {
-            resources = AppCompatResources.getDrawable(holder.itemView.iconView.context, R.drawable.ic_copy_clipboard)
-            title = holder.itemView.labelView.context.getString(R.string.copy)
+            resources = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_copy_clipboard)
+            title = holder.itemView.context.getString(R.string.copy)
             type = ShareBottomSheets.KEY_COPY
         } else if (isPositionOther(position)) {
-            resources = AppCompatResources.getDrawable(holder.itemView.iconView.context, R.drawable.ic_btn_more)
-            title = holder.itemView.labelView.context.getString(R.string.other)
+            resources = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_btn_more)
+            title = holder.itemView.context.getString(R.string.other)
             type = ShareBottomSheets.KEY_OTHER
         } else {
             val activity = mActivities[position]
@@ -72,12 +73,20 @@ class ShareAdapter(@NonNull var mActivities : List<ResolveInfo>, @NonNull var mP
 
     class ShareViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        private lateinit var iconView: ImageView
+        private lateinit var labelView: TextView
+
+        init {
+            iconView = itemView.findViewById(R.id.iconView)
+            labelView = itemView.findViewById(R.id.labelView)
+        }
+
         fun bindItem(resource: Drawable?, title: CharSequence?, type: String?, clickListener: OnItemClickListener?) {
             resource.let {
-                itemView.iconView.setImageDrawable(it)
+                iconView.setImageDrawable(it)
             }
             title.let {
-                itemView.labelView.text = it
+                labelView.text = it
             }
             type?.let {typeString ->
                 clickListener?.let {listener ->

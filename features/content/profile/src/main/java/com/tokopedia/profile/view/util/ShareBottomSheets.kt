@@ -38,8 +38,14 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     private val PACKAGENAME_LINE = "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity"
     private val PACKAGENAME_TWITTER = "com.twitter.composer.ComposerShareActivity"
     private val PACKAGENAME_GPLUS = "com.google.android.apps.plus.GatewayActivityAlias"
+    private val PACKAGENAME_INSTAGRAM = "com.instagram.android";
 
-    private val ClassNameApplications = arrayOf(PACKAGENAME_WHATSAPP, PACKAGENAME_FACEBOOK, PACKAGENAME_LINE, PACKAGENAME_TWITTER, PACKAGENAME_GPLUS)
+    private val ClassNameApplications = arrayOf(PACKAGENAME_WHATSAPP,
+            PACKAGENAME_FACEBOOK,
+            PACKAGENAME_LINE,
+            PACKAGENAME_TWITTER,
+            PACKAGENAME_GPLUS,
+            PACKAGENAME_INSTAGRAM)
 
     companion object {
         val COPY = "Copy"
@@ -61,6 +67,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
         private val KEY_TWITTER = "twitter"
         private val KEY_FACEBOOK = "facebook"
         private val KEY_GOOGLE = "google"
+        private val KEY_INSTAGRAM = "instagram"
         val KEY_OTHER = "lainnya"
         val KEY_COPY = "salinlink"
 
@@ -129,17 +136,24 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     private fun init() {
         val intent = getIntent("")
 
-        val resolvedActivities = getActivity()!!.getPackageManager()
-                .queryIntentActivities(intent, 0)
-        if (!resolvedActivities.isEmpty()) {
-            val showApplications = validate(resolvedActivities)
+        intent.setAction(Intent.ACTION_SEND)
+        intent.setType("text/plain")
+        activity?.let {
+            val resolvedActivities = it.packageManager
+                    .queryIntentActivities(intent, 0)
+            if (!resolvedActivities.isEmpty()) {
+                val showApplications = validate(resolvedActivities)
 
-            val adapter = ShareAdapter(showApplications, getActivity()!!
-                    .getPackageManager())
-            mRecyclerView!!.adapter = adapter
+                val adapter = ShareAdapter(showApplications, getActivity()!!
+                        .getPackageManager())
+                mRecyclerView!!.adapter = adapter
 
-            adapter.setOnItemClickListener(this)
+                adapter.setOnItemClickListener(this)
+            } else {
+                return
+            }
         }
+
     }
 
     private fun validate(resolvedActivities: List<ResolveInfo>): List<ResolveInfo> {
