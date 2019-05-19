@@ -36,39 +36,68 @@ class ShareAdapter(@NonNull var mActivities : List<ResolveInfo>, @NonNull var mP
     }
 
     private fun isPositionOther(position: Int): Boolean {
-        return position == mActivities.size + 1
+        return position == mActivities.size + 2
     }
 
     private fun isPositionCopy(position: Int): Boolean {
+        return position == mActivities.size + 1
+    }
+
+    private fun isPositionInstagram(position: Int): Boolean {
         return position == mActivities.size
+    }
+
+    private fun getYoutubePosition(): Int {
+        return mActivities.size
+    }
+
+    private fun getCopyPosition(): Int {
+        return mActivities.size + 1
+    }
+
+    private fun getOtherPosition(): Int {
+        return mActivities.size + 2
     }
 
     override fun onBindViewHolder(holder: ShareViewHolder, position: Int) {
 
-        val title: CharSequence
-        val type: String
-        val resources: Drawable?
+        var title: CharSequence
+        var type: String
+        var resources: Drawable?
 
-        if (isPositionCopy(position)) {
-            resources = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_copy_clipboard)
-            title = holder.itemView.context.getString(R.string.copy)
-            type = ShareBottomSheets.KEY_COPY
-        } else if (isPositionOther(position)) {
-            resources = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_btn_more)
-            title = holder.itemView.context.getString(R.string.other)
-            type = ShareBottomSheets.KEY_OTHER
-        } else {
-            val activity = mActivities[position]
-            resources = activity.loadIcon(mPackageManager)
-            title = activity.loadLabel(mPackageManager)
-            type = activity.activityInfo.packageName
+        when(position) {
+            getYoutubePosition() -> {
+                resources = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_copy_clipboard)
+                title = holder.itemView.context.getString(R.string.copy)
+                type = ShareBottomSheets.KEY_YOUTUBE
+            }
+            getCopyPosition() -> {
+                resources = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_copy_clipboard)
+                title = holder.itemView.context.getString(R.string.copy)
+                type = ShareBottomSheets.KEY_COPY
+            }
+            getOtherPosition() -> {
+                resources = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_btn_more)
+                title = holder.itemView.context.getString(R.string.other)
+                type = ShareBottomSheets.KEY_OTHER
+            }
+            else -> {
+                val activity = mActivities[position]
+                resources = activity.loadIcon(mPackageManager)
+                title = activity.loadLabel(mPackageManager)
+                type = activity.activityInfo.packageName
+                if (title.equals(ShareBottomSheets.KEY_INSTAGRAM_DIRECT)) {
+                    title = ShareBottomSheets.NAME_INSTAGRAM
+                }
+            }
         }
+
 
         holder.bindItem(resources, title, type, onItemClickListener)
     }
 
     override fun getItemCount(): Int {
-        return mActivities.size + 2 // for salin link and lainnya
+        return mActivities.size + 3 // for youtube, salin link and lainnya
     }
 
     class ShareViewHolder(view: View) : RecyclerView.ViewHolder(view) {

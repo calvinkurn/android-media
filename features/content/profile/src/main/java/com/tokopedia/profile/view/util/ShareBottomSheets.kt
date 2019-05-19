@@ -24,6 +24,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.profile.R
 import com.tokopedia.track.TrackApp
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * @author by yfsx on 17/05/19.
@@ -68,6 +69,9 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
         private val KEY_FACEBOOK = "facebook"
         private val KEY_GOOGLE = "google"
         private val KEY_INSTAGRAM = "instagram"
+        val KEY_INSTAGRAM_DIRECT = "direct"
+        val NAME_INSTAGRAM = "Instagram"
+        val KEY_YOUTUBE = "youtube"
         val KEY_OTHER = "lainnya"
         val KEY_COPY = "salinlink"
 
@@ -134,33 +138,26 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private fun init() {
-        val showApplications = getAvailableApps()
-        val adapter = ShareAdapter(showApplications, getActivity()!!
-                .getPackageManager())
-        mRecyclerView!!.adapter = adapter
+        val intent = getIntent("")
+        activity?.let {
+            val resolvedActivities = it.packageManager
+                    .queryIntentActivities(intent, 0)
+            if (!resolvedActivities.isEmpty()) {
+                val showApplications: ArrayList<ResolveInfo> = validate(resolvedActivities)
+                showApplications.addAll(getInstagramApps())
+                val adapter = ShareAdapter(showApplications, getActivity()!!
+                        .getPackageManager())
+                mRecyclerView!!.adapter = adapter
 
-        adapter.setOnItemClickListener(this)
-    }
-
-    private fun getAvailableApps(): List<ResolveInfo> {
-        val showApplications = ArrayList<ResolveInfo>()
-        val pm = activity!!.getPackageManager()
-        val shareIntent = Intent()
-        shareIntent.action = Intent.ACTION_SEND
-        shareIntent.type = "text/plain"
-        val resolveInfos = pm.queryIntentActivities(shareIntent, 0) // returns all applications which can listen to the SEND Intent
-        if (resolveInfos != null && !resolveInfos.isEmpty()) {
-            for (info in resolveInfos) {
-                if (Arrays.asList(*ClassNameApplications)
-                                .contains(info.activityInfo.packageName)) {
-                    showApplications.add(info)
-                }
+                adapter.setOnItemClickListener(this)
+            } else {
+                return
             }
         }
-        return showApplications
+
     }
 
-    private fun validate(resolvedActivities: List<ResolveInfo>): List<ResolveInfo> {
+    private fun validate(resolvedActivities: List<ResolveInfo>): ArrayList<ResolveInfo> {
         val showApplications = ArrayList<ResolveInfo>()
         for (resolveInfo in resolvedActivities) {
             if (Arrays.asList(*ClassNameApplications)
@@ -169,6 +166,15 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
             }
         }
         return showApplications
+    }
+
+    private fun getInstagramApps(): ArrayList<ResolveInfo> {
+        val pm = activity!!.getPackageManager()
+        val shareIntent = Intent()
+        shareIntent.action = Intent.ACTION_SEND
+        shareIntent.type = "text/plain"
+        val resolveInfos = pm.queryIntentActivities(shareIntent, 0)
+        return validate(resolveInfos)
     }
 
     override fun onItemClick(packageName: String) {
