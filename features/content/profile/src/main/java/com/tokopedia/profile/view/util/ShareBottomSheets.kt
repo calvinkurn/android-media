@@ -134,26 +134,30 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private fun init() {
-        val intent = getIntent("")
+        val showApplications = getAvailableApps()
+        val adapter = ShareAdapter(showApplications, getActivity()!!
+                .getPackageManager())
+        mRecyclerView!!.adapter = adapter
 
-        intent.setAction(Intent.ACTION_SEND)
-        intent.setType("text/plain")
-        activity?.let {
-            val resolvedActivities = it.packageManager
-                    .queryIntentActivities(intent, 0)
-            if (!resolvedActivities.isEmpty()) {
-                val showApplications = validate(resolvedActivities)
+        adapter.setOnItemClickListener(this)
+    }
 
-                val adapter = ShareAdapter(showApplications, getActivity()!!
-                        .getPackageManager())
-                mRecyclerView!!.adapter = adapter
-
-                adapter.setOnItemClickListener(this)
-            } else {
-                return
+    private fun getAvailableApps(): List<ResolveInfo> {
+        val showApplications = ArrayList<ResolveInfo>()
+        val pm = activity!!.getPackageManager()
+        val shareIntent = Intent()
+        shareIntent.action = Intent.ACTION_SEND
+        shareIntent.type = "text/plain"
+        val resolveInfos = pm.queryIntentActivities(shareIntent, 0) // returns all applications which can listen to the SEND Intent
+        if (resolveInfos != null && !resolveInfos.isEmpty()) {
+            for (info in resolveInfos) {
+                if (Arrays.asList(*ClassNameApplications)
+                                .contains(info.activityInfo.packageName)) {
+                    showApplications.add(info)
+                }
             }
         }
-
+        return showApplications
     }
 
     private fun validate(resolvedActivities: List<ResolveInfo>): List<ResolveInfo> {
