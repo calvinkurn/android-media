@@ -748,7 +748,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                               url: String, iamgeUrl: String) {
         activity?.let {
             val linkerData = constructShareData("","", url, String.format("%s %s", description, "%s"), title)
-            ShareBottomSheets().show(fragmentManager!!, linkerData, isOwner, userId.toString(), true)
+            ShareBottomSheets().show(fragmentManager!!, linkerData, isOwner, userId.toString(), false)
         }
     }
 
