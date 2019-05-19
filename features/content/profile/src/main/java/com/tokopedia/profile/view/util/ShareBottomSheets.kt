@@ -15,6 +15,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -22,8 +23,11 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.profile.R
+import com.tokopedia.profile.analytics.ProfileAnalytics
+import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.track.TrackApp
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 /**
@@ -32,7 +36,13 @@ import kotlin.collections.ArrayList
 class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     val TITLE_EN = "Share"
 
+    @Inject
+    lateinit var profileAnalytics: ProfileAnalytics
+
     val KEY_ADDING = ".isAddingProduct"
+    val KEY_ISOWNER = "isOwner"
+    val KEY_PROFILEID = "profileId"
+    val KEY_SHARE_PROFILE = "share_profile"
 
     private val PACKAGENAME_WHATSAPP = "com.whatsapp.ContactPicker"
     private val PACKAGENAME_FACEBOOK = "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias"
@@ -69,7 +79,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
         private val KEY_FACEBOOK = "facebook"
         private val KEY_GOOGLE = "google"
         private val KEY_INSTAGRAM = "instagram"
-        val KEY_INSTAGRAM_DIRECT = "direct"
+        val KEY_INSTAGRAM_DIRECT = "Direct"
         val NAME_INSTAGRAM = "Instagram"
         val KEY_YOUTUBE = "youtube"
         val KEY_OTHER = "lainnya"
@@ -80,23 +90,24 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
 
     private lateinit var data: LinkerData
     private var isAdding: Boolean = false
+    private var isOwner = false
+    private var profileId = ""
+    private var isShareProfile = false
 
-    fun newInstance(data: LinkerData, isAddingProduct: Boolean): ShareBottomSheets {
+    fun newInstance(data: LinkerData, isAddingProduct: Boolean, isOwner: Boolean, profileId: String, isShareProfile: Boolean): ShareBottomSheets {
         val fragment = ShareBottomSheets()
         val bundle = Bundle()
         bundle.putParcelable(ShareBottomSheets::class.java.getName(), data)
         bundle.putBoolean(ShareBottomSheets::class.java.getName() + KEY_ADDING, isAddingProduct)
+        bundle.putBoolean(KEY_ISOWNER, isOwner)
+        bundle.putString(KEY_PROFILEID, profileId)
+        bundle.putBoolean(KEY_SHARE_PROFILE, isShareProfile)
         fragment.setArguments(bundle)
         return fragment
     }
 
-    fun show(fragmentManager: FragmentManager, data: LinkerData,
-             isAddingProduct: Boolean) {
-        newInstance(data, isAddingProduct).show(fragmentManager, TITLE_EN)
-    }
-
-    fun show(fragmentManager: FragmentManager, data: LinkerData) {
-        newInstance(data, false).show(fragmentManager, TITLE_EN)
+    fun show(fragmentManager: FragmentManager, data: LinkerData, isOwner: Boolean, profileId: String, isShareProfile: Boolean) {
+        newInstance(data, false, isOwner, profileId, isShareProfile).show(fragmentManager, TITLE_EN)
     }
 
     override fun getLayoutResourceId(): Int {
@@ -108,31 +119,37 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     protected override fun title(): String {
-        return getString(R.string.title_share)
+        return data.ogTitle ?: getString(R.string.title_share)
     }
 
     protected override fun configView(parentView: View) {
         arguments?.let{
             data = it.getParcelable(ShareBottomSheets::class.java.getName())
             isAdding = it.getBoolean(ShareBottomSheets::class.java.getName() + KEY_ADDING, false)
+            isOwner = it.getBoolean(KEY_ISOWNER, false)
+            profileId = it.getString(KEY_PROFILEID, "")
+            isShareProfile = it.getBoolean(KEY_SHARE_PROFILE, false)
         }
         super.configView(parentView)
     }
 
-    private var mRecyclerView: RecyclerView? = null
-    private var mProgressBar: ProgressBar? = null
-    private var mLayoutError: LinearLayout? = null
-    private var mTextViewError: TextView? = null
+    private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mProgressBar: ProgressBar
+    private lateinit var mLayoutError: LinearLayout
+    private lateinit var mTextViewError: TextView
 
     override fun initView(view: View) {
-
+        DaggerProfileComponent.builder()
+                .kolComponent(KolComponentInstance.getKolComponent(activity!!.application))
+                .build()
+                .inject(this)
         mRecyclerView = view.findViewById(R.id.recyclerview)
         mProgressBar = view.findViewById(R.id.progressbar)
         mLayoutError = view.findViewById(R.id.layout_error)
         mTextViewError = view.findViewById(R.id.message_error)
 
         val mLayoutManager = LinearLayoutManager(getActivity())
-        mRecyclerView!!.layoutManager = mLayoutManager
+        mRecyclerView.layoutManager = mLayoutManager
 
         broadcastAddProduct()
     }
@@ -144,10 +161,10 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
                     .queryIntentActivities(intent, 0)
             if (!resolvedActivities.isEmpty()) {
                 val showApplications: ArrayList<ResolveInfo> = validate(resolvedActivities)
-                showApplications.addAll(getInstagramApps())
-                val adapter = ShareAdapter(showApplications, getActivity()!!
+//                showApplications.addAll(getInstagramApps()) //for next development
+                val adapter = ShareAdapter(showApplications, it
                         .getPackageManager())
-                mRecyclerView!!.adapter = adapter
+                mRecyclerView.adapter = adapter
 
                 adapter.setOnItemClickListener(this)
             } else {
@@ -168,22 +185,43 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
         return showApplications
     }
 
-    private fun getInstagramApps(): ArrayList<ResolveInfo> {
+    fun getInstagramApps(): ArrayList<ResolveInfo> {
+        val showApplications = ArrayList<ResolveInfo>()
         val pm = activity!!.getPackageManager()
         val shareIntent = Intent()
         shareIntent.action = Intent.ACTION_SEND
         shareIntent.type = "text/plain"
-        val resolveInfos = pm.queryIntentActivities(shareIntent, 0)
-        return validate(resolveInfos)
+        // mainIntent.setType("image/*");
+        val resolveInfos = pm.queryIntentActivities(shareIntent, 0) // returns all applications which can listen to the SEND Intent
+        if (resolveInfos != null && !resolveInfos.isEmpty()) {
+            for (info in resolveInfos) {
+                if (Arrays.asList(*ClassNameApplications)
+                                .contains(info.activityInfo.packageName)) {
+                    showApplications.add(info)
+                }
+            }
+        }
+        return showApplications
     }
 
     override fun onItemClick(packageName: String) {
-        if (packageName.equals(KEY_OTHER, ignoreCase = true)) {
-            actionMore(packageName)
-        } else if (packageName.equals(KEY_COPY, ignoreCase = true)) {
-            actionCopy()
-        } else {
-            actionShare(packageName)
+        when (packageName) {
+            KEY_OTHER -> {
+                actionMore(packageName)
+            }
+            KEY_COPY -> {
+                actionCopy()
+            }
+            KEY_INSTAGRAM -> {
+
+            }
+            KEY_YOUTUBE -> {
+
+            }
+            else -> {
+                actionShare(packageName)
+            }
+
         }
     }
 
@@ -204,17 +242,16 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
         )
 
         Toast.makeText(getActivity(), getString(R.string.msg_copy), Toast.LENGTH_SHORT).show()
-        sendAnalyticsToGtm(data.getType(), COPY)
     }
 
     private fun actionShare(packageName: String) {
         val media = constantMedia(packageName)
         data.setSource(media)
-
-        ShareSocmedHandler(activity!!).ShareSpecific(data, activity!!, packageName,
-                TYPE, null, "")
-
-        sendTracker(packageName)
+        activity?.let {
+            ShareSocmedHandler(it).ShareData(it, packageName,
+                    TYPE, data.originalTextContent, "", null , "")
+            sendTracker(packageName)
+        }
     }
 
     private fun actionMore(packageName: String) {
@@ -249,13 +286,13 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     private var addProductReceiver: BroadcastReceiver? = null
 
     private fun stateProgress(progress: Boolean) {
-        mLayoutError!!.visibility = View.GONE
+        mLayoutError.visibility = View.GONE
         if (progress) {
-            mProgressBar!!.visibility = View.VISIBLE
-            mRecyclerView!!.visibility = View.GONE
+            mProgressBar.visibility = View.VISIBLE
+            mRecyclerView.visibility = View.GONE
         } else {
-            mProgressBar!!.visibility = View.GONE
-            mRecyclerView!!.visibility = View.VISIBLE
+            mProgressBar.visibility = View.GONE
+            mRecyclerView.visibility = View.VISIBLE
             init()
         }
     }
@@ -288,10 +325,10 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
 
     fun onError(resultData: Bundle) {
         val messageError = resultData.getString(MESSAGE_ERROR_FLAG)
-        mProgressBar!!.visibility = View.GONE
-        mLayoutError!!.visibility = View.VISIBLE
-        mRecyclerView!!.visibility = View.GONE
-        mTextViewError!!.text = messageError + "\n" + getString(R.string.error_failed_add_product)
+        mProgressBar.visibility = View.GONE
+        mLayoutError.visibility = View.VISIBLE
+        mRecyclerView.visibility = View.GONE
+        mTextViewError.text = messageError + "\n" + getString(R.string.error_failed_add_product)
     }
 
     fun setData(data: Bundle) {
@@ -307,13 +344,13 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
 
     override fun onResume() {
         super.onResume()
-        getActivity()!!.registerReceiver(addProductReceiver,
+        activity!!.registerReceiver(addProductReceiver,
                 IntentFilter(BROADCAST_ADD_PRODUCT))
     }
 
     override fun onPause() {
         super.onPause()
-        getActivity()!!.unregisterReceiver(addProductReceiver)
+        activity!!.unregisterReceiver(addProductReceiver)
     }
 
     /**
@@ -322,58 +359,26 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
      * @return String media tracking
      */
     private fun constantMedia(packageName: String): String {
-//        if (packageName.contains(KEY_WHATSAPP)) {
-//            return AppEventTracking.SOCIAL_MEDIA.WHATSHAPP
-//        } else if (packageName.contains(KEY_LINE)) {
-//            return AppEventTracking.SOCIAL_MEDIA.LINE
-//        } else if (packageName.contains(KEY_TWITTER)) {
-//            return AppEventTracking.SOCIAL_MEDIA.TWITTER
-//        } else if (packageName.contains(KEY_FACEBOOK)) {
-//            return AppEventTracking.SOCIAL_MEDIA.FACEBOOK
-//        } else if (packageName.contains(KEY_GOOGLE)) {
-//            return AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS
-//        } else if (packageName.contains(KEY_OTHER)) {
-//            return AppEventTracking.SOCIAL_MEDIA.OTHER
-//        }
+        if (packageName.contains(KEY_WHATSAPP)) {
+            return KEY_WHATSAPP
+        } else if (packageName.contains(KEY_LINE)) {
+            return KEY_LINE
+        } else if (packageName.contains(KEY_TWITTER)) {
+            return KEY_TWITTER
+        } else if (packageName.contains(KEY_FACEBOOK)) {
+            return KEY_FACEBOOK
+        } else if (packageName.contains(KEY_GOOGLE)) {
+            return KEY_GOOGLE
+        } else if (packageName.contains(KEY_OTHER)) {
+            return KEY_OTHER
+        }
         return ""
     }
 
     private fun sendTracker(packageName: String) {
-        val media = constantMedia(packageName)
-        if (!media.isEmpty()) {
-            if (data.getType() == LinkerData.CATEGORY_TYPE) {
-                shareCategory(data, media)
-            } else {
-                sendAnalyticsToGtm(data.getType(), media)
-            }
-        }
-    }
-
-    private fun shareCategory(data: LinkerData, media: String) {
-        val shareParam = data.getSplittedDescription(",")
-        if (shareParam.size == 2) {
-            eventShareCategory(shareParam[0], shareParam[1] + "-" + media)
-        }
-    }
-
-    fun eventShareCategory(parentCat: String, label: String) {
-//        TrackApp.getInstance().gtm.sendGeneralEvent(
-//                AppEventTracking.Event.CATEGORY_PAGE,
-//                AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
-//                AppEventTracking.Action.CATEGORY_SHARE,
-//                label)
-    }
-
-    private fun sendAnalyticsToGtm(type: String, channel: String) {
-//        when (type) {
-//            LinkerData.REFERRAL_TYPE -> {
-//                UnifyTracking.eventReferralAndShare(getContext(), AppEventTracking.Action.SELECT_CHANNEL, channel)
-//                TrackingUtils.sendMoEngageReferralShareEvent(getContext(), channel)
-//            }
-//            LinkerData.APP_SHARE_TYPE -> UnifyTracking.eventAppShareWhenReferralOff(getContext(), AppEventTracking.Action.SELECT_CHANNEL,
-//                    channel)
-//            LinkerData.HOTLIST_TYPE -> HotlistPageTracking.eventShareHotlist(getContext(), channel)
-//            else -> UnifyTracking.eventShare(getContext(), channel)
-//        }
+        if (isShareProfile)
+            profileAnalytics.eventClickShareProfileIni(isOwner, profileId, constantMedia(packageName))
+        else
+            profileAnalytics.eventClickSharePostIni(isOwner, profileId, constantMedia(packageName))
     }
 }

@@ -35,28 +35,16 @@ class ShareAdapter(@NonNull var mActivities : List<ResolveInfo>, @NonNull var mP
         this.onItemClickListener = onItemClickListener
     }
 
-    private fun isPositionOther(position: Int): Boolean {
-        return position == mActivities.size + 2
-    }
-
-    private fun isPositionCopy(position: Int): Boolean {
-        return position == mActivities.size + 1
-    }
-
-    private fun isPositionInstagram(position: Int): Boolean {
-        return position == mActivities.size
-    }
-
     private fun getYoutubePosition(): Int {
         return mActivities.size
     }
 
     private fun getCopyPosition(): Int {
-        return mActivities.size + 1
+        return mActivities.size
     }
 
     private fun getOtherPosition(): Int {
-        return mActivities.size + 2
+        return mActivities.size + 1
     }
 
     override fun onBindViewHolder(holder: ShareViewHolder, position: Int) {
@@ -66,11 +54,11 @@ class ShareAdapter(@NonNull var mActivities : List<ResolveInfo>, @NonNull var mP
         var resources: Drawable?
 
         when(position) {
-            getYoutubePosition() -> {
-                resources = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_copy_clipboard)
-                title = holder.itemView.context.getString(R.string.copy)
-                type = ShareBottomSheets.KEY_YOUTUBE
-            }
+//            getYoutubePosition() -> { //for next development
+//                resources = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_copy_clipboard)
+//                title = holder.itemView.context.getString(R.string.title_youtube)
+//                type = ShareBottomSheets.KEY_YOUTUBE
+//            }
             getCopyPosition() -> {
                 resources = AppCompatResources.getDrawable(holder.itemView.context, R.drawable.ic_copy_clipboard)
                 title = holder.itemView.context.getString(R.string.copy)
@@ -97,7 +85,7 @@ class ShareAdapter(@NonNull var mActivities : List<ResolveInfo>, @NonNull var mP
     }
 
     override fun getItemCount(): Int {
-        return mActivities.size + 3 // for youtube, salin link and lainnya
+        return mActivities.size + 2 // for youtube, salin link and lainnya
     }
 
     class ShareViewHolder(view: View) : RecyclerView.ViewHolder(view) {
