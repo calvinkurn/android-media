@@ -26,7 +26,7 @@ class ShareAdapter(@NonNull var mActivities : List<ResolveInfo>, @NonNull var mP
     private var onItemClickListener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShareViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_share,
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_bottomsheet_share,
                 parent, false)
         return ShareViewHolder(itemView)
     }
@@ -73,8 +73,8 @@ class ShareAdapter(@NonNull var mActivities : List<ResolveInfo>, @NonNull var mP
 
     class ShareViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private var iconView: ImageView = view.findViewById(R.id.iconView)
-        private var labelView: TextView = view.findViewById(R.id.labelView)
+        private var iconView: ImageView = view.findViewById(R.id.icon_view)
+        private var labelView: TextView = view.findViewById(R.id.label_view)
 
         fun bindItem(resource: Drawable?, title: CharSequence?, type: String?, clickListener: OnItemClickListener?) {
             resource.let {
