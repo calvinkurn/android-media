@@ -13,12 +13,14 @@ import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.homepage.di.DaggerHotelHomepageComponent
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
 import com.tokopedia.hotel.homepage.presentation.fragment.HotelHomepageFragment
+import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity
 
 class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageComponent> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         toolbar.contentInsetStartWithNavigation = 0
+        startActivity(HotelOrderDetailActivity.getCallingIntent(this))
     }
 
     override fun getComponent(): HotelHomepageComponent =
