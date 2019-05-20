@@ -656,12 +656,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onSearchGuideClicked(String keyword) {
+    public void onSearchGuideClicked(String queryParams) {
 
     }
 
     @Override
-    public void onRelatedSearchClicked(String keyword) {
+    public void onRelatedSearchClicked(String queryParams, String keyword) {
 
     }
 

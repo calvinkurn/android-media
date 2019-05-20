@@ -1,0 +1,98 @@
+package com.tokopedia.search.result.presentation.presenter.search;
+
+import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
+import com.tokopedia.discovery.newdiscovery.domain.model.InitiateSearchModel;
+import com.tokopedia.search.result.presentation.presenter.subscriber.InitiateSearchSubscriber;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.HashMap;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+
+public class SearchPresenterTest {
+
+    private static abstract class MockInitiateSearchUseCase extends UseCase<InitiateSearchModel> { }
+
+    private UseCase<InitiateSearchModel> initiateSearchModelUseCase;
+
+    private SearchPresenter searchPresenter;
+
+    @Before
+    public void setUp() {
+        searchPresenter = new SearchPresenter();
+        initiateSearchModelUseCase = mock(MockInitiateSearchUseCase.class);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void initiateSearch_NotInjected_ShouldThrowError() {
+        searchPresenter.initiateSearch(new HashMap<>());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void initiateSearch_NoListener_ShouldThrowError() {
+        searchPresenter.initiateSearchModelUseCase = initiateSearchModelUseCase;
+        searchPresenter.initiateSearch(new HashMap<>());
+    }
+
+    @Test
+    public void initiateSearch_GivenNulls_ShouldNotExecuteUseCase() {
+        searchPresenter.initiateSearchModelUseCase = initiateSearchModelUseCase;
+        searchPresenter.setInitiateSearchListener(mock(InitiateSearchListener.class));
+        searchPresenter.initiateSearch(null);
+
+        verify(initiateSearchModelUseCase, never()).execute(any(RequestParams.class), any(InitiateSearchSubscriber.class));
+    }
+
+    @Test
+    public void initiateSearch_GivenAnyParams_ShouldExecuteUseCase() {
+        searchPresenter.initiateSearchModelUseCase = initiateSearchModelUseCase;
+        searchPresenter.setInitiateSearchListener(mock(InitiateSearchListener.class));
+        doNothing().when(initiateSearchModelUseCase).execute(any(RequestParams.class), any(InitiateSearchSubscriber.class));
+
+        searchPresenter.initiateSearch(new HashMap<>());
+
+        verify(initiateSearchModelUseCase).execute(any(RequestParams.class), any(InitiateSearchSubscriber.class));
+    }
+
+    @Test
+    public void onPause_NotInjected_ShouldNotError() {
+        searchPresenter.onPause();
+
+        verify(initiateSearchModelUseCase, never()).execute(any(RequestParams.class), any(InitiateSearchSubscriber.class));
+    }
+
+    @Test
+    public void onPause_AfterInjectUseCase_ShouldUnsubscribeAnyUseCase() {
+        searchPresenter.initiateSearchModelUseCase = initiateSearchModelUseCase;
+        doNothing().when(initiateSearchModelUseCase).unsubscribe();
+
+        searchPresenter.onPause();
+
+        verify(initiateSearchModelUseCase).unsubscribe();
+    }
+
+    @Test
+    public void onResume() {
+        searchPresenter.onResume();
+    }
+
+    @Test
+    public void onDestroy() {
+        searchPresenter.onDestroy();
+    }
+
+    @After
+    public void tearDown() {
+        initiateSearchModelUseCase = null;
+        searchPresenter = null;
+    }
+}

@@ -369,10 +369,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Uri uri = Uri.parse(item.getUrl());
-                    String query = uri.getQueryParameter(BrowseApi.Q);
                     SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
-                    itemClickListener.onSearchGuideClicked(query);
+                    itemClickListener.onSearchGuideClicked(Uri.parse(item.getUrl()).getEncodedQuery());
                 }
             });
             imageView.setImageResource(BACKGROUND[getAdapterPosition() % 5]);
