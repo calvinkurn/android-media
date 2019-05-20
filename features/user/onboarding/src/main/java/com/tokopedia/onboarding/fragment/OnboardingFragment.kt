@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.onboarding.R
-import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.animation.OnboardingAnimationHelper
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 import com.tokopedia.onboarding.listener.CustomAnimationPageTransformerDelegate
@@ -61,9 +60,6 @@ class OnboardingFragment : BaseDaggerFragment(),
     var bgColor: Int = 0
     var position: Int = 0
     var isAnimationPlayed = false
-
-    @Inject
-    lateinit var analytics: OnboardingAnalytics
 
     @Inject
     lateinit var userSession: UserSessionInterface
