@@ -606,8 +606,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun showGetListError(throwable: Throwable) {
-        if (activity is ShopPageView) {
-            (activity as? ShopPageView)?.stopPerformanceMonitor()
+        if (activity is ShopPageActivity) {
+            (activity as? ShopPageActivity)?.stopPerformanceMonitor()
         }
         hideLoading()
         updateStateScrollListener()
