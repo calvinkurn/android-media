@@ -214,8 +214,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ImageView imgPriority;
     private TextView tvPrioritasTicker;
     private LinearLayout llPrioritasTicker;
-    private LinearLayout llPrioritas;
-
+    private RelativeLayout llPrioritas;
+    private TextView tvPrioritasFee;
+    private TextView tvPrioritasFeePrice;
+    private ImageView imgPriorityTnc;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -334,6 +336,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         checkBoxPriority = itemView.findViewById(R.id.cb_prioritas);
         llPrioritasTicker = itemView.findViewById(R.id.ll_prioritas_ticker);
         tvPrioritasTicker = itemView.findViewById(R.id.tv_prioritas_ticker);
+        tvPrioritasFee = itemView.findViewById(R.id.tv_priority_fee);
+        tvPrioritasFeePrice = itemView.findViewById(R.id.tv_priority_fee_price);
+        imgPriorityTnc = itemView.findViewById(R.id.img_prioritas_info);
 
         // robinhood III
         llCourierBlackboxStateLoading = itemView.findViewById(R.id.ll_courier_blackbox_state_loading);
@@ -766,6 +771,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         double totalWeight = 0;
         int shippingPrice = 0;
         int insurancePrice = 0;
+        int priorityPrice = 0;
         long totalPurchaseProtectionPrice = 0;
         int totalPurchaseProtectionItem = 0;
         int additionalPrice = 0;
@@ -807,9 +813,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 insurancePrice = shipmentCartItemModel.getSelectedShipmentDetailData()
                         .getSelectedCourier().getInsurancePrice();
             }
+            Boolean isOrderPriority = shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority();
+            if (isOrderPriority != null && isOrderPriority) {
+                priorityPrice = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getPriorityPrice();
+            }
             additionalPrice = shipmentCartItemModel.getSelectedShipmentDetailData()
                     .getSelectedCourier().getAdditionalPrice();
-            subTotalPrice += (totalItemPrice + shippingPrice + insurancePrice + totalPurchaseProtectionPrice + additionalPrice);
+            subTotalPrice += (totalItemPrice + shippingPrice + insurancePrice + totalPurchaseProtectionPrice + additionalPrice + priorityPrice);
         } else {
             subTotalPrice = totalItemPrice;
         }
@@ -819,6 +829,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvShippingFee.setText(shippingFeeLabel);
         tvShippingFeePrice.setText(getPriceFormat(tvShippingFee, tvShippingFeePrice, shippingPrice));
         tvInsuranceFeePrice.setText(getPriceFormat(tvInsuranceFee, tvInsuranceFeePrice, insurancePrice));
+        tvPrioritasFeePrice.setText(getPriceFormat(tvPrioritasFee,tvPrioritasFeePrice, priorityPrice));
         tvProtectionLabel.setText(totalPPPItemLabel);
         tvProtectionFee.setText(getPriceFormat(tvProtectionLabel, tvProtectionFee, totalPurchaseProtectionPrice));
         tvAdditionalFeePrice.setText(getPriceFormat(tvAdditionalFee, tvAdditionalFeePrice, additionalPrice));
@@ -1040,7 +1051,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderPrioritas(final ShipmentCartItemModel shipmentCartItemModel) {
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
-
         if (getAdapterPosition() != RecyclerView.NO_POSITION && shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
             shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
 
@@ -1049,7 +1059,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-
+                            shipmentCartItemModel.getSelectedShipmentDetailData().setOrderPriority(isChecked);
+                            mActionListener.onPriorityChecked(getAdapterPosition());
+                            mActionListener.onNeedUpdateRequestData();
+                            if (saveStateDebounceListener != null) {
+                                saveStateDebounceListener.onNeedToSaveState(shipmentCartItemModel);
+                            }
                         }
                     }
                 });
@@ -1059,8 +1074,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (!courierItemData.getNow()) {
                 llPrioritas.setVisibility(View.GONE);
                 llPrioritasTicker.setVisibility(View.GONE);
+            } else {
+                llPrioritas.setVisibility(View.VISIBLE);
+                llPrioritasTicker.setVisibility(View.VISIBLE);
+                tvPrioritasTicker.setText(R.string.label_hardcoded_prioritas_ticker);
             }
         }
+        imgPriorityTnc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActionListener.onPriorityTncClicker();
+            }
+        });
     }
 
     private void renderInsurance(final ShipmentCartItemModel shipmentCartItemModel) {

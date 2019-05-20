@@ -1702,6 +1702,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onPriorityChecked(int position) {
+        if (rvShipment.isComputingLayout()) {
+            rvShipment.post(new Runnable() {
+                @Override
+                public void run() {
+                    shipmentAdapter.updateShipmentCostModel();
+                    shipmentAdapter.updateItemAndTotalCost(position);
+                }
+            });
+        } else {
+            shipmentAdapter.updateShipmentCostModel();
+            shipmentAdapter.updateItemAndTotalCost(position);
+        }
+    }
+
+    @Override
     public void onInsuranceChecked(final int position) {
         if (rvShipment.isComputingLayout()) {
             rvShipment.post(new Runnable() {
@@ -1742,6 +1758,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onInsuranceTncClicked() {
         Intent intent = CheckoutWebViewActivity.newInstance(getContext(),
                 CartConstant.TERM_AND_CONDITION_URL,
+                getString(R.string.title_activity_checkout_tnc_webview));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onPriorityTncClicker() {
+        Intent intent = CheckoutWebViewActivity.newInstance(getContext(),
+                CartConstant.PRIORITY_TNC_URL,
                 getString(R.string.title_activity_checkout_tnc_webview));
         startActivity(intent);
     }

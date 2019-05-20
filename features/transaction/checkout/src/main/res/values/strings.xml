@@ -104,6 +104,7 @@
     <string name="label_delivery_price">Total Ongkos Kirim</string>
     <string name="label_additional_cost">Biaya Tambahan</string>
     <string name="label_seller_additional_cost">Biaya Tambahan Penjual</string>
+    <string name="label_order_priority_cost">Biaya Order Prioritas</string>
     <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>
     <string name="label_dialog_message_cancel_pickup_booth">Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan</string>
     <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
