@@ -16,10 +16,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
-import com.tokopedia.core.analytics.nishikino.model.EventTracking
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED
@@ -56,12 +57,10 @@ import com.tokopedia.product.manage.item.utils.*
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import kotlinx.android.synthetic.main.fragment_base_product_edit.*
 import javax.inject.Inject
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : ProductAddView> : BaseDaggerFragment(),
         ProductAddView, ListenerOnErrorAddProduct {
@@ -183,13 +182,12 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun startProductEtalaseActivity() {
-        if (appRouter != null && appRouter is ProductEditModuleRouter) {
-            activity?.run {
-                this@BaseProductAddEditFragment.startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId
-                        ?: -1),
-                        REQUEST_CODE_GET_ETALASE)
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_ETALASE_PICKER,
+                    (currentProductAddViewModel?.etalaseId ?: -1).toString())
+            intent?.run {
+                startActivityForResult(this, REQUEST_CODE_GET_ETALASE)
             }
-
         }
     }
 
@@ -297,9 +295,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun goToGoldMerchantPage() {
-        if (appRouter != null && appRouter is ProductEditModuleRouter) {
-            (appRouter as ProductEditModuleRouter).goToGMSubscribe(activity)
-        }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_SUBSCRIBE_DASHBOARD)
+        intent?.run { startActivity(this) }
+
     }
 
     override fun onSuccessStoreProductToDraft(productId: Long, isUploading: Boolean) {
@@ -491,17 +489,23 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             }
 
             val hasWholesale = productPrice?.wholesalePrice?.let { it.size > 0 } == true
-            if (appRouter is ProductEditModuleRouter) {
-                val intent = (appRouter as ProductEditModuleRouter).createIntentProductVariant(activity,
-                        productVariantByCatModelList, productVariantViewModel,
-                        productPrice?.currencyType ?: CurrencyTypeDef.TYPE_IDR,
-                        productPrice?.price ?: 0.0,
-                        getStatusStockViewVariant(productStock ?: ProductStock()),
-                        officialStore, productStock?.sku, isEdittingDraft(),
-                        productSizeChart, hasOriginalVariantLevel1 == true,
-                        hasOriginalVariantLevel2 == true,
-                        hasWholesale)
-                startActivityForResult(intent, REQUEST_CODE_VARIANT)
+            activity?.let {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
+                intent?.run {
+                    putExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList)
+                    putExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel)
+                    putExtra(ProductExtraConstant.EXTRA_CURRENCY_TYPE, productPrice?.currencyType ?: CurrencyTypeDef.TYPE_IDR)
+                    putExtra(ProductExtraConstant.EXTRA_DEFAULT_PRICE, productPrice?.price ?: 0.0)
+                    putExtra(ProductExtraConstant.EXTRA_STOCK_TYPE, getStatusStockViewVariant(productStock ?: ProductStock()))
+                    putExtra(EXTRA_IS_OFFICIAL_STORE, officialStore)
+                    putExtra(ProductExtraConstant.EXTRA_DEFAULT_SKU, productStock?.sku)
+                    putExtra(ProductExtraConstant.EXTRA_NEED_RETAIN_IMAGE, isEdittingDraft())
+                    putExtra(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART, productSizeChart)
+                    putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, hasOriginalVariantLevel1)
+                    putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, hasOriginalVariantLevel2)
+                    putExtra(ProductExtraConstant.EXTRA_HAS_WHOLESALE, hasWholesale)
+                    startActivityForResult(this, REQUEST_CODE_VARIANT)
+                }
             }
         }
     }

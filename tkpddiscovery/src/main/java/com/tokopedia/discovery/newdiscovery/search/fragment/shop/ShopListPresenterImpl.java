@@ -5,8 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
@@ -17,8 +16,11 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.Favori
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.subscriber.ToggleFavoriteActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,6 +39,9 @@ public class ShopListPresenterImpl extends SearchSectionFragmentPresenterImpl<Sh
     GetDynamicFilterUseCase getDynamicFilterUseCase;
     @Inject
     ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
+    @Inject
+    UserSessionInterface userSession;
+
     private ShopListFragmentView viewListener;
     private FavoriteActionListener favoriteActionListener;
     private Context context;
@@ -89,12 +94,19 @@ public class ShopListPresenterImpl extends SearchSectionFragmentPresenterImpl<Sh
     @Override
     protected RequestParams getDynamicFilterParam() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
-        requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_SHOP);
-        requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putString(BrowseApi.Q, getView().getQueryKey());
-        requestParams.putString(BrowseApi.SC, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SC);
+        requestParams.putAll(generateParamsNetwork(requestParams));
+        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SHOP);
+        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
+        requestParams.putString(SearchApiConst.SC, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SC);
         return requestParams;
+    }
+
+    private HashMap<String, String> generateParamsNetwork(RequestParams requestParams) {
+        return new HashMap<>(
+                AuthUtil.generateParamsNetwork(userSession.getUserId(),
+                        userSession.getDeviceId(),
+                        requestParams.getParamsAllValueInString()));
     }
 
     @Override

@@ -1,9 +1,8 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
-import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 
@@ -20,6 +19,7 @@ public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
     List<Option> quickFilterList = new ArrayList<>();
     private GuidedSearchViewModel guidedSearch;
     CpmModel cpmModel;
+    private GlobalNavViewModel globalNavViewModel;
 
     @Override
     public int type(ProductListTypeFactory typeFactory) {
@@ -64,5 +64,13 @@ public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
 
     public GuidedSearchViewModel getGuidedSearch() {
         return guidedSearch;
+    }
+
+    public GlobalNavViewModel getGlobalNavViewModel() {
+        return globalNavViewModel;
+    }
+
+    public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
+        this.globalNavViewModel = globalNavViewModel;
     }
 }

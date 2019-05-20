@@ -16,20 +16,9 @@ import rx.Observable;
  */
 public interface CacheHomeInteractor {
 
-    void getProductFeedCache(GetProductFeedCacheListener listener);
-    void setProductFeedCache(ProductFeedTransformData productFeedTransformData);
-    void getFavoriteCache(GetFavoriteCacheListener listener);
-    void setFavoriteCache(FavoriteTransformData favoriteTransformData);
-
     void setProdHistoryCache(RecentViewData productFeedData);
 
     RecentViewData getProdHistoryCache();
-    void setWishListCache(WishlistData wishlistData);
-    WishlistData getWishListCache();
-
-    Observable<HorizontalShopList> getShopAdsObservable();
-    Boolean isShopAdsCacheAvailable();
-    void setRecommendedShopCache(List<ShopItem> shopItem);
     void unSubscribeObservable();
 
     interface GetProductFeedCacheListener {

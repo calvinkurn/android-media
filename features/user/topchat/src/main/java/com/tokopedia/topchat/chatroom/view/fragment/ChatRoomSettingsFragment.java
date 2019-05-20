@@ -140,7 +140,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
                     setPromotionalInfoViewVisibility(false);
                 }
 
-                if(chatSettingsResponse.getChatBlockResponse() != null) {
+                if (chatSettingsResponse.getChatBlockResponse() != null) {
                     Bundle bundle = new Bundle();
                     bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_BLOCKED,
                             chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
@@ -169,7 +169,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
             }
         }
 
-        if(chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse()!= null) {
+        if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse() != null) {
             Bundle bundle = new Bundle();
             bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_BLOCKED,
                     chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
@@ -330,7 +330,13 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
 
     @Override
     public void showErrorMessage() {
-        ToasterNormal.show(getActivity(), getResources().getString(R.string.error_chat_message));
+        if (getContext() != null) {
+            ToasterNormal.show(getActivity(), getErrorChatMessage());
+        }
+    }
+
+    private String getErrorChatMessage() {
+        return getResources().getString(R.string.error_chat_message);
     }
 
     @Override
