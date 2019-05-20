@@ -15,7 +15,7 @@ import com.tokopedia.tkpd.network.LogoutPojo
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.main_test.*
+import kotlinx.android.synthetic.main.main_testapp.*
 import rx.Observable
 import rx.Observer
 import rx.android.schedulers.AndroidSchedulers
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_test)
+        setContentView(R.layout.main_testapp)
 
         val editTextUser = findViewById<EditText>(R.id.editTextUser)
         val editTextPassword = findViewById<EditText>(R.id.editTextPassword)
