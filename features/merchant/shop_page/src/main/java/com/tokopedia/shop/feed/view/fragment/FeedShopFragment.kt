@@ -475,7 +475,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
+    override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
     }
 
