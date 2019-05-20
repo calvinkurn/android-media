@@ -108,6 +108,9 @@ public class RouteManager {
             return;
         }
         String uriString = UriUtil.buildUri(applinkPattern, parameter);
+        if (uriString.isEmpty()) {
+            return;
+        }
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(context, uriString);
         Intent intent;
         if (!TextUtils.isEmpty(mappedDeeplink)) {
