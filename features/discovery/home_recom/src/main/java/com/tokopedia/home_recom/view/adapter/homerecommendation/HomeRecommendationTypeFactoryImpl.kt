@@ -10,6 +10,7 @@ import com.tokopedia.home_recom.model.dataModel.TitleDataModel
 import com.tokopedia.home_recom.view.viewHolder.ProductInfoViewHolder
 import com.tokopedia.home_recom.view.viewHolder.RecommendationCarouselViewHolder
 import com.tokopedia.home_recom.view.viewHolder.RecommendationItemViewHolder
+import com.tokopedia.home_recom.view.viewHolder.TitleViewHolder
 
 class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
     override fun type(dataModel: ProductInfoDataModel): Int {
@@ -33,6 +34,7 @@ class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommen
             RecommendationItemDataModel.LAYOUT -> RecommendationItemViewHolder(view)
             ProductInfoDataModel.LAYOUT -> ProductInfoViewHolder(view)
             RecommendationCarouselDataModel.LAYOUT -> RecommendationCarouselViewHolder(view)
+            TitleDataModel.LAYOUT -> TitleViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
