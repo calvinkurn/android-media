@@ -55,7 +55,7 @@
                     android:layout_marginRight="@dimen/dp_4"
                     tools:background="@color/black" />
 
-                <TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/tv_variant_color"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 android:paddingStart="@dimen/dp_8"
                 android:paddingEnd="@dimen/dp_8">
 
-                <TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/tv_variant_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
 
         </LinearLayout>
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_product_name"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_variant"
             tools:text="This is really long product name that appear on the screen" />
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_product_price"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
