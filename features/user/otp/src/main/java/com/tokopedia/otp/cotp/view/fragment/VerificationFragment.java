@@ -436,9 +436,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         if (!isRunningTimer) {
             countDownTimer = new CountDownTimer(cacheHandler.getRemainingTime() * INTERVAL, INTERVAL) {
                 public void onTick(long millisUntilFinished) {
-                    isRunningTimer = true;
-                    setRunningCountdownText(String.valueOf(TimeUnit.MILLISECONDS.toSeconds
-                            (millisUntilFinished)));
+                    if(isAdded()){
+                        isRunningTimer = true;
+                        setRunningCountdownText(String.valueOf(TimeUnit.MILLISECONDS.toSeconds
+                                (millisUntilFinished)));
+                    }
                 }
 
                 public void onFinish() {
