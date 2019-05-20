@@ -490,8 +490,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             @Override
             public void onError(Throwable e) {
                 viewListener.finishLoading();
-                viewListener.networkError(uriData);
-//                prepareOpenWebView(uriData);
+                prepareOpenWebView(uriData);
             }
 
             @Override
