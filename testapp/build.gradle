@@ -113,7 +113,6 @@ android {
         }
         release {
             signingConfig signingConfigs.debug
-            minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
             proguardFiles 'proguard-rules.pro'
