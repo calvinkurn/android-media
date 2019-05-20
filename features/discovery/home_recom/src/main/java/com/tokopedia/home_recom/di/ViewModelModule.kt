@@ -23,8 +23,8 @@ abstract class ViewModelModule {
     @ViewModelKey(RecommendationViewModel::class)
     internal abstract fun productInfoViewModel(viewModel: RecommendationViewModel): ViewModel
 
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(RecommendationItemViewModel::class)
-//    internal abstract fun recommendationItemViewModel(viewModel: RecommendationItemViewModel): ViewModel
+    @Binds
+    @IntoMap
+    @ViewModelKey(RecommendationItemViewModel::class)
+    internal abstract fun recommendationItemViewModel(viewModel: RecommendationItemViewModel): ViewModel
 }
