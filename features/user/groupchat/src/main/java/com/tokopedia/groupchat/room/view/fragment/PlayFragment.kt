@@ -368,7 +368,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     fun backPress() {
-        if (exitDialog != null) {
+        if (exitDialog != null && !viewState.errorViewShown()) {
             exitDialog!!.show()
         } else {
             activity?.finish()

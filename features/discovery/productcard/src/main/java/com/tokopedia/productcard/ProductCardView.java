@@ -116,13 +116,13 @@ public class ProductCardView extends BaseCustomView {
     }
 
     public void setWishlistButtonVisible(boolean isVisible) {
-        wishlistButton.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        //wishlist not implemented yet, don't delete this.
+//        wishlistButton.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     public void setRatingReviewCount(int rating, int reviewCount) {
         if (rating > 0 && rating <= 5) {
             ratingView.setImageResource(getRatingDrawable(rating));
-            reviewCountView.setText("(" + Integer.toString(reviewCount) + ")");
         } else {
             if(fixedHeight) {
                 ratingView.setVisibility(View.INVISIBLE);

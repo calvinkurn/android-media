@@ -68,7 +68,7 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
     @Override
     public void loadMoreData(final SearchParameter searchParameter, HashMap<String, String> additionalParams) {
-        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false);
+        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter);
         removeDefaultCategoryParam(requestParams);
 
         getProductUseCase.execute(requestParams,

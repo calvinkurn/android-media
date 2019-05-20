@@ -11,10 +11,6 @@ public interface BaseDiscoveryContract {
 
     interface View {
 
-        boolean isForceSearch();
-
-        void setForceSearch(boolean forceSearch);
-
         boolean isRequestOfficialStoreBanner();
 
         void setRequestOfficialStoreBanner(boolean requestOfficialStoreBanner);
@@ -54,6 +50,6 @@ public interface BaseDiscoveryContract {
 
         void requestImageSearch(String filePath);
 
-        void initiateSearch(SearchParameter searchParameter, boolean forceSearch, InitiateSearchListener initiateSearchListener);
+        void initiateSearch(SearchParameter searchParameter, InitiateSearchListener initiateSearchListener);
     }
 }
