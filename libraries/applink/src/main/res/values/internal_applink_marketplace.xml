@@ -32,7 +32,7 @@
     <string name="path_shop_open" translatable="false">/shop-open</string>
 
     <string name="path_shop_setting_address" translatable="false">/shop/setting/address</string>
-    <string name="path_shop_setting_info" translatable="false">/shop/setting</string>
+    <string name="path_shop_setting" translatable="false">/shop/setting</string>
     <string name="path_shop_setting_etalase" translatable="false">/shop/setting/etalase</string>
     <string name="path_shop_setting_note" translatable="false">/shop/setting/notes</string>
 
