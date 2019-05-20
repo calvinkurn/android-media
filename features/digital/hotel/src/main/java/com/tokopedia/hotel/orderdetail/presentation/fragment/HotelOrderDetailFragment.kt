@@ -87,11 +87,6 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
 
         orderDetailViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
                 "18")
-
-        button.setOnClickListener {
-            orderDetailViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
-                    edittext.text.toString())
-        }
     }
 
     fun renderConditionalInfo(hotelTransportDetail: HotelTransportDetail) {

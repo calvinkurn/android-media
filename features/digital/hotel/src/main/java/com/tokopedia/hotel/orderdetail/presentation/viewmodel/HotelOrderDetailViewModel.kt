@@ -19,8 +19,7 @@ import javax.inject.Named
  * @author by jessica on 13/05/19
  */
 
-class HotelOrderDetailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                    dispatcher: CoroutineDispatcher,
+class HotelOrderDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                     @Named("dummy_order_detail")
                                                     private val dummyOrderDetail: String,
                                                     private val useCase: GetHotelOrderDetailUseCase) : BaseViewModel(dispatcher) {
@@ -28,15 +27,11 @@ class HotelOrderDetailViewModel @Inject constructor(private val graphqlRepositor
     val orderDetailData = MutableLiveData<Result<HotelOrderDetail>>()
 
     fun getOrderDetail(rawQuery: String, orderId: String) {
-
         launch {
             orderDetailData.value = useCase.execute(rawQuery, orderId, true)
         }
-
-//            val gson = Gson()
-//            orderDetailData.value = Success(gson.fromJson(dummyOrderDetail,
-//                    HotelOrderDetail.Response::class.java).response)
-
+//        val gson = Gson()
+//        orderDetailData.value = Success(gson.fromJson(dummyOrderDetail, HotelOrderDetail.Response::class.java).response)
     }
 
 }
