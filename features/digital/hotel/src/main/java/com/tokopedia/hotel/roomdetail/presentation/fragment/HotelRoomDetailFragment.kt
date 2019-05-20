@@ -2,6 +2,7 @@ package com.tokopedia.hotel.roomdetail.presentation.fragment
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
@@ -14,6 +15,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
@@ -22,6 +24,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
+import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomdetail.presentation.viewmodel.HotelRoomDetailViewModel
@@ -31,6 +34,7 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import kotlinx.android.synthetic.main.fragment_hotel_room_detail.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
@@ -100,11 +104,15 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupCollapsingToolbar() {
-        (activity as HotelRoomDetailActivity).setSupportActionBar(detail_toolbar)
+        (activity as HotelRoomDetailActivity).setSupportActionBar(room_detail_detail_toolbar)
         (activity as HotelRoomDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        collapsing_toolbar.title = ""
-        app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+        val navIcon = room_detail_detail_toolbar.navigationIcon
+        navIcon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
+        (activity as HotelRoomDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
+
+        room_detail_collapsing_toolbar.title = ""
+        room_detail_app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
             var scrollRange = -1
 
@@ -113,10 +121,12 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
                     scrollRange = appBarLayout.totalScrollRange
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsing_toolbar.title = hotelRoom.roomInfo.name
+                    room_detail_collapsing_toolbar.title = hotelRoom.roomInfo.name
+                    navIcon?.setColorFilter(resources.getColor(R.color.black), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
-                    collapsing_toolbar.title = " "
+                    room_detail_collapsing_toolbar.title = " "
+                    navIcon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
             }
