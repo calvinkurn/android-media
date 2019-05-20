@@ -38,13 +38,13 @@
           "weight": 2
         }
       ],
-      "HotelTransportDetails": [
+      "hotelTransportDetails": [
         {
           "conditionalInfoTop": {
-            "title": "Dana Pembayaran blablabla"
+            "Title": "Dana Pembayaran blablabla"
           },
           "conditionalInfoBottom": {
-            "title": "credit card tidak ditagih"
+            "Title": "credit card tidak ditagih"
           },
           "guestDetail": {
             "title": "nama tamu",

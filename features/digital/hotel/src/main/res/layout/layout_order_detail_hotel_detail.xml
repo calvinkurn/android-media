@@ -28,7 +28,9 @@
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_order_detail_hotel_detail"
                     app:fontSize="small"
+                    app:textViewTheme="lightPrimary"
                     app:weight="medium"
+                    tools:textColor="@color/light_primary"
                     tools:textSize="@dimen/sp_14"
                     tools:textStyle="bold" />
 
@@ -154,8 +156,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_2"
-                    app:layout_constraintTop_toBottomOf="@id/room_info"
-                    android:orientation="vertical"/>
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/room_info" />
 
                 <!--Ticker-->
 
@@ -163,9 +165,9 @@
                     android:id="@+id/special_request_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/room_amenities"
                     android:layout_marginTop="@dimen/dp_16"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/room_amenities" />
+
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/special_notes"
                     android:layout_width="match_parent"
@@ -196,14 +198,13 @@
                     android:id="@+id/call_icon"
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
-                    android:src="@drawable/ic_phone_black_36dp"
+                    android:src="@drawable/ic_call_green_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/contact_hotel"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-
                     />
 
                 <com.tokopedia.design.component.TextViewCompat
@@ -216,7 +217,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/call_icon"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:textColor="@color/tkpd_main_green"/>
             </android.support.constraint.ConstraintLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -242,7 +244,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
-                android:text="Detail Kamar"
+                android:text="Detail Tamu"
                 app:fontSize="small"
                 app:textViewTheme="lightPrimary"
                 app:weight="medium"

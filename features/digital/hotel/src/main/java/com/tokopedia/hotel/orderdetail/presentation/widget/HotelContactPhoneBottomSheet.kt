@@ -26,14 +26,14 @@ class HotelContactPhoneBottomSheet: BottomSheets(){
         view.minimumHeight = 0
 
         recyclerView = view.findViewById(R.id.recycler_view)
-
-        val contactAdapter = ContactAdapter(contactList, listener)
-        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = contactAdapter
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val contactAdapter = ContactAdapter(contactList, listener)
+        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = contactAdapter
         updateHeight()
     }
 

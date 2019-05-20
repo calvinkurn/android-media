@@ -18,6 +18,7 @@ class TitleTextAdapter(val type: Int): RecyclerView.Adapter<TitleTextAdapter.Vie
         when (type) {
             HORIZONTAL_LAYOUT -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text, parent, false)
             VERTICAL_LAYOUT -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text_vertical, parent, false)
+            HORIZONTAL_LAYOUT_ORANGE -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text_horizontal_orange, parent, false)
             else -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text, parent, false)
         }
         return ViewHolder(itemView)
@@ -55,6 +56,7 @@ class TitleTextAdapter(val type: Int): RecyclerView.Adapter<TitleTextAdapter.Vie
     companion object {
         const val HORIZONTAL_LAYOUT = 1
         const val VERTICAL_LAYOUT = 2
+        const val HORIZONTAL_LAYOUT_ORANGE = 11
     }
 }
 

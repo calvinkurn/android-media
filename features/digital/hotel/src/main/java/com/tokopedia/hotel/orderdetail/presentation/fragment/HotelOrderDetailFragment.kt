@@ -175,7 +175,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         payment_fares_recycler_View.adapter = faresAdapter
         faresAdapter.addData(payment.fares.toMutableList())
 
-        var summaryAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
+        var summaryAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT_ORANGE)
         payment_summary_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         payment_summary_recycler_view.adapter = summaryAdapter
         summaryAdapter.addData(payment.summary.toMutableList())
