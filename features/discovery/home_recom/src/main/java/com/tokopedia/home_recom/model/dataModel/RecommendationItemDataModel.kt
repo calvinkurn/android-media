@@ -5,14 +5,13 @@ import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
-class RecommendationCarouselDataModel(
-        val title: String,
-        val products: List<RecommendationItem>,
+class RecommendationItemDataModel(
+        val productItem: RecommendationItem,
         val listener: RecommendationCardView.TrackingListener
 ) : BaseHomeRecommendationDataModel {
 
     companion object{
-        val LAYOUT = R.layout.fragment_recommendation_carousell
+        val LAYOUT = R.layout.fragment_recommendation_item
     }
 
     override fun type(typeFactory: HomeRecommendationTypeFactory): Int = typeFactory.type(this)

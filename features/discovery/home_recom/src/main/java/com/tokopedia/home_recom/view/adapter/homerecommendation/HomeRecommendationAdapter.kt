@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_recom.model.dataModel.BaseHomeRecommendationDataModel
 import com.tokopedia.home_recom.model.dataModel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.dataModel.RecommendationCarouselDataModel
-import com.tokopedia.home_recom.view.viewHolder.ProductInfoViewHolder
+import com.tokopedia.home_recom.model.dataModel.TitleDataModel
 
 class HomeRecommendationAdapter(
         private val adapterTypeFactory: HomeRecommendationTypeFactoryImpl
@@ -25,6 +25,7 @@ class HomeRecommendationAdapter(
         when(getItemViewType(position)){
             ProductInfoDataModel.LAYOUT -> layout.isFullSpan = true
             RecommendationCarouselDataModel.LAYOUT -> layout.isFullSpan = true
+            TitleDataModel.LAYOUT -> layout.isFullSpan = true
         }
         holder.bind(visitables[position])
     }
@@ -33,5 +34,4 @@ class HomeRecommendationAdapter(
 
     override fun getItemViewType(position: Int): Int = visitables[position].type(adapterTypeFactory)
 
-    fun getItem(position: Int) = visitables[position]
 }

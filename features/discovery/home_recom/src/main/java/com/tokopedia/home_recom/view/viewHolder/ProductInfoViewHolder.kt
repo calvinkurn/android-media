@@ -23,12 +23,12 @@ class ProductInfoViewHolder(private val view: View) : AbstractViewHolder<Product
 
     override fun bind(element: ProductInfoDataModel) {
         productName.text = element.product.name
-        productDiscount.text = element.product.discount
-        setSplashedText(element.product.originalPrice)
+        productDiscount.text = "20%"
+        setSplashedText("RP100.000")
         productPrice.text = element.product.price
-        location.text = element.product.location
+        location.text = "Jakarta"
         ImageHandler.loadImageFitCenter(view.context, productImage, element.product.imageUrl)
-        setRatingReviewCount(element.product.rating, element.product.reviewCount)
+        setRatingReviewCount(element.product.rating, element.product.countReview)
     }
 
     private fun setRatingReviewCount(rating: Int, review: Int){
