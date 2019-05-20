@@ -33,7 +33,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lottie
 
     implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation 'io.reactivex:rxkotlin:0.60.0'
