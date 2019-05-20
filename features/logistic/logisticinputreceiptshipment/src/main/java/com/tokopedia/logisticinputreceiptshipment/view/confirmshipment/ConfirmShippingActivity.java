@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -64,6 +65,7 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
     private TextView courierName;
     private EditText barcodeEditText;
     private ProgressDialog progressDialog;
+    private PermissionCheckerHelper permissionCheckerHelper = new PermissionCheckerHelper();
 
     @Inject
     OrderCourierPresenterImpl presenter;
@@ -197,8 +199,7 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
     private View.OnClickListener onBarcodeScanClickedListener() {
         return view -> {
             sendAnalyticsOnClickButtonScan();
-            PermissionCheckerHelper helper = new PermissionCheckerHelper();
-            helper.checkPermissions(this, permissionList, new PermissionCheckerHelper.PermissionCheckListener() {
+            permissionCheckerHelper.checkPermissions(this, permissionList, new PermissionCheckerHelper.PermissionCheckListener() {
                 @Override
                 public void onPermissionDenied(@NotNull String permissionText) {
                     Toast.makeText(ConfirmShippingActivity.this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
@@ -215,6 +216,14 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
                 }
             }, getString(R.string.rationale_barcode_permission));
         };
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+        }
     }
 
     public void initInjector() {
