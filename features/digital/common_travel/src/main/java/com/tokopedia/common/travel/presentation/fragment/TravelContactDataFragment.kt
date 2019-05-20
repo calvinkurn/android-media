@@ -3,7 +3,6 @@ package com.tokopedia.common.travel.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import com.tokopedia.common.travel.R
 import com.tokopedia.common.travel.di.CommonTravelComponent
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
 import com.tokopedia.common.travel.presentation.model.TravelContactData
-import com.tokopedia.design.text.watcher.AfterTextWatcher
 import kotlinx.android.synthetic.main.fragment_travel_contact_data.*
 
 class TravelContactDataFragment: BaseDaggerFragment() {
