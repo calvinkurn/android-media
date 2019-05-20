@@ -34,7 +34,9 @@
         <com.tokopedia.design.component.EditTextCompat
             android:id="@+id/ev_email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:maxLines="1" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/ev_error_email"

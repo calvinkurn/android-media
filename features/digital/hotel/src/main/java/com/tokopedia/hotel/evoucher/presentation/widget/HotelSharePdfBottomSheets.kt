@@ -1,29 +1,57 @@
 package com.tokopedia.hotel.evoucher.presentation.widget
 
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Patterns
 import android.view.View
 import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.design.component.ButtonCompat
+import com.tokopedia.design.component.EditTextCompat
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.evoucher.presentation.adapter.HotelShareAsPdfAdapter
 import kotlinx.android.synthetic.main.bottom_sheets_share_as_pdf.view.*
 
 /**
  * @author by furqan on 16/05/19
  */
-class HotelSharePdfBottomSheets : BottomSheets() {
+class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAsPdfListener {
 
     val emailList = mutableListOf<String>()
+    lateinit var adapter: HotelShareAsPdfAdapter
+
+    lateinit var recyclerView: RecyclerView
+    lateinit var divider: View
+    lateinit var evEmail: EditTextCompat
+    lateinit var btnSend: ButtonCompat
+    lateinit var evError: TextViewCompat
+    lateinit var containerEmail: View
 
     override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_share_as_pdf
 
     override fun initView(view: View) {
-        with(view) {
-            ev_error_email.setTextColor(ContextCompat.getColor(context, R.color.red_500))
+        adapter = HotelShareAsPdfAdapter(emailList, this)
 
-            ev_email.addTextChangedListener(object : TextWatcher {
+        with(view) {
+            recyclerView = rv_email_list
+            divider = divider_list
+            evEmail = ev_email
+            btnSend = btn_send_email
+            evError = ev_error_email
+            containerEmail = container_add_email
+
+            evError.setTextColor(ContextCompat.getColor(context, R.color.red_500))
+
+            val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            recyclerView.layoutManager = layoutManager
+            recyclerView.setHasFixedSize(true)
+            recyclerView.isNestedScrollingEnabled = false
+            recyclerView.adapter = adapter
+
+            evEmail.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                 }
 
@@ -31,38 +59,66 @@ class HotelSharePdfBottomSheets : BottomSheets() {
                 }
 
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    btn_send_email.isEnabled = !(s.isEmpty() && emailList.isEmpty())
-                    ev_error_email.visibility = View.GONE
+                    configSendButton()
+                    evError.visibility = View.GONE
                 }
             })
 
-            container_add_email.setOnClickListener {
-                if (validateEmail(ev_error_email, ev_email.text.toString())) {
-                    emailList.add(ev_email.text.toString())
-                    ev_error_email.visibility = View.GONE
+            containerEmail.setOnClickListener {
+                if (validateEmail(evEmail.text.toString().trim())) {
+
+                    emailList.add(evEmail.text.toString().trim())
+                    evEmail.setText("")
+                    evError.visibility = View.GONE
+
+                    configDivider()
+                    configRecyclerView()
+                    configSendButton()
+                    updateHeight()
+
+                    adapter.notifyDataSetChanged()
                 }
             }
 
-            if (emailList.isEmpty()) {
-                divider_list.visibility = View.GONE
+            btnSend.setOnClickListener {
+                if (evEmail.text.isNotEmpty() && validateEmail(evEmail.text.toString().trim())) {
+                    emailList.add(evEmail.text.toString().trim())
+                    evError.visibility = View.GONE
+                }
+
+                if (emailList.isNotEmpty()) {
+                    // call API to send email
+                }
             }
+
+            configDivider()
+            configRecyclerView()
         }
     }
 
     override fun title(): String = getString(R.string.hotel_share_as_pdf)
 
-    private fun validateEmail(tvError: TextViewCompat, email: String): Boolean {
+    override fun onDelete(email: String) {
+        emailList.remove(email)
+        adapter.notifyDataSetChanged()
+        configDivider()
+        configRecyclerView()
+        configSendButton()
+        updateHeight()
+    }
+
+    private fun validateEmail(email: String): Boolean {
         var valid = true
         when {
             email.isEmpty() -> {
                 valid = false
-                tvError.text = getString(R.string.hotel_share_empty_email_error)
-                tvError.visibility = View.VISIBLE
+                evError.text = getString(R.string.hotel_share_empty_email_error)
+                evError.visibility = View.VISIBLE
             }
-            isValidEmail(email) || isEmailWithoutProhibitSymbol(email) -> {
+            !isValidEmail(email) || !isEmailWithoutProhibitSymbol(email) -> {
                 valid = false
-                tvError.text = getString(R.string.hotel_share_format_email_error)
-                tvError.visibility = View.VISIBLE
+                evError.text = getString(R.string.hotel_share_format_email_error)
+                evError.visibility = View.VISIBLE
             }
         }
         return valid
@@ -74,5 +130,25 @@ class HotelSharePdfBottomSheets : BottomSheets() {
 
     private fun isEmailWithoutProhibitSymbol(contactEmail: String): Boolean =
             !contactEmail.contains("+")
+
+    private fun configDivider() {
+        if (emailList.isEmpty()) {
+            divider.visibility = View.GONE
+        } else {
+            divider.visibility = View.VISIBLE
+        }
+    }
+
+    private fun configRecyclerView() {
+        if (emailList.isEmpty()) {
+            recyclerView.visibility = View.GONE
+        } else {
+            recyclerView.visibility = View.VISIBLE
+        }
+    }
+
+    private fun configSendButton() {
+        btnSend.isEnabled = !(evEmail.text.isEmpty() && emailList.isEmpty())
+    }
 
 }

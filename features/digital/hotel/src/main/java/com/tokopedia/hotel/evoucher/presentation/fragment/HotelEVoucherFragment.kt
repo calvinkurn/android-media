@@ -97,7 +97,7 @@ class HotelEVoucherFragment : TkpdBaseV4Fragment() {
 
     companion object {
 
-        val TAG_SHARE_AS_PDF = "TAG_SHARE_AS_PDF"
+        const val TAG_SHARE_AS_PDF = "TAG_SHARE_AS_PDF"
 
         fun getInstance(): HotelEVoucherFragment = HotelEVoucherFragment()
 
