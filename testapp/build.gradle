@@ -61,7 +61,7 @@ buildscript {
     }
     dependencies{
         classpath rootProject.ext.gradlePlugin.crashlytics
-        classpath 'com.google.gms:google-services:4.2.0'
+        classpath rootProject.ext.gradlePlugin.googleServices
     }
 }
 android {
