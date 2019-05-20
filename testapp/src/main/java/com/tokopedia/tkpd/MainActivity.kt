@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity() {
         val button = findViewById<Button>(R.id.button)
 
         button.setOnClickListener {
-            RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
+            RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
         }
     }
 

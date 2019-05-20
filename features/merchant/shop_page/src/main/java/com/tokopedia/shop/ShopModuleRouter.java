@@ -11,8 +11,6 @@ import android.support.v4.app.Fragment;
 
 public interface ShopModuleRouter {
 
-    Fragment getKolPostShopFragment(String shopId, String createPostUrl);
-
     void goToManageShop(Context context);
 
     void goToManageShipping(Context context);

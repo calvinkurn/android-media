@@ -31,7 +31,9 @@ object ApplinkConstInternalMarketplace {
     // CheckoutVariantActivity, "EXTRA_ATC_REQUEST" = AtcRequestParam
     @JvmField
     val EXPRESS_CHECKOUT = "$INTERNAL_MARKETPLACE/checkout-variant"
-
+    // CartActivity
+    @JvmField
+    val CART = "$INTERNAL_MARKETPLACE/cart"
 
     // ProductDetailActivity
     @JvmField
@@ -78,22 +80,24 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
 
-
     //ShopSettingsInfoActivity
     @JvmField
-    val SHOP_SETTINGS_INFO = "$INTERNAL_MARKETPLACE/shop-settings-info"
+    val SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/shop/setting"
 
-    //ShopSettingsNotesActivity
+    //ShopSettingsNoteActivity
     @JvmField
-    val SHOP_SETTINGS_NOTES = "$INTERNAL_MARKETPLACE/shop-settings-notes"
+    val SHOP_NOTE_SETTING = "$INTERNAL_MARKETPLACE/shop/setting/notes"
+
+    @JvmField
+    val SHOP_SHIPPING_SETTING = "$INTERNAL_MARKETPLACE/shop/setting/shipping"
 
     //ShopSettingsEtalaseActivity
     @JvmField
-    val SHOP_SETTINGS_ETALASE = "$INTERNAL_MARKETPLACE/shop-settings-etalase"
+    val SHOP_SETTINGS_ETALASE = "$INTERNAL_MARKETPLACE/shop/setting/etalase"
 
     //ShopSettingsAddressActivity
     @JvmField
-    val SHOP_SETTINGS_ADDRESS = "$INTERNAL_MARKETPLACE/shop-settings-address"
+    val SHOP_SETTINGS_ADDRESS = "$INTERNAL_MARKETPLACE/shop/setting/address"
 
     //DistrictRecommendationShopSettingsActivity
     @JvmField

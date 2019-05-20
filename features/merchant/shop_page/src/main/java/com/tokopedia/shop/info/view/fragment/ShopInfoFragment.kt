@@ -247,7 +247,7 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
         shopInfo?.run {
             shopPageTracking.clickAddNote(CustomDimensionShopPage.create(shopInfo))
         }
-        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES)
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_NOTE_SETTING)
     }
 
     override fun onNoteClicked(position: Long, shopNoteViewModel: ShopNoteViewModel) {

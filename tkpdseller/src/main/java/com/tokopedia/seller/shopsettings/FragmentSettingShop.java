@@ -74,7 +74,7 @@ public class FragmentSettingShop extends TkpdFragment {
                 switch (pos) {
                     case 0:
                         UnifyTracking.eventManageShopInfo(getActivity());
-                        startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO), 0);
+                        startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS), 0);
                         break;
                     case 1:
                         intent = new Intent(getActivity(), EditShippingActivity.class);
@@ -87,7 +87,7 @@ public class FragmentSettingShop extends TkpdFragment {
                         break;
                     case 3:
                         UnifyTracking.eventManageShopNotes(getActivity());
-                        RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES);
+                        RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.SHOP_NOTE_SETTING);
                         break;
                     case 4:
                         UnifyTracking.eventManageShopLocation(getActivity());

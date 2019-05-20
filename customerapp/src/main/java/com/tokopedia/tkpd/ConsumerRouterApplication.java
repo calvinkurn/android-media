@@ -211,9 +211,7 @@ import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.model.Configuration;
 import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
-import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -2046,11 +2044,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getContactUsIntent(Context context) {
         return ContactUsHomeActivity.getContactUsHomeIntent(context, new Bundle());
-    }
-
-    @Override
-    public Fragment getKolPostShopFragment(String shopId, String createPostUrl) {
-        return KolPostShopFragment.newInstance(shopId, createPostUrl);
     }
 
     @Override

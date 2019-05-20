@@ -15,7 +15,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.item
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ListHelper;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
-import com.tokopedia.search.result.presentation.view.listener.ProductListener;
+import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +28,11 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchVie
     RelatedSearchAdapter adapter;
     TextView relatedSearchTitle;
 
-    public RelatedSearchViewHolder(View itemView, ProductListener itemClickListener) {
+    public RelatedSearchViewHolder(View itemView, RelatedSearchListener relatedSearchListener) {
         super(itemView);
         recyclerView = itemView.findViewById(R.id.recyclerView);
         relatedSearchTitle = itemView.findViewById(R.id.relatedSearchTitle);
-        adapter = new RelatedSearchAdapter(itemClickListener);
+        adapter = new RelatedSearchAdapter(relatedSearchListener);
         recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
@@ -56,10 +56,10 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchVie
     public static class RelatedSearchAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         List<RelatedSearchViewModel.OtherRelated> itemList = new ArrayList<>();
-        ProductListener itemClickListener;
+        RelatedSearchListener relatedSearchListener;
 
-        public RelatedSearchAdapter(ProductListener itemClickListener) {
-            this.itemClickListener = itemClickListener;
+        public RelatedSearchAdapter(RelatedSearchListener relatedSearchListener) {
+            this.relatedSearchListener = relatedSearchListener;
         }
 
         public void setItemList(List<RelatedSearchViewModel.OtherRelated> itemList) {
@@ -70,7 +70,7 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchVie
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.related_search_item, parent, false);
-            return new ViewHolder(view, itemClickListener);
+            return new ViewHolder(view, relatedSearchListener);
         }
 
         @Override
@@ -87,12 +87,12 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchVie
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView textView;
-        ProductListener itemClickListener;
+        RelatedSearchListener relatedSearchListener;
 
-        public ViewHolder(View itemView, ProductListener itemClickListener) {
+        public ViewHolder(View itemView, RelatedSearchListener relatedSearchListener) {
             super(itemView);
             textView = itemView.findViewById(R.id.related_search_text);
-            this.itemClickListener = itemClickListener;
+            this.relatedSearchListener = relatedSearchListener;
         }
 
         public void bind(final RelatedSearchViewModel.OtherRelated item) {
@@ -100,7 +100,9 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchVie
             textView.setOnClickListener(view -> {
                 Uri uri = Uri.parse(item.getUrl());
                 String keyword = uri.getQueryParameter(SearchApiConst.Q);
-                itemClickListener.onRelatedSearchClicked(uri.getEncodedQuery(), keyword);
+                if (relatedSearchListener != null) {
+                    relatedSearchListener.onRelatedSearchClicked(uri.getEncodedQuery(), keyword);
+                }
             });
         }
     }
