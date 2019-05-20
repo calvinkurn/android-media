@@ -27,7 +27,7 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
         PeopleAddressModel result = new PeopleAddressModel();
 
         // when developing, once get null
-        if (addressCornerResponse != null) {
+        if (addressCornerResponse != null && addressCornerResponse.getData() != null) {
             List<RecipientAddressModel> recipientAddressModelList = new ArrayList<>();
             for (Datum addressModel : addressCornerResponse.getData()) {
                 RecipientAddressModel recipientAddress = new RecipientAddressModel();

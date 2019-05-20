@@ -7,7 +7,7 @@ import android.os.Parcelable
  * Created by fwidjaja on 2019-05-14.
  */
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-data class AutoCompleteGeocodeResultUiModel (
+data class AutocompleteGeocodeResultUiModel (
         var name: String = "",
         var placeId: String = "",
         var vicinity: String = ""
@@ -28,12 +28,12 @@ data class AutoCompleteGeocodeResultUiModel (
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<AutoCompleteGeocodeResultUiModel> {
-        override fun createFromParcel(parcel: Parcel): AutoCompleteGeocodeResultUiModel {
-            return AutoCompleteGeocodeResultUiModel(parcel)
+    companion object CREATOR : Parcelable.Creator<AutocompleteGeocodeResultUiModel> {
+        override fun createFromParcel(parcel: Parcel): AutocompleteGeocodeResultUiModel {
+            return AutocompleteGeocodeResultUiModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<AutoCompleteGeocodeResultUiModel?> {
+        override fun newArray(size: Int): Array<AutocompleteGeocodeResultUiModel?> {
             return arrayOfNulls(size)
         }
     }

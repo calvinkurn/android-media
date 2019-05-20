@@ -6,13 +6,13 @@ import android.os.Parcelable
 /**
  * Created by fwidjaja on 2019-05-14.
  */
-data class AutoCompleteGeocodeResponseUiModel (
+data class AutocompleteGeocodeResponseUiModel (
         var status: String = "",
-        var data: AutoCompleteGeocodeDataUiModel = AutoCompleteGeocodeDataUiModel()
+        var data: AutocompleteGeocodeDataUiModel = AutocompleteGeocodeDataUiModel()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
-            parcel.readParcelable(AutoCompleteGeocodeDataUiModel::class.java.classLoader))
+            parcel.readParcelable(AutocompleteGeocodeDataUiModel::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(status)
@@ -23,12 +23,12 @@ data class AutoCompleteGeocodeResponseUiModel (
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<AutoCompleteGeocodeResponseUiModel> {
-        override fun createFromParcel(parcel: Parcel): AutoCompleteGeocodeResponseUiModel {
-            return AutoCompleteGeocodeResponseUiModel(parcel)
+    companion object CREATOR : Parcelable.Creator<AutocompleteGeocodeResponseUiModel> {
+        override fun createFromParcel(parcel: Parcel): AutocompleteGeocodeResponseUiModel {
+            return AutocompleteGeocodeResponseUiModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<AutoCompleteGeocodeResponseUiModel?> {
+        override fun newArray(size: Int): Array<AutocompleteGeocodeResponseUiModel?> {
             return arrayOfNulls(size)
         }
     }

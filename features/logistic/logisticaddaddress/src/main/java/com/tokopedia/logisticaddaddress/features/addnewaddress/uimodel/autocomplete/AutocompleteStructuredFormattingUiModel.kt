@@ -1,0 +1,12 @@
+package com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete
+
+import android.os.Parcel
+import android.os.Parcelable
+
+/**
+ * Created by fwidjaja on 2019-05-20.
+ */
+data class AutocompleteStructuredFormattingUiModel (
+        var mainText: String = "",
+        var secondaryText: String = ""
+)

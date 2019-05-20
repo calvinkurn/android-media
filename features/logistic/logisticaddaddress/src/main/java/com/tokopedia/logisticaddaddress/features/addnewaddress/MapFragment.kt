@@ -1,6 +1,9 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress
 
 import android.os.Bundle
+import android.os.Handler
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.CoordinatorLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,20 +24,25 @@ import com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_DEFAULT_LONG
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.MapLoadingBottomSheetFragment
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutoCompleteGeocodeBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import javax.inject.Inject
 
 /**
  * Created by fwidjaja on 2019-05-08.
  */
-class MapFragment: BaseDaggerFragment(), AddNewAddressView, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, ResultCallback<LocationSettingsResult>{
+class MapFragment: BaseDaggerFragment(), MapViewListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, ResultCallback<LocationSettingsResult>,
+        AutocompleteBottomSheetFragment.ActionListener{
 
     private var googleMap: GoogleMap? = null
     private var currentLat: Double? = 0.0
     private var currentLong: Double? = 0.0
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<CoordinatorLayout>
+    val handler = Handler()
 
     @Inject
     lateinit var presenter: MapPresenter
@@ -84,11 +92,14 @@ class MapFragment: BaseDaggerFragment(), AddNewAddressView, GoogleApiClient.Conn
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mapView.onCreate(savedInstanceState)
-
         mapView.getMapAsync(this)
         presenter.connectGoogleApi(this)
 
-        up.setOnClickListener {
+        bottomSheetBehavior = BottomSheetBehavior.from<CoordinatorLayout>(bottomsheet_getdistrict)
+        getdistrict_container.visibility = View.GONE
+        whole_loading_container.visibility = View.VISIBLE
+
+        back_button.setOnClickListener {
             mapView.onPause()
             presenter.disconnectGoogleApi()
             activity?.finish()
@@ -102,6 +113,22 @@ class MapFragment: BaseDaggerFragment(), AddNewAddressView, GoogleApiClient.Conn
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
         MapsInitializer.initialize(activity!!)
         moveMap(MapUtils.generateLatLng(currentLat, currentLong))
+
+        // nanti cek permission location di sini!
+        handler.postDelayed({
+            showAutocompleteGeocodeBottomSheet()
+        }, 1500)
+
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        googleMap?.setOnCameraIdleListener {
+            val target: LatLng = googleMap.cameraPosition.target
+            val latTarget = target.latitude
+            val longTarget = target.longitude
+            tv_title_getdistrict.visibility = View.GONE
+            tv_address_getdistrict.visibility = View.GONE
+            loading_container.visibility = View.VISIBLE
+            presenter.autofill("$latTarget,$longTarget")
+        }
     }
 
     override fun moveMap(latLng: LatLng) {
@@ -113,13 +140,6 @@ class MapFragment: BaseDaggerFragment(), AddNewAddressView, GoogleApiClient.Conn
                 .build()
 
         googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-
-        showMapLoadingBottomSheet()
-    }
-
-    private fun showMapLoadingBottomSheet() {
-        val mapLoadingBottomSheetFragment = MapLoadingBottomSheetFragment.newInstance()
-        mapLoadingBottomSheetFragment.show(fragmentManager, "")
     }
 
     override fun onResume() {
@@ -157,5 +177,39 @@ class MapFragment: BaseDaggerFragment(), AddNewAddressView, GoogleApiClient.Conn
 
     override fun onResult(locationSettingsResult: LocationSettingsResult) {
         presenter.onResult(locationSettingsResult)
+    }
+
+    private fun showAutocompleteGeocodeBottomSheet() {
+        val autocompleteGeocodeBottomSheetFragment =
+                AutocompleteBottomSheetFragment.newInstance()
+        autocompleteGeocodeBottomSheetFragment.setActionListener(this)
+        autocompleteGeocodeBottomSheetFragment.show(fragmentManager, "")
+    }
+
+    override fun onGetPlaceId(placeId: String) {
+        presenter.getDistrict(placeId)
+    }
+
+    override fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel) {
+        whole_loading_container.visibility = View.GONE
+        getdistrict_container.visibility = View.VISIBLE
+        currentLat = getDistrictDataUiModel.latitude.toDouble()
+        currentLong = getDistrictDataUiModel.longitude.toDouble()
+        moveMap(MapUtils.generateLatLng(currentLat, currentLong))
+        updateGetDistrictBottomSheet(getDistrictDataUiModel.title, getDistrictDataUiModel.formattedAddress)
+    }
+
+    override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
+        whole_loading_container.visibility = View.GONE
+        getdistrict_container.visibility = View.VISIBLE
+        updateGetDistrictBottomSheet(autofillDataUiModel.title, autofillDataUiModel.formattedAddress)
+    }
+
+    private fun updateGetDistrictBottomSheet(title: String, formattedAddres: String) {
+        loading_container.visibility = View.GONE
+        tv_title_getdistrict.visibility = View.VISIBLE
+        tv_address_getdistrict.visibility = View.VISIBLE
+        tv_title_getdistrict.text = title
+        tv_address_getdistrict.text = formattedAddres
     }
 }

@@ -1,16 +1,15 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.get_district
+package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteGeocodeMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutoCompleteGeocodeBottomSheetView
+import com.tokopedia.logisticaddaddress.features.addnewaddress.MapViewListener
 import rx.Subscriber
 
 /**
  * Created by fwidjaja on 2019-05-16.
  */
-class GetDistrictBottomSheetSubscriber(val view: GetDistrictBottomSheetView,
-                                       val mapper: GetDistrictMapper): Subscriber<GraphqlResponse>() {
+class GetDistrictSubscriber(val view: MapViewListener,
+                            val mapper: GetDistrictMapper): Subscriber<GraphqlResponse>() {
 
     override fun onNext(t: GraphqlResponse?) {
         val getDistrictResponseUiModel = mapper.map(t)

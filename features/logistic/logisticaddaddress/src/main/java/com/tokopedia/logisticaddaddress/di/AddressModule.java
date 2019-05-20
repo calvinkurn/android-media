@@ -44,13 +44,6 @@ public class AddressModule {
 
     @Provides
     @AddressScope
-    MapPresenter provideAddNewAddressPresenter(
-            @ApplicationContext Context context) {
-        return new MapPresenter(context);
-    }
-
-    @Provides
-    @AddressScope
     PerformanceMonitoring providePerformanceMonitoring(){
         return new PerformanceMonitoring();
     }

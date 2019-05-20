@@ -1,22 +1,21 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Location
-import android.telephony.CellLocation.requestLocationUpdate
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.Status
-import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsResult
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.places.Places
-import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
+import com.tokopedia.logisticaddaddress.domain.mapper.AutofillMapper
+import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
+import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.AutofillSubscriber
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.GetDistrictSubscriber
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 /**
@@ -24,8 +23,11 @@ import javax.inject.Inject
  */
 
 @AddNewAddressScope
-class MapPresenter @Inject constructor(private val context: Context):
-        BaseDaggerPresenter<AddNewAddressView>(), LocationListener {
+class MapPresenter @Inject constructor(private val context: Context,
+                                       private val getDistrictUseCase: GetDistrictUseCase,
+                                       private val getDistrictMapper: GetDistrictMapper,
+                                       private val autofillUseCase: AutofillUseCase,
+                                       private val autofillMapper: AutofillMapper): BaseDaggerPresenter<MapViewListener>() {
     var googleApiClient: GoogleApiClient? = null
 
     private val defaultLat: Double by lazy { -6.175794 }
@@ -55,54 +57,30 @@ class MapPresenter @Inject constructor(private val context: Context):
                 view.moveMap(MapUtils.generateLatLng(defaultLat, defaultLong))
             }
         }
-
-        /*final Status status = locationSettingsResult.getStatus();
-        switch (status.getStatusCode()) {
-            case LocationSettingsStatusCodes.SUCCESS:
-            view.moveMap(getLastLocation());
-            requestLocationUpdate();
-            break;
-            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-            view.showDialogError(status);
-            break;
-            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-            break;
-            default:
-            break;
-        }*/
     }
 
-    override fun onLocationChanged(p0: Location?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun getDistrict(placeId: String) {
+        getDistrictUseCase.setParams(placeId)
+        getDistrictUseCase.execute(RequestParams.create(), GetDistrictSubscriber(view, getDistrictMapper))
     }
 
-    /*@SuppressLint("MissingPermission")
-    private fun getLastLocation(): LatLng {
-        return try {
-            if (isServiceConnected()) {
-                val location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
-                MapUtils.saveLocation(context, location)
-                LatLng(location.latitude, location.longitude)
-            } else {
-                MapUtils.generateLatLng(defaultLat, defaultLong)
-            }
-        } catch (e: Exception) {
-            MapUtils.generateLatLng(defaultLat, defaultLong)
-        }
-
-    }*/
-
-    private fun isServiceConnected(): Boolean {
-        val availability = GoogleApiAvailability.getInstance()
-
-        val resultCode = availability.isGooglePlayServicesAvailable(context)
-
-        return if (ConnectionResult.SUCCESS == resultCode) {
-            CommonUtils.dumper("Google play services available")
-            true
-        } else {
-            CommonUtils.dumper("Google play services unavailable")
-            false
-        }
+    fun autofill(latlng: String) {
+        autofillUseCase.setParams(latlng)
+        autofillUseCase.execute(RequestParams.create(), AutofillSubscriber(view, autofillMapper))
     }
+
+    override fun detachView() {
+        super.detachView()
+        getDistrictUseCase.unsubscribe()
+        autofillUseCase.unsubscribe()
+    }
+
+    fun clearCacheGetDistrict() {
+        getDistrictUseCase.clearCache()
+    }
+
+    fun clearCacheAutofill() {
+        autofillUseCase.clearCache()
+    }
+
 }

@@ -34,12 +34,14 @@
     </RelativeLayout>
 
     <ImageButton
-        android:id="@+id/up"
+        android:id="@+id/back_button"
         android:layout_width="?actionBarSize"
         android:layout_height="?actionBarSize"
         android:layout_gravity="start|top"
         android:background="?selectableItemBackgroundBorderless"
         android:contentDescription="@string/navigate_up"
         android:src="@drawable/ic_arrow_back" />
+
+    <include layout="@layout/bottomsheet_getdistrict" />
 
 </android.support.design.widget.CoordinatorLayout>

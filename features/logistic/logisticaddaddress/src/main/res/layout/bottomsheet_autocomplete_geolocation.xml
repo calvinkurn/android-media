@@ -37,7 +37,7 @@
                     android:tint="@color/ic_grey_color"
                     android:layout_gravity="center_vertical"/>
 
-                <TextView
+                <EditText
                     android:id="@+id/et_search"
                     android:layout_marginLeft="@dimen/dp_11"
                     android:layout_marginStart="@dimen/dp_11"
@@ -122,7 +122,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_poi_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8" />
