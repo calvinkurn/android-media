@@ -8,7 +8,8 @@ import com.github.paolorotolo.appintro.AppIntro2;
 /**
  * Created by hafizh HERDI on 3/7/2016.
  */
-public abstract class BaseOnboardingActivity extends AppIntro {
+public abstract class
+BaseOnboardingActivity extends AppIntro {
 
     @Override
     protected void onStart() {
