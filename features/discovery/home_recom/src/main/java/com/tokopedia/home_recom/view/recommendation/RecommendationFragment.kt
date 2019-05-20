@@ -15,6 +15,7 @@ import com.tokopedia.home_recom.model.dataModel.RecommendationCarouselDataModel
 import com.tokopedia.home_recom.model.dataModel.RecommendationItemDataModel
 import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationTypeFactoryImpl
+import com.tokopedia.recommendation_widget_common.RecommendationParams
 import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
 import com.tokopedia.recommendation_widget_common.TYPE_INFO
 import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
@@ -45,12 +46,13 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         disableLoadMore()
-
         viewModel.recommendationListModel.observe(this, Observer {
             it?.let { recommendationList ->
                 renderList(mapDataModel(recommendationList.recommendationList))
             }
         })
+
+        viewModel.getRecommendationList(RecommendationParams())
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
