@@ -132,6 +132,7 @@
     <string name="hotel_order_detail_guest_detail">Detail Tamu</string>
     <string name="hotel_order_detail_guest_name">Nama Tamu</string>
     <string name="hotel_order_detail_payment_method">Metode Pembayaran</string>
+    <string name="hotel_order_detail_title">Detail Pesanan</string>
 
     <string name="hotel_detail_room_full_text">Kamar Penuh</string>
     <string name="hotel_detail_change_search_text">Ganti Pencarian</string>

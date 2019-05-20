@@ -48,7 +48,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var orderDetailViewModel: HotelOrderDetailViewModel
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = getString(R.string.hotel_order_detail_title)
 
     override fun initInjector() = getComponent(HotelOrderDetailComponent::class.java).inject(this)
 
