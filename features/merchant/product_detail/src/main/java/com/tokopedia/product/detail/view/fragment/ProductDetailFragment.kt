@@ -20,6 +20,7 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
+import android.support.v4.util.ArrayMap
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.*
@@ -1443,9 +1444,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             if (productInfoViewModel.isUserSessionActive()) {
                 val intent = RouteManager.getIntent(it,
-                    ApplinkConst.TOPCHAT_ASKSELLER,
-                    shop.shopCore.shopID, product.basic.url,
-                    "product", shop.shopCore.name, shop.shopAssets.avatar)
+                        ApplinkConst.TOPCHAT_ASKSELLER,
+                        shop.shopCore.shopID, "",
+                        "product", shop.shopCore.name, shop.shopAssets.avatar)
+                putChatProductInfoTo(intent)
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
@@ -1454,6 +1456,56 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
         productDetailTracking.eventSendMessage()
         productDetailTracking.eventSendChat()
+    }
+
+    private fun putChatProductInfoTo(intent: Intent?) {
+        if (intent == null) return
+        val variants = mapSelectedProductVariants()
+        val productImageUrl = getProductImageUrl()
+        val productName = getProductName()
+        val productPrice = getProductPrice()
+        val productUrl = getProductUrl()
+        val productColorVariant = variants?.get("colour")?.get("value")
+        val productColorHexVariant = variants?.get("colour")?.get("hex")
+        val productSizeVariant = variants?.get("size")?.get("value")
+        with(intent) {
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, productId)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, productImageUrl)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, productName)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, productPrice)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, productUrl)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, productColorVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, productColorHexVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, productSizeVariant)
+        }
+    }
+
+    private fun getProductImageUrl(): String? {
+        val images = productInfo?.pictures
+        return images?.get(0)?.urlThumbnail
+    }
+
+    private fun getProductName(): String? {
+        return productInfo?.basic?.name
+    }
+
+    private fun getProductPrice(): String? {
+        return productInfo?.basic?.price?.getCurrencyFormatted()
+    }
+
+    private fun getProductUrl(): String? {
+        return productInfo?.basic?.url
+    }
+
+    private fun mapSelectedProductVariants(): ArrayMap<String, ArrayMap<String, String>>? {
+        return getProductVariant()?.mapSelectedProductVariants(userInputVariant)
+    }
+
+    private fun getProductVariant(): ProductVariant? {
+        val productVariantResponse = productInfoViewModel.productVariantResp.value
+        return if (productVariantResponse is Success) {
+            productVariantResponse.data
+        }  else { null }
     }
 
     /**
