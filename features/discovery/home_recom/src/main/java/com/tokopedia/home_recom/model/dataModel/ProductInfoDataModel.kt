@@ -1,7 +1,7 @@
 package com.tokopedia.home_recom.model.dataModel
 
 import com.tokopedia.home_recom.R
-import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactory
+import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationTypeFactory
 
 class ProductInfoDataModel(
         val product: ProductDataModel

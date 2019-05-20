@@ -3,4 +3,6 @@
     <string name="home_recommendation">Rekomendasi</string>
     <string name="add_to_cart">Tambah ke Keranjang</string>
     <string name="review_count">(%d)</string>
+    <string name="similar_product_title">Produk Serupa</string>
+    <string name="another_product_title">Produk Lain dari Toko Ini</string>
 </resources>

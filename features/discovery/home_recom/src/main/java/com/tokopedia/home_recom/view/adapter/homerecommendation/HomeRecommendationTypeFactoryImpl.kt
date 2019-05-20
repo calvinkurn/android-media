@@ -1,4 +1,4 @@
-package com.tokopedia.home_recom.view.adapter
+package com.tokopedia.home_recom.view.adapter.homerecommendation
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -8,9 +8,9 @@ import com.tokopedia.home_recom.model.dataModel.RecommendationCarouselDataModel
 import com.tokopedia.home_recom.model.dataModel.RecommendationScrollDataModel
 import com.tokopedia.home_recom.view.viewHolder.ProductInfoViewHolder
 import com.tokopedia.home_recom.view.viewHolder.RecommendationCarouselViewHolder
-import com.tokopedia.home_recom.view.viewHolder.RecommendationScrollViewHolder
+import com.tokopedia.home_recom.view.viewHolder.RecommendationItemViewHolder
 
-class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory{
+class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
     override fun type(dataModel: ProductInfoDataModel): Int {
         return ProductInfoDataModel.LAYOUT
     }
@@ -25,7 +25,7 @@ class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommen
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when(type){
-            RecommendationScrollDataModel.LAYOUT -> RecommendationScrollViewHolder(view)
+            RecommendationScrollDataModel.LAYOUT -> RecommendationItemViewHolder(view)
             ProductInfoDataModel.LAYOUT -> ProductInfoViewHolder(view)
             RecommendationCarouselDataModel.LAYOUT -> RecommendationCarouselViewHolder(view)
             else -> super.createViewHolder(view, type)

@@ -4,13 +4,12 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.dataModel.BaseHomeRecommendationDataModel
-import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
-import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
+import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationAdapter
+import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -19,14 +18,16 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
+    private lateinit var productId: String
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl() }
     private val adapter by lazy { HomeRecommendationAdapter(adapterTypeFactory) }
     private val viewModel by lazy { viewModelProvider.get(RecommendationViewModel::class.java) }
 
     companion object{
-        fun newInstance() = RecommendationFragment()
+        fun newInstance(productId: String) = RecommendationFragment().apply {
+            this.productId = productId
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

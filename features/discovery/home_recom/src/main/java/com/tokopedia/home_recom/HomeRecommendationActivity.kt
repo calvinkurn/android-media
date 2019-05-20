@@ -2,19 +2,14 @@ package com.tokopedia.home_recom
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.view.recommendation.RecommendationFragment
-import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
 
@@ -36,17 +31,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         }
     }
 
-    object DeeplinkIntent{
-
-        @DeepLink(ApplinkConst.HOME_RECOMMENDATION_PAGE)
-        @JvmStatic
-        fun getCallingApplinkSearchIntent(context: Context, bundle: Bundle): Intent = Intent(context, HomeRecommendationActivity::class.java).apply{
-            putExtra(PRODUCT_ID, bundle.getString(DEEP_LINK_URI))
-        }
-    }
-
     override fun getNewFragment(): Fragment {
-        return RecommendationFragment.newInstance()
+        return RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID))
     }
 
     override fun getComponent(): HomeRecommendationComponent = DaggerHomeRecommendationComponent.builder()

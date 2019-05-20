@@ -1,5 +1,6 @@
 package com.tokopedia.home_recom.view.viewHolder
 
+import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -23,7 +24,7 @@ class ProductInfoViewHolder(private val view: View) : AbstractViewHolder<Product
     override fun bind(element: ProductInfoDataModel) {
         productName.text = element.product.name
         productDiscount.text = element.product.discount
-        productSlashedPrice.text = element.product.originalPrice
+        setSplashedText(element.product.originalPrice)
         productPrice.text = element.product.price
         location.text = element.product.location
         ImageHandler.loadImageFitCenter(view.context, productImage, element.product.imageUrl)
@@ -50,5 +51,10 @@ class ProductInfoViewHolder(private val view: View) : AbstractViewHolder<Product
             5 -> R.drawable.ic_star_five
             else -> R.drawable.ic_star_none
         }
+    }
+
+    private fun setSplashedText(text: String){
+        productSlashedPrice.text = text
+        productSlashedPrice.paintFlags = productSlashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 }

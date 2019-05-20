@@ -1,4 +1,4 @@
-package com.tokopedia.home_recom.view.adapter
+package com.tokopedia.home_recom.view.adapter.homerecommendation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
