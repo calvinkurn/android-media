@@ -589,10 +589,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (currentShipmentData instanceof ShipmentCartItemModel) {
             shipmentCartItemModel = (ShipmentCartItemModel) currentShipmentData;
             if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
-                //orderpriority
+                shipmentCartItemModel.getSelectedShipmentDetailData()
                 mapperOrderPriority(serviceData, shipmentCartItemModel);
             } else {
-                //oprderpriority
                 mapperOrderPriority(serviceData, shipmentCartItemModel);
             }
         }

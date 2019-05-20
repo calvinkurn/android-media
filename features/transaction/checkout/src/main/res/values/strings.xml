@@ -62,6 +62,7 @@
     <string name="label_order_shipping_address_new">Alamat Pengiriman</string>
     <string name="label_shipment_insurance">Asuransi Pengiriman</string>
     <string name="label_order_prioritas">Order Prioritas</string>
+    <string name="label_hardcoded_order_prioritas_info">Pesanan diproses dalam 1 jam</string>
     <string name="image_desc_button_insurance_info">Button insurance info</string>
     <string name="image_desc_button_dropshipper_info">Button dropshipper info</string>
     <string name="image_desc_button_partial_order_info">Button partial order info</string>
