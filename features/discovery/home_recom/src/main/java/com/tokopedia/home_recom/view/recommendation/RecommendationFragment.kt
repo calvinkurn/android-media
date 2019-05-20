@@ -46,6 +46,7 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         disableLoadMore()
+        getRecyclerView(view).layoutManager = recyclerViewLayoutManager
         viewModel.recommendationListModel.observe(this, Observer {
             it?.let { recommendationList ->
                 renderList(mapDataModel(recommendationList.recommendationList))
