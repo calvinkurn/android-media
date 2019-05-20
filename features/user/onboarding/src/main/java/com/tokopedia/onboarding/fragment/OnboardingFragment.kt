@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
-import com.tokopedia.onboarding.animation.OnboardingAnimation
+import com.tokopedia.onboarding.animation.OnboardingAnimationHelper
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 import com.tokopedia.onboarding.listener.CustomAnimationPageTransformerDelegate
 import com.tokopedia.user.session.UserSessionInterface
@@ -145,11 +145,11 @@ class OnboardingFragment : BaseDaggerFragment(),
         titleView.visibility = View.VISIBLE
         descView.visibility = View.VISIBLE
 
-        val slideTitle = OnboardingAnimation.slideReverseX(titleView)
-        val slideDesc = OnboardingAnimation.slideReverseX(descView)
+        val slideTitle = OnboardingAnimationHelper.slideReverseX(titleView)
+        val slideDesc = OnboardingAnimationHelper.slideReverseX(descView)
 
-        val fadeTitle = OnboardingAnimation.appearText(titleView)
-        val fadeDesc = OnboardingAnimation.appearText(descView)
+        val fadeTitle = OnboardingAnimationHelper.appearText(titleView)
+        val fadeDesc = OnboardingAnimationHelper.appearText(descView)
         slideDesc.startDelay = 100L
         val set = AnimatorSet()
         set.playTogether(slideTitle, slideDesc, fadeTitle, fadeDesc)

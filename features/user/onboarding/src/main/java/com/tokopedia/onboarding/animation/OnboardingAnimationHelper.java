@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
  * Created by stevenfredian on 7/26/17.
  */
 
-public class OnboardingAnimation {
+public class OnboardingAnimationHelper {
 
     public static final long DEFAULT_ANIMATION_DURATION = 1250L;
     public static final int UP_DIRECTION = -1;
