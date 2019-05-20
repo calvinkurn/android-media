@@ -1,4 +1,4 @@
-package com.tokopedia.topads.auto.viewmodel;
+package com.tokopedia.topads.auto.view.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;

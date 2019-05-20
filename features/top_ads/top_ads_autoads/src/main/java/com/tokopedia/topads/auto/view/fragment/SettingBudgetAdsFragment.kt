@@ -1,4 +1,4 @@
-package com.tokopedia.topads.auto.view.fragment.budget
+package com.tokopedia.topads.auto.view.fragment
 
 import android.content.Intent
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package com.tokopedia.topads.auto.view.fragment.budget
+package com.tokopedia.topads.auto.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -56,7 +56,7 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
     override fun onManualAdsClicked() {
         val intent = (activity!!.application as TopAdsAutoRouter)
                 .getTopAdsAddingPromoOptionIntent(activity!!)
-        startActivityForResult(intent, DailyBudgetFragment.REQUEST_CODE_AD_OPTION)
+        startActivityForResult(intent, REQUEST_CODE_AD_OPTION)
     }
 
     override fun onAutoAdsClicked() {

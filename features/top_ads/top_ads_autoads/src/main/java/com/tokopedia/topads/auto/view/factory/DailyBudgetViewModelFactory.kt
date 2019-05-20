@@ -1,9 +1,10 @@
-package com.tokopedia.topads.auto.view.fragment.budget
+package com.tokopedia.topads.auto.view.factory
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
 import com.tokopedia.topads.auto.data.repository.AutoTopAdsRepositoy
+import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import javax.inject.Inject
 
 /**

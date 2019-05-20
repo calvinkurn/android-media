@@ -10,8 +10,7 @@ import com.tokopedia.topads.auto.data.network.datasource.AutoAdsNetworkDataSourc
 import com.tokopedia.topads.auto.data.repository.AutoTopAdsRepositoy
 import com.tokopedia.topads.auto.data.repository.AutoTopAdsRepositoyImpl
 import com.tokopedia.topads.auto.di.AutoAdsScope
-import com.tokopedia.topads.auto.view.fragment.budget.DailyBudgetViewModel
-import com.tokopedia.topads.auto.view.fragment.budget.DailyBudgetViewModelFactory
+import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -38,7 +37,7 @@ class AutoAdsModule {
 
     @AutoAdsScope
     @Provides
-    fun provideDataSource(gqlRepostory: GraphqlRepository, userSession: UserSession,
+    fun provideDataSource(gqlRepostory: GraphqlRepository, userSession: UserSessionInterface,
                           rawQueries: Map<String, String>): AutoAdsNetworkDataSource
             = AutoAdsNetworkDataSourceImpl(gqlRepostory, userSession, rawQueries)
 

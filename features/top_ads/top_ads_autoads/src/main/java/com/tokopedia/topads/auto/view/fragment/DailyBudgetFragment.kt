@@ -1,8 +1,5 @@
-package com.tokopedia.topads.auto.view.fragment.budget
+package com.tokopedia.topads.auto.view.fragment
 
-import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
@@ -15,7 +12,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.SeekBar
 import android.widget.TextView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -23,9 +19,9 @@ import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.seller.common.widget.PrefixEditText
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.data.network.datasource.AutoAdsNetworkDataSourceImpl
-import com.tokopedia.topads.auto.data.repository.AutoTopAdsRepositoyImpl
 import com.tokopedia.topads.auto.di.AutoAdsComponent
+import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
+import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
