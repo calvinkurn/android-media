@@ -2,24 +2,20 @@ package com.tokopedia.recommendation_widget_common.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.*
-import com.tokopedia.recommendation_widget_common.RecommendationRawQueryKeyConstant.QUERY_RECOMMENDATION_WIDGET
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationList
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModelDummy
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.internal.cache.CacheStrategy
 import javax.inject.Inject
 import javax.inject.Named
 
