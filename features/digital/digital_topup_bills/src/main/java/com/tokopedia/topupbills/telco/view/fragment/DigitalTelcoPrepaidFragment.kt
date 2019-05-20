@@ -1,6 +1,7 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
 import android.app.Activity
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.ActivityNotFoundException
@@ -25,15 +26,14 @@ import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
 import com.tokopedia.topupbills.telco.data.TelcoCustomData
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
+import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalProductTelcoItem
 import com.tokopedia.topupbills.telco.view.model.DigitalPromo
 import com.tokopedia.topupbills.telco.view.model.DigitalRecentNumber
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
-import com.tokopedia.topupbills.telco.view.widget.DigitalBaseClientNumberWidget
-import com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
-import com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
-import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoClientNumberWidget
+import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
+import com.tokopedia.topupbills.telco.view.widget.*
 import javax.inject.Inject
 
 /**
@@ -46,6 +46,7 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
     private lateinit var promoListView: DigitalPromoListWidget
     private lateinit var viewPager: ViewPager
     private lateinit var tabLayout: TabLayout
+    private lateinit var buyWidget: DigitalTelcoBuyWidget
     private lateinit var telcoCustomData: TelcoCustomComponentData
     private val recentNumbers = mutableListOf<DigitalRecentNumber>()
     private val promoList = mutableListOf<DigitalPromo>()
@@ -56,6 +57,7 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     private lateinit var customViewModel: DigitalTelcoCustomViewModel
+    private lateinit var sharedModel: SharedProductTelcoViewModel
 
     override fun onStart() {
         context?.let {
@@ -69,6 +71,7 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             customViewModel = viewModelProvider.get(DigitalTelcoCustomViewModel::class.java)
+            sharedModel = viewModelProvider.get(SharedProductTelcoViewModel::class.java)
         }
     }
 
@@ -83,6 +86,15 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        sharedModel.productItem.observe(this, Observer {
+            it?.run {
+                buyWidget.setTotalPrice(it.product.attributes.price)
+            }
+        })
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_prepaid, container, false)
         recentNumbersView = view.findViewById(R.id.recent_numbers)
@@ -90,6 +102,7 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         promoListView = view.findViewById(R.id.promo_widget)
         viewPager = view.findViewById(R.id.product_view_pager)
         tabLayout = view.findViewById(R.id.tab_layout)
+        buyWidget = view.findViewById(R.id.buy_widget)
         return view
     }
 
@@ -208,7 +221,7 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
                 TelcoComponentType.PRODUCT_PAKET_DATA, operatorId, TelcoProductType.PRODUCT_LIST), "Paket Data"))
         listProductTab.add(DigitalProductTelcoItem(DigitalTelcoProductFragment.newInstance(
                 TelcoComponentType.PRODUCT_ROAMING, operatorId, TelcoProductType.PRODUCT_LIST), "Roaming"))
-        val pagerAdapter = com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter(listProductTab, childFragmentManager)
+        val pagerAdapter = DigitalTelcoProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
         tabLayout.setupWithViewPager(viewPager)
     }

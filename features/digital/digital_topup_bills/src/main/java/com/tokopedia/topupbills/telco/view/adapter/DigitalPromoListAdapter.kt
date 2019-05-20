@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.getColorText
+import com.tokopedia.topupbills.getColorFromResources
 import com.tokopedia.topupbills.telco.view.model.DigitalPromo
 
 /**
@@ -76,12 +76,12 @@ class DigitalPromoListAdapter(val digitalPromoList: List<DigitalPromo>) :
                 container.setBackgroundResource(R.drawable.digital_bg_transparent_border_green)
                 btnCopyPromo.setBackgroundResource(R.drawable.digital_bg_green_rounded)
                 btnCopyPromo.setText(context.getString(R.string.text_has_copied_promo_code))
-                btnCopyPromo.setTextColor(context.resources.getColorText(context, R.color.white))
+                btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, R.color.white))
             } else {
                 container.setBackgroundResource(R.drawable.digital_bg_transparent_round)
                 btnCopyPromo.setBackgroundResource(R.drawable.digital_bg_transparent_border_green)
                 btnCopyPromo.setText(context.getString(R.string.text_copy_promo_code))
-                btnCopyPromo.setTextColor(context.resources.getColorText(context, R.color.tkpd_main_green))
+                btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, R.color.tkpd_main_green))
             }
         }
 

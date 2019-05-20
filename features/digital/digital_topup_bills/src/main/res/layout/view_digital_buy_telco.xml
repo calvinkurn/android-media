@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/buy_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/dp_15"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/TextView.Small.Bold"
+        android:lineHeight="@dimen/dp_18"
+        android:lines="1"
+        android:text="Total Pembayaran" />
+
+    <TextView
+        android:id="@+id/total_price"
+        style="@style/TextView.Micro.Orange.Bold"
+        android:layout_below="@+id/title"
+        android:lineHeight="@dimen/dp_18"
+        android:lines="1"
+        android:layout_marginTop="@dimen/dp_10"
+        tools:text="Rp 25.200" />
+
+    <Button
+        android:id="@+id/next_btn"
+        android:layout_width="wrap_content"
+        android:layout_alignTop="@+id/title"
+        android:layout_alignBottom="@+id/total_price"
+        style="@style/Button"
+        android:textColor="@color/white"
+        android:background="@drawable/digital_bg_orange_rounded"
+        android:layout_alignParentRight="true"
+        android:text="Lanjut"/>
+
+</RelativeLayout>

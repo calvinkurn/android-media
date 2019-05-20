@@ -7,7 +7,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.getColorText
+import com.tokopedia.topupbills.getColorFromResources
 import com.tokopedia.topupbills.telco.view.model.DigitalProductSubMenu
 import org.jetbrains.annotations.NotNull
 
@@ -64,16 +64,16 @@ class DigitalSubMenuWidget @JvmOverloads constructor(@NotNull context: Context, 
 
     fun headerLeftActive(submenu: DigitalProductSubMenu) {
         listener.onClickSubMenu(submenu)
-        titleHeaderLeft.setTextColor(resources.getColorText(context, R.color.font_white_primary_70))
-        titleHeaderRight.setTextColor(resources.getColorText(context, R.color.digital_title_header_non_active))
+        titleHeaderLeft.setTextColor(resources.getColorFromResources(context, R.color.font_white_primary_70))
+        titleHeaderRight.setTextColor(resources.getColorFromResources(context, R.color.digital_title_header_non_active))
         layoutHeaderLeft.setBackgroundResource(R.drawable.bg_round_corner_solid_green)
         layoutHeaderRight.setBackgroundResource(R.color.digital_grey_bg_header)
     }
 
     fun headerRightActive(submenu: DigitalProductSubMenu) {
         listener.onClickSubMenu(submenu)
-        titleHeaderLeft.setTextColor(resources.getColorText(context, R.color.digital_title_header_non_active))
-        titleHeaderRight.setTextColor(resources.getColorText(context, R.color.font_white_primary_70))
+        titleHeaderLeft.setTextColor(resources.getColorFromResources(context, R.color.digital_title_header_non_active))
+        titleHeaderRight.setTextColor(resources.getColorFromResources(context, R.color.font_white_primary_70))
         layoutHeaderLeft.setBackgroundResource(R.color.digital_grey_bg_header)
         layoutHeaderRight.setBackgroundResource(R.drawable.bg_round_corner_solid_green)
     }

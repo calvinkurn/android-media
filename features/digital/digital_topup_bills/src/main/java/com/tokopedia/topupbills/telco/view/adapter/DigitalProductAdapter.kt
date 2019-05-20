@@ -1,5 +1,6 @@
 package com.tokopedia.topupbills.telco.view.adapter
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +9,9 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.getColorFromResources
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
-import com.tokopedia.topupbills.telco.view.model.DigitalProductTelcoItem
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -19,9 +20,20 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
     : RecyclerView.Adapter<DigitalProductAdapter.BaseProductViewHolder>() {
 
     private lateinit var listener: ActionListener
+    private lateinit var context: Context
 
     fun setListener(listener: ActionListener) {
         this.listener = listener
+    }
+
+    fun resetProductListSelected(productId: String) {
+        for (i in 0..productList.size-1) {
+            if (productList.get(i).product.attributes.selected && !productList.get(i).key.equals(productId)) {
+                productList.get(i).product.attributes.selected = false
+                notifyItemChanged(i)
+                break
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: BaseProductViewHolder, position: Int) {
@@ -32,6 +44,7 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseProductViewHolder {
+        context = parent.context
         if (productType == TelcoProductType.PRODUCT_GRID) {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.item_digital_product_grid, parent, false)
             return ProductGridViewHolder(view)
@@ -64,7 +77,7 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
             productPrice.setText(productItem.product.attributes.price)
         }
 
-        open fun onClickProductItem() {
+        protected fun onClickProductItem() {
             for (i in 0..productList.size-1) {
                 if (productList.get(i).product.attributes.selected) {
                     productList.get(i).product.attributes.selected = false
@@ -76,6 +89,14 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
             productItem.product.attributes.selected = true
             notifyItemChanged(adapterPosition)
             listener.onClickItemProduct(productItem)
+        }
+
+        protected fun setItemSelected(viewGrup: ViewGroup) {
+            if (productItem.product.attributes.selected) {
+                viewGrup.setBackgroundResource(R.drawable.digital_bg_green_light_rounded)
+            } else {
+                viewGrup.setBackgroundResource(R.drawable.digital_bg_transparent_round)
+            }
         }
     }
 
@@ -91,11 +112,7 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
 
         override fun bindView() {
             super.bindView()
-            if (productItem.product.attributes.selected) {
-                layoutProduct.setBackgroundResource(R.drawable.digital_bg_transparent_border_green)
-            } else {
-                layoutProduct.setBackgroundResource(R.drawable.digital_bg_transparent_round)
-            }
+            setItemSelected(layoutProduct)
         }
 
     }
@@ -117,11 +134,7 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
 
         override fun bindView() {
             super.bindView()
-            if (productItem.product.attributes.selected) {
-                layoutProduct.setBackgroundResource(R.drawable.digital_bg_transparent_border_green)
-            } else {
-                layoutProduct.setBackgroundResource(R.drawable.digital_bg_transparent_round)
-            }
+            setItemSelected(layoutProduct)
         }
     }
 

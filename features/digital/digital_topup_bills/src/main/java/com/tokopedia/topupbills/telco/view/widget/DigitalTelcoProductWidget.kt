@@ -52,6 +52,12 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         adapter.notifyDataSetChanged()
     }
 
+    fun notifyProductItemChanges(productId: String) {
+        if (::adapter.isInitialized) {
+            adapter.resetProductListSelected(productId)
+        }
+    }
+
     interface ActionListener {
         fun onClickProduct(itemProduct: TelcoProductDataCollection)
     }

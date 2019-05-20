@@ -64,7 +64,7 @@ fun Uri.covertContactUriToContactData(contentResolver: ContentResolver): Digital
     return DigitalContactData(givenName, contactNumber, contactType)
 }
 
-fun Resources.getColorText(context: Context, @ColorRes resId: Int): Int {
+fun Resources.getColorFromResources(context: Context, @ColorRes resId: Int): Int {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         this.getColor(resId, context.theme)
     } else {

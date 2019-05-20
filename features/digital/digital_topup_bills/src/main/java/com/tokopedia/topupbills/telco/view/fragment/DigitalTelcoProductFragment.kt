@@ -1,5 +1,6 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.tokopedia.topupbills.telco.data.TelcoProductComponentData
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoProductViewModel
+import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
 import javax.inject.Inject
 
@@ -25,6 +27,7 @@ import javax.inject.Inject
 class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     private lateinit var telcoTelcoProductView: DigitalTelcoProductWidget
+    private lateinit var sharedModel: SharedProductTelcoViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -42,7 +45,17 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             productViewModel = viewModelProvider.get(DigitalTelcoProductViewModel::class.java)
+            sharedModel = viewModelProvider.get(SharedProductTelcoViewModel::class.java)
         }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        sharedModel.productItem.observe(this, Observer {
+            it?.run {
+                telcoTelcoProductView.notifyProductItemChanges(it.key)
+            }
+        })
     }
 
     override fun getScreenName(): String {
@@ -79,7 +92,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
         telcoTelcoProductView.setListener(object : DigitalTelcoProductWidget.ActionListener {
             override fun onClickProduct(itemProduct: TelcoProductDataCollection) {
-                Toast.makeText(activity, itemProduct.product.attributes.info, Toast.LENGTH_SHORT).show()
+                sharedModel.setProductSelected(itemProduct)
             }
         })
     }
