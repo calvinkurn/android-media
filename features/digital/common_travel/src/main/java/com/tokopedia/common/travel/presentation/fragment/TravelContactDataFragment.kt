@@ -1,5 +1,7 @@
 package com.tokopedia.common.travel.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +35,10 @@ class TravelContactDataFragment: BaseDaggerFragment() {
         initView()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     fun initView() {
         setupInitialData()
     }
@@ -50,6 +56,22 @@ class TravelContactDataFragment: BaseDaggerFragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         sp_contact_phone_code.adapter = adapter
         sp_contact_phone_code.setSelection(0)
+        sp_contact_phone_code.setOnClickListener {  }
+
+        contact_data_button.setOnClickListener {
+            contactData.name = til_contact_name.editText.text.toString()
+            contactData.email = til_contact_email.editText.text.toString()
+            contactData.phoneCode = sp_contact_phone_code.selectedItem.toString().toInt()
+            contactData.phone = til_contact_phone_number.editText.text.toString()
+            onSaveButtonClicked()
+        }
+    }
+
+    fun onSaveButtonClicked() {
+        val intent = Intent()
+        intent.putExtra(EXTRA_CONTACT_DATA, contactData)
+        activity!!.setResult(Activity.RESULT_OK, intent)
+        activity!!.finish()
     }
 
     override fun getScreenName(): String = ""
@@ -59,6 +81,8 @@ class TravelContactDataFragment: BaseDaggerFragment() {
     }
 
     companion object {
+        const val EXTRA_CONTACT_DATA = "extra_contact_data"
+
         fun getInstance(contactData: TravelContactData): TravelContactDataFragment =
             TravelContactDataFragment().also {
                 it.arguments = Bundle().apply {

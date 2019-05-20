@@ -78,7 +78,7 @@
     </LinearLayout>
 
     <com.tokopedia.design.component.ButtonCompat
-        android:id="@+id/room_detail_button"
+        android:id="@+id/contact_data_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
         android:text="@string/travel_select_passenger_submit_button"
