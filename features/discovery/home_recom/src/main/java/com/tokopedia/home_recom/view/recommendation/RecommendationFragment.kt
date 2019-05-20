@@ -9,10 +9,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
-import com.tokopedia.home_recom.model.dataModel.BaseHomeRecommendationDataModel
-import com.tokopedia.home_recom.model.dataModel.ProductInfoDataModel
-import com.tokopedia.home_recom.model.dataModel.RecommendationCarouselDataModel
-import com.tokopedia.home_recom.model.dataModel.RecommendationItemDataModel
+import com.tokopedia.home_recom.model.dataModel.*
 import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.recommendation_widget_common.RecommendationParams
@@ -87,8 +84,11 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
         val list = ArrayList<BaseHomeRecommendationDataModel>()
         listRecommendationModelDummy.forEach { recommendationModelDummy ->
             when(recommendationModelDummy.type){
-                TYPE_SCROLL -> recommendationModelDummy.recommendationItemList.forEach {
-                    list.add(RecommendationItemDataModel(it, this))
+                TYPE_SCROLL -> {
+                    list.add(TitleDataModel(recommendationModelDummy.title))
+                    recommendationModelDummy.recommendationItemList.forEach {
+                        list.add(RecommendationItemDataModel(it, this))
+                    }
                 }
                 TYPE_INFO -> list.add(ProductInfoDataModel(recommendationModelDummy.recommendationItemList[0]))
                 TYPE_CAROUSEL -> list.add(RecommendationCarouselDataModel(recommendationModelDummy.title, recommendationModelDummy.recommendationItemList, this))

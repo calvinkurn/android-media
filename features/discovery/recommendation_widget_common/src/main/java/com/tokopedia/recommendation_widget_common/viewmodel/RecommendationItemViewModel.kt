@@ -53,8 +53,8 @@ class RecommendationItemViewModel @Inject constructor(private val graphqlReposit
             recommendationListModel.value = RecommendationList(
                     listOf(
                             generateDummyInfo("Product Info", TYPE_INFO),
-                            generateDummyModel("Product Info", TYPE_CAROUSEL),
-                            generateDummyModel("Product Info", TYPE_SCROLL))
+                            generateDummyModel("Product Info", TYPE_SCROLL),
+                            generateDummyModel("Produk Lain dari Toko Ini", TYPE_CAROUSEL))
             )
         }) {
 
