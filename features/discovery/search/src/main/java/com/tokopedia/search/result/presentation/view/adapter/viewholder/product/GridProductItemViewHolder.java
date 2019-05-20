@@ -111,7 +111,9 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItemVie
         productImage.setViewHintListener(productItem, new ImpressedImageView.ViewHintListener() {
             @Override
             public void onViewHint() {
-                productListener.onProductImpressed(productItem, getAdapterPosition());
+                if (productListener != null) {
+                    productListener.onProductImpressed(productItem, getAdapterPosition());
+                }
             }
         });
         wishlistButtonContainer.setVisibility(View.VISIBLE);
@@ -126,17 +128,26 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItemVie
         wishlistButtonContainer.setEnabled(productItem.isWishlistButtonEnabled());
 
         wishlistButtonContainer.setOnClickListener(v -> {
-            if (productItem.isWishlistButtonEnabled()) {
+            if (productListener != null && productItem.isWishlistButtonEnabled()) {
                 productListener.onWishlistButtonClicked(productItem);
             }
         });
 
         container.setOnLongClickListener(v -> {
-            productListener.onLongClick(productItem, getAdapterPosition());
+            if (productListener != null) {
+                productListener.onLongClick(productItem, getAdapterPosition());
+            }
             return true;
         });
 
-        container.setOnClickListener(v -> productListener.onItemClicked(productItem, getAdapterPosition()));
+        container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (productListener != null) {
+                    productListener.onItemClicked(productItem, getAdapterPosition());
+                }
+            }
+        });
 
         if (productItem.getRating() != 0) {
             ratingReviewContainer.setVisibility(View.VISIBLE);

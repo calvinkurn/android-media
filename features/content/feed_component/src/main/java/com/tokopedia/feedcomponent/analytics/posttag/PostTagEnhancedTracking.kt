@@ -1,4 +1,4 @@
-package com.tokopedia.kol.analytics
+package com.tokopedia.feedcomponent.analytics.posttag
 
 import com.google.android.gms.tagmanager.DataLayer
 import java.util.ArrayList
@@ -39,7 +39,7 @@ class PostTagEnhancedTracking {
             return DataLayer.mapOf(Action.CLICK, getEcommerceClickValue(listProduct, listSource))
         }
 
-        fun getEcommerceClickValue(listProduct: List<Product>,listSource: String): Map<String, Any> {
+        fun getEcommerceClickValue(listProduct: List<Product>, listSource: String): Map<String, Any> {
             return DataLayer.mapOf(
                     ACTION_FIELD, getEcommerceActionFieldValue(listSource),
                     PRODUCTS, getProducts(listProduct))
