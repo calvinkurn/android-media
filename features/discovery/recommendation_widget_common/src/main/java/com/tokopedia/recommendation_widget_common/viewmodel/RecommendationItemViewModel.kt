@@ -25,7 +25,6 @@ import javax.inject.Named
 
 class RecommendationItemViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                   private val userSessionInterface: UserSessionInterface,
-                                  private val rawQueries: Map<String, String>,
                                   @Named("Main")
                                   val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
     val recommendationListModel = MutableLiveData<RecommendationList>()
@@ -47,7 +46,7 @@ class RecommendationItemViewModel @Inject constructor(private val graphqlReposit
 
                 //still dummy
                 val gqlRecommendationRequest = GraphqlRequest(
-                        rawQueries[QUERY_RECOMMENDATION_WIDGET],
+                        RecommendationRawQueryKeyConstant.QUERY_RECOMMENDATION_WIDGET,
                         RecomendationEntity::class.java,
                         params
                 )
