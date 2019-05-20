@@ -34,10 +34,13 @@ class DigitalTelcoBuyWidget @JvmOverloads constructor(@NotNull context: Context,
 
     fun setTotalPrice(price: String) {
         totalPrice.setText(price)
-        buyLayout.visibility = View.VISIBLE
     }
 
-    fun hideLayoutTotalPrice() {
-        buyLayout.visibility = View.GONE
+    fun setVisibilityLayout(show: Boolean) {
+        if (show) {
+            buyLayout.visibility = View.VISIBLE
+        } else {
+            buyLayout.visibility = View.GONE
+        }
     }
 }

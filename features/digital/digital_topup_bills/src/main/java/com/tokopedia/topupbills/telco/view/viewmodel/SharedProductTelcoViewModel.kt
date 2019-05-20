@@ -13,8 +13,13 @@ class SharedProductTelcoViewModel @Inject constructor(val dispatcher: CoroutineD
     : BaseViewModel(dispatcher) {
 
     val productItem = MutableLiveData<TelcoProductDataCollection>()
+    val showTotalPrice = MutableLiveData<Boolean>()
 
     fun setProductSelected(productItem: TelcoProductDataCollection) {
         this.productItem.value = productItem
+    }
+
+    fun setShowTotalPrice(show: Boolean) {
+        this.showTotalPrice.value = show
     }
 }

@@ -8,7 +8,8 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.GraphqlClient
@@ -27,11 +28,16 @@ import javax.inject.Inject
 class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     private lateinit var telcoTelcoProductView: DigitalTelcoProductWidget
+    private lateinit var emptyStateProductView: LinearLayout
+    private lateinit var titleEmptyState: TextView
+    private lateinit var descEmptyState: TextView
     private lateinit var sharedModel: SharedProductTelcoViewModel
+    private lateinit var productViewModel: DigitalTelcoProductViewModel
+
+    private var titleProduct: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var productViewModel: DigitalTelcoProductViewModel
 
     override fun onStart() {
         context?.let {
@@ -72,6 +78,9 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_product, container, false)
         telcoTelcoProductView = view.findViewById(R.id.telco_product_view)
+        emptyStateProductView = view.findViewById(R.id.telco_empty_state_layout)
+        titleEmptyState = view.findViewById(R.id.title_empty_product)
+        descEmptyState = view.findViewById(R.id.desc_empty_product)
         return view
     }
 
@@ -79,13 +88,14 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let {
+            titleProduct = it.getString(COMPONENT_NAME)
             val productType = it.getInt(PRODUCT_TYPE)
             val operatorId = it.getString(OPERATOR_ID)
             val componentId = it.getInt(COMPONENT_TYPE)
 
             var mapParam = HashMap<String, kotlin.Any>()
-            mapParam.put("componentID", componentId)
-            mapParam.put("operatorID", operatorId)
+            mapParam.put(KEY_COMPONENT_ID, componentId)
+            mapParam.put(KEY_OPERATOR_ID, operatorId)
             productViewModel.getProductCollections(GraphqlHelper.loadRawString(resources, R.raw.query_product_digital_telco),
                     mapParam, productType, this::onSuccessProductList, this::onErrorProductList)
         }
@@ -93,30 +103,41 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         telcoTelcoProductView.setListener(object : DigitalTelcoProductWidget.ActionListener {
             override fun onClickProduct(itemProduct: TelcoProductDataCollection) {
                 sharedModel.setProductSelected(itemProduct)
+                sharedModel.setShowTotalPrice(true)
             }
         })
     }
 
     fun onSuccessProductList(productData: TelcoProductComponentData) {
+        emptyStateProductView.visibility = View.GONE
+        telcoTelcoProductView.visibility = View.VISIBLE
         telcoTelcoProductView.renderGridProductList(productData.productType, productData.rechargeProductData.productDataCollections)
     }
 
     fun onErrorProductList(throwable: Throwable) {
-        Toast.makeText(activity, "product " + throwable.message, Toast.LENGTH_SHORT).show()
+        titleEmptyState.setText(getString(R.string.title_telco_product_empty_state, titleProduct))
+        descEmptyState.setText(getString(R.string.desc_telco_product_empty_state, titleProduct.toLowerCase()))
+        emptyStateProductView.visibility = View.VISIBLE
+        telcoTelcoProductView.visibility = View.GONE
     }
 
     companion object {
 
         val PRODUCT_TYPE = "product_type"
         val COMPONENT_TYPE = "component_type"
+        val COMPONENT_NAME = "component_name"
         val OPERATOR_ID = "operator_Id"
 
-        fun newInstance(componentType: Int, operatorId: String, productType: Int): Fragment {
+        val KEY_COMPONENT_ID = "componentID"
+        val KEY_OPERATOR_ID = "operatorID"
+
+        fun newInstance(componentType: Int, componentName: String, operatorId: String, productType: Int): Fragment {
             val fragment = DigitalTelcoProductFragment()
             val bundle = Bundle()
             bundle.putInt(PRODUCT_TYPE, productType)
             bundle.putInt(COMPONENT_TYPE, componentType)
             bundle.putString(OPERATOR_ID, operatorId)
+            bundle.putString(COMPONENT_NAME, componentName)
             fragment.arguments = bundle
             return fragment
         }

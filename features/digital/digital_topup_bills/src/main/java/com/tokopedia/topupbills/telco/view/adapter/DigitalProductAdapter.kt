@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.getColorFromResources
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 
@@ -27,7 +26,7 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
     }
 
     fun resetProductListSelected(productId: String) {
-        for (i in 0..productList.size-1) {
+        for (i in 0..productList.size - 1) {
             if (productList.get(i).product.attributes.selected && !productList.get(i).key.equals(productId)) {
                 productList.get(i).product.attributes.selected = false
                 notifyItemChanged(i)
@@ -78,7 +77,7 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
         }
 
         protected fun onClickProductItem() {
-            for (i in 0..productList.size-1) {
+            for (i in 0..productList.size - 1) {
                 if (productList.get(i).product.attributes.selected) {
                     productList.get(i).product.attributes.selected = false
                     notifyItemChanged(i)

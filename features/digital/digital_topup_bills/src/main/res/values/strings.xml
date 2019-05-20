@@ -10,4 +10,6 @@
     <string name="text_copy_promo_code">Salin</string>
     <string name="text_has_copied_promo_code">Disalin</string>
     <string name="title_promo">Promo</string>
+    <string name="title_telco_product_empty_state">%s Tidak Tersedia</string>
+    <string name="desc_telco_product_empty_state">Produk %s untuk provider ini belum tersedia, silakan coba provider lainnya.</string>
 </resources>
