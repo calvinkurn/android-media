@@ -299,7 +299,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             presenter.processUTM(this, applink);
 
             //map applink to internal if any
-            String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(applinkString);
+            String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
             if (!TextUtils.isEmpty(mappedDeeplink)) {
                 RouteManager.route(this, mappedDeeplink);
             } else {

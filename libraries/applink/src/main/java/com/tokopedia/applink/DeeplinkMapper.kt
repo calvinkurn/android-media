@@ -1,7 +1,8 @@
 package com.tokopedia.applink
 
-import android.net.Uri
+import android.content.Context
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
 /**
@@ -18,9 +19,9 @@ object DeeplinkMapper {
      * In conventional term, convert deeplink (http or tokopedia) to applink (tokopedia:// or tokopedia-android-internal://)
      */
     @JvmStatic
-    fun getRegisteredNavigation(deeplink: String): String {
+    fun getRegisteredNavigation(context: Context, deeplink: String): String {
         if (deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true)) {
-            return getRegisteredNavigationFromHttp(deeplink)
+            return getRegisteredNavigationFromHttp(context, deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA, true)) {
             return getRegisteredNavigationFromTokopedia(deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
@@ -37,8 +38,8 @@ object DeeplinkMapper {
      * This function should be called after checking domain shop from server side
      * eg: https://www.tokopedia.com/pulsa/ to tokopedia://pulsa
      */
-    private fun getRegisteredNavigationFromHttp(deeplink: String): String {
-        val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(deeplink)
+    private fun getRegisteredNavigationFromHttp(context: Context, deeplink: String): String {
+        val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
             return applinkDigital
         }

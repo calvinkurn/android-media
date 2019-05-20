@@ -547,7 +547,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                             .showAndCheckApplinkUnsupported();
                 }
             } else {
-                String applink = DeeplinkMapper.getRegisteredNavigation(url);
+                String applink = DeeplinkMapper.getRegisteredNavigation(getContext(), url);
                 if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(getActivity(), applink)) {
                     RouteManager.route(getActivity(), applink);
                     return true;

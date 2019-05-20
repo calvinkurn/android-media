@@ -89,7 +89,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     private void checkUrlMapToApplink() {
-        String applink = DeeplinkMapper.getRegisteredNavigation(uriData.toString());
+        String applink = DeeplinkMapper.getRegisteredNavigation(this, uriData.toString());
         if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(this, applink)) {
             String screenName = AppScreen.SCREEN_NATIVE_RECHARGE;
             presenter.sendCampaignGTM(this, applink, screenName);

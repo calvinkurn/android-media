@@ -108,7 +108,7 @@ public class RouteManager {
             return;
         }
         String uriString = UriUtil.buildUri(applinkPattern, parameter);
-        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(uriString);
+        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(context, uriString);
         Intent intent;
         if (!TextUtils.isEmpty(mappedDeeplink)) {
             intent = buildInternalExplicitIntent(context, mappedDeeplink);
@@ -134,7 +134,7 @@ public class RouteManager {
             return;
         }
         String uriString = UriUtil.buildUri(applinkPattern, parameter);
-        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(uriString);
+        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(context, uriString);
         Intent intent;
         if (!TextUtils.isEmpty(mappedDeeplink)) {
             intent = buildInternalExplicitIntent(context, mappedDeeplink);
@@ -186,7 +186,7 @@ public class RouteManager {
         if (context == null) {
             return null;
         }
-        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(deeplink);
+        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(context, deeplink);
         if (!TextUtils.isEmpty(mappedDeeplink)) {
             // Found internal deeplink, redirect
             return buildInternalExplicitIntent(context, mappedDeeplink);
