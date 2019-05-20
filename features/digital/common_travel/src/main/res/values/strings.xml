@@ -74,4 +74,7 @@
     <string name="travel_contact_data_name_hint">Nama kamu</string>
     <string name="travel_contact_data_email_hint">namakamu@contoh.com</string>
     <string name="travel_contact_data_phone_number_hint">Minimum 9 digit</string>
+    <string name="travel_contact_data_name_error">Nama belum diisi</string>
+    <string name="travel_contact_data_email_error">Format e-mail salah</string>
+    <string name="travel_contact_data_phone_number_error">Nomor telepon minimum 9 digit</string>
 </resources>
