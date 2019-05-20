@@ -113,7 +113,14 @@ android {
         }
         release {
             signingConfig signingConfigs.debug
-            proguardFiles 'proguard-rules.pro'
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            if (allowProguard()) {
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            } else {
+                proguardFiles 'proguard-rules.txt'
+            }
         }
     }
     splits {
