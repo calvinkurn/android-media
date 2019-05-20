@@ -84,9 +84,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     @Inject
     lateinit var presenter: FeedShopContract.Presenter
 
-    @Inject
-    lateinit var postTagAnalytics: PostTagAnalytics
-
     companion object {
         private const val YOUTUBE_URL = "{youtube_url}"
         private const val TEXT_PLAIN = "text/plain"
