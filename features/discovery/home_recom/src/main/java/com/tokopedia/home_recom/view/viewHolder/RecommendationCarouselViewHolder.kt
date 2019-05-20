@@ -16,7 +16,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 class RecommendationCarouselViewHolder(view: View) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
 
-    private val title: TextView by lazy { view.findViewById<TextView>(R.id.product_name) }
+    private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
     private val recyclerView: RecyclerView by lazy { view.findViewById<RecyclerView>(R.id.list) }
 
     override fun bind(element: RecommendationCarouselDataModel) {
