@@ -37,7 +37,6 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryIm
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.util.Utils
-import kotlinx.android.synthetic.main.layout_product_preview.view.*
 
 /**
  * @author : Steven 29/11/18
@@ -60,6 +59,7 @@ class TopChatViewStateImpl(
     private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
     private var productPreviewContainer: ConstraintLayout = view.findViewById(R.id.cl_product_preview)
+    private var productPreviewRecyclerView = view.findViewById<RecyclerView>(R.id.rv_product_preview)
 
     lateinit var productPreviewAdapter: ProductPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
@@ -111,7 +111,7 @@ class TopChatViewStateImpl(
 
     private fun initProductPreviewLayout() {
         productPreviewAdapter = ProductPreviewAdapter(onEmptyProductPreview())
-        view.rv_product_preview.apply {
+        productPreviewRecyclerView.apply {
             setHasFixedSize(true)
             adapter = productPreviewAdapter
         }
