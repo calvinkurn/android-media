@@ -56,6 +56,8 @@ class HotelBookingFragment : BaseDaggerFragment() {
     var roomRequest = ""
     var roomRequestMaxCharCount = ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT
 
+    var guestName = ""
+
     var promoCode = ""
 
     lateinit var saveInstanceCacheManager: SaveInstanceCacheManager
@@ -115,6 +117,8 @@ class HotelBookingFragment : BaseDaggerFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(EXTRA_HOTEL_CART_ID, cartId)
+        outState.putString(EXTRA_ROOM_REQUEST, roomRequest)
+        outState.putString(EXTRA_GUEST_NAME, guestName)
     }
 
     private fun initView() {
@@ -124,7 +128,8 @@ class HotelBookingFragment : BaseDaggerFragment() {
         setupRoomRequestForm()
         setupContactDetail(hotelCart.cart)
         setupInvoiceSummary(hotelCart.cart)
-        setupBookingButton()
+
+        booking_button.setOnClickListener { onBookingButtonClicked() }
     }
 
     private fun setupHotelInfo(property: HotelPropertyData) {
@@ -237,9 +242,12 @@ class HotelBookingFragment : BaseDaggerFragment() {
         tv_contact_phone_number.text = getString(R.string.hotel_booking_contact_detail_phone_number,
                 contactData.phoneCode, contactData.phone)
 
-        radio_button_contact_guest.isChecked = tv_guest_input.text.isNotEmpty()
-        toggleShowGuestForm(radio_button_contact_guest.isChecked)
-        radio_group_contact.setOnCheckedChangeListener { group, checkedId ->
+        if (guestName.isNotEmpty()) {
+            radio_button_contact_guest.isChecked = true
+            tv_guest_input.setText(guestName)
+            toggleShowGuestForm(true)
+        }
+        radio_group_contact.setOnCheckedChangeListener { _, checkedId ->
             toggleShowGuestForm(radio_button_contact_guest.id == checkedId)
         }
 
@@ -247,12 +255,6 @@ class HotelBookingFragment : BaseDaggerFragment() {
         til_guest.setErrorTextAppearance(R.style.ErrorTextAppearance)
         til_guest.setHelperTextAppearance(R.style.HelperTextAppearance)
         toggleGuestFormError(false)
-        til_guest.editText.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                KeyboardHandler.hideSoftKeyboard(activity)
-                toggleGuestFormError(til_guest.editText.text.isNullOrEmpty())
-            }
-        }
     }
 
     private fun toggleShowGuestForm(value: Boolean) {
@@ -267,11 +269,11 @@ class HotelBookingFragment : BaseDaggerFragment() {
         when (value) {
             true -> {
                 til_guest.setHelper(null)
-                til_guest.setError(noticeString)
+                til_guest.error = noticeString
             }
             false -> {
                 til_guest.setHelper(noticeString)
-                til_guest.setError(null)
+                til_guest.error = null
             }
         }
     }
@@ -292,31 +294,29 @@ class HotelBookingFragment : BaseDaggerFragment() {
         tv_invoice_foreign_currency.text = spannableString
     }
 
-    private fun setupBookingButton() {
-        booking_button.setOnClickListener {
-//            if (validateRoomRequest() && validateGuestName()) {
-//                val hotelCheckoutParam = HotelCheckoutParam(
-//                    cartId = cartId,
-//                    contact = hotelCart.cart.contact,
-//                    guestName = tv_guest_input.text.toString(),
-//                    promoCode = promoCode,
-//                    specialRequest = roomRequest
-//                )
-//                bookingViewModel.checkoutCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_checkout), hotelCheckoutParam)
-//            }
-//            onCancellationPolicyClicked(hotelCart.property)
-            onTaxPolicyClicked()
+    private fun onBookingButtonClicked() {
+        if (validateData()) {
+            val hotelCheckoutParam = HotelCheckoutParam(
+                cartId = cartId,
+                contact = hotelCart.cart.contact,
+                guestName = tv_guest_input.text.toString(),
+                promoCode = promoCode,
+                specialRequest = roomRequest
+            )
+//            bookingViewModel.checkoutCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_checkout), hotelCheckoutParam)
         }
+//        onTaxPolicyClicked()
+        onCancellationPolicyClicked(hotelCart.property)
     }
 
-    private fun validateRoomRequest(): Boolean {
-        return tv_room_request_input.text.isEmpty() || (
-                tv_room_request_input.text.isNotEmpty() && tv_room_request_input.text.length <= roomRequestMaxCharCount)
-    }
-
-    private fun validateGuestName(): Boolean {
-        return !radio_button_contact_guest.isSelected || (
-                radio_button_contact_guest.isSelected && tv_guest_input.text.isNotEmpty())
+    private fun validateData(): Boolean {
+        var isValid = true
+        if (tv_room_request_input.text.isNullOrBlank() || tv_room_request_input.text.length <= roomRequestMaxCharCount) isValid = false
+        if (!radio_button_contact_guest.isSelected || til_guest.editText.text.isNotEmpty()) {
+            toggleGuestFormError(true)
+            isValid = false
+        }
+        return isValid
     }
 
     override fun getScreenName(): String = "Pembayaran"
@@ -328,6 +328,8 @@ class HotelBookingFragment : BaseDaggerFragment() {
     companion object {
         const val ARG_CART_ID = "arg_cart_id"
         const val EXTRA_HOTEL_CART_ID = "extra_hotel_cart_id"
+        const val EXTRA_ROOM_REQUEST = "extra_room_request"
+        const val EXTRA_GUEST_NAME = "extra_guest_name"
         const val TAG_HOTEL_CANCELLATION_POLICY = "hotel_cancellation_policy"
         const val TAG_HOTEL_TAX_POLICY = "hotel_tax_policy"
         const val ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT = 250
