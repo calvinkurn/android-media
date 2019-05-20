@@ -9,6 +9,7 @@ import com.tokopedia.search.result.presentation.model.ShopViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.EmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.shop.GridShopItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.shop.ListShopItemViewHolder;
+import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.ShopListener;
 
@@ -16,13 +17,12 @@ public class ShopListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implem
 
     private ShopListener shopListener;
     private EmptyStateListener emptyStateListener;
+    private BannerAdsListener bannerAdsListener;
 
-    public void setShopListener(ShopListener shopListener) {
+    public ShopListTypeFactoryImpl(ShopListener shopListener, EmptyStateListener emptyStateListener, BannerAdsListener bannerAdsListener) {
         this.shopListener = shopListener;
-    }
-
-    public void setEmptyStateListener(EmptyStateListener emptyStateListener) {
         this.emptyStateListener = emptyStateListener;
+        this.bannerAdsListener = bannerAdsListener;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ShopListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implem
         } else if (type == GridShopItemViewHolder.LAYOUT) {
             viewHolder = new GridShopItemViewHolder(view, shopListener);
         } else if (type == EmptySearchViewHolder.LAYOUT) {
-            viewHolder = new EmptySearchViewHolder(view, emptyStateListener, null);
+            viewHolder = new EmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, null);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

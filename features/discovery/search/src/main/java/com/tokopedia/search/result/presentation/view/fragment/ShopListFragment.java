@@ -30,11 +30,11 @@ import com.tokopedia.search.result.presentation.model.ShopViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.ShopListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration;
+import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.FavoriteActionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchShopListener;
 import com.tokopedia.search.result.presentation.view.listener.ShopListener;
-import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactoryImpl;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -50,6 +50,7 @@ public class ShopListFragment
         SearchSectionGeneralAdapter.OnItemChangeView,
         ShopListener,
         EmptyStateListener,
+        BannerAdsListener,
         SearchShopListener {
 
     public static final String SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab";
@@ -134,7 +135,8 @@ public class ShopListFragment
     private void bindView(View rootView) {
         if(getContext() == null || getContext().getResources() == null) return;
 
-        adapter = new ShopListAdapter(this, createShopListTypeFactory());
+        adapter = new ShopListAdapter(this,
+                new ShopListTypeFactoryImpl(this, this, this));
 
         recyclerView = rootView.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(getGridLayoutManager());
@@ -151,14 +153,6 @@ public class ShopListFragment
         recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
 
         adapter.addLoading();
-    }
-
-    private ShopListTypeFactory createShopListTypeFactory() {
-        ShopListTypeFactoryImpl shopListTypeFactory = new ShopListTypeFactoryImpl();
-        shopListTypeFactory.setShopListener(this);
-        shopListTypeFactory.setEmptyStateListener(this);
-
-        return shopListTypeFactory;
     }
 
     private void initListener() {
