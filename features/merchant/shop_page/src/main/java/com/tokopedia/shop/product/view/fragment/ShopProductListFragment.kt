@@ -295,6 +295,8 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
     override fun onSwipeRefresh() {
         hideEtalaseList()
+        viewModel.etalaseResponse.value = null
+        viewModel.clearEtalaseCache()
         etalaseChipAdapter.etalaseViewModelList = null
         shopProductAdapter.setShopEtalaseTitle(null, null)
         super.onSwipeRefresh()
