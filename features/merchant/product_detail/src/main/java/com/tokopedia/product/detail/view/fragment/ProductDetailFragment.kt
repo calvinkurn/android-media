@@ -204,6 +204,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_ETALASE = 565
         const val REQUEST_CODE_NORMAL_CHECKOUT = 566
         const val REQUEST_CODE_ATC_EXPRESS = 567
+        const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
         const val REQUEST_CODE_SHOP_INFO = 998
 
         const val SAVED_NOTE = "saved_note"
@@ -497,33 +498,13 @@ class ProductDetailFragment : BaseDaggerFragment() {
         actionButtonView.addToCartClick = {
             productDetailTracking.eventClickAddToCart(productInfo?.basic?.id?.toString() ?: "",
                 productInfo?.variant?.isVariant ?: false)
-            if (productInfoViewModel.isUserSessionActive()) {
-                goToNormalCheckout(ATC_ONLY)
-            } else {
-                context?.let {
-                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
-                }
-            }
+            goToNormalCheckout(ATC_ONLY)
         }
         actionButtonView.buyNowClick = {
             // buy now / buy / preorder
             productDetailTracking.eventClickBuy(productInfo?.basic?.id?.toString() ?: "",
                 productInfo?.variant?.isVariant ?: false)
-            if (productInfoViewModel.isUserSessionActive()) {
-                val isExpressCheckout = (productInfoViewModel.productInfoP3resp.value)?.isExpressCheckoutType
-                        ?: false
-                if (isExpressCheckout) {
-                    goToAtcExpress()
-                } else {
-                    goToNormalCheckout()
-                }
-            } else { // not login
-                context?.let {
-                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
-                }
-            }
+            doBuy()
         }
 
         open_shop.setOnClickListener {
@@ -539,6 +520,23 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
         }
         loadProductData()
+    }
+
+    private fun doBuy() {
+        val isExpressCheckout = (productInfoViewModel.productInfoP3resp.value)?.isExpressCheckoutType
+                ?: false
+        if (isExpressCheckout) {
+            if (productInfoViewModel.isUserSessionActive()) {
+                goToAtcExpress()
+            } else {
+                context?.let {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS)
+                }
+            }
+        } else {
+            goToNormalCheckout()
+        }
     }
 
     private fun goToNormalCheckout(@ProductAction action: Int = ATC_AND_BUY) {
@@ -932,6 +930,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
             REQUEST_CODE_EDIT_PRODUCT -> {
                 loadProductData(true)
+            }
+            REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
+                doBuy()
             }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
