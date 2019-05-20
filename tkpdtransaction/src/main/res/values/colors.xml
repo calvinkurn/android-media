@@ -25,5 +25,6 @@
     <color name="tradein_blue_text_bom">#009bff</color>
 
     <color name="black_70_new">#b3000000</color>
+    <color name="xco_button_color_disable">#B7C2C9</color>
 
 </resources>
