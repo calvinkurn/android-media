@@ -49,6 +49,7 @@ import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
+import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
@@ -613,6 +614,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         activity?.let {
             val router = (it.application as TopChatRouter)
             val shopName = (arguments?.get(ApplinkConst.Chat.PARAM_HEADER) as ChatRoomHeaderViewModel).name
+            (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
             analytics.eventClickBuyProductAttachment(
                     element.blastId.toString(),
                     element.productName,
@@ -630,16 +632,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         activity?.let {
             val router = (it.application as TopChatRouter)
+            (viewState as TopChatViewState)?.sendAnalyticsClickATC(element)
             val shopName = (arguments?.get(ApplinkConst.Chat.PARAM_HEADER) as ChatRoomHeaderViewModel).name
-            analytics.eventClickAddToCartProductAttachment(
-                    element.blastId.toString(),
-                    element.productName,
-                    element.productId.toString(),
-                    element.productPrice,
-                    1,
-                    element.shopId.toString(),
-                    shopName
-            )
+
             presenter.addProductToCart(router, element, onError(), onSuccessAddToCart(),
                     shopId)
         }

@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.customview
 import android.os.Parcelable
 import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 
 interface TopChatViewState : BaseChatViewState {
@@ -19,5 +20,9 @@ interface TopChatViewState : BaseChatViewState {
                            opponentName : String,
                            blockedStatus: BlockedStatus,
                            onUnblockChatClicked: () -> Unit)
+
+    fun sendAnalyticsClickBuyNow(element: ProductAttachmentViewModel)
+
+    fun sendAnalyticsClickATC(element: ProductAttachmentViewModel)
 
 }

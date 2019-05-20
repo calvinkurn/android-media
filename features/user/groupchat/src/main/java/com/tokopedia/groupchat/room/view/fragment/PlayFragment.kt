@@ -743,7 +743,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onDestroy() {
-        viewState?.destroy()
+        if(::viewState.isInitialized){
+            viewState?.destroy()
+        }
         presenter.detachView()
         super.onDestroy()
     }
