@@ -65,7 +65,6 @@ allprojects {
             }
         }
         maven { url "https://www.jitpack.io" }
-        maven { url "$rootDir/node_modules/react-native/android" }
         maven { url 'https://hansel.io/maven' }
     }
 }
