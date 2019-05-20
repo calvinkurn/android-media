@@ -13,6 +13,7 @@ import com.tokopedia.topads.auto.di.AutoAdsScope
 import com.tokopedia.topads.auto.view.fragment.budget.DailyBudgetViewModel
 import com.tokopedia.topads.auto.view.fragment.budget.DailyBudgetViewModelFactory
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
@@ -22,6 +23,10 @@ import dagger.Provides
 @Module
 @AutoAdsScope
 class AutoAdsModule {
+
+    @AutoAdsScope
+    @Provides
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 
     @AutoAdsScope
     @Provides
