@@ -39,7 +39,7 @@ data class HotelTransportDetail(
 ) {
 
     data class ConditionalInfo(
-            @SerializedName("title")
+            @SerializedName("Title")
             @Expose
             val title: String = ""
     )

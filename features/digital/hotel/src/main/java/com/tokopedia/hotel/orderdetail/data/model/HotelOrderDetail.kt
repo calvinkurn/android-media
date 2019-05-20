@@ -28,7 +28,7 @@ data class HotelOrderDetail(
         @Expose
         val actionButtons: List<ActionButton> = listOf(),
 
-        @SerializedName("HotelTransportDetails")
+        @SerializedName("hotelTransportDetails")
         @Expose
         val hotelTransportDetails: List<HotelTransportDetail> = listOf()
 ) {

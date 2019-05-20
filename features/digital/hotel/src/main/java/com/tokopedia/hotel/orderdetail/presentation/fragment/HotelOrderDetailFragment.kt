@@ -187,6 +187,9 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     }
 
     fun renderFooter(orderDetail: HotelOrderDetail) {
+
+        order_detail_footer_layout.removeAllViews()
+
         val helpText = TextViewCompat(context)
         helpText.setFontSize(TextViewCompat.FontSize.MICRO)
         helpText.setTextColor(resources.getColor(R.color.light_primary))
