@@ -63,6 +63,7 @@ import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.receiver.USSDBroadcastReceiver;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
+import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity;
 import com.tokopedia.digital.product.view.activity.DigitalUssdActivity;
 import com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter;
@@ -73,6 +74,7 @@ import com.tokopedia.digital.product.view.listener.IUssdUpdateListener;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ContactData;
+import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
@@ -154,6 +156,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private static final int REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 1004;
     private static final int REQUEST_CODE_CONTACT_PICKER = 1005;
     private static final int REQUEST_CODE_CART_DIGITAL = 1006;
+    private static final int REQUEST_CODE_CHECK_SALDO_EMONEY = 1007;
 
     private NestedScrollView mainHolderContainer;
     private ProgressBar pbMainLoading;
@@ -246,7 +249,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-            digitalAnalytics = new DigitalAnalytics();
+        digitalAnalytics = new DigitalAnalytics();
         View view = inflater.inflate(R.layout.fragment_product_digital_module, container, false);
         initView(view);
         return view;
@@ -284,7 +287,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
         } else {
             if (!isFromWidget) {
                 setHasOptionsMenu(true);
-                presenter.processGetHelpUrlData(categoryId);
                 presenter.processGetCategoryAndBannerData(
                         categoryId, operatorId, productId, clientNumber);
             } else {
@@ -377,8 +379,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
         selectedCheckPulsaBalanceView = null;
         checkETollBalanceView.setListener(() -> {
-            Intent intent = DigitalCheckETollBalanceNFCActivity.newInstance(getActivity());
-            startActivity(intent);
+            Intent intent = DigitalCheckETollBalanceNFCActivity.newInstance(getActivity(),
+                    DigitalCheckETollBalanceNFCActivity.DIGITAL_NFC_FROM_PDP);
+            startActivityForResult(intent, REQUEST_CODE_CHECK_SALDO_EMONEY);
         });
     }
 
@@ -477,25 +480,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showHelpMenu(String url) {
-        digitalHelpUrl = url;
-        getActivity().invalidateOptionsMenu();
-    }
-
-    @Override
-    public String getHelpUrl() {
-        return digitalHelpUrl;
-    }
-
-    @Override
-    public void navigateToWebview(String helpUrl) {
-        if (getActivity() != null && getActivity().getApplication() instanceof DigitalModuleRouter) {
-            Intent intent = ((DigitalModuleRouter) getActivity().getApplication())
-                    .getDefaultContactUsIntent(getActivity(), helpUrl, getString(R.string.digital_product_help_menu_label));
-            if (intent != null) {
-                startActivity(intent);
-            }
-        }
+    public void navigateToWebview() {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
+        startActivity(intent);
     }
 
     @Override
@@ -867,7 +854,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 }
                 if (isFromWidget) {
                     isFromWidget = false;
-                    presenter.processGetHelpUrlData(categoryId);
                     presenter.processGetCategoryAndBannerData(
                             categoryId, operatorId, productId, clientNumber);
                     setMenuVisibility(true);
@@ -905,6 +891,27 @@ public class DigitalProductFragment extends BaseDaggerFragment
                     }
                 }
                 break;
+            case REQUEST_CODE_CHECK_SALDO_EMONEY:
+                if (checkETollBalanceView != null) {
+                    if (resultCode == Activity.RESULT_OK && data != null &&
+                            data.getParcelableExtra(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA) != null) {
+                        DigitalCategoryDetailPassData passData = data.getParcelableExtra(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, passData.getCategoryId());
+                        bundle.putString(ARG_PARAM_EXTRA_OPERATOR_ID, passData.getOperatorId());
+                        bundle.putString(ARG_PARAM_EXTRA_PRODUCT_ID, passData.getProductId());
+                        bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, passData.getClientNumber());
+                        bundle.putBoolean(ARG_PARAM_EXTRA_IS_FROM_WIDGET, passData.isFromWidget());
+                        bundle.putBoolean(ARG_PARAM_EXTRA_IS_COUPON_APPLIED, passData.isCouponApplied());
+                        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE, passData.getAdditionalETollBalance());
+                        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE, passData.getAdditionalETollLastUpdatedDate());
+                        setupArguments(bundle);
+                        setHasOptionsMenu(true);
+                        presenter.processGetCategoryAndBannerData(
+                                categoryId, operatorId, productId, clientNumber);
+                    }
+                }
+                break;
         }
     }
 
@@ -915,11 +922,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             menu.findItem(R.id.action_menu_subscription_digital).setVisible(false);
             menu.findItem(R.id.action_menu_product_list_digital).setVisible(false);
         }
-        if (digitalHelpUrl != null && digitalHelpUrl.length() > 0) {
-            menu.findItem(R.id.action_menu_help_digital).setVisible(true);
-        } else {
-            menu.findItem(R.id.action_menu_help_digital).setVisible(false);
-        }
+        menu.findItem(R.id.action_menu_help_digital).setVisible(true);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
