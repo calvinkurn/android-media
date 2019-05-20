@@ -2,24 +2,19 @@ package com.tokopedia.recommendation_widget_common.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.*
-import com.tokopedia.recommendation_widget_common.RecommendationRawQueryKeyConstant.QUERY_RECOMMENDATION_WIDGET
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationList
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModelDummy
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.internal.cache.CacheStrategy
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -27,7 +22,7 @@ class RecommendationItemViewModel @Inject constructor(private val graphqlReposit
                                   private val userSessionInterface: UserSessionInterface,
                                   @Named("Main")
                                   val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
-    val recommendationListModel = MutableLiveData<RecommendationList>()
+    val recommendationListModel = MutableLiveData<List<RecommendationWidget>>()
 
     fun getRecommendationList(recommendationParams: RecommendationParams) {
         launchCatchError(block = {
@@ -51,15 +46,13 @@ class RecommendationItemViewModel @Inject constructor(private val graphqlReposit
                         params
                 )
 
-//                graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
+                graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
             }
 
-            recommendationListModel.value = RecommendationList(
-                    listOf(
-                            generateDummyInfo("Product Info", TYPE_INFO),
-                            generateDummyModel("Product Info", TYPE_CAROUSEL),
-                            generateDummyModel("Product Info", TYPE_SCROLL))
-            )
+            recommendationListModel.value = listOf(
+                    generateDummyInfo("Product Info", TYPE_INFO),
+                    generateDummyModel("Product Info", TYPE_CAROUSEL),
+                    generateDummyModel("Product Info", TYPE_SCROLL))
         }) {
 
         }
@@ -68,7 +61,7 @@ class RecommendationItemViewModel @Inject constructor(private val graphqlReposit
     private fun generateDummyInfo(
             title: String,
             type: String
-    ) : RecommendationModelDummy {
+    ) : RecommendationWidget {
         val listItem: MutableList<RecommendationItem> = arrayListOf()
         listItem.add(RecommendationItem(
                 1,
@@ -89,21 +82,24 @@ class RecommendationItemViewModel @Inject constructor(private val graphqlReposit
                 "testing",
                 true
         ))
-        return RecommendationModelDummy(
+        return RecommendationWidget(
                 listItem,
                 title,
                 title,
                 "dari sana",
                 "www.facebook.com",
                 "www.facebook.com",
-                type
+                type,
+                0,
+                0,
+                0
         )
     }
 
     private fun generateDummyModel(
             title: String,
             type: String
-    ) : RecommendationModelDummy {
+    ) : RecommendationWidget {
         val listItem: MutableList<RecommendationItem> = arrayListOf()
         listItem.add(RecommendationItem(
                 1,
@@ -295,14 +291,17 @@ class RecommendationItemViewModel @Inject constructor(private val graphqlReposit
                 "testing",
                 true
         ))
-        return RecommendationModelDummy(
+        return RecommendationWidget(
                 listItem,
                 title,
                 title,
                 "dari mana saja",
                 "www.facebook.com",
                 "www.facebook.com",
-                type
+                type,
+                0,
+                0,
+                0
         )
     }
 }

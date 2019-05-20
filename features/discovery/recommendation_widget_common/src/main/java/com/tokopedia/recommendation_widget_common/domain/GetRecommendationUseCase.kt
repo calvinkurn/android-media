@@ -8,7 +8,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,17 +25,17 @@ import rx.Observable
 class GetRecommendationUseCase @Inject
 constructor(private val context: Context,
             private val graphqlUseCase: GraphqlUseCase,
-            private val userSession: UserSessionInterface) : UseCase<RecommendationModel>() {
+            private val userSession: UserSessionInterface) : UseCase<List<RecommendationWidget>>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<RecommendationModel> {
+    override fun createObservable(requestParams: RequestParams): Observable<List<RecommendationWidget>> {
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
                 R.raw.query_recommendation_widget), RecomendationEntity::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map<RecomendationEntity.RecomendationData> { graphqlResponse ->
+                .map<List<RecomendationEntity.RecomendationData>> { graphqlResponse ->
                     val entity = graphqlResponse.getData<RecomendationEntity>(RecomendationEntity::class.java)
-                    entity?.productRecommendationWidget?.data?.get(0)
+                    entity?.productRecommendationWidget?.data
                 }
                 .map(RecommendationEntityMapper())
     }
