@@ -34,6 +34,7 @@ import kotlinx.android.synthetic.main.layout_order_detail_transaction_detail.*
 import javax.inject.Inject
 import android.content.Intent.ACTION_DIAL
 import android.net.Uri
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 
 
@@ -84,7 +85,13 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        orderDetailViewModel.getOrderDetail("")
+        orderDetailViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                "18")
+
+        button.setOnClickListener {
+            orderDetailViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                    edittext.text.toString())
+        }
     }
 
     fun renderConditionalInfo(hotelTransportDetail: HotelTransportDetail) {
