@@ -10,8 +10,11 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.nfc.tech.NfcA;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
@@ -43,26 +46,23 @@ import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.listener.IETollView;
 import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.utils.NFCUtils;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 
 import java.io.IOException;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created by Rizky on 15/05/18.
  */
-@RuntimePermissions
 public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         implements IETollView {
 
@@ -98,6 +98,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     private String [][] techListsArray;
 
     private FirebaseRemoteConfigImpl remoteConfig;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     public static Intent newInstance(Context context) {
         return new Intent(context, DigitalCheckETollBalanceNFCActivity.class);
@@ -221,7 +222,23 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     public void onResume() {
         super.onResume();
         if (nfcAdapter != null) {
-            DigitalCheckETollBalanceNFCActivityPermissionsDispatcher.detectNFCWithCheck(this);
+            permissionCheckerHelper = new PermissionCheckerHelper();
+            permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_NFC, new PermissionCheckerHelper.PermissionCheckListener() {
+                @Override
+                public void onPermissionDenied(@NotNull String permissionText) {
+                    permissionCheckerHelper.onPermissionDenied(DigitalCheckETollBalanceNFCActivity.this, permissionText);
+                }
+
+                @Override
+                public void onNeverAskAgain(@NotNull String permissionText) {
+                    permissionCheckerHelper.onNeverAskAgain(DigitalCheckETollBalanceNFCActivity.this, permissionText);
+                }
+
+                @Override
+                public void onPermissionGranted() {
+                    detectNFC();
+                }
+            }, getStringResource(R.string.nfc_permission_rationale_message));
         } else {
             // show webview help page
             if (getApplication() instanceof DigitalModuleRouter) {
@@ -231,6 +248,13 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                 finish();
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     @Override
@@ -374,7 +398,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         }
     }
 
-    @NeedsPermission(Manifest.permission.NFC)
     void detectNFC() {
         if (!nfcAdapter.isEnabled()) {
             eTollUpdateBalanceResultView.setVisibility(View.GONE);
@@ -421,22 +444,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     private void directToNFCSettingsPage() {
         Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
         startActivity(intent);
-    }
-
-    @OnShowRationale(Manifest.permission.NFC)
-    void showRationaleForNFC(final PermissionRequest request) {
-        new AlertDialog.Builder(this)
-                .setMessage(getStringResource(R.string.nfc_permission_rationale_message))
-                .setPositiveButton(getStringResource(R.string.allow_nfc_permission), (dialog, which)
-                        -> request.proceed())
-                .setNegativeButton(getStringResource(R.string.deny_nfc_permission), (dialog, which)
-                        -> request.cancel()).show();
-    }
-
-    @OnPermissionDenied(Manifest.permission.NFC)
-    void showDeniedForNFC() {
-        Toast.makeText(this, getStringResource(R.string.nfc_permission_denied_message),
-                Toast.LENGTH_SHORT).show();
     }
 
     @Override
