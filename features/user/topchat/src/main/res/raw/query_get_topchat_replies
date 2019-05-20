@@ -18,6 +18,7 @@ query get_chat_replies($msgId: Int!, $page: Int!) {
       domain
       status {
         timestamp
+        timestampStr
         isOnline
       }
     }

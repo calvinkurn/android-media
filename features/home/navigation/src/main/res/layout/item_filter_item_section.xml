@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/chips_item"
+        style="@style/TextView.Small.BlackSecondary"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
+        android:background="@drawable/bg_item_filter_neutral"
+        tools:text="superstar"
+        />
+
+</RelativeLayout>

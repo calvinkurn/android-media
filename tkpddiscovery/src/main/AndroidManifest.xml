@@ -17,7 +17,20 @@
             android:label="Filter"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_discovery"
+                    android:path="@string/path_filter"/>
+
+            </intent-filter>
+        </activity>
         <activity
             android:name=".newdynamicfilter.DynamicFilterColorActivity"
             android:label="Warna"
@@ -58,7 +71,20 @@
             android:name=".activity.SortProductActivity"
             android:label="Urutkan"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
+            android:theme="@style/Theme.Tokopedia3">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_discovery"
+                    android:path="@string/path_sort"/>
+
+            </intent-filter>
+        </activity>
         <activity
             android:name=".intermediary.view.IntermediaryActivity"
             android:label=""
@@ -108,7 +134,6 @@
         </activity>
         <activity
             android:name=".autocomplete.presentation.activity.AutoCompleteActivity"
-            android:theme="@style/Discovery.Transparent"
             android:screenOrientation="portrait"
             android:label="@string/image_search_title"
             android:windowSoftInputMode="adjustNothing"

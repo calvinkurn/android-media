@@ -2,7 +2,6 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.lis
 
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.base.EmptyStateListener;
-import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 
@@ -19,9 +18,9 @@ public interface ProductListener extends EmptyStateListener {
 
     void onSuggestionClicked(String suggestedQuery);
 
-    void onSearchGuideClicked(String keyword);
+    void onSearchGuideClicked(String queryParams);
 
-    void onRelatedSearchClicked(String keyword);
+    void onRelatedSearchClicked(String queryParams, String keyword);
 
     void onQuickFilterSelected(Option option);
 
