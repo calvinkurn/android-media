@@ -15,6 +15,7 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:padding="@dimen/dp_12"/>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
