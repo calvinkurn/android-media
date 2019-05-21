@@ -81,8 +81,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private boolean isDisableCorner;
     private RecipientAddressModel mCurrAddress;
 
-    private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
-
     private PerformanceMonitoring chooseAddressTracePerformance;
     private boolean isChooseAddressTraceStopped;
 
@@ -217,21 +215,15 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         llNoResult = view.findViewById(R.id.ll_no_result);
         rlContent = view.findViewById(R.id.rl_content);
         btChangeSearch = view.findViewById(R.id.bt_change_search);
-        btChangeSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mSvAddressSearchBox.getSearchTextView().setText("");
-                mSvAddressSearchBox.getSearchTextView().requestFocus();
-            }
+        btChangeSearch.setOnClickListener(view1 -> {
+            mSvAddressSearchBox.getSearchTextView().setText("");
+            mSvAddressSearchBox.getSearchTextView().requestFocus();
         });
-        swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                isLoading = true;
-                mSvAddressSearchBox.getSearchTextView().setText("");
-                maxItemPosition = 0;
-                onSearchReset();
-            }
+        swipeToRefreshLayout.setOnRefreshListener(() -> {
+            isLoading = true;
+            mSvAddressSearchBox.getSearchTextView().setText("");
+            maxItemPosition = 0;
+            onSearchReset();
         });
         mRvRecipientAddressList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -488,12 +480,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mCartAddressChoiceListener = (ICartAddressChoiceActivityListener) context;
-    }
-
-    @Override
     public void onAddAddressButtonClicked() {
         if (getActivity() != null) {
             if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
@@ -549,12 +535,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     private View.OnClickListener onSearchViewClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
-                openSoftKeyboard();
-            }
+        return view -> {
+            mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
+            openSoftKeyboard();
         };
     }
 
