@@ -132,36 +132,4 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
         void onCornerButtonClicked();
     }
 
-    class SampaiViewHolder extends RecyclerView.ViewHolder {
-
-        Button mButton;
-        View mCornerView;
-        TextView mCornerName, mBranchName;
-        RadioButton mRadio;
-
-        public SampaiViewHolder(View itemView) {
-            super(itemView);
-            mCornerView = itemView.findViewById(R.id.view_tkpd_corner);
-            mButton = itemView.findViewById(R.id.button_tkpd_corner);
-            mCornerName = itemView.findViewById(R.id.text_view_corner);
-            mBranchName = itemView.findViewById(R.id.text_view_branch);
-            mRadio = itemView.findViewById(R.id.radio_button_corner);
-        }
-
-        public void bind(CornerAddressModel model, ActionListener listener, int position) {
-            if (!TextUtils.isEmpty(model.getCornerName())) {
-                mCornerView.setVisibility(View.VISIBLE);
-                mCornerView.setOnClickListener(view -> listener.onCornerAddressClicked(model, position));
-                mCornerName.setText(model.getCornerName());
-                mBranchName.setText(model.getCornerBranchName());
-                mRadio.setChecked(model.isSelected());
-                mButton.setText("Ubah Lokasi Tokopedia Corner");
-            } else {
-                mCornerView.setVisibility(View.GONE);
-                mButton.setText("Pilih Lokasi Tokopedia Corner");
-            }
-            mButton.setOnClickListener(view -> listener.onCornerButtonClicked());
-        }
-    }
-
 }
