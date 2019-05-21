@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.autocomplete.presentation.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -28,26 +29,21 @@ import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.util.AnimationUtil;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.TrackApp;
 
-import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
+import javax.inject.Inject;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.DEEP_LINK_URI;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_IS_AUTOCOMPLETE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
 
-@RuntimePermissions
 public class AutoCompleteActivity extends DiscoveryActivity
         implements AutoCompleteContract.View {
 
@@ -89,6 +85,9 @@ public class AutoCompleteActivity extends DiscoveryActivity
     AutoCompletePresenter autoCompletePresenter;
     @Inject
     SearchTracking searchTracking;
+    @Inject
+    private PermissionCheckerHelper permissionCheckerHelper;
+
     private SearchComponent searchComponent;
     private boolean isHandlingIntent = false;
 
@@ -297,42 +296,38 @@ public class AutoCompleteActivity extends DiscoveryActivity
         return R.layout.activity_auto_complete;
     }
 
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onImageSuccess(String uri) {
-        onImagePickedSuccess(uri);
+        permissionCheckerHelper.checkPermission(
+                getActivityContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        RequestPermissionUtil.onPermissionDenied(getActivityContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        RequestPermissionUtil.onNeverAskAgain(getActivityContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        onImagePickedSuccess(uri);
+                    }
+                },
+                ""
+        );
     }
 
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(this, new RequestPermissionUtil.PermissionRequestListener() {
-            @Override
-            public void onProceed() {
-                request.proceed();
-            }
-
-            @Override
-            public void onCancel() {
-                request.cancel();
-            }
-        }, Manifest.permission.READ_EXTERNAL_STORAGE);
+    private Activity getActivityContext() {
+        return AutoCompleteActivity.this;
     }
 
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-    
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        onRequestPermissionsResult(
-                requestCode, permissions, grantResults);
-
+        permissionCheckerHelper.onRequestPermissionsResult(getActivityContext(), requestCode, permissions, grantResults);
     }
 
     private interface AnimationCallback {
