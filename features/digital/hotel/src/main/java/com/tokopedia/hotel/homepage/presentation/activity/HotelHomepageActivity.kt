@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.common.travel.presentation.activity.PhoneCodePickerActivity
+import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
+import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.common.applink.ApplinkConstant
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
@@ -19,6 +22,13 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         toolbar.contentInsetStartWithNavigation = 0
+
+        startActivity(TravelContactDataActivity.getCallingIntent(this, TravelContactData(
+                name = "test",
+                email = "test@test.com",
+                phoneCode = 62,
+                phone = "763246784"
+        )))
     }
 
     override fun getComponent(): HotelHomepageComponent =

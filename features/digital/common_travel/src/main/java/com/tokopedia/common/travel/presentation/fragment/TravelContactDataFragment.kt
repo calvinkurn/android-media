@@ -5,19 +5,26 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.travel.R
 import com.tokopedia.common.travel.di.CommonTravelComponent
+import com.tokopedia.common.travel.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import kotlinx.android.synthetic.main.fragment_travel_contact_data.*
 
 class TravelContactDataFragment: BaseDaggerFragment() {
 
     lateinit var contactData: TravelContactData
+
+    lateinit var spinnerAdapter: ArrayAdapter<String>
+    val spinnerData = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +45,19 @@ class TravelContactDataFragment: BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_CODE_PHONE_CODE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val countryPhoneCode : CountryPhoneCode = data!!.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
+                    contactData.phoneCode = countryPhoneCode.countryPhoneCode.toInt()
+
+                    spinnerData.clear()
+                    spinnerData += getString(R.string.phone_code_format, contactData.phoneCode)
+                    spinnerAdapter.notifyDataSetChanged()
+                }
+            }
+        }
     }
 
     fun initView() {
@@ -53,12 +73,18 @@ class TravelContactDataFragment: BaseDaggerFragment() {
 
         til_contact_phone_number.editText.setText(contactData.phone)
 
-        val initialPhoneCode: String = "+" + contactData.phoneCode
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, listOf(initialPhoneCode, initialPhoneCode))
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        sp_contact_phone_code.adapter = adapter
+        val initialPhoneCode = getString(R.string.phone_code_format, contactData.phoneCode)
+        spinnerData += initialPhoneCode
+        spinnerAdapter =  ArrayAdapter(context!!, android.R.layout.simple_spinner_item, spinnerData)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        sp_contact_phone_code.adapter = spinnerAdapter
         sp_contact_phone_code.setSelection(0)
-//        sp_contact_phone_code.setOnClickListener {  }
+        sp_contact_phone_code.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(activity), REQUEST_CODE_PHONE_CODE)
+            }
+            true
+        }
 
         contact_data_button.setOnClickListener { onSaveButtonClicked() }
     }
@@ -106,6 +132,7 @@ class TravelContactDataFragment: BaseDaggerFragment() {
 
     companion object {
         const val EXTRA_CONTACT_DATA = "extra_contact_data"
+        const val REQUEST_CODE_PHONE_CODE = 1
         const val MIN_PHONE_NUMBER_DIGIT = 9
 
         fun getInstance(contactData: TravelContactData): TravelContactDataFragment =
