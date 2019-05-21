@@ -10,7 +10,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.applink.CheckoutAppLink;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
-import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
+import com.tokopedia.checkout.view.feature.emptycart2.EmptyCartFragment;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 
 /**
@@ -98,7 +98,7 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
     @Override
     public void onCartEmpty(String autoApplyMessage, String state, String titleDesc, String promoCode) {
         if (emptyCartFragment == null) {
-            emptyCartFragment = EmptyCartFragment.newInstance(autoApplyMessage, "", state, titleDesc, promoCode);
+            emptyCartFragment = EmptyCartFragment.Companion.newInstance(autoApplyMessage, "", state, titleDesc, promoCode);
         }
         if (emptyCartFragment.isAdded()) return;
         cartFragment = null;

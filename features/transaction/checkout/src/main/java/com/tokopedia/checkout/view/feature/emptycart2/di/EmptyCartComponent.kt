@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.emptycart2.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.checkout.view.feature.emptycart2.EmptyCartFragment
 import dagger.Component
 
 /**
@@ -10,4 +11,5 @@ import dagger.Component
 @EmptyCartScope
 @Component(modules = [EmptyCartModule::class], dependencies = [BaseAppComponent::class])
 interface EmptyCartComponent {
+    fun inject(emptyCartFragment: EmptyCartFragment)
 }
