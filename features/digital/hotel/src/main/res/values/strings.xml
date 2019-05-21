@@ -138,7 +138,7 @@
     <string name="hotel_detail_change_search_text">Ganti Pencarian</string>
 
     <string name="hotel_booking_title">Pembayaran</string>
-    <string name="hotel_room_night_count">%1$d Kamar</string>
+    <string name="hotel_room_night_count">%1$d Malam</string>
     <string name="hotel_booking_pay_at_hotel_label">\u0020Bayar di Hotel (Perlu Jaminan Kartu Kredit)</string>
     <string name="hotel_booking_room_general_info">%1$d Kamar • %2$d Tamu</string>
     <string name="hotel_booking_free_breakfast">Sarapan Gratis</string>
@@ -167,6 +167,4 @@
     <string name="hotel_booking_back_dialog_desc">Kamar bisa penuh dan tidak tersedia di waktu lain. Lanjut pesan untuk tetap menginap di kamar ini.</string>
     <string name="hotel_booking_back_dialog_no">Batalkan</string>
     <string name="hotel_booking_back_dialog_yes">Lanjut pesan</string>
-
-    <string name="hotel_room_night_count">%1$d Malam</string>
 </resources>

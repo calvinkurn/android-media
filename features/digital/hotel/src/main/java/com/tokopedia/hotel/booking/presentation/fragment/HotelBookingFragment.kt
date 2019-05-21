@@ -143,13 +143,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
     }
 
     private fun setupRoomDuration(cart: HotelCartData) {
-        booking_room_duration_info.hotel_check_in_date.text = changeDateStringFormat(cart.checkIn,
-                TravelDateUtil.YYYY_MM_DD, TravelDateUtil.DEFAULT_VIEW_FORMAT)
-        booking_room_duration_info.hotel_check_out_date.text = changeDateStringFormat(cart.checkOut,
-                TravelDateUtil.YYYY_MM_DD, TravelDateUtil.DEFAULT_VIEW_FORMAT)
-
-        booking_room_duration_info.hotel_room_night_count.text = getString(R.string.hotel_room_night_count,
-                HotelUtils.countNightDifference(cart.checkIn, cart.checkOut))
+        booking_room_duration_info.setRoomDates(cart.checkIn, cart.checkOut)
     }
 
     private fun changeDateStringFormat(dateString: String, oldFormat: String, newFormat: String): String {

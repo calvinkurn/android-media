@@ -98,10 +98,10 @@
                 android:layout_height="@dimen/dp_8"
                 android:background="@color/divider_color"/>
 
-            <include
+            <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
                 android:id="@+id/booking_room_duration_info"
-                layout="@layout/widget_hotel_room_duration"
-                android:visibility="visible" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <android.support.v7.widget.AppCompatImageView
                 android:layout_width="match_parent"
