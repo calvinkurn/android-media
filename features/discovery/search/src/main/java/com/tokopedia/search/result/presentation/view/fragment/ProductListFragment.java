@@ -9,7 +9,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +101,6 @@ public class ProductListFragment
         WishListActionListener {
 
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
-    public static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
     private static final int REQUEST_ACTIVITY_SORT_PRODUCT = 1233;
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
@@ -187,7 +185,7 @@ public class ProductListFragment
         presenter.setWishlistActionListener(this);
         presenter.setRequestDynamicFilterListener(this);
 
-        return inflater.inflate(R.layout.fragment_base_discovery, null);
+        return inflater.inflate(R.layout.search_fragment_base_discovery, null);
     }
 
     @Override
@@ -707,22 +705,6 @@ public class ProductListFragment
     }
 
     @Override
-    public void launchLoginActivity(String productId) {
-        Bundle extras = new Bundle();
-        extras.putString("product_id", productId);
-
-        if (getActivity() == null) return;
-
-        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
-
-        if (router != null) {
-            Intent intent = router.getLoginIntent(getActivity());
-            intent.putExtras(extras);
-            startActivityForResult(intent, REQUEST_CODE_LOGIN);
-        }
-    }
-
-    @Override
     public boolean isUserHasLogin() {
         return userSession.isLoggedIn();
     }
@@ -945,11 +927,6 @@ public class ProductListFragment
 
         LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), SEARCH_RESULT_ENHANCE_ANALYTIC);
         return cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0);
-    }
-
-    @Override
-    public void logDebug(String tag, String message) {
-        Log.d(tag, message);
     }
 
     @Override

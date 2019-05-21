@@ -10,6 +10,8 @@ public interface SearchConstant {
 
     String EXTRA_ACTIVE_TAB_POSITION = "EXTRA_ACTIVE_TAB_POSITION";
 
+    String EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID";
+
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
     String DEEP_LINK_URI = "deep_link_uri";
 
