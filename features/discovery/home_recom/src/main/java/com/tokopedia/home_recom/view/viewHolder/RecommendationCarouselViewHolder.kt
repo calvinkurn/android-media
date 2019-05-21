@@ -6,13 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_recom.R
+import com.tokopedia.home_recom.model.dataModel.RecommendationCarouselItemDataModel
 import com.tokopedia.home_recom.model.dataModel.RecommendationCarouselDataModel
-import com.tokopedia.home_recom.model.dataModel.RecommendationItemDataModel
-import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 class RecommendationCarouselViewHolder(view: View) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
 
@@ -26,16 +23,16 @@ class RecommendationCarouselViewHolder(view: View) : AbstractViewHolder<Recommen
 
     private fun setupRecyclerView(dataModel: RecommendationCarouselDataModel){
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.adapter = object : RecyclerView.Adapter<RecommendationItemViewHolder>() {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationItemViewHolder {
-                val view = LayoutInflater.from(parent.context).inflate(RecommendationItemDataModel.LAYOUT, parent, false)
-                return RecommendationItemViewHolder(view)
+        recyclerView.adapter = object : RecyclerView.Adapter<RecommendationCarouselItemViewHolder>() {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationCarouselItemViewHolder {
+                val view = LayoutInflater.from(parent.context).inflate(RecommendationCarouselItemDataModel.LAYOUT, parent, false)
+                return RecommendationCarouselItemViewHolder(view)
             }
 
             override fun getItemCount(): Int = dataModel.products.size
 
-            override fun onBindViewHolder(holder: RecommendationItemViewHolder, position: Int) {
-                holder.bind(RecommendationItemDataModel(dataModel.products[position], dataModel.listener))
+            override fun onBindViewHolder(holder: RecommendationCarouselItemViewHolder, position: Int) {
+                holder.bind(RecommendationCarouselItemDataModel(dataModel.products[position], dataModel.listener))
             }
         }
     }

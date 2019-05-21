@@ -5,7 +5,7 @@ import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
-class RecommendationAnotherProductItemDataModel(
+class RecommendationCarouselItemDataModel(
         val productItem: RecommendationItem,
         val listener: RecommendationCardView.TrackingListener
 ) : BaseHomeRecommendationDataModel {

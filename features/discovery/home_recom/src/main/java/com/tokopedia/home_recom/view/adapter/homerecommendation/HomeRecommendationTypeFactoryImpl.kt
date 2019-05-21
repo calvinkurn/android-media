@@ -23,8 +23,8 @@ class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommen
         return TitleDataModel.LAYOUT
     }
 
-    override fun type(dataModel: RecommendationAnotherProductItemDataModel): Int {
-        return RecommendationAnotherProductItemDataModel.LAYOUT
+    override fun type(dataModel: RecommendationCarouselItemDataModel): Int {
+        return RecommendationCarouselItemDataModel.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
