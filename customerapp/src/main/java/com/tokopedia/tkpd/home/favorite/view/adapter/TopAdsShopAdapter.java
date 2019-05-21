@@ -34,7 +34,6 @@ import com.tokopedia.track.TrackApp;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
 
 /**
  * @author by erry on 30/01/17.
@@ -196,7 +195,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
             mainContent = (LinearLayout) itemView.findViewById(R.id.main_content);
             shopCover = (ImageView) itemView.findViewById(R.id.shop_cover);
             shopIcon = (ImageView) itemView.findViewById(R.id.shop_icon);
