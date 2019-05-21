@@ -40,6 +40,9 @@ public class ShopGroup {
     @SerializedName("has_promo_list")
     @Expose
     private boolean hasPromoList;
+    @SerializedName("checkbox_state")
+    @Expose
+    private boolean checkboxState;
 
     public int getUserAddressId() {
         return userAddressId;
@@ -72,4 +75,8 @@ public class ShopGroup {
     public String getCartString() { return cartString; }
 
     public boolean getHasPromoList() { return hasPromoList; }
+
+    public boolean isCheckboxState() {
+        return checkboxState;
+    }
 }

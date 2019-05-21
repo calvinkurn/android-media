@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.variant
 
+import android.support.v4.util.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -69,6 +70,25 @@ data class ProductVariant(
     fun getOptionListString(selectedVariantId: String?): List<String>? {
         return getVariant(selectedVariantId)?.getOptionStringList(variant)
     }
+
+    fun mapSelectedProductVariants(selectedVariantId: String?): ArrayMap<String, ArrayMap<String, String>>? {
+        val child = getChildProductVariant(selectedVariantId)
+        return child?.mapVariant(variant)
+    }
+
+    private fun getChildProductVariant(selectedVariantId: String?): Child? {
+        val variantId = selectedVariantId ?: defaultChildString
+        if (hasChildren) {
+            for (child: Child in children) {
+                if (child.productId.toString().equals(variantId, false)) {
+                    return child
+                }
+            }
+        }
+        return null
+    }
+
+    
 }
 
 data class Picture(

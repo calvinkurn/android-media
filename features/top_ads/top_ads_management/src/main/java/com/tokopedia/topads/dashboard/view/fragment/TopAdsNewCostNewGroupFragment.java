@@ -8,9 +8,11 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
+import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
@@ -19,6 +21,7 @@ import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -54,11 +57,14 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
     @Override
     protected void loadSuggestionBid() {
         // get id from view model
-        List<String> ids = new ArrayList<>();
+        List<Integer> ids = new ArrayList<>();
         for (TopAdsProductViewModel topAdsProductViewModel : stepperModel.getTopAdsProductViewModels()) {
-            ids.add(topAdsProductViewModel.getDepartmentId() + "");
+            ids.add(topAdsProductViewModel.getId());
         }
-        topAdsDetailNewProductPresenter.getSuggestionBid(ids, TopAdsNetworkConstant.SOURCE_NEW_COST_GROUP);
+        List<DataSuggestions> suggestions = new ArrayList<>();
+        suggestions.add(new DataSuggestions(TopAdsNetworkConstant.BID_INFO_TYPE_PRODUCT, ids));
+        topAdsDetailNewProductPresenter.getBidInfo(TopAdsNetworkConstant.BID_INFO_TYPE_PRODUCT,
+                suggestions, TopAdsNetworkConstant.SOURCE_NEW_COST_GROUP);
     }
 
     @Override
@@ -97,15 +103,15 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
     }
 
     @Override
-    public void onSuggestionSuccess(GetSuggestionResponse s) {
-        setSuggestionBidText(s);
+    public void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo) {
+        setSuggestionBidText(bidInfo.getData().get(0));
         detailAd.setSuggestionBidValue(suggestionBidValue);
         detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED);
         defaultSuggestionBidButtonStatus = TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED;
     }
 
     @Override
-    public void onSuggestionError(@Nullable Throwable t) {
+    public void onBidInfoError(@Nullable Throwable t) {
         detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.NO_SUGGESTION);
     }
 
