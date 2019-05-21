@@ -346,7 +346,7 @@ public class DeepLinkChecker {
     }
 
     private static String constructSearchApplink(String query, String departmentId) {
-        String applink = query == null || query.length() == 0 ?
+        String applink = TextUtils.isEmpty(query) ?
                 ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
                 ApplinkConst.DISCOVERY_SEARCH;
 
