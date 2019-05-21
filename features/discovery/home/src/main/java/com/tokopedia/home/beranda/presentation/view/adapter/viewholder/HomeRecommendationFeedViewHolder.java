@@ -69,7 +69,7 @@ implements HomeTabFeedListener {
         homeFeedsTabLayout.setVisibility(View.VISIBLE);
         homeFeedsViewPager.setVisibility(View.VISIBLE);
 
-        if (homeFeedPagerAdapter == null || homeRecommendationFeedViewModel.isNewData()) {
+        if (homeRecommendationFeedViewModel.isNewData()) {
             initViewPagerAndTablayout();
             homeRecommendationFeedViewModel.setNewData(false);
         }
