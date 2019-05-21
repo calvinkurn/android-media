@@ -68,4 +68,12 @@ public class FragmentSelfieIdCamera extends HomeCreditSelfieFragment{
         cameraView.stop();
         super.onDestroy();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideLoading();
+        cameraView.stop();
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
 }
