@@ -2,18 +2,15 @@ package com.tokopedia.hotel.booking.presentation.fragment
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.content.res.ColorStateList
-import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewCompat
-import android.text.*
+import android.text.Editable
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -31,15 +28,12 @@ import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
-import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.bottom_sheets_hotel_booking.view.*
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
-import kotlinx.android.synthetic.main.widget_hotel_room_duration.view.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
 
