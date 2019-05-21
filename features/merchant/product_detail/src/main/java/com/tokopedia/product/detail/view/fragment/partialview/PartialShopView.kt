@@ -97,7 +97,6 @@ class PartialShopView private constructor(private val view: View, private val cl
             shop_feature.shouldShowWithAction(shopFeatureData.value) {
                 shop_feature.text = shopFeatureData.title
             }
-            shop_feature.visible()
         }
     }
 
