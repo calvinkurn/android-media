@@ -24,6 +24,7 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.content_tanpa_agunan.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
@@ -39,8 +40,11 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     private lateinit var loanPeriodLabelTV: TextView
     private lateinit var loanPeriodValueTV: TextView
 
+    private var currentLoanPeriodType: Int =0
+
     private lateinit var loanPeriodMonthList: ArrayList<LoanPeriodMonth>
     private lateinit var loanPeriodYearList: ArrayList<LoanPeriodYear>
+    private lateinit var loanPeriodTypeList: ArrayList<LoanPeriodType>
     private var mCurrentTab: Int = 0
     private var mContext: Context? = null
 
@@ -87,9 +91,12 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
         presenter.getFilterData()
 
+        prepareLoanPeriodTypeList()
+
         loanPeriodLabelTV = spinner_label_nominal.findViewById(R.id.tv_label_text)
         loanPeriodValueTV = spinner_value_nominal.findViewById(R.id.tv_label_text)
 
+        (view.findViewById<View>(R.id.tv_label_text) as TextView).text = "Pilih"
         spinner_label_nominal.setOnClickListener {
 
 
@@ -115,6 +122,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
         }*/
     }
 
+
     /*private fun sendCariPinjamanClickEvent() {
         val eventLabel = screenName + " - " + spinner_value_nominal!!.selectedItem.toString()
         instantLoanAnalytics.eventCariPinjamanClick(eventLabel)
@@ -139,6 +147,18 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
         gqlFilterData.gqlLoanAmountResponse.sortBy { it.value }
         loanPeriodLabelTV.text = ""
+    }
+
+    private fun prepareLoanPeriodTypeList() {
+
+        loanPeriodTypeList = ArrayList<LoanPeriodType>()
+        var loanPeriodType: LoanPeriodType
+        loanPeriodType = LoanPeriodType("Year", "Bulan", 1)
+        loanPeriodTypeList.add(loanPeriodType)
+
+        loanPeriodType = LoanPeriodType("Month", "Tahun", 2)
+        loanPeriodTypeList.add(loanPeriodType)
+
     }
 
     private fun prepareLoanPeriodListYear(min: Int, max: Int) {
