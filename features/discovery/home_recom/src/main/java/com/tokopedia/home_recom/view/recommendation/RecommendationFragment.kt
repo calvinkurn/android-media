@@ -6,6 +6,10 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
@@ -38,6 +42,10 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
         fun newInstance(productId: String) = RecommendationFragment().apply {
             this.productId = productId
         }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_recommendation, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -78,6 +86,11 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
 
     override fun loadData(page: Int) {
         //Do nothing
+    }
+
+    override fun disableLoadMore() {
+        super.disableLoadMore()
+        getRecyclerView(view).isNestedScrollingEnabled = false
     }
 
     private fun mapDataModel(listRecommendationModelDummy: List<RecommendationModelDummy>): List<BaseHomeRecommendationDataModel>{
