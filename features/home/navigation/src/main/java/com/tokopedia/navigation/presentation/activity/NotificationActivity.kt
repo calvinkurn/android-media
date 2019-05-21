@@ -116,9 +116,14 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     private fun clearNotifCounter(position: Int) {
         if(position == INDEX_NOTIFICATION_UPDATE) {
             presenter.clearNotifCounter()
-            updateCounter = 0
-            setCounterNotificationUpdate()
+            resetCounterNotificationUpdate()
         }
+    }
+
+
+    override fun resetCounterNotificationUpdate() {
+        updateCounter = 0
+        setCounterNotificationUpdate()
     }
 
     private fun sendAnalytics(position: Int) {
@@ -186,6 +191,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         super.onDestroy()
         presenter.detachView()
     }
+
 
     companion object {
 
