@@ -132,7 +132,6 @@ open class SizeSmallBusinessViewHolder (
 
     open fun renderPrice(element: HomeWidget.ContentItemTab?) {
         if (hasPrice(element)) {
-            itemView.priceLayout.visibility = View.VISIBLE
 
             if (element?.pricePrefix.isNullOrEmpty()) {
                 itemView.pricePrefix.visibility = View.GONE
@@ -157,7 +156,9 @@ open class SizeSmallBusinessViewHolder (
             }
 
         } else {
-            itemView.priceLayout.visibility = View.GONE
+            itemView.price.visibility = View.GONE
+            itemView.pricePrefix.visibility = View.GONE
+            itemView.strikeThroughPrice.visibility = View.GONE
         }
     }
 

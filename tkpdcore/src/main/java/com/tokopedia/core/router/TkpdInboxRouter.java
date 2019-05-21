@@ -58,8 +58,6 @@ public interface TkpdInboxRouter {
 
     Intent getTopProfileIntent(Context context, String userId);
 
-    void startAddProduct(Activity activity, String shopId);
-
     Intent getHelpUsIntent(Context context);
 
     Intent getWebviewActivityWithIntent(Context context, String url, String title);

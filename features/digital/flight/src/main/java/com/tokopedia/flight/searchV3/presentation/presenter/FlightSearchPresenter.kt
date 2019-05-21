@@ -161,15 +161,16 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
     override fun fetchCombineData(passDataViewModel: FlightSearchPassDataViewModel) {
         val flightPassengerViewModel = passDataViewModel.flightPassengerViewModel
 
+
         val departureAirport = if (passDataViewModel.departureAirport.airportCode != null &&
-                passDataViewModel.departureAirport.airportCode != "") {
+                passDataViewModel.departureAirport.airportCode.isNotEmpty()) {
             passDataViewModel.departureAirport.airportCode
         } else {
             passDataViewModel.departureAirport.cityCode
         }
 
         val arrivalAirport = if (passDataViewModel.arrivalAirport.airportCode != null &&
-                passDataViewModel.departureAirport.airportCode != "") {
+                passDataViewModel.arrivalAirport.airportCode.isNotEmpty()) {
             passDataViewModel.arrivalAirport.airportCode
         } else {
             passDataViewModel.arrivalAirport.cityCode

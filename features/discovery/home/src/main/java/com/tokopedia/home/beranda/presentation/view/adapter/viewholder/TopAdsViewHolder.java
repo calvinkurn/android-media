@@ -7,11 +7,9 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -69,10 +67,10 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     @Override
     public void onShopItemClicked(int position, Shop shop) {
         if(context instanceof Activity) {
-            Activity activity = (Activity) context;
-            Intent intent = ((IHomeRouter) activity.getApplication()).getShopPageIntent(activity,
-                    shop.getId());
+            Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP);
+            intent.putExtra("EXTRA_SHOP_ID", shop.getId());
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
         }
     }
 

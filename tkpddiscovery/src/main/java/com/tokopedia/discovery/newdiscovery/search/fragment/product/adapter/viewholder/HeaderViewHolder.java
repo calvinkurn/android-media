@@ -17,16 +17,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.widget.GlobalNavWidget;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
@@ -56,6 +58,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private QuickFilterAdapter quickFilterAdapter;
     private RecyclerView guidedSearchRecyclerView;
     private GuidedSearchAdapter guidedSearchAdapter;
+    private GlobalNavWidget globalNavWidget;
     private final String searchQuery;
 
     public HeaderViewHolder(View itemView, ProductListener productListener, String searchQuery) {
@@ -65,6 +68,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         this.productListener = productListener;
         suggestionContainer = (LinearLayout) itemView.findViewById(R.id.suggestion_container);
         adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
+        globalNavWidget = itemView.findViewById(R.id.globalNavWidget);
         quickFilterListView = (RecyclerView) itemView.findViewById(R.id.quickFilterListView);
         guidedSearchRecyclerView = itemView.findViewById(R.id.guidedSearchRecyclerView);
         guidedSearchAdapter = new GuidedSearchAdapter(productListener);
@@ -107,6 +111,22 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     @Override
     public void bind(final HeaderViewModel element) {
         adsBannerView.displayAds(element.getCpmModel());
+        if (element.getGlobalNavViewModel() != null) {
+            globalNavWidget.setData(element.getGlobalNavViewModel(), new GlobalNavWidget.ClickListener() {
+                @Override
+                public void onClickItem(GlobalNavViewModel.Item item) {
+                    productListener.onGlobalNavWidgetClicked(item, element.getGlobalNavViewModel().getKeyword());
+                }
+
+                @Override
+                public void onclickSeeAllButton(String applink, String url) {
+                    productListener.onGlobalNavWidgetClickSeeAll(applink, url);
+                }
+            });
+            globalNavWidget.setVisibility(View.VISIBLE);
+        } else {
+            globalNavWidget.setVisibility(View.GONE);
+        }
         if (element.getSuggestionModel() != null) {
             suggestionContainer.removeAllViews();
             View suggestionView = LayoutInflater.from(context).inflate(R.layout.suggestion_layout, null);
@@ -169,7 +189,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                 break;
             case DeepLinkChecker.ETALASE:
                 bundle = new Bundle();
-                bundle.putString(ETALASE_NAME, DeepLinkChecker.getLinkSegment(url).get(2));
+                bundle.putString(ETALASE_NAME, Uri.parse(url).getPathSegments().get(2));
                 if (DeepLinkChecker.getQuery(url, KEYWORD) != null) {
                     bundle.putString(KEYWORD, DeepLinkChecker.getQuery(url, KEYWORD));
                 }
@@ -349,13 +369,11 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Uri uri = Uri.parse(item.getUrl());
-                    String query = uri.getQueryParameter(BrowseApi.Q);
                     SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
-                    itemClickListener.onSearchGuideClicked(query);
+                    itemClickListener.onSearchGuideClicked(Uri.parse(item.getUrl()).getEncodedQuery());
                 }
             });
-            imageView.setImageResource(BACKGROUND[getAdapterPosition()]);
+            imageView.setImageResource(BACKGROUND[getAdapterPosition() % 5]);
         }
     }
 }

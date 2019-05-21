@@ -31,35 +31,32 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
         val LAYOUT = R.layout.item_quantity_detail_product_page
     }
 
-    private val textWatcher by lazy {
-        object : TextWatcher {
+    private inner class QuantityTextWatcher(
             var previousQuantity: Int = element.orderQuantity
-            override fun afterTextChanged(s: Editable?) {
+    ): TextWatcher {
+        override fun afterTextChanged(p0: Editable?) {}
 
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+        override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            var newQuantity = 0
+            try {
+                newQuantity = s.toString().toInt()
+            } catch (e: NumberFormatException) {
+                e.printStackTrace()
+                element.orderQuantity = 0
             }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                var newQuantity = 0
-                try {
-                    newQuantity = s.toString().toInt()
-                } catch (e: NumberFormatException) {
-                    e.printStackTrace()
-                    element.orderQuantity = 0
-                }
-                val quantityModel = QuantityModel(previousQuantity, newQuantity)
-                // if listener is null, do without debounce
-                if (quantityChangeDebounceListener == null) {
-                    onNextDebounce(quantityModel)
-                } else {
-                    quantityChangeDebounceListener!!.onDoNext(quantityModel)
-                }
+            val quantityModel = QuantityModel(previousQuantity, newQuantity)
+            // if listener is null, do without debounce
+            if (quantityChangeDebounceListener == null) {
+                onNextDebounce(quantityModel)
+            } else {
+                quantityChangeDebounceListener!!.onDoNext(quantityModel)
             }
         }
     }
+
+    private val textWatcher by lazy { QuantityTextWatcher() }
 
     override fun bind(element: QuantityViewModel?) {
         if (element != null) {

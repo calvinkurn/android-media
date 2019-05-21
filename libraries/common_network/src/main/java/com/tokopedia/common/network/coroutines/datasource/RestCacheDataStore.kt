@@ -4,8 +4,8 @@ import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common.network.util.*
 import com.tokopedia.common.network.util.RestConstant.RES_CODE_CACHE
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Retrieve the response from cache only

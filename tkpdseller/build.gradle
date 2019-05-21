@@ -62,6 +62,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.webview)
 
     implementation rootProject.ext.networkDependencies.glide
 

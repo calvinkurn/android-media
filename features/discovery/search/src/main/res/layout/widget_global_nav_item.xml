@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/globalNavItemContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="@dimen/dp_72"
+            android:layout_height="@dimen/dp_72"
+            android:src="@drawable/squircle"
+            android:scaleType="fitXY"/>
+
+        <ImageView
+            android:id="@+id/globalNavItemImage"
+            android:layout_width="@dimen/dp_72"
+            android:layout_height="@dimen/dp_72"
+            android:padding="@dimen/dp_16"
+            android:scaleType="centerInside"/>
+        
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/globalNavItemName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        style="@style/TextView.Micro"
+        android:ellipsize="end"
+        android:layout_marginTop="@dimen/dp_2"
+        android:textColor="#f531353b"
+        android:gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/globalNavItemInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_marginTop="@dimen/dp_2"
+        android:textColor="#f531353b"
+        style="@style/TextView.Micro.Bold"
+        android:textSize="@dimen/sp_10"
+        android:visibility="gone"
+        android:gravity="center_horizontal"/>
+
+</LinearLayout>

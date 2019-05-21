@@ -60,16 +60,6 @@ class HomeMainToolbar : MainToolbar {
         initToolbarIcon()
 
         switchToLightToolbar()
-
-        btnInbox.setOnClickListener { v ->
-            if (userSession.isLoggedIn) {
-                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName)
-                getContext().startActivity((this.context.applicationContext as SearchBarRouter)
-                        .gotoInboxMainPage(getContext()))
-            } else {
-                RouteManager.route(context, ApplinkConst.LOGIN)
-            }
-        }
     }
 
     private fun initToolbarIcon() {

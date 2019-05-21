@@ -567,7 +567,9 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!eventName.isEmpty()) {
                 values.put("event", eventName);
             }
-            iris.saveEvent(values);
+            if(values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
+                iris.saveEvent(values);
+            }
         }
     }
 

@@ -21,22 +21,25 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.updateinactivephone.R;
 import com.tokopedia.updateinactivephone.design.view.UpdateInactivePhoneInfoBottomSheet;
+import com.tokopedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 import com.tokopedia.updateinactivephone.fragment.SelectImageNewPhoneFragment;
 import com.tokopedia.updateinactivephone.fragment.UpdateNewPhoneEmailFragment;
 import com.tokopedia.updateinactivephone.presenter.ChangeInactiveFormRequestPresenter;
 import com.tokopedia.updateinactivephone.view.ChangeInactiveFormRequest;
-import com.tokopedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 
 import javax.inject.Inject;
 
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.IS_DUPLICATE_REQUEST;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.USER_EMAIL;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.USER_PHONE;
-
-import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
-        .QUERY_CONSTANTS.OLD_PHONE;
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.OLD_PHONE;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.USER_ID;
 
+/**
+ * For navigating to this class
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal#CHANGE_INACTIVE_PHONE_FORM}
+ * Please pass USER_ID and OLD_PHONE
+ */
 public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implements
         HasComponent<AppComponent>, ChangeInactiveFormRequest.View,
         SelectImageNewPhoneFragment.SelectImageInterface, UpdateNewPhoneEmailFragment.UpdateNewPhoneEmailInteractor {

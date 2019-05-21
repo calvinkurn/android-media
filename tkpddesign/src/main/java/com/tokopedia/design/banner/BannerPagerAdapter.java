@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * @author by alifa on 11/28/17.
  */
-
+@Deprecated
 public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.BannerViewHolder> {
 
     private static final String TAG = BannerPagerAdapter.class.getSimpleName();
