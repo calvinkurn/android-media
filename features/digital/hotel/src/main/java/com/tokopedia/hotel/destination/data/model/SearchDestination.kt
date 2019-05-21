@@ -18,6 +18,10 @@ data class SearchDestination(
         @Expose
         val type: String = "",
 
+        @SerializedName("typeID")
+        @Expose
+        val typeID: String = "",
+
         @SerializedName("tag")
         @Expose
         val tag: String = "",
@@ -25,6 +29,10 @@ data class SearchDestination(
         @SerializedName("icon")
         @Expose
         val icon: String = "",
+
+        @SerializedName("iconUrl")
+        @Expose
+        val iconUrl: String = "",
 
         @SerializedName("name")
         @Expose
