@@ -1,5 +1,6 @@
 package com.tokopedia.seller.purchase.detail.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 
@@ -21,7 +22,7 @@ public interface OrderDetailPresenter {
 
     void fetchData(Context context, String orderId, int userMode);
 
-    void processInvoice(Context context, OrderDetailData data, boolean seller);
+    void processInvoice(Activity context, OrderDetailData data, boolean seller);
 
     void processShowComplain(Context context, OrderDetailData data);
 

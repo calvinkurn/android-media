@@ -1,5 +1,6 @@
 package com.tokopedia.seller.purchase.detail.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
@@ -74,7 +75,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
-    public void processInvoice(Context context, OrderDetailData data, boolean seller) {
+    public void processInvoice(Activity context, OrderDetailData data, boolean seller) {
         AppUtils.InvoiceDialog(
                 context, data.getInvoiceUrl(),
                 data.getInvoiceNumber(), seller

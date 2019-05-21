@@ -206,13 +206,16 @@
         <activity
             android:name=".purchase.detail.activity.OrderDetailActivity"
             android:label="@string/title_activity_people_tx_details"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.White"/>
         <activity
             android:name=".purchase.detail.activity.OrderHistoryActivity"
-            android:label="@string/transaction_title_activity_order_history" />
+            android:label="@string/transaction_title_activity_order_history"
+            android:theme="@style/Theme.White"/>
         <activity
             android:name=".purchase.detail.activity.CustomScannerBarcodeActivity"
-            android:label="@string/title_scan_awb" />
+            android:label="@string/title_scan_awb"
+            android:theme="@style/Theme.White"/>
         <activity
             android:name=".purchase.detail.activity.BookingCodeActivity"
             android:label="@string/title_booking_code_detail"
