@@ -326,6 +326,14 @@ public class AutoCompleteActivity extends DiscoveryActivity
     void showNeverAskForStorage() {
         RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
+    
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        onRequestPermissionsResult(
+                requestCode, permissions, grantResults);
+
+    }
 
     private interface AnimationCallback {
         void doAnimation();
