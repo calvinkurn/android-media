@@ -364,11 +364,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public Activity getActivityContext() {
-        return getActivity();
-    }
-
-    @Override
     public void onSearchSubmitted(String text) {
         performSearch(text, true);
     }

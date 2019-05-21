@@ -65,7 +65,7 @@ public class ShipmentAddressListPresenter
                         @Override
                         public void onError(Throwable throwable) {
                             throwable.printStackTrace();
-                            if (isViewAttached() && getMvpView().getActivityContext() != null) {
+                            if (isViewAttached()) {
                                 getMvpView().hideLoading();
                                 getMvpView().showError(throwable);
                                 getMvpView().stopTrace();

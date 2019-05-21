@@ -35,8 +35,6 @@ public interface ISearchAddressListView<T> {
 
     void resetPagination();
 
-    Activity getActivityContext();
-
     void setToken(Token token);
 
     void navigateToCheckoutPage(RecipientAddressModel recipientAddressModel);
