@@ -181,6 +181,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 OPEN_DETAIL -> {
                     showSnackbar(data!!.getStringExtra("message"))
                 }
+                LOGIN_CODE -> {
+                    loadInitialData()
+                }
             }
         }
     }
