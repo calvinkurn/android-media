@@ -30,7 +30,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/dp_16"
-                    android:paddingTop="@dimen/dp_16"
                     android:paddingRight="@dimen/dp_16"
                     android:paddingBottom="@dimen/dp_16">
 
@@ -112,27 +111,23 @@
                         android:id="@+id/indonesia_review_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:thumb="@drawable/bg_switch_thumb_selector"
+                        android:thumb="@drawable/bg_hotel_switch_thumb"
                         android:track="@drawable/bg_switch_track_selector"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintRight_toRightOf="parent" />
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
 
                 </android.support.constraint.ConstraintLayout>
-
-                <!--<View-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="@dimen/dp_1"-->
-                <!--android:background="@drawable/bg_line_separator" />-->
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="@drawable/bg_line_separator" />
 
             </LinearLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@drawable/bg_line_separator" />
 
         <com.tokopedia.hotel.roomlist.widget.FilterChipRecyclerView
             android:id="@+id/filter_recycler_view"
@@ -152,7 +147,6 @@
             android:background="@drawable/bg_line_separator" />
 
     </android.support.design.widget.AppBarLayout>
-
 
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/recycler_view"

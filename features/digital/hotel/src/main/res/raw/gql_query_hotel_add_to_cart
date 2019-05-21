@@ -1,0 +1,5 @@
+mutation PropertyAddToCart($data: PropertyAddToCartRequest!) {
+    propertyAddToCart(input: $data) {
+        cartID
+    }
+}

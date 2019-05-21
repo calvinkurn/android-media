@@ -24,6 +24,7 @@ ext {
     tkpdGroupchatVersion = '2.22'
     tkpdHomeVersion = '2.22'
     tkpdHotelVersion = '2.22'
+    tkpdImagePreviewSliderVersion = '2.22'
     tkpdInboxVersion = '2.22'
     tkpdInterestPickVersion = '2.22'
     tkpdKolCommonVersion = '2.22'
@@ -126,6 +127,7 @@ ext {
             groupchat               : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
             home                    : "com.tokopedia.home:home:${tkpdHomeVersion}",
             hotel                   : "com.tokopedia.hotel:hotel:${tkpdHotelVersion}",
+            imagePreviewSlider      : "com.tokopedia.imagepreviewslider:imagepreviewslider:${tkpdImagePreviewSliderVersion}",
             inbox                   : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             kol                     : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             kolCommon               : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
@@ -206,6 +208,7 @@ ext {
             train                           : ":features:digital:train",
 //            train                         : ":features:digital:train_no_op",
             hotel                           : ":features:digital:hotel",
+            imagePreviewSlider              : ":features:digital:imagepreviewslider",
 
             categoryCommon                  : ":features:discovery:category_common",
             flashsaleManagement             : ":features:discovery:flashsale_management",

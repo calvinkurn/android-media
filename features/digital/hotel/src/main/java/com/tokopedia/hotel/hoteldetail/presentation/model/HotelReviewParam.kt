@@ -14,17 +14,17 @@ data class HotelReviewParam(
 
         @SerializedName("page")
         @Expose
-        var page: Int = 0,
+        var page: Int = 1,
 
         @SerializedName("rows")
         @Expose
-        var rows: Int = 0,
+        var rows: Int = 11,
 
         @SerializedName("sortBy")
         @Expose
-        var sortBy: String = "",
+        var sortBy: String = "create_time",
 
         @SerializedName("sortType")
         @Expose
-        var sortType: String = ""
+        var sortType: String = "desc"
 )

@@ -53,16 +53,23 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
             room_facility_recycler_view.removeAllViews()
 
             var breakfastTextView = FacilityTextView(context)
-            breakfastTextView.setIconAndText("",
-                    if (breakfastIncluded) getString(R.string.hotel_room_list_free_breakfast)
-                    else getString(R.string.hotel_room_list_breakfast_not_included))
+
+            if (breakfastIncluded) {
+                breakfastTextView.setIconAndText(R.drawable.ic_hotel_free_breakfast, getString(R.string.hotel_room_list_free_breakfast))
+            } else {
+                breakfastTextView.setIconAndText(R.drawable.ic_hotel_no_breakfast, getString(R.string.hotel_room_list_breakfast_not_included))
+            }
             room_facility_recycler_view.addView(breakfastTextView)
 
+
             var refundableTextView = FacilityTextView(context)
-            refundableTextView.setIconAndText("",
-                    if (refundable) getString(R.string.hotel_room_list_refundable_with_condition)
-                    else getString(R.string.hotel_room_list_not_refundable) )
+            if (refundable) {
+                refundableTextView.setIconAndText(R.drawable.ic_hotel_refundable, getString(R.string.hotel_room_list_refundable_with_condition))
+            } else {
+                refundableTextView.setIconAndText(R.drawable.ic_hotel_not_refundable, getString(R.string.hotel_room_list_not_refundable))
+            }
             room_facility_recycler_view.addView(refundableTextView)
+
 
             for (i in 0..min(roomFacility.size, 1)) {
                 var textView = FacilityTextView(context)
@@ -92,12 +99,12 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
             roomListModel.occupancyText = hotelRoom.occupancyInfo.occupancyText
             roomListModel.bedInfo = hotelRoom.bedInfo
             roomListModel.roomFacility = hotelRoom.roomInfo.facility
-//            roomListModel.payInHotel = hotelRoom.roomInfo
+            roomListModel.payInHotel = hotelRoom.additionalPropertyInfo.isDirectPayment
             roomListModel.breakfastIncluded = hotelRoom.breakfastInfo.isBreakfastIncluded
             roomListModel.isRefundable = hotelRoom.refundInfo.isRefundable
             roomListModel.isCcRequired = hotelRoom.creditCardInfo.isCCRequired
-            if (hotelRoom.roomPrice.isNotEmpty()) roomListModel.price = hotelRoom.roomPrice[0].roomPrice
-            if (hotelRoom.roomPrice.isNotEmpty()) roomListModel.actualPrice = hotelRoom.roomPrice[0].totalPrice
+            roomListModel.creditCardInfo = hotelRoom.creditCardInfo.creditCardInfo
+            if (hotelRoom.roomPrice.isNotEmpty()) roomListModel.price = hotelRoom.roomPrice[0].totalPrice
             roomListModel.roomLeft = hotelRoom.numberRoomLeft
 
             val images: MutableList<String> = arrayListOf()
