@@ -79,7 +79,6 @@ public abstract class TActivity extends BaseActivity {
 
     protected boolean onSearchOptionSelected() {
         Intent intent = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
-        intent.putExtra("EXTRA_IS_AUTOCOMPLETE", true);
         startActivity(intent);
         return true;
     }

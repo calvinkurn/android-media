@@ -334,12 +334,10 @@ public class DeepLinkChecker {
         String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
 
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
 
         Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
-            intent = RouteManager.getIntent(context, constructAutoCompleteApplink(searchQuery, departmentId));
+            intent = RouteManager.getIntent(context, constructSearchApplink(searchQuery, departmentId));
             intent.putExtras(bundle);
         } else {
             intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId);
@@ -347,8 +345,12 @@ public class DeepLinkChecker {
         context.startActivity(intent);
     }
 
-    private static String constructAutoCompleteApplink(String query, String departmentId) {
-        return ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
+    private static String constructSearchApplink(String query, String departmentId) {
+        String applink = query == null || query.length() == 0 ?
+                ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
+                ApplinkConst.DISCOVERY_SEARCH;
+
+        return applink
                 + "?"
                 + "q=" + query
                 + "&sc=" + departmentId;

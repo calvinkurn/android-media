@@ -694,12 +694,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
 
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
 
         Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
-            intent = RouteManager.getIntent(context, constructAutoCompleteApplink(searchQuery, departmentId));
+            intent = RouteManager.getIntent(context, constructSearchApplink(searchQuery, departmentId));
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -711,8 +709,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-    private static String constructAutoCompleteApplink(String query, String departmentId) {
-        return ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
+    private static String constructSearchApplink(String query, String departmentId) {
+        String applink = query == null || query.length() == 0 ?
+                ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
+                ApplinkConst.DISCOVERY_SEARCH;
+
+        return applink
                 + "?"
                 + "q=" + query
                 + "&sc=" + departmentId;

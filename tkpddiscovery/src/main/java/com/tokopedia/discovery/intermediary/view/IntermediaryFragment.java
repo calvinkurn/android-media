@@ -35,12 +35,10 @@ import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -52,11 +50,9 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
-import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
@@ -1045,7 +1041,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
                 bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
 
-                Intent intent = RouteManager.getIntent(getContext(), constructAutoCompleteApplink(searchQuery, departmentId));
+                Intent intent = RouteManager.getIntent(getContext(), constructSearchApplink(searchQuery, departmentId));
                 intent.putExtras(bundle);
 
                 startActivity(intent);
@@ -1078,8 +1074,12 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     }
 
-    private static String constructAutoCompleteApplink(String query, String departmentId) {
-        return ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
+    private static String constructSearchApplink(String query, String departmentId) {
+        String applink = query == null || query.length() == 0 ?
+                ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
+                ApplinkConst.DISCOVERY_SEARCH;
+
+        return applink
                 + "?"
                 + "q=" + query
                 + "&sc=" + departmentId;
