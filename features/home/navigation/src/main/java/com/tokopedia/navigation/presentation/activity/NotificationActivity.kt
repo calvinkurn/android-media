@@ -116,6 +116,8 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     private fun clearNotifCounter(position: Int) {
         if(position == INDEX_NOTIFICATION_UPDATE) {
             presenter.clearNotifCounter()
+            updateCounter = 0
+            setCounterNotificationUpdate()
         }
     }
 
