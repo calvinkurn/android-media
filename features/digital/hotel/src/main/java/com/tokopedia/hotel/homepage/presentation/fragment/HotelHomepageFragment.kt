@@ -311,7 +311,6 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     }
 
     companion object {
-        val ONE_DAY: Long = TimeUnit.DAYS.toMillis(1)
         const val MAX_SELECTION_DATE = 30
         const val DEFAULT_LAST_HOUR_IN_DAY = 23
         const val DEFAULT_LAST_MIN_SEC_IN_DAY = 59
