@@ -15,9 +15,9 @@ public interface ISearchAddressListView<T> {
 
     void showList(T t);
 
-    void showSampai();
+    void showEmptyCorner();
 
-    void setSampai(CornerAddressModel cornerAddressModel);
+    void setCorner(CornerAddressModel cornerAddressModel);
 
     void populateCorner(List<CornerAddressModel> cornerAddressModelList);
 
@@ -27,7 +27,7 @@ public interface ISearchAddressListView<T> {
 
     void showListEmpty();
 
-    void showError(String message);
+    void showError(Throwable e);
 
     void showLoading();
 

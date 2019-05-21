@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.feature.addressoptions;
 
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.common.base.CartMvpPresenter;
@@ -68,16 +67,14 @@ public class ShipmentAddressListPresenter
                             throwable.printStackTrace();
                             if (isViewAttached() && getMvpView().getActivityContext() != null) {
                                 getMvpView().hideLoading();
-                                String message = ErrorHandler.getErrorMessage(getMvpView().getActivityContext(), throwable);
-                                getMvpView().showError(message);
+                                getMvpView().showError(throwable);
                                 getMvpView().stopTrace();
                             }
                         }
 
                         @Override
                         public void onNext(PeopleAddressModel peopleAddressModel) {
-                            boolean viewIsAttached = isViewAttached();
-                            if (viewIsAttached) {
+                            if (isViewAttached()) {
                                 getMvpView().hideLoading();
                                 if (peopleAddressModel != null) {
                                     if (peopleAddressModel.getToken() != null) {
@@ -94,16 +91,7 @@ public class ShipmentAddressListPresenter
                                             RecipientAddressModel newlyCreatedAddress = null;
                                             if (currentAddress != null) {
                                                 for (RecipientAddressModel recipientAddressModel : peopleAddressModel.getRecipientAddressModelList()) {
-                                                    if (recipientAddressModel.getId().equalsIgnoreCase(currentAddress.getId()) ||
-                                                            (recipientAddressModel.getDestinationDistrictId().equals(currentAddress.getDestinationDistrictId()) &&
-                                                                    recipientAddressModel.getCityId().equals(currentAddress.getCityId()) &&
-                                                                    recipientAddressModel.getProvinceId().equals(currentAddress.getProvinceId()) &&
-                                                                    recipientAddressModel.getStreet().equals(currentAddress.getStreet()) &&
-                                                                    recipientAddressModel.getAddressName().equals(currentAddress.getAddressName()) &&
-                                                                    recipientAddressModel.getPostalCode().equals(currentAddress.getPostalCode()) &&
-                                                                    recipientAddressModel.getRecipientPhoneNumber().equals(currentAddress.getRecipientPhoneNumber()) &&
-                                                                    recipientAddressModel.getRecipientName().equals(currentAddress.getRecipientName()))
-                                                    ) {
+                                                    if (recipientAddressModel.isIdentical(currentAddress)) {
                                                         newlyCreatedAddress = recipientAddressModel;
                                                         recipientAddressModel.setSelected(true);
                                                         break;
@@ -118,7 +106,7 @@ public class ShipmentAddressListPresenter
                                                     if (peopleAddressModel.getCornerAddressModelsList() != null &&
                                                             !peopleAddressModel.getCornerAddressModelsList().isEmpty() &&
                                                             !isDisableCorner) {
-                                                        getMvpView().setSampai(peopleAddressModel.getCornerAddressModelsList().get(0));
+                                                        getMvpView().setCorner(peopleAddressModel.getCornerAddressModelsList().get(0));
                                                         getMvpView().populateCorner(peopleAddressModel.getCornerAddressModelsList());
                                                     }
                                                     getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());

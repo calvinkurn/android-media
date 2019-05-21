@@ -302,6 +302,19 @@ public class RecipientAddressModel implements Parcelable {
                 && getProvinceId().equals(that.getProvinceId());
     }
 
+    // A method to compare two address model in address list cart
+    public boolean isIdentical(RecipientAddressModel model) {
+        return (this.getId().equalsIgnoreCase(model.getId()) ||
+                (this.getDestinationDistrictId().equals(model.getDestinationDistrictId()) &&
+                        this.getCityId().equals(model.getCityId()) &&
+                        this.getProvinceId().equals(model.getProvinceId()) &&
+                        this.getStreet().equals(model.getStreet()) &&
+                        this.getAddressName().equals(model.getAddressName()) &&
+                        this.getPostalCode().equals(model.getPostalCode()) &&
+                        this.getRecipientPhoneNumber().equals(model.getRecipientPhoneNumber()) &&
+                        this.getRecipientName().equals(model.getRecipientName())));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -58,7 +59,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         SearchInputView.ResetListener, ShipmentAddressListAdapter.ActionListener {
 
     private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
-    public static final String TAG_CORNER_BS = "TAG_CORNER_BS";
+    public static final String TAG_CORNER_BOTTOMSHEET = "TAG_CORNER_BOTTOMSHEET";
     public static final String ARGUMENT_DISABLE_CORNER = "ARGUMENT_DISABLE_CORNER";
     public static final String ARGUMENT_ORIGIN_DIRECTION_TYPE = "ARGUMENT_ORIGIN_DIRECTION_TYPE";
     public static final int ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM = 1;
@@ -284,12 +285,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void showSampai() {
+    public void showEmptyCorner() {
         mShipmentAddressListAdapter.showSampaiWithoutSelected();
     }
 
     @Override
-    public void setSampai(CornerAddressModel cornerAddressModel) {
+    public void setCorner(CornerAddressModel cornerAddressModel) {
         mShipmentAddressListAdapter.setSampai(cornerAddressModel);
     }
 
@@ -303,7 +304,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void showCornerBottomSheet() {
         if (mCornerBottomSheet != null && getFragmentManager() != null)
-            mCornerBottomSheet.show(getFragmentManager(), TAG_CORNER_BS);
+            mCornerBottomSheet.show(getFragmentManager(), TAG_CORNER_BOTTOMSHEET);
     }
 
     @Override
@@ -335,10 +336,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void showError(String message) {
+    public void showError(Throwable e) {
         rlContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
         llNoResult.setVisibility(View.GONE);
+        String message = ErrorHandler.getErrorMessage(getContext(), e);
         NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -424,7 +426,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             RecipientAddressModel result = AddressCornerMapper.converToCartModel(cornerAddressModel, mCurrAddress.getId());
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(result);
         } else {
-            showError(getString(R.string.technical_problem_text));
+            // Show error due to unexpected behaviour
+            this.showError(null);
         }
     }
 
