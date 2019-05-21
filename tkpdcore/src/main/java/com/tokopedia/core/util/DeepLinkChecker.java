@@ -339,12 +339,19 @@ public class DeepLinkChecker {
 
         Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
-            intent = BrowseProductRouter.getSearchProductIntent(context);
+            intent = RouteManager.getIntent(context, constructAutoCompleteApplink(searchQuery, departmentId));
             intent.putExtras(bundle);
         } else {
             intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId);
         }
         context.startActivity(intent);
+    }
+
+    private static String constructAutoCompleteApplink(String query, String departmentId) {
+        return ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
+                + "?"
+                + "q=" + query
+                + "&sc=" + departmentId;
     }
 
     private static boolean isHotBrowse(String url) {

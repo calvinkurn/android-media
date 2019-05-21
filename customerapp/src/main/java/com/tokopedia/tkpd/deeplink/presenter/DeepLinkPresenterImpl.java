@@ -699,7 +699,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
         Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
-            intent = BrowseProductRouter.getSearchProductIntent(context);
+            intent = RouteManager.getIntent(context, constructAutoCompleteApplink(searchQuery, departmentId));
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -709,6 +709,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         } else {
             IntermediaryActivity.moveToClear(context, departmentId);
         }
+    }
+
+    private static String constructAutoCompleteApplink(String query, String departmentId) {
+        return ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
+                + "?"
+                + "q=" + query
+                + "&sc=" + departmentId;
     }
 
     private void openReferralScreen(Uri uriData) {

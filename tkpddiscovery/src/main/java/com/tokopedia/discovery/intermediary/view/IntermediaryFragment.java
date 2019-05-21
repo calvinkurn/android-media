@@ -1045,7 +1045,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
                 bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
 
-                Intent intent = BrowseProductRouter.getSearchProductIntent(getContext());
+                Intent intent = RouteManager.getIntent(getContext(), constructAutoCompleteApplink(searchQuery, departmentId));
                 intent.putExtras(bundle);
 
                 startActivity(intent);
@@ -1076,6 +1076,13 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
                 )));
 
+    }
+
+    private static String constructAutoCompleteApplink(String query, String departmentId) {
+        return ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
+                + "?"
+                + "q=" + query
+                + "&sc=" + departmentId;
     }
 
     public void eventHotlistIntermediary(String parentCat, String label) {
