@@ -34,6 +34,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
+        <activity
+            android:name=".presentation.activity.PhoneCodePickerActivity"
+            android:label="@string/activity_label_flight_booking_phone_code"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
     </application>
 
 </manifest>

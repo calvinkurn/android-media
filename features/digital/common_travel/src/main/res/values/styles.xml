@@ -39,4 +39,12 @@
         <item name="android:paddingRight">4dp</item>
     </style>
 
+    <style name="Theme.White.Flight">
+        <item name="popupTheme">@style/FlightPopupTheme</item>
+    </style>
+
+    <style name="FlightPopupTheme">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
 </resources>

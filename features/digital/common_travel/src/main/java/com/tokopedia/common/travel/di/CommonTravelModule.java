@@ -3,10 +3,11 @@ package com.tokopedia.common.travel.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.common.travel.database.CommonTravelRoomDb;
 import com.tokopedia.common.travel.database.TravelPassengerDao;
-import com.tokopedia.common.travel.database.TravelPassengerRoomDb;
 import com.tokopedia.common.travel.domain.provider.TravelProvider;
 import com.tokopedia.common.travel.domain.provider.TravelScheduler;
+import com.tokopedia.flight.country.database.CountryPhoneCodeDao;
 
 import dagger.Module;
 import dagger.Provides;
@@ -19,14 +20,20 @@ public class CommonTravelModule {
 
     @CommonTravelScope
     @Provides
-    TravelPassengerRoomDb provideTravelPassengerRoomDb(@ApplicationContext Context context) {
-        return TravelPassengerRoomDb.getDatabase(context);
+    CommonTravelRoomDb provideTravelPassengerRoomDb(@ApplicationContext Context context) {
+        return CommonTravelRoomDb.getDatabase(context);
     }
 
     @CommonTravelScope
     @Provides
-    TravelPassengerDao provideTravelPassengerDao(TravelPassengerRoomDb travelPassengerRoomDb) {
-        return travelPassengerRoomDb.travelPassengerDao();
+    TravelPassengerDao provideTravelPassengerDao(CommonTravelRoomDb commonTravelRoomDb) {
+        return commonTravelRoomDb.travelPassengerDao();
+    }
+
+    @CommonTravelScope
+    @Provides
+    CountryPhoneCodeDao provideCountryPhoneCodeDao(CommonTravelRoomDb commonTravelRoomDb) {
+        return commonTravelRoomDb.countryPhoneCodeDao();
     }
 
     @Provides
