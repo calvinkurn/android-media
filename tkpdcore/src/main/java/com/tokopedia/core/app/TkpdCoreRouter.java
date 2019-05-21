@@ -137,8 +137,6 @@ public interface TkpdCoreRouter {
 
     Intent getResolutionCenterIntentSeller(Context context);
 
-    String applink(Activity activity, String deeplink);
-
     Intent getKolFollowingPageIntent(Context context, int userId);
 
     Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);

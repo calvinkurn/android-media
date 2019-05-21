@@ -255,7 +255,8 @@ class PlayWebviewFragment : BaseDaggerFragment(), View.OnKeyListener {
                         val intent = RouteManager.getIntent(this, url)
                         startActivityForResult(intent, REQUEST_CODE_LOGIN)
                         return true
-                    } else if (RouteManager.isSupportApplink(this, url)) {
+                    } else if (!URLUtil.isNetworkUrl(url) &&
+                        RouteManager.isSupportApplink(this, url)) {
                         RouteManager.route(this, url)
                         return true
                     } else {

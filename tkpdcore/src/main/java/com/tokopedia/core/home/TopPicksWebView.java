@@ -81,7 +81,7 @@ public class TopPicksWebView extends TkpdCoreWebViewActivity implements
 
 
     public void openShop(String url) {
-        Fragment fragment = FragmentShopPreview.createInstances(DeepLinkChecker.getLinkSegment(url).get(0), url);
+        Fragment fragment = FragmentShopPreview.createInstances(Uri.parse(url).getPathSegments().get(0), url);
         getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 

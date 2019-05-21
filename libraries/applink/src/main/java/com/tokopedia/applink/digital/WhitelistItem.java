@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.deeplink;
+package com.tokopedia.applink.digital;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
