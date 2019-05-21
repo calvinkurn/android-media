@@ -1,6 +1,7 @@
 package com.tokopedia.digital.product.additionalfeature.etoll.view.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -79,6 +80,9 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     private static final int TRANSCEIVE_TIMEOUT_IN_SEC = 5000;
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
+    public static final String DIGITAL_NFC_CALLING_TYPE = "calling_page_check_saldo";
+    public static final String DIGITAL_NFC_FROM_PDP = "calling_from_pdp";
+    private static final String DIGITAL_NFC = "calling_from_nfc";
 
     private static final String TAG = DigitalCheckETollBalanceNFCActivity.class.getSimpleName();
 
@@ -99,8 +103,10 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     private FirebaseRemoteConfigImpl remoteConfig;
 
-    public static Intent newInstance(Context context) {
-        return new Intent(context, DigitalCheckETollBalanceNFCActivity.class);
+    public static Intent newInstance(Context context, String typeCallingPage) {
+        Intent intent = new Intent(context, DigitalCheckETollBalanceNFCActivity.class);
+        intent.putExtra(DIGITAL_NFC_CALLING_TYPE, typeCallingPage);
+        return intent;
     }
 
     @SuppressWarnings("unused")
@@ -119,7 +125,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         Intent intentDigitalProduct = DigitalProductActivity.newInstance(context, passData);
         taskStackBuilder.addNextIntent(intentDigitalProduct);
 
-        Intent intentEToll = DigitalCheckETollBalanceNFCActivity.newInstance(context);
+        Intent intentEToll = DigitalCheckETollBalanceNFCActivity.newInstance(context, DIGITAL_NFC);
         taskStackBuilder.addNextIntent(intentEToll);
 
         return taskStackBuilder;
@@ -180,11 +186,17 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                     .additionalETollLastUpdatedDate(eTollUpdateBalanceResultView.getCardLastUpdatedDate())
                     .build();
 
-            Intent intent = DigitalProductActivity.newInstance(
-                    DigitalCheckETollBalanceNFCActivity.this,
-                    passData);
-
-            startActivity(intent);
+            if (getIntent() != null && getIntent().getStringExtra(DIGITAL_NFC_CALLING_TYPE) != null) {
+                if (getIntent().getStringExtra(DIGITAL_NFC_CALLING_TYPE) == DIGITAL_NFC) {
+                    navigatePageToDigitalProduct(passData);
+                } else {
+                    Intent intentReturn = new Intent();
+                    intentReturn.putExtra(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+                    setResult(Activity.RESULT_OK, intentReturn);
+                }
+            } else {
+                navigatePageToDigitalProduct(passData);
+            }
             finish();
         });
 
@@ -197,6 +209,13 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                     ));
             directToNFCSettingsPage();
         });
+    }
+
+    private void navigatePageToDigitalProduct(DigitalCategoryDetailPassData passData) {
+        Intent intent = DigitalProductActivity.newInstance(
+                DigitalCheckETollBalanceNFCActivity.this,
+                passData);
+        startActivity(intent);
     }
 
     @Override
@@ -224,12 +243,9 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             DigitalCheckETollBalanceNFCActivityPermissionsDispatcher.detectNFCWithCheck(this);
         } else {
             // show webview help page
-            if (getApplication() instanceof DigitalModuleRouter) {
-                DigitalModuleRouter digitalModuleRouter =
-                        (DigitalModuleRouter) getApplication();
-                startActivity(digitalModuleRouter.getWebviewActivityWithIntent(this, DigitalUrl.HelpUrl.ETOLL));
-                finish();
-            }
+            Intent intent = RouteManager.getIntent(this, ApplinkConst.CONTACT_US_NATIVE);
+            startActivity(intent);
+            finish();
         }
     }
 
