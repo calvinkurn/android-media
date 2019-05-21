@@ -55,7 +55,7 @@ class FeedShopPresenter @Inject constructor(
         cursor = ""
         if (!getUserId().equals("0")) {
             getDynamicFeedFirstUseCase.execute(
-                    GetFeedShopFirstUseCase.createRequestParams(getUserId(), shopId, isLoadFirst),
+                    GetFeedShopFirstUseCase.createRequestParams(getUserId(), shopId, isPullToRefresh),
                     object : Subscriber<DynamicFeedShopDomain>() {
                         override fun onNext(t: DynamicFeedShopDomain?) {
                             t?.let {
