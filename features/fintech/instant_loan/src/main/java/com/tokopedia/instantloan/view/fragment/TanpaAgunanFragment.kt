@@ -1,6 +1,8 @@
 package com.tokopedia.instantloan.view.fragment
 
+import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,16 +17,18 @@ import com.tokopedia.instantloan.InstantLoanComponentInstance
 import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
-import com.tokopedia.instantloan.data.model.response.*
+import com.tokopedia.instantloan.data.model.response.GqlFilterData
+import com.tokopedia.instantloan.data.model.response.LoanPeriodType
+import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
+import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
 import com.tokopedia.instantloan.router.InstantLoanRouter
+import com.tokopedia.instantloan.view.activity.SelectLoanParamActivity
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor
 import com.tokopedia.instantloan.view.fragment.DanaInstantFragment.Companion.LOGIN_REQUEST_CODE
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.content_tanpa_agunan.*
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
 class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
@@ -40,10 +44,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     private lateinit var loanPeriodLabelTV: TextView
     private lateinit var loanPeriodValueTV: TextView
 
-    private var currentLoanPeriodType: Int =0
+    private var currentLoanPeriodType: Int = 0
 
-    private lateinit var loanPeriodMonthList: ArrayList<LoanPeriodMonth>
-    private lateinit var loanPeriodYearList: ArrayList<LoanPeriodYear>
+    private lateinit var loanPeriodMonthList: ArrayList<LoanPeriodType>
+    private lateinit var loanPeriodYearList: ArrayList<LoanPeriodType>
     private lateinit var loanPeriodTypeList: ArrayList<LoanPeriodType>
     private var mCurrentTab: Int = 0
     private var mContext: Context? = null
@@ -99,8 +103,13 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
         (view.findViewById<View>(R.id.tv_label_text) as TextView).text = "Pilih"
         spinner_label_nominal.setOnClickListener {
 
+            val intent: Intent = SelectLoanParamActivity.createInstance(context!!, loanPeriodTypeList, null)
 
+            startActivityForResult(intent, LOAN_PERIOD_TYPE)
         }
+
+        (spinner_value_nominal.findViewById<View>(R.id.tv_label_text) as TextView).text = "Pilih Jumlah"
+
         /*text_value_amount.text = resources.getStringArray(R.array.values_amount)[mCurrentTab]
         text_value_duration.text = resources.getStringArray(R.array.values_duration)[mCurrentTab]
         text_value_processing_time.text = resources.getStringArray(R.array.values_processing_time)[mCurrentTab]
@@ -140,6 +149,33 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
         }
     }*/
 
+
+    private lateinit var selectedLoanPeriodType: LoanPeriodType
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == LOGIN_REQUEST_CODE) {
+            if (userSession != null && userSession.isLoggedIn) {
+                showToastMessage(resources.getString(R.string.login_to_proceed), Toast.LENGTH_SHORT)
+            } else {
+                /*openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
+                        spinner_value_nominal!!.selectedItem.toString().split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1])*/
+            }
+        } else if (resultCode == RESULT_OK && requestCode == LOAN_PERIOD_TYPE) {
+
+            selectedLoanPeriodType = data!!.extras?.getParcelable<LoanPeriodType>(SelectLoanParamActivity.EXTRA_SELECTED_NAME)!!
+
+            for (loanPeriodType in loanPeriodTypeList) {
+                loanPeriodType.isSelected = loanPeriodType.id == selectedLoanPeriodType.id
+            }
+            (view!!.findViewById<View>(R.id.tv_label_text) as TextView).text = selectedLoanPeriodType.label
+        }
+
+
+    }
+
     override fun setFilterDataForOnlineLoan(gqlFilterData: GqlFilterData) {
 
         prepareLoanPeriodListMonth(gqlFilterData.gqlLoanPeriodResponse.loanMonth.min, gqlFilterData.gqlLoanPeriodResponse.loanMonth.max)
@@ -151,7 +187,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
     private fun prepareLoanPeriodTypeList() {
 
-        loanPeriodTypeList = ArrayList<LoanPeriodType>()
+        loanPeriodTypeList = ArrayList()
         var loanPeriodType: LoanPeriodType
         loanPeriodType = LoanPeriodType("Year", "Bulan", 1)
         loanPeriodTypeList.add(loanPeriodType)
@@ -163,10 +199,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
     private fun prepareLoanPeriodListYear(min: Int, max: Int) {
 
-        var loanPeriodYear: LoanPeriodYear
+        var loanPeriodYear: LoanPeriodType
         var i = 0
         for (value in min..max) {
-            loanPeriodYear = LoanPeriodYear(value.toString() + " Year", value.toString(), i++)
+            loanPeriodYear = LoanPeriodType(value.toString() + " Year", value.toString(), i++)
             loanPeriodYearList.add(loanPeriodYear)
         }
 
@@ -174,10 +210,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
     private fun prepareLoanPeriodListMonth(min: Int, max: Int) {
 
-        var loamPeriodMonth: LoanPeriodMonth
+        var loamPeriodMonth: LoanPeriodType
         var i = 0
         for (value in min..max) {
-            loamPeriodMonth = LoanPeriodMonth(value.toString() + " Month", value.toString(), i++)
+            loamPeriodMonth = LoanPeriodType(value.toString() + " Month", value.toString(), i++)
             i++
             loanPeriodMonthList.add(loamPeriodMonth)
         }
@@ -265,6 +301,8 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     companion object {
 
         private val TAB_POSITION = "tab_position"
+
+        private val LOAN_PERIOD_TYPE = 12
 
         fun createInstance(position: Int): TanpaAgunanFragment {
             val bundle = Bundle()
