@@ -26,7 +26,7 @@ public class SearchCatalogModel {
 
     @SerializedName("total_record")
     @Expose
-    public String totalRecord;
+    public String totalRecord = "";
 
     @SerializedName("catalogs")
     @Expose
@@ -53,62 +53,62 @@ public class SearchCatalogModel {
     public static class Catalog {
         @SerializedName("catalog_id")
         @Expose
-        public String catalogId;
+        public String catalogId = "";
 
         @SerializedName("catalog_name")
         @Expose
-        public String catalogName;
+        public String catalogName = "";
 
         @SerializedName("catalog_price")
         @Expose
-        public String catalogPrice;
+        public String catalogPrice = "";
 
         @SerializedName("catalog_price_raw")
         @Expose
-        public String catalogPriceRaw;
+        public String catalogPriceRaw = "";
 
         @SerializedName("catalog_uri")
         @Expose
-        public String catalogUri;
+        public String catalogUri = "";
 
         @SerializedName("catalog_image")
         @Expose
-        public String catalogImage;
+        public String catalogImage = "";
 
         @SerializedName("catalog_image_300")
         @Expose
-        public String catalogImage300;
+        public String catalogImage300 = "";
 
         @SerializedName("catalog_description")
         @Expose
-        public String catalogDescription;
+        public String catalogDescription = "";
 
         @SerializedName("catalog_count_product")
         @Expose
-        public String catalogCountProduct;
+        public String catalogCountProduct = "";
     }
 
     public static class BreadCrumb {
 
         @SerializedName("id")
         @Expose
-        public String ID;
+        public String ID = "";
 
         @SerializedName("name")
         @Expose
-        public String name;
+        public String name = "";
 
         @SerializedName("total_data")
         @Expose
-        public String totalData;
+        public String totalData = "";
 
         @SerializedName("parent_id")
         @Expose
-        public String parentId;
+        public String parentId = "";
 
         @SerializedName("identifier")
         @Expose
-        public String identifier;
+        public String identifier = "";
 
         @SerializedName("child")
         @Expose
@@ -116,11 +116,11 @@ public class SearchCatalogModel {
 
         @SerializedName("tree")
         @Expose
-        public String tree;
+        public String tree = "";
 
         @SerializedName("href")
         @Expose
-        public String href;
+        public String href = "";
 
         @SerializedName("name_without_total")
         @Expose

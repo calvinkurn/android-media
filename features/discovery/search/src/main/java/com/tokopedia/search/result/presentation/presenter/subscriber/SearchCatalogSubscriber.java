@@ -16,6 +16,7 @@ import rx.Subscriber;
 public class SearchCatalogSubscriber extends Subscriber<SearchCatalogModel> {
 
     protected CatalogListSectionContract.View view;
+    private boolean dataIsNull = false;
 
     public SearchCatalogSubscriber(CatalogListSectionContract.View view) {
         this.view = view;
@@ -28,29 +29,13 @@ public class SearchCatalogSubscriber extends Subscriber<SearchCatalogModel> {
     }
 
     @Override
-    public void onCompleted() {
-        view.getDynamicFilter();
-        view.hideRefreshLayout();
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        if (e instanceof MessageErrorException) {
-            view.renderErrorView(e.getMessage());
-        } else if (e instanceof RuntimeException) {
-            view.renderErrorView(e.getMessage());
-        } else if (e instanceof IOException) {
+    public void onNext(SearchCatalogModel searchCatalogModel) {
+        if(searchCatalogModel == null) {
+            dataIsNull = true;
             view.renderRetryInit();
-        } else {
-            view.renderUnknown();
-            e.printStackTrace();
+            return;
         }
 
-        view.hideRefreshLayout();
-    }
-
-    @Override
-    public void onNext(SearchCatalogModel searchCatalogModel) {
         view.renderListView(mappingCatalogViewModel(searchCatalogModel));
         view.renderShareURL(searchCatalogModel.shareURL);
         view.setHasNextPage(isHasNextPage(searchCatalogModel.paging.uriNext));
@@ -66,7 +51,7 @@ public class SearchCatalogSubscriber extends Subscriber<SearchCatalogModel> {
     protected List<Visitable> mappingCatalogViewModel(SearchCatalogModel domain) {
         List<Visitable> list = new ArrayList<>();
 
-        if (domain.catalogList.isEmpty()) {
+        if (domain.catalogList == null || domain.catalogList.isEmpty()) {
             return list;
         }
 
@@ -84,5 +69,31 @@ public class SearchCatalogSubscriber extends Subscriber<SearchCatalogModel> {
             list.add(model);
         }
         return list;
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        if(e == null) {
+            view.renderUnknown();
+        }
+        else {
+            e.printStackTrace();
+
+            if (e instanceof MessageErrorException || e instanceof RuntimeException) {
+                view.renderErrorView(e.getMessage());
+            } else if (e instanceof IOException) {
+                view.renderRetryInit();
+            } else {
+                view.renderUnknown();
+            }
+        }
+
+        view.hideRefreshLayout();
+    }
+
+    @Override
+    public void onCompleted() {
+        if(!dataIsNull) view.getDynamicFilter();
+        view.hideRefreshLayout();
     }
 }
