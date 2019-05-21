@@ -334,5 +334,9 @@
     <string name="error_no_change_price_weight">Mohon Ubah Harga dan Berat Produk</string>
     <string name="text_complaint_dialog">Apakah Pesanan dari toko %s bermasalah? \n\n\nKlik <b>Ya</b> untuk komplain barang yang berkendala atau belum sampai.\nKlik <b>Kembali</b> untuk membatalkan aksi ini</string>
     <string name="label_change_weight_price">Ubah harga/berat</string>
+    <string name="title_booking_code_detail">Detail Kode Booking</string>
+    <string name="transaction_title_activity_order_history">Detail Status</string>
+    <string name="title_scan_awb">Scan Barcode</string>
+
 
 </resources>
