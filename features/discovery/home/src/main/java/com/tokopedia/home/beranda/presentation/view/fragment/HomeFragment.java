@@ -766,6 +766,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (feedTabVisitable != null) {
             visitables.add(feedTabVisitable);
         }
+        presenter.getFeedTabData();
         adapter.updateItems(visitables);
     }
 
