@@ -134,17 +134,11 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
     override fun setFilterDataForOnlineLoan(gqlFilterData: GqlFilterData) {
 
-        prepareLoanPeriodTypeList()
         prepareLoanPeriodListMonth(gqlFilterData.gqlLoanPeriodResponse.loanMonth.min, gqlFilterData.gqlLoanPeriodResponse.loanMonth.max)
         prepareLoanPeriodListYear(gqlFilterData.gqlLoanPeriodResponse.loanYear.min, gqlFilterData.gqlLoanPeriodResponse.loanYear.max)
 
         gqlFilterData.gqlLoanAmountResponse.sortBy { it.value }
         loanPeriodLabelTV.text = ""
-    }
-
-    private fun prepareLoanPeriodTypeList() {
-
-
     }
 
     private fun prepareLoanPeriodListYear(min: Int, max: Int) {
