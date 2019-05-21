@@ -51,21 +51,6 @@
                 android:singleLine="true" />
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-        <TextView
-            style="@style/TextView.Micro.BlackDisabled"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_20"
-            android:text="@string/shop_open_label_shop_domain" />
-
-        <TextView
-            style="@style/TextView.Micro.BlackDisabled"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:text="@string/shop_open_info_shop_domain_definition" />
-
         <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/text_input_domain_name"
             style="@style/HintTextInputLayout"
@@ -92,10 +77,77 @@
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/text_input_address"
+            style="@style/HintTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:hint="@string/shop_address"
+            app:prefixString="@string/domain_short">
+
+            <com.tokopedia.seller.common.widget.PrefixEditText
+                android:id="@+id/edit_text_input_address"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="textNoSuggestions"
+                android:maxLines="2"
+                android:hint="@string/shop_address_hint"
+                app:prefix="@string/domain_short"
+                android:maxLength="@integer/max_domain_name_plus_tokopedia"
+                app:prefixTextColor="@color/font_black_secondary_54" />
+
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/text_input_postal"
+            style="@style/HintTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_18"
+            android:hint="@string/shop_postal_code"
+            app:prefixString="@string/domain_short">
+
+            <com.tokopedia.seller.common.widget.PrefixEditText
+                android:id="@+id/edit_text_postal"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="textNoSuggestions"
+                android:maxLines="1"
+                app:prefix="@string/domain_short"
+                android:maxLength="@integer/max_domain_name_plus_tokopedia"
+                app:prefixTextColor="@color/font_black_secondary_54" />
+
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
         <View
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_8">
+
+            <CheckBox
+                android:id="@+id/cb_shop_tnc"
+                style="@style/shopOpenTncCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_shop_tnc"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/dp_4"
+                android:text="Anda telah menyetujui Syarat dan Ketentuan serta Kebijakan Privasi Tokopedia."/>
+        </LinearLayout>
 
         <Button
             android:id="@+id/button_submit"

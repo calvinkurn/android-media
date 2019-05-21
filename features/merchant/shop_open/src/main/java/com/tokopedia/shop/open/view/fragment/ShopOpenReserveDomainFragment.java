@@ -3,11 +3,20 @@ package com.tokopedia.shop.open.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -31,6 +40,8 @@ import com.tokopedia.shop.open.view.listener.ShopOpenDomainView;
 import com.tokopedia.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
 import com.tokopedia.shop.open.view.watcher.AfterTextWatcher;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 
 import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
@@ -48,9 +59,16 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     private TkpdHintTextInputLayout textInputShopName;
     private EditText editTextInputShopName;
     private TkpdHintTextInputLayout textInputDomainName;
+    private TkpdHintTextInputLayout textInputAddress;
+    private TkpdHintTextInputLayout textInputPostal;
     private PrefixEditText editTextInputDomainName;
     private SnackbarRetry snackbarRetry;
     private TkpdProgressDialog tkpdProgressDialog;
+    private EditText editTextInputShopAddress;
+    private EditText editTextInputShopPostal;
+    private TextView tvTncOpenShop;
+    private CheckBox cbTncOpenShop;
+    private boolean isTncChecked = false;
 
     @Inject
     ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
@@ -86,8 +104,14 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         buttonSubmit = view.findViewById(R.id.button_submit);
         textInputShopName = view.findViewById(R.id.text_input_shop_name);
         textInputDomainName = view.findViewById(R.id.text_input_domain_name);
+        textInputAddress = view.findViewById(R.id.text_input_address);
+        textInputPostal = view.findViewById(R.id.text_input_postal);
         editTextInputShopName = textInputShopName.getEditText();
         editTextInputDomainName = (PrefixEditText) textInputDomainName.getEditText();
+        editTextInputShopAddress = textInputAddress.getEditText();
+        editTextInputShopPostal = textInputPostal.getEditText();
+        tvTncOpenShop = view.findViewById(R.id.tv_shop_tnc);
+        cbTncOpenShop = view.findViewById(R.id.cb_shop_tnc);
 
         String helloName = getString(R.string.hello_x, SessionHandler.getLoginName(getActivity()));
         textHello.setText(MethodChecker.fromHtml(helloName));
@@ -107,6 +131,8 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                     textInputShopName.setError(getString(R.string.shop_open_error_shop_name_min_char));
                 } else if (s.toString().length() <= textInputShopName.getCounterMaxLength()) {
                     shopOpenDomainPresenter.checkShop(editTextInputShopName.getText().toString());
+                } else {
+                    textInputDomainName.setHelper(getString(R.string.shop_open_error_shop_name_min_char));
                 }
             }
         });
@@ -128,6 +154,59 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                 }
             }
         });
+
+        editTextInputShopAddress.addTextChangedListener(new AfterTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                textInputAddress.disableSuccessError();
+                buttonSubmit.setEnabled(false);
+                hideSnackBarRetry();
+
+                if (TextUtils.isEmpty(s)) {
+                    textInputAddress.setError(getString(R.string.shop_open_error_address));
+                }
+
+            }
+        });
+
+
+        editTextInputShopPostal.addTextChangedListener(new AfterTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                textInputPostal.disableSuccessError();
+                buttonSubmit.setEnabled(false);
+                hideSnackBarRetry();
+
+                if (TextUtils.isEmpty(s)) {
+                    textInputAddress.setError(getString(R.string.shop_open_error_postal));
+                }
+            }
+        });
+
+        SpannableString textTnc = new SpannableString(getString(R.string.tnc_open_shop));
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NotNull View textView) {
+                //Intent
+            }
+        };
+
+        textTnc.setSpan(clickableSpan,21 , 42 , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textTnc.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),21 , 42 , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textTnc.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.tkpd_main_green)),21 , 42 , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        textTnc.setSpan(clickableSpan,47, textTnc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textTnc.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),47, textTnc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textTnc.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.tkpd_main_green)),47 , textTnc.length() , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
+        cbTncOpenShop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isTncChecked = isChecked;
+            }
+        });
+
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,7 +256,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     }
 
     private void onButtonSubmitClicked() {
-        if (!isShopNameDomainValid()) {
+        if (!isShopNameDomainValid() || !isTncChecked) {
             buttonSubmit.setEnabled(false);
             return;
         }
@@ -263,7 +342,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     }
 
     private void checkEnableSubmit() {
-        if (isShopNameDomainValid()) {
+        if (isShopNameDomainValid() && isTncChecked) {
             buttonSubmit.setEnabled(true);
         }
     }
