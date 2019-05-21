@@ -36,6 +36,7 @@ import android.content.Intent.ACTION_DIAL
 import android.net.Uri
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
+import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.view.*
 
 
 /**
@@ -126,7 +127,12 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     }
 
     fun renderHotelDetail(propertyDetail: HotelTransportDetail.PropertyDetail) {
-        booking_code.text = propertyDetail.bookingKey.content
+
+        if (propertyDetail.bookingKey.content.isNotEmpty()) {
+            hideBookingCode(false)
+            booking_code.text = propertyDetail.bookingKey.content
+        } else hideBookingCode(true)
+
         hotel_name.text = propertyDetail.propertyInfo.name
         hotel_address.text = propertyDetail.propertyInfo.address
 
@@ -148,6 +154,10 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         specialRequestAdapter.addData(propertyDetail.specialRequest.toMutableList())
 
         special_notes.text = propertyDetail.extraInfo
+
+        checkin_checkout_date.setRoomDatesFormatted(propertyDetail.checkInOut[0].checkInOut.date,
+                propertyDetail.checkInOut[1].checkInOut.date,
+                propertyDetail.checkInOut[2].content)
     }
 
     fun showCallButtonSheet(contactList: List<HotelTransportDetail.ContactInfo>) {
@@ -221,6 +231,12 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_order_detail, container, false)
 
+
+    fun hideBookingCode(enableHide: Boolean) {
+        booking_code_hint.visibility = if (enableHide) View.GONE else View.VISIBLE
+        booking_code.visibility = if (enableHide) View.GONE else View.VISIBLE
+        order_hotel_detail.seperator_1.visibility =  if (enableHide) View.GONE else View.VISIBLE
+    }
 
     override fun onClickCall(contactNumber: String) {
         Toast.makeText(context, contactNumber, Toast.LENGTH_SHORT).show()
