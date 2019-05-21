@@ -9,13 +9,14 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.home_recom.R
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.dataModel.*
 import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationTypeFactoryImpl
+import com.tokopedia.home_recom.view.productInfo.ProductInfoFragment
 import com.tokopedia.recommendation_widget_common.RecommendationParams
 import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
 import com.tokopedia.recommendation_widget_common.TYPE_INFO
@@ -93,6 +94,12 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
         getRecyclerView(view).isNestedScrollingEnabled = false
     }
 
+    private fun displayProductInfo(dataModel: ProductInfoDataModel){
+        childFragmentManager.beginTransaction()
+                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(dataModel))
+                .commit()
+    }
+
     private fun mapDataModel(listRecommendationModelDummy: List<RecommendationModelDummy>): List<BaseHomeRecommendationDataModel>{
         val list = ArrayList<BaseHomeRecommendationDataModel>()
         listRecommendationModelDummy.forEach { recommendationModelDummy ->
@@ -103,7 +110,7 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
                         list.add(RecommendationItemDataModel(it, this))
                     }
                 }
-                TYPE_INFO -> list.add(ProductInfoDataModel(recommendationModelDummy.recommendationItemList[0]))
+                TYPE_INFO -> displayProductInfo(ProductInfoDataModel(recommendationModelDummy.recommendationItemList[0]))
                 TYPE_CAROUSEL -> list.add(RecommendationCarouselDataModel(recommendationModelDummy.title, recommendationModelDummy.recommendationItemList, this))
             }
         }
