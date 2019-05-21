@@ -11,7 +11,6 @@ import com.tokopedia.search.result.presentation.presenter.subscriber.RefreshCata
 import com.tokopedia.search.result.presentation.presenter.subscriber.RequestDynamicFilterSubscriber;
 import com.tokopedia.search.result.presentation.presenter.subscriber.SearchCatalogLoadMoreSubscriber;
 import com.tokopedia.search.result.presentation.presenter.subscriber.SearchCatalogSubscriber;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -32,8 +31,6 @@ final class CatalogListPresenter
     UseCase<DynamicFilterModel> getDynamicFilterUseCase;
     @Inject
     UserSessionInterface userSession;
-
-    private RequestDynamicFilterListener requestDynamicFilterListener;
 
     @Override
     public void initInjector(CatalogListSectionContract.View view) {

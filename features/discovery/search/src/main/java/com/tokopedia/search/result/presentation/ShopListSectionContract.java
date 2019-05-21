@@ -24,8 +24,6 @@ public interface ShopListSectionContract {
     interface Presenter extends SearchSectionContract.Presenter<View> {
         void setFavoriteActionListener(FavoriteActionListener favoriteActionListener);
 
-        void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener);
-
         void setSearchShopListener(SearchShopListener searchShopListener);
 
         void loadShop(Map<String, Object> searchParameter);
