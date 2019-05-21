@@ -86,7 +86,7 @@ public class AutoCompleteActivity extends DiscoveryActivity
     @Inject
     SearchTracking searchTracking;
     @Inject
-    private PermissionCheckerHelper permissionCheckerHelper;
+    PermissionCheckerHelper permissionCheckerHelper;
 
     private SearchComponent searchComponent;
     private boolean isHandlingIntent = false;
