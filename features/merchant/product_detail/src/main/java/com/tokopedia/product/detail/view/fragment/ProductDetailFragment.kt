@@ -20,6 +20,7 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
+import android.support.v4.util.ArrayMap
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.*
@@ -204,6 +205,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_ETALASE = 565
         const val REQUEST_CODE_NORMAL_CHECKOUT = 566
         const val REQUEST_CODE_ATC_EXPRESS = 567
+        const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
         const val REQUEST_CODE_SHOP_INFO = 998
 
         const val SAVED_NOTE = "saved_note"
@@ -497,33 +499,13 @@ class ProductDetailFragment : BaseDaggerFragment() {
         actionButtonView.addToCartClick = {
             productDetailTracking.eventClickAddToCart(productInfo?.basic?.id?.toString() ?: "",
                 productInfo?.variant?.isVariant ?: false)
-            if (productInfoViewModel.isUserSessionActive()) {
-                goToNormalCheckout(ATC_ONLY)
-            } else {
-                context?.let {
-                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
-                }
-            }
+            goToNormalCheckout(ATC_ONLY)
         }
         actionButtonView.buyNowClick = {
             // buy now / buy / preorder
             productDetailTracking.eventClickBuy(productInfo?.basic?.id?.toString() ?: "",
                 productInfo?.variant?.isVariant ?: false)
-            if (productInfoViewModel.isUserSessionActive()) {
-                val isExpressCheckout = (productInfoViewModel.productInfoP3resp.value)?.isExpressCheckoutType
-                        ?: false
-                if (isExpressCheckout) {
-                    goToAtcExpress()
-                } else {
-                    goToNormalCheckout()
-                }
-            } else { // not login
-                context?.let {
-                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
-                }
-            }
+            doBuy()
         }
 
         open_shop.setOnClickListener {
@@ -539,6 +521,23 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
         }
         loadProductData()
+    }
+
+    private fun doBuy() {
+        val isExpressCheckout = (productInfoViewModel.productInfoP3resp.value)?.isExpressCheckoutType
+                ?: false
+        if (isExpressCheckout) {
+            if (productInfoViewModel.isUserSessionActive()) {
+                goToAtcExpress()
+            } else {
+                context?.let {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS)
+                }
+            }
+        } else {
+            goToNormalCheckout()
+        }
     }
 
     private fun goToNormalCheckout(@ProductAction action: Int = ATC_AND_BUY) {
@@ -933,6 +932,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
             REQUEST_CODE_EDIT_PRODUCT -> {
                 loadProductData(true)
             }
+            REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
+                doBuy()
+            }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
         }
@@ -1004,7 +1006,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             commission.text = pdpAffiliate.commissionValueDisplay
             btn_affiliate.setOnClickListener { onAffiliateClick(pdpAffiliate, false) }
             actionButtonView.gone()
-        } else {
+        } else if (!GlobalConfig.isSellerApp()) {
             base_btn_affiliate.gone()
             actionButtonView.byMeClick = this::onAffiliateClick
             actionButtonView.showByMe(true, pdpAffiliate)
@@ -1442,9 +1444,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.let {
             if (productInfoViewModel.isUserSessionActive()) {
                 val intent = RouteManager.getIntent(it,
-                    ApplinkConst.TOPCHAT_ASKSELLER,
-                    shop.shopCore.shopID, product.basic.url,
-                    "product", shop.shopCore.name, shop.shopAssets.avatar)
+                        ApplinkConst.TOPCHAT_ASKSELLER,
+                        shop.shopCore.shopID, "",
+                        "product", shop.shopCore.name, shop.shopAssets.avatar)
+                putChatProductInfoTo(intent)
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
@@ -1453,6 +1456,56 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
         productDetailTracking.eventSendMessage()
         productDetailTracking.eventSendChat()
+    }
+
+    private fun putChatProductInfoTo(intent: Intent?) {
+        if (intent == null) return
+        val variants = mapSelectedProductVariants()
+        val productImageUrl = getProductImageUrl()
+        val productName = getProductName()
+        val productPrice = getProductPrice()
+        val productUrl = getProductUrl()
+        val productColorVariant = variants?.get("colour")?.get("value")
+        val productColorHexVariant = variants?.get("colour")?.get("hex")
+        val productSizeVariant = variants?.get("size")?.get("value")
+        with(intent) {
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, productId)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, productImageUrl)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, productName)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, productPrice)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, productUrl)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, productColorVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, productColorHexVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, productSizeVariant)
+        }
+    }
+
+    private fun getProductImageUrl(): String? {
+        val images = productInfo?.pictures
+        return images?.get(0)?.urlThumbnail
+    }
+
+    private fun getProductName(): String? {
+        return productInfo?.basic?.name
+    }
+
+    private fun getProductPrice(): String? {
+        return productInfo?.basic?.price?.getCurrencyFormatted()
+    }
+
+    private fun getProductUrl(): String? {
+        return productInfo?.basic?.url
+    }
+
+    private fun mapSelectedProductVariants(): ArrayMap<String, ArrayMap<String, String>>? {
+        return getProductVariant()?.mapSelectedProductVariants(userInputVariant)
+    }
+
+    private fun getProductVariant(): ProductVariant? {
+        val productVariantResponse = productInfoViewModel.productVariantResp.value
+        return if (productVariantResponse is Success) {
+            productVariantResponse.data
+        }  else { null }
     }
 
     /**

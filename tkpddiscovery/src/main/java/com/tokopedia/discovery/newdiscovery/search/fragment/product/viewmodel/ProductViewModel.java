@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.tokopedia.discovery.common.data.DataValue;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;

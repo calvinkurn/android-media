@@ -17,6 +17,7 @@ public class TopAdsProductViewModel extends GenericClass implements Comparable<T
     private boolean isPromoted;
     private int adId;
     private String groupName;
+    private int groupId;
 
     public TopAdsProductViewModel() {
         super(TopAdsProductViewModel.class.getName());
@@ -28,6 +29,14 @@ public class TopAdsProductViewModel extends GenericClass implements Comparable<T
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     public String getName() {
@@ -122,6 +131,7 @@ public class TopAdsProductViewModel extends GenericClass implements Comparable<T
         dest.writeByte(this.isPromoted ? (byte) 1 : (byte) 0);
         dest.writeInt(this.adId);
         dest.writeString(this.groupName);
+        dest.writeInt(this.groupId);
     }
 
     public int getDepartmentId() {
@@ -142,6 +152,7 @@ public class TopAdsProductViewModel extends GenericClass implements Comparable<T
         this.isPromoted = in.readByte() != 0;
         this.adId = in.readInt();
         this.groupName = in.readString();
+        this.groupId = in.readInt();
     }
 
     public static final Creator<TopAdsProductViewModel> CREATOR = new Creator<TopAdsProductViewModel>() {

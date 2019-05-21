@@ -11,7 +11,5 @@ import android.support.v4.app.Fragment;
 
 public interface ShopModuleRouter {
 
-    Fragment getKolPostShopFragment(String shopId, String createPostUrl);
-
     void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel);
 }

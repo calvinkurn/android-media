@@ -29,7 +29,9 @@ object ApplinkConstInternalMarketplace {
     // CheckoutVariantActivity, "EXTRA_ATC_REQUEST" = AtcRequestParam
     @JvmField
     val EXPRESS_CHECKOUT = "$INTERNAL_MARKETPLACE/checkout-variant"
-
+    // CartActivity
+    @JvmField
+    val CART = "$INTERNAL_MARKETPLACE/cart"
 
     // ProductDetailActivity
     @JvmField

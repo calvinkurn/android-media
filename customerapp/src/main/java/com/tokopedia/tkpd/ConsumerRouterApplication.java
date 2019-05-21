@@ -215,9 +215,7 @@ import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.model.Configuration;
 import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
-import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -2071,11 +2069,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Fragment getKolPostShopFragment(String shopId, String createPostUrl) {
-        return KolPostShopFragment.newInstance(shopId, createPostUrl);
-    }
-
-    @Override
     public void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType(LinkerData.SHOP_TYPE)
@@ -2406,6 +2399,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
 
         return intent;
+    }
+
+    @Override
+    public Intent getSellerWebViewIntent(Context context, String webviewUrl) {
+        return null;
     }
 
     @Override
@@ -2761,6 +2759,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getInboxTalkCallingIntent(Context context) {
         return InboxTalkActivity.Companion.createIntent(context);
+    }
+
+    @Override
+    public Intent getManageAdressIntent(Context context) {
+        return new Intent(context, ManagePeopleAddressActivity.class);
     }
 
     @Override

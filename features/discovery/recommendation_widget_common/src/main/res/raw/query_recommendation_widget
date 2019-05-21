@@ -18,6 +18,9 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
         imageUrl
         price
         priceInt
+        discountPercentage
+        slashedPrice
+        slashedPriceInt
         shop {
           id
           name
