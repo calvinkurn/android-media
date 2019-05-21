@@ -44,7 +44,7 @@
     <string name="hotel_bottom_sheets_room_count_title">Kamar</string>
     <string name="hotel_bottom_sheets_adult_count_title">Tamu</string>
     <string name="hotel_button_save">Simpan</string>
-    <string name="hotel_guest_info_room_more_than_adult_error_message">Jumlah kamar tidak boleh melebihi jumlah tamu.</string>
+    <string name="hotel_guest_info_room_more_than_adult_error_message">Jumlah kamar tidak boleh melebihi jumlah tamu dewasa.</string>
     <string name="hotel_homepage_near_by_destination">Hotel dekat lokasimu</string>
 
     <string name="hotel_destination_edittext_hint">Cari kota, area, atau hotel</string>
@@ -117,8 +117,27 @@
     <string name="hotel_room_detail_breakfast">Makanan</string>
     <string name="hotel_room_detail_extra_bed">Extra bed</string>
     <string name="hotel_room_detail_price_info">Harga /kamar/malam</string>
+
+    <string name="hotel_order_detail_status">Status</string>
+    <string name="hotel_order_detail_transaction_date">Tanggal Transaksi</string>
+    <string name="hotel_order_detail_product_category">Kategori Produk</string>
+    <string name="hotel_order_detail_see_invoice_text">LIHAT</string>
+    <string name="hotel_order_detail_see_evoucher_text">Lihat E-voucher</string>
+    <string name="hotel_order_detail_hotel_detail">Detail Hotel</string>
+    <string name="hotel_order_detail_booking_code">Kode Booking: </string>
+    <string name="hotel_order_detail_hotel_name">Nama Hotel</string>
+    <string name="hotel_order_detail_see_hotel_detail">Lihat Detail Hotel</string>
+    <string name="hotel_order_detail_special_request">Permintaan Khusus</string>
+    <string name="hotel_order_detail_contact_hotel">Kontak Hotel</string>
+    <string name="hotel_order_detail_guest_detail">Detail Tamu</string>
+    <string name="hotel_order_detail_guest_name">Nama Tamu</string>
+    <string name="hotel_order_detail_payment_method">Metode Pembayaran</string>
+    <string name="hotel_order_detail_title">Detail Pesanan</string>
+
     <string name="hotel_detail_room_full_text">Kamar Penuh</string>
     <string name="hotel_detail_change_search_text">Ganti Pencarian</string>
+
+    <string name="hotel_room_night_count">%1$d Malam</string>
 
     <string name="hotel_share_as_image">Bagikan sebagai gambar</string>
     <string name="hotel_share_as_pdf">Bagikan sebagai PDF</string>
