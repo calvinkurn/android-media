@@ -192,11 +192,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (shopId.isNotEmpty() && !isLoading) {
             isLoading = true
             if (isLoadingInitialData) {
-                presenter.getFeedFirstPage(shopId)
+                presenter.getFeedFirstPage(shopId, false)
             } else {
                 presenter.getFeed(shopId)
             }
         }
+    }
+
+    override fun onSwipeRefresh() {
+        hideSnackBarRetry()
+        swipeToRefresh.isRefreshing = true
+        presenter.getFeedFirstPage(shopId, true)
     }
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain) {
@@ -544,7 +550,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun goToLogin() {
-        RouteManager.route(getActivity(), ApplinkConst.LOGIN);
+        activity?.let {
+            startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), LOGIN_CODE)
+        }
     }
 
     private fun getEmptyResultViewModel(): EmptyFeedShopViewModel {
