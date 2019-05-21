@@ -195,7 +195,7 @@ open class DynamicPostViewHolder(v: View,
 
     private fun animateFooter() {
         Handler().postDelayed({
-            itemView.footerBackground.animation = AnimationUtils.loadAnimation(itemView.context, R.anim.anim_fade_in);
+            itemView.footerBackground.animation = AnimationUtils.loadAnimation(itemView.context, R.anim.anim_fade_in)
             itemView.footerBackground.visibility = View.VISIBLE
         }, 2000)
     }
@@ -393,7 +393,7 @@ open class DynamicPostViewHolder(v: View,
     }
 
     private fun isPostTagAvailable(postTag: PostTag): Boolean {
-        return postTag.totalItems != 0 || postTag.items.size != 0
+        return postTag.totalItems != 0 || postTag.items.isNotEmpty()
     }
 
     interface DynamicPostListener {

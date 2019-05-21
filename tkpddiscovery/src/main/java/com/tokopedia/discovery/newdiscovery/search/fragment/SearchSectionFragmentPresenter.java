@@ -11,5 +11,4 @@ import java.util.HashMap;
 
 public interface SearchSectionFragmentPresenter<V extends CustomerView> extends CustomerPresenter<V> {
     void requestDynamicFilter();
-    void requestDynamicFilter(HashMap<String, String> additionalParams);
 }

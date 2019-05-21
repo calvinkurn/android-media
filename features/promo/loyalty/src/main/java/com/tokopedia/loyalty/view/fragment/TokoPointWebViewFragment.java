@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.URLUtil;
 import android.webkit.WebView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
@@ -35,7 +36,7 @@ public class TokoPointWebViewFragment extends BaseSessionWebViewFragment {
     @Override
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
         if (getActivity() != null && getActivity().getApplication() != null) {
-            if (RouteManager.isSupportApplink(getActivity(), url)) {
+            if (!URLUtil.isNetworkUrl(url) && RouteManager.isSupportApplink(getActivity(), url)) {
                 RouteManager.route(getActivity(), url);
                 return true;
             } else if (Uri.parse(url).getScheme().equalsIgnoreCase(ApplinkConst.APPLINK_CUSTOMER_SCHEME)) {

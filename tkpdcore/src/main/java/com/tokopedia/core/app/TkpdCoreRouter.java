@@ -139,8 +139,6 @@ public interface TkpdCoreRouter {
 
     Intent getResolutionCenterIntentSeller(Context context);
 
-    String applink(Activity activity, String deeplink);
-
     Intent getKolFollowingPageIntent(Context context, int userId);
 
     Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
@@ -187,6 +185,8 @@ public interface TkpdCoreRouter {
     Intent getSettingBankIntent(Context context);
 
     Intent getInboxTalkCallingIntent(Context context);
+
+    Intent getManageAdressIntent(Context context);
 
     Intent getAutomaticResetPasswordIntent(Context context, String email);
 
