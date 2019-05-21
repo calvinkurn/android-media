@@ -615,15 +615,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             val router = (it.application as TopChatRouter)
             val shopName = (arguments?.get(ApplinkConst.Chat.PARAM_HEADER) as ChatRoomHeaderViewModel).name
             (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
-            analytics.eventClickBuyProductAttachment(
-                    element.blastId.toString(),
-                    element.productName,
-                    element.productId.toString(),
-                    element.productPrice,
-                    1,
-                    element.shopId.toString(),
-                    shopName
-            )
             presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(),
                     shopId)
         }
@@ -633,8 +624,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         activity?.let {
             val router = (it.application as TopChatRouter)
             (viewState as TopChatViewState)?.sendAnalyticsClickATC(element)
-            val shopName = (arguments?.get(ApplinkConst.Chat.PARAM_HEADER) as ChatRoomHeaderViewModel).name
-
             presenter.addProductToCart(router, element, onError(), onSuccessAddToCart(),
                     shopId)
         }
