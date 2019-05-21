@@ -67,11 +67,14 @@ class TravelContactDataFragment: BaseDaggerFragment() {
     private fun setupInitialData() {
         til_contact_name.setLabel(getString(R.string.travel_contact_data_name_title))
         til_contact_name.editText.setText(contactData.name)
+        til_contact_name.setErrorTextAppearance(R.style.ErrorTextAppearance)
 
         til_contact_email.setLabel(getString(R.string.travel_contact_data_email_title))
         til_contact_email.editText.setText(contactData.email)
+        til_contact_name.setErrorTextAppearance(R.style.ErrorTextAppearance)
 
         til_contact_phone_number.editText.setText(contactData.phone)
+        til_contact_name.setErrorTextAppearance(R.style.ErrorTextAppearance)
 
         val initialPhoneCode = getString(R.string.phone_code_format, contactData.phoneCode)
         spinnerData += initialPhoneCode
@@ -93,7 +96,6 @@ class TravelContactDataFragment: BaseDaggerFragment() {
         if (validateData()) {
             contactData.name = til_contact_name.editText.text.toString()
             contactData.email = til_contact_email.editText.text.toString()
-            contactData.phoneCode = sp_contact_phone_code.selectedItem.toString().toInt()
             contactData.phone = til_contact_phone_number.editText.text.toString()
 
             val intent = Intent()
