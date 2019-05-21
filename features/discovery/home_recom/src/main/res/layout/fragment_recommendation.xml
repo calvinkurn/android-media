@@ -4,7 +4,8 @@
                                             android:layout_height="match_parent">
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
         <FrameLayout
                 android:id="@+id/product_info_container"
                 android:layout_width="match_parent"
