@@ -157,10 +157,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="com.tokopedia.tkpd"
-                    android:pathPrefix="/myshop-editor.pl"
-                    android:scheme="https" />
+                <data android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
