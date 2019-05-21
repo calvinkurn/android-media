@@ -30,7 +30,7 @@ data class SearchDestination(
         @Expose
         val icon: String = "",
 
-        @SerializedName("iconUrl")
+        @SerializedName("iconURL")
         @Expose
         val iconUrl: String = "",
 
