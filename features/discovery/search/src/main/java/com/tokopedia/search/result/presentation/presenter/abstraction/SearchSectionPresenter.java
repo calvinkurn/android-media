@@ -17,10 +17,11 @@ public abstract class SearchSectionPresenter<T extends SearchSectionContract.Vie
         requestParams.putAllString(additionalParams);
     }
 
-    protected RequestParams enrichWithFilterAndSortParams(RequestParams requestParams) {
+    protected void enrichWithFilterAndSortParams(RequestParams requestParams) {
         if (getView() == null) {
-            return requestParams;
+            return;
         }
+
         if (getView().getSelectedSort() != null) {
             requestParams.putAllString(getView().getSelectedSort());
         }
@@ -30,6 +31,11 @@ public abstract class SearchSectionPresenter<T extends SearchSectionContract.Vie
         if (getView().getExtraFilter() != null) {
             requestParams.putAllString(getView().getExtraFilter());
         }
-        return requestParams;
+    }
+
+    protected void removeDefaultCategoryParam(RequestParams params) {
+        if (params.getString(SearchApiConst.SC, "").equals(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SC)) {
+            params.clearValue(SearchApiConst.SC);
+        }
     }
 }

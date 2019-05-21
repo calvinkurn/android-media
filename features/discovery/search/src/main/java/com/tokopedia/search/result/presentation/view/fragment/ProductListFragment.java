@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -47,8 +46,14 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
+import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
+import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
+import com.tokopedia.search.result.presentation.view.listener.GlobalNavWidgetListener;
+import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
+import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
+import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
+import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.similarsearch.SimilarSearchManager;
@@ -82,14 +87,18 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
-
 public class ProductListFragment
         extends SearchSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView,
         ProductListSectionContract.View,
         ProductListener,
+        SuggestionListener,
+        GuidedSearchListener,
+        RelatedSearchListener,
+        QuickFilterListener,
+        GlobalNavWidgetListener,
+        BannerAdsListener,
+        EmptyStateListener,
         WishListActionListener {
 
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
@@ -221,15 +230,13 @@ public class ProductListFragment
                 .build();
     }
 
-    public String getRegistrationId() {
-        if(getActivity() == null || getActivity().getApplicationContext() == null) return "";
-
-        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), GCM_STORAGE);
-        return cache.getString(GCM_ID, "");
-    }
-
     private void setupAdapter() {
-        productListTypeFactory = new ProductListTypeFactoryImpl(this, topAdsConfig, getQueryKey());
+        productListTypeFactory = new ProductListTypeFactoryImpl(
+                this, this,
+                this, this,
+                this, this,
+                this, this,
+                topAdsConfig, getQueryKey());
         adapter = new ProductListAdapter(getActivity(), this, productListTypeFactory);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.setAdapter(adapter);
@@ -917,13 +924,6 @@ public class ProductListFragment
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
     }
 
-    @Nullable
-    public BaseAppComponent getBaseAppComponent() {
-        if(getActivity() == null || getActivity().getApplication() == null) return null;
-
-        return ((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent();
-    }
-
     @Override
     public void clearLastProductItemPositionFromCache() {
         if(getActivity() == null || getActivity().getApplicationContext() == null) return;
@@ -1036,5 +1036,10 @@ public class ProductListFragment
     @Override
     public Map<String, Object> getSearchParameterMap() {
         return searchParameter.getSearchParameterMap();
+    }
+
+    @Override
+    public boolean shouldSaveToLocalDynamicFilterDb() {
+        return false;
     }
 }

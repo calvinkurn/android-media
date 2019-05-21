@@ -112,6 +112,14 @@
                     android:scheme="https"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".FallbackActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3.PlainGreen">
+        </activity>
+
         <activity
             android:name=".deeplink.activity.DeepLinkActivity"
             android:hardwareAccelerated="true"
@@ -178,7 +186,7 @@
             android:name=".home.SimpleHomeActivity"
             android:label="@string/title_activity_simple_home"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".goldmerchant.GoldMerchantRedirectActivity"
             android:label="@string/label_gold_merchant"
