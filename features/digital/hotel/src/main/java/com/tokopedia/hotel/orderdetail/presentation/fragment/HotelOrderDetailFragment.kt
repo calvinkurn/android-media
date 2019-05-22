@@ -38,7 +38,9 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_CATEGORY
 import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_ID
+import com.tokopedia.hotel.orderdetail.presentation.widget.HotelRefundBottomSheet
 import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.view.*
+import kotlinx.coroutines.experimental.launch
 
 
 /**
@@ -115,6 +117,12 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         bottom_conditional_text.visibility = if (hotelTransportDetail.conditionalInfoBottom.title.isNotBlank()) View.VISIBLE else View.GONE
         bottom_conditional_text.text = hotelTransportDetail.conditionalInfoBottom.title
 
+        refund_ticker_layout.setOnClickListener {
+            if (hotelTransportDetail.cancellation.isClickable)
+                showRefundInfo(hotelTransportDetail.cancellation.cancellationPolicies) }
+        refund_title.text = hotelTransportDetail.cancellation.title
+        refund_text.text = hotelTransportDetail.cancellation.content
+
         call_hotel_layout.setOnClickListener { showCallButtonSheet(hotelTransportDetail.contactInfo) }
     }
 
@@ -183,6 +191,12 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         bottomSheet.contactList = contactList
         bottomSheet.listener = this
         bottomSheet.show(activity!!.supportFragmentManager, TAG_CONTACT_INFO)
+    }
+
+    fun showRefundInfo(cancellationPolicies: List<HotelTransportDetail.Cancellation.CancellationPolicy>) {
+        val bottomSheet = HotelRefundBottomSheet()
+        bottomSheet.cancellationPolicies = cancellationPolicies
+        bottomSheet.show(activity!!.supportFragmentManager, TAG_CANCELLATION_INFO)
     }
 
     fun renderGuestDetail(guestDetail: TitleContent) {
@@ -279,6 +293,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
                 }
 
         const val TAG_CONTACT_INFO = "guestContactInfo"
+        const val TAG_CANCELLATION_INFO = "cancellationPolicyInfo"
         const val ORDER_STATUS_SUCCESS = 700
         const val ORDER_STATUS_FAIL = 600
 

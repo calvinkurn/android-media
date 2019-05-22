@@ -8,29 +8,28 @@ import android.view.View
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
-import com.tokopedia.hotel.orderdetail.presentation.adapter.ContactAdapter
+import com.tokopedia.hotel.orderdetail.presentation.adapter.CancellationAdapter
 
 /**
  * @author by jessica on 15/05/19
  */
 
-class HotelContactPhoneBottomSheet: BottomSheets(){
+class HotelRefundBottomSheet: BottomSheets(){
 
     private lateinit var recyclerView: RecyclerView
+    lateinit var cancellationPolicies: List<HotelTransportDetail.Cancellation.CancellationPolicy>
 
-    lateinit var contactList: List<HotelTransportDetail.ContactInfo>
-    lateinit var listener: ContactAdapter.OnClickCallListener
+    lateinit var adapter: CancellationAdapter
 
-    lateinit var contactAdapter: ContactAdapter
-
-    override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_hotel_contact_phone
+    override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_hotel_order_detail_refund
 
     override fun initView(view: View) {
+        view.minimumHeight = 600
         recyclerView = view.findViewById(R.id.recycler_view)
 
-        contactAdapter = ContactAdapter(contactList, listener)
+        adapter = CancellationAdapter(cancellationPolicies)
         recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = contactAdapter
+        recyclerView.adapter = adapter
     }
 
     override fun setupDialog(dialog: Dialog?, style: Int) {
@@ -38,6 +37,5 @@ class HotelContactPhoneBottomSheet: BottomSheets(){
         updateHeight()
     }
 
-
-    override fun title(): String = "Kontak Hotel"
+    override fun title(): String = "Ketentuan Pembatalan"
 }
