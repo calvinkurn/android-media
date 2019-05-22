@@ -14,7 +14,7 @@ buildCache {
         }
     }
 }
-if (file("/libraries/composite_build/.composite-enable").exists()) {
+if (file("/libraries/composite_lib/.composite-enable").exists()) {
     includeBuild('libraries/composite_build') {
         dependencySubstitution {
             substitute module('com.tokopedia.cache_manager:cache_manager') with project(':cache_manager')
