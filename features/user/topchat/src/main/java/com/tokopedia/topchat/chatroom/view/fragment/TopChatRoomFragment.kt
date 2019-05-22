@@ -104,6 +104,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     val REQUEST_GO_TO_SETTING_TEMPLATE = 113
     val REQUEST_GO_TO_SETTING_CHAT = 114
 
+    var seenAttachedProduct = HashSet<Int>()
+
     companion object {
 
         private const val POST_ID = "{post_id}"
@@ -854,5 +856,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun trackSeenProduct(element: ProductAttachmentViewModel) {
+        seenAttachedProduct.add(element.productId)
     }
 }
