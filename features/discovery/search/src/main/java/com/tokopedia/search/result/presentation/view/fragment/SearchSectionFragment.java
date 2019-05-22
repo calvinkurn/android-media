@@ -383,7 +383,7 @@ public abstract class SearchSectionFragment
     }
 
     protected void openBottomSheetFilter() {
-        if(searchParameter == null) return;
+        if(searchParameter == null || getFilters() == null) return;
 
         bottomSheetListener.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap());
         bottomSheetListener.launchFilterBottomSheet();
@@ -450,7 +450,8 @@ public abstract class SearchSectionFragment
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
 
-        if(filterController == null || searchParameter == null) return;
+        if(filterController == null || searchParameter == null
+            || getFilters() == null || getSort() == null) return;
 
         List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
         filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList);
@@ -462,6 +463,8 @@ public abstract class SearchSectionFragment
     }
 
     private void initSelectedSort() {
+        if(getSort() == null) return;
+
         HashMap<String, String> selectedSort = new HashMap<>(
                 SortHelper.Companion.getSelectedSortFromSearchParameter(searchParameter.getSearchParameterHashMap(), getSort())
         );
