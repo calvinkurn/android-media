@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -20,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
@@ -59,6 +61,7 @@ public abstract class SearchSectionFragment
         RequestDynamicFilterListener {
 
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
+    public static final int REQUEST_CODE_LOGIN = 561;
 
     protected static final int START_ROW_FIRST_TIME_LOAD = 0;
 
@@ -359,7 +362,7 @@ public abstract class SearchSectionFragment
 
     @Override
     public void setSelectedFilter(HashMap<String, String> selectedFilter) {
-        if(filterController == null) return;
+        if(filterController == null || getFilters() == null) return;
 
         List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
         filterController.initFilterController(selectedFilter, initializedFilterList);
@@ -388,7 +391,7 @@ public abstract class SearchSectionFragment
     }
 
     protected void openBottomSheetFilter() {
-        if(searchParameter == null) return;
+        if(searchParameter == null || getFilters() == null) return;
 
         bottomSheetListener.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap());
         bottomSheetListener.launchFilterBottomSheet();
@@ -455,7 +458,8 @@ public abstract class SearchSectionFragment
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
 
-        if(filterController == null || searchParameter == null) return;
+        if(filterController == null || searchParameter == null
+            || getFilters() == null || getSort() == null) return;
 
         List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
         filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList);
@@ -467,6 +471,8 @@ public abstract class SearchSectionFragment
     }
 
     private void initSelectedSort() {
+        if(getSort() == null) return;
+
         HashMap<String, String> selectedSort = new HashMap<>(
                 SortHelper.Companion.getSelectedSortFromSearchParameter(searchParameter.getSearchParameterHashMap(), getSort())
         );
@@ -648,5 +654,26 @@ public abstract class SearchSectionFragment
         if(getActivity() == null || getActivity().getApplication() == null) return null;
 
         return ((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent();
+    }
+
+    @Override
+    public void logDebug(String tag, String message) {
+        Log.d(tag, message);
+    }
+
+    @Override
+    public void launchLoginActivity(String productId) {
+        Bundle extras = new Bundle();
+        extras.putString("product_id", productId);
+
+        if (getActivity() == null) return;
+
+        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
+
+        if (router != null) {
+            Intent intent = router.getLoginIntent(getActivity());
+            intent.putExtras(extras);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN);
+        }
     }
 }
