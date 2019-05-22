@@ -15,12 +15,10 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
@@ -35,6 +33,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.typefac
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.FavoriteActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -105,7 +104,8 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     protected void initInjector() {
         SearchComponent component = DaggerSearchComponent.builder()
-                .appComponent(getComponent(AppComponent.class))
+                // getAppComponent from tkpdcore. Temporary solution until this Fragment moved to search module
+                .appComponent(getAppComponent())
                 .build();
         component.inject(this);
     }

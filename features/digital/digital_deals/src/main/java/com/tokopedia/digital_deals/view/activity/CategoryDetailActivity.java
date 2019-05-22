@@ -17,9 +17,11 @@ import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
 import com.tokopedia.digital_deals.view.utils.CategoryDetailCallbacks;
+import com.tokopedia.digital_deals.view.utils.Utils;
 
 public class CategoryDetailActivity extends DealsBaseActivity implements CategoryDetailCallbacks {
 
@@ -45,12 +47,14 @@ public class CategoryDetailActivity extends DealsBaseActivity implements Categor
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(new Intent(context, DealsHomeActivity.class));
 
+        Location location = Utils.getSingletonInstance().getLocation(context);
         Uri.Builder uri = Uri.parse(deepLink).buildUpon();
         String searchName = extras.getString("search_name");
         CategoriesModel categoriesModel = new CategoriesModel();
         categoriesModel.setCategoryId(Integer.parseInt(extras.getString("category_id")));
         categoriesModel.setTitle(extras.getString("name"));
-        categoriesModel.setCategoryUrl(DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_CATEGORY + searchName);
+        String categoryUrl = searchName + "?"+ Utils.QUERY_PARAM_CITY_ID + "=" + location.getId();
+        categoriesModel.setCategoryUrl(DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_CATEGORY + categoryUrl);
 
         if (TextUtils.isEmpty(categoriesModel.getTitle())) {
             if (!TextUtils.isEmpty(searchName)) {

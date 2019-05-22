@@ -78,7 +78,7 @@ class PartialButtonActionView private constructor(private val view: View,
                 if (preOrder?.isPreOrderActive() == true) {
                     R.string.action_preorder
                 } else {
-                    if (isExpressCheckout || isSpecialPrize) {
+                    if (isExpressCheckout) {
                         R.string.buy_now
                     } else {
                         R.string.buy

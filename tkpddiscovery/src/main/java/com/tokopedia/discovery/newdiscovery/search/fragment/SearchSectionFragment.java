@@ -14,24 +14,24 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.core.discovery.model.Sort;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
+import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.discovery.common.data.Filter;
+import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.discovery.common.data.Sort;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
@@ -168,9 +168,15 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             this.redirectionListener = (RedirectionListener) context;
         }
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        isUsingBottomSheetFilter = remoteConfig.getBoolean(
-                RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER,
-                true) && (this instanceof ProductListFragment);
+
+        // Temporary Solution to set isUsingBottomSheetFilter always false
+        // Currently only ProductListPresenter used BottomSheetFilter,
+        // and ProductListPresenter already moved to new module, which does not extend this class anymore
+        //
+        // For permanent solution, this onAttach will be overridden by its children
+        // to determine whether it should use BottomSheetFilter or not
+        // Example, see ProductListFragment in search module
+        isUsingBottomSheetFilter = false;
     }
 
     @Override
@@ -381,7 +387,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     @Override
     public void setSelectedFilter(HashMap<String, String> selectedFilter) {
-        if(filterController == null) return;
+        if(filterController == null || getFilters() == null) return;
 
         List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
         filterController.initFilterController(selectedFilter, initializedFilterList);
@@ -410,7 +416,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void openBottomSheetFilter() {
-        if(searchParameter == null) return;
+        if(searchParameter == null || getFilters() == null) return;
 
         bottomSheetListener.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap());
         bottomSheetListener.launchFilterBottomSheet();
@@ -456,7 +462,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     public void getDynamicFilter() {
         if (canRequestDynamicFilter()) {
             isGettingDynamicFilter = true;
-            requestDynamicFilter();
+            getPresenter().requestDynamicFilter();
         }
     }
 
@@ -465,18 +471,14 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 && !isGettingDynamicFilter;
     }
 
-    //TODO will be removed after catalog and shop already migrated also to Gql
-    protected void requestDynamicFilter() {
-        getPresenter().requestDynamicFilter();
-    }
-
     @Override
     public void renderDynamicFilter(DynamicFilterModel pojo) {
         isGettingDynamicFilter = false;
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
 
-        if(filterController == null || searchParameter == null) return;
+        if(filterController == null || searchParameter == null
+                || getFilters() == null || getSort() == null) return;
 
         List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
         filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList);
@@ -488,6 +490,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     private void initSelectedSort() {
+        if(getSort() == null) return;
+
         HashMap<String, String> selectedSort = new HashMap<>(
                 SortHelper.Companion.getSelectedSortFromSearchParameter(searchParameter.getSearchParameterHashMap(), getSort())
         );
@@ -503,8 +507,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_get_dynamic_filter));
     }
 
-    public void performNewProductSearch(String query, boolean forceSearch) {
-        redirectionListener.performNewProductSearch(query, forceSearch);
+    public void performNewProductSearch(String queryParams) {
+        redirectionListener.performNewProductSearch(queryParams);
     }
 
     public void showSearchInputView() {
@@ -601,17 +605,13 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
     }
 
-    protected boolean isUsingBottomSheetFilter() {
-        return isUsingBottomSheetFilter;
-    }
-
     protected void removeSelectedFilter(String uniqueId) {
         if(filterController == null) return;
 
         Option option = OptionHelper.generateOptionFromUniqueId(uniqueId);
 
         removeFilterFromFilterController(option);
-        applyFilterToSearchParameter(filterController.getFilterParameter());
+        applyFilterToSearchParameter(filterController.getParameter());
         clearDataFilterSort();
         reloadData();
     }
@@ -656,5 +656,16 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
         return OptionHelper.combinePriceFilterIfExists(filterController.getActiveFilterOptionList(),
                 getResources().getString(R.string.empty_state_selected_filter_price_name));
+    }
+
+    // getAppComponent from tkpdcore. Temporary solution until this Fragment moved to search module
+    protected AppComponent getAppComponent() {
+        if(getActivity() != null) {
+            if(getActivity().getApplication() instanceof MainApplication) {
+                return ((MainApplication)getActivity().getApplication()).getAppComponent();
+            }
+        }
+
+        return null;
     }
 }

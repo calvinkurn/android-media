@@ -77,7 +77,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
 
     interface ActionListener {
-        fun onClashCheckPromo(clashingInfoDetailUiModel: ClashingInfoDetailUiModel)
+        fun onClashCheckPromo(clashingInfoDetailUiModel: ClashingInfoDetailUiModel, type: String)
         fun onSuccessCheckPromoFirstStep(promoData: ResponseGetPromoStackUiModel)
     }
 
@@ -318,10 +318,10 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         actionListener.onSuccessCheckPromoFirstStep(model)
     }
 
-    override fun onClashCheckPromoFirstStep(model: ClashingInfoDetailUiModel) {
+    override fun onClashCheckPromoFirstStep(model: ClashingInfoDetailUiModel, type: String) {
         hideKeyboard()
         dismiss()
-        actionListener.onClashCheckPromo(model)
+        actionListener.onClashCheckPromo(model, type)
     }
 
     override fun configView(parentView: View?) {
@@ -332,7 +332,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     private fun hideKeyboard() {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
+        (inputMethodManager as InputMethodManager?)?.hideSoftInputFromWindow(view?.windowToken, 0);
     }
 
 }

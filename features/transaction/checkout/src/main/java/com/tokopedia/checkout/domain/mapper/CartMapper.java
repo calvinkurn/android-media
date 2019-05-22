@@ -79,7 +79,7 @@ public class CartMapper implements ICartMapper {
                 }
             }
         }
-        cartListData.setError(!TextUtils.isEmpty(errorMessage) || hasError);
+        cartListData.setError(hasError);
         cartListData.setErrorMessage(errorMessage);
         if (cartListData.isError()) {
             cartListData.setCartTickerErrorData(
@@ -96,21 +96,30 @@ public class CartMapper implements ICartMapper {
         for (ShopGroup shopGroup : cartDataListResponse.getShopGroups()) {
             ShopGroupData shopGroupData = new ShopGroupData();
 
-            int errorItemCountPerShop = 0;
-            for (CartDetail cartDetail : shopGroup.getCartDetails()) {
-                if (cartDetail.getErrors() != null && cartDetail.getErrors().size() > 0) {
-                    errorItemCountPerShop++;
-                }
-            }
+            shopGroupData.setError(!mapperUtil.isEmpty(shopGroup.getErrors()));
 
-            boolean shopError = false;
-            if (shopGroup.getErrors().size() > 0 || errorItemCountPerShop == shopGroup.getCartDetails().size()) {
-                shopError = true;
-                isDisableAllProducts = true;
+            if (!shopGroupData.isError()) {
+                int errorItemCountPerShop = 0;
+                String defaultErrorMessage = "";
+                for (CartDetail cartDetail : shopGroup.getCartDetails()) {
+                    if (cartDetail.getErrors() != null && cartDetail.getErrors().size() > 0) {
+                        errorItemCountPerShop++;
+                        if (TextUtils.isEmpty(defaultErrorMessage) && cartDetail.getErrors().size() > 0) {
+                            defaultErrorMessage = cartDetail.getErrors().get(0);
+                        }
+                    }
+                }
+
+                boolean shopError = false;
+                if (errorItemCountPerShop == shopGroup.getCartDetails().size()) {
+                    shopError = true;
+                    isDisableAllProducts = true;
+                    shopGroupData.setErrorTitle(defaultErrorMessage);
+                } else {
+                    isDisableAllProducts = false;
+                }
+                shopGroupData.setError(shopError);
             }
-            shopGroupData.setError(shopError);
-            // shopGroupData.setError(!mapperUtil.isEmpty(shopGroup.getErrors()));
-            shopGroupData.setErrorTitle(mapperUtil.convertToString(shopGroup.getErrors()));
             shopGroupData.setShopId(String.valueOf(shopGroup.getShop().getShopId()));
             shopGroupData.setShopName(shopGroup.getShop().getShopName());
             shopGroupData.setShopType(generateShopType(shopGroup.getShop()));
@@ -147,6 +156,7 @@ public class CartMapper implements ICartMapper {
                         voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
                         voucherOrdersItemData.setVariant(voucherOrdersItem.getType());
                         voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
+                        voucherOrdersItemData.setIsAutoapply(true);
                         shopGroupData.setVoucherOrdersItemData(voucherOrdersItemData);
                         break;
                     }
@@ -158,6 +168,7 @@ public class CartMapper implements ICartMapper {
                 CartItemData cartItemData = new CartItemData();
 
                 CartItemData.OriginData cartItemDataOrigin = new CartItemData.OriginData();
+                cartItemDataOrigin.setCheckboxState(data.isCheckboxState());
                 cartItemDataOrigin.setProductVarianRemark(
                         data.getProduct().getProductNotes()
                 );
@@ -239,6 +250,7 @@ public class CartMapper implements ICartMapper {
                 cartItemData.setOriginData(cartItemDataOrigin);
                 cartItemData.setUpdatedData(cartItemDataUpdated);
                 cartItemData.setErrorData(cartItemMessageErrorData);
+                cartItemData.setFulfillment(shopGroup.isFulFillment());
 
                 cartItemData.setSingleChild(shopGroup.getCartDetails().size() == 1);
 
@@ -287,11 +299,15 @@ public class CartMapper implements ICartMapper {
 
                 cartItemDataList.add(cartItemData);
             }
-            shopGroupData.setCartItemDataList(cartItemDataList, shopGroupData.isError());
+            if (shopGroupData.isError() && TextUtils.isEmpty(shopGroupData.getErrorTitle())) {
+                shopGroupData.setErrorTitle(mapperUtil.convertToString(shopGroup.getErrors()));
+            }
+            shopGroupData.setCartItemDataList(cartItemDataList);
+            shopGroupData.setChecked(shopGroup.isCheckboxState());
             shopGroupDataList.add(shopGroupData);
         }
         cartListData.setShopGroupDataList(shopGroupDataList);
-        cartListData.setAllSelected(true);
+        cartListData.setAllSelected(cartDataListResponse.isGlobalCheckboxState());
         cartListData.setPromoCouponActive(cartDataListResponse.getIsCouponActive() == 1);
 
         CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
@@ -342,6 +358,7 @@ public class CartMapper implements ICartMapper {
                             voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
                             voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
                             voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
+                            voucherOrdersItemData.setIsAutoapply(true);
                             voucherOrdersItemDataList.add(voucherOrdersItemData);
                         }
                         autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
@@ -498,7 +515,7 @@ public class CartMapper implements ICartMapper {
             ShopGroupData shopGroupData = new ShopGroupData();
             List<CartItemData> itemDataList = new ArrayList<>();
             itemDataList.add(cartItemData);
-            shopGroupData.setCartItemDataList(itemDataList, false);
+            shopGroupData.setCartItemDataList(itemDataList);
             shopGroupDataList.add(shopGroupData);
         }
         cartListData.setShopGroupDataList(shopGroupDataList);
@@ -531,11 +548,14 @@ public class CartMapper implements ICartMapper {
                 voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
                 voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
                 voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
+                voucherOrdersItemData.setIsAutoapply(true);
                 voucherOrdersItemDataList.add(voucherOrdersItemData);
             }
             autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
             cartListData.setAutoApplyStackData(autoApplyStackData);
         }
+
+        cartListData.setShowOnboarding(cartDataListResponse.isShowOnboarding());
 
         return cartListData;
 

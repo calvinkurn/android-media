@@ -155,7 +155,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setCurrentSite(TOKOPEDIA_MARKETPLACE);
 
         for (Product product : getProductList(orderData)) {
-            purchase.addProduct(addCouponToProduct(product.getProduct(), couponCode));
+            purchase.addProduct(product.getProduct());
         }
 
         return purchase;
@@ -287,6 +287,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             product.setPrice(String.valueOf(orderDetail.getProductPrice()));
             product.setCategory(getProductCategory(orderDetail));
             product.setQty(String.valueOf(orderDetail.getQuantity()));
+            product.setDimension54(getDimension54Value(orderData.isFulfillment()));
 
             products.add(product);
         }
@@ -299,6 +300,10 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         }
 
         return "";
+    }
+
+    private String getDimension54Value(boolean isFulfillment) {
+        return isFulfillment ? "tokopedia" : "regular";
     }
 
     private String getProductCategory(OrderDetail orderDetail) {
@@ -338,17 +343,17 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
         branchIOPayment.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         branchIOPayment.setOrderId(String.valueOf(orderData.getOrderId()));
-        branchIOPayment.setShipping(String.valueOf((int) orderData.getShippingPrice()));
-        branchIOPayment.setRevenue(String.valueOf((int) paymentData.getPaymentAmount()));
+        branchIOPayment.setShipping(String.valueOf((long)orderData.getShippingPrice()));
+        branchIOPayment.setRevenue(String.valueOf((long)paymentData.getPaymentAmount()));
         branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE);
-        branchIOPayment.setItemPrice(String.valueOf(orderData.getItemPrice()));
+        branchIOPayment.setItemPrice(String.valueOf((long)orderData.getItemPrice()));
         for (OrderDetail orderDetail : orderData.getOrderDetail()) {
             HashMap<String, String> product = new HashMap<>();
             product.put(LinkerConstants.ID, String.valueOf(orderDetail.getProductId()));
             product.put(LinkerConstants.NAME, getProductName(orderDetail));
-            product.put(LinkerConstants.PRICE, String.valueOf((int) orderDetail.getProductPrice()));
-            product.put(LinkerConstants.PRICE_IDR_TO_DOUBLE, String.valueOf(CurrencyFormatHelper.convertRupiahToLong(
-                    String.valueOf(orderDetail.getProductPrice()))));
+            product.put(LinkerConstants.PRICE, String.valueOf((long)orderDetail.getProductPrice()));
+            product.put(LinkerConstants.PRICE_IDR_TO_DOUBLE,String.valueOf(CurrencyFormatHelper.convertRupiahToLong(
+                    String.valueOf((long)orderDetail.getProductPrice()))));
             product.put(LinkerConstants.QTY, String.valueOf(orderDetail.getQuantity()));
             product.put(LinkerConstants.CATEGORY, String.valueOf(orderDetail.getProduct().getProductCategory().getCategoryName()));
 

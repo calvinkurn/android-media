@@ -34,6 +34,7 @@ import com.tokopedia.analytics.Analytics;
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.changephonenumber.ChangePhoneNumberUrl;
 import com.tokopedia.chat_common.network.ChatUrl;
@@ -42,7 +43,6 @@ import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.common.category.CategoryDbFlow;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -97,7 +97,6 @@ import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
-import com.tokopedia.tkpdpdp.ProductDetailUrl;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.topads.sdk.base.Config;
@@ -116,6 +115,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -166,6 +166,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
 
+        PersistentCacheManager.init(this);
+
         super.onCreate();
         initReact();
 
@@ -185,8 +187,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
         }
 
-        cacheManager = new GlobalCacheManager();
-        cacheManager.setCacheDuration(600);
         if(callback == null) {
             callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
         }
@@ -337,7 +337,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         AccountHomeUrl.BASE_MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
         ChangePhoneNumberUrl.BASE_URL = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         PhoneVerificationConst.BASE_URL = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
-        ProductDetailUrl.WS_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         TopAdsConstantKt.setTOPADS_BASE_URL(ConsumerAppBaseUrl.BASE_TOPADS_DOMAIN);
         TalkUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_INBOX_DOMAIN);
         AttachProductUrl.URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
@@ -562,16 +561,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         return DeepLinkActivity.class;
     }
 
-    GlobalCacheManager cacheManager;
-
     @Override
     public void saveCPM(@NonNull String cpm) {
-        cacheManager.save(CharacterPerMinuteInterface.KEY, cpm, 60);
+        PersistentCacheManager.instance.put(CharacterPerMinuteInterface.KEY, cpm, TimeUnit.MINUTES.toMillis(1));
     }
 
     @Override
     public String getCPM() {
-        return cacheManager.get(CharacterPerMinuteInterface.KEY);
+        return PersistentCacheManager.instance.getString(CharacterPerMinuteInterface.KEY);
     }
 
     @Override
