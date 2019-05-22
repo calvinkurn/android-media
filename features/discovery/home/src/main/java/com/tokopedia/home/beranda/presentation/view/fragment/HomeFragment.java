@@ -1120,6 +1120,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Visitable mappingHomeFeedModel(List<FeedTabModel> feedTabModelList) {
         HomeRecommendationFeedViewModel feedViewModel = new HomeRecommendationFeedViewModel();
         feedViewModel.setFeedTabModel(feedTabModelList);
+        feedViewModel.setNewData(true);
         return feedViewModel;
     }
 
