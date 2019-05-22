@@ -955,6 +955,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition) {
         checkCourierPromo(courierItemData, itemPosition);
         shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).setStateLoadingCourierState(false);
+        shipmentAdapter.setSelectedPriority(itemPosition, courierItemData.getNow(),courierItemData.getPriorityInnactiveMessage(),
+                courierItemData.getPriorityPrice(),courierItemData.getPriorityFormattedPrice());
         shipmentAdapter.setSelectedCourier(itemPosition, courierItemData);
         onNeedUpdateViewItem(itemPosition);
     }
@@ -1896,7 +1898,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentAdapter.updateCheckoutButtonData(null);
                 }
 
-                shipmentAdapter.setSelectedPriority(cartItemPosition,serviceData);
+                shipmentAdapter.setSelectedPriority(cartItemPosition,serviceData.getOrderPriority().getNow(),serviceData.getOrderPriority().getInactiveMessage(),
+                        serviceData.getOrderPriority().getPrice(),serviceData.getOrderPriority().getFormattedPrice());
                 shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
                 shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, recommendedCourier, cartItemPosition);

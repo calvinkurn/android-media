@@ -175,7 +175,7 @@
             android:gravity="end"
             tools:text="Rp 19.000" />
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_priority_fee"
             style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
@@ -184,7 +184,7 @@
             android:layout_marginBottom="@dimen/dp_16"
             android:text="@string/label_order_priority_cost" />
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_priority_fee_price"
             style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"

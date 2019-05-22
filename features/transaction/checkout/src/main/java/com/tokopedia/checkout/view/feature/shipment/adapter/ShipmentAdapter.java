@@ -584,15 +584,21 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void setSelectedPriority(int cartItemPosition,ServiceData serviceData) {
+    public void setSelectedPriority(int cartItemPosition,boolean isNow, String priorityInnactiveMessage,int priorityPrice,String priorityFormattedPrice) {
         ShipmentCartItemModel shipmentCartItemModel;
         Object currentShipmentData = shipmentDataList.get(cartItemPosition);
         if (currentShipmentData instanceof ShipmentCartItemModel) {
             shipmentCartItemModel = (ShipmentCartItemModel) currentShipmentData;
             if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
-                mapperOrderPriority(serviceData, shipmentCartItemModel);
+                shipmentCartItemModel.setNow(isNow);
+                shipmentCartItemModel.setPriorityInactiveMessage(priorityInnactiveMessage);
+                shipmentCartItemModel.setPriorityPrice(priorityPrice);
+                shipmentCartItemModel.setPriorityFormattedPrice(priorityFormattedPrice);
             } else {
-                mapperOrderPriority(serviceData, shipmentCartItemModel);
+                shipmentCartItemModel.setNow(isNow);
+                shipmentCartItemModel.setPriorityInactiveMessage(priorityInnactiveMessage);
+                shipmentCartItemModel.setPriorityPrice(priorityPrice);
+                shipmentCartItemModel.setPriorityFormattedPrice(priorityFormattedPrice);
             }
         }
     }
