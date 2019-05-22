@@ -107,9 +107,6 @@
                 <data
                     android:host="tokopedia.link"
                     android:scheme="https"/>
-                <data
-                    android:host="exclusive.tokopedia.net"
-                    android:scheme="https"/>
             </intent-filter>
         </activity>
 
@@ -139,13 +136,6 @@
                 <data
                     android:host="m.tokopedia.com"
                     android:pathPattern=".*"
-                    android:scheme="https"/>
-                <data
-                    android:host="tokopedia.com"
-                    android:pathPattern=".*"
-                    android:scheme="https"/>
-                <data
-                    android:host="tokopedia.onelink.me"
                     android:scheme="https"/>
 
             </intent-filter>
