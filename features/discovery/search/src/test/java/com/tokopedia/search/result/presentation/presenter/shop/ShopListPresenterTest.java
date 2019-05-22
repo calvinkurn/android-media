@@ -40,7 +40,7 @@ public class ShopListPresenterTest {
 
     @Test(expected = BaseDaggerPresenter.CustomerViewNotAttachedException.class)
     public void requestDynamicFilter_ViewNotAttached_ShouldThrowException() {
-        shopListPresenter.requestDynamicFilter();
+        shopListPresenter.requestDynamicFilter(new HashMap<>());
     }
 
     @Test(expected = RuntimeException.class)
@@ -48,7 +48,7 @@ public class ShopListPresenterTest {
         shopListPresenter.attachView(shopListView);
         shopListPresenter.getDynamicFilterUseCase = dynamicFilterModelUseCase;
 
-        shopListPresenter.requestDynamicFilter();
+        shopListPresenter.requestDynamicFilter(new HashMap<>());
     }
 
     @Test(expected = RuntimeException.class)
@@ -56,7 +56,7 @@ public class ShopListPresenterTest {
         shopListPresenter.attachView(shopListView);
         shopListPresenter.setRequestDynamicFilterListener(requestDynamicFilterListener);
 
-        shopListPresenter.requestDynamicFilter();
+        shopListPresenter.requestDynamicFilter(new HashMap<>());
     }
 
     @Test(expected = RuntimeException.class)
@@ -65,7 +65,7 @@ public class ShopListPresenterTest {
         shopListPresenter.setRequestDynamicFilterListener(requestDynamicFilterListener);
         shopListPresenter.getDynamicFilterUseCase = dynamicFilterModelUseCase;
 
-        shopListPresenter.requestDynamicFilter();
+        shopListPresenter.requestDynamicFilter(new HashMap<>());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class ShopListPresenterTest {
         shopListPresenter.getDynamicFilterUseCase = dynamicFilterModelUseCase;
         shopListPresenter.userSession = userSession;
 
-        shopListPresenter.requestDynamicFilter();
+        shopListPresenter.requestDynamicFilter(new HashMap<>());
 
         verify(dynamicFilterModelUseCase).execute(any(RequestParams.class), any(RequestDynamicFilterSubscriber.class));
     }
