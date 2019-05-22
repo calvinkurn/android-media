@@ -24,7 +24,12 @@ import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
+import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
+import com.tokopedia.search.result.presentation.view.listener.GlobalNavWidgetListener;
+import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
+import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
+import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.widget.GlobalNavWidget;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
@@ -43,22 +48,31 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private RecyclerView quickFilterListView;
     private TopAdsBannerView adsBannerView;
     private Context context;
-    private ProductListener productListener;
+    private SuggestionListener suggestionListener;
+    private QuickFilterListener quickFilterListener;
+    private GlobalNavWidgetListener globalNavWidgetListener;
     private QuickFilterAdapter quickFilterAdapter;
     private RecyclerView guidedSearchRecyclerView;
     private GuidedSearchAdapter guidedSearchAdapter;
     private GlobalNavWidget globalNavWidget;
 
-    public HeaderViewHolder(View itemView, ProductListener productListener) {
+    public HeaderViewHolder(View itemView,
+                            SuggestionListener suggestionListener,
+                            QuickFilterListener quickFilterListener,
+                            GuidedSearchListener guidedSearchListener,
+                            GlobalNavWidgetListener globalNavWidgetListener,
+                            BannerAdsListener bannerAdsListener) {
         super(itemView);
         context = itemView.getContext();
-        this.productListener = productListener;
+        this.suggestionListener = suggestionListener;
+        this.quickFilterListener = quickFilterListener;
+        this.globalNavWidgetListener = globalNavWidgetListener;
         suggestionContainer = itemView.findViewById(R.id.suggestion_container);
         adsBannerView = itemView.findViewById(R.id.ads_banner);
         globalNavWidget = itemView.findViewById(R.id.globalNavWidget);
         quickFilterListView = itemView.findViewById(R.id.quickFilterListView);
         guidedSearchRecyclerView = itemView.findViewById(R.id.guidedSearchRecyclerView);
-        guidedSearchAdapter = new GuidedSearchAdapter(productListener);
+        guidedSearchAdapter = new GuidedSearchAdapter(guidedSearchListener);
         guidedSearchRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         guidedSearchRecyclerView.setAdapter(guidedSearchAdapter);
         guidedSearchRecyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
@@ -67,7 +81,9 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         ));
         initQuickFilterRecyclerView();
         adsBannerView.setTopAdsBannerClickListener((position, applink, data) -> {
-            productListener.onBannerAdsClicked(applink);
+            if (bannerAdsListener != null) {
+                bannerAdsListener.onBannerAdsClicked(applink);
+            }
             if (applink.contains(SHOP)) {
                 TopAdsGtmTracker.eventSearchResultPromoShopClick(context, data, position);
             } else {
@@ -83,7 +99,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     }
 
     private void initQuickFilterRecyclerView() {
-        quickFilterAdapter = new QuickFilterAdapter(productListener);
+        quickFilterAdapter = new QuickFilterAdapter(quickFilterListener);
         quickFilterListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         quickFilterListView.setAdapter(quickFilterAdapter);
         quickFilterListView.addItemDecoration(new LinearHorizontalSpacingDecoration(
@@ -114,12 +130,16 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             globalNavWidget.setData(element.getGlobalNavViewModel(), new GlobalNavWidget.ClickListener() {
                 @Override
                 public void onClickItem(GlobalNavViewModel.Item item) {
-                    productListener.onGlobalNavWidgetClicked(item, element.getGlobalNavViewModel().getKeyword());
+                    if (globalNavWidgetListener != null) {
+                        globalNavWidgetListener.onGlobalNavWidgetClicked(item, element.getGlobalNavViewModel().getKeyword());
+                    }
                 }
 
                 @Override
                 public void onclickSeeAllButton(String applink, String url) {
-                    productListener.onGlobalNavWidgetClickSeeAll(applink, url);
+                    if (globalNavWidgetListener != null) {
+                        globalNavWidgetListener.onGlobalNavWidgetClickSeeAll(applink, url);
+                    }
                 }
             });
             globalNavWidget.setVisibility(View.VISIBLE);
@@ -136,8 +156,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             if (!TextUtils.isEmpty(element.getSuggestionViewModel().getSuggestionText())) {
                 suggestionText.setText(Html.fromHtml(element.getSuggestionViewModel().getSuggestionText()));
                 suggestionText.setOnClickListener(v -> {
-                    if (!TextUtils.isEmpty(element.getSuggestionViewModel().getSuggestedQuery())) {
-                        productListener.onSuggestionClicked(element.getSuggestionViewModel().getSuggestedQuery());
+                    if (suggestionListener != null && !TextUtils.isEmpty(element.getSuggestionViewModel().getSuggestedQuery())) {
+                        suggestionListener.onSuggestionClicked(element.getSuggestionViewModel().getSuggestedQuery());
                     }
                 });
                 suggestionText.setVisibility(View.VISIBLE);
@@ -176,11 +196,11 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         private static final int HEADER_COUNT = 1;
 
         private List<Option> optionList = new ArrayList<>();
-        private ProductListener clickListener;
+        private QuickFilterListener quickFilterListener;
         private String formattedResultCount;
 
-        QuickFilterAdapter(ProductListener clickListener) {
-            this.clickListener = clickListener;
+        QuickFilterAdapter(QuickFilterListener quickFilterListener) {
+            this.quickFilterListener = quickFilterListener;
         }
 
         void setOptionList(List<Option> optionList) {
@@ -199,7 +219,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             if (viewType == TYPE_ITEM_QUICK_FILTER) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.quick_filter_item, parent, false);
-                return new QuickFilterItemViewHolder(view, clickListener);
+                return new QuickFilterItemViewHolder(view, quickFilterListener);
             } else if (viewType == TYPE_HEADER_PRODUCT_COUNT) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_result_count_item, parent, false);
                 return new ProductCountViewHolder(view);
@@ -237,9 +257,9 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     private static class QuickFilterItemViewHolder extends RecyclerView.ViewHolder {
         private TextView quickFilterText;
-        private final ProductListener quickFilterListener;
+        private final QuickFilterListener quickFilterListener;
 
-        QuickFilterItemViewHolder(View itemView, ProductListener quickFilterListener) {
+        QuickFilterItemViewHolder(View itemView, QuickFilterListener quickFilterListener) {
             super(itemView);
             quickFilterText = itemView.findViewById(R.id.quick_filter_text);
             this.quickFilterListener = quickFilterListener;
@@ -250,11 +270,18 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
             setBackgroundResource(option);
 
-            quickFilterText.setOnClickListener(view -> quickFilterListener.onQuickFilterSelected(option));
+            quickFilterText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (quickFilterListener != null) {
+                        quickFilterListener.onQuickFilterSelected(option);
+                    }
+                }
+            });
         }
 
         private void setBackgroundResource(Option option) {
-            if (quickFilterListener.isQuickFilterSelected(option)) {
+            if (quickFilterListener != null && quickFilterListener.isQuickFilterSelected(option)) {
                 quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
             } else {
                 quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
@@ -283,10 +310,10 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private static class GuidedSearchAdapter extends RecyclerView.Adapter<GuidedSearchViewHolder> {
 
         List<GuidedSearchViewModel.Item> itemList = new ArrayList<>();
-        ProductListener itemClickListener;
+        GuidedSearchListener guidedSearchListener;
 
-        GuidedSearchAdapter(ProductListener itemClickListener) {
-            this.itemClickListener = itemClickListener;
+        GuidedSearchAdapter(GuidedSearchListener guidedSearchListener) {
+            this.guidedSearchListener = guidedSearchListener;
         }
 
         void setItemList(List<GuidedSearchViewModel.Item> itemList) {
@@ -298,7 +325,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         @Override
         public GuidedSearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.guided_search_item_with_background, parent, false);
-            return new GuidedSearchViewHolder(view, itemClickListener);
+            return new GuidedSearchViewHolder(view, guidedSearchListener);
         }
 
         @Override
@@ -324,20 +351,22 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
         TextView textView;
         ImageView imageView;
-        ProductListener itemClickListener;
+        GuidedSearchListener guidedSearchListener;
 
-        GuidedSearchViewHolder(View itemView, ProductListener itemClickListener) {
+        GuidedSearchViewHolder(View itemView, GuidedSearchListener guidedSearchListener) {
             super(itemView);
             textView = itemView.findViewById(R.id.guided_search_text);
             imageView = itemView.findViewById(R.id.guided_search_background);
-            this.itemClickListener = itemClickListener;
+            this.guidedSearchListener = guidedSearchListener;
         }
 
         public void bind(final GuidedSearchViewModel.Item item) {
             textView.setText(item.getKeyword());
             textView.setOnClickListener(view -> {
-                SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
-                itemClickListener.onSearchGuideClicked(Uri.parse(item.getUrl()).getEncodedQuery());
+                if (guidedSearchListener != null) {
+                    SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
+                    guidedSearchListener.onSearchGuideClicked(Uri.parse(item.getUrl()).getEncodedQuery());
+                }
             });
             imageView.setImageResource(BACKGROUND[getAdapterPosition() % 5]);
         }
