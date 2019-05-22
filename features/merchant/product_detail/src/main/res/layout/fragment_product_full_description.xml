@@ -95,7 +95,6 @@
             android:id="@+id/txt_product_descr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/label_product_desc"
             android:layout_marginTop="@dimen/dp_16"
             android:autoLink="all"
             android:transitionName="@string/transition_description"
