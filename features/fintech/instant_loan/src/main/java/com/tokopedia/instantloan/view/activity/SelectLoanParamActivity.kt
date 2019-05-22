@@ -104,7 +104,6 @@ class SelectLoanParamActivity : BaseActivity() {
                 }
                 selectedKey = sortList[holder.adapterPosition].id
                 selectedValue = sortList[holder.adapterPosition].value
-                val selectedName = sortList[holder.adapterPosition].label
                 sortList[holder.adapterPosition].isSelected = true
                 clickListener.onItemClicked(sortList[holder.adapterPosition])
 

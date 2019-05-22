@@ -8,7 +8,6 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.instantloan.constant.DeviceDataKeys
 import com.tokopedia.instantloan.data.model.response.GqlFilterDataResponse
-import com.tokopedia.instantloan.data.model.response.GqlLendingDataResponse
 import com.tokopedia.instantloan.data.model.response.ResponsePhoneData
 import com.tokopedia.instantloan.data.model.response.ResponseUserProfileStatus
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager
@@ -20,18 +19,18 @@ import com.tokopedia.instantloan.ddcollector.bdd.BasicDeviceData
 import com.tokopedia.instantloan.domain.interactor.GetFilterDataUseCase
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase
-import com.tokopedia.instantloan.view.contractor.InstantLoanContractor
+import com.tokopedia.instantloan.view.contractor.OnlineLoanContractor
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
 
-class InstantLoanPresenter @Inject
+class OnlineLoanPresenter @Inject
 constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCase,
             private val mGetFilterDataUseCase: GetFilterDataUseCase,
             private val mPostPhoneDataUseCase: PostPhoneDataUseCase) :
-        BaseDaggerPresenter<InstantLoanContractor.View>(), InstantLoanContractor.Presenter {
+        BaseDaggerPresenter<OnlineLoanContractor.View>(), OnlineLoanContractor.Presenter {
 
     @Inject
     lateinit var userSession: UserSession
@@ -53,8 +52,10 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
         }
     }
 
-    override fun attachView(view: InstantLoanContractor.View) {
+    override fun attachView(view: OnlineLoanContractor.View) {
         super.attachView(view)
+
+        getFilterData()
     }
 
     override fun initialize() {
@@ -66,6 +67,30 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
         mGetFilterDataUseCase.unsubscribe()
         mPostPhoneDataUseCase.unsubscribe()
         super.detachView()
+    }
+
+    override fun getFilterData() {
+
+        mGetFilterDataUseCase.execute(object : Subscriber<GraphqlResponse>() {
+            override fun onNext(graphqlResponse: GraphqlResponse?) {
+                if (isViewNotAttached) {
+                    return
+                }
+                val gqlFilterDataResponse = graphqlResponse?.getData(GqlFilterDataResponse::class.java) as GqlFilterDataResponse
+                view.setFilterDataForOnlineLoan(gqlFilterDataResponse.gqlFilterData)
+
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+            }
+
+        })
+
     }
 
     override fun getLoanProfileStatus() {

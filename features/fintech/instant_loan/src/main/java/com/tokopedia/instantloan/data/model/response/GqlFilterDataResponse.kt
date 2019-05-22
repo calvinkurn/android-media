@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GqlFilterDataResponse(
 
-        @SerializedName("le_getfilterdata")
+        @SerializedName("le_getfilter")
         var gqlFilterData: GqlFilterData
 
 )

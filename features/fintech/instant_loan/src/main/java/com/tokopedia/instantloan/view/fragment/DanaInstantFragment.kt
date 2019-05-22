@@ -87,7 +87,7 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
         text_form_description.text = resources.getStringArray(R.array.values_description)[mCurrentTab]
 
         button_search_pinjaman.setOnClickListener { view1 -> searchLoanOnline() }
-        il_learn_more.setOnClickListener{
+        il_learn_more.setOnClickListener {
             RouteManager.route(mContext, String.format("%s?url=%s", ApplinkConst.WEBVIEW, InstantLoanUrl.COMMON_URL.INSTANT_LOAN_LEARN_MORE))
         }
     }
@@ -332,10 +332,6 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
                         resources.getString(R.string.login_to_proceed))
             }
         }
-    }
-
-    override fun setFilterDataForOnlineLoan(gqlFilterData: GqlFilterData) {
-
     }
 
     override fun onDestroyView() {
