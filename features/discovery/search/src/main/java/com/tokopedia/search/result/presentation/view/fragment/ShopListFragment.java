@@ -431,8 +431,7 @@ public class ShopListFragment
         adapter.setFavoriteButtonEnabled(adapterPosition, true);
     }
 
-    @Override
-    public String getQueryKey() {
+    private String getQueryKey() {
         if(getSearchParameter() == null) return "";
 
         return getSearchParameter().getSearchQuery();

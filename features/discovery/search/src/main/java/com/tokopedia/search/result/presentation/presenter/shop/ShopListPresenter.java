@@ -139,7 +139,6 @@ final class ShopListPresenter
         requestParams.putAllString(generateParamsNetwork(requestParams));
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SHOP);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
 
         requestParams.putAll(searchParameter);
 

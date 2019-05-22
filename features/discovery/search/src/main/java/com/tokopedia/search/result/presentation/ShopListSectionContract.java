@@ -17,8 +17,6 @@ public interface ShopListSectionContract {
         void disableFavoriteButton(int adapterPosition);
 
         void enableFavoriteButton(int adapterPosition);
-
-        String getQueryKey();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
