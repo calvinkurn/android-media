@@ -40,7 +40,6 @@ final class ShopListPresenter
     UserSessionInterface userSession;
 
     private SearchShopListener searchShopListener;
-    private RequestDynamicFilterListener requestDynamicFilterListener;
     private FavoriteActionListener favoriteActionListener;
 
     @Override
@@ -60,11 +59,6 @@ final class ShopListPresenter
     @Override
     public void setFavoriteActionListener(FavoriteActionListener favoriteActionListener) {
         this.favoriteActionListener = favoriteActionListener;
-    }
-
-    @Override
-    public void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener) {
-        this.requestDynamicFilterListener = requestDynamicFilterListener;
     }
 
     @Override

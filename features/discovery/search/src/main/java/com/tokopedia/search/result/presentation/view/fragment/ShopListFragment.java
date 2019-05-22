@@ -404,22 +404,6 @@ public class ShopListFragment
     }
 
     @Override
-    public void launchLoginActivity(String shopId) {
-        Bundle extras = new Bundle();
-        extras.putString("shop_id", shopId);
-
-        if (getActivity() == null) return;
-
-        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
-
-        if (router != null) {
-            Intent intent = router.getLoginIntent(getActivity());
-            intent.putExtras(extras);
-            startActivityForResult(intent, REQUEST_CODE_LOGIN);
-        }
-    }
-
-    @Override
     public boolean isUserHasLogin() {
         if(userSession == null) return false;
 
@@ -581,11 +565,6 @@ public class ShopListFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
-    }
-
-    @Override
-    public void logDebug(String tag, String message) {
-        Log.d(tag, message);
     }
 
     @Override
