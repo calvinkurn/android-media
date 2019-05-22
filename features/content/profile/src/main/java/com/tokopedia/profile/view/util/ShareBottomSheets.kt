@@ -232,7 +232,9 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
                         DataMapper().getLinkerShareData(data),
                         object : ShareCallback {
                             override fun urlCreated(linkerShareData: LinkerShareResult) {
-                                ClipboardHandler().CopyToClipboard(activity!!, data.originalTextContent)
+                                activity?.let {
+                                    ClipboardHandler().CopyToClipboard(it, data.originalTextContent)
+                                }
                             }
 
                             override fun onError(linkerError: LinkerError) {
