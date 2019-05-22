@@ -6,7 +6,6 @@ import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 import com.tokopedia.usecase.RequestParams;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public abstract class SearchSectionPresenter<T extends SearchSectionContract.View>
