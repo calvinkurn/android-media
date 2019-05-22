@@ -820,13 +820,13 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
         @JvmStatic
         fun createInstance(shopId: String,
                            keyword: String,
-                           etalaseId: String,
+                           etalaseId: String?,
                            sort: String,
                            attribution: String): ShopProductListFragment = ShopProductListFragment().also {
                 it.arguments = Bundle().apply {
                     putString(ShopParamConstant.EXTRA_SHOP_ID, shopId)
                     putString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, keyword)
-                    putString(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId)
+                    putString(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId ?: "")
                     putString(ShopParamConstant.EXTRA_SORT_ID, sort)
                     putString(ShopParamConstant.EXTRA_ATTRIBUTION, attribution)
                 }
