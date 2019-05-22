@@ -69,8 +69,6 @@ class TopChatViewStateImpl(
     var isShopFollowed: Boolean = false
     lateinit var chatRoomViewModel: ChatroomViewModel
 
-    var seenAttachedProduct = HashSet<Int>()
-
     init {
         initView()
     }
@@ -84,14 +82,6 @@ class TopChatViewStateImpl(
                 scrollDownWhenInBottom()
             }
         }
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                when (newState) {
-                    RecyclerView.SCROLL_STATE_IDLE -> trackSeenAttachedProduct()
-                }
-            }
-        })
 
         maximize.setOnClickListener { maximizeTools() }
 
@@ -117,19 +107,6 @@ class TopChatViewStateImpl(
         }
 
         initProductPreviewLayout()
-    }
-
-    private fun trackSeenAttachedProduct() {
-        val firstItem = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-        val lastItem = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-        val items = getList()
-        for (index in firstItem..lastItem) {
-            if (index < 0 && index >= items.size) continue
-            val item = items[index]
-            if (item is ProductAttachmentViewModel) {
-                seenAttachedProduct.add(item.productId)
-            }
-        }
     }
 
     private fun initProductPreviewLayout() {
