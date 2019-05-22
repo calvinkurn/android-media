@@ -354,7 +354,7 @@ public abstract class SearchSectionFragment
 
     @Override
     public void setSelectedFilter(HashMap<String, String> selectedFilter) {
-        if(filterController == null) return;
+        if(filterController == null || getFilters() == null) return;
 
         List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
         filterController.initFilterController(selectedFilter, initializedFilterList);
