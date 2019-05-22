@@ -36,6 +36,8 @@ import android.content.Intent.ACTION_DIAL
 import android.net.Uri
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_CATEGORY
+import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_ID
 import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.view.*
 
 
@@ -49,6 +51,9 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var orderDetailViewModel: HotelOrderDetailViewModel
 
+    private var orderId: String = ""
+    private var orderCategory: String = ""
+
     override fun getScreenName(): String = getString(R.string.hotel_order_detail_title)
 
     override fun initInjector() = getComponent(HotelOrderDetailComponent::class.java).inject(this)
@@ -59,6 +64,11 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             orderDetailViewModel = viewModelProvider.get(HotelOrderDetailViewModel::class.java)
+        }
+
+        arguments?.let {
+            orderId = it.getString(KEY_ORDER_ID, "")
+            orderCategory = it.getString(KEY_ORDER_CATEGORY, "")
         }
     }
 
@@ -86,8 +96,15 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        orderDetailViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
-                "18")
+        if (savedInstanceState != null && savedInstanceState.containsKey(SAVED_KEY_ORDER_ID) &&
+                savedInstanceState.containsKey(SAVED_KEY_ORDER_CATEGORY)) {
+            orderId = savedInstanceState.getString(SAVED_KEY_ORDER_ID)!!
+            orderCategory = savedInstanceState.getString(SAVED_KEY_ORDER_CATEGORY)
+        }
+
+        orderDetailViewModel.getOrderDetail(
+                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                orderId, orderCategory)
     }
 
     fun renderConditionalInfo(hotelTransportDetail: HotelTransportDetail) {
@@ -104,7 +121,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     fun renderTransactionDetail(orderDetail: HotelOrderDetail) {
 
         transaction_status.text = orderDetail.status.statusText
-        when(orderDetail.status.status) {
+        when (orderDetail.status.status) {
             ORDER_STATUS_FAIL -> transaction_status.setTextColor(resources.getColor(R.color.red_pink))
             ORDER_STATUS_SUCCESS -> transaction_status.setTextColor(resources.getColor(R.color.tkpd_main_green))
         }
@@ -155,7 +172,8 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
 
         special_notes.text = propertyDetail.extraInfo
 
-        checkin_checkout_date.setRoomDatesFormatted(propertyDetail.checkInOut[0].checkInOut.date,
+        checkin_checkout_date.setRoomDatesFormatted(
+                propertyDetail.checkInOut[0].checkInOut.date,
                 propertyDetail.checkInOut[1].checkInOut.date,
                 propertyDetail.checkInOut[2].content)
     }
@@ -235,7 +253,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     fun hideBookingCode(enableHide: Boolean) {
         booking_code_hint.visibility = if (enableHide) View.GONE else View.VISIBLE
         booking_code.visibility = if (enableHide) View.GONE else View.VISIBLE
-        order_hotel_detail.seperator_1.visibility =  if (enableHide) View.GONE else View.VISIBLE
+        order_hotel_detail.seperator_1.visibility = if (enableHide) View.GONE else View.VISIBLE
     }
 
     override fun onClickCall(contactNumber: String) {
@@ -245,11 +263,26 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         startActivity(callIntent)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SAVED_KEY_ORDER_ID, orderId)
+        outState.putString(SAVED_KEY_ORDER_CATEGORY, orderCategory)
+    }
+
     companion object {
-        fun getInstance(): HotelOrderDetailFragment = HotelOrderDetailFragment()
+        fun getInstance(orderId: String, orderCategory: String): HotelOrderDetailFragment =
+                HotelOrderDetailFragment().also {
+                    it.arguments = Bundle().apply {
+                        putString(KEY_ORDER_ID, orderId)
+                        putString(KEY_ORDER_CATEGORY, orderCategory)
+                    }
+                }
 
         const val TAG_CONTACT_INFO = "guestContactInfo"
         const val ORDER_STATUS_SUCCESS = 700
         const val ORDER_STATUS_FAIL = 600
+
+        const val SAVED_KEY_ORDER_ID = "keyOrderId"
+        const val SAVED_KEY_ORDER_CATEGORY = "keyOrderCategory"
     }
 }
