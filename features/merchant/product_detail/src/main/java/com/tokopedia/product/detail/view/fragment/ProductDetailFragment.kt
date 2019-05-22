@@ -1004,7 +1004,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             base_btn_affiliate.gone()
             actionButtonView.byMeClick = this::onAffiliateClick
             actionButtonView.showByMe(true, pdpAffiliate)
-            actionButtonView.visible()
+            actionButtonView.visibility = shopInfo?.statusInfo?.shopStatus == 1
         }
     }
 
