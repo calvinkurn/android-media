@@ -51,6 +51,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.features.common_promo)
+    implementation project(rootProject.ext.libraries.permissionchecker)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -67,9 +68,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    kapt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

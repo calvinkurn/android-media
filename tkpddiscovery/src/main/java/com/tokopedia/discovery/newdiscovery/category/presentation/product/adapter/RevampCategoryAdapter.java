@@ -10,9 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -86,6 +88,9 @@ public class RevampCategoryAdapter extends
         boolean isUserHasLogin();
 
         String getUserId();
+
+        void onQuickFilterSelected(String filterKey, String filterValue);
+
     }
 
     public void addDataChild(List<ChildCategoryModel> children) {
