@@ -1,11 +1,14 @@
 package com.tokopedia.shop.note.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -84,7 +87,9 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Ol
 
     @Override
     public void onEmptyButtonClicked() {
-        ((ShopModuleRouter) getActivity().getApplication()).goToEditShopNote(getActivity());
+        Intent noteIntent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.SHOP_NOTE_SETTING);
+        if (noteIntent != null)
+            startActivity(noteIntent);
     }
 
     @Override

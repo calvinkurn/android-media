@@ -42,7 +42,6 @@ import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAda
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
@@ -52,6 +51,7 @@ import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragment;
+import com.tokopedia.search.result.presentation.view.fragment.ShopListFragment;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
