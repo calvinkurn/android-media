@@ -801,7 +801,11 @@ open class PlayViewStateImpl(
     }
 
     override fun autoPlayVideo() {
-        youtubeRunnable?.postDelayed({ youTubePlayer?.play() }, PlayFragment.YOUTUBE_DELAY.toLong())
+        try {
+            youtubeRunnable?.postDelayed({ youTubePlayer?.play() }, PlayFragment.YOUTUBE_DELAY.toLong())
+        } catch(e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean) {
