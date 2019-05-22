@@ -4,8 +4,8 @@
 
     <!-- Use this only for AppBarLayout -->
     <style name="Theme.Tokopedia3" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorAccent">@android:color/transparent</item>
-        <item name="android:colorAccent">@android:color/transparent</item>
+        <item name="colorAccent">@color/tkpd_dark_green</item>
+        <item name="android:colorAccent">@color/tkpd_dark_green</item>
         <item name="actionMenuTextColor">@color/white</item>
         <item name="android:spinnerItemStyle">?android:attr/spinnerItemStyle</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Tokopedia</item>

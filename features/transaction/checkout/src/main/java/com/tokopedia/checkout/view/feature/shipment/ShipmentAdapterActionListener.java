@@ -43,7 +43,7 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
 
-    void onRemovePromoCode();
+    void onRemovePromoCode(String promoCode);
 
     void resetTotalPrice();
 
@@ -87,7 +87,7 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
                              List<ShopShipment> shopShipmentList,
                              boolean isCourierRecommendation);
 
-    void onCourierPromoCanceled(String shipperName);
+    void onCourierPromoCanceled(String shipperName, String promoCode);
 
     boolean isToogleYearEndPromoOn();
 
@@ -100,4 +100,8 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void onNotifierClicked(String url);
 
     void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel);
+
+    void onProcessToPayment();
+
+    void onProcessToPaymentCod();
 }

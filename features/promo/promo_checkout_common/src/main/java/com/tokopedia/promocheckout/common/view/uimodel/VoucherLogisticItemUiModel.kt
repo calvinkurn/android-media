@@ -6,8 +6,9 @@ import android.os.Parcelable
 /**
  * Created by fajarnuha on 02/04/19.
  */
-data class VoucherLogisticItemUiModel(var code: String = "", var couponDesc: String = "", var message: MessageUiModel = MessageUiModel()) : Parcelable {
+data class VoucherLogisticItemUiModel(var code: String = "", var couponDesc: String = "", var couponAmount: String = "", var message: MessageUiModel = MessageUiModel()) : Parcelable {
     constructor(source: Parcel) : this(
+            source.readString(),
             source.readString(),
             source.readString(),
             source.readParcelable(MessageUiModel::class.java.classLoader)
@@ -18,6 +19,7 @@ data class VoucherLogisticItemUiModel(var code: String = "", var couponDesc: Str
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(code)
         writeString(couponDesc)
+        writeString(couponAmount)
         writeParcelable(message, flags)
     }
 

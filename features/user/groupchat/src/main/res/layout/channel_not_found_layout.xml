@@ -12,6 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp_48"
+        android:minWidth="@dimen/dp_200"
+        android:minHeight="@dimen/dp_200"
         tools:src="@drawable/ic_play_no_connection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -26,8 +28,7 @@
         android:gravity="center_horizontal"
         android:text="@string/next_event_warn"
         android:textColor="@color/black_70"
-        android:textSize="@dimen/sp_16"
-        android:textStyle="bold"
+        android:textSize="@dimen/sp_20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +59,7 @@
         android:layout_marginTop="@dimen/dp_32"
         android:fontFamily="sans-serif-medium"
         android:orientation="vertical"
-        app:cardCornerRadius="@dimen/radius"
+        app:cardCornerRadius="@dimen/dp_8"
         app:cardPreventCornerOverlap="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -77,8 +78,8 @@
             android:minWidth="@dimen/min_width_button_shopping"
             android:text="@string/check_next_event_schedule"
             android:textColor="#ffffff"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal" />
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold" />
 
     </android.support.v7.widget.CardView>
 

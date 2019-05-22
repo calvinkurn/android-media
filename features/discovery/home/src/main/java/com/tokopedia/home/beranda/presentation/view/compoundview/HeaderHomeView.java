@@ -36,6 +36,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapResource;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.gamification.util.HexValidator;
 import com.tokopedia.home.IHomeRouter;
@@ -167,8 +168,7 @@ public class HeaderHomeView extends BaseCustomView {
     private OnClickListener onScanListener() {
         return v -> {
             HomePageTracking.eventQrCode(getContext());
-            getContext().startActivity(((IHomeRouter) getContext().getApplicationContext())
-                    .gotoQrScannerPage(false));
+            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.QR_SCANNEER);
         };
     }
 

@@ -222,7 +222,11 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+        try {
+           super.onRestoreInstanceState(savedInstanceState);
+        } catch (Exception e) {
+           reloadPage();
+        }
     }
 
     public boolean isFirstTimeUser() {
@@ -778,6 +782,8 @@ public class MainParentActivity extends BaseActivity implements
             if (emptyCartFragment == null) {
                 emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc, promoCode);
             }
+            if (emptyCartFragment.isAdded()) return;
+            cartFragment = null;
             fragmentList.set(CART_MENU, emptyCartFragment);
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
         }
@@ -791,6 +797,8 @@ public class MainParentActivity extends BaseActivity implements
             } else if (bundle != null) {
                 cartFragment.setArguments(bundle);
             }
+            if (cartFragment.isAdded()) return;
+            emptyCartFragment = null;
             fragmentList.set(CART_MENU, cartFragment);
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
         }
@@ -822,7 +830,7 @@ public class MainParentActivity extends BaseActivity implements
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intentHome.setAction(Intent.ACTION_VIEW);
 
-                    Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchPage(this);
+                    Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchAutoCompletePage(this);
                     productIntent.setAction(Intent.ACTION_VIEW);
                     productIntent.putExtras(args);
 

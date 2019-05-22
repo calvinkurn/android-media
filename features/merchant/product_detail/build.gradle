@@ -50,6 +50,9 @@ dependencies {
     implementation project(rootProject.ext.features.referral)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.tradeIn)
+    implementation project(rootProject.ext.features.recommendationWidgetCommon)
+    implementation project(rootProject.ext.features.productCard)
+
 
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.multiDex
