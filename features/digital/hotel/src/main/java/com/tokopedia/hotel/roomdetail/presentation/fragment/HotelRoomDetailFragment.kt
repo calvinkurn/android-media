@@ -283,9 +283,7 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
             override fun onClick(v: View?) {
                 if (userSessionInterface.isLoggedIn) {
                     roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
-                            HotelAddCartParam("", addToCartParam.checkIn,
-                                    addToCartParam.checkOut, addToCartParam.propertyId,
-                                    hotelRoom.roomId, addToCartParam.room, addToCartParam.adult))
+                            addToCartParam)
                 } else {
                     goToLoginPage()
                 }
