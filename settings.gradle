@@ -15,7 +15,6 @@ buildCache {
     }
 }
 if (file("./libraries/composite_lib/.composite-enable").exists()) {
-println "masuk sini"
     includeBuild('./libraries/composite_lib') {
         dependencySubstitution {
             substitute module('com.tokopedia.cache_manager:cache_manager') with project(':cache_manager')
