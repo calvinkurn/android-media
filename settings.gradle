@@ -1,3 +1,4 @@
+include ':ovop2p'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
