@@ -13,11 +13,11 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.EmptySearchProfileModel
 import com.tokopedia.search.R
+import com.tokopedia.search.result.presentation.model.EmptySearchProfileViewModel
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 
-class EmptySearchProfileViewHolder(view: View, private val emptyStateListener: EmptyStateListener) : AbstractViewHolder<EmptySearchProfileModel>(view) {
+class EmptySearchProfileViewHolder(view: View, private val emptyStateListener: EmptyStateListener) : AbstractViewHolder<EmptySearchProfileViewModel>(view) {
 
     private val context: Context
     private val noResultImage: ImageView
@@ -35,7 +35,7 @@ class EmptySearchProfileViewHolder(view: View, private val emptyStateListener: E
         selectedFilterRecyclerView = itemView.findViewById(R.id.selectedFilterRecyclerView)
     }
 
-    override fun bind(model: EmptySearchProfileModel) {
+    override fun bind(model: EmptySearchProfileViewModel) {
 
         noResultImage.setImageResource(model.imageRes)
         emptyTitleTextView.text = model.title
