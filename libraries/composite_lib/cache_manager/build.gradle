@@ -14,7 +14,7 @@ android {
 project.ext {
     artifactId = 'cachemanager'
     groupId = 'com.tokopedia.cachemanager'
-    versionName = "${tkpdCacheManagerVersion}"
+    versionName = "2.22"
     artifactName = "cache_manager"
 }
 
