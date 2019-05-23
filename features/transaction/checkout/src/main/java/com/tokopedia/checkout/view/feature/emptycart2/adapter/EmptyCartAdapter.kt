@@ -10,8 +10,15 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 class EmptyCartAdapter(adapterTypeFactory: EmptyCartAdapterTypeFactory) :
         BaseListAdapter<Visitable<*>, EmptyCartAdapterTypeFactory>(adapterTypeFactory) {
 
-    fun addUiModels(visitableList: ArrayList<Visitable<*>>) {
-        visitables.addAll(visitableList)
+    override fun addElement(position: Int, element: Visitable<*>?) {
+        visitables.add(position, element)
     }
 
+    override fun addElement(element: Visitable<*>?) {
+        visitables.add(element)
+    }
+
+    fun removeElement(position: Int) {
+        visitables.removeAt(position)
+    }
 }

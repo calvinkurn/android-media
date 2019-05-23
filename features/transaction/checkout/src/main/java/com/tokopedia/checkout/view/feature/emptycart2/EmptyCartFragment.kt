@@ -1,5 +1,8 @@
 package com.tokopedia.checkout.view.feature.emptycart2
 
+import android.app.ProgressDialog
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -9,21 +12,35 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.checkout.view.feature.emptycart2.di.DaggerEmptyCartComponent
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveView
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveWithBackView
+import com.tokopedia.checkout.view.feature.emptycart2.adapter.EmptyCartAdapter
 import com.tokopedia.checkout.view.feature.emptycart2.adapter.EmptyCartAdapterTypeFactory
+import com.tokopedia.checkout.view.feature.emptycart2.uimodel.PromoUiModel
+import com.tokopedia.checkout.view.feature.emptycart2.viewholder.PromoViewHolder
+import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.PromoViewModel
+import kotlinx.android.synthetic.main.fragment_empty_cart_2.*
+import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 2019-05-17.
  */
 
-class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFactory>() {
+class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFactory>(), ActionListener {
 
     private var toolbar: View? = null
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var promoViewModel: PromoViewModel
+    lateinit var progressDialog: ProgressDialog
+    lateinit var adapter: EmptyCartAdapter
 
     companion object {
         val ARG_AUTO_APPLY_MESSAGE = "ARG_AUTO_APPLY_MESSAGE"
@@ -45,17 +62,60 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            promoViewModel = viewModelProvider.get(PromoViewModel::class.java)
+        }
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_empty_cart_2, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setMessage(getString(R.string.title_loading))
         setupToolbar(view)
+        adapter.clearAllElements()
+        onNeedUpdateViewItems()
+        renderPromo()
+    }
+
+    fun onNeedUpdateViewItem(position: Int) {
+        if (recycler_view.isComputingLayout) {
+            recycler_view.post { adapter.notifyItemChanged(position) }
+        } else {
+            adapter.notifyItemChanged(position)
+        }
+    }
+
+    fun onNeedUpdateViewItems() {
+        if (recycler_view.isComputingLayout) {
+            recycler_view.post { adapter.notifyDataSetChanged() }
+        } else {
+            adapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun renderPromo() {
+        if (arguments?.getString(ARG_AUTO_APPLY_MESSAGE) != null) {
+            val promoUiModel = PromoUiModel()
+            promoUiModel.messageSuccess = arguments?.getString(ARG_AUTO_APPLY_MESSAGE) ?: ""
+            promoUiModel.code = arguments?.getString(ARG_AUTO_APPLY_PROMO_CODE) ?: ""
+            promoUiModel.state = arguments?.getString(ARG_AUTO_APPLY_STATE) ?: ""
+            promoUiModel.titleDescription = arguments?.getString(ARG_AUTO_APPLY_TITLE) ?: ""
+
+            adapter.addElement(0, promoUiModel)
+            onNeedUpdateViewItem(0)
+        }
     }
 
     override fun getAdapterTypeFactory(): EmptyCartAdapterTypeFactory {
-        return EmptyCartAdapterTypeFactory()
+        return EmptyCartAdapterTypeFactory(this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -64,6 +124,11 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
 
     override fun getScreenName(): String? {
         return null
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, EmptyCartAdapterTypeFactory> {
+        adapter = EmptyCartAdapter(adapterTypeFactory)
+        return adapter
     }
 
     override fun initInjector() {
@@ -126,6 +191,36 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
                 (toolbar as ToolbarRemoveWithBackView).setVisibilityRemove(state)
             }
         }
+    }
+
+    private fun showLoadingDialog() {
+        progressDialog.show()
+    }
+
+    private fun hideLoadingDialog() {
+        progressDialog.hide()
+    }
+
+    private fun showSnackBarError(message: String) {
+        NetworkErrorHelper.showRedSnackbar(activity, message)
+    }
+
+    override fun onClearPromo(promoCode: String) {
+        showLoadingDialog()
+        promoViewModel.clearCacheAutoApplyStack(promoCode, this::onSuccessClearPromo, this::onErrorClearPromo)
+    }
+
+    private fun onSuccessClearPromo() {
+        hideLoadingDialog()
+        if (adapter.getItemViewType(0) == PromoViewHolder.LAYOUT) {
+            adapter.removeElement(0)
+            onNeedUpdateViewItem(0)
+        }
+    }
+
+    private fun onErrorClearPromo(e: Throwable) {
+        hideLoadingDialog()
+        showSnackBarError(ErrorHandler.getErrorMessage(activity, e))
     }
 
 }

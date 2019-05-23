@@ -9,7 +9,7 @@ import dagger.Component
  */
 
 @EmptyCartScope
-@Component(modules = [EmptyCartModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [EmptyCartModule::class, ViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface EmptyCartComponent {
     fun inject(emptyCartFragment: EmptyCartFragment)
 }

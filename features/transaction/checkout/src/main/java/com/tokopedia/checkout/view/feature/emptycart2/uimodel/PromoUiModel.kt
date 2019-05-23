@@ -7,7 +7,12 @@ import com.tokopedia.checkout.view.feature.emptycart2.adapter.EmptyCartAdapterTy
  * Created by Irfan Khoirul on 2019-05-20.
  */
 
-class PromoUiModel : Visitable<EmptyCartAdapterTypeFactory> {
+data class PromoUiModel(
+        var messageSuccess: String = "",
+        var state: String = "",
+        var titleDescription: String = "",
+        var code: String = ""
+) : Visitable<EmptyCartAdapterTypeFactory> {
 
     override fun type(typeFactory: EmptyCartAdapterTypeFactory): Int {
         return typeFactory.type(this)

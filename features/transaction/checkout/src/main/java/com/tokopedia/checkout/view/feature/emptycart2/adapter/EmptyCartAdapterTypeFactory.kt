@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.checkout.view.feature.emptycart2.ActionListener
 import com.tokopedia.checkout.view.feature.emptycart2.uimodel.*
 import com.tokopedia.checkout.view.feature.emptycart2.viewholder.*
 
@@ -13,7 +14,7 @@ import com.tokopedia.checkout.view.feature.emptycart2.viewholder.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-open class EmptyCartAdapterTypeFactory() : BaseAdapterTypeFactory(), EmptyCartTypeFactory {
+open class EmptyCartAdapterTypeFactory(val listener: ActionListener) : BaseAdapterTypeFactory(), EmptyCartTypeFactory {
 
     override fun type(viewModel: PromoUiModel): Int {
         return PromoViewHolder.LAYOUT
@@ -41,7 +42,7 @@ open class EmptyCartAdapterTypeFactory() : BaseAdapterTypeFactory(), EmptyCartTy
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         return when (viewType) {
-            PromoViewHolder.LAYOUT -> PromoViewHolder(view)
+            PromoViewHolder.LAYOUT -> PromoViewHolder(view, listener)
             EmptyCartPlaceholderViewHolder.LAYOUT -> EmptyCartPlaceholderViewHolder(view)
             RecentViewViewHolder.LAYOUT -> RecentViewViewHolder(view)
             WishlistViewHolder.LAYOUT -> WishlistViewHolder(view)

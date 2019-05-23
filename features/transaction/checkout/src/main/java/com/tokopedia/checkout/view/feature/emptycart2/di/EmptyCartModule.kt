@@ -7,5 +7,7 @@ import dagger.Module
  */
 
 @Module
+@EmptyCartScope
 class EmptyCartModule {
+
 }

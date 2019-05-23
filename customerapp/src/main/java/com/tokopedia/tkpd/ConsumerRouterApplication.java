@@ -2711,6 +2711,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc, String promoCode) {
+        // Todo: remove this
+        autoApplyMessage = "This is auto apply message";
+        state = "green";
+        titleDesc = "THIS IS PROMO TITLE";
+        promoCode = "CODE1000";
         return EmptyCartFragment.Companion.newInstance(autoApplyMessage, EmptyCartFragment.class.getSimpleName(), state, titleDesc, promoCode);
     }
 
