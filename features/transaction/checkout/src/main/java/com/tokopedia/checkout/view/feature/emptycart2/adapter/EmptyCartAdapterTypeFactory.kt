@@ -43,7 +43,7 @@ open class EmptyCartAdapterTypeFactory(val listener: ActionListener) : BaseAdapt
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         return when (viewType) {
             PromoViewHolder.LAYOUT -> PromoViewHolder(view, listener)
-            EmptyCartPlaceholderViewHolder.LAYOUT -> EmptyCartPlaceholderViewHolder(view)
+            EmptyCartPlaceholderViewHolder.LAYOUT -> EmptyCartPlaceholderViewHolder(view, listener)
             RecentViewViewHolder.LAYOUT -> RecentViewViewHolder(view)
             WishlistViewHolder.LAYOUT -> WishlistViewHolder(view)
             RecommendationViewHolder.LAYOUT -> RecommendationViewHolder(view)

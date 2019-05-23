@@ -17,12 +17,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.checkout.view.feature.emptycart2.di.DaggerEmptyCartComponent
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveView
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveWithBackView
 import com.tokopedia.checkout.view.feature.emptycart2.adapter.EmptyCartAdapter
 import com.tokopedia.checkout.view.feature.emptycart2.adapter.EmptyCartAdapterTypeFactory
+import com.tokopedia.checkout.view.feature.emptycart2.uimodel.EmptyCartPlaceholderUiModel
 import com.tokopedia.checkout.view.feature.emptycart2.uimodel.PromoUiModel
 import com.tokopedia.checkout.view.feature.emptycart2.viewholder.PromoViewHolder
 import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.PromoViewModel
@@ -79,13 +82,25 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         super.onViewCreated(view, savedInstanceState)
         progressDialog = ProgressDialog(activity)
         progressDialog.setMessage(getString(R.string.title_loading))
+
         setupToolbar(view)
+
         adapter.clearAllElements()
-        onNeedUpdateViewItems()
+        notifyDataSetChanged()
+
         renderPromo()
+        renderEmptyCartPlaceholder()
     }
 
-    fun onNeedUpdateViewItem(position: Int) {
+    fun notifyItemRemoved(position: Int) {
+        if (recycler_view.isComputingLayout) {
+            recycler_view.post { adapter.notifyItemRemoved(position) }
+        } else {
+            adapter.notifyItemRemoved(position)
+        }
+    }
+
+    fun notifyItemChanged(position: Int) {
         if (recycler_view.isComputingLayout) {
             recycler_view.post { adapter.notifyItemChanged(position) }
         } else {
@@ -93,24 +108,11 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         }
     }
 
-    fun onNeedUpdateViewItems() {
+    fun notifyDataSetChanged() {
         if (recycler_view.isComputingLayout) {
             recycler_view.post { adapter.notifyDataSetChanged() }
         } else {
             adapter.notifyDataSetChanged()
-        }
-    }
-
-    private fun renderPromo() {
-        if (arguments?.getString(ARG_AUTO_APPLY_MESSAGE) != null) {
-            val promoUiModel = PromoUiModel()
-            promoUiModel.messageSuccess = arguments?.getString(ARG_AUTO_APPLY_MESSAGE) ?: ""
-            promoUiModel.code = arguments?.getString(ARG_AUTO_APPLY_PROMO_CODE) ?: ""
-            promoUiModel.state = arguments?.getString(ARG_AUTO_APPLY_STATE) ?: ""
-            promoUiModel.titleDescription = arguments?.getString(ARG_AUTO_APPLY_TITLE) ?: ""
-
-            adapter.addElement(0, promoUiModel)
-            onNeedUpdateViewItem(0)
         }
     }
 
@@ -166,7 +168,7 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
             statusBarBackground.visibility = View.GONE
         }
         appbar.addView(toolbar)
-        (getActivity() as AppCompatActivity).setSupportActionBar(appbar)
+        (activity as AppCompatActivity).setSupportActionBar(appbar)
         setVisibilityRemoveButton(false)
     }
 
@@ -205,6 +207,19 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         NetworkErrorHelper.showRedSnackbar(activity, message)
     }
 
+    private fun renderPromo() {
+        if (arguments?.getString(ARG_AUTO_APPLY_MESSAGE) != null) {
+            val promoUiModel = PromoUiModel()
+            promoUiModel.messageSuccess = arguments?.getString(ARG_AUTO_APPLY_MESSAGE) ?: ""
+            promoUiModel.code = arguments?.getString(ARG_AUTO_APPLY_PROMO_CODE) ?: ""
+            promoUiModel.state = arguments?.getString(ARG_AUTO_APPLY_STATE) ?: ""
+            promoUiModel.titleDescription = arguments?.getString(ARG_AUTO_APPLY_TITLE) ?: ""
+
+            adapter.addElement(0, promoUiModel)
+            notifyItemChanged(0)
+        }
+    }
+
     override fun onClearPromo(promoCode: String) {
         showLoadingDialog()
         promoViewModel.clearCacheAutoApplyStack(promoCode, this::onSuccessClearPromo, this::onErrorClearPromo)
@@ -214,13 +229,23 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         hideLoadingDialog()
         if (adapter.getItemViewType(0) == PromoViewHolder.LAYOUT) {
             adapter.removeElement(0)
-            onNeedUpdateViewItem(0)
+            notifyItemRemoved(0)
         }
     }
 
     private fun onErrorClearPromo(e: Throwable) {
         hideLoadingDialog()
         showSnackBarError(ErrorHandler.getErrorMessage(activity, e))
+    }
+
+    private fun renderEmptyCartPlaceholder() {
+        val uiModel = EmptyCartPlaceholderUiModel()
+        adapter.addElement(uiModel)
+        notifyItemChanged(adapter.getIndexOf(uiModel))
+    }
+
+    override fun onClickShopNow() {
+        RouteManager.route(activity, ApplinkConst.HOME)
     }
 
 }

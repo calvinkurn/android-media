@@ -8,4 +8,5 @@ interface ActionListener {
 
     fun onClearPromo(promoCode: String)
 
+    fun onClickShopNow()
 }

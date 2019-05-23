@@ -21,4 +21,8 @@ class EmptyCartAdapter(adapterTypeFactory: EmptyCartAdapterTypeFactory) :
     fun removeElement(position: Int) {
         visitables.removeAt(position)
     }
+
+    fun getIndexOf(element: Visitable<*>?): Int {
+        return visitables.indexOf(element)
+    }
 }
