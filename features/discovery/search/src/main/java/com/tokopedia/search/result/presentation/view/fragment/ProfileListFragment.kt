@@ -93,6 +93,7 @@ class ProfileListFragment :
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter.attachView(this)
+        presenter.initInjector()
         presenter.attachFollowActionListener(this)
         presenter.attachSearchProfileListener(this)
 
