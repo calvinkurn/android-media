@@ -329,7 +329,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     int notificationId = bundle.getInt(Constant.EXTRA_NOTIFICATION_ID, 0);
 
                     if (notificationId == 0) {
-                        HistoryNotification.clearAllHistoryNotification(notificationType);
+                        HistoryNotification.clearAllHistoryNotification(this, notificationType);
                     } else {
                         HistoryNotification.clearHistoryNotification(this, notificationType, notificationId);
                     }
