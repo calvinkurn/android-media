@@ -106,7 +106,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
             roomListModel.isRefundable = hotelRoom.refundInfo.isRefundable
             roomListModel.isCcRequired = hotelRoom.creditCardInfo.isCCRequired
             roomListModel.creditCardInfo = hotelRoom.creditCardInfo.creditCardInfo
-            if (hotelRoom.roomPrice.isNotEmpty()) roomListModel.price = hotelRoom.roomPrice[0].totalPrice
+            roomListModel.price = hotelRoom.roomPrice.totalPrice
             roomListModel.roomLeft = hotelRoom.numberRoomLeft
             roomListModel.available = hotelRoom.available
 

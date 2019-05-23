@@ -48,7 +48,7 @@ data class HotelRoom(
 
         @SerializedName("roomPrice")
         @Expose
-        val roomPrice: List<HotelRoomPrice> = listOf(),
+        val roomPrice: HotelRoomPrice = HotelRoomPrice(),
 
         @SerializedName("roomPolicy")
         @Expose
