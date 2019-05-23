@@ -19,6 +19,8 @@
     <string name="view_similar_item">Lihat Barang Serupa</string>
     <string name="press_to_see_similar">Tekan dan tahan produk pilihan Anda untuk melihat produk serupa.</string>
     <string name="megerti">Mengerti</string>
+    <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
+    <string name="msg_add_wishlist">Sukses menambah wishlist</string>
 
     <string name="label_shop_inactive">Sudah Tidak Aktif</string>
     <string name="label_shop_close">Tutup</string>
