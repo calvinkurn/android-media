@@ -1,5 +1,9 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
@@ -45,9 +49,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
 }
 
 apply from: '../../publish_local.gradle'

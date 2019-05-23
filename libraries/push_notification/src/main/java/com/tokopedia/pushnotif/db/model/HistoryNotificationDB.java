@@ -1,33 +1,19 @@
 package com.tokopedia.pushnotif.db.model;
 
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.ConflictAction;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.pushnotif.db.PushNotificationDatabase;
-
 /**
  * @author ricoharisin .
  */
 
-@Table(database = PushNotificationDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
-public class HistoryNotificationDB extends BaseModel{
+public class HistoryNotificationDB {
 
-    @PrimaryKey(autoincrement = true)
-    @Column(name = "id")
     private int Id;
 
-    @Column(name = "sender_name")
     private String SenderName;
 
-    @Column(name = "message")
     private String Message;
 
-    @Column(name = "notification_type")
     private int NotificationType;
 
-    @Column(name = "notification_id")
     private int NotificationId;
 
     public int getId() {
