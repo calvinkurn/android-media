@@ -61,7 +61,6 @@ final class ProductListPresenter
     RemoteConfig remoteConfig;
 
     private WishListActionListener wishlistActionListener;
-    private RequestDynamicFilterListener requestDynamicFilterListener;
     private boolean enableGlobalNavWidget;
     private boolean changeParamRow;
 
@@ -80,11 +79,6 @@ final class ProductListPresenter
     @Override
     public void setWishlistActionListener(WishListActionListener wishlistActionListener) {
         this.wishlistActionListener = wishlistActionListener;
-    }
-
-    @Override
-    public void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener) {
-        this.requestDynamicFilterListener = requestDynamicFilterListener;
     }
 
     @Override
