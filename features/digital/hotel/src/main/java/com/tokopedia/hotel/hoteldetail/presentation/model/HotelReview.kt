@@ -71,10 +71,6 @@ data class HotelReview(
             @Expose
             val averageScoreReview: Int = 0,
 
-            @SerializedName("totalReviewOri")
-            @Expose
-            val totalReviewOri: Int = 0,
-
             @SerializedName("hasNext")
             @Expose
             val hasNext: Boolean = true,
