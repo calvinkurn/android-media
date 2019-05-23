@@ -13,6 +13,7 @@ query propertyReview($data:PropertyReviewRequest!){
     }
     totalReview
     averageScoreReview
+    totalReviewOri
     hasNext
     headline
   }
