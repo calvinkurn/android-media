@@ -14,8 +14,8 @@ android {
 project.ext {
     artifactId = 'cachemanager'
     groupId = 'com.tokopedia.cachemanager'
-    versionName = "${tkpdCacheManagerVersion}"
-    artifactName = "cachemanager-release"
+    versionName = "2.22"
+    artifactName = "cache_manager"
 }
 
 
@@ -29,4 +29,4 @@ dependencies {
     androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
 }
 
-apply from: '../../publish_local.gradle'
+apply from: '../publish_local.gradle'

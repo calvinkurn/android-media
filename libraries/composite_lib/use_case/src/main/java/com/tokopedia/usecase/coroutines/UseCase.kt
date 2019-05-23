@@ -1,6 +1,6 @@
 package com.tokopedia.usecase.coroutines
 
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.*
 
 abstract class UseCase<out T : Any> {
