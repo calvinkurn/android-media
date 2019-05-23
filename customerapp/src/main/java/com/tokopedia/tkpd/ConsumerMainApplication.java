@@ -391,7 +391,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
         PushNotification.initDatabase(getApplicationContext());
-        Analytics.initDB(getApplicationContext());
         CategoryDbFlow.initDatabase(getApplicationContext());
     }
 
