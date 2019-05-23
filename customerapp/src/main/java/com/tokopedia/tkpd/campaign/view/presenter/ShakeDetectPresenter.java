@@ -214,7 +214,6 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                         } else {
                             CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                             getView().showErrorGetInfo();
-                            return;
                         }
                     }
                 });
