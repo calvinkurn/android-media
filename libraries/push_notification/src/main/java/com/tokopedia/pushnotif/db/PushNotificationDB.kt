@@ -5,13 +5,13 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import com.tokopedia.pushnotif.db.dao.HistoryNotificationDao
-import com.tokopedia.pushnotif.db.model.HistoryNotificationTable
+import com.tokopedia.pushnotif.db.model.HistoryNotificationDB
 
 
 /**
  * @author okasurya on 5/22/19.
  */
-@Database(entities = [HistoryNotificationTable::class], version = PUSHNOTIF_DB_VERSION)
+@Database(entities = [HistoryNotificationDB::class], version = PUSHNOTIF_DB_VERSION)
 abstract class PushNotificationDB: RoomDatabase() {
     abstract fun historyNotificationDao(): HistoryNotificationDao
 

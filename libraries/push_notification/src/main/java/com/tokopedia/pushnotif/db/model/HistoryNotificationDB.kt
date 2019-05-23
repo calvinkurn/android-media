@@ -6,17 +6,17 @@ import android.arch.persistence.room.PrimaryKey
 import com.tokopedia.pushnotif.db.HISTORY_NOTIFICATION_TABLE
 
 @Entity(tableName = HISTORY_NOTIFICATION_TABLE)
-data class HistoryNotificationTable(
+data class HistoryNotificationDB(
     @ColumnInfo(name = "sender_name")
-    val SenderName: String,
+    val senderName: String,
     @ColumnInfo(name = "message")
-    val Message: String,
+    val message: String,
     @ColumnInfo(name = "notification_type")
-    val NotificationType: Int,
+    val notificationType: Int,
     @ColumnInfo(name = "notification_id")
-    val NotificationId: Int
+    val notificationId: Int
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var Id: Int = 0
+    var id: Int = 0
 }
