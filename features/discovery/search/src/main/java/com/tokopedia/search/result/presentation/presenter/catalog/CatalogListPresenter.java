@@ -92,11 +92,10 @@ final class CatalogListPresenter
 
     private RequestParams createRequestDynamicFilterParams(Map<String, Object> searchParameterMap) {
         RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(searchParameterMap);
         requestParams.putAllString(generateParamsNetwork(requestParams));
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_CATALOG);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-
-        requestParams.putAll(searchParameterMap);
 
         return requestParams;
     }

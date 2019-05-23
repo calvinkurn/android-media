@@ -136,11 +136,10 @@ final class ShopListPresenter
 
     private RequestParams createRequestDynamicFilterParams(Map<String, Object> searchParameter) {
         RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(searchParameter);
         requestParams.putAllString(generateParamsNetwork(requestParams));
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SHOP);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-
-        requestParams.putAll(searchParameter);
 
         return requestParams;
     }
