@@ -12,6 +12,9 @@ public class ValidateOtpPojo {
     @SerializedName("uuid")
     @Expose
     String uuid;
+    @SerializedName("msisdn")
+    @Expose
+    String msisdn;
 
     public int getIsSuccess() {
         return isSuccess;
@@ -20,4 +23,9 @@ public class ValidateOtpPojo {
     public String getUuid() {
         return uuid;
     }
+
+    public String getMsisdn() {
+        return msisdn;
+    }
+
 }
