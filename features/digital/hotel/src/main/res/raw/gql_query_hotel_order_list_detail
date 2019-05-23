@@ -1,0 +1,93 @@
+query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
+  orderDetails(orderCategoryStr: $orderCategoryStr, orderId: $orderId) {
+    status {
+      status
+      statusText
+    }
+    title {
+      label
+      value
+    }
+    invoice {
+      invoiceRefNum
+      invoiceUrl
+    }
+    actionButtons {
+      label
+      buttonType
+      uri
+      weight
+      uriWeb
+    }
+    contactUs {
+      helpText
+      helpUrl
+    }
+    hotelTransportDetails{
+      conditionalInfoTop{
+        Title
+      }
+      conditionalInfoBottom{
+        Title
+      }
+      guestDetail{
+        title
+        content
+      }
+      propertyDetail{
+        bookingKey{
+          title
+          content
+        }
+        image{
+          urlMax360
+          urlSquare60
+          urlOriginal
+        }
+        checkInOut{
+          title
+          content
+          checkInOut{
+            day
+            date
+            time
+          }
+        }
+        propertyInfo{
+          types
+          name
+          address
+          starRating
+        }
+        room{
+          title
+          content
+          amenities{
+            content
+          }
+        }
+        specialRequest{
+          title
+          content
+        }
+        extraInfo
+      }
+      payment{
+        title
+        detail{
+          title
+          content
+        }
+        fares{
+          title
+          content
+        }
+        summary{
+          title
+          content
+        }
+
+      }
+    }
+  }
+}

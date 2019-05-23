@@ -3,8 +3,10 @@ query suggestion($data: PropertySuggestionSearchParam!) {
     data {
       id
       type
+      typeID
       tag
       icon
+      iconURL
       name
       location
       hotelCount
