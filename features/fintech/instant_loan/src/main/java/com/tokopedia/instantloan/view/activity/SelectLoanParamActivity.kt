@@ -10,7 +10,6 @@ import android.view.*
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.data.model.response.LoanPeriodType
 import java.util.*
@@ -26,7 +25,7 @@ class SelectLoanParamActivity : BaseActivity() {
     private var selectedValue: String? = null
 
     override fun getScreenName(): String? {
-        return AppScreen.SCREEN_SORT_PRODUCT
+        return ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,12 +53,12 @@ class SelectLoanParamActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(com.tokopedia.core2.R.menu.menu_sort, menu)
+        menuInflater.inflate(R.menu.menu_sort, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == com.tokopedia.core2.R.id.action_close) {
+        if (item.itemId == R.id.action_close) {
             finish()
         }
         return super.onOptionsItemSelected(item)
@@ -67,7 +66,7 @@ class SelectLoanParamActivity : BaseActivity() {
 
     override fun finish() {
         super.finish()
-        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.core2.R.anim.push_down)
+        overridePendingTransition(android.R.anim.fade_in, R.anim.push_down)
     }
 
     private inner class ListAdapter(sortList: List<LoanPeriodType>?, private var selectedKey: Int, private var selectedValue: String?, internal var clickListener: OnItemClickListener) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
@@ -82,20 +81,13 @@ class SelectLoanParamActivity : BaseActivity() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val v = LayoutInflater.from(parent.context).inflate(com.tokopedia.core2.R.layout.sort_list_item, parent, false)
+            val v = LayoutInflater.from(parent.context).inflate(R.layout.sort_list_item, parent, false)
             return ViewHolder(v)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.title.text = sortList[position].label
             holder.title.tag = sortList[position].value
-            /*if (selectedValue == null) {
-                if (position == 0) {
-                    holder.title.isSelected = true
-                }
-            } else {
-                holder.title.isSelected = sortList[position].label == selectedKey.toString() && sortList[position].value == selectedValue
-            }*/
 
             holder.title.isSelected = sortList[position].isSelected
             holder.title.setOnClickListener(View.OnClickListener {
@@ -120,7 +112,7 @@ class SelectLoanParamActivity : BaseActivity() {
             var title: TextView
 
             init {
-                title = v.findViewById<View>(com.tokopedia.core2.R.id.title) as TextView
+                title = v.findViewById<View>(R.id.title) as TextView
                 title.setOnClickListener(this)
             }
 

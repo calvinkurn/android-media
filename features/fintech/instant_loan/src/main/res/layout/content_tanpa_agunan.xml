@@ -15,88 +15,47 @@
         android:text="@string/label_loan_amount"
         android:textColor="@color/black_54"
         android:textSize="@dimen/sp_12"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/cl_info_one"
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/loan_amount_limit"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/text_form_description">
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:text="@string/label_loan_amount"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_10"
+        android:visibility="gone"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_form_description"
+        app:layout_constraintBottom_toBottomOf="@+id/text_form_description"
+        app:layout_constraintStart_toEndOf="@+id/text_form_description" />
 
 
-        <TextView
-            android:id="@+id/text_label_amount"
-            style="@style/LoanInfoLabelText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/il_margin_medium"
-            android:text="@string/label_amount"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/text_value_amount"
-            style="@style/DefaultValueText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/il_margin_xsmall"
-            android:text="1 Juta - 500"
-            app:layout_constraintLeft_toLeftOf="@+id/text_label_amount"
-            app:layout_constraintRight_toLeftOf="@+id/line_separator_vertical_one"
-            app:layout_constraintTop_toBottomOf="@+id/text_label_amount" />
-
-        <View
-            android:id="@+id/line_separator_vertical_one"
-            android:layout_width="2dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/il_margin_medium"
-            android:background="@color/white_four"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/text_label_duration"
-            style="@style/LoanInfoLabelText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_small_sm"
-            android:layout_marginLeft="@dimen/margin_small_sm"
-            android:layout_marginTop="@dimen/il_margin_medium"
-            android:text="@string/label_duration"
-            app:layout_constraintStart_toEndOf="@+id/line_separator_vertical_one"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/text_value_duration"
-            style="@style/DefaultValueText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_small_sm"
-            android:layout_marginLeft="@dimen/margin_small_sm"
-            android:layout_marginTop="@dimen/il_margin_xsmall"
-            android:text="7 - 18 Hari"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/line_separator_vertical_one"
-            app:layout_constraintTop_toBottomOf="@+id/text_label_duration" />
-    </android.support.constraint.ConstraintLayout>
+    <com.tokopedia.instantloan.view.ui.WidgetAddRemove
+        android:id="@+id/widget_add_remove"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_form_description"
+        app:war_btnDisableTintColor="@color/grey_400"
+        app:war_btnEnableTintColor="@color/colorPrimary" />
 
 
     <TextView
         android:id="@+id/text_loan_period"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Periode Pinjaman"
+        android:text="@string/il_loan_period"
         android:textColor="@color/black_54"
+        android:layout_marginTop="@dimen/dp_16"
         android:textSize="@dimen/sp_12"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cl_info_one"
+        app:layout_constraintTop_toBottomOf="@+id/widget_add_remove"
         tools:layout_editor_absoluteX="0dp" />
 
 

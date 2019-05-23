@@ -17,21 +17,20 @@ import com.tokopedia.instantloan.InstantLoanComponentInstance
 import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
-import com.tokopedia.instantloan.data.model.response.GqlFilterData
-import com.tokopedia.instantloan.data.model.response.LoanPeriodType
-import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
-import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
+import com.tokopedia.instantloan.data.model.response.*
 import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.activity.SelectLoanParamActivity
 import com.tokopedia.instantloan.view.contractor.OnlineLoanContractor
 import com.tokopedia.instantloan.view.fragment.DanaInstantFragment.Companion.LOGIN_REQUEST_CODE
 import com.tokopedia.instantloan.view.presenter.OnlineLoanPresenter
+import com.tokopedia.instantloan.view.ui.WidgetAddRemove
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.content_tanpa_agunan.*
 import javax.inject.Inject
 
 
-class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View {
+class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, WidgetAddRemove.OnButtonClickListener {
+
 
     @Inject
     lateinit var presenter: OnlineLoanPresenter
@@ -42,16 +41,20 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View {
     lateinit var userSession: UserSession
 
     private lateinit var loanPeriodLabelTV: TextView
+    private lateinit var widgetAddRemove: WidgetAddRemove
+    private lateinit var loanAmountWarning: TextView
     private lateinit var loanPeriodValueTV: TextView
     private lateinit var selectedLoanPeriodType: LoanPeriodType
     private lateinit var selectedLoanPeriodMonth: LoanPeriodType
     private lateinit var selectedLoanPeriodYear: LoanPeriodType
+    private lateinit var selectedLoanAmountResponse: GqlLoanAmountResponse
 
     private var currentLoanPeriodType: Int = 0
 
     private var loanPeriodMonthList: ArrayList<LoanPeriodType> = ArrayList()
     private var loanPeriodYearList: ArrayList<LoanPeriodType> = ArrayList()
     private var loanPeriodTypeList: ArrayList<LoanPeriodType> = ArrayList()
+    private var loanAmountList: ArrayList<GqlLoanAmountResponse> = ArrayList()
     private var mCurrentTab: Int = 0
     private var mContext: Context? = null
 
@@ -95,6 +98,12 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View {
 
         loanPeriodLabelTV = spinner_label_nominal.findViewById(R.id.tv_label_text)
         loanPeriodValueTV = spinner_value_nominal.findViewById(R.id.tv_label_text)
+        widgetAddRemove = view.findViewById(R.id.widget_add_remove)
+
+        widgetAddRemove.setButtonClickListener(this)
+
+
+        loanAmountWarning = widgetAddRemove.findViewById(R.id.tv_warning)
 
         loanPeriodLabelTV.text = "Pilih"
         spinner_label_nominal.setOnClickListener {
@@ -233,6 +242,18 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View {
         prepareLoanPeriodListYear(gqlFilterData.gqlLoanPeriodResponse.loanYear.min, gqlFilterData.gqlLoanPeriodResponse.loanYear.max)
 
         gqlFilterData.gqlLoanAmountResponse.sortBy { it.value }
+
+        loanAmountList = gqlFilterData.gqlLoanAmountResponse
+
+
+        widgetAddRemove.setMinQuantity(0)
+        widgetAddRemove.setMaxQuantity(loanAmountList.size)
+
+        loan_amount_limit.text = "(${loanAmountList[0].label} - ${loanAmountList[loanAmountList.lastIndex].label})"
+        loan_amount_limit.visibility = View.VISIBLE
+
+        widgetAddRemove.setText(loanAmountList[0].label)
+
     }
 
     private fun prepareLoanPeriodTypeList() {
@@ -264,6 +285,28 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View {
         for (value in min..max) {
             loamPeriodMonth = LoanPeriodType(value.toString(), "$value Bulan", i++)
             loanPeriodMonthList.add(loamPeriodMonth)
+        }
+    }
+
+    override fun onDecreaseButtonClicked(currentQuantity: Int) {
+        if (currentQuantity in 0 until loanAmountList.size) {
+            loanAmountWarning.visibility = View.INVISIBLE
+            widgetAddRemove.setText(loanAmountList[currentQuantity].label)
+        } else {
+            loanAmountWarning.visibility = View.VISIBLE
+            loanAmountWarning.text = "Minimal Pinjaman ${loanAmountList[0].label}"
+        }
+    }
+
+    override fun onIncreaseButtonClicked(currentQuantity: Int) {
+
+
+        if (currentQuantity in 0 until loanAmountList.size) {
+            loanAmountWarning.visibility = View.INVISIBLE
+            widgetAddRemove.setText(loanAmountList[currentQuantity].label)
+        } else {
+            loanAmountWarning.visibility = View.VISIBLE
+            loanAmountWarning.text = "Maksimal Pinjaman ${loanAmountList.last().label} "
         }
     }
 

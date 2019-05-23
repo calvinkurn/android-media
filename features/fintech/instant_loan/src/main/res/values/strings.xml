@@ -108,6 +108,7 @@
     <string name="il_lending_partner">Mitra Kami</string>
     <string name="label_loan_online">Pinjaman Online</string>
     <string name="label_loan_amount">Jumlah Pinjaman</string>
+    <string name="il_loan_period">Periode Pinjaman</string>
 
 
 </resources>
