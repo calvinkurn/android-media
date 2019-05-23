@@ -9,11 +9,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
+import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
@@ -22,6 +27,9 @@ import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
 import com.tokopedia.digital_deals.view.utils.CategoryDetailCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CategoryDetailActivity extends DealsBaseActivity implements CategoryDetailCallbacks {
 
@@ -80,7 +88,6 @@ public class CategoryDetailActivity extends DealsBaseActivity implements Categor
         categoryName = getIntent().getStringExtra(CATEGORY_NAME);
         if (TextUtils.isEmpty(categoryName))
             categoryName = getString(R.string.text_deals);
-        updateTitle(categoryName);
         getSupportFragmentManager().addOnBackStackChangedListener(getListener());
 
         return CategoryDetailHomeFragment.createInstance(getIntent().getExtras());
@@ -127,6 +134,4 @@ public class CategoryDetailActivity extends DealsBaseActivity implements Categor
 
         return result;
     }
-
-
 }

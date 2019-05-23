@@ -64,6 +64,7 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
     public void onDestroy() {
         getAllBrandsUseCase.unsubscribe();
         getNextAllBrandPageUseCase.unsubscribe();
+        getLocationListRequestUseCase.unsubscribe();
     }
 
 

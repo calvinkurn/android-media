@@ -74,6 +74,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private TextView tvCityName;
     private List<Brand> brands = new ArrayList<>();
     List<CategoriesModel> categoryList = new ArrayList<>();
+    private String categoryId;
 
     @Inject
     public DealsSearchPresenter mPresenter;
@@ -100,6 +101,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         searchInputView.setListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         categoryList = getIntent().getParcelableArrayListExtra(EXTRA_LIST);
+        categoryId = getIntent().getStringExtra("cat_id");
         mPresenter.attachView(this);
         mPresenter.initialize();
     }
@@ -224,7 +226,17 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Override
     public RequestParams getParams() {
-        return RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
+        if (!TextUtils.isEmpty(searchInputView.getSearchText())) {
+            requestParams.putString(Utils.BRAND_QUERY_TAGS, searchInputView.getSearchText());
+        }
+        Location location = Utils.getSingletonInstance().getLocation(this);
+        requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
+        requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND_AND_PRODUCT);
+        if (!TextUtils.isEmpty(categoryId)) {
+            requestParams.putString(Utils.QUERY_PARAM_CHILD_CATEGORY_ID, categoryId);
+        }
+        return requestParams;
     }
 
     @Override

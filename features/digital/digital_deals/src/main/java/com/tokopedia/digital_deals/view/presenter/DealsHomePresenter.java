@@ -301,7 +301,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 getView().renderTopDeals(getCarouselOrTop(categoryItems, TOP));
                 getView().renderCarousels(getCarouselOrTop(categoryItems, CAROUSEL));
 
-                getView().renderCategoryList(getCategories(dealsResponse.getCategoryItems()));
+                getView().renderCategoryList(getCategories(dealsResponse.getCategoryItems()), categoriesModels);
                 getView().renderCuratedDealsList(getCuratedDeals(dealsResponse.getCategoryItems(), TOP));
 
                 Type token2 = new TypeToken<DataResponse<AllBrandsResponse>>() {
@@ -427,6 +427,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                     categoriesModel.setCategoryUrl(listItems.get(i).getCategoryUrl());
                     categoriesModel.setPosition(i - 1);
                     categoriesModel.setCategoryId(listItems.get(i).getCategoryId());
+                    categoriesModel.setItems(listItems.get(i).getItems());
                     categoriesModels.add(categoriesModel);
                 }
             }

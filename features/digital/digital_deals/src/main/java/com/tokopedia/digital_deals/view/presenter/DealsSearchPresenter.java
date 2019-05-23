@@ -64,12 +64,7 @@ public class DealsSearchPresenter
             return;
         }
         highlight = searchText;
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(getSearchDealsListRequestUseCase.TAG, searchText);
-        Location location = Utils.getSingletonInstance().getLocation(getView().getActivity());
-        requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
-        requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, "brand_product");
-        getSearchDealsListRequestUseCase.setRequestParams(requestParams);
+        getSearchDealsListRequestUseCase.setRequestParams(getView().getParams());
         getSearchDealsListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -102,7 +97,6 @@ public class DealsSearchPresenter
 
     @Override
     public void initialize() {
-//        mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
         mTopDeals = TopDealsCacheHandler.init().getTopDeals();
         if (mTopDeals != null && mTopDeals.size() > 0) {
             getView().showSuggestedDeals(mTopDeals, true);

@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -60,6 +61,7 @@ public class Utils {
     public static String BRAND_QUERY_PARAM_TREE = "tree";
     public static String BRAND_QUERY_TAGS = "tags";
     public static String BRAND_QUERY_PARAM_BRAND = "brand";
+    public static String BRAND_QUERY_PARAM_BRAND_AND_PRODUCT = "brand_product";
     public static String QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
     public static String QUERY_PARAM_CITY_ID = "cities";
     public static String LOCATION_NAME = "jakarta";
@@ -69,6 +71,7 @@ public class Utils {
     private static final float MIN_RADIUS = 0.0f;
     public static Locale locale = new Locale("in", "ID");
     private static final String RUPIAH_FORMAT = "Rp %s";
+    private static final String SHOWCASE_PREFERENCES = "show_case_pref";
     private SparseIntArray likedEventMap;
     private SparseIntArray unLikedEventMap;
 
@@ -380,6 +383,19 @@ public class Utils {
         }
 
         return newUri.build();
+    }
+
+    public static boolean hasShown(Context context, String tag){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHOWCASE_PREFERENCES,
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(tag, false);
+    }
+
+    public static void setShown(Context context, String tag, boolean hasShown){
+        SharedPreferences.Editor sharedPreferencesEditor = context.getSharedPreferences(SHOWCASE_PREFERENCES,
+                Context.MODE_PRIVATE).edit();
+        sharedPreferencesEditor.putBoolean (tag, hasShown);
+        sharedPreferencesEditor.apply();
     }
 
 }

@@ -3,13 +3,18 @@ package com.tokopedia.digital_deals.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,22 +22,31 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
+import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
+import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsCategoryDetailContract;
+import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
+import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
@@ -43,6 +57,7 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -50,7 +65,7 @@ import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class CategoryDetailHomeFragment extends BaseDaggerFragment implements DealsCategoryDetailContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest {
+public class CategoryDetailHomeFragment extends BaseDaggerFragment implements DealsCategoryDetailContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet {
 
     private final boolean IS_SHORT_LAYOUT = true;
     private RecyclerView recyclerViewDeals;
@@ -58,14 +73,13 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private View progressBarLayout;
     private ProgressBar progBar;
     private CoordinatorLayout mainContent;
-    private CoordinatorLayout baseMainContent;
     private ConstraintLayout clBrands;
-    private Menu mMenu;
     private TextView seeAllBrands;
     private TextView popularLocation;
     private TextView numberOfDeals;
     private LinearLayoutManager layoutManager;
-    private ScrollView noContent;
+    private LinearLayout noContent;
+    private Toolbar toolbar;
     @Inject
     DealsAnalytics dealsAnalytics;
     @Inject
@@ -76,8 +90,15 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private DealsCategoryAdapter dealsAdapter;
     private int adapterPosition = -1;
     private boolean forceRefresh;
-    private final int MAX_BRANDS = 8;
-
+    public static final String SEARCH_TEXT = "search_text";
+    private TextView toolbarTitle;
+    private TextView searchInputView;
+    private ImageView backArrow;
+    private String searchText;
+    CloseableBottomSheetDialog selectLocationFragment;
+    List<CategoriesModel> categoryList = new ArrayList<>();
+    List<ProductItem> categoryItems = new ArrayList<>();
+    private AppBarLayout appBarLayout;
 
     @Override
     protected void initInjector() {
@@ -96,7 +117,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.categoriesModel = getArguments().getParcelable(CategoryDetailActivity.CATEGORIES_DATA);
-
+        this.categoryList = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_LIST);
+        this.categoryItems = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_CATEGOTRY_LIST);
     }
 
     @Override
@@ -113,25 +135,61 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
 
     private void setViewIds(View view) {
-
+        toolbar = view.findViewById(R.id.toolbar_category);
+        appBarLayout = view.findViewById(R.id.app_bar_layout);
+        searchInputView = view.findViewById(R.id.search_input_view);
+        backArrow = view.findViewById(R.id.backArraw);
+        toolbarTitle = view.findViewById(R.id.tv_location_name);
+        searchInputView.setOnClickListener(this);
         seeAllBrands = view.findViewById(R.id.tv_see_all);
         popularLocation = view.findViewById(R.id.tv_popular);
         numberOfDeals = view.findViewById(R.id.number_of_locations);
         recyclerViewDeals = view.findViewById(R.id.rv_deals);
         recyclerViewBrands = view.findViewById(R.id.rv_brands);
         mainContent = view.findViewById(R.id.main_content);
-        baseMainContent = view.findViewById(R.id.base_main_content);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         progBar = view.findViewById(R.id.prog_bar);
         clBrands = view.findViewById(R.id.cl_brands);
-        noContent = view.findViewById(R.id.scroll_view_no_content);
+        noContent = view.findViewById(R.id.no_content);
         seeAllBrands.setOnClickListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewDeals.setLayoutManager(layoutManager);
         dealsAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.CATEGORY_PAGE, this, !IS_SHORT_LAYOUT);
         dealsAdapter.setCategoryName(categoriesModel.getTitle());
         recyclerViewDeals.setAdapter(dealsAdapter);
+        searchText = getArguments().getString(SEARCH_TEXT);
+        if (!TextUtils.isEmpty(searchText)) {
+            searchInputView.setText(searchText);
+        }
+        toolbarTitle.setOnClickListener(this);
+        KeyboardHandler.DropKeyboard(getContext(), searchInputView);
 
+        Location location = Utils.getSingletonInstance().getLocation(getContext());
+        if (location != null) {
+            toolbarTitle.setText(location.getName());
+        }
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
+//        nestedScrollView.setNestedScrollingEnabled(false);
+//        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+//            @Override
+//            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+//                if (scrollY == 0) {
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                        appBarLayout.setElevation(0.0f);
+//                    }
+//                } else {
+////                    mPresenter.onRecyclerViewScrolled(layoutManager);
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                        appBarLayout.setElevation(4.0f);
+//                    }
+//                }
+//            }
+//        });
     }
 
 
@@ -153,6 +211,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     @Override
     public void renderCategoryList(List<ProductItem> deals, int count) {
+        searchInputView.setHint(String.format(getContext().getResources().getString(R.string.search_input_hint_category), this.categoriesModel.getName()));
         Location location = Utils.getSingletonInstance().getLocation(getContext());
         if (location != null)
             locationName = location.getName();
@@ -177,8 +236,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         }
 
         if (!TextUtils.isEmpty(locationName))
-            popularLocation.setText(String.format(getActivity().getResources().getString(R.string.popular_deals_in_location)
-                    , locationName));
+            popularLocation.setText(String.format(getActivity().getResources().getString(R.string.popular_deals_in_location), this.categoriesModel.getTitle(), locationName));
         else
             popularLocation.setText(getActivity().getResources().getString(R.string.text_deals));
     }
@@ -194,8 +252,11 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     private void setBrandsAdapter(List<Brand> brandList) {
-        int maxBrands = brandList.size() < MAX_BRANDS ? brandList.size() : MAX_BRANDS;
-        recyclerViewBrands.setAdapter(new DealsBrandAdapter(brandList.subList(0, maxBrands), DealsBrandAdapter.ITEM_BRAND_SHORT));
+        int itemCount = Utils.getScreenWidth() / (int) (getResources().getDimension(R.dimen.dp_66) + getResources().getDimension(R.dimen.dp_8));//Divide by item width including margin
+        int maxBrands = Math.min(brandList.size(), itemCount);
+        recyclerViewBrands.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewBrands.setAdapter(new DealsBrandAdapter(brandList.subList(0, maxBrands), DealsBrandAdapter.ITEM_BRAND_HOME));
     }
 
     @Override
@@ -216,27 +277,27 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         super.onCreateOptionsMenu(menu, inflater);
 
         inflater.inflate(R.menu.menu_category_detail, menu);
-        mMenu = menu;
         onPrepareOptionsMenu(menu);
 
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return mPresenter.onOptionMenuClick(id);
+//        int id = item.getItemId();
+//        return mPresenter.onOptionMenuClick(id);
+        return true;
     }
 
     @Override
     public void hideSearchButton() {
-        MenuItem item = mMenu.findItem(R.id.action_menu_search);
-        item.setVisible(false);
+//        MenuItem item = mMenu.findItem(R.id.action_menu_search);
+//        item.setVisible(false);
     }
 
     @Override
     public void showSearchButton() {
-        MenuItem item = mMenu.findItem(R.id.action_menu_search);
-        item.setVisible(true);
+//        MenuItem item = mMenu.findItem(R.id.action_menu_search);
+//        item.setVisible(true);
 
     }
 
@@ -266,7 +327,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     @Override
     public void showViews() {
-        baseMainContent.setVisibility(View.VISIBLE);
+        mainContent.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -290,7 +351,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            mPresenter.onRecyclerViewScrolled(layoutManager);
+                mPresenter.onRecyclerViewScrolled(layoutManager);
         }
     };
 
@@ -379,7 +440,18 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.tv_see_all) {
-            fragmentCallbacks.replaceFragment(categoriesModel);
+            Intent brandIntent = new Intent(getContext(), AllBrandsActivity.class);
+            brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoryList);
+            brandIntent.putExtra(AllBrandsActivity.SEARCH_TEXT, searchInputView.getText().toString());
+            navigateToActivity(brandIntent);
+        } else if (v.getId() == R.id.tv_location_name) {
+            mPresenter.getLocations();
+        } else if (v.getId() == R.id.search_input_view) {
+            Intent searchIntent = new Intent(getContext(), DealsSearchActivity.class);
+            TopDealsCacheHandler.init().setTopDeals(getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_CATEGOTRY_LIST));
+            searchIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoryList);
+            searchIntent.putExtra("cat_id", String.valueOf(categoriesModel.getCategoryId()));
+            getContext().startActivity(searchIntent);
         } else {
             mPresenter.onOptionMenuClick(v.getId());
         }
@@ -417,5 +489,32 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                 dealsAdapter.notifyDataSetChanged();
             forceRefresh = false;
         }
+    }
+
+    @Override
+    public void onLocationItemSelected(boolean locationUpdated) {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (locationUpdated && location != null) {
+            mPresenter.getBrandsList(true);
+            mPresenter.getCategoryDetails(true);
+            toolbarTitle.setText(location.getName());
+        }
+        if (selectLocationFragment != null) {
+            selectLocationFragment.dismiss();
+        }
+    }
+
+    @Override
+    public void closeBottomsheet() {
+        if (selectLocationFragment != null) {
+            selectLocationFragment.dismiss();
+        }
+    }
+
+    @Override
+    public void startLocationFragment(List<Location> locations) {
+        selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(getContext(), false, locations, this, toolbarTitle.getText().toString(), this), "", false);
+        selectLocationFragment.show();
     }
 }

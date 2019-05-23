@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 public class AllBrandsActivity extends DealsBaseActivity implements SearchInputView.Listener, View.OnClickListener, AllBrandsFragment.UpdateLocation {
 
+    public static final String EXTRA_CATEGOTRY_LIST = "category_item_list";
     private ViewPager categoryViewPager;
     private TabLayout tabs;
     private BrandsFragmentPagerAdapter brandsTabsPagerAdapter;

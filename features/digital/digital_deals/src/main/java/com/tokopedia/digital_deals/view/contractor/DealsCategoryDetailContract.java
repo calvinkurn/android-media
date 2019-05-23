@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.usecase.RequestParams;
 
@@ -51,6 +52,8 @@ public class DealsCategoryDetailContract {
         void showViews();
 
         void checkLocationStatus();
+
+        void startLocationFragment(List<Location> locations);
     }
 
     public interface Presenter extends CustomerPresenter<DealsCategoryDetailContract.View> {
@@ -60,6 +63,8 @@ public class DealsCategoryDetailContract {
         void onDestroy();
 
         boolean onOptionMenuClick(int id);
+
+        void searchSubmitted(String searchText);
 
         void onRecyclerViewScrolled(LinearLayoutManager layoutManager);
 

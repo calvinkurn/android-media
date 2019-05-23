@@ -1,12 +1,16 @@
 package com.tokopedia.digital_deals.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
@@ -32,24 +36,26 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.coachmark.CoachMark;
+import com.tokopedia.coachmark.CoachMarkBuilder;
+import com.tokopedia.coachmark.CoachMarkContentPosition;
+import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
-import com.tokopedia.digital_deals.view.activity.DealsBaseActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
@@ -66,9 +72,16 @@ import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,6 +96,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, DealsLocationAdapter.ActionListener, CloseableBottomSheetDialog.OnCancelListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet, PopupMenu.OnMenuItemClickListener {
 
+    private final long SHOW_CASE_DELAY = 400;
 
     private Menu mMenu;
     @Inject
@@ -121,6 +135,9 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private CloseableBottomSheetDialog selectLocationFragment;
     private RecyclerView rvSearchResults;
     public static boolean isLocationUpdated = false;
+    private CategoryItem categoryItem;
+    private boolean isFirstTime = false;
+    private TextView promoheading;
 
     public static Fragment createInstance() {
         Fragment fragment = new DealsHomeFragment();
@@ -162,11 +179,31 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (location != null) {
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
-
+            startShowCase();
         } else {
             mPresenter.getLocations(true);
         }
+    }
 
+    private void startShowCase() {
+        ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
+        coachItems.add(new CoachMarkItem(tvLocationName, getString(R.string.coachicon_title_location), getString(R.string.coachicon_description_location)));
+        coachItems.add(new CoachMarkItem(searchInputView, getString(R.string.coachicon_title_searchbar), getString(R.string.coachicon_description_searchbar)));
+        coachItems.add(new CoachMarkItem(promoheading, getString(R.string.coachicon_title_promo), getString(R.string.coachicon_description_promo), CoachMarkContentPosition.BOTTOM, R.color.white, nestedScrollView));
+        CoachMark coachMark = new CoachMarkBuilder().build();
+        coachMark.setShowCaseStepListener(new CoachMark.OnShowCaseStepListener() {
+            @Override
+            public boolean onShowCaseGoTo(int prev, int next, @NotNull CoachMarkItem coachMarkItem) {
+                if (next == 2) {
+                    nestedScrollView.smoothScrollTo(0, curatedDealsLayout.getBottom());
+                }
+                return false;
+            }
+        });
+        if (!Utils.hasShown(getActivity(), DealsHomeFragment.class.getName())) {
+            coachMark.show(getActivity(), "SampleCoachMark", coachItems);
+            Utils.setShown(getActivity(), DealsHomeFragment.class.getName(), true);
+        }
     }
 
     @Override
@@ -197,6 +234,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         tvSeeAllBrands = view.findViewById(R.id.tv_see_all_brands);
         tvSeeAllTrendingDeals = view.findViewById(R.id.tv_see_all_deals);
         curatedDealsLayout = view.findViewById(R.id.curated_deals);
+        promoheading = view.findViewById(R.id.tv_promos);
         tvSeeAllBrands.setOnClickListener(this);
         searchInputView.setOnClickListener(this);
         tvLocationName.setOnClickListener(this);
@@ -338,7 +376,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void renderCategoryList(List<CategoryItem> categoryList) {
+    public void renderCategoryList(List<CategoryItem> categoryList, List<CategoriesModel> categoriesModels) {
         if (categoryList != null) {
             applyFilterOnCategories(categoryList);
             catItems.removeAllViews();
@@ -365,7 +403,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                         categoriesModel.setCategoryUrl(categoryList.get(position1).getCategoryUrl());
                         categoriesModel.setCategoryId(categoryList.get(position1).getCategoryId());
                         categoriesModel.setPosition(position1);
-                        openCategoryDetail(categoriesModel);
+                        openCategoryDetail(categoriesModel, categoriesModels);
                     }
                 });
                 view.setLayoutParams(params);
@@ -382,7 +420,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startDealsCategoryFragment(categoryList);
+                    startDealsCategoryFragment(categoryList, categoriesModels);
                 }
             });
         }
@@ -430,6 +468,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void renderTopDeals(CategoryItem categoryItem) {
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
+            this.categoryItem = categoryItem;
             trendingDeals.setVisibility(View.VISIBLE);
             if (categoryItem.getItems().size() >= 9) {
                 tvSeeAllTrendingDeals.setVisibility(View.VISIBLE);
@@ -694,6 +733,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
         Utils.getSingletonInstance().updateLocation(getContext(), locationList.get(0));
+        this.isFirstTime = isForFirstime;
         if (isForFirstime) {
             mPresenter.getDealsList(false);
         }
@@ -705,7 +745,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void startDealsCategoryFragment(List<CategoryItem> categoryItems) {
+    public void startDealsCategoryFragment(List<CategoryItem> categoryItems, List<CategoriesModel> categoriesModels) {
         View categoryView = getLayoutInflater().inflate(R.layout.deals_category_bottomsheet_layout, null);
         RecyclerView recyclerView = categoryView.findViewById(R.id.rv_category_items);
         ImageView crossIcon = categoryView.findViewById(R.id.cross_icon_bottomsheet);
@@ -715,7 +755,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 dealsCategoryBottomSheet.dismiss();
             }
         });
-        DealsCategoryItemAdapter adapter = new DealsCategoryItemAdapter(categoryItems, this);
+        DealsCategoryItemAdapter adapter = new DealsCategoryItemAdapter(categoryItems, categoriesModels, this);
         recyclerView.setAdapter(adapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 5,
                 GridLayoutManager.VERTICAL, false);
@@ -726,7 +766,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void openCategoryDetail(CategoriesModel categoriesModel) {
+    public void openCategoryDetail(CategoriesModel categoriesModel, List<CategoriesModel> categoriesModels) {
         if (dealsCategoryBottomSheet != null) {
             dealsCategoryBottomSheet.dismiss();
         }
@@ -734,6 +774,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         detailsIntent.putExtra(CategoryDetailActivity.CATEGORIES_DATA, categoriesModel);
         detailsIntent.putExtra(CategoryDetailActivity.CATEGORY_NAME, categoriesModel.getTitle());
         detailsIntent.putExtra(CategoryDetailActivity.FROM_HOME, true);
+        detailsIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
+        detailsIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_CATEGOTRY_LIST, (ArrayList<? extends Parcelable>) this.categoryItem.getItems());
         getActivity().startActivity(detailsIntent);
     }
 
