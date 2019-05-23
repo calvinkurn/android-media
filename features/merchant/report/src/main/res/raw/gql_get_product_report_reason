@@ -1,5 +1,5 @@
 {
-  visionProductReportReason(lang: "id"){
+  visionGetReportProductReason(lang: "id"){
     category_id
     child{
       category_id
@@ -11,8 +11,14 @@
       additional_fields{
         detail
         key
-        Max
+        max
+        min
         type
+        label
+      }
+      additional_info{
+        type
+        label
         value
       }
       detail
@@ -21,8 +27,14 @@
     additional_fields{
       detail
       key
-      Max
+      max
+      min
       type
+      label
+    }
+    additional_info{
+      type
+      label
       value
     }
     detail

@@ -11,13 +11,21 @@ import com.tokopedia.report.di.MerchantReportComponent
 import com.tokopedia.report.view.fragment.ProductReportFragment
 
 class ProductReportActivity: BaseSimpleActivity(), HasComponent<MerchantReportComponent> {
+    private val fragment = ProductReportFragment()
 
-    override fun getNewFragment(): Fragment = ProductReportFragment()
+    override fun getNewFragment(): Fragment = fragment
 
     override fun getComponent(): MerchantReportComponent = DaggerMerchantReportComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
     companion object {
          fun getCallingIntent(context: Context): Intent = Intent(context, ProductReportActivity::class.java)
+    }
+
+    override fun onBackPressed() {
+        if(!fragment.isInRoot){
+            fragment.onBackPressed()
+        } else
+            super.onBackPressed()
     }
 }

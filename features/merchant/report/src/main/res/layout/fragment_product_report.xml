@@ -1,42 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@color/white"
+<com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_22">
-
-    <com.tokopedia.design.component.TextViewCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:textColor="#f531353b"
-        android:text="@string/product_report_header"
-        app:fontSize="title"/>
-
-    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_2"/>
-
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_18"
-        android:textColorLink="@color/tkpd_main_green"
-        app:fontSize="micro"/>
-
-</LinearLayout>
+    android:background="@color/white"/>

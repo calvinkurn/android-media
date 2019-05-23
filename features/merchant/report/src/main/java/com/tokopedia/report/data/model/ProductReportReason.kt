@@ -17,6 +17,10 @@ data class ProductReportReason(
         @Expose
         val additionalFields: List<AdditionalField> = listOf(),
 
+        @SerializedName("additional_info")
+        @Expose
+        val additionalInfo: List<AdditionalInfo> = listOf(),
+
         @SerializedName("detail")
         @Expose
         val detail: String = "",
@@ -24,11 +28,7 @@ data class ProductReportReason(
         @SerializedName("value")
         @Expose
         val value: String = ""
-): ParentItem<ProductReportReason> {
-
-    override fun getChildList(): List<ProductReportReason> = children
-
-    override val isInitiallyExpanded: Boolean = false
+) {
 
     data class AdditionalField(
             @SerializedName("detail")
@@ -39,13 +39,31 @@ data class ProductReportReason(
             @Expose
             val key: String = "",
 
-            @SerializedName("Max")
+            @SerializedName("max")
             @Expose
             val max: Int = 0,
+
+            @SerializedName("min")
+            @Expose
+            val min: Int = 0,
 
             @SerializedName("type")
             @Expose
             val type: String = "",
+
+            @SerializedName("label")
+            @Expose
+            val value: String = ""
+    )
+
+    data class AdditionalInfo(
+            @SerializedName("type")
+            @Expose
+            val type: String = "",
+
+            @SerializedName("label")
+            @Expose
+            val label: String = "",
 
             @SerializedName("value")
             @Expose
@@ -53,7 +71,7 @@ data class ProductReportReason(
     )
 
     data class Response(
-            @SerializedName("visionProductReportReason")
+            @SerializedName("visionGetReportProductReason")
             @Expose
             val data: List<ProductReportReason> = listOf()
     )
