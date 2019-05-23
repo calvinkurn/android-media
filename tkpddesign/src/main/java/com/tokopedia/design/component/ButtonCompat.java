@@ -155,6 +155,7 @@ public class ButtonCompat extends AppCompatButton {
                 break;
             case WHITE_TRANSPARENT:
                 initDraw(R.color.white, R.drawable.bg_button_white_transparent);
+                break;
             case WHITE:
                 initDraw(R.color.grey_button_compat, R.drawable.bg_button_white);
                 break;
