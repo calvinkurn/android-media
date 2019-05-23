@@ -260,7 +260,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
         FlowManager.initModule(ProductDraftGeneratedDatabaseHolder.class);
         FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
-        PushNotification.initDatabase(getApplicationContext());
         CategoryDbFlow.initDatabase(getApplicationContext());
     }
 

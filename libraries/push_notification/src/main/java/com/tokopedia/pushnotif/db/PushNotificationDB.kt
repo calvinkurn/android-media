@@ -13,7 +13,7 @@ import com.tokopedia.pushnotif.db.model.HistoryNotificationTable
  */
 @Database(entities = [HistoryNotificationTable::class], version = PUSHNOTIF_DB_VERSION)
 abstract class PushNotificationDB: RoomDatabase() {
-    abstract fun historyNotificationDaot(): HistoryNotificationDao
+    abstract fun historyNotificationDao(): HistoryNotificationDao
 
     companion object {
         // For Singleton instantiation

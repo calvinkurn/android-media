@@ -5,9 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.PushNotificationGeneratedDatabaseHolder;
 import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
 import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
 import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
@@ -19,15 +16,6 @@ import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
  */
 
 public class PushNotification {
-
-    public static void initDatabase(Context applicationContext) {
-        try{
-            FlowManager.getConfig();
-        } catch (IllegalStateException e) {
-            FlowManager.init(new FlowConfig.Builder(applicationContext).build());
-        }
-        FlowManager.initModule(PushNotificationGeneratedDatabaseHolder.class);
-    }
 
     public static void notify(Context context, Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
@@ -54,7 +42,7 @@ public class PushNotification {
         int notificationId = ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks());
 
         Notification notifTalk = new TalkNotificationFactory(context)
-                    .createNotification(applinkNotificationModel, notificationType, notificationId);
+                .createNotification(applinkNotificationModel, notificationType, notificationId);
 
         SummaryNotificationFactory summaryNotificationFactory = new SummaryNotificationFactory(context);
         Notification notifSummary = summaryNotificationFactory
@@ -103,7 +91,7 @@ public class PushNotification {
     }
 
     private static void notifyGeneral(Context context, ApplinkNotificationModel applinkNotificationModel,
-                                   int notificationType, NotificationManagerCompat notificationManagerCompat) {
+                                      int notificationType, NotificationManagerCompat notificationManagerCompat) {
         Notification notifChat = new GeneralNotificationFactory(context)
                 .createNotification(applinkNotificationModel, notificationType, notificationType);
 
@@ -112,7 +100,7 @@ public class PushNotification {
     }
 
     private static void notifyChallenges(Context context, ApplinkNotificationModel applinkNotificationModel,
-                                      int notificationType, NotificationManagerCompat notificationManagerCompat) {
+                                         int notificationType, NotificationManagerCompat notificationManagerCompat) {
         Notification notifChat = new GeneralNotificationFactory(context)
                 .createNotification(applinkNotificationModel, notificationType, notificationType);
 

@@ -390,7 +390,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
-        PushNotification.initDatabase(getApplicationContext());
         Analytics.initDB(getApplicationContext());
         CategoryDbFlow.initDatabase(getApplicationContext());
     }
