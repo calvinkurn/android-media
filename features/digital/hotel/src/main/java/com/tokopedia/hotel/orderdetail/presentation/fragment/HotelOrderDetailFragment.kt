@@ -117,11 +117,16 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         bottom_conditional_text.visibility = if (hotelTransportDetail.conditionalInfoBottom.title.isNotBlank()) View.VISIBLE else View.GONE
         bottom_conditional_text.text = hotelTransportDetail.conditionalInfoBottom.title
 
-        refund_ticker_layout.setOnClickListener {
-            if (hotelTransportDetail.cancellation.isClickable)
-                showRefundInfo(hotelTransportDetail.cancellation.cancellationPolicies) }
-        refund_title.text = hotelTransportDetail.cancellation.title
-        refund_text.text = hotelTransportDetail.cancellation.content
+        if (hotelTransportDetail.cancellation.title.isEmpty()) {
+            refund_ticker_layout.visibility = View.GONE
+        } else {
+            refund_ticker_layout.visibility = View.VISIBLE
+            refund_ticker_layout.setOnClickListener {
+                if (hotelTransportDetail.cancellation.isClickable)
+                    showRefundInfo(hotelTransportDetail.cancellation.cancellationPolicies) }
+            refund_title.text = hotelTransportDetail.cancellation.title
+            refund_text.text = hotelTransportDetail.cancellation.content
+        }
 
         call_hotel_layout.setOnClickListener { showCallButtonSheet(hotelTransportDetail.contactInfo) }
     }
@@ -142,13 +147,19 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         }
         transactionDetailAdapter.notifyDataSetChanged()
 
-        invoice_number.text = orderDetail.invoice.invoiceRefNum
-        invoice_see_button.visibility = if (orderDetail.invoice.invoiceUrl.isNotBlank()) View.VISIBLE else View.GONE
-        if (orderDetail.invoice.invoiceUrl.isNotBlank()) {
-            invoice_see_button.setOnClickListener {
-                RouteManager.route(context, orderDetail.invoice.invoiceUrl)
+        if (orderDetail.invoice.invoiceRefNum.isBlank()) {
+            invoice_layout.visibility = View.GONE
+        } else {
+            invoice_layout.visibility = View.VISIBLE
+            invoice_number.text = orderDetail.invoice.invoiceRefNum
+            invoice_see_button.visibility = if (orderDetail.invoice.invoiceUrl.isNotBlank()) View.VISIBLE else View.GONE
+            if (orderDetail.invoice.invoiceUrl.isNotBlank()) {
+                invoice_see_button.setOnClickListener {
+                    RouteManager.route(context, orderDetail.invoice.invoiceUrl)
+                }
             }
         }
+
     }
 
     fun renderHotelDetail(propertyDetail: HotelTransportDetail.PropertyDetail) {

@@ -76,8 +76,6 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
             // Will be decided later
             val bottomSheet = HotelContactPhoneBottomSheet()
             bottomSheet.contactList = listOf(
-                    HotelTransportDetail.ContactInfo("16"),
-                    HotelTransportDetail.ContactInfo("17"),
                     HotelTransportDetail.ContactInfo("18"),
                     HotelTransportDetail.ContactInfo("19"),
                     HotelTransportDetail.ContactInfo("20"),
@@ -85,7 +83,15 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
                     HotelTransportDetail.ContactInfo("22"),
                     HotelTransportDetail.ContactInfo("23"),
                     HotelTransportDetail.ContactInfo("24"),
-                    HotelTransportDetail.ContactInfo("25"))
+                    HotelTransportDetail.ContactInfo("25"),
+                    HotelTransportDetail.ContactInfo("30"),
+                    HotelTransportDetail.ContactInfo("31"),
+                    HotelTransportDetail.ContactInfo("32"),
+                    HotelTransportDetail.ContactInfo("33"),
+                    HotelTransportDetail.ContactInfo("34"),
+                    HotelTransportDetail.ContactInfo("35"),
+                    HotelTransportDetail.ContactInfo("36"),
+                    HotelTransportDetail.ContactInfo("37"))
             bottomSheet.listener = this
             bottomSheet.show(supportFragmentManager, HotelOrderDetailFragment.TAG_CONTACT_INFO)
         } else {
