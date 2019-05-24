@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.utils.RatingHelper;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.item.DeletableItemView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 import java.util.ArrayList;

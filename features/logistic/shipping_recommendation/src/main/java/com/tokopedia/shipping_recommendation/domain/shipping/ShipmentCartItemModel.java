@@ -75,6 +75,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     // Flag for courier recommendation
     private boolean useCourierRecommendation;
+    private boolean isHidingCourier;
 
     // for robinhood III
     private boolean isBlackbox;
@@ -134,6 +135,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         stateHasExtraMarginTop = in.readByte() != 0;
         recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
         useCourierRecommendation = in.readByte() != 0;
+        isHidingCourier = in.readByte() != 0;
         isBlackbox = in.readByte() != 0;
         addressId = in.readInt();
         blackboxInfo = in.readString();
@@ -187,6 +189,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (stateHasExtraMarginTop ? 1 : 0));
         dest.writeParcelable(recipientAddressModel, flags);
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
+        dest.writeByte((byte) (isHidingCourier ? 1 : 0));
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
         dest.writeInt(addressId);
         dest.writeString(blackboxInfo);
@@ -246,6 +249,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setGoldMerchant(shipmentCartItemModel.isGoldMerchant());
         newShipmentCartItemModel.setShopShipmentList(shipmentCartItemModel.getShopShipmentList());
         newShipmentCartItemModel.setUseCourierRecommendation(shipmentCartItemModel.isUseCourierRecommendation());
+        newShipmentCartItemModel.setHidingCourier(shipmentCartItemModel.isHidingCourier());
         newShipmentCartItemModel.setCartString(shipmentCartItemModel.getCartString());
         newShipmentCartItemModel.setShippingId(shipmentCartItemModel.getShippingId());
         newShipmentCartItemModel.setSpId(shipmentCartItemModel.getSpId());
@@ -506,6 +510,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setUseCourierRecommendation(boolean useCourierRecommendation) {
         this.useCourierRecommendation = useCourierRecommendation;
+    }
+
+    public boolean isHidingCourier() {
+        return isHidingCourier;
+    }
+
+    public void setHidingCourier(boolean hidingCourier) {
+        isHidingCourier = hidingCourier;
     }
 
     public String getCartString() { return cartString; }

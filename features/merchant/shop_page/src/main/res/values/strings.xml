@@ -108,6 +108,12 @@
     <string name="dashboard_x_points">%1$s poin</string>
     <string name="total_point_format">(%1$s)</string>
 
+    <string name="moderate_shop_error">Oops… Request moderasi gagal</string>
+    <string name="moderate_shop_success">Request moderasi toko berhasil</string>
+    <string name="moderate_shop_title">Permintaan untuk membuka moderasi toko</string>
+    <string name="moderate_shop_option_1">Saya sudah mematuhi syarat &amp; ketentuan yang ditetapkan oleh Tokopedia.</string>
+    <string name="moderate_shop_option_2">Saya sudah memperbaiki konten yang ada di toko saya.</string>
+
     <string name="reputation_value_not_appear">Belum ada Nilai Reputasi</string>
     <string name="favorited_shop_title">Followers Toko</string>
     <string name="shop_page_speed_shop_not_available">Belum Tersedia</string>
@@ -143,5 +149,10 @@
     <string name="search_keyword_at_tokopedia">Cari \"%1$s\" di Tokopedia</string>
     <string name="tablayout_new_text">Baru</string>
     <string name="x_product">%1$s Produk</string>
+
+    <string name="string_btn_whitelist">Buat Post</string>
+    <string name="empty_feed_title">Tingkatkan Penjualanmu</string>
+    <string name="empty_feed_subtitle">Yuk, post promo dan update dari Tokomu \nsupaya makin banyak yang belanja!</string>
+    <string name="empty_feed_btn">Post Sekarang</string>
 
 </resources>
