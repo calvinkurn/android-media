@@ -300,30 +300,33 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         val text = Html.fromHtml(help.helpText)
         val spannableString = SpannableString(text)
         val startIndexOfLink = text.indexOf("disini")
-        spannableString.setSpan(object : ClickableSpan() {
-            override fun onClick(view: View) {
-                try {
-                    RouteManager.route(context, help.helpUrl)
-                } catch (e: UnsupportedEncodingException) {
-                    e.printStackTrace()
+        if (startIndexOfLink >= 0) {
+            spannableString.setSpan(object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    try {
+                        RouteManager.route(context, help.helpUrl)
+                    } catch (e: UnsupportedEncodingException) {
+                        e.printStackTrace()
+                    }
                 }
-            }
 
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = resources.getColor(R.color.green_250) // specific color for this link
-            }
-        }, startIndexOfLink, startIndexOfLink + "disini".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                    ds.color = resources.getColor(R.color.green_250) // specific color for this link
+                }
+            }, startIndexOfLink, startIndexOfLink + "disini".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
+            helpLabel.setHighlightColor(Color.TRANSPARENT)
+            helpLabel.setMovementMethod(LinkMovementMethod.getInstance())
+        }
 
         helpLabel.gravity = Gravity.CENTER
         val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
         helpLabel.layoutParams = params
-        helpLabel.setHighlightColor(Color.TRANSPARENT)
-        helpLabel.setMovementMethod(LinkMovementMethod.getInstance())
-        helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
-
+        
         return helpLabel
     }
 
