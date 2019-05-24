@@ -150,4 +150,9 @@
     <string name="tablayout_new_text">Baru</string>
     <string name="x_product">%1$s Produk</string>
 
+    <string name="string_btn_whitelist">Buat Post</string>
+    <string name="empty_feed_title">Tingkatkan Penjualanmu</string>
+    <string name="empty_feed_subtitle">Yuk, post promo dan update dari Tokomu \nsupaya makin banyak yang belanja!</string>
+    <string name="empty_feed_btn">Post Sekarang</string>
+
 </resources>

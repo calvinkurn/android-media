@@ -18,6 +18,7 @@ import rx.Observable;
 public class RegisterPhoneNumberUseCase extends UseCase<RegisterPhoneNumberModel> {
 
     private static final String PARAMS_PHONE_NUMBER = "phone";
+    private static final String PARAMS_UUID = "validate_token";
     private static final String PARAMS_TYPE = "type";
     private static final String PARAMS_TYPE_PHONE = "phone";
     private static final String PARAMS_NAME = "fullname";
@@ -49,9 +50,10 @@ public class RegisterPhoneNumberUseCase extends UseCase<RegisterPhoneNumberModel
         return params;
     }
 
-    public static RequestParams getParamsWithName(String phoneNumber, String name) {
+    public static RequestParams getParamsWithName(String phoneNumber, String name, String uuid) {
         RequestParams params = RequestParams.create();
         params.putString(PARAMS_PHONE_NUMBER, phoneNumber);
+        params.putString(PARAMS_UUID, uuid);
         params.putString(PARAMS_NAME, name);
         params.putString(PARAMS_TYPE, PARAMS_TYPE_PHONE);
         params.putInt(PARAMS_OS_TYPE, PARAMS_OS_TYPE_ANDROID);

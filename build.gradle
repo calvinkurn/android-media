@@ -5,6 +5,7 @@ apply from: 'buildconfig/dependencies/dependency-libraries.gradle'
 apply from: 'buildconfig/dependencies/dependency-features.gradle'
 //apply from: 'buildconfig/dependencies/dependency-features-no-op.gradle'
 apply from: 'tools/quality.gradle'
+apply from: 'tools/composite_build.gradle'
 
 
 buildscript {
@@ -30,7 +31,7 @@ buildscript {
         classpath('net.sf.proguard:proguard-gradle:5.2.1') {
             force = true
         }
-        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.0.1") {
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.9.6") {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
         if (!project.hasProperty("disable-performance-plugin")) {

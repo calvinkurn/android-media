@@ -300,14 +300,6 @@ public abstract class SellerRouterApplication extends MainApplication
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
     }
 
-    @Override
-    public ProductComponent getProductComponent() {
-        if (productComponent == null) {
-            productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
-        }
-        return productComponent;
-    }
-
     public GMComponent getGMComponent() {
         if (gmComponent == null) {
             gmComponent = daggerGMBuilder.appComponent(getApplicationComponent()).build();
@@ -356,10 +348,7 @@ public abstract class SellerRouterApplication extends MainApplication
         EtalaseUtils.clearEtalaseCache(getApplicationContext());
     }
 
-    @Override
-    public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
-        return ProductEditActivity.Companion.createInstance(context, productId);
-    }
+
 
     @Override
     public void resetAddProductCache(Context context) {
@@ -877,11 +866,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public String applink(Activity activity, String deeplink) {
-        return null;
-    }
-
-    @Override
     public Intent getPhoneVerificationActivationIntent(Context context) {
         return PhoneVerificationActivationActivity.getCallingIntent(context);
     }
@@ -1020,12 +1004,6 @@ public abstract class SellerRouterApplication extends MainApplication
         context.startActivity(intent);
     }
 
-    @Override
-    public void goToAddProduct(Context context) {
-        if (context != null && context instanceof Activity) {
-            context.startActivity(new Intent(context, ProductAddNameCategoryActivity.class));
-        }
-    }
 
     @Override
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
@@ -1289,21 +1267,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getManageProductIntent(Context context) {
-        return new Intent(context, ProductManageActivity.class);
-    }
-
-    @Override
-    public Intent createIntentProductEtalase(Context context, int etalaseId) {
-        return EtalasePickerActivity.createInstance(context, etalaseId);
-    }
-
-    @Override
-    public Intent getCategoryPickerIntent(Context context, int categoryId) {
-        return CategoryPickerActivity.createIntent(context, categoryId);
-    }
-
-    @Override
     public Intent getProductTalk(Context context, String productId) {
         return TalkProductActivity.Companion.createIntent(context, productId);
     }
@@ -1459,11 +1422,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getWebviewActivityWithIntent(Context context, String url) {
         return SimpleWebViewWithFilePickerActivity.getIntent(context,
                 url);
-    }
-
-    @Override
-    public Fragment getKolPostShopFragment(String shopId, String createPostUrl) {
-        return KolPostShopFragment.newInstance(shopId, createPostUrl);
     }
 
     @Override
@@ -1703,11 +1661,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public com.tokopedia.iris.Iris getIris() {
         return null;
-    }
-
-    @Override
-    public void openImagePreviewFromChat(@NotNull Context context, @NotNull ArrayList<String> listImage, @NotNull ArrayList<String> imageDesc, @NotNull String title, @NotNull String date) {
-
     }
 
     public String getContactUsBaseURL() {

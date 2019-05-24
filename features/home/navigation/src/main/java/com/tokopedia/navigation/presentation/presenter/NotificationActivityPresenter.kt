@@ -19,10 +19,6 @@ class NotificationActivityPresenter @Inject constructor(
     : BaseDaggerPresenter<NotificationActivityContract.View>()
         , NotificationActivityContract.Presenter {
 
-    override fun getTotalUnreadCounter(onSuccessGetTotalUnreadCounter: (NotificationUpdateTotalUnread) -> Unit) {
-        getNotificationTotalUnreadUseCase.execute(GetNotificationTotalUnreadSubscriber(onSuccessGetTotalUnreadCounter))
-    }
-
     override fun getUpdateUnreadCounter(onSuccess: (NotificationUpdateUnread) -> Unit) {
         getNotificationUpdateUnreadUseCase.execute(GetNotificationUpdateUnreadSubscriber(onSuccess))
     }
