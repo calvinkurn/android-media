@@ -9,7 +9,7 @@ apply from: 'tools/composite_build.gradle'
 
 
 buildscript {
-    ext.jacocoVersion = '0.7.9'
+    ext.jacocoVersion = '0.8.2'
     repositories {
         gradlePluginPortal()
         google()
