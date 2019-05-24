@@ -222,13 +222,7 @@ import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareResult;
 import com.tokopedia.linker.model.UserData;
-import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
-import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
-import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
-import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
-import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
-import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
@@ -534,7 +528,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         SaldoDetailsRouter,
         ILoyaltyRouter,
         ChatbotRouter,
-        LoginRegisterPhoneRouter,
         ExpressCheckoutRouter,
         ResolutionRouter,
         NormalCheckoutRouter,
@@ -3319,36 +3312,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getMaintenancePageIntent() {
         return MaintenancePage.createIntentFromNetwork(getAppContext());
-    }
-
-    @Override
-    public Intent getNoTokocashAccountIntent(Context context, String phoneNumber) {
-        return NotConnectedTokocashActivity.getNoTokocashAccountIntent(context, phoneNumber);
-    }
-
-    @NotNull
-    @Override
-    public Intent getCheckRegisterPhoneNumberIntent(@NotNull Context context) {
-        return CheckRegisterPhoneNumberActivity.getCallingIntent(context);
-    }
-
-    @NotNull
-    @Override
-    public Intent getChooseTokocashAccountIntent(@NotNull Context context, @NotNull ChooseTokoCashAccountViewModel data) {
-        return ChooseTokocashAccountActivity.getCallingIntent(context, data);
-    }
-
-    @NotNull
-    @Override
-    public Intent getTokoCashOtpIntent(@NotNull Context context, @NotNull String phoneNumber,
-                                       boolean canUseOtherMethod, @NotNull String defaultRequestMode) {
-        return TokoCashOtpActivity.getCallingIntent(context, phoneNumber, canUseOtherMethod, defaultRequestMode);
-    }
-
-    @NotNull
-    @Override
-    public Intent getCheckLoginPhoneNumberIntent(@NotNull Context context) {
-        return CheckLoginPhoneNumberActivity.getCallingIntent(context);
     }
 
     @SuppressLint("MissingPermission")

@@ -1,32 +1,30 @@
 package com.tokopedia.analytics.database;
 
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
 /**
  * @author okasurya on 5/14/18.
  */
 
-@Table(name = GtmLogDB.NAME, database = TkpdAnalyticsDatabase.class)
-public class GtmLogDB extends BaseModel {
-    public static final String NAME = "gtm_log";
+@Entity(tableName = GtmLogDB.NAME)
+public class GtmLogDB {
+    static final String NAME = "gtm_log";
 
-    @Column
-    @PrimaryKey(autoincrement = true)
+    @PrimaryKey(autoGenerate = true)
     long id;
 
-    @Column
+    @ColumnInfo(name = "data")
     String data;
 
-    @Column
+    @ColumnInfo(name = "name")
     String name;
 
-    @Column
+    @ColumnInfo(name = "category")
     String category;
 
-    @Column
+    @ColumnInfo(name = "timestamp")
     long timestamp;
 
     public long getId() {
