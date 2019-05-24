@@ -24,6 +24,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.TextViewCompat
@@ -42,30 +43,14 @@ import com.tokopedia.hotel.orderdetail.presentation.widget.HotelContactPhoneBott
 import com.tokopedia.hotel.orderdetail.presentation.widget.HotelRefundBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_order_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.view.*
 import kotlinx.android.synthetic.main.layout_order_detail_payment_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_transaction_detail.*
-import javax.inject.Inject
-import android.content.Intent.ACTION_DIAL
-import android.graphics.Color
-import android.net.Uri
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.widget.TextView
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_CATEGORY
-import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_ID
-import com.tokopedia.hotel.orderdetail.presentation.widget.HotelRefundBottomSheet
-import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.view.*
-import kotlinx.coroutines.experimental.launch
 import java.io.UnsupportedEncodingException
-import java.net.URLEncoder
+import javax.inject.Inject
 
 
 /**
