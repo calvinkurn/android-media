@@ -145,7 +145,10 @@ class RecommendationPageTracking {
                     ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                         convertRecommendationItemToDataImpressionObject(
                                 recommendationItem,
-                                VALUE_LIST_ORGANIC_PRODUCT_RECOMMENDATION_LOGIN,
+                                String.format(
+                                        VALUE_LIST_ORGANIC_PRODUCT_RECOMMENDATION_LOGIN,
+                                        recommendationItem.recommendationType
+                                ),
                                 position)
                     )
                 )
@@ -161,7 +164,7 @@ class RecommendationPageTracking {
 
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_VIEW,
-                EVENT_CATEGORY, EVENT_CATEGORY_PRODUCT_DETAIL_PAGE,
+                EVENT_CATEGORY, ,
                 EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN,
                 EVENT_LABEL, VALUE_EMPTY,
                 ECOMMERCE, DataLayer.mapOf(
@@ -169,7 +172,10 @@ class RecommendationPageTracking {
                     ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                         convertRecommendationItemToDataImpressionObject(
                                 recommendationItem,
-                                VALUE_LIST_TOPADS_PRODUCT_RECOMMENDATION_LOGIN,
+                                String.format(
+                                        VALUE_LIST_TOPADS_PRODUCT_RECOMMENDATION_LOGIN,
+                                        recommendationItem.recommendationType
+                                ),
                                 position)
                     )
                 )
@@ -193,7 +199,9 @@ class RecommendationPageTracking {
                     ECOMMERCE_CLICK,
                         convertRecommendationItemToDataClickObject(
                         recommendationItem,
-                        VALUE_LIST_ORGANIC_PRODUCT_RECOMMENDATION_LOGIN,
+                                String.format(
+                                        VALUE_LIST_ORGANIC_PRODUCT_RECOMMENDATION_LOGIN,
+                                        recommendationItem.recommendationType),
                         position)
                 )
         )
@@ -216,7 +224,10 @@ class RecommendationPageTracking {
                     ECOMMERCE_CLICK,
                         convertRecommendationItemToDataClickObject(
                                 recommendationItem,
-                                VALUE_LIST_TOPADS_PRODUCT_RECOMMENDATION_LOGIN,
+                                String.format(
+                                        VALUE_LIST_TOPADS_PRODUCT_RECOMMENDATION_LOGIN,
+                                        recommendationItem.recommendationType
+                                ),
                                 position)
                 )
         )
@@ -239,7 +250,10 @@ class RecommendationPageTracking {
                     ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                         convertRecommendationItemToDataImpressionObject(
                                 recommendationItem,
-                                VALUE_LIST_ORGANIC_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                                String.format(
+                                        VALUE_LIST_ORGANIC_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                                        recommendationItem.recommendationType
+                                ),
                                 position)
                     )
                 )
@@ -263,7 +277,10 @@ class RecommendationPageTracking {
                     ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                         convertRecommendationItemToDataImpressionObject(
                                 recommendationItem,
-                                VALUE_LIST_TOPADS_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                                String.format(
+                                        VALUE_LIST_TOPADS_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                                        recommendationItem.recommendationType
+                                ),
                                 position)
                     )
                 )
@@ -287,7 +304,10 @@ class RecommendationPageTracking {
                     ECOMMERCE_CLICK,
                         convertRecommendationItemToDataClickObject(
                                 recommendationItem,
-                                VALUE_LIST_ORGANIC_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                                String.format(
+                                        VALUE_LIST_ORGANIC_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                                        recommendationItem.recommendationType
+                                ),
                                 position)
                 )
         )
@@ -310,7 +330,10 @@ class RecommendationPageTracking {
                     ECOMMERCE_CLICK,
                         convertRecommendationItemToDataClickObject(
                                 recommendationItem,
-                                VALUE_LIST_TOPADS_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                                String.format(
+                                        VALUE_LIST_TOPADS_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                                        recommendationItem.recommendationType
+                                ),
                                 position)
                 )
         )
@@ -337,7 +360,7 @@ class RecommendationPageTracking {
         val data = DataLayer.mapOf(
                 EVENT, EVENT_CLICK_PDP,
                 EVENT_CATEGORY, EVENT_CATEGORY_PRODUCT_DETAIL_PAGE,
-                EVENT_ACTION, EVENT_ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_LOGIN,
+                EVENT_ACTION, EVENT_ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION_LOGIN,
                 EVENT_LABEL, VALUE_EMPTY
         )
 
