@@ -442,6 +442,7 @@ import rx.functions.Func1;
 import tradein_common.TradeInUtils;
 import tradein_common.router.TradeInRouter;
 
+import static com.instabug.library.Instabug.getApplicationContext;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
@@ -582,15 +583,28 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initIris() {
-        mIris = Iris.Companion.init(this);
+        mIris = Iris.Companion.getInstance(this);
 
         boolean irisEnable = getBooleanRemoteConfig(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true);
+        String irisConfig = getStringRemoteConfig(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, "");
 
-        mIris.setService(new Configuration(
-                IRIS_ROW_LIMIT,
-                IRIS_TIME_MINUTES,
-                irisEnable
-        ));
+        Configuration configuration;
+        if (!irisConfig.isEmpty()) {
+            configuration = mIris.Companion.convert(irisConfig);
+            if (configuration != null) {
+                configuration.setEnabled(irisEnable);
+            }
+        } else {
+            configuration = new Configuration(
+                    IRIS_ROW_LIMIT,
+                    IRIS_TIME_MINUTES,
+                    irisEnable
+            );
+        }
+
+        if (configuration != null) {
+            mIris.setService(configuration);
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.tokopedia.iris
 
 import android.content.Context
+import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.model.Configuration
 
 /**
@@ -29,6 +30,27 @@ interface Iris {
     fun setDeviceId(deviceId: String)
 
     companion object {
-        fun init(context: Context): Iris = IrisAnalytics(context)
+
+        private val lock = Any()
+
+        @Volatile private var iris: Iris? = null
+
+        fun getInstance(context: Context) : Iris {
+            return iris?: synchronized(lock) {
+                IrisAnalytics(context).also {
+                    iris = it
+                }
+            }
+        }
+
+        fun deleteInstance() {
+            synchronized(lock) {
+                iris = null
+            }
+        }
+
+        fun convert(json: String) : Configuration? {
+            return ConfigurationMapper().parse(json)
+        }
     }
 }

@@ -1,24 +1,21 @@
 package com.tokopedia.iris
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
-import androidx.work.*
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
-import com.tokopedia.iris.worker.SendDataWorker
+import com.tokopedia.iris.worker.IrisService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import org.json.JSONObject
-import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
-
 
 /**
  * @author okasurya on 10/2/18.
  */
-class IrisAnalytics(context: Context) : Iris, CoroutineScope {
+class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
     private val trackingRepository: TrackingRepository = TrackingRepository(context)
@@ -37,7 +34,6 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
     override fun resetService(config: Configuration) {
         try {
             if (cache.isEnabled()) {
-                WorkManager.getInstance().cancelAllWorkByTag(WORKER_SEND_DATA)
                 setWorkManager(config)
             }
         } catch (ignored: Exception) {
@@ -81,22 +77,8 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
     }
 
     private fun setWorkManager(config: Configuration) {
-        val data: Data = Data.Builder().putInt(MAX_ROW, config.maxRow).build()
-        val irisConstraint = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-
-        val oneTimeWorkRequest = OneTimeWorkRequestBuilder<SendDataWorker>()
-                .setInputData(data)
-                .addTag(WORKER_SEND_DATA)
-                .setConstraints(irisConstraint)
-                .build()
-
-        val periodicWorkRequest = PeriodicWorkRequestBuilder<SendDataWorker>(config.intervals, TimeUnit.MINUTES)
-                .setInputData(data)
-                .addTag(WORKER_SEND_DATA)
-                .setConstraints(irisConstraint)
-                .build()
-
-        WorkManager.getInstance().enqueue(oneTimeWorkRequest)
-        WorkManager.getInstance().enqueueUniquePeriodicWork(WORKER_SEND_DATA, ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest)
+        val intent = Intent(context, IrisService::class.java)
+        intent.putExtra(WORKER_SEND_DATA, config)
+        context.startService(intent)
     }
 }
