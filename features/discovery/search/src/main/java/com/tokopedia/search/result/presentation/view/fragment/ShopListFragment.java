@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -404,22 +403,6 @@ public class ShopListFragment
     }
 
     @Override
-    public void launchLoginActivity(String shopId) {
-        Bundle extras = new Bundle();
-        extras.putString("shop_id", shopId);
-
-        if (getActivity() == null) return;
-
-        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
-
-        if (router != null) {
-            Intent intent = router.getLoginIntent(getActivity());
-            intent.putExtras(extras);
-            startActivityForResult(intent, REQUEST_CODE_LOGIN);
-        }
-    }
-
-    @Override
     public boolean isUserHasLogin() {
         if(userSession == null) return false;
 
@@ -447,8 +430,7 @@ public class ShopListFragment
         adapter.setFavoriteButtonEnabled(adapterPosition, true);
     }
 
-    @Override
-    public String getQueryKey() {
+    private String getQueryKey() {
         if(getSearchParameter() == null) return "";
 
         return getSearchParameter().getSearchQuery();
@@ -581,11 +563,6 @@ public class ShopListFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
-    }
-
-    @Override
-    public void logDebug(String tag, String message) {
-        Log.d(tag, message);
     }
 
     @Override
