@@ -4,6 +4,8 @@ package com.tokopedia.flight.booking.view.presenter;
 import android.support.annotation.NonNull;
 import android.util.Patterns;
 
+import com.tokopedia.common.travel.domain.GetPhoneCodeUseCase;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
@@ -14,7 +16,6 @@ import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.booking.domain.FlightBookingGetPhoneCodeUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
@@ -22,7 +23,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
@@ -69,7 +69,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private static final int MAX_CONTACT_NAME_LENGTH = 20;
     private FlightAddToCartUseCase flightAddToCartUseCase;
     private FlightBookingCartDataMapper flightBookingCartDataMapper;
-    private FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase;
+    private GetPhoneCodeUseCase getPhoneCodeUseCase;
     private FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase;
     private CompositeSubscription compositeSubscription;
     private FlightAnalytics flightAnalytics;
@@ -84,7 +84,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Inject
     public FlightBookingPresenter(FlightAddToCartUseCase flightAddToCartUseCase,
                                   FlightBookingCartDataMapper flightBookingCartDataMapper,
-                                  FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase,
+                                  GetPhoneCodeUseCase getPhoneCodeUseCase,
                                   FlightAnalytics flightAnalytics,
                                   UserSessionInterface userSession,
                                   FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase,
@@ -92,7 +92,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightAddToCartUseCase = flightAddToCartUseCase;
         this.flightBookingCartDataMapper = flightBookingCartDataMapper;
-        this.flightBookingGetPhoneCodeUseCase = flightBookingGetPhoneCodeUseCase;
+        this.getPhoneCodeUseCase = getPhoneCodeUseCase;
         this.flightAnalytics = flightAnalytics;
         this.userSession = userSession;
         this.flightSearchJourneyByIdUseCase = flightSearchJourneyByIdUseCase;
@@ -171,8 +171,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                 getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT));
                 getView().renderFinishTimeCountDown(expiredDate);
             }
-            getView().getCurrentBookingParamViewModel().setPhoneCodeViewModel(flightBookingCartData.getDefaultPhoneCode());
-            getView().renderPhoneCodeView(String.format("+%s", getView().getCurrentBookingParamViewModel().getPhoneCodeViewModel().getCountryPhoneCode()));
+            getView().getCurrentBookingParamViewModel().setPhoneCode(flightBookingCartData.getDefaultPhoneCode());
+            getView().renderPhoneCodeView(String.format("+%s", getView().getCurrentBookingParamViewModel().getPhoneCode().getCountryPhoneCode()));
 
             int oldTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
             int resultTotalPrice = 0;
@@ -299,9 +299,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @Override
-    public void onPhoneCodeResultReceived(FlightBookingPhoneCodeViewModel phoneCodeViewModel) {
-        getView().getCurrentBookingParamViewModel().setPhoneCodeViewModel(phoneCodeViewModel);
-        getView().renderPhoneCodeView(String.format("+%s", phoneCodeViewModel.getCountryPhoneCode()));
+    public void onPhoneCodeResultReceived(CountryPhoneCode phoneCode) {
+        getView().getCurrentBookingParamViewModel().setPhoneCode(phoneCode);
+        getView().renderPhoneCodeView(String.format("+%s", phoneCode.getCountryPhoneCode()));
     }
 
     @Override
@@ -428,10 +428,10 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                             }
                         })
                         .zipWith(getDefaultPhoneDataObservable(),
-                                new Func2<FlightBookingCartData, FlightBookingPhoneCodeViewModel, FlightBookingCartData>() {
+                                new Func2<FlightBookingCartData, CountryPhoneCode, FlightBookingCartData>() {
                                     @Override
-                                    public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
-                                        flightBookingCartData.setDefaultPhoneCode(flightBookingPhoneCodeViewModel);
+                                    public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, CountryPhoneCode flightBookingPhoneCode) {
+                                        flightBookingCartData.setDefaultPhoneCode(flightBookingPhoneCode);
                                         return flightBookingCartData;
                                     }
                                 })
@@ -513,12 +513,12 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @NonNull
-    private Observable<FlightBookingPhoneCodeViewModel> getDefaultPhoneDataObservable() {
-        return flightBookingGetPhoneCodeUseCase.createObservable(flightBookingGetPhoneCodeUseCase.createRequest("Indonesia"))
-                .flatMap(new Func1<List<FlightBookingPhoneCodeViewModel>, Observable<FlightBookingPhoneCodeViewModel>>() {
+    private Observable<CountryPhoneCode> getDefaultPhoneDataObservable() {
+        return getPhoneCodeUseCase.createObservable(getPhoneCodeUseCase.createRequest("Indonesia"))
+                .flatMap(new Func1<List<CountryPhoneCode>, Observable<CountryPhoneCode>>() {
                     @Override
-                    public Observable<FlightBookingPhoneCodeViewModel> call(List<FlightBookingPhoneCodeViewModel> flightBookingPhoneCodeViewModels) {
-                        return Observable.from(flightBookingPhoneCodeViewModels);
+                    public Observable<CountryPhoneCode> call(List<CountryPhoneCode> flightBookingPhoneCodes) {
+                        return Observable.from(flightBookingPhoneCodes);
                     }
                 }).first();
     }
@@ -662,7 +662,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         }
         travelTickerUseCase.unsubscribe();
         flightAddToCartUseCase.unsubscribe();
-        flightBookingGetPhoneCodeUseCase.unsubscribe();
+        getPhoneCodeUseCase.unsubscribe();
         flightSearchJourneyByIdUseCase.unsubscribe();
         detachView();
     }

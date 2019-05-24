@@ -33,15 +33,15 @@ public class GetPhoneCodeUseCase extends UseCase<List<CountryPhoneCode>> {
     public Observable<List<CountryPhoneCode>> createObservable(RequestParams requestParams) {
         return phoneCodeRepository.getPhoneCodeList(requestParams.getString(PARAM_QUERY, DEFAULT_PARAM))
                 .flatMap(flightAirportCountryTables -> {
-                    List<CountryPhoneCode> flightBookingPhoneCodeViewModels = new ArrayList<>();
+                    List<CountryPhoneCode> flightBookingPhoneCodes = new ArrayList<>();
                     for (CountryPhoneCodeTable flightAirportDB : flightAirportCountryTables) {
-                        CountryPhoneCode flightBookingPhoneCodeViewModel = new CountryPhoneCode();
-                        flightBookingPhoneCodeViewModel.setCountryId(flightAirportDB.getCountryId());
-                        flightBookingPhoneCodeViewModel.setCountryName(flightAirportDB.getCountryName());
-                        flightBookingPhoneCodeViewModel.setCountryPhoneCode(String.valueOf(flightAirportDB.getPhoneCode()));
-                        flightBookingPhoneCodeViewModels.add(flightBookingPhoneCodeViewModel);
+                        CountryPhoneCode flightBookingPhoneCode = new CountryPhoneCode();
+                        flightBookingPhoneCode.setCountryId(flightAirportDB.getCountryId());
+                        flightBookingPhoneCode.setCountryName(flightAirportDB.getCountryName());
+                        flightBookingPhoneCode.setCountryPhoneCode(String.valueOf(flightAirportDB.getPhoneCode()));
+                        flightBookingPhoneCodes.add(flightBookingPhoneCode);
                     }
-                    return Observable.just(flightBookingPhoneCodeViewModels);
+                    return Observable.just(flightBookingPhoneCodes);
                 });
     }
 

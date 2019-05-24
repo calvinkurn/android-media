@@ -18,19 +18,16 @@ import dagger.Provides;
 @Module
 public class CommonTravelModule {
 
-    @CommonTravelScope
     @Provides
     CommonTravelRoomDb provideTravelPassengerRoomDb(@ApplicationContext Context context) {
         return CommonTravelRoomDb.getDatabase(context);
     }
 
-    @CommonTravelScope
     @Provides
     TravelPassengerDao provideTravelPassengerDao(CommonTravelRoomDb commonTravelRoomDb) {
         return commonTravelRoomDb.travelPassengerDao();
     }
 
-    @CommonTravelScope
     @Provides
     CountryPhoneCodeDao provideCountryPhoneCodeDao(CommonTravelRoomDb commonTravelRoomDb) {
         return commonTravelRoomDb.countryPhoneCodeDao();

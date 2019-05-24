@@ -80,9 +80,9 @@ public class PhoneCodePickerPresenterImpl extends BaseDaggerPresenter<PhoneCodeP
             }
 
             @Override
-            public void onNext(List<CountryPhoneCode> flightBookingPhoneCodeViewModels) {
+            public void onNext(List<CountryPhoneCode> flightBookingPhoneCodes) {
                 if (isViewAttached()) {
-                    getView().renderList(flightBookingPhoneCodeViewModels);
+                    getView().renderList(flightBookingPhoneCodes);
                 }
             }
         };

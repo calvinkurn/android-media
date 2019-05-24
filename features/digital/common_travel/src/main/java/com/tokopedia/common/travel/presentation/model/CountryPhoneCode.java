@@ -61,7 +61,7 @@ public class CountryPhoneCode implements Parcelable, Visitable<PhoneCodePickerAd
         this.countryPhoneCode = in.readString();
     }
 
-    public static final Creator<CountryPhoneCode> CREATOR = new Creator<CountryPhoneCode>() {
+    public static final Parcelable.Creator<CountryPhoneCode> CREATOR = new Parcelable.Creator<CountryPhoneCode>() {
         @Override
         public CountryPhoneCode createFromParcel(Parcel source) {
             return new CountryPhoneCode(source);
@@ -73,6 +73,7 @@ public class CountryPhoneCode implements Parcelable, Visitable<PhoneCodePickerAd
         }
     };
 
+    @Override
     public int type(PhoneCodePickerAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
     }

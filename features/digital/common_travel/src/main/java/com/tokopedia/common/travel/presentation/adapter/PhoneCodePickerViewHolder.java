@@ -26,8 +26,8 @@ public class PhoneCodePickerViewHolder extends AbstractViewHolder<CountryPhoneCo
     }
 
     @Override
-    public void bind(CountryPhoneCode flightBookingPhoneCodeViewModel) {
-        countryPhonCode.setText(itemView.getContext().getString(R.string.phone_code_picker_label, flightBookingPhoneCodeViewModel.getCountryPhoneCode()));
-        countryName.setText(flightBookingPhoneCodeViewModel.getCountryName());
+    public void bind(CountryPhoneCode flightBookingPhoneCode) {
+        countryPhonCode.setText(itemView.getContext().getString(R.string.phone_code_picker_label, flightBookingPhoneCode.getCountryPhoneCode()));
+        countryName.setText(flightBookingPhoneCode.getCountryName());
     }
 }
