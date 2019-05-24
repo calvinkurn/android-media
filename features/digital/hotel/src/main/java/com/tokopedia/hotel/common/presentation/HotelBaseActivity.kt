@@ -12,13 +12,18 @@ import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.di.component.HotelComponent
 import com.tokopedia.hotel.common.presentation.widget.HotelMenuBottomSheets
+import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
+import com.tokopedia.hotel.orderdetail.presentation.adapter.ContactAdapter
+import com.tokopedia.hotel.orderdetail.presentation.fragment.HotelOrderDetailFragment
+import com.tokopedia.hotel.orderdetail.presentation.widget.HotelContactPhoneBottomSheet
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * @author by furqan on 25/03/19
  */
-abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.HotelMenuListener {
+abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.HotelMenuListener,
+        ContactAdapter.OnClickCallListener {
 
     private lateinit var hotelComponent: HotelComponent
 
@@ -69,6 +74,20 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
     override fun onOrderListClicked() {
         if (userSessionInterface.isLoggedIn) {
             // Will be decided later
+            val bottomSheet = HotelContactPhoneBottomSheet()
+            bottomSheet.contactList = listOf(
+                    HotelTransportDetail.ContactInfo("16"),
+                    HotelTransportDetail.ContactInfo("17"),
+                    HotelTransportDetail.ContactInfo("18"),
+                    HotelTransportDetail.ContactInfo("19"),
+                    HotelTransportDetail.ContactInfo("20"),
+                    HotelTransportDetail.ContactInfo("21"),
+                    HotelTransportDetail.ContactInfo("22"),
+                    HotelTransportDetail.ContactInfo("23"),
+                    HotelTransportDetail.ContactInfo("24"),
+                    HotelTransportDetail.ContactInfo("25"))
+            bottomSheet.listener = this
+            bottomSheet.show(supportFragmentManager, HotelOrderDetailFragment.TAG_CONTACT_INFO)
         } else {
             RouteManager.route(this, ApplinkConst.LOGIN)
         }
@@ -93,6 +112,10 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
             hotelComponent = HotelComponentInstance.getHotelComponent(application)
         }
         return hotelComponent as HotelComponent
+    }
+
+    override fun onClickCall(contactNumber: String) {
+        RouteManager.route(this, "tokopedia://hotel/order/${contactNumber}")
     }
 
     abstract fun shouldShowOptionMenu(): Boolean
