@@ -78,6 +78,23 @@
 
         </LinearLayout>
 
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            app:cardCornerRadius="@dimen/dp_2">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:text="@string/travel_contact_data_notice"/>
+
+        </android.support.v7.widget.CardView>
+
     </LinearLayout>
 
     <com.tokopedia.design.component.ButtonCompat
