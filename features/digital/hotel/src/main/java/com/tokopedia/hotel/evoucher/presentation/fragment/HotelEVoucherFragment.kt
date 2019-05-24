@@ -148,33 +148,51 @@ class HotelEVoucherFragment : BaseDaggerFragment() {
             tv_guest_name.text = data.hotelTransportDetails[0].guestDetail.content
 
             if (data.hotelTransportDetails[0].propertyDetail.isNotEmpty()) {
-                tv_property_name.text = data.hotelTransportDetails[0].propertyDetail[0].propertyInfo.name
-                tv_property_address.text = data.hotelTransportDetails[0].propertyDetail[0].propertyInfo.address
+                val propertyDetail = data.hotelTransportDetails[0].propertyDetail[0]
 
-                for (i in 1..data.hotelTransportDetails[0].propertyDetail[0].propertyInfo.starRating) {
+                tv_property_name.text = propertyDetail.propertyInfo.name
+                tv_property_address.text = propertyDetail.propertyInfo.address
+
+                rdv_checkin_checkout_date.setRoomDatesFormatted(
+                        propertyDetail.checkInOut[0].checkInOut.date,
+                        propertyDetail.checkInOut[1].checkInOut.date,
+                        propertyDetail.checkInOut[2].content)
+
+                for (i in 1..propertyDetail.propertyInfo.starRating) {
                     container_rating_view.addView(RatingStarView(context!!))
                 }
 
-                tv_booking_title.text = data.hotelTransportDetails[0].propertyDetail[0].bookingKey.title
-                tv_booking_code.text = data.hotelTransportDetails[0].propertyDetail[0].bookingKey.content
+                tv_booking_title.text = propertyDetail.bookingKey.title
+                tv_booking_code.text = propertyDetail.bookingKey.content
 
-                if (data.hotelTransportDetails[0].propertyDetail[0].room.isNotEmpty()) {
-                    tv_room_title.text = data.hotelTransportDetails[0].propertyDetail[0].room[0].title
-                    tv_room_info.text = data.hotelTransportDetails[0].propertyDetail[0].room[0].content
+                if (propertyDetail.room.isNotEmpty()) {
+                    tv_room_title.text = propertyDetail.room[0].title
+                    tv_room_info.text = propertyDetail.room[0].content
 
                     var amenitiesString = ""
-                    for ((index, item) in data.hotelTransportDetails[0].propertyDetail[0].room[0].amenities.withIndex()) {
+                    for ((index, item) in propertyDetail.room[0].amenities.withIndex()) {
                         amenitiesString += item.content
-
-                        if (index < data.hotelTransportDetails[0].propertyDetail[0].room[0].amenities.size - 1) amenitiesString += ", "
+                        if (index < propertyDetail.room[0].amenities.size - 1) amenitiesString += ", "
                     }
 
                     tv_room_facility.text = amenitiesString
                 }
 
-                tv_additional_notes.text = data.hotelTransportDetails[0].propertyDetail[0].extraInfo
+                tv_additional_notes.text = propertyDetail.extraInfo
+
+                if (propertyDetail.specialRequest.isNotEmpty()) {
+                    tv_request_label.text = propertyDetail.specialRequest[0].title
+                    tv_request_info.text = propertyDetail.specialRequest[0].content
+                }
 
             }
+
+            var phoneString = ""
+            for ((index, item) in data.hotelTransportDetails[0].contactInfo.withIndex()) {
+                phoneString += item.number
+                if (index < data.hotelTransportDetails[0].contactInfo.size - 1) phoneString += ", "
+            }
+            tv_property_phone.text = getString(R.string.hotel_e_voucher_phone, phoneString)
         }
     }
 

@@ -40,10 +40,10 @@
                         android:orientation="horizontal" />
 
                     <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_property_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_8"
-                        android:id="@+id/tv_property_name"
                         android:gravity="center"
                         app:fontSize="titleBig"
                         app:textViewTheme="lightPrimary"
@@ -51,18 +51,18 @@
                         tools:text="Avissa Suites" />
 
                     <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_property_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_8"
-                        android:id="@+id/tv_property_address"
                         android:gravity="center"
                         app:fontSize="micro"
                         tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat." />
 
                     <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_property_phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tv_property_phone"
                         android:layout_marginBottom="@dimen/dp_8"
                         android:gravity="center"
                         app:fontSize="micro"
@@ -78,38 +78,33 @@
                     android:layout_below="@+id/ticket_head"
                     android:background="@drawable/bg_hotel_ticket_bottom"
                     android:orientation="vertical"
-                    android:paddingTop="@dimen/dp_16"
                     android:paddingBottom="@dimen/dp_16">
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
+                        android:id="@+id/rdv_checkin_checkout_date"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Menunggu Widget dari Resa yang di Booking"
-                        app:fontSize="micro"
-                        tools:text="Menunggu Widget dari Resa yang di Booking" />
+                        android:layout_height="wrap_content" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="5dp"
-                        android:layout_marginTop="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_16"
                         android:background="@drawable/bg_hotel_ticket_divider"
                         android:layerType="software" />
 
                     <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_guest_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
-                        android:id="@+id/tv_guest_title"
                         app:fontSize="micro"
                         tools:text="Nama Tamu" />
 
                     <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_guest_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tv_guest_name"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_16"
@@ -119,21 +114,21 @@
                         tools:text="Muhammad Furqan" />
 
                     <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_booking_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
-                        android:id="@+id/tv_booking_title"
                         app:fontSize="micro"
                         tools:text="Kode Booking" />
 
                     <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_booking_code"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_16"
-                        android:id="@+id/tv_booking_code"
                         app:fontSize="small"
                         app:textViewTheme="lightPrimary"
                         app:weight="medium"
@@ -161,33 +156,33 @@
                     tools:text="DETAIL PESANAN" />
 
                 <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_room_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
-                    android:id="@+id/tv_room_title"
                     app:fontSize="small"
                     app:textViewTheme="lightPrimary"
                     app:weight="medium"
                     tools:text="Kamar Deluxe Double" />
 
                 <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_room_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:id="@+id/tv_room_info"
                     app:fontSize="micro"
                     tools:text="2 Kamar • 2 Tamu" />
 
                 <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_room_facility"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:id="@+id/tv_room_facility"
                     app:fontSize="micro"
                     tools:text="Termasuk Sarapan, Refund Bersyarat" />
 
@@ -200,32 +195,32 @@
                     android:layerType="software" />
 
                 <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_request_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:id="@+id/tv_request_label"
                     app:fontSize="micro"
                     tools:text="Permintaan Khusus" />
 
                 <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_request_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
-                    android:id="@+id/tv_request_info"
                     android:layout_marginRight="@dimen/dp_16"
                     app:fontSize="small"
                     app:textViewTheme="lightPrimary"
                     tools:text="Saya ingin kamar yang view nya pantai, dingin, dan tambahan extra bed 2 yah mas tolong." />
 
                 <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_additional_notes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_24"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_16"
-                    android:id="@+id/tv_additional_notes"
                     app:fontSize="micro"
                     tools:text="Dana deposit, pajak wisata, dan biaya lainnya mungkin akan ditagihkan saat check-in." />
 

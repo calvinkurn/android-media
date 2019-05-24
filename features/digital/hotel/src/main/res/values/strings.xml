@@ -139,6 +139,7 @@
 
     <string name="hotel_room_night_count">%1$d Malam</string>
 
+    <string name="hotel_e_voucher_phone">No. Telepon: %1$s</string>
     <string name="hotel_share_as_image">Bagikan sebagai gambar</string>
     <string name="hotel_share_as_pdf">Bagikan sebagai PDF</string>
     <string name="hotel_share_file_name">Tokopedia_Hotel_%1$s.png</string>

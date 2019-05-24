@@ -47,13 +47,13 @@
             "Title": "credit card tidak ditagih"
           },
           "guestDetail": {
-            "title": "nama tamu",
-            "content": "Stevanus Kurniawan"
+            "title": "Nama Tamu",
+            "content": "Stevanus Kurniawan Suharyanto"
           },
           "propertyDetail": [
             {
               "bookingKey": {
-                "title": "kode booking",
+                "title": "Kode Booking",
                 "content": "P231PC"
               },
               "image": [
@@ -95,8 +95,8 @@
               "propertyInfo": {
                 "type": "hotel",
                 "name": "Avissa Suites",
-                "address": "jalan...",
-                "starRating": 4
+                "address": "Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat.",
+                "starRating": 5
               },
               "room": [
                 {
@@ -111,7 +111,7 @@
               ],
               "specialRequest": [
                 {
-                  "title": "permintaan khusus",
+                  "title": "Permintaan Khusus",
                   "content": "kamar view pantai"
                 }
               ],
