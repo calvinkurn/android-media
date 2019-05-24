@@ -29,9 +29,9 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,6 +65,8 @@ public class MyApplication extends BaseMainApplication
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
+
+        PersistentCacheManager.init(this);
         super.onCreate();
         FlowManager.init(new FlowConfig.Builder(this)
                 .build());

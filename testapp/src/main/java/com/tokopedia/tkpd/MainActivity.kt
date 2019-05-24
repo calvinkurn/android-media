@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.network.LogoutPojo
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -158,6 +159,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }.doOnNext {
                 userSession.logoutSession()
+                PersistentCacheManager.instance.delete()
             }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<LogoutPojo> {
