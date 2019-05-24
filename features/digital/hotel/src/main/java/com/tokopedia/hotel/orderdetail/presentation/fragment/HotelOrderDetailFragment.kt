@@ -318,11 +318,11 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
                 }
             }, startIndexOfLink, startIndexOfLink + "disini".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-            helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
             helpLabel.setHighlightColor(Color.TRANSPARENT)
             helpLabel.setMovementMethod(LinkMovementMethod.getInstance())
         }
 
+        helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
         helpLabel.gravity = Gravity.CENTER
         val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
