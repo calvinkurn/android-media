@@ -267,7 +267,8 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     fun renderFooter(orderDetail: HotelOrderDetail) {
 
         order_detail_footer_layout.removeAllViews()
-        order_detail_footer_layout.addView(createHelpText(orderDetail.contactUs))
+        if (orderDetail.contactUs.helpText.isNotBlank())
+            order_detail_footer_layout.addView(createHelpText(orderDetail.contactUs))
 
         for (button in orderDetail.actionButtons) {
             val buttonCompat = ButtonCompat(context)
@@ -326,7 +327,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
         helpLabel.layoutParams = params
-        
+
         return helpLabel
     }
 
