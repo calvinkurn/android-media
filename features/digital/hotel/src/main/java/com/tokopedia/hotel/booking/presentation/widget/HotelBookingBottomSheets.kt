@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.booking.presentation.widget
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -12,18 +13,14 @@ import com.tokopedia.hotel.R
  */
 class HotelBookingBottomSheets : BottomSheets() {
 
-    private lateinit var contentView: LinearLayout
     var contentViewList: ArrayList<View> = arrayListOf()
     var title = ""
 
     override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_hotel_booking
 
     override fun initView(view: View) {
-        contentView = view.findViewById(R.id.hotel_booking_container) as LinearLayout
-
-        for (view_item in contentViewList) contentView.addView(view_item)
-
-        updateHeight()
+        val contentView: LinearLayout = view.findViewById(R.id.hotel_booking_container)
+        for (viewItem in contentViewList) contentView.addView(viewItem)
     }
 
     override fun title() = title

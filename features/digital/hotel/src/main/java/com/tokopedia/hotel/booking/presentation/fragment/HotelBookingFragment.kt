@@ -52,9 +52,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
     var roomRequest = ""
     var roomRequestMaxCharCount = ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT
-
     var guestName = ""
-
     var promoCode = ""
 
     lateinit var saveInstanceCacheManager: SaveInstanceCacheManager
@@ -104,7 +102,9 @@ class HotelBookingFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_CART_ID)) {
-            cartId = savedInstanceState.getString(EXTRA_HOTEL_CART_ID)!!
+            cartId = savedInstanceState.getString(EXTRA_HOTEL_CART_ID,"")
+            roomRequest = savedInstanceState.getString(EXTRA_ROOM_REQUEST,"")
+            guestName = savedInstanceState.getString(EXTRA_GUEST_NAME,"")
         }
 
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), cartId,
@@ -306,6 +306,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
         val priceLabelResId = if (property.rooms[0].isDirectPayment) R.string.hotel_booking_invoice_estimate_pay_at_hotel else R.string.hotel_booking_invoice_estimate_pay_now
         tv_room_estimated_price_label.text = getString(priceLabelResId)
         tv_room_estimated_price.text = cart.localTotalPrice
+        tv_room_estimated_price.setTextColor(ContextCompat.getColor(context!!, R.color.orange_607))
 
         if (cart.currency != "IDR") {
             tv_invoice_foreign_currency.visibility = View.VISIBLE

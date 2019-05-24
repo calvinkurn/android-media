@@ -528,14 +528,14 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:fontSize="micro"
-                        app:textViewTheme="lightSecondary" />
+                        app:textViewTheme="lightSecondary"
+                        tools:text="Bayar di Hotel"/>
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:id="@+id/tv_room_estimated_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:textColor="@color/orange_607"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:fontSize="small"
