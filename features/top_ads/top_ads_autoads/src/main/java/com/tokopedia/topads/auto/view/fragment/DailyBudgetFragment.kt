@@ -1,5 +1,7 @@
 package com.tokopedia.topads.auto.view.fragment
 
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
@@ -19,12 +21,18 @@ import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.seller.common.widget.PrefixEditText
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.R
+import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
+import com.tokopedia.topads.auto.data.entity.BidInfoData
+import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData
+import com.tokopedia.topads.auto.data.entity.TopAdsShopInfoData
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -37,9 +45,14 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     lateinit var budgetViewModel: DailyBudgetViewModel
     lateinit var budgetInputLayout: TextInputLayout
 
+    val requestType = "auto_ads"
+    val source = "update_auto_ads"
+
     @Inject
     lateinit var factory: DailyBudgetViewModelFactory
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     abstract fun getLayoutId(): Int
 
@@ -59,42 +72,29 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source)
+        budgetViewModel.budgetInfoData.observe(this@DailyBudgetFragment, Observer {
+            val data = it!!.get(0)
+            priceEditText.setText(data.minDailyBudget.toString())
 
-        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                priceRange.text = budgetViewModel.getPotentialImpression(10000.toDouble(),
-                        20000.toDouble(), progress.toDouble())
-                priceEditText.setText(progress.toString())
-            }
+            seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
+            seekBar.value = data.minDailyBudget
+            seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    priceRange.text = budgetViewModel.getPotentialImpression(data.minBid.toDouble(),
+                            data.maxBid.toDouble(), progress.toDouble())
+                    priceEditText.setText(progress.toString())
+                }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
 
-            }
+                }
 
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
 
-            }
+                }
+            })
         })
-//        budgetViewModel.bidInfo.observe(this, Observer { topadsBidInfo ->
-//            val bidInfo = topadsBidInfo!!.data[0]
-//            seekBar.range = Range(bidInfo.minBid, bidInfo.maxBid, bidInfo.minBid)
-//            seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-//                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-//                    priceRange.text = budgetViewModel.getPotentialImpression(bidInfo.minBid.toDouble(),
-//                            bidInfo.maxBid.toDouble(), progress.toDouble())
-//                    priceEditText.setText(progress.toString())
-//                }
-//
-//                override fun onStartTrackingTouch(seekBar: SeekBar) {
-//
-//                }
-//
-//                override fun onStopTrackingTouch(seekBar: SeekBar) {
-//
-//                }
-//            })
-//        })
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -109,8 +109,6 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     }
 
     open fun setListener() {
-        seekBar.range = Range(MIN_BUDGET, MAX_BUDGET, 1000)
-        seekBar.value = 15000
         priceEditText.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (!hasFocus) {
                 val imm = activity!!
@@ -135,40 +133,14 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_AD_OPTION) {
             if (data != null) {
+
                 when (data.getIntExtra(SELECTED_OPTION, -1)) {
-                    TopAdsAddingOption.GROUP_OPT -> onSummaryGroupClicked()
-                    TopAdsAddingOption.PRODUCT_OPT -> gotoCreateProductAd()
-                    TopAdsAddingOption.KEYWORDS_OPT -> gotoCreateKeyword()
+                    TopAdsAddingOption.GROUP_OPT -> (activity as AutoAdsBaseActivity).onSummaryGroupClicked()
+                    TopAdsAddingOption.PRODUCT_OPT -> (activity as AutoAdsBaseActivity).gotoCreateProductAd()
+                    TopAdsAddingOption.KEYWORDS_OPT -> (activity as AutoAdsBaseActivity).gotoCreateKeyword()
                 }
                 activity!!.finishAffinity()
             }
-        }
-    }
-
-    private fun gotoCreateProductAd() {
-        val router = activity!!.application as TopAdsAutoRouter
-        if (GlobalConfig.isSellerApp()) {
-            startActivity(router.getTopAdsGroupNewPromoIntent(activity!!))
-        } else {
-            router.openTopAdsDashboardApplink(activity!!)
-        }
-    }
-
-    private fun onSummaryGroupClicked() {
-        val router = activity!!.application as TopAdsAutoRouter
-        if (GlobalConfig.isSellerApp()) {
-            startActivity(router.getTopAdsGroupAdListIntent(activity!!))
-        } else {
-            router.openTopAdsDashboardApplink(activity!!)
-        }
-    }
-
-    private fun gotoCreateKeyword() {
-        val router = activity!!.application as TopAdsAutoRouter
-        if (GlobalConfig.isSellerApp()) {
-            startActivity(router.getTopAdsKeywordNewChooseGroupIntent(activity!!, true, null))
-        } else {
-            router.openTopAdsDashboardApplink(activity!!)
         }
     }
 

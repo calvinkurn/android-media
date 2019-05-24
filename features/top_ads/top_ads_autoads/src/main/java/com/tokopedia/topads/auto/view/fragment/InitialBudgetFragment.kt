@@ -1,7 +1,9 @@
 package com.tokopedia.topads.auto.view.fragment
 
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -9,6 +11,7 @@ import android.view.View
 import android.widget.Button
 
 import com.tokopedia.topads.auto.R
+import com.tokopedia.topads.auto.data.entity.TopAdsShopInfoData
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.view.activity.AutoAdsActivatedActivity
 import com.tokopedia.topads.auto.view.widget.InfoAutoAdsSheet

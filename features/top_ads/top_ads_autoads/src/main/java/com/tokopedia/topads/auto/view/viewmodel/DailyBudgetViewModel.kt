@@ -1,10 +1,23 @@
 package com.tokopedia.topads.auto.view.viewmodel
 
-
+import android.arch.lifecycle.MutableLiveData
 import android.content.Context
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.base.AutoAdsViewModel
-import com.tokopedia.topads.auto.data.repository.AutoTopAdsRepositoy
+import com.tokopedia.topads.auto.data.entity.BidInfoData
+import com.tokopedia.topads.auto.data.entity.TopAdsShopInfoData
+import com.tokopedia.topads.auto.data.network.response.TopAdsShopInfo
+import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
+import com.tokopedia.topads.auto.internal.RawQueryKeyObject
+import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.withContext
 import javax.inject.Inject
 
 /**
@@ -12,8 +25,31 @@ import javax.inject.Inject
  */
 class DailyBudgetViewModel @Inject constructor(
         private val context: Context,
-        private val repository: AutoTopAdsRepositoy
-) : AutoAdsViewModel(repository) {
+        private val dispatcher: CoroutineDispatcher,
+        private val repository: GraphqlRepository,
+        private val rawQueries: Map<String, String>
+        ) : BaseViewModel(dispatcher) {
+
+    val budgetInfoData = MutableLiveData<List<BidInfoData>>()
+
+    fun getBudgetInfo(shopId: Int, requestType: String, source: String) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.IO){
+                val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_BID_INFO],
+                        TopadsBidInfo.Response::class.java,
+                        mapOf("shopId" to shopId, "requestType" to requestType, "source" to source))
+                val cacheStrategy = GraphqlCacheStrategy
+                        .Builder(CacheType.ALWAYS_CLOUD).build()
+                repository.getReseponse(listOf(request), cacheStrategy)
+            }
+            data.getSuccessData<TopadsBidInfo.Response>().bidInfo.data.let {
+                budgetInfoData.postValue(it)
+            }
+        }) {
+            it.printStackTrace()
+        }
+    }
+
 
     fun getPotentialImpression(minBid: Double, maxBid: Double, bid: Double): String {
         return String.format("%,.0f - %,.0f", calculateImpression(maxBid, bid),

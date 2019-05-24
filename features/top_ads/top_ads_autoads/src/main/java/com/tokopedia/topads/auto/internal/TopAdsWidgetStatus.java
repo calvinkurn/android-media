@@ -7,7 +7,9 @@ import java.lang.annotation.RetentionPolicy;
 
 import static com.tokopedia.topads.auto.internal.TopAdsWidgetStatus.STATUS_ACTIVE;
 import static com.tokopedia.topads.auto.internal.TopAdsWidgetStatus.STATUS_INACTIVE;
-import static com.tokopedia.topads.auto.internal.TopAdsWidgetStatus.STATUS_IN_PROGRESS;
+import static com.tokopedia.topads.auto.internal.TopAdsWidgetStatus.STATUS_IN_PROGRESS_ACTIVE;
+import static com.tokopedia.topads.auto.internal.TopAdsWidgetStatus.STATUS_IN_PROGRESS_AUTOMANAGE;
+import static com.tokopedia.topads.auto.internal.TopAdsWidgetStatus.STATUS_IN_PROGRESS_INACTIVE;
 import static com.tokopedia.topads.auto.internal.TopAdsWidgetStatus.STATUS_NOT_DELIVERED;
 
 /**
@@ -15,10 +17,12 @@ import static com.tokopedia.topads.auto.internal.TopAdsWidgetStatus.STATUS_NOT_D
  */
 
 @Retention(RetentionPolicy.SOURCE)
-@IntDef({STATUS_INACTIVE, STATUS_IN_PROGRESS, STATUS_ACTIVE, STATUS_NOT_DELIVERED})
+@IntDef({STATUS_INACTIVE, STATUS_IN_PROGRESS_ACTIVE, STATUS_IN_PROGRESS_INACTIVE, STATUS_IN_PROGRESS_AUTOMANAGE, STATUS_ACTIVE, STATUS_NOT_DELIVERED})
 public @interface TopAdsWidgetStatus {
     int STATUS_INACTIVE = 100;
-    int STATUS_IN_PROGRESS = 200;
-    int STATUS_ACTIVE = 300;
-    int STATUS_NOT_DELIVERED = 400;
+    int STATUS_IN_PROGRESS_ACTIVE = 200;
+    int STATUS_IN_PROGRESS_AUTOMANAGE = 300;
+    int STATUS_IN_PROGRESS_INACTIVE = 400;
+    int STATUS_ACTIVE = 500;
+    int STATUS_NOT_DELIVERED = 600;
 }

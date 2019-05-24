@@ -80,21 +80,24 @@
         android:padding="@dimen/dp_16">
 
         <TextView
+            android:id="@+id/daily_usage_status"
             style="@style/TextView.Title.Bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Terpakai Rp200.000" />
+            tools:text="@string/terpakai" />
 
         <ProgressBar
+            android:id="@+id/progress_bar"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:progress="20" />
 
         <TextView
+            android:id="@+id/daily_budget_status"
             style="@style/TextView.Micro.BlackDisabled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Anggaran Harian Rp1.000.000" />
+            tools:text="@string/anggaran_harian_status" />
     </LinearLayout>
 </LinearLayout>
