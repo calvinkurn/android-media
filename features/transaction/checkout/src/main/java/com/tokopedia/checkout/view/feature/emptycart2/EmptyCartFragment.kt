@@ -1,12 +1,15 @@
 package com.tokopedia.checkout.view.feature.emptycart2
 
 import android.app.ProgressDialog
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.checkout.view.feature.emptycart2.di.DaggerEmptyCartComponent
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveView
@@ -27,8 +31,13 @@ import com.tokopedia.checkout.view.feature.emptycart2.adapter.EmptyCartAdapter
 import com.tokopedia.checkout.view.feature.emptycart2.adapter.EmptyCartAdapterTypeFactory
 import com.tokopedia.checkout.view.feature.emptycart2.uimodel.EmptyCartPlaceholderUiModel
 import com.tokopedia.checkout.view.feature.emptycart2.uimodel.PromoUiModel
+import com.tokopedia.checkout.view.feature.emptycart2.uimodel.WishlistUiModel
 import com.tokopedia.checkout.view.feature.emptycart2.viewholder.PromoViewHolder
 import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.PromoViewModel
+import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.WishlistViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import kotlinx.android.synthetic.main.fragment_empty_cart_2.*
 import javax.inject.Inject
 
@@ -42,6 +51,7 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var promoViewModel: PromoViewModel
+    lateinit var wishlistViewModel: WishlistViewModel
     lateinit var progressDialog: ProgressDialog
     lateinit var adapter: EmptyCartAdapter
 
@@ -50,6 +60,10 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         val ARG_AUTO_APPLY_STATE = "ARG_AUTO_APPLY_STATE"
         val ARG_AUTO_APPLY_TITLE = "ARG_AUTO_APPLY_TITLE"
         val ARG_AUTO_APPLY_PROMO_CODE = "ARG_AUTO_APPLY_PROMO_CODE"
+
+        val REQUEST_CODE_ROUTE_WISHLIST = 123
+        val REQUEST_CODE_ROUTE_RECENT_VIEW = 321
+
 
         fun newInstance(autoApplyMessage: String?, args: String?, state: String?, titleDesc: String?, promoCode: String?): EmptyCartFragment {
             val emptyCartFragment = EmptyCartFragment()
@@ -70,8 +84,8 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             promoViewModel = viewModelProvider.get(PromoViewModel::class.java)
+            wishlistViewModel = viewModelProvider.get(WishlistViewModel::class.java)
         }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -90,9 +104,42 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
 
         renderPromo()
         renderEmptyCartPlaceholder()
+        renderWishlist()
     }
 
-    fun notifyItemRemoved(position: Int) {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        promoViewModel.clearPromoResult.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessClearPromo()
+                is Fail -> onErrorClearPromo(RuntimeException())
+            }
+        })
+        wishlistViewModel.wishlistData.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetWishlist(it.data)
+                is Fail -> { }
+            }
+        })
+    }
+
+    override fun onDestroyView() {
+        promoViewModel.clearPromoResult.removeObservers(this)
+        promoViewModel.unsubscribeSubscription()
+        wishlistViewModel.wishlistData.removeObservers(this)
+        wishlistViewModel.unsubscribeSubscription()
+        super.onDestroyView()
+    }
+
+    private fun notifyItemInserted(position: Int) {
+        if (recycler_view.isComputingLayout) {
+            recycler_view.post { adapter.notifyItemInserted(position) }
+        } else {
+            adapter.notifyItemInserted(position)
+        }
+    }
+
+    private fun notifyItemRemoved(position: Int) {
         if (recycler_view.isComputingLayout) {
             recycler_view.post { adapter.notifyItemRemoved(position) }
         } else {
@@ -100,7 +147,7 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         }
     }
 
-    fun notifyItemChanged(position: Int) {
+    private fun notifyItemChanged(position: Int) {
         if (recycler_view.isComputingLayout) {
             recycler_view.post { adapter.notifyItemChanged(position) }
         } else {
@@ -108,7 +155,7 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         }
     }
 
-    fun notifyDataSetChanged() {
+    private fun notifyDataSetChanged() {
         if (recycler_view.isComputingLayout) {
             recycler_view.post { adapter.notifyDataSetChanged() }
         } else {
@@ -116,8 +163,12 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         }
     }
 
+    override fun getRecyclerView(view: View): RecyclerView {
+        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
+    }
+
     override fun getAdapterTypeFactory(): EmptyCartAdapterTypeFactory {
-        return EmptyCartAdapterTypeFactory(this)
+        return EmptyCartAdapterTypeFactory(this, getItemWidth())
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -222,7 +273,7 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
 
     override fun onClearPromo(promoCode: String) {
         showLoadingDialog()
-        promoViewModel.clearCacheAutoApplyStack(promoCode, this::onSuccessClearPromo, this::onErrorClearPromo)
+        promoViewModel.clearCacheAutoApplyStack(promoCode)
     }
 
     private fun onSuccessClearPromo() {
@@ -246,6 +297,34 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
 
     override fun onClickShopNow() {
         RouteManager.route(activity, ApplinkConst.HOME)
+    }
+
+    private fun renderWishlist() {
+        wishlistViewModel.getWishlist()
+    }
+
+    private fun getItemWidth(): Int {
+        val displayMetrics = activity?.resources?.displayMetrics
+        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+        val deviceWidth = displayMetrics?.widthPixels
+        return (deviceWidth?.div(2.0f))?.toDouble()?.toInt() ?: 0
+    }
+
+    override fun onItemWishListClicked(wishlist: Wishlist, position: Int) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlist.id);
+        startActivityForResult(intent, REQUEST_CODE_ROUTE_WISHLIST)
+    }
+
+    override fun onShowAllWishlist() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.WISHLIST);
+        startActivityForResult(intent, REQUEST_CODE_ROUTE_WISHLIST)
+    }
+
+    private fun onSuccessGetWishlist(wishlistData: MutableList<Wishlist>) {
+        val wishlistUiModel = WishlistUiModel()
+        wishlistUiModel.wishlistItems = wishlistData
+        adapter.addElement(wishlistUiModel)
+        notifyItemInserted(adapter.getIndexOf(wishlistUiModel))
     }
 
 }

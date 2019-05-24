@@ -1,10 +1,14 @@
 package com.tokopedia.checkout.view.feature.emptycart2.viewmodel
 
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -14,7 +18,13 @@ import javax.inject.Inject
 
 class PromoViewModel @Inject constructor(private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase) : ViewModel() {
 
-    fun clearCacheAutoApplyStack(promoCode: String, onResultSuccess: () -> Unit, onResultError: (e: Throwable) -> Unit) {
+    val clearPromoResult = MutableLiveData<Result<Boolean>>()
+
+    fun unsubscribeSubscription() {
+        clearCacheAutoApplyStackUseCase.unsubscribe()
+    }
+
+    fun clearCacheAutoApplyStack(promoCode: String) {
         val promoCodes = arrayListOf(promoCode)
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodes)
         clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
@@ -23,15 +33,15 @@ class PromoViewModel @Inject constructor(private val clearCacheAutoApplyStackUse
             }
 
             override fun onError(e: Throwable) {
-                onResultError(e)
+                clearPromoResult.value = Fail(RuntimeException())
             }
 
             override fun onNext(response: GraphqlResponse) {
                 val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
                 if (responseData.successData.success) {
-                    onResultSuccess()
+                    clearPromoResult.value = Success(true)
                 } else {
-                    onResultError(RuntimeException())
+                    clearPromoResult.value = Fail(RuntimeException())
                 }
             }
         })

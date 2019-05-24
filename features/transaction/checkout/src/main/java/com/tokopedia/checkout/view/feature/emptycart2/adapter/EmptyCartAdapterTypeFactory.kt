@@ -14,7 +14,7 @@ import com.tokopedia.checkout.view.feature.emptycart2.viewholder.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-open class EmptyCartAdapterTypeFactory(val listener: ActionListener) : BaseAdapterTypeFactory(), EmptyCartTypeFactory {
+open class EmptyCartAdapterTypeFactory(val listener: ActionListener, val itemWidth: Int) : BaseAdapterTypeFactory(), EmptyCartTypeFactory {
 
     override fun type(viewModel: PromoUiModel): Int {
         return PromoViewHolder.LAYOUT
@@ -45,7 +45,7 @@ open class EmptyCartAdapterTypeFactory(val listener: ActionListener) : BaseAdapt
             PromoViewHolder.LAYOUT -> PromoViewHolder(view, listener)
             EmptyCartPlaceholderViewHolder.LAYOUT -> EmptyCartPlaceholderViewHolder(view, listener)
             RecentViewViewHolder.LAYOUT -> RecentViewViewHolder(view)
-            WishlistViewHolder.LAYOUT -> WishlistViewHolder(view)
+            WishlistViewHolder.LAYOUT -> WishlistViewHolder(view, listener, itemWidth)
             RecommendationViewHolder.LAYOUT -> RecommendationViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }

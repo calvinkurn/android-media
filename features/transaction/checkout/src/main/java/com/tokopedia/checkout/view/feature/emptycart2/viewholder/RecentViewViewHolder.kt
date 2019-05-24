@@ -16,7 +16,7 @@ class RecentViewViewHolder(val view: View) : AbstractViewHolder<EmptyCartPlaceho
     }
 
     override fun bind(element: EmptyCartPlaceholderUiModel?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
 }
