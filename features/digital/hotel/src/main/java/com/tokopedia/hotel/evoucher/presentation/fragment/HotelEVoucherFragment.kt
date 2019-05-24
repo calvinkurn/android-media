@@ -38,6 +38,8 @@ class HotelEVoucherFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var eVoucherViewModel: HotelEVoucherViewModel
 
+    lateinit var orderId: String
+
     override fun getScreenName(): String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,15 +65,21 @@ class HotelEVoucherFragment : BaseDaggerFragment() {
         })
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(EXTRA_ORDER_ID, orderId)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
             inflater.inflate(R.layout.fragment_hotel_e_voucher, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
-                "18")
+        val args = savedInstanceState ?: arguments!!
+        orderId = args.getString(EXTRA_ORDER_ID, "")
+        eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_hotel_order_list_detail), orderId)
     }
 
     override fun initInjector() = getComponent(HotelEVoucherComponent::class.java).inject(this)
@@ -173,8 +181,13 @@ class HotelEVoucherFragment : BaseDaggerFragment() {
     companion object {
 
         const val TAG_SHARE_AS_PDF = "TAG_SHARE_AS_PDF"
+        const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
 
-        fun getInstance(): HotelEVoucherFragment = HotelEVoucherFragment()
+        fun getInstance(orderId: String): HotelEVoucherFragment = HotelEVoucherFragment().also {
+            it.arguments = Bundle().apply {
+                putString(EXTRA_ORDER_ID, orderId)
+            }
+        }
 
     }
 }

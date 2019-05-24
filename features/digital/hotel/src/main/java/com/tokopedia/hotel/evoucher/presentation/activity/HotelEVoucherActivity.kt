@@ -12,6 +12,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.evoucher.di.DaggerHotelEVoucherComponent
 import com.tokopedia.hotel.evoucher.di.HotelEVoucherComponent
 import com.tokopedia.hotel.evoucher.presentation.fragment.HotelEVoucherFragment
+import com.tokopedia.hotel.evoucher.presentation.fragment.HotelEVoucherFragment.Companion.EXTRA_ORDER_ID
 import com.tokopedia.hotel.evoucher.presentation.widget.HotelMenuShareSheets
 
 
@@ -26,7 +27,7 @@ class HotelEVoucherActivity : HotelBaseActivity(), HotelMenuShareSheets.HotelSha
     override fun shouldShowOptionMenu(): Boolean = true
 
     override fun getNewFragment(): Fragment {
-        fragment = HotelEVoucherFragment.getInstance()
+        fragment = HotelEVoucherFragment.getInstance(intent.getStringExtra(EXTRA_ORDER_ID))
         return fragment
     }
 
@@ -77,7 +78,8 @@ class HotelEVoucherActivity : HotelBaseActivity(), HotelMenuShareSheets.HotelSha
 
         const val TAG_HOTEL_SHARE_MENU = "HOTEL_SHARE_MENU"
 
-        fun getCallingIntent(context: Context): Intent =
+        fun getCallingIntent(context: Context, orderId: String): Intent =
                 Intent(context, HotelEVoucherActivity::class.java)
+                        .putExtra(EXTRA_ORDER_ID, orderId)
     }
 }
