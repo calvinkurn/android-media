@@ -202,6 +202,12 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     };
 
     private void handleAppBarOffsetChange(int offset) {
+
+        if(getActivity()!=null && getActivity().isFinishing() == false && getContext()!=null && isAdded()==true && isRemoving()==false){
+
+
+        }
+
         int positiveOffset = offset * -1;
         int toolbarTransitionRange = getResources().getDimensionPixelSize(R.dimen.tp_home_top_bg_height)
                 - tokoPointToolbar.getHeight() - getStatusBarHeight(getActivity());
