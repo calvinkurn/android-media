@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Rect
 import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.widget.SwipeRefreshLayout
@@ -56,6 +57,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
@@ -941,27 +943,70 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         isOwner = userId.toString() == userSession.userId
 
         layoutManager = LinearLayoutManager(activity)
-
+        recyclerView.layoutManager = layoutManager
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            var laginaik:Boolean = true
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+                    laginaik = true
+                } else {
+                    laginaik = false
+                }
+
+            }
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
+
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE
                             && layoutManager != null) {
                         val item: Visitable<*>?
-                        val position = when {
-                            itemIsFullScreen() -> layoutManager.findLastVisibleItemPosition()
-                            layoutManager.findFirstCompletelyVisibleItemPosition() != -1 -> layoutManager.findFirstCompletelyVisibleItemPosition()
-                            layoutManager.findLastCompletelyVisibleItemPosition() != -1 -> layoutManager.findLastCompletelyVisibleItemPosition()
-                            else -> 0
-                        }
+//                        val position = when {
+//                            itemIsFullScreen() -> layoutManager.findLastVisibleItemPosition()
+//                            layoutManager.findFirstCompletelyVisibleItemPosition() != -1 -> layoutManager.findFirstCompletelyVisibleItemPosition()
+//                            layoutManager.findLastCompletelyVisibleItemPosition() != -1 -> layoutManager.findLastCompletelyVisibleItemPosition()
+//                            else -> 0
+//                        }
+//                        (recyclerView?.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+//                        item = adapter.list[position]
 
-                        item = adapter.list[position]
+//                        if (item is DynamicPostViewModel) {
+//                            if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
+//                                adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
+//                            }
+//                            if (item.contentList.size == 1 && item.contentList.get(0) is VideoViewModel) {
+//                                adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO)
+//                                (recyclerView?.findViewHolderForAdapterPosition(position) as VideoViewHolder).playVideo((item as VideoViewModel).url)
+//                            }
+//                        }
+                        var firstPosition = layoutManager.findFirstVisibleItemPosition();
+                        var lastPosition = layoutManager.findLastVisibleItemPosition();
 
-                        if (item is DynamicPostViewModel) {
-                            if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
-                                adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
+                        var rvRect = Rect();
+                        recyclerView?.getGlobalVisibleRect(rvRect);
+
+                        for (i in firstPosition..lastPosition) {
+                            var rowRect = Rect();
+                            layoutManager.findViewByPosition(i).getGlobalVisibleRect(rowRect);
+                            var videoViewRect = Rect()
+                            layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.getGlobalVisibleRect(videoViewRect)
+
+                            var percentVideo = 0
+                            if (rowRect.bottom >= rvRect.bottom) {
+                                layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.let {
+                                    var visibleVideo = rvRect.bottom - videoViewRect.top
+                                    percentVideo = (visibleVideo * 100) / it.height
+                                }
+                            } else {
+                                layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.let {
+                                    var visibleVideo = videoViewRect.bottom - rvRect.top
+                                    percentVideo = (visibleVideo * 100) / it.height
+                                }
+                            }
+                            if (percentVideo > 75) {
+                                (recyclerView?.findViewHolderForAdapterPosition(i) as DynamicPostViewHolder).playVideo()
                             }
                         }
                     }

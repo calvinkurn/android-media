@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.video
 
+import android.net.Uri
 import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
@@ -7,6 +8,8 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_post_video.view.*
 
@@ -15,10 +18,12 @@ import kotlinx.android.synthetic.main.item_post_video.view.*
  */
 class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHolder<VideoViewModel>() {
 
+
     override var layoutRes = R.layout.item_post_video
 
     companion object {
         const val STRING_DEFAULT_TRANSCODING = "customerTrans"
+        const val TAG = "TAG_VIDEO_VIEW_HOLDER"
     }
 
     override fun bind(element: VideoViewModel) {
@@ -51,6 +56,18 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                 }
         )
         itemView.image.loadImage(element.thumbnail)
+//        itemView.image.addOnImpressionListener(element, object : ViewHintListener {
+//            override fun onViewHint() {
+//                playVideo(element.url)
+//            }
+//        })
+    }
+
+    fun playVideo(url: String) {
+        itemView.layout_video.visibility = View.VISIBLE
+        itemView.layout_video.setVideoURI(Uri.parse(url))
+        itemView.layout_video.start()
+
     }
 
     interface VideoViewListener {

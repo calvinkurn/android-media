@@ -14,7 +14,7 @@ data class Header(
         @SerializedName("avatarDescription")
         val avatarDescription: String = "",
         @SerializedName("avatarTitle")
-        val avatarTitle: String = "",
+        var avatarTitle: String = "",
         @SerializedName("avatarWeblink")
         val avatarWeblink: String = "",
         @SerializedName("deletable")
