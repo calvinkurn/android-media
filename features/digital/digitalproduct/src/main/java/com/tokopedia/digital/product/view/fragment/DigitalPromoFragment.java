@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.adapter.BannerAdapter;
@@ -149,13 +150,7 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
     @Override
     public void onBannerItemClicked(BannerData bannerData) {
         if (!TextUtils.isEmpty(bannerData.getLink())) {
-            Uri uri = Uri.parse(bannerData.getLink());
-            List<String> linkSegment = uri.getPathSegments();
-            if (linkSegment != null && linkSegment.size() == 1 && linkSegment.get(0).equalsIgnoreCase("promo")){
-                openPromo(bannerData.getLink(), linkSegment);
-            } else {
-                navigateToWebView(bannerData.getLink());
-            }
+            RouteManager.route(getActivity(), bannerData.getLink());
         }
     }
 
@@ -163,30 +158,6 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
         View view = getView();
         if (view != null) NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), message);
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void openPromo(String url, List<String> linkSegment) {
-        DigitalModuleRouter router = ((DigitalModuleRouter) getActivity().getApplication());
-        if (linkSegment.size() == 2) {
-            Intent intent = router.getPromoDetailIntent(getActivity(), linkSegment.get(1));
-            startActivity(intent);
-        } else if (linkSegment.size() == 1) {
-            FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-            boolean remoteConfigEnable = remoteConfig.getBoolean(
-                    RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
-            );
-            if (remoteConfigEnable) {
-                Intent intent = router.getPromoListIntent(getActivity());
-                startActivity(intent);
-            } else {
-                navigateToWebView(url);
-            }
-        }
-    }
-
-    private void navigateToWebView(String url){
-        DigitalModuleRouter router = ((DigitalModuleRouter) getActivity().getApplication());
-        navigateToActivity(router.getWebviewActivityWithIntent(getActivity(), url));
     }
 
     private void navigateToActivity(Intent intent) {
