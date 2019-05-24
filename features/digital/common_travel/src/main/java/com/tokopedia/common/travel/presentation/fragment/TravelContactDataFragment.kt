@@ -70,10 +70,10 @@ class TravelContactDataFragment: BaseDaggerFragment() {
 
         til_contact_email.setLabel(getString(R.string.travel_contact_data_email_title))
         til_contact_email.editText.setText(contactData.email)
-        til_contact_name.setErrorTextAppearance(R.style.ErrorTextAppearance)
+        til_contact_email.setErrorTextAppearance(R.style.ErrorTextAppearance)
 
         til_contact_phone_number.editText.setText(contactData.phone)
-        til_contact_name.setErrorTextAppearance(R.style.ErrorTextAppearance)
+        til_contact_phone_number.setErrorTextAppearance(R.style.ErrorTextAppearance)
 
         val initialPhoneCode = getString(R.string.phone_code_format, contactData.phoneCode)
         spinnerData += initialPhoneCode
