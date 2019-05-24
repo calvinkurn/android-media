@@ -61,7 +61,6 @@ final class ProductListPresenter
     RemoteConfig remoteConfig;
 
     private WishListActionListener wishlistActionListener;
-    private RequestDynamicFilterListener requestDynamicFilterListener;
     private boolean enableGlobalNavWidget;
     private boolean changeParamRow;
 
@@ -83,15 +82,9 @@ final class ProductListPresenter
     }
 
     @Override
-    public void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener) {
-        this.requestDynamicFilterListener = requestDynamicFilterListener;
-    }
-
-    @Override
-    public void requestDynamicFilter() {
+    public void requestDynamicFilter(Map<String, Object> searchParameterMap) {
         requestDynamicFilterCheckForNulls();
 
-        Map<String, Object> searchParameterMap = getView().getSearchParameterMap();
         Map<String, String> additionalParamsMap = getView().getAdditionalParamsMap();
 
         if(searchParameterMap == null) return;
@@ -173,7 +166,6 @@ final class ProductListPresenter
         if(searchParameter == null || additionalParams == null) return;
 
         RequestParams requestParams = createInitializeSearchParam(searchParameter);
-        enrichWithFilterAndSortParams(requestParams);
         enrichWithRelatedSearchParam(requestParams);
         enrichWithAdditionalParams(requestParams, additionalParams);
 

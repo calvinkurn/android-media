@@ -5,9 +5,9 @@ import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.search.di.module.AddWishListUseCaseModule;
 import com.tokopedia.search.di.module.RemoteConfigModule;
 import com.tokopedia.search.di.module.RemoveWishListUseCaseModule;
-import com.tokopedia.search.di.module.TopAdsServiceModule;
+import com.tokopedia.search.result.network.service.TopAdsServiceModule;
 import com.tokopedia.search.di.module.UserSessionModule;
-import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterUseCaseModule;
+import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.productwishlisturl.ProductWishlistUrlUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule;
 
@@ -22,7 +22,7 @@ import dagger.Component;
         TopAdsServiceModule.class,
         ProductWishlistUrlUseCaseModule.class,
         SearchProductUseCaseModule.class,
-        GetDynamicFilterUseCaseModule.class,
+        GetDynamicFilterGqlUseCaseModule.class,
         RemoteConfigModule.class
 }, dependencies = BaseAppComponent.class)
 public interface ProductListPresenterComponent {

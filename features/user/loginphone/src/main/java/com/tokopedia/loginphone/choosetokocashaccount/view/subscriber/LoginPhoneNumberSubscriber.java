@@ -2,7 +2,6 @@ package com.tokopedia.loginphone.choosetokocashaccount.view.subscriber;
 
 import android.content.Context;
 
-import com.tokopedia.loginphone.choosetokocashaccount.data.LoginTokoCashViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
 import com.tokopedia.sessioncommon.data.model.LoginEmailDomain;
@@ -12,7 +11,7 @@ import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 /**
  * @author by nisie on 29/10/18.
  */
-public class LoginPhoneNumberSubscriber extends LoginCommonSubscriber<LoginTokoCashViewModel> {
+public class LoginPhoneNumberSubscriber extends LoginCommonSubscriber<LoginEmailDomain> {
 
     private final ChooseTokocashAccountContract.View view;
 
@@ -26,7 +25,7 @@ public class LoginPhoneNumberSubscriber extends LoginCommonSubscriber<LoginTokoC
 
 
     @Override
-    public void onNext(LoginTokoCashViewModel loginEmailDomain) {
+    public void onNext(LoginEmailDomain loginEmailDomain) {
         super.onNext(loginEmailDomain);
 
         if (loginEmailDomain.getLoginResult().getIsLogin().equals("true")) {
