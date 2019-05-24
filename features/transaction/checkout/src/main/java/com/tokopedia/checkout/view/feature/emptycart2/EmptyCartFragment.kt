@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,15 +24,18 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.checkout.view.feature.emptycart2.di.DaggerEmptyCartComponent
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.domain.datamodel.recentview.RecentView
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveView
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveWithBackView
 import com.tokopedia.checkout.view.feature.emptycart2.adapter.EmptyCartAdapter
 import com.tokopedia.checkout.view.feature.emptycart2.adapter.EmptyCartAdapterTypeFactory
 import com.tokopedia.checkout.view.feature.emptycart2.uimodel.EmptyCartPlaceholderUiModel
 import com.tokopedia.checkout.view.feature.emptycart2.uimodel.PromoUiModel
+import com.tokopedia.checkout.view.feature.emptycart2.uimodel.RecentViewUiModel
 import com.tokopedia.checkout.view.feature.emptycart2.uimodel.WishlistUiModel
 import com.tokopedia.checkout.view.feature.emptycart2.viewholder.PromoViewHolder
 import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.PromoViewModel
+import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.RecentViewViewModel
 import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.WishlistViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -52,6 +54,7 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var promoViewModel: PromoViewModel
     lateinit var wishlistViewModel: WishlistViewModel
+    lateinit var recentViewViewModel: RecentViewViewModel
     lateinit var progressDialog: ProgressDialog
     lateinit var adapter: EmptyCartAdapter
 
@@ -63,7 +66,6 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
 
         val REQUEST_CODE_ROUTE_WISHLIST = 123
         val REQUEST_CODE_ROUTE_RECENT_VIEW = 321
-
 
         fun newInstance(autoApplyMessage: String?, args: String?, state: String?, titleDesc: String?, promoCode: String?): EmptyCartFragment {
             val emptyCartFragment = EmptyCartFragment()
@@ -85,6 +87,7 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             promoViewModel = viewModelProvider.get(PromoViewModel::class.java)
             wishlistViewModel = viewModelProvider.get(WishlistViewModel::class.java)
+            recentViewViewModel = viewModelProvider.get(RecentViewViewModel::class.java)
         }
     }
 
@@ -104,6 +107,7 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
 
         renderPromo()
         renderEmptyCartPlaceholder()
+        renderRecentView()
         renderWishlist()
     }
 
@@ -118,7 +122,15 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         wishlistViewModel.wishlistData.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetWishlist(it.data)
-                is Fail -> { }
+                is Fail -> {
+                }
+            }
+        })
+        recentViewViewModel.recentViewData.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetRecentView(it.data)
+                is Fail -> {
+                }
             }
         })
     }
@@ -128,6 +140,9 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         promoViewModel.unsubscribeSubscription()
         wishlistViewModel.wishlistData.removeObservers(this)
         wishlistViewModel.unsubscribeSubscription()
+        recentViewViewModel.recentViewData.removeObservers(this)
+        recentViewViewModel.unsubscribeSubscription()
+
         super.onDestroyView()
     }
 
@@ -323,8 +338,37 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
     private fun onSuccessGetWishlist(wishlistData: MutableList<Wishlist>) {
         val wishlistUiModel = WishlistUiModel()
         wishlistUiModel.wishlistItems = wishlistData
-        adapter.addElement(wishlistUiModel)
+        if (adapter.itemCount == 3) {
+            adapter.addElement(wishlistUiModel)
+        } else {
+            adapter.addElement(EmptyCartAdapter.DEFAULT_POSITION_WISHLIST, wishlistUiModel)
+        }
         notifyItemInserted(adapter.getIndexOf(wishlistUiModel))
+    }
+
+    private fun renderRecentView() {
+        recentViewViewModel.getRecentView()
+    }
+
+    private fun onSuccessGetRecentView(recentViewdata: MutableList<RecentView>) {
+        val recentViewUiModel = RecentViewUiModel()
+        recentViewUiModel.recentViewItems = recentViewdata
+        if (adapter.itemCount == 2) {
+            adapter.addElement(recentViewUiModel)
+        } else {
+            adapter.addElement(EmptyCartAdapter.DEFAULT_POSITION_RECENT_VIEW, recentViewUiModel)
+        }
+        notifyItemInserted(adapter.getIndexOf(recentViewUiModel))
+    }
+
+    override fun onItemRecentViewClicked(recentView: RecentView, position: Int) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recentView.productId);
+        startActivityForResult(intent, REQUEST_CODE_ROUTE_RECENT_VIEW)
+    }
+
+    override fun onShowAllRecentView() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.RECENT_VIEW);
+        startActivityForResult(intent, REQUEST_CODE_ROUTE_RECENT_VIEW)
     }
 
 }

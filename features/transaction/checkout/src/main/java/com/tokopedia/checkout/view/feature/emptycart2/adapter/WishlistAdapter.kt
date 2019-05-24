@@ -25,8 +25,7 @@ class WishlistAdapter(val listener: ActionListener, val itemWidth: Int) : Recycl
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WishlistItemViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(WishlistItemViewHolder.LAYOUT, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(WishlistItemViewHolder.LAYOUT, parent, false)
         return WishlistItemViewHolder(view, listener, itemWidth)
     }
 

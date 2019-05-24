@@ -49,6 +49,5 @@ class WishlistViewModel @Inject constructor(private val getWishlistUseCase: GetW
                 }
             }
         })
-
     }
 }

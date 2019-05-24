@@ -44,7 +44,7 @@ open class EmptyCartAdapterTypeFactory(val listener: ActionListener, val itemWid
         return when (viewType) {
             PromoViewHolder.LAYOUT -> PromoViewHolder(view, listener)
             EmptyCartPlaceholderViewHolder.LAYOUT -> EmptyCartPlaceholderViewHolder(view, listener)
-            RecentViewViewHolder.LAYOUT -> RecentViewViewHolder(view)
+            RecentViewViewHolder.LAYOUT -> RecentViewViewHolder(view, listener, itemWidth)
             WishlistViewHolder.LAYOUT -> WishlistViewHolder(view, listener, itemWidth)
             RecommendationViewHolder.LAYOUT -> RecommendationViewHolder(view)
             else -> super.createViewHolder(view, viewType)

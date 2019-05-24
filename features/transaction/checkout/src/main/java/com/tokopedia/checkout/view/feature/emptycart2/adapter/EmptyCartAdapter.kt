@@ -10,6 +10,14 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 class EmptyCartAdapter(adapterTypeFactory: EmptyCartAdapterTypeFactory) :
         BaseListAdapter<Visitable<*>, EmptyCartAdapterTypeFactory>(adapterTypeFactory) {
 
+    companion object {
+        val DEFAULT_POSITION_PROMO = 0;
+        val DEFAULT_POSITION_EMPTY_CART_PLACEHOLDER = 1;
+        val DEFAULT_POSITION_RECENT_VIEW = 2;
+        val DEFAULT_POSITION_WISHLIST = 3;
+        val DEFAULT_POSITION_RECOMMENDATION = 4;
+    }
+
     override fun addElement(position: Int, element: Visitable<*>?) {
         visitables.add(position, element)
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.feature.emptycart2
 
+import com.tokopedia.checkout.domain.datamodel.recentview.RecentView
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 
 /**
@@ -15,4 +16,8 @@ interface ActionListener {
     fun onItemWishListClicked(wishlist: Wishlist, position: Int)
 
     fun onShowAllWishlist();
+
+    fun onItemRecentViewClicked(recentView: RecentView, position: Int)
+
+    fun onShowAllRecentView();
 }
