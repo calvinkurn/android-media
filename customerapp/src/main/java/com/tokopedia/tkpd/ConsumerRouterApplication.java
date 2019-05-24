@@ -442,7 +442,6 @@ import rx.functions.Func1;
 import tradein_common.TradeInUtils;
 import tradein_common.router.TradeInRouter;
 
-import static com.instabug.library.Instabug.getApplicationContext;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
