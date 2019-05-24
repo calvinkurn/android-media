@@ -41,6 +41,12 @@ class RoomDurationView : BaseCustomView {
         hotel_check_out_time.text = checkOutTime
     }
 
+    fun setRoomDatesFormatted(checkInDate: String, checkOutDate: String, nightCount: String) {
+        hotel_check_in_date.text = checkInDate
+        hotel_check_out_date.text = checkOutDate
+        hotel_room_night_count.text = nightCount
+    }
+
     fun changeDateStringFormat(dateString: String, oldFormat: String, newFormat: String): String {
         return TravelDateUtil.dateToString(newFormat, TravelDateUtil.stringToDate(oldFormat, dateString))
     }

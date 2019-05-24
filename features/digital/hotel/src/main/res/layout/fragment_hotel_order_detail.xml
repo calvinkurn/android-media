@@ -13,6 +13,7 @@
 
         <include
             layout="@layout/layout_order_detail_hotel_detail"
+            android:id="@+id/order_hotel_detail"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_marginTop="@dimen/dp_8"/>

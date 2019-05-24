@@ -20,9 +20,10 @@ import javax.inject.Inject
 
 class GetHotelOrderDetailUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
-    suspend fun execute(rawQuery: String, orderId: String, fromCloud: Boolean): Result<HotelOrderDetail>{
+    suspend fun execute(rawQuery: String, orderId: String, orderCategory: String,
+                        fromCloud: Boolean): Result<HotelOrderDetail>{
         val params = mapOf(PARAM_ORDER_ID to orderId,
-                PARAM_ORDER_CATEGORY_STR to PARAM_VALUE_ORDER_CATEGORY)
+                PARAM_ORDER_CATEGORY_STR to orderCategory)
 
         if (fromCloud) useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         else useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
@@ -48,7 +49,5 @@ class GetHotelOrderDetailUseCase @Inject constructor(val useCase: MultiRequestGr
     companion object {
         const val PARAM_ORDER_ID = "orderId"
         const val PARAM_ORDER_CATEGORY_STR = "orderCategoryStr"
-
-        const val PARAM_VALUE_ORDER_CATEGORY = "HOTELS"
     }
 }
