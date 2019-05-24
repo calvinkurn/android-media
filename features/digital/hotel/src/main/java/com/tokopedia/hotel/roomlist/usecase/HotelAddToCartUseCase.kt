@@ -24,7 +24,8 @@ class HotelAddToCartUseCase @Inject constructor(val useCase: MultiRequestGraphql
 
     suspend fun execute(rawQuery: String, hotelAddCartParam: HotelAddCartParam): Result<HotelAddCartResponse> {
 
-        hotelAddCartParam.idempotencyKey = generateIdEmpotency(hotelAddCartParam.roomId)
+        if (hotelAddCartParam.rooms.isNotEmpty())
+            hotelAddCartParam.idempotencyKey = generateIdEmpotency(hotelAddCartParam.rooms.first().roomId)
         val param = mapOf(PARAM_ADD_TO_CART to hotelAddCartParam)
 
         useCase.clearRequest()

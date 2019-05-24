@@ -14,6 +14,14 @@ data class HotelRoom(
         @Expose
         val roomId: String = "",
 
+        @SerializedName("available")
+        @Expose
+        val available: Boolean = true,
+
+        @SerializedName("roomQtyRequired")
+        @Expose
+        val roomQtyReqiured: Int = 1,
+
         @SerializedName("breakfastInfo")
         @Expose
         val breakfastInfo: RoomBreakfastInfo = RoomBreakfastInfo(),
@@ -40,7 +48,7 @@ data class HotelRoom(
 
         @SerializedName("roomPrice")
         @Expose
-        val roomPrice: List<HotelRoomPrice> = listOf(),
+        val roomPrice: HotelRoomPrice = HotelRoomPrice(),
 
         @SerializedName("roomPolicy")
         @Expose
@@ -54,16 +62,13 @@ data class HotelRoom(
         @Expose
         val refundableUntil: String = "",
 
-
         @SerializedName("roomInfo")
         @Expose
         val roomInfo: HotelRoomInfo = HotelRoomInfo(),
 
-
         @SerializedName("bedInfo")
         @Expose
         val bedInfo: String = "",
-
 
         @SerializedName("taxes")
         @Expose
@@ -90,7 +95,15 @@ data class HotelRoom(
 
             @SerializedName("breakFast")
             @Expose
-            val breakFast: String = ""
+            val breakFast: String = "",
+
+            @SerializedName("icon")
+            @Expose
+            val icon: String = "",
+
+            @SerializedName("iconUrl")
+            @Expose
+            val iconUrl: String = ""
     )
 
     data class RoomOccupancyInfo(
@@ -124,7 +137,15 @@ data class HotelRoom(
 
             @SerializedName("refundStatus")
             @Expose
-            val refundStatus: String = ""
+            val refundStatus: String = "",
+
+            @SerializedName("icon")
+            @Expose
+            val icon: String = "",
+
+            @SerializedName("iconUrl")
+            @Expose
+            val iconUrl: String = ""
     )
 
     data class CreditCardInfo(
