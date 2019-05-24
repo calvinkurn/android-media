@@ -219,16 +219,6 @@ public class CatalogListAdapter extends BaseAdapter<CatalogsValueEntity> {
         return new ViewHolder(itemView);
     }
 
-//    @Override
-//    public int getItemCount() {
-//        if (mIsLimitEnable) {
-//            return mItems.size() > CommonConstant.HOMEPAGE_PAGE_SIZE ? CommonConstant.HOMEPAGE_PAGE_SIZE : mItems.size();
-//        } else {
-//            return mItems.size();
-//        }
-//    }
-
-
     @Override
     public void loadData(int currentPageIndex) {
         if (mIsLimitEnable) {
@@ -272,7 +262,6 @@ public class CatalogListAdapter extends BaseAdapter<CatalogsValueEntity> {
                 if (catalogListingOuter != null) {
                     loadCompleted(catalogListingOuter.getCatalog().getCatalogs(), catalogListingOuter);
                     setLastPage(!catalogListingOuter.getCatalog().getPaging().isHasNext());
-//                    getView().populateCatalog(catalogListingOuter.getCatalog().getCatalogs());
                 }
             }
         });
@@ -285,11 +274,6 @@ public class CatalogListAdapter extends BaseAdapter<CatalogsValueEntity> {
     private int getSortId() {
         return 1;
     }
-
-    private int getPageNumber() {
-        return 1;  //default page size
-    }
-
 
     @Override
     public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder vh) {
