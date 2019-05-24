@@ -33,10 +33,23 @@ import kotlinx.android.synthetic.main.layout_order_detail_payment_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_transaction_detail.*
 import javax.inject.Inject
 import android.content.Intent.ACTION_DIAL
+import android.graphics.Color
 import android.net.Uri
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-
+import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_CATEGORY
+import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_ID
+import com.tokopedia.hotel.orderdetail.presentation.widget.HotelRefundBottomSheet
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.view.*
+import java.io.UnsupportedEncodingException
 
 /**
  * @author by jessica on 10/05/19
@@ -48,6 +61,12 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var orderDetailViewModel: HotelOrderDetailViewModel
 
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
+    private var orderId: String = ""
+    private var orderCategory: String = ""
+
     override fun getScreenName(): String = getString(R.string.hotel_order_detail_title)
 
     override fun initInjector() = getComponent(HotelOrderDetailComponent::class.java).inject(this)
@@ -58,6 +77,11 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             orderDetailViewModel = viewModelProvider.get(HotelOrderDetailViewModel::class.java)
+        }
+
+        arguments?.let {
+            orderId = it.getString(KEY_ORDER_ID, "")
+            orderCategory = it.getString(KEY_ORDER_CATEGORY, "")
         }
     }
 
@@ -75,6 +99,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
                         renderPaymentDetail(it.data.hotelTransportDetails.first().payment)
                     }
                     renderFooter(it.data)
+                    loadingState.visibility = View.GONE
                 }
                 is Fail -> {
                 }
@@ -85,8 +110,18 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        orderDetailViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
-                "18")
+        if (savedInstanceState != null && savedInstanceState.containsKey(SAVED_KEY_ORDER_ID) &&
+                savedInstanceState.containsKey(SAVED_KEY_ORDER_CATEGORY)) {
+            orderId = savedInstanceState.getString(SAVED_KEY_ORDER_ID)!!
+            orderCategory = savedInstanceState.getString(SAVED_KEY_ORDER_CATEGORY)
+        }
+
+        loadingState.visibility = View.VISIBLE
+        if (userSessionInterface.isLoggedIn) {
+            orderDetailViewModel.getOrderDetail(
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                    orderId, orderCategory)
+        } else RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
     fun renderConditionalInfo(hotelTransportDetail: HotelTransportDetail) {
@@ -97,13 +132,24 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         bottom_conditional_text.visibility = if (hotelTransportDetail.conditionalInfoBottom.title.isNotBlank()) View.VISIBLE else View.GONE
         bottom_conditional_text.text = hotelTransportDetail.conditionalInfoBottom.title
 
+        if (hotelTransportDetail.cancellation.title.isEmpty()) {
+            refund_ticker_layout.visibility = View.GONE
+        } else {
+            refund_ticker_layout.visibility = View.VISIBLE
+            refund_ticker_layout.setOnClickListener {
+                if (hotelTransportDetail.cancellation.isClickable)
+                    showRefundInfo(hotelTransportDetail.cancellation.cancellationPolicies) }
+            refund_title.text = hotelTransportDetail.cancellation.title
+            refund_text.text = hotelTransportDetail.cancellation.content
+        }
+
         call_hotel_layout.setOnClickListener { showCallButtonSheet(hotelTransportDetail.contactInfo) }
     }
 
     fun renderTransactionDetail(orderDetail: HotelOrderDetail) {
 
         transaction_status.text = orderDetail.status.statusText
-        when(orderDetail.status.status) {
+        when (orderDetail.status.status) {
             ORDER_STATUS_FAIL -> transaction_status.setTextColor(resources.getColor(R.color.red_pink))
             ORDER_STATUS_SUCCESS -> transaction_status.setTextColor(resources.getColor(R.color.tkpd_main_green))
         }
@@ -116,17 +162,39 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         }
         transactionDetailAdapter.notifyDataSetChanged()
 
-        invoice_number.text = orderDetail.invoice.invoiceRefNum
-        invoice_see_button.visibility = if (orderDetail.invoice.invoiceUrl.isNotBlank()) View.VISIBLE else View.GONE
-        if (orderDetail.invoice.invoiceUrl.isNotBlank()) {
-            invoice_see_button.setOnClickListener {
-                RouteManager.route(context, orderDetail.invoice.invoiceUrl)
+        if (orderDetail.invoice.invoiceRefNum.isBlank()) {
+            invoice_layout.visibility = View.GONE
+        } else {
+            invoice_layout.visibility = View.VISIBLE
+            invoice_number.text = orderDetail.invoice.invoiceRefNum
+            invoice_see_button.visibility = if (orderDetail.invoice.invoiceUrl.isNotBlank()) View.VISIBLE else View.GONE
+            if (orderDetail.invoice.invoiceUrl.isNotBlank()) {
+                invoice_see_button.setOnClickListener {
+                    RouteManager.route(context, orderDetail.invoice.invoiceUrl)
+                }
             }
         }
+
+        if (orderDetail.status.status == ORDER_STATUS_SUCCESS) {
+            evoucher_layout.visibility = View.VISIBLE
+            evoucher_layout.setOnClickListener {
+                goToEvoucherPage()
+            }
+        } else evoucher_layout.visibility = View.GONE
+
+    }
+
+    fun goToEvoucherPage() {
+        // use orderId and orderCategory to pass to Evoucher Page
     }
 
     fun renderHotelDetail(propertyDetail: HotelTransportDetail.PropertyDetail) {
-        booking_code.text = propertyDetail.bookingKey.content
+
+        if (propertyDetail.bookingKey.content.isNotEmpty()) {
+            hideBookingCode(false)
+            booking_code.text = propertyDetail.bookingKey.content
+        } else hideBookingCode(true)
+
         hotel_name.text = propertyDetail.propertyInfo.name
         hotel_address.text = propertyDetail.propertyInfo.address
 
@@ -142,12 +210,21 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
             }
         }
 
-        var specialRequestAdapter = TitleTextAdapter(TitleTextAdapter.VERTICAL_LAYOUT)
-        special_request_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        special_request_recycler_view.adapter = specialRequestAdapter
-        specialRequestAdapter.addData(propertyDetail.specialRequest.toMutableList())
+        if (propertyDetail.specialRequest.isNotEmpty()) {
+            special_request_recycler_view.visibility = View.VISIBLE
+            var specialRequestAdapter = TitleTextAdapter(TitleTextAdapter.VERTICAL_LAYOUT)
+            special_request_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            special_request_recycler_view.adapter = specialRequestAdapter
+            specialRequestAdapter.addData(propertyDetail.specialRequest.toMutableList())
+        } else special_request_recycler_view.visibility = View.GONE
 
         special_notes.text = propertyDetail.extraInfo
+        special_notes.visibility = if (propertyDetail.extraInfo.isNotBlank()) View.VISIBLE else View.GONE
+
+        checkin_checkout_date.setRoomDatesFormatted(
+                propertyDetail.checkInOut[0].checkInOut.date,
+                propertyDetail.checkInOut[1].checkInOut.date,
+                propertyDetail.checkInOut[2].content)
     }
 
     fun showCallButtonSheet(contactList: List<HotelTransportDetail.ContactInfo>) {
@@ -155,6 +232,12 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         bottomSheet.contactList = contactList
         bottomSheet.listener = this
         bottomSheet.show(activity!!.supportFragmentManager, TAG_CONTACT_INFO)
+    }
+
+    fun showRefundInfo(cancellationPolicies: List<HotelTransportDetail.Cancellation.CancellationPolicy>) {
+        val bottomSheet = HotelRefundBottomSheet()
+        bottomSheet.cancellationPolicies = cancellationPolicies
+        bottomSheet.show(activity!!.supportFragmentManager, TAG_CANCELLATION_INFO)
     }
 
     fun renderGuestDetail(guestDetail: TitleContent) {
@@ -184,16 +267,8 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     fun renderFooter(orderDetail: HotelOrderDetail) {
 
         order_detail_footer_layout.removeAllViews()
-
-        val helpText = TextViewCompat(context)
-        helpText.setFontSize(TextViewCompat.FontSize.MICRO)
-        helpText.setTextColor(resources.getColor(R.color.light_primary))
-        helpText.text = Html.fromHtml(orderDetail.contactUs.helpText)
-        helpText.gravity = Gravity.CENTER
-        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
-        helpText.layoutParams = params
-        order_detail_footer_layout.addView(helpText)
+        if (orderDetail.contactUs.helpText.isNotBlank())
+            order_detail_footer_layout.addView(createHelpText(orderDetail.contactUs))
 
         for (button in orderDetail.actionButtons) {
             val buttonCompat = ButtonCompat(context)
@@ -218,9 +293,53 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         }
     }
 
+    fun createHelpText(help: HotelOrderDetail.Contact): TextViewCompat {
+
+        val helpLabel = TextViewCompat(context)
+        helpLabel.setFontSize(TextViewCompat.FontSize.MICRO)
+        helpLabel.setTextColor(resources.getColor(R.color.light_primary))
+        val text = Html.fromHtml(help.helpText)
+        val spannableString = SpannableString(text)
+        val startIndexOfLink = help.helpText.toLowerCase().indexOf("disini")
+        if (startIndexOfLink >= 0) {
+            spannableString.setSpan(object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    try {
+                        RouteManager.route(context, help.helpUrl)
+                    } catch (e: UnsupportedEncodingException) {
+                        e.printStackTrace()
+                    }
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                    ds.color = resources.getColor(R.color.green_250) // specific color for this link
+                }
+            }, startIndexOfLink, startIndexOfLink + "disini".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            helpLabel.setHighlightColor(Color.TRANSPARENT)
+            helpLabel.setMovementMethod(LinkMovementMethod.getInstance())
+        }
+
+        helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
+        helpLabel.gravity = Gravity.CENTER
+        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
+        helpLabel.layoutParams = params
+
+        return helpLabel
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_order_detail, container, false)
 
+
+    fun hideBookingCode(enableHide: Boolean) {
+        booking_code_hint.visibility = if (enableHide) View.GONE else View.VISIBLE
+        booking_code.visibility = if (enableHide) View.GONE else View.VISIBLE
+        order_hotel_detail.seperator_1.visibility = if (enableHide) View.GONE else View.VISIBLE
+    }
 
     override fun onClickCall(contactNumber: String) {
         Toast.makeText(context, contactNumber, Toast.LENGTH_SHORT).show()
@@ -229,11 +348,27 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         startActivity(callIntent)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SAVED_KEY_ORDER_ID, orderId)
+        outState.putString(SAVED_KEY_ORDER_CATEGORY, orderCategory)
+    }
+
     companion object {
-        fun getInstance(): HotelOrderDetailFragment = HotelOrderDetailFragment()
+        fun getInstance(orderId: String, orderCategory: String): HotelOrderDetailFragment =
+                HotelOrderDetailFragment().also {
+                    it.arguments = Bundle().apply {
+                        putString(KEY_ORDER_ID, orderId)
+                        putString(KEY_ORDER_CATEGORY, orderCategory)
+                    }
+                }
 
         const val TAG_CONTACT_INFO = "guestContactInfo"
+        const val TAG_CANCELLATION_INFO = "cancellationPolicyInfo"
         const val ORDER_STATUS_SUCCESS = 700
         const val ORDER_STATUS_FAIL = 600
+
+        const val SAVED_KEY_ORDER_ID = "keyOrderId"
+        const val SAVED_KEY_ORDER_CATEGORY = "keyOrderCategory"
     }
 }

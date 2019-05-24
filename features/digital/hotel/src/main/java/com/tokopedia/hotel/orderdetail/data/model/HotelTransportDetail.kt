@@ -29,7 +29,7 @@ data class HotelTransportDetail(
         @Expose
         val payment: Payment = Payment(),
 
-        @SerializedName("cancellation")
+        @SerializedName("cancellationPolicies")
         @Expose
         val cancellation: Cancellation = Cancellation(),
 
@@ -182,7 +182,11 @@ data class HotelTransportDetail(
             @Expose
             val content: String = "",
 
-            @SerializedName("cancellationPolicies")
+            @SerializedName("isClickable")
+            @Expose
+            val isClickable: Boolean = false,
+
+            @SerializedName("policies")
             @Expose
             val cancellationPolicies: List<CancellationPolicy> = listOf()
     ) {
@@ -205,11 +209,7 @@ data class HotelTransportDetail(
 
                 @SerializedName("active")
                 @Expose
-                val active: Boolean = false,
-
-                @SerializedName("isClickable")
-                @Expose
-                val isClickable: Boolean = false
+                val active: Boolean = false
         )
     }
 
