@@ -47,8 +47,25 @@ import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.view.*
 import kotlinx.android.synthetic.main.layout_order_detail_payment_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_transaction_detail.*
-import java.io.UnsupportedEncodingException
 import javax.inject.Inject
+import android.content.Intent.ACTION_DIAL
+import android.graphics.Color
+import android.net.Uri
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_CATEGORY
+import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_ID
+import com.tokopedia.hotel.orderdetail.presentation.widget.HotelRefundBottomSheet
+import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.view.*
+import kotlinx.coroutines.experimental.launch
+import java.io.UnsupportedEncodingException
+import java.net.URLEncoder
 
 
 /**
@@ -60,6 +77,9 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var orderDetailViewModel: HotelOrderDetailViewModel
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     private var orderId: String = ""
     private var orderCategory: String = ""
@@ -96,6 +116,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
                         renderPaymentDetail(it.data.hotelTransportDetails.first().payment)
                     }
                     renderFooter(it.data)
+                    loadingState.visibility = View.GONE
                 }
                 is Fail -> {
                 }
@@ -112,9 +133,12 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
             orderCategory = savedInstanceState.getString(SAVED_KEY_ORDER_CATEGORY)
         }
 
-        orderDetailViewModel.getOrderDetail(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
-                orderId, orderCategory)
+        loadingState.visibility = View.VISIBLE
+        if (userSessionInterface.isLoggedIn) {
+            orderDetailViewModel.getOrderDetail(
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                    orderId, orderCategory)
+        } else RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
     fun renderConditionalInfo(hotelTransportDetail: HotelTransportDetail) {
@@ -204,12 +228,16 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
             }
         }
 
-        var specialRequestAdapter = TitleTextAdapter(TitleTextAdapter.VERTICAL_LAYOUT)
-        special_request_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        special_request_recycler_view.adapter = specialRequestAdapter
-        specialRequestAdapter.addData(propertyDetail.specialRequest.toMutableList())
+        if (propertyDetail.specialRequest.isNotEmpty()) {
+            special_request_recycler_view.visibility = View.VISIBLE
+            var specialRequestAdapter = TitleTextAdapter(TitleTextAdapter.VERTICAL_LAYOUT)
+            special_request_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            special_request_recycler_view.adapter = specialRequestAdapter
+            specialRequestAdapter.addData(propertyDetail.specialRequest.toMutableList())
+        } else special_request_recycler_view.visibility = View.GONE
 
         special_notes.text = propertyDetail.extraInfo
+        special_notes.visibility = if (propertyDetail.extraInfo.isNotBlank()) View.VISIBLE else View.GONE
 
         checkin_checkout_date.setRoomDatesFormatted(
                 propertyDetail.checkInOut[0].checkInOut.date,
@@ -257,7 +285,8 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     fun renderFooter(orderDetail: HotelOrderDetail) {
 
         order_detail_footer_layout.removeAllViews()
-        order_detail_footer_layout.addView(createHelpText(orderDetail.contactUs))
+        if (orderDetail.contactUs.helpText.isNotBlank())
+            order_detail_footer_layout.addView(createHelpText(orderDetail.contactUs))
 
         for (button in orderDetail.actionButtons) {
             val buttonCompat = ButtonCompat(context)
@@ -289,30 +318,33 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         helpLabel.setTextColor(resources.getColor(R.color.light_primary))
         val text = Html.fromHtml(help.helpText)
         val spannableString = SpannableString(text)
-        val startIndexOfLink = text.indexOf("disini")
-        spannableString.setSpan(object : ClickableSpan() {
-            override fun onClick(view: View) {
-                try {
-                    RouteManager.route(context, help.helpUrl)
-                } catch (e: UnsupportedEncodingException) {
-                    e.printStackTrace()
+        val startIndexOfLink = help.helpText.toLowerCase().indexOf("disini")
+        if (startIndexOfLink >= 0) {
+            spannableString.setSpan(object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    try {
+                        RouteManager.route(context, help.helpUrl)
+                    } catch (e: UnsupportedEncodingException) {
+                        e.printStackTrace()
+                    }
                 }
-            }
 
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = resources.getColor(R.color.green_250) // specific color for this link
-            }
-        }, startIndexOfLink, startIndexOfLink + "disini".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                    ds.color = resources.getColor(R.color.green_250) // specific color for this link
+                }
+            }, startIndexOfLink, startIndexOfLink + "disini".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
+            helpLabel.setHighlightColor(Color.TRANSPARENT)
+            helpLabel.setMovementMethod(LinkMovementMethod.getInstance())
+        }
+
+        helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
         helpLabel.gravity = Gravity.CENTER
         val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
         helpLabel.layoutParams = params
-        helpLabel.setHighlightColor(Color.TRANSPARENT)
-        helpLabel.setMovementMethod(LinkMovementMethod.getInstance())
-        helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
 
         return helpLabel
     }

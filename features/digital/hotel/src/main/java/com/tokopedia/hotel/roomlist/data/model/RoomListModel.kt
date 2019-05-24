@@ -9,6 +9,7 @@ import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 
 data class RoomListModel(
         var roomName: String = "",
+        var roomSize: String = "",
         var maxOccupancy: Int = 0,
         var maxFreeChild: Int = 0,
         var occupancyText: String = "",
@@ -21,5 +22,6 @@ data class RoomListModel(
         var creditCardInfo: String = "",
         var price: String = "",
         var images: List<String> = listOf(),
-        var roomLeft: Int = 0
+        var roomLeft: Int = 0,
+        var available: Boolean = true
 )
