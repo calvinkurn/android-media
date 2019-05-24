@@ -33,7 +33,14 @@ import kotlinx.android.synthetic.main.layout_order_detail_payment_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_transaction_detail.*
 import javax.inject.Inject
 import android.content.Intent.ACTION_DIAL
+import android.graphics.Color
 import android.net.Uri
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_CATEGORY
@@ -41,6 +48,8 @@ import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailAct
 import com.tokopedia.hotel.orderdetail.presentation.widget.HotelRefundBottomSheet
 import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.view.*
 import kotlinx.coroutines.experimental.launch
+import java.io.UnsupportedEncodingException
+import java.net.URLEncoder
 
 
 /**
@@ -117,11 +126,16 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         bottom_conditional_text.visibility = if (hotelTransportDetail.conditionalInfoBottom.title.isNotBlank()) View.VISIBLE else View.GONE
         bottom_conditional_text.text = hotelTransportDetail.conditionalInfoBottom.title
 
-        refund_ticker_layout.setOnClickListener {
-            if (hotelTransportDetail.cancellation.isClickable)
-                showRefundInfo(hotelTransportDetail.cancellation.cancellationPolicies) }
-        refund_title.text = hotelTransportDetail.cancellation.title
-        refund_text.text = hotelTransportDetail.cancellation.content
+        if (hotelTransportDetail.cancellation.title.isEmpty()) {
+            refund_ticker_layout.visibility = View.GONE
+        } else {
+            refund_ticker_layout.visibility = View.VISIBLE
+            refund_ticker_layout.setOnClickListener {
+                if (hotelTransportDetail.cancellation.isClickable)
+                    showRefundInfo(hotelTransportDetail.cancellation.cancellationPolicies) }
+            refund_title.text = hotelTransportDetail.cancellation.title
+            refund_text.text = hotelTransportDetail.cancellation.content
+        }
 
         call_hotel_layout.setOnClickListener { showCallButtonSheet(hotelTransportDetail.contactInfo) }
     }
@@ -142,13 +156,30 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         }
         transactionDetailAdapter.notifyDataSetChanged()
 
-        invoice_number.text = orderDetail.invoice.invoiceRefNum
-        invoice_see_button.visibility = if (orderDetail.invoice.invoiceUrl.isNotBlank()) View.VISIBLE else View.GONE
-        if (orderDetail.invoice.invoiceUrl.isNotBlank()) {
-            invoice_see_button.setOnClickListener {
-                RouteManager.route(context, orderDetail.invoice.invoiceUrl)
+        if (orderDetail.invoice.invoiceRefNum.isBlank()) {
+            invoice_layout.visibility = View.GONE
+        } else {
+            invoice_layout.visibility = View.VISIBLE
+            invoice_number.text = orderDetail.invoice.invoiceRefNum
+            invoice_see_button.visibility = if (orderDetail.invoice.invoiceUrl.isNotBlank()) View.VISIBLE else View.GONE
+            if (orderDetail.invoice.invoiceUrl.isNotBlank()) {
+                invoice_see_button.setOnClickListener {
+                    RouteManager.route(context, orderDetail.invoice.invoiceUrl)
+                }
             }
         }
+
+        if (orderDetail.status.status == ORDER_STATUS_SUCCESS) {
+            evoucher_layout.visibility = View.VISIBLE
+            evoucher_layout.setOnClickListener {
+                goToEvoucherPage()
+            }
+        } else evoucher_layout.visibility = View.GONE
+
+    }
+
+    fun goToEvoucherPage() {
+        // use orderId and orderCategory to pass to Evoucher Page
     }
 
     fun renderHotelDetail(propertyDetail: HotelTransportDetail.PropertyDetail) {
@@ -226,16 +257,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     fun renderFooter(orderDetail: HotelOrderDetail) {
 
         order_detail_footer_layout.removeAllViews()
-
-        val helpText = TextViewCompat(context)
-        helpText.setFontSize(TextViewCompat.FontSize.MICRO)
-        helpText.setTextColor(resources.getColor(R.color.light_primary))
-        helpText.text = Html.fromHtml(orderDetail.contactUs.helpText)
-        helpText.gravity = Gravity.CENTER
-        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
-        helpText.layoutParams = params
-        order_detail_footer_layout.addView(helpText)
+        order_detail_footer_layout.addView(createHelpText(orderDetail.contactUs))
 
         for (button in orderDetail.actionButtons) {
             val buttonCompat = ButtonCompat(context)
@@ -258,6 +280,41 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
             }
             order_detail_footer_layout.addView(buttonCompat)
         }
+    }
+
+    fun createHelpText(help: HotelOrderDetail.Contact): TextViewCompat {
+
+        val helpLabel = TextViewCompat(context)
+        helpLabel.setFontSize(TextViewCompat.FontSize.MICRO)
+        helpLabel.setTextColor(resources.getColor(R.color.light_primary))
+        val text = Html.fromHtml(help.helpText)
+        val spannableString = SpannableString(text)
+        val startIndexOfLink = text.indexOf("disini")
+        spannableString.setSpan(object : ClickableSpan() {
+            override fun onClick(view: View) {
+                try {
+                    RouteManager.route(context, help.helpUrl)
+                } catch (e: UnsupportedEncodingException) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+                ds.color = resources.getColor(R.color.green_250) // specific color for this link
+            }
+        }, startIndexOfLink, startIndexOfLink + "disini".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        helpLabel.gravity = Gravity.CENTER
+        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
+        helpLabel.layoutParams = params
+        helpLabel.setHighlightColor(Color.TRANSPARENT)
+        helpLabel.setMovementMethod(LinkMovementMethod.getInstance())
+        helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
+
+        return helpLabel
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
