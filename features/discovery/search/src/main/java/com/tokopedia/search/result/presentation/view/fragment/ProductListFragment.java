@@ -215,7 +215,7 @@ public class ProductListFragment
     }
 
     private void bindView(View rootView) {
-        recyclerView = rootView.findViewById(com.tokopedia.discovery.R.id.recyclerview);
+        recyclerView = rootView.findViewById(R.id.recyclerview);
     }
 
     private void initTopAdsConfig() {
@@ -239,7 +239,7 @@ public class ProductListFragment
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new ProductItemDecoration(
-                getContext().getResources().getDimensionPixelSize(com.tokopedia.discovery.R.dimen.dp_16),
+                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
                 getContext().getResources().getColor(R.color.white)
         ));
         setHeaderTopAds(true);
@@ -666,7 +666,7 @@ public class ProductListFragment
                 generateWishlistClickEventLabel(true));
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(com.tokopedia.discovery.R.string.msg_add_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
     }
 
     private String generateWishlistClickEventLabel(boolean isWishlisted) {
@@ -689,7 +689,7 @@ public class ProductListFragment
                 generateWishlistClickEventLabel(false));
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(com.tokopedia.discovery.R.string.msg_remove_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
     }
 
     @Override
@@ -732,14 +732,14 @@ public class ProductListFragment
     @Override
     public void setEmptyProduct() {
         isListEmpty = true;
-        adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(com.tokopedia.discovery.R.string.product_tab_title).toLowerCase());
+        adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
         SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
     }
 
     @Override
     protected void refreshAdapterForEmptySearch() {
         if (adapter != null) {
-            adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(com.tokopedia.discovery.R.string.product_tab_title).toLowerCase());
+            adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
         }
     }
 

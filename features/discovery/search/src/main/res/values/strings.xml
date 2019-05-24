@@ -19,6 +19,8 @@
     <string name="view_similar_item">Lihat Barang Serupa</string>
     <string name="press_to_see_similar">Tekan dan tahan produk pilihan Anda untuk melihat produk serupa.</string>
     <string name="megerti">Mengerti</string>
+    <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
+    <string name="msg_add_wishlist">Sukses menambah wishlist</string>
 
     <string name="label_shop_inactive">Sudah Tidak Aktif</string>
     <string name="label_shop_close">Tutup</string>
@@ -28,4 +30,9 @@
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
 
     <string name="title_total_prods">Produk</string>
+
+    <string name="value_profile_count">%1$s profil</string>
+    <string name="empty_search_content_template">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba keyword lain?</string>
+    <string name="empty_search_button_text">Lakukan Pencarian Baru</string>
+    <string name="msg_empty_search_with_filter_1">Oops, %s tidak ditemukan :(</string>
 </resources>
