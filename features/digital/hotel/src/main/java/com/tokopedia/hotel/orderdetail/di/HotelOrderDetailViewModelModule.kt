@@ -24,5 +24,5 @@ abstract class HotelOrderDetailViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(HotelOrderDetailViewModel::class)
-    internal abstract fun hotelDestinationViewModel(viewModel: HotelOrderDetailViewModel):ViewModel
+    internal abstract fun hotelOrderDetailViewModel(viewModel: HotelOrderDetailViewModel):ViewModel
 }

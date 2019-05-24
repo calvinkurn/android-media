@@ -43,8 +43,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_8"
+                        android:id="@+id/tv_property_name"
                         android:gravity="center"
-                        android:text="Avissa Suites"
                         app:fontSize="titleBig"
                         app:textViewTheme="lightPrimary"
                         app:weight="medium"
@@ -54,17 +54,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_8"
+                        android:id="@+id/tv_property_address"
                         android:gravity="center"
-                        android:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat."
                         app:fontSize="micro"
                         tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat." />
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/tv_property_phone"
                         android:layout_marginBottom="@dimen/dp_8"
                         android:gravity="center"
-                        android:text="No. Telepon: 0231 204464"
                         app:fontSize="micro"
                         tools:text="No. Telepon: 0231 204464" />
 
@@ -87,7 +87,7 @@
                         android:gravity="center"
                         android:text="Menunggu Widget dari Resa yang di Booking"
                         app:fontSize="micro"
-                        tools:text="No. Telepon: 0231 204464" />
+                        tools:text="Menunggu Widget dari Resa yang di Booking" />
 
                     <View
                         android:layout_width="match_parent"
@@ -102,17 +102,17 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
-                        android:text="Nama Tamu"
+                        android:id="@+id/tv_guest_title"
                         app:fontSize="micro"
                         tools:text="Nama Tamu" />
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/tv_guest_name"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_16"
-                        android:text="Muhammad Furqan"
                         app:fontSize="small"
                         app:textViewTheme="lightPrimary"
                         app:weight="medium"
@@ -123,7 +123,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
-                        android:text="Kode Booking"
+                        android:id="@+id/tv_booking_title"
                         app:fontSize="micro"
                         tools:text="Kode Booking" />
 
@@ -133,7 +133,7 @@
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_16"
-                        android:text="XYZABABA110"
+                        android:id="@+id/tv_booking_code"
                         app:fontSize="small"
                         app:textViewTheme="lightPrimary"
                         app:weight="medium"
@@ -167,7 +167,7 @@
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
-                    android:text="Kamar Deluxe Double"
+                    android:id="@+id/tv_room_title"
                     app:fontSize="small"
                     app:textViewTheme="lightPrimary"
                     app:weight="medium"
@@ -178,7 +178,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:text="2 Kamar • 2 Tamu"
+                    android:id="@+id/tv_room_info"
                     app:fontSize="micro"
                     tools:text="2 Kamar • 2 Tamu" />
 
@@ -187,7 +187,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:text="Termasuk Sarapan, Refund Bersyarat"
+                    android:id="@+id/tv_room_facility"
                     app:fontSize="micro"
                     tools:text="Termasuk Sarapan, Refund Bersyarat" />
 
@@ -204,7 +204,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:text="Permintaan Khusus"
+                    android:id="@+id/tv_request_label"
                     app:fontSize="micro"
                     tools:text="Permintaan Khusus" />
 
@@ -212,8 +212,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
+                    android:id="@+id/tv_request_info"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:text="Saya ingin kamar yang view nya pantai, dingin, dan tambahan extra bed 2 yah mas tolong."
                     app:fontSize="small"
                     app:textViewTheme="lightPrimary"
                     tools:text="Saya ingin kamar yang view nya pantai, dingin, dan tambahan extra bed 2 yah mas tolong." />
@@ -225,7 +225,7 @@
                     android:layout_marginTop="@dimen/dp_24"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_16"
-                    android:text="Dana deposit, pajak wisata, dan biaya lainnya mungkin akan ditagihkan saat check-in."
+                    android:id="@+id/tv_additional_notes"
                     app:fontSize="micro"
                     tools:text="Dana deposit, pajak wisata, dan biaya lainnya mungkin akan ditagihkan saat check-in." />
 

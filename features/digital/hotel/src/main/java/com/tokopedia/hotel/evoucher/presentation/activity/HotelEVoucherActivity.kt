@@ -5,8 +5,12 @@ import android.content.Intent
 import android.support.v4.app.Fragment
 import android.view.Menu
 import android.view.MenuItem
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
+import com.tokopedia.hotel.evoucher.di.DaggerHotelEVoucherComponent
+import com.tokopedia.hotel.evoucher.di.HotelEVoucherComponent
 import com.tokopedia.hotel.evoucher.presentation.fragment.HotelEVoucherFragment
 import com.tokopedia.hotel.evoucher.presentation.widget.HotelMenuShareSheets
 
@@ -14,7 +18,8 @@ import com.tokopedia.hotel.evoucher.presentation.widget.HotelMenuShareSheets
 /**
  * @author by furqan on 14/05/19
  */
-class HotelEVoucherActivity : HotelBaseActivity(), HotelMenuShareSheets.HotelShareListener {
+class HotelEVoucherActivity : HotelBaseActivity(), HotelMenuShareSheets.HotelShareListener,
+        HasComponent<HotelEVoucherComponent> {
 
     lateinit var fragment: HotelEVoucherFragment
 
@@ -62,6 +67,11 @@ class HotelEVoucherActivity : HotelBaseActivity(), HotelMenuShareSheets.HotelSha
     override fun onShareAsPdfClicked() {
         if (::fragment.isInitialized) fragment.shareAsPdf()
     }
+
+    override fun getComponent(): HotelEVoucherComponent =
+            DaggerHotelEVoucherComponent.builder()
+                    .hotelComponent(HotelComponentInstance.getHotelComponent(application))
+                    .build()
 
     companion object {
 
