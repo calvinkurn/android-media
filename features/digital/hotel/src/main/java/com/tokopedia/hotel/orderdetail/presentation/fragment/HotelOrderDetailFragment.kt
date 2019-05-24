@@ -300,7 +300,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         helpLabel.setTextColor(resources.getColor(R.color.light_primary))
         val text = Html.fromHtml(help.helpText)
         val spannableString = SpannableString(text)
-        val startIndexOfLink = text.indexOf("disini")
+        val startIndexOfLink = help.helpText.toLowerCase().indexOf("disini")
         if (startIndexOfLink >= 0) {
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(view: View) {
