@@ -5,5 +5,5 @@ package com.tokopedia.pushnotif.db
  */
 
 const val PUSHNOTIF_DB_VERSION = 2
-const val PUSHNOTIF_DB = "PushNotificationDB2"
+const val PUSHNOTIF_DB = "PushNotificationDB2.db"
 const val HISTORY_NOTIFICATION_TABLE = "HistoryNotificationDB"
