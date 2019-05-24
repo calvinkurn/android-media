@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse
 import com.tokopedia.checkout.domain.datamodel.addresscorner.GqlKeroWithAddressResponse
-import com.tokopedia.district_recommendation.domain.model.AddressResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.transactiondata.entity.request.AddressRequest
@@ -19,7 +18,7 @@ import java.util.HashMap
  */
 public class GetAddressCornerUseCase(val context: Context, val usecase: GraphqlUseCase) {
 
-    private val PARAM_CHECKOUT_PARAMS: String = "input"
+    private val PARAM_ADDRESS_USECASE: String = "input"
 
     fun getObservable(): Observable<AddressCornerResponse> {
         usecase.clearRequest()
@@ -38,7 +37,7 @@ public class GetAddressCornerUseCase(val context: Context, val usecase: GraphqlU
 
     private fun getParam(json: Any): Map<String, Any> {
         val params = HashMap<String, Any>()
-        params[PARAM_CHECKOUT_PARAMS] = json
+        params[PARAM_ADDRESS_USECASE] = json
         return params
     }
 }
