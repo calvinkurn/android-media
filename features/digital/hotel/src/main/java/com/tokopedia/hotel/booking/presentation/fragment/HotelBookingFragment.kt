@@ -4,9 +4,13 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +19,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.hotel.R
@@ -119,9 +122,9 @@ class HotelBookingFragment : BaseDaggerFragment() {
         setupHotelInfo(hotelCart.property)
         setupRoomDuration(hotelCart.cart)
         setupRoomInfo(hotelCart.property, hotelCart.cart)
-        setupRoomRequestForm()
+        setupRoomRequestForm(hotelCart.cart)
         setupContactDetail(hotelCart.cart)
-        setupInvoiceSummary(hotelCart.cart)
+        setupInvoiceSummary(hotelCart.cart, hotelCart.property)
 
         booking_button.setOnClickListener { onBookingButtonClicked() }
     }
@@ -140,10 +143,6 @@ class HotelBookingFragment : BaseDaggerFragment() {
         booking_room_duration_info.setRoomDates(cart.checkIn, cart.checkOut)
     }
 
-    private fun changeDateStringFormat(dateString: String, oldFormat: String, newFormat: String): String {
-        return TravelDateUtil.dateToString(newFormat, TravelDateUtil.stringToDate(oldFormat, dateString))
-    }
-
     private fun setupRoomInfo(property: HotelPropertyData, cart: HotelCartData) {
         if (property.rooms.isNotEmpty()) {
             tv_booking_room_info_title.text = property.rooms[0].roomName
@@ -159,6 +158,29 @@ class HotelBookingFragment : BaseDaggerFragment() {
                 tv_booking_room_info_occupancy.text = it.description.replace("x", "•")
             }
             if (!property.rooms[0].isBreakFastIncluded) tv_booking_room_info_breakfast.visibility = View.GONE
+
+            val cancellationPolicy = property.rooms[0].cancellationPolicies
+            tv_cancellation_policy_ticker.truncateDescription = false
+            tv_cancellation_policy_ticker.resetMaxLineCount()
+            tv_cancellation_policy_ticker.info_title.setFontSize(TextViewCompat.FontSize.MICRO)
+
+            var cancellationDesc: CharSequence = cancellationPolicy.content
+            if (cancellationPolicy.isClickable) {
+                val moreInfoString = getString(R.string.hotel_booking_cancellation_policy_more_info)
+                val spannableString = SpannableString("$cancellationDesc $moreInfoString")
+                val moreInfoSpan = object : ClickableSpan() {
+                    override fun onClick(textView: View) {
+                        onCancellationPolicyClicked(property)
+                    }
+                }
+                spannableString.setSpan(moreInfoSpan,spannableString.length - moreInfoString.length, spannableString.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.green_200)),
+                        spannableString.length - moreInfoString.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                cancellationDesc = spannableString
+            }
+            tv_cancellation_policy_ticker.setTitleAndDescription(cancellationPolicy.policyType, cancellationDesc)
+            tv_cancellation_policy_ticker.info_desc.movementMethod = LinkMovementMethod.getInstance()
         }
     }
 
@@ -189,7 +211,8 @@ class HotelBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupRoomRequestForm() {
+    private fun setupRoomRequestForm(cart: HotelCartData) {
+        if (cart.specialRequest.isNotEmpty()) roomRequest = cart.specialRequest
         if (roomRequest.isNotEmpty()) {
             showRequestForm()
             tv_room_request_input.setText(roomRequest)
@@ -266,7 +289,12 @@ class HotelBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupInvoiceSummary(cart: HotelCartData) {
+    private fun setupInvoiceSummary(cart: HotelCartData, property: HotelPropertyData) {
+        if (property.rooms.isNotEmpty() && property.rooms[0].importantNote.isNotEmpty()) {
+            invoice_tax_deposit_info_container.visibility = View.VISIBLE
+            tv_invoice_tax_deposit_info.text = property.rooms[0].importantNote
+        }
+
         cart.fares.find { it.type == "base_price" }?.let {
             tv_room_price_label.text = it.description
             tv_room_price.text = it.price
