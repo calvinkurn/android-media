@@ -14,7 +14,7 @@ import java.util.HashMap;
  * Created by henrypriyono on 11/22/17.
  */
 
-public abstract class SearchSectionFragmentPresenterImpl<V extends SearchSectionFragmentView> extends BaseDaggerPresenter<V> implements SearchSectionFragmentPresenter<V> {
+public abstract class BrowseSectionFragmentPresenterImpl<V extends BrowseSectionFragmentView> extends BaseDaggerPresenter<V> implements BrowseSectionFragmentPresenter<V> {
 
     public AppComponent getComponent(Context context) {
         return ((MainApplication) context).getAppComponent();

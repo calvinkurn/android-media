@@ -6,7 +6,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Em
  * Created by henrypriyono on 10/16/17.
  */
 
-public interface SearchSectionTypeFactory {
+public interface BrowseSectionTypeFactory {
     int type(EmptySearchModel emptySearchModel);
 
     int getRecyclerViewItem();

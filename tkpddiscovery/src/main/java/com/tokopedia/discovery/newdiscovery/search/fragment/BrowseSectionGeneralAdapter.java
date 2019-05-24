@@ -21,12 +21,12 @@ import java.util.List;
  * Created by henrypriyono on 10/16/17.
  */
 
-public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+public abstract class BrowseSectionGeneralAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private OnItemChangeView itemChangeView;
     public EmptyModel emptyModel;
 
-    public SearchSectionGeneralAdapter(OnItemChangeView itemChangeView) {
+    public BrowseSectionGeneralAdapter(OnItemChangeView itemChangeView) {
         this.itemChangeView = itemChangeView;
         emptyModel = new EmptyModel();
     }
@@ -160,7 +160,7 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
 
     public abstract List<Visitable> getItemList();
 
-    protected abstract SearchSectionTypeFactory getTypeFactory();
+    protected abstract BrowseSectionTypeFactory getTypeFactory();
 
 
 

@@ -6,8 +6,8 @@ import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
  * Created by henrypriyono on 10/16/17.
  */
 
-public abstract class SearchSectionTypeFactoryImpl extends BaseAdapterTypeFactory
-        implements SearchSectionTypeFactory {
+public abstract class BrowseSectionTypeFactoryImpl extends BaseAdapterTypeFactory
+        implements BrowseSectionTypeFactory {
 
     private int recyclerViewItem;
 
