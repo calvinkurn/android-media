@@ -57,6 +57,7 @@ public class TopChatAnalytics {
         String EVENT_NAME_CLICK_INBOXCHAT = "clickInboxChat";
         String EVENT_NAME_PRODUCT_CLICK = "productClick";
         String EVENT_NAME_ATC = "addToCart";
+        String EVENT_NAME_PRODUCT_PREVIEW = "productView";
 
     }
 
@@ -73,6 +74,7 @@ public class TopChatAnalytics {
         public static final String TEMPLATE_CHAT_CLICK = "click on template chat";
         public static final String UPDATE_TEMPLATE = "click on tambah template";
         public static final String CLICK_PRODUCT_IMAGE = "click on product image";
+        public static final String VIEW_PRODUCT_PREVIEW = "view on product thumbnail";
         public static final String CLICK_THUMBNAIL = "click on thumbnail";
         public static final String CLICK_COPY_VOUCHER_THUMBNAIL = "click copy on shop voucher thumbnail";
         public static final String CLICK_VOUCHER_THUMBNAIL = "click shop voucher thumbnail";
@@ -259,10 +261,10 @@ public class TopChatAnalytics {
 
     public void eventSeenProductAttachment(@NotNull ProductAttachmentViewModel product, Integer position) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                EVENT_NAME, "testingProductPreview",
-                EVENT_CATEGORY, "testing product view",
-                EVENT_ACTION, "",
-                EVENT_LABEL, "",
+                EVENT_NAME, Name.EVENT_NAME_PRODUCT_PREVIEW,
+                EVENT_CATEGORY, Category.CHAT_DETAIL,
+                EVENT_ACTION, Action.VIEW_PRODUCT_PREVIEW,
+                EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId())),
                 ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
                         "impressions", DataLayer.mapOf(
                                 "name", product.getProductName(),
