@@ -524,7 +524,6 @@
                         android:id="@+id/tv_room_estimated_price_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/hotel_booking_invoice_estimate"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -536,6 +535,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
+                        android:textColor="@color/orange_607"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:fontSize="small"
@@ -548,10 +548,12 @@
                     android:id="@+id/tv_invoice_foreign_currency"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:text="@string/hotel_booking_invoice_foreign_currency_label"
                     app:fontSize="micro"
                     app:textViewTheme="lightSecondary"
-                    tools:text="Dalam mata uang lokal sebesar SGD 100"/>
+                    tools:visibility="visible"
+                    tools:text="Sebagai referensi, estimasi harga dalam rupiah sebesar Rp 400.000"/>
 
             </LinearLayout>
 

@@ -161,8 +161,9 @@
     <string name="hotel_booking_invoice_title">Ringkasan Tagihan</string>
     <string name="hotel_booking_tax_label">Pajak</string>
     <string name="hotel_booking_tax_included">Sudah termasuk</string>
-    <string name="hotel_booking_invoice_estimate">Estimasi total tagihan</string>
-    <string name="hotel_booking_invoice_foreign_currency_label">Dalam mata uang lokal sebesar %1$s</string>
+    <string name="hotel_booking_invoice_estimate_pay_at_hotel">Bayar di Hotel</string>
+    <string name="hotel_booking_invoice_estimate_pay_now">Total tagihan</string>
+    <string name="hotel_booking_invoice_foreign_currency_label">Sebagai referensi, estimasi harga dalam rupiah sebesar %1$s</string>
     <string name="hotel_booking_button">Lanjutkan</string>
     <string name="hotel_booking_back_dialog_title">Yakin batal pesan?</string>
     <string name="hotel_booking_back_dialog_desc">Kamar bisa penuh dan tidak tersedia di waktu lain. Lanjut pesan untuk tetap menginap di kamar ini.</string>

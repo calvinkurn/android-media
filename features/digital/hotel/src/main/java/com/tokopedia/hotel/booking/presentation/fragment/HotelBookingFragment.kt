@@ -297,17 +297,23 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
         cart.fares.find { it.type == "base_price" }?.let {
             tv_room_price_label.text = it.description
-            tv_room_price.text = it.price
+            tv_room_price.text = it.localPrice
         }
         cart.fares.find { it.type == "tax" }?.let {
             tv_room_tax_label.text = it.description
-            tv_room_tax.text = it.price
+            tv_room_tax.text = it.localPrice
         }
-        tv_room_estimated_price.text = cart.totalPrice
-        val spannableString = SpannableString(getString(R.string.hotel_booking_invoice_foreign_currency_label, cart.localTotalPrice))
-        spannableString.setSpan(StyleSpan(Typeface.BOLD), spannableString.length - cart.localTotalPrice.length, spannableString.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        tv_invoice_foreign_currency.text = spannableString
+        val priceLabelResId = if (property.rooms[0].isDirectPayment) R.string.hotel_booking_invoice_estimate_pay_at_hotel else R.string.hotel_booking_invoice_estimate_pay_now
+        tv_room_estimated_price_label.text = getString(priceLabelResId)
+        tv_room_estimated_price.text = cart.localTotalPrice
+
+        if (cart.currency != "IDR") {
+            tv_invoice_foreign_currency.visibility = View.VISIBLE
+            val spannableString = SpannableString(getString(R.string.hotel_booking_invoice_foreign_currency_label, cart.totalPrice))
+            spannableString.setSpan(StyleSpan(Typeface.BOLD), spannableString.length - cart.totalPrice.length, spannableString.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            tv_invoice_foreign_currency.text = spannableString
+        }
     }
 
     private fun onBookingButtonClicked() {
