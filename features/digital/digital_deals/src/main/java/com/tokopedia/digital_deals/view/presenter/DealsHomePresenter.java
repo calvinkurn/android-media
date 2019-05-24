@@ -32,6 +32,7 @@ import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
 import com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager;
+import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
@@ -49,6 +50,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -414,18 +417,19 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     }
 
     private List<CategoryItem> getCategories(List<CategoryItem> listItems) {
+        applyFilterOnCategories(listItems);
         List<CategoryItem> categoryList = null;
         categoriesModels = new ArrayList<>();
         if (listItems != null && listItems.size() > 2) {
             categoryList = new ArrayList<>();
-            for (int i = listItems.size() -1; i > 1; i--) {
-                if (listItems.get(i).getIsCard() != 1) {
+            for (int i = 0; i < listItems.size() -1; i++) {
+                if (listItems.get(i).getIsCard() != 1 && !listItems.get(i).getTitle().equalsIgnoreCase(CAROUSEL)) {
                     categoryList.add(listItems.get(i));
                     CategoriesModel categoriesModel = new CategoriesModel();
                     categoriesModel.setName(listItems.get(i).getName());
                     categoriesModel.setTitle(listItems.get(i).getTitle());
                     categoriesModel.setCategoryUrl(listItems.get(i).getCategoryUrl());
-                    categoriesModel.setPosition(i - 1);
+                    categoriesModel.setPosition(i);
                     categoriesModel.setCategoryId(listItems.get(i).getCategoryId());
                     categoriesModel.setItems(listItems.get(i).getItems());
                     categoriesModels.add(categoriesModel);
@@ -441,6 +445,40 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         categoriesModel.setPosition(0);
         categoriesModels.add(0, categoriesModel);
         return categoryList;
+    }
+
+
+    public void applyFilterOnCategories(List<CategoryItem> categoryRespons) {
+        Map<Integer, Integer> sortOrder = new HashMap<>();
+        for (CategoryItem categoryItem : categoryRespons) {
+            sortOrder.put(categoryItem.getCategoryId(), categoryItem.getPriority());
+            if (sortOrder.size() == categoryRespons.size()) {
+                Collections.sort(categoryRespons, new CategoryItemComparator(sortOrder));
+            }
+        }
+    }
+
+    private class CategoryItemComparator implements Comparator<CategoryItem> {
+        private Map<Integer, Integer> sortOrder;
+
+        public CategoryItemComparator(Map<Integer, Integer> sortOrder) {
+            this.sortOrder = sortOrder;
+        }
+
+        @Override
+        public int compare(CategoryItem i1, CategoryItem i2) {
+            Integer id1 = sortOrder.get(i1.getCategoryId());
+            if (id1 == null) {
+                throw new IllegalArgumentException("Bad id encountered: " +
+                        i1.getCategoryId());
+            }
+            Integer id2 = sortOrder.get(i2.getCategoryId());
+            if (id2 == null) {
+                throw new IllegalArgumentException("Bad id encountered: " +
+                        i2.getCategoryId());
+            }
+            return id2.compareTo(id1);
+        }
     }
 
     private void processSearchResponse(DealsResponse dealEntity) {

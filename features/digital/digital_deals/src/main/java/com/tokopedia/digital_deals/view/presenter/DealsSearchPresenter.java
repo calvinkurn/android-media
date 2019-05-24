@@ -87,7 +87,7 @@ public class DealsSearchPresenter
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
                 SearchResponse searchResponse = (SearchResponse) dataResponse.getData();
-                getView().setSuggestedBrands(searchResponse.getBrandList());
+                getView().setSuggestedBrands(searchResponse.getBrandList(), searchResponse.getBrandCount());
                 getView().setTrendingDealsOrSuggestions(processSearchResponse(searchResponse), false, highlight, searchResponse.getCount());
                 checkIfToLoad(getView().getLayoutManager());
                 CommonUtils.dumper("enter onNext");

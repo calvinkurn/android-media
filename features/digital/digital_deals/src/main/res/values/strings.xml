@@ -51,7 +51,7 @@
     <string name="change_location">Ubah Lokasi</string>
     <string name="popular_deals_in_location">%1$s di %2$s\u0020</string>
     <string name="popular_brand">Brand populer</string>
-    <string name="all_brands">Semua Brand</string>
+    <string name="all_brands">Semua</string>
     <string name="search_input_hint_brand">Cari Brand</string>
     <string name="search_input_hint_category">Cari %1$s favoritmu</string>
     <string name="see_on_map">Lihat Peta</string>

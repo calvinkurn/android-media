@@ -64,7 +64,7 @@ public class Utils {
     public static String BRAND_QUERY_PARAM_BRAND_AND_PRODUCT = "brand_product";
     public static String QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
     public static String QUERY_PARAM_CITY_ID = "cities";
-    public static String LOCATION_NAME = "jakarta";
+    public static String LOCATION_NAME = "Jakarta";
     public static int LOCATION_ID = 318;
     public static final String NEXT_URL = "nexturl";
     private static final float MAX_RADIUS = 25.0f;

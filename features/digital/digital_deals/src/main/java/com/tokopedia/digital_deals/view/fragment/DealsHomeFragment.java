@@ -1,15 +1,12 @@
 package com.tokopedia.digital_deals.view.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -72,11 +69,6 @@ import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -118,6 +110,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private AppBarLayout appBarLayout;
     private NestedScrollView nestedScrollView;
     private LinearLayout curatedDealsLayout;
+    private LinearLayout toolbarNameLayout;
     private final boolean IS_SHORT_LAYOUT = false;
     OpenTrendingDeals openTrendingDeals;
 
@@ -187,7 +180,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     private void startShowCase() {
         ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
-        coachItems.add(new CoachMarkItem(tvLocationName, getString(R.string.coachicon_title_location), getString(R.string.coachicon_description_location)));
+        coachItems.add(new CoachMarkItem(toolbarNameLayout, getString(R.string.coachicon_title_location), getString(R.string.coachicon_description_location)));
         coachItems.add(new CoachMarkItem(searchInputView, getString(R.string.coachicon_title_searchbar), getString(R.string.coachicon_description_searchbar)));
         coachItems.add(new CoachMarkItem(promoheading, getString(R.string.coachicon_title_promo), getString(R.string.coachicon_description_promo), CoachMarkContentPosition.BOTTOM, R.color.white, nestedScrollView));
         CoachMark coachMark = new CoachMarkBuilder().build();
@@ -216,6 +209,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private void setUpVariables(View view) {
         shimmerLayout = view.findViewById(R.id.shimmer_layout);
         toolbar = view.findViewById(R.id.deals_toolbar);
+        toolbarNameLayout = view.findViewById(R.id.toolbar_home_layout);
         toolbarTitle = view.findViewById(R.id.toolbar_title);
         backArrow = view.findViewById(R.id.backArraw);
         overFlowIcon = view.findViewById(R.id.overFlow_icon);
@@ -378,7 +372,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void renderCategoryList(List<CategoryItem> categoryList, List<CategoriesModel> categoriesModels) {
         if (categoryList != null) {
-            applyFilterOnCategories(categoryList);
+//            applyFilterOnCategories(categoryList);
             catItems.removeAllViews();
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.weight = 0.5f;

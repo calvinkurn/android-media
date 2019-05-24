@@ -128,12 +128,12 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     public void onSearchTextChanged(String text) {
-        if(!TextUtils.isEmpty(searchText) && searchText.equals(text)){
+        if(text == null || text.equals(searchText)){
             return;
         }
         searchText = text;
-        mPresenter.sendEventClick(DealsAnalytics.EVENT_CLICK_SEARCH_BRAND, text);
-        mPresenter.searchSubmitted(text);
+        mPresenter.sendEventClick(DealsAnalytics.EVENT_CLICK_SEARCH_BRAND, searchText);
+        mPresenter.searchSubmitted(searchText);
     }
 
 

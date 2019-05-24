@@ -1,32 +1,51 @@
 package com.tokopedia.digital_deals.view.activity;
 
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
+import android.text.Layout;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.AlignmentSpan;
+import android.text.style.StyleSpan;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.adapter.BrandsFragmentPagerAdapter;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
+import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.AllBrandsPresenter;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class AllBrandsActivity extends DealsBaseActivity implements SearchInputView.Listener, View.OnClickListener, AllBrandsFragment.UpdateLocation {
+public class AllBrandsActivity extends DealsBaseActivity implements SearchInputView.Listener, View.OnClickListener, AllBrandsFragment.UpdateLocation, PopupMenu.OnMenuItemClickListener {
 
     public static final String EXTRA_CATEGOTRY_LIST = "category_item_list";
     private ViewPager categoryViewPager;
@@ -36,10 +55,15 @@ public class AllBrandsActivity extends DealsBaseActivity implements SearchInputV
     public static final String SEARCH_TEXT = "search_text";
     private TextView toolbarTitle;
     private SearchInputView searchInputView;
-    private ImageView backArrow;
+    private ImageView backArrow, overFlowIcon;
     AllBrandsFragment allBrandsFragment;
+    DealsAnalytics dealsAnalytics;
     List<CategoriesModel> categoryList = new ArrayList<>();
     private String searchText;
+    private UserSession userSession;
+    private Menu mMenu;
+    private int categoryId;
+    private int position = 0;
 
     @Override
     protected int getLayoutRes() {
@@ -50,6 +74,8 @@ public class AllBrandsActivity extends DealsBaseActivity implements SearchInputV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.slide_in_left_brands, R.anim.slide_out_right_brands);
+        userSession = new UserSession(this);
+        dealsAnalytics = new DealsAnalytics();
         setUpVariables();
     }
 
@@ -57,23 +83,33 @@ public class AllBrandsActivity extends DealsBaseActivity implements SearchInputV
         tabs = findViewById(R.id.tabs);
         searchInputView = findViewById(R.id.search_input_view);
         backArrow = findViewById(R.id.backArraw);
+        overFlowIcon = findViewById(R.id.overFlow_icon);
         toolbarTitle = findViewById(R.id.tv_location_name);
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_brand));
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_17));
+        searchInputView.setSearchTextColor(ContextCompat.getColor(this, R.color.clr_ae31353b));
         searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_24), getResources().getDimensionPixelSize(R.dimen.dp_24));
         searchInputView.setListener(this);
         categoryViewPager = findViewById(R.id.container);
         categoryList = getIntent().getParcelableArrayListExtra(EXTRA_LIST);
+        if (getIntent() != null && !TextUtils.isEmpty(getIntent().getStringExtra("cat_id"))) {
+            categoryId = Integer.parseInt(getIntent().getStringExtra("cat_id"));
+            for (int i = 0; i < categoryList.size(); i++) {
+                if (categoryId == categoryList.get(i).getCategoryId()) {
+                    position = i;
+                }
+            }
+        }
         searchText = getIntent().getStringExtra(SEARCH_TEXT);
         if (!TextUtils.isEmpty(searchText)) {
             searchInputView.setSearchText(searchText);
         }
         brandsTabsPagerAdapter =
                 new BrandsFragmentPagerAdapter(getSupportFragmentManager(), categoryList, searchInputView.getSearchText());
-        setCategoryViewPagerListener();
         categoryViewPager.setAdapter(brandsTabsPagerAdapter);
         tabs.setupWithViewPager(categoryViewPager);
         categoryViewPager.setOffscreenPageLimit(1);
+        categoryViewPager.setCurrentItem(position);
         categoryViewPager.setSaveFromParentEnabled(false);
 
         toolbarTitle.setOnClickListener(this);
@@ -88,10 +124,30 @@ public class AllBrandsActivity extends DealsBaseActivity implements SearchInputV
             allBrandsFragment = (AllBrandsFragment) fragment;
         }
 
+        setCategoryViewPagerListener();
+
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+        overFlowIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(AllBrandsActivity.this, v);
+                MenuInflater menuInflater = popupMenu.getMenuInflater();
+                menuInflater.inflate(R.menu.menu_deals_home, popupMenu.getMenu());
+                mMenu = popupMenu.getMenu();
+                for (int i = 0; i < mMenu.size(); i++) {
+                    MenuItem item = popupMenu.getMenu().getItem(i);
+                    SpannableString s = new SpannableString(item.getTitle());
+                    s.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, s.length(), 0);
+                    s.setSpan(new StyleSpan(Typeface.NORMAL), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    item.setTitle(s);
+                }
+                popupMenu.setOnMenuItemClickListener(AllBrandsActivity.this);
+                popupMenu.show();
             }
         });
     }
@@ -155,5 +211,32 @@ public class AllBrandsActivity extends DealsBaseActivity implements SearchInputV
             AllBrandsFragment allBrandsFragment = (AllBrandsFragment) fragment;
             allBrandsFragment.onSearchSubmitted(searchText);
         }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_promo) {
+            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_PROMO,
+                    "");
+            ((DealsModuleRouter) this.getApplication())
+                    .actionOpenGeneralWebView(this, DealsUrl.WebUrl.PROMOURL);
+        } else if (id == R.id.action_booked_history) {
+            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_DAFTAR_TRANSAKSI,
+                    "");
+            if (userSession.isLoggedIn()) {
+                RouteManager.route(this, ApplinkConst.DEALS_ORDER);
+            } else {
+                Intent intent = ((DealsModuleRouter) this.getApplication()).
+                        getLoginIntent(this);
+                startActivity(intent);
+            }
+        } else if (id == R.id.action_faq) {
+            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_BANTUAN,
+                    "");
+            ((DealsModuleRouter) this.getApplication())
+                    .actionOpenGeneralWebView(this, DealsUrl.WebUrl.FAQURL);
+        }
+        return true;
     }
 }

@@ -2,7 +2,6 @@ package com.tokopedia.digital_deals.view.contractor;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -29,7 +28,7 @@ public class DealsSearchContract {
 
         void setTrendingDealsOrSuggestions(List<ProductItem> searchViewModels, boolean isTrendingDeals, String highlight, int count);
 
-        void setSuggestedBrands(List<Brand> brandList);
+        void setSuggestedBrands(List<Brand> brandList, int count);
 
         void showSuggestedDeals(List<ProductItem> items, boolean showList);
 

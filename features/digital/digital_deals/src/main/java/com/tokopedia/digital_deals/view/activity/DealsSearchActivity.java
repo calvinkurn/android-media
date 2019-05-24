@@ -16,7 +16,6 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -287,13 +286,15 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     @Override
-    public void setSuggestedBrands(List<Brand> brandList) {
+    public void setSuggestedBrands(List<Brand> brandList, int count) {
         if (brandList != null && brandList.size() > 0) {
             this.brands = brandList;
             brandLayout.setVisibility(View.VISIBLE);
             brandsHeading.setVisibility(View.VISIBLE);
-            brandCount.setVisibility(View.VISIBLE);
-            brandCount.setText(String.format(getResources().getString(R.string.brand_count_text), searchInputView.getSearchText(), brandList.size()));
+            if (count > 4) {
+                brandCount.setVisibility(View.VISIBLE);
+                brandCount.setText(String.format(getResources().getString(R.string.brand_count_text), searchInputView.getSearchText(),count));
+            }
             noBrandsFound.setVisibility(View.GONE);
             LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) dealsHeading.getLayoutParams();
             params1.setMargins(getResources().getDimensionPixelOffset(R.dimen.dp_16), getResources().getDimensionPixelOffset(R.dimen.dp_12), 0, 0);

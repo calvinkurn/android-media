@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,7 +16,13 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.AlignmentSpan;
+import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,14 +31,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
+import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
@@ -65,7 +77,7 @@ import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class CategoryDetailHomeFragment extends BaseDaggerFragment implements DealsCategoryDetailContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet {
+public class CategoryDetailHomeFragment extends BaseDaggerFragment implements DealsCategoryDetailContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet, PopupMenu.OnMenuItemClickListener {
 
     private final boolean IS_SHORT_LAYOUT = true;
     private RecyclerView recyclerViewDeals;
@@ -80,6 +92,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private LinearLayoutManager layoutManager;
     private LinearLayout noContent;
     private Toolbar toolbar;
+    private ImageView overFlowIcon;
     @Inject
     DealsAnalytics dealsAnalytics;
     @Inject
@@ -99,6 +112,9 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     List<CategoriesModel> categoryList = new ArrayList<>();
     List<ProductItem> categoryItems = new ArrayList<>();
     private AppBarLayout appBarLayout;
+    private UserSession userSession;
+
+    private Menu mMenu;
 
     @Override
     protected void initInjector() {
@@ -119,6 +135,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         this.categoriesModel = getArguments().getParcelable(CategoryDetailActivity.CATEGORIES_DATA);
         this.categoryList = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_LIST);
         this.categoryItems = getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_CATEGOTRY_LIST);
+        userSession = new UserSession(getActivity());
     }
 
     @Override
@@ -143,6 +160,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         searchInputView.setOnClickListener(this);
         seeAllBrands = view.findViewById(R.id.tv_see_all);
         popularLocation = view.findViewById(R.id.tv_popular);
+        overFlowIcon = view.findViewById(R.id.overFlow_icon);
         numberOfDeals = view.findViewById(R.id.number_of_locations);
         recyclerViewDeals = view.findViewById(R.id.rv_deals);
         recyclerViewBrands = view.findViewById(R.id.rv_brands);
@@ -174,24 +192,51 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                 getActivity().onBackPressed();
             }
         });
-//        nestedScrollView.setNestedScrollingEnabled(false);
-//        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-//            @Override
-//            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-//                if (scrollY == 0) {
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                        appBarLayout.setElevation(0.0f);
-//                    }
-//                } else {
-////                    mPresenter.onRecyclerViewScrolled(layoutManager);
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                        appBarLayout.setElevation(4.0f);
-//                    }
-//                }
-//            }
-//        });
+
+        overFlowIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(getActivity(), v);
+                MenuInflater menuInflater = popupMenu.getMenuInflater();
+                menuInflater.inflate(R.menu.menu_deals_home, popupMenu.getMenu());
+                mMenu = popupMenu.getMenu();
+                for (int i = 0; i < mMenu.size(); i++) {
+                    MenuItem item = popupMenu.getMenu().getItem(i);
+                    SpannableString s = new SpannableString(item.getTitle());
+                    s.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, s.length(), 0);
+                    s.setSpan(new StyleSpan(Typeface.NORMAL), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    item.setTitle(s);
+                }
+                popupMenu.setOnMenuItemClickListener(CategoryDetailHomeFragment.this);
+                popupMenu.show();
+            }
+        });
+
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset == 0) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        toolbar.setElevation(0.0f);
+                    }
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        toolbar.setElevation(4.0f);
+                    }
+                }
+            }
+        });
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location != null) {
+            toolbarTitle.setText(location.getName());
+        }
+    }
 
     @Override
     protected String getScreenName() {
@@ -216,6 +261,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         if (location != null)
             locationName = location.getName();
         if (deals != null && deals.size() > 0) {
+            this.categoryItems = deals;
             if (count == 0)
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), deals.size()));
             else
@@ -351,7 +397,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-                mPresenter.onRecyclerViewScrolled(layoutManager);
+            mPresenter.onRecyclerViewScrolled(layoutManager);
         }
     };
 
@@ -442,13 +488,14 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         if (v.getId() == R.id.tv_see_all) {
             Intent brandIntent = new Intent(getContext(), AllBrandsActivity.class);
             brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoryList);
+            brandIntent.putExtra("cat_id", String.valueOf(categoriesModel.getCategoryId()));
             brandIntent.putExtra(AllBrandsActivity.SEARCH_TEXT, searchInputView.getText().toString());
             navigateToActivity(brandIntent);
         } else if (v.getId() == R.id.tv_location_name) {
             mPresenter.getLocations();
         } else if (v.getId() == R.id.search_input_view) {
             Intent searchIntent = new Intent(getContext(), DealsSearchActivity.class);
-            TopDealsCacheHandler.init().setTopDeals(getArguments().getParcelableArrayList(AllBrandsActivity.EXTRA_CATEGOTRY_LIST));
+            TopDealsCacheHandler.init().setTopDeals(this.categoryItems);
             searchIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoryList);
             searchIntent.putExtra("cat_id", String.valueOf(categoriesModel.getCategoryId()));
             getContext().startActivity(searchIntent);
@@ -516,5 +563,32 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(getContext(), false, locations, this, toolbarTitle.getText().toString(), this), "", false);
         selectLocationFragment.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_promo) {
+            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_PROMO,
+                    "");
+            ((DealsModuleRouter) getActivity().getApplication())
+                    .actionOpenGeneralWebView(getActivity(), DealsUrl.WebUrl.PROMOURL);
+        } else if (id == R.id.action_booked_history) {
+            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_DAFTAR_TRANSAKSI,
+                    "");
+            if (userSession.isLoggedIn()) {
+                RouteManager.route(getActivity(), ApplinkConst.DEALS_ORDER);
+            } else {
+                Intent intent = ((DealsModuleRouter) getActivity().getApplication()).
+                        getLoginIntent(getActivity());
+                navigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN);
+            }
+        } else if (id == R.id.action_faq) {
+            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_BANTUAN,
+                    "");
+            ((DealsModuleRouter) getActivity().getApplication())
+                    .actionOpenGeneralWebView(getActivity(), DealsUrl.WebUrl.FAQURL);
+        }
+        return true;
     }
 }
