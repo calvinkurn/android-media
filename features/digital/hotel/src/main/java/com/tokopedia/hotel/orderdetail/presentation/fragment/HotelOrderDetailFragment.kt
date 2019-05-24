@@ -4,52 +4,51 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.text.Html
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.Toast
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.design.component.TextViewCompat
-import com.tokopedia.hotel.R
-import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
-import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
-import com.tokopedia.hotel.orderdetail.data.model.TitleContent
-import com.tokopedia.hotel.orderdetail.di.HotelOrderDetailComponent
-import com.tokopedia.hotel.orderdetail.presentation.adapter.ContactAdapter
-import com.tokopedia.hotel.orderdetail.presentation.adapter.TitleTextAdapter
-import com.tokopedia.hotel.orderdetail.presentation.viewmodel.HotelOrderDetailViewModel
-import com.tokopedia.hotel.orderdetail.presentation.widget.HotelContactPhoneBottomSheet
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_hotel_order_detail.*
-import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.*
-import kotlinx.android.synthetic.main.layout_order_detail_payment_detail.*
-import kotlinx.android.synthetic.main.layout_order_detail_transaction_detail.*
-import javax.inject.Inject
 import android.content.Intent.ACTION_DIAL
 import android.graphics.Color
 import android.net.Uri
+import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.component.ButtonCompat
+import com.tokopedia.design.component.TextViewCompat
+import com.tokopedia.hotel.R
+import com.tokopedia.hotel.evoucher.presentation.activity.HotelEVoucherActivity
+import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
+import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
+import com.tokopedia.hotel.orderdetail.data.model.TitleContent
+import com.tokopedia.hotel.orderdetail.di.HotelOrderDetailComponent
 import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_CATEGORY
 import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_ID
+import com.tokopedia.hotel.orderdetail.presentation.adapter.ContactAdapter
+import com.tokopedia.hotel.orderdetail.presentation.adapter.TitleTextAdapter
+import com.tokopedia.hotel.orderdetail.presentation.viewmodel.HotelOrderDetailViewModel
+import com.tokopedia.hotel.orderdetail.presentation.widget.HotelContactPhoneBottomSheet
 import com.tokopedia.hotel.orderdetail.presentation.widget.HotelRefundBottomSheet
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_hotel_order_detail.*
+import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.view.*
-import kotlinx.coroutines.experimental.launch
+import kotlinx.android.synthetic.main.layout_order_detail_payment_detail.*
+import kotlinx.android.synthetic.main.layout_order_detail_transaction_detail.*
 import java.io.UnsupportedEncodingException
-import java.net.URLEncoder
+import javax.inject.Inject
 
 
 /**
@@ -132,7 +131,8 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
             refund_ticker_layout.visibility = View.VISIBLE
             refund_ticker_layout.setOnClickListener {
                 if (hotelTransportDetail.cancellation.isClickable)
-                    showRefundInfo(hotelTransportDetail.cancellation.cancellationPolicies) }
+                    showRefundInfo(hotelTransportDetail.cancellation.cancellationPolicies)
+            }
             refund_title.text = hotelTransportDetail.cancellation.title
             refund_text.text = hotelTransportDetail.cancellation.content
         }
@@ -179,7 +179,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     }
 
     fun goToEvoucherPage() {
-        // use orderId and orderCategory to pass to Evoucher Page
+        startActivity(HotelEVoucherActivity.getCallingIntent(context!!, orderId))
     }
 
     fun renderHotelDetail(propertyDetail: HotelTransportDetail.PropertyDetail) {
