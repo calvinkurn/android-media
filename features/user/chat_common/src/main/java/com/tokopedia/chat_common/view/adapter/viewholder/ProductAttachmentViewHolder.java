@@ -66,7 +66,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         prerequisiteUISetup(element);
         setupProductUI(element, chatBalloon);
         setupChatBubbleAlignment(chatBalloon, element);
-        viewListener.trackSeenProduct(element);
+        viewListener.trackSeenProduct(element, getAdapterPosition());
     }
 
     private void setupChatBubbleAlignment(View productContainerView, ProductAttachmentViewModel element) {

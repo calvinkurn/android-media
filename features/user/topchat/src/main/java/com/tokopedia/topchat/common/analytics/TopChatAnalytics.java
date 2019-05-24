@@ -3,6 +3,7 @@ package com.tokopedia.topchat.common.analytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -251,6 +252,27 @@ public class TopChatAnalytics {
                                                 "position", 0
                                         )
                                 )
+                        )
+                )
+        ));
+    }
+
+    public void eventSeenProductAttachment(@NotNull ProductAttachmentViewModel product, Integer position) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT_NAME, "testingProductPreview",
+                EVENT_CATEGORY, "testing product view",
+                EVENT_ACTION, "",
+                EVENT_LABEL, "",
+                ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
+                        "impressions", DataLayer.mapOf(
+                                "name", product.getProductName(),
+                                "id", product.getProductId(),
+                                "price", product.getPriceInt(),
+                                "brand", "",
+                                "category", product.getCategory(),
+                                "variant", product.getVariant(),
+                                "list", "",
+                                "position", position
                         )
                 )
         ));

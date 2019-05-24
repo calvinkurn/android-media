@@ -244,5 +244,5 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         this.shopId = it.headerModel.shopId
     }
 
-    override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
+    override fun trackSeenProduct(element: ProductAttachmentViewModel, position: Int) {}
 }
