@@ -42,15 +42,14 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_CATEGORY
 import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_ID
 import com.tokopedia.hotel.orderdetail.presentation.widget.HotelRefundBottomSheet
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.view.*
-import kotlinx.coroutines.experimental.launch
 import java.io.UnsupportedEncodingException
-import java.net.URLEncoder
-
 
 /**
  * @author by jessica on 10/05/19
@@ -61,6 +60,9 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var orderDetailViewModel: HotelOrderDetailViewModel
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     private var orderId: String = ""
     private var orderCategory: String = ""
@@ -97,6 +99,7 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
                         renderPaymentDetail(it.data.hotelTransportDetails.first().payment)
                     }
                     renderFooter(it.data)
+                    loadingState.visibility = View.GONE
                 }
                 is Fail -> {
                 }
@@ -113,9 +116,12 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
             orderCategory = savedInstanceState.getString(SAVED_KEY_ORDER_CATEGORY)
         }
 
-        orderDetailViewModel.getOrderDetail(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
-                orderId, orderCategory)
+        loadingState.visibility = View.VISIBLE
+        if (userSessionInterface.isLoggedIn) {
+            orderDetailViewModel.getOrderDetail(
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                    orderId, orderCategory)
+        } else RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
     fun renderConditionalInfo(hotelTransportDetail: HotelTransportDetail) {
@@ -204,12 +210,16 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
             }
         }
 
-        var specialRequestAdapter = TitleTextAdapter(TitleTextAdapter.VERTICAL_LAYOUT)
-        special_request_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        special_request_recycler_view.adapter = specialRequestAdapter
-        specialRequestAdapter.addData(propertyDetail.specialRequest.toMutableList())
+        if (propertyDetail.specialRequest.isNotEmpty()) {
+            special_request_recycler_view.visibility = View.VISIBLE
+            var specialRequestAdapter = TitleTextAdapter(TitleTextAdapter.VERTICAL_LAYOUT)
+            special_request_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            special_request_recycler_view.adapter = specialRequestAdapter
+            specialRequestAdapter.addData(propertyDetail.specialRequest.toMutableList())
+        } else special_request_recycler_view.visibility = View.GONE
 
         special_notes.text = propertyDetail.extraInfo
+        special_notes.visibility = if (propertyDetail.extraInfo.isNotBlank()) View.VISIBLE else View.GONE
 
         checkin_checkout_date.setRoomDatesFormatted(
                 propertyDetail.checkInOut[0].checkInOut.date,
