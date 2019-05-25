@@ -125,7 +125,7 @@ class ShopOpenPostalCodeChooserFragment : BaseSearchListFragment<PostalCodeViewM
     }
 
     override fun showInitialLoadMessage() {
-        tv_message.text = getString(com.tokopedia.district_recommendation.R.string.message_advice_search_postal_code)
+        tv_message.text = getString(R.string.message_advice_search_postal_code)
         showMessageSection()
     }
 
