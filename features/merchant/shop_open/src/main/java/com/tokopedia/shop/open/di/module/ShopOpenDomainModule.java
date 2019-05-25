@@ -3,6 +3,7 @@ package com.tokopedia.shop.open.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -13,6 +14,7 @@ import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.seller.logistic.data.source.cloud.api.WSLogisticApi;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
+import com.tokopedia.shop.open.R;
 import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.data.repository.ShopOpenRepository;
 import com.tokopedia.shop.open.data.repository.ShopOpenRepositoryImpl;
@@ -23,9 +25,11 @@ import com.tokopedia.shop.open.data.source.cloud.api.OpenShopApi;
 import com.tokopedia.seller.logistic.data.repository.DistrictLogisticDataRepositoryImpl;
 import com.tokopedia.seller.logistic.data.source.LogisticDataSource;
 import com.tokopedia.seller.logistic.domain.DistrictLogisticDataRepository;
+import com.tokopedia.shop.open.view.fragment.ShopOpenReserveDomainFragment;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
@@ -93,5 +97,31 @@ public class ShopOpenDomainModule {
         }else{
             return null;
         }
+    }
+
+    @ShopOpenDomainScope
+    @Provides
+    @Named(ShopOpenReserveDomainFragment.OPEN_SHOP_SUBMIT_RAW)
+    public String requestQuery(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                R.raw.create_open_shop
+        );
+    }
+
+    @ShopOpenDomainScope
+    @Provides
+    @Named(ShopOpenReserveDomainFragment.VALIDATE_DOMAIN_NAME_SHOP)
+    public String requestQueryValidate(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                R.raw.validate_domain_name_shop
+        );
+    }
+
+    @ShopOpenDomainScope
+    @Provides
+    UserSession providesUserSession(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

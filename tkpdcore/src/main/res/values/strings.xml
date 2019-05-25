@@ -1078,9 +1078,10 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="domain_short">www.tokopedia.com/</string>
     <string name="title_activity_contact_us">Pusat Bantuan</string>
     <string name="shop_address_hint">Tulis nama kota atau kecamatan</string>
-    <string name="title_activity_contact_us">Hubungi Kami</string>
     <string name="title_select_city">Pilih Asal Kota</string>
     <string name="tnc_open_shop">Anda telah menyetujui Syarat dan Ketentuan serta Kebijakan Privasi Tokopedia.</string>
+    <string name="tnc_webview_title">Syarat dan Ketentuan</string>
+    <string name="privacy_policy_webview_title">Kebijakan Privasi</string>
 
 
     <string name="title_activity_create_reso_center">Buat Komplain</string>

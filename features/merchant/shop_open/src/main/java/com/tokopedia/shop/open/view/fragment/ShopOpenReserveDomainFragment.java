@@ -1,14 +1,17 @@
 package com.tokopedia.shop.open.view.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -18,29 +21,46 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.district_recommendation.domain.model.Address;
+import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationContract;
+import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.util.ShopErrorHandler;
+import com.tokopedia.shop.open.view.activity.ShopOpenCreateReadyActivity;
+import com.tokopedia.shop.open.view.activity.ShopOpenPostalCodeChooserActivity;
 import com.tokopedia.shop.open.view.activity.ShopOpenReserveDomainSuccessActivity;
+import com.tokopedia.shop.open.view.activity.ShopOpenWebViewActivity;
+import com.tokopedia.shop.open.view.holder.OpenShopAddressViewHolder;
 import com.tokopedia.shop.open.view.listener.ShopOpenDomainView;
 import com.tokopedia.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
 import com.tokopedia.shop.open.view.watcher.AfterTextWatcher;
+import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -50,30 +70,45 @@ import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
  * Created by Hendry on 3/17/2017.
  */
 
-public class ShopOpenReserveDomainFragment extends BasePresenterFragment implements ShopOpenDomainView {
+public class ShopOpenReserveDomainFragment extends BasePresenterFragment implements ShopOpenDomainView, OpenShopAddressViewHolder.OpenShopAddressListener {
 
     public static final int MIN_SHOP_NAME_LENGTH = 3;
     public static final int MIN_SHOP_DOMAIN_LENGTH = 3;
+    public static final int REQUEST_CODE__EDIT_ADDRESS = 1235;
+    public static final int REQUEST_CODE_POSTAL_CODE = 1515;
+    public static final String VALIDATE_DOMAIN_NAME_SHOP = "validate_domain_name_shop";
+    public static final String URL_TNC = "https://www.tokopedia.com/terms.pl";
+    public static final String URL_PRIVACY_POLICY = "https://www.tokopedia.com/privacy.pl";
+    public static final String URL_IMAGE_OPEN_SHOP = "https://ecs7.tokopedia.net/img/android/seller_dashboard_shop/xxhdpi/seller_dashboard.png";
     private static final String SCREEN_NAME = "Nama Toko";
+    public static final String OPEN_SHOP_SUBMIT_RAW = "create_open_shop";
     private View buttonSubmit;
     private TkpdHintTextInputLayout textInputShopName;
     private EditText editTextInputShopName;
     private TkpdHintTextInputLayout textInputDomainName;
-    private TkpdHintTextInputLayout textInputAddress;
-    private TkpdHintTextInputLayout textInputPostal;
     private PrefixEditText editTextInputDomainName;
     private SnackbarRetry snackbarRetry;
+    private LogisticRouter logisticRouter;
+    private OpenShopAddressViewHolder openShopAddressViewHolder;
     private TkpdProgressDialog tkpdProgressDialog;
-    private EditText editTextInputShopAddress;
-    private EditText editTextInputShopPostal;
+    RequestParams requestParams;
     private TextView tvTncOpenShop;
     private CheckBox cbTncOpenShop;
     private boolean isTncChecked = false;
+    private boolean isDistrictChoosen = false;
+    private boolean isPostalCodeChoosen = false;
+    private String postalCode;
+    private ImageView imgShopOpen;
 
     @Inject
     ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
     @Inject
     ShopOpenTracking trackingOpenShop;
+    @Inject
+    UserSession userSession;
+    @Inject
+    GlobalCacheManager globalCacheManager;
+
     private boolean fromAppShortCut = false;
 
     public static ShopOpenReserveDomainFragment newInstance() {
@@ -100,23 +135,26 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_open_domain, container, false);
+        requestParams = RequestParams.create();
+        requestParams.putAll((HashMap<String, String>) AuthUtil.generateParams(getActivity()));
         TextView textHello = view.findViewById(R.id.text_hello);
+        imgShopOpen = view.findViewById(R.id.img_shop_open);
         buttonSubmit = view.findViewById(R.id.button_submit);
         textInputShopName = view.findViewById(R.id.text_input_shop_name);
         textInputDomainName = view.findViewById(R.id.text_input_domain_name);
-        textInputAddress = view.findViewById(R.id.text_input_address);
-        textInputPostal = view.findViewById(R.id.text_input_postal);
         editTextInputShopName = textInputShopName.getEditText();
         editTextInputDomainName = (PrefixEditText) textInputDomainName.getEditText();
-        editTextInputShopAddress = textInputAddress.getEditText();
-        editTextInputShopPostal = textInputPostal.getEditText();
         tvTncOpenShop = view.findViewById(R.id.tv_shop_tnc);
         cbTncOpenShop = view.findViewById(R.id.cb_shop_tnc);
-
-        String helloName = getString(R.string.hello_x, SessionHandler.getLoginName(getActivity()));
+        //init partial part which is Address and Postal Code Selector
+        openShopAddressViewHolder = new OpenShopAddressViewHolder(view, getContext(), this);
+        String helloName = getString(R.string.hello_x, userSession.getName());
         textHello.setText(MethodChecker.fromHtml(helloName));
+        setupTncOpenShop();
 
         buttonSubmit.setEnabled(false);
+
+        ImageHandler.LoadImage(imgShopOpen, URL_IMAGE_OPEN_SHOP);
 
         editTextInputShopName.addTextChangedListener(new AfterTextWatcher() {
 
@@ -131,8 +169,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                     textInputShopName.setError(getString(R.string.shop_open_error_shop_name_min_char));
                 } else if (s.toString().length() <= textInputShopName.getCounterMaxLength()) {
                     shopOpenDomainPresenter.checkShop(editTextInputShopName.getText().toString());
-                } else {
-                    textInputDomainName.setHelper(getString(R.string.shop_open_error_shop_name_min_char));
                 }
             }
         });
@@ -155,55 +191,11 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             }
         });
 
-        editTextInputShopAddress.addTextChangedListener(new AfterTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                textInputAddress.disableSuccessError();
-                buttonSubmit.setEnabled(false);
-                hideSnackBarRetry();
-
-                if (TextUtils.isEmpty(s)) {
-                    textInputAddress.setError(getString(R.string.shop_open_error_address));
-                }
-
-            }
-        });
-
-
-        editTextInputShopPostal.addTextChangedListener(new AfterTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                textInputPostal.disableSuccessError();
-                buttonSubmit.setEnabled(false);
-                hideSnackBarRetry();
-
-                if (TextUtils.isEmpty(s)) {
-                    textInputAddress.setError(getString(R.string.shop_open_error_postal));
-                }
-            }
-        });
-
-        SpannableString textTnc = new SpannableString(getString(R.string.tnc_open_shop));
-        ClickableSpan clickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(@NotNull View textView) {
-                //Intent
-            }
-        };
-
-        textTnc.setSpan(clickableSpan,21 , 42 , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textTnc.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),21 , 42 , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textTnc.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.tkpd_main_green)),21 , 42 , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        textTnc.setSpan(clickableSpan,47, textTnc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textTnc.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),47, textTnc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textTnc.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.tkpd_main_green)),47 , textTnc.length() , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-
         cbTncOpenShop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 isTncChecked = isChecked;
+                checkEnableSubmit();
             }
         });
 
@@ -224,9 +216,53 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             trackingOpenShop.eventSellShortcut();
     }
 
+    private void setupTncOpenShop() {
+        SpannableString textTnc = new SpannableString(getString(R.string.tnc_open_shop));
+        ClickableSpan tncClickableSpan = setupClickableSpan(URL_TNC, getString(R.string.tnc_webview_title));
+        ClickableSpan privacyPolicyClickableSpan = setupClickableSpan(URL_PRIVACY_POLICY, getString(R.string.privacy_policy_webview_title));
+
+        textTnc.setSpan(tncClickableSpan, 21, 42, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textTnc.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 21, 42, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textTnc.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.tkpd_main_green)), 21, 42, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        textTnc.setSpan(privacyPolicyClickableSpan, 47, textTnc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textTnc.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 48, textTnc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textTnc.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.tkpd_main_green)), 47, textTnc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvTncOpenShop.setText(textTnc);
+        tvTncOpenShop.setMovementMethod(LinkMovementMethod.getInstance());
+
+    }
+
+    private ClickableSpan setupClickableSpan(String url, String title) {
+        return new ClickableSpan() {
+            @Override
+            public void onClick(@NotNull View textView) {
+                if (getActivity() != null) {
+                    Intent intent = ShopOpenWebViewActivity.Companion.newInstance(getActivity(), url, title);
+                    startActivity(intent);
+                }
+
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(true);
+            }
+        };
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onAttachListener(Context context) {
+        super.onAttachListener(context);
+        if (context.getApplicationContext() instanceof LogisticRouter) {
+            logisticRouter = (LogisticRouter) context.getApplicationContext();
+        }
     }
 
     @Override
@@ -235,19 +271,22 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             fromAppShortCut = arguments.getBoolean(FROM_APP_SHORTCUTS);
     }
 
-    private void hideSnackBarRetry() {
+    @Override
+    public void hideSnackBarRetry() {
         if (snackbarRetry != null && snackbarRetry.isShown()) {
             snackbarRetry.hideRetrySnackbar();
         }
     }
 
-    private void hideSubmitLoading() {
+    @Override
+    public void hideSubmitLoading() {
         if (tkpdProgressDialog != null) {
             tkpdProgressDialog.dismiss();
         }
     }
 
-    private void showSubmitLoading() {
+    @Override
+    public void showSubmitLoading() {
         if (tkpdProgressDialog == null) {
             tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS,
                     getString(R.string.title_loading));
@@ -263,7 +302,10 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         showSubmitLoading();
         String shopName = editTextInputShopName.getText().toString().trim();
         String shopDomain = editTextInputDomainName.getTextWithoutPrefix().trim();
-        shopOpenDomainPresenter.submitReserveNameAndDomainShop(shopName, shopDomain);
+        Integer districtId = openShopAddressViewHolder.getDistrictId();
+        Integer postalCodeId = Integer.valueOf(postalCode);
+//        shopOpenDomainPresenter.submitReserveNameAndDomainShop(shopName, shopDomain);
+        shopOpenDomainPresenter.onSubmitCreateShop(shopName, shopDomain, districtId, postalCodeId);
     }
 
     @Override
@@ -290,9 +332,9 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     }
 
     @Override
-    public void onErrorCheckShopName(Throwable t) {
-        textInputShopName.setError(ShopErrorHandler.getErrorMessage(getActivity(), t));
-        trackingOpenShop.eventOpenShopBiodataNameError(ShopErrorHandler.getErrorMessage(getActivity(), t));
+    public void onErrorCheckShopName(String message) {
+        textInputShopName.setError(message);
+        trackingOpenShop.eventOpenShopBiodataNameError(message);
     }
 
     @Override
@@ -306,9 +348,9 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     }
 
     @Override
-    public void onErrorCheckShopDomain(Throwable t) {
-        textInputDomainName.setError(ShopErrorHandler.getErrorMessage(getActivity(), t));
-        trackingOpenShop.eventOpenShopBiodataDomainError(ShopErrorHandler.getErrorMessage(getActivity(), t));
+    public void onErrorCheckShopDomain(String message) {
+        textInputDomainName.setError(message);
+        trackingOpenShop.eventOpenShopBiodataDomainError(message);
     }
 
     @Override
@@ -327,6 +369,47 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         snackbarRetry.showRetrySnackbar();
     }
 
+    private void onErrorSelectPostalCode() {
+        String errorMessage = "Pilih Kota Terlebih Dahulu";
+        ToasterError.make(getView(), errorMessage, BaseToaster.LENGTH_INDEFINITE)
+                .setAction(R.string.title_ok, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void buttonEnabledFalse() {
+        buttonSubmit.setEnabled(false);
+    }
+
+    @Override
+    public void navigateToDistrictChooser() {
+        shopOpenDomainPresenter.openDistrictRecommendation(requestParams);
+    }
+
+    @Override
+    public void navigateToPostalChooser() {
+        // Users have to select district first before select postal code
+        if (!isDistrictChoosen) {
+            onErrorSelectPostalCode();
+        } else {
+            if (getActivity() != null) {
+                Intent intent = ShopOpenPostalCodeChooserActivity.Companion.createNewInstance(getActivity(), openShopAddressViewHolder.getPostalCode());
+                startActivityForResult(intent, REQUEST_CODE_POSTAL_CODE);
+            }
+        }
+    }
+
+    @Override
+    public void onSuccessGetToken(Token token) {
+        logisticRouter.navigateToEditAddressActivityRequest(ShopOpenReserveDomainFragment.this
+                , REQUEST_CODE__EDIT_ADDRESS, token);
+    }
+
     private void sendErrorTracking(String errorMessage) {
         trackingOpenShop.eventOpenShopBiodataError(errorMessage);
         String generatedErrorMessage = ShopErrorHandler.getGeneratedErrorMessage(errorMessage.toCharArray(),
@@ -341,9 +424,12 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         goToShopOpenMandatory(shopName);
     }
 
-    private void checkEnableSubmit() {
-        if (isShopNameDomainValid() && isTncChecked) {
+    @Override
+    public void checkEnableSubmit() {
+        if (isShopNameDomainValid() && isTncChecked && isDistrictChoosen && isPostalCodeChoosen) {
             buttonSubmit.setEnabled(true);
+        } else {
+            buttonSubmit.setEnabled(false);
         }
     }
 
@@ -356,6 +442,60 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         Intent intent = ShopOpenReserveDomainSuccessActivity.getIntent(getContext(), shopName);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void onSuccessCreateShop(String message) {
+        hideSubmitLoading();
+        AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
+        if (getActivity() != null) {
+            Intent intent = ShopOpenCreateReadyActivity.Companion.newInstance(getActivity());
+            startActivity(intent);
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onErrorCreateShop(String message) {
+        hideSubmitLoading();
+        ToasterError.make(getView(), message, BaseToaster.LENGTH_INDEFINITE)
+                .setAction(R.string.title_ok, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_CODE_POSTAL_CODE:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    postalCode = data.getStringExtra(ShopOpenPostalCodeChooserFragment.Companion.getINTENT_DATA_POSTAL_CODE());
+                    if (postalCode != null) {
+                        isPostalCodeChoosen = true;
+                        openShopAddressViewHolder.updatePostalCodeView(postalCode);
+                    }
+                }
+            case REQUEST_CODE__EDIT_ADDRESS:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    Address address = data.getParcelableExtra(DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS);
+                    if (address != null) {
+                        isDistrictChoosen = true;
+                        openShopAddressViewHolder.setDistrictId(address.getDistrictId());
+                        openShopAddressViewHolder.initPostalCode(address.getZipCodes());
+                        openShopAddressViewHolder.updateLocationView(
+                                address.getProvinceName(),
+                                address.getCityName(),
+                                address.getDistrictName()
+                        );
+                    }
+                }
+        }
     }
 
     public boolean isFromAppShortCut() {
