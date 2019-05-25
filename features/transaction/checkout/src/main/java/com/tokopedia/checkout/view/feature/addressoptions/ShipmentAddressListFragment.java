@@ -156,21 +156,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
     protected boolean getOptionsMenuEnable() {
         return true;
     }
@@ -527,6 +512,21 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public interface ICartAddressChoiceActivityListener {
 
         void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult);
+
+    }
+
+    @Override
+    protected void onFirstTimeLaunched() {
+
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
 
     }
 }
