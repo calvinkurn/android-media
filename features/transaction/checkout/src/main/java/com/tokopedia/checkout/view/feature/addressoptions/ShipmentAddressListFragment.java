@@ -240,6 +240,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     protected void initialVar() {
         mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvRecipientAddressList.setAdapter(mShipmentAddressListAdapter);
+        if (!isDisableCorner) mShipmentAddressListAdapter.showSampaiWithoutSelected();
     }
 
     @Override
@@ -257,13 +258,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void showList(List<RecipientAddressModel> recipientAddressModels) {
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
-        mShipmentAddressListAdapter.notifyDataSetChanged();
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showEmptyCorner() {
-        mShipmentAddressListAdapter.showSampaiWithoutSelected();
     }
 
     @Override
