@@ -44,7 +44,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position) == R.layout.item_sampai) {
+        if (getItemViewType(position) == SampaiViewHolder.getTYPE()) {
             SampaiViewHolder sampaiViewHolder = (SampaiViewHolder) holder;
             sampaiViewHolder.bind(mSampaiModel, mActionListener, position);
         } else {
