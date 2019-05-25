@@ -2,14 +2,21 @@ package com.tokopedia.checkout.view.feature.addressoptions
 
 import com.tokopedia.checkout.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
+import rx.Subscriber
 import javax.inject.Inject
+
+const val EMPTY_STRING: String = ""
 
 /**
  * Created by fajarnuha on 2019-05-24.
  */
-class AddressListPresenter @Inject constructor(val usecase: GetAddressCornerUseCase): AddressListContract.Presenter {
+class AddressListPresenter
+@Inject constructor(val usecase: GetAddressCornerUseCase) : AddressListContract.Presenter {
 
     private var mView: ISearchAddressListView<List<RecipientAddressModel>>? = null
+    private var mCurrentQuery: String = ""
+    private var mCurrentPage: Int = 1
+    private var mHasNext: Boolean = false
 
     override fun attachView(view: ISearchAddressListView<List<RecipientAddressModel>>) {
         mView = view
@@ -20,15 +27,56 @@ class AddressListPresenter @Inject constructor(val usecase: GetAddressCornerUseC
     }
 
     override fun getAddress() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        usecase.execute(EMPTY_STRING).subscribe(getAddressHandler(EMPTY_STRING))
     }
 
     override fun searchAddress(query: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        usecase.execute(query).subscribe(getAddressHandler(query))
     }
 
     override fun loadMore() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (!mHasNext) return
+        usecase.loadMore(mCurrentQuery, mCurrentPage + 1).subscribe(
+                { result ->
+                    mCurrentPage++
+                    mView?.updateList(result.listAddress)
+                    mView?.hideLoading()
+                    mView?.stopTrace()
+                },
+                { e ->
+                    mView?.showError(e)
+                    mView?.hideLoading()
+                    mView?.stopTrace()
+                }, {}
+        )
     }
+
+    private fun getAddressHandler(query: String): Subscriber<AddressListModel> =
+            object : Subscriber<AddressListModel>() {
+                override fun onNext(t: AddressListModel?) {
+                    t?.let {
+                        mView?.setToken(it.token)
+                        mHasNext = it.hasNext ?: false
+                        if (it.listAddress.isNotEmpty()) {
+                            mView?.showList(it.listAddress)
+                            mCurrentQuery = query
+                            mCurrentPage = 1
+                        } else mView?.showListEmpty()
+                        mView?.hideLoading()
+                        mView?.stopTrace()
+                    }
+
+                }
+
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable?) {
+                    mView?.hideLoading()
+                    mView?.stopTrace()
+                    mView?.showError(e)
+                }
+            }
 
 }
