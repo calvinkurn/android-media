@@ -38,7 +38,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(viewType, parent, false);
-        if (viewType == R.layout.item_sampai) return new SampaiViewHolder(view);
+        if (viewType == SampaiViewHolder.getTYPE()) return new SampaiViewHolder(view);
         return new RecipientAddressViewHolder(view);
     }
 
@@ -62,7 +62,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0 && mSampaiModel != null) return R.layout.item_sampai;
+        if (position == 0 && mSampaiModel != null) return SampaiViewHolder.getTYPE();
         else return RecipientAddressViewHolder.TYPE;
     }
 

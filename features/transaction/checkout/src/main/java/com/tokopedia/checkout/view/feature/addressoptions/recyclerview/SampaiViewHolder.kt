@@ -35,4 +35,8 @@ class SampaiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
         mButton.setOnClickListener { view -> listener.onCornerButtonClicked() }
     }
+
+    companion object {
+        @JvmStatic val TYPE: Int = R.layout.item_sampai
+    }
 }
