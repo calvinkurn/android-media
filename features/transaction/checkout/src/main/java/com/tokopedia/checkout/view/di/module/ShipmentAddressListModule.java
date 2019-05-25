@@ -5,6 +5,8 @@ import android.content.Context;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.di.scope.ShipmentAddressListScope;
+import com.tokopedia.checkout.view.feature.addressoptions.AddressListContract;
+import com.tokopedia.checkout.view.feature.addressoptions.AddressListPresenter;
 import com.tokopedia.checkout.view.feature.addressoptions.recyclerview.ShipmentAddressListAdapter;
 import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListFragment;
 import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListPresenter;
@@ -33,6 +35,12 @@ public class ShipmentAddressListModule {
     @ShipmentAddressListScope
     ShipmentAddressListPresenter provideCartAddressListPresenter(GetPeopleAddressUseCase getPeopleAddressUseCase) {
         return new ShipmentAddressListPresenter(getPeopleAddressUseCase);
+    }
+
+    @Provides
+    @ShipmentAddressListScope
+    AddressListContract.Presenter provideAddressListPresenter(AddressListPresenter presenter) {
+        return presenter;
     }
 
     @Provides
