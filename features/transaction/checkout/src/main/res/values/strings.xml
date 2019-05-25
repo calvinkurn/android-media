@@ -288,5 +288,7 @@
     <string name="logistic_promo_err_msg">Promo pengiriman sedang bermasalah. Silakan ubah pengiriman anda</string>
     <string name="button_change_corner">Ubah Lokasi Tokopedia Corner</string>
     <string name="button_choose_corner">Pilih Lokasi Tokopedia Corner</string>
+    <string name="brand_tokopedia_corner">Tokopedia Corner</string>
+    <string name="ticker_corner_sicepat_only_info">Saat ini, pengiriman dengan tujuan Tokopedia Corner hanya dapat menggunakan SiCepat Regular.</string>
 
 </resources>

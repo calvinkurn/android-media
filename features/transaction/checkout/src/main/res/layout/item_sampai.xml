@@ -9,10 +9,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:text="Tokopedia Corner"
+        android:text="@string/brand_tokopedia_corner"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold" />
 
@@ -27,7 +28,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:background="@drawable/bg_warning"
         android:padding="@dimen/dp_16"
-        android:text="Saat ini, pengiriman dengan tujuan Tokopedia Corner hanya dapat menggunakan SiCepat Regular."
+        android:text="@string/ticker_corner_sicepat_only_info"
         android:textSize="@dimen/sp_12"
         tools:text="Saat ini, pengiriman dengan tujuan Tokopedia Corner hanya dapat menggunakan SiCepat Regular." />
 
@@ -51,9 +52,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_4"
+                android:text="@string/brand_tokopedia_corner"
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/sp_12"
-                android:text="Tokopedia Corner"
                 tools:text="Tokopedia Corner" />
 
             <TextView
@@ -78,9 +79,10 @@
                 android:id="@+id/radio_button_corner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:clickable="false"
                 android:layout_centerVertical="true"
+                android:clickable="false"
                 android:theme="@style/TransactionToggleButton" />
 
         </RelativeLayout>
