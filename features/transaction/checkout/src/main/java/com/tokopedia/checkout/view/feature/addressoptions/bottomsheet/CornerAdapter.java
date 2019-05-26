@@ -43,7 +43,7 @@ public class CornerAdapter extends RecyclerView.Adapter<CornerAdapter.CornerView
         return mData.size();
     }
 
-    public void addAll(List<RecipientAddressModel> list) {
+    public void addAll(List<? extends RecipientAddressModel> list) {
         mData.clear();
         mData.addAll(list);
         notifyDataSetChanged();

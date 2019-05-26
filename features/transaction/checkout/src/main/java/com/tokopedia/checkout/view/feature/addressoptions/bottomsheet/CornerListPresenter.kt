@@ -7,16 +7,19 @@ import javax.inject.Inject
 /**
  * Created by fajarnuha on 2019-05-26.
  */
-class CornerListPresenter @Inject constructor(val usecase: GetCornerUseCase) {
+class CornerListPresenter @Inject constructor(val usecase: GetCornerUseCase): CornerContract.Presenter {
 
-    private var mView: CornerListFragment? = null
+    private var mView: CornerContract.View? = null
 
-    fun attachView(view: CornerListFragment) {
+    override fun attachView(view: CornerContract.View) {
         this.mView = view
     }
 
-    fun getCorner() {
+    override fun getData() {
         usecase.execute("").subscribe({ mView?.setData(it.listAddress)}, {}, {})
     }
 
+    override fun searchQuery(query: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

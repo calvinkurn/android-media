@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.feature.addressoptions.bottomsheet;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +20,8 @@ import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ import javax.inject.Inject;
 /**
  * Created by fajarnuha on 09/02/19.
  */
-public class CornerListFragment extends BaseDaggerFragment implements CornerAdapter.OnItemCliciListener {
+public class CornerListFragment extends BaseDaggerFragment implements CornerContract.View, CornerAdapter.OnItemCliciListener {
 
     private static final String ARGUMENTS_BRANCH_LIST = "ARGUMENTS_BRANCH_LIST";
 
@@ -97,7 +98,7 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerAdap
         mRvCorner.setLayoutManager(new LinearLayoutManager(getContext()));
         mRvCorner.setAdapter(mAdapter);
         mPresenter.attachView(this);
-        mPresenter.getCorner();
+        mPresenter.getData();
     }
 
     @Override
@@ -107,12 +108,24 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerAdap
         }
     }
 
-    public void showEmptyView() {
-        mEmptyVIew.setVisibility(View.VISIBLE);
+    @Override
+    public void setData(List<? extends RecipientAddressModel> data) {
+        mAdapter.addAll(data);
     }
 
-    public void setData(List<RecipientAddressModel> data) {
-        mAdapter.addAll(data);
+    @Override
+    public void setLoadingState(boolean active) {
+
+    }
+
+    @Override
+    public void showError(@NotNull Throwable e) {
+
+    }
+
+    @Override
+    public void showEmptyView() {
+        mEmptyVIew.setVisibility(View.VISIBLE);
     }
 
     public void setCornerListener(BranchChosenListener listener) {
