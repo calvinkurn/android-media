@@ -73,14 +73,6 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerAdap
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof BranchChosenListener) {
-            mListener = (BranchChosenListener) context;
-        }
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -120,6 +112,10 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerAdap
 
     public void setData(List<RecipientAddressModel> data) {
         mAdapter.addAll(data);
+    }
+
+    public void setCornerListener(BranchChosenListener listener) {
+        mListener = listener;
     }
 
     public interface BranchChosenListener {

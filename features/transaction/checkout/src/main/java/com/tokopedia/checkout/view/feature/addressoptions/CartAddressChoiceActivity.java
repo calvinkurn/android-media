@@ -117,6 +117,13 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
+    public void onAttachFragment(Fragment fragment) {
+        if (fragment instanceof CornerListFragment) {
+            ((CornerListFragment) fragment).setCornerListener(this);
+        }
+    }
+
+    @Override
     protected void initInjector() {
 
     }
