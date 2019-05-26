@@ -290,5 +290,6 @@
     <string name="button_choose_corner">Pilih Lokasi Tokopedia Corner</string>
     <string name="brand_tokopedia_corner">Tokopedia Corner</string>
     <string name="ticker_corner_sicepat_only_info">Saat ini, pengiriman dengan tujuan Tokopedia Corner hanya dapat menggunakan SiCepat Regular.</string>
+    <string name="ticker_corner_list_info">- Wajib membawa kartu mahasiswa / staff saat pengambilan pesanan \n- Pesanan dikirim dengan siCepat Regular</string>
 
 </resources>
