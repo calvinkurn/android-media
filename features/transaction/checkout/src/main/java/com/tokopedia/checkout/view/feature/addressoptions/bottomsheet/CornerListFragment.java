@@ -37,6 +37,8 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerAdap
     private BranchChosenListener mListener;
     private final CornerAdapter mAdapter = new CornerAdapter(mBranchList, this);
 
+    private View mEmptyVIew;
+
     @Inject CornerListPresenter mPresenter;
 
     public static CornerListFragment newInstance() {
@@ -94,6 +96,7 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerAdap
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         SearchInputView mSearchView = view.findViewById(R.id.sv_address_search_box);
+        mEmptyVIew = view.findViewById(R.id.ll_no_result);
         RecyclerView mRvCorner = view.findViewById(R.id.rv_corner_list);
 
         mRvCorner.setHasFixedSize(true);
@@ -110,12 +113,12 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerAdap
         }
     }
 
-    public void setData(List<RecipientAddressModel> data) {
-        mAdapter.addAll(data);
+    public void showEmptyView() {
+        mEmptyVIew.setVisibility(View.VISIBLE);
     }
 
-    public void setOnBranchChosenListener(BranchChosenListener listener) {
-        mListener = listener;
+    public void setData(List<RecipientAddressModel> data) {
+        mAdapter.addAll(data);
     }
 
     public interface BranchChosenListener {
