@@ -3,6 +3,8 @@ package com.tokopedia.checkout.domain.datamodel.addressoptions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+
 /**
  * Created by fajarnuha on 09/02/19.
  */
@@ -23,6 +25,8 @@ public class CornerAddressModel implements Parcelable {
     private String longitude;
     private String userCornerId;
     private boolean isSelected;
+
+    private RecipientAddressModel cornerModel;
 
     public CornerAddressModel() {
     }
@@ -147,6 +151,14 @@ public class CornerAddressModel implements Parcelable {
         this.cityId = cityId;
     }
 
+    public RecipientAddressModel getCornerModel() {
+        return cornerModel;
+    }
+
+    public void setCornerModel(RecipientAddressModel cornerModel) {
+        this.cornerModel = cornerModel;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -169,6 +181,7 @@ public class CornerAddressModel implements Parcelable {
         dest.writeString(this.longitude);
         dest.writeString(this.userCornerId);
         dest.writeByte(this.isSelected ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.cornerModel, flags);
     }
 
     protected CornerAddressModel(Parcel in) {
@@ -187,6 +200,7 @@ public class CornerAddressModel implements Parcelable {
         this.longitude = in.readString();
         this.userCornerId = in.readString();
         this.isSelected = in.readByte() != 0;
+        this.cornerModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
     }
 
     public static final Creator<CornerAddressModel> CREATOR = new Creator<CornerAddressModel>() {

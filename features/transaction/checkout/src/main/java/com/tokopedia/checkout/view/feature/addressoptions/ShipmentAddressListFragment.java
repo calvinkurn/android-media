@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -30,7 +29,7 @@ import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.feature.addressoptions.recyclerview.ShipmentAddressListAdapter;
-import com.tokopedia.checkout.view.feature.addressoptions.bottomsheet.CornerBottomSheet;
+import com.tokopedia.checkout.view.feature.addressoptions.bottomsheet.CornerListFragment;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
@@ -71,7 +70,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private LinearLayout llNoResult;
     private RelativeLayout rlContent;
     private Button btChangeSearch;
-    private CornerBottomSheet mCornerBottomSheet;
+    private CornerListFragment mCornerListFragment;
 
     private InputMethodManager mInputMethodManager;
     private ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
@@ -262,21 +261,21 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void setCorner(CornerAddressModel cornerAddressModel) {
-        mShipmentAddressListAdapter.setSampai(cornerAddressModel);
+    public void setCorner(RecipientAddressModel cornerAddressModel) {
+        mShipmentAddressListAdapter.setCorner(cornerAddressModel);
     }
 
     @Override
     public void populateCorner(List<CornerAddressModel> cornerAddressModelList) {
-        mCornerBottomSheet = CornerBottomSheet.newInstance(cornerAddressModelList);
-        mCornerBottomSheet.setOnBranchChosenListener(
-                corner -> mShipmentAddressListAdapter.setSampai(corner));
+        // Changed the flow
+//        mCornerListFragment = CornerListFragment.newInstance(cornerAddressModelList);
+//        mCornerListFragment.setOnBranchChosenListener(
+//                corner -> mShipmentAddressListAdapter.setCorner(corner));
     }
 
     @Override
     public void showCornerBottomSheet() {
-        if (mCornerBottomSheet != null && getFragmentManager() != null)
-            mCornerBottomSheet.show(getFragmentManager(), TAG_CORNER_BOTTOMSHEET);
+        mCartAddressChoiceActivityListener.requestCornerList();
     }
 
     @Override
@@ -462,7 +461,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void onCornerButtonClicked() {
-        showCornerBottomSheet();
+        mCartAddressChoiceActivityListener.requestCornerList();
     }
 
     private void openSoftKeyboard() {
@@ -505,9 +504,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     public interface ICartAddressChoiceActivityListener {
-
         void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult);
-
+        void requestCornerList();
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
+import com.tokopedia.checkout.view.feature.addressoptions.bottomsheet.CornerListFragment;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
  * Fajar U N
  */
 public class CartAddressChoiceActivity extends BaseCheckoutActivity
-        implements ShipmentAddressListFragment.ICartAddressChoiceActivityListener {
+        implements ShipmentAddressListFragment.ICartAddressChoiceActivityListener, CornerListFragment.BranchChosenListener {
 
     public static final int REQUEST_CODE = 981;
 
@@ -46,6 +47,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS = 2;
     public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST = 0;
     public static final int TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN = 4;
+    private final String TAG_CORNER_FRAGMENT = "TAG_CORNER_FRAGMENT";
 
     private int typeRequest;
     private Token token;
@@ -231,6 +233,20 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 break;
             default:
         }
+    }
+
+    @Override
+    public void requestCornerList() {
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.parent_view, CornerListFragment.newInstance(), TAG_CORNER_FRAGMENT)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onCornerChosen(RecipientAddressModel corner) {
+        getSupportFragmentManager().popBackStack();
+        ((ShipmentAddressListFragment) getFragment()).setCorner(corner);
     }
 
     @Override

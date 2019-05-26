@@ -84,8 +84,8 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
         notifyDataSetChanged();
     }
 
-    public void setSampai(CornerAddressModel cornerAddressModel) {
-        mSampaiModel = cornerAddressModel;
+    public void setCorner(RecipientAddressModel cornerAddressModel) {
+        mSampaiModel.setCornerModel(cornerAddressModel);
         notifyDataSetChanged();
     }
 

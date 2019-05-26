@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.List;
 
@@ -17,10 +18,10 @@ import java.util.List;
  */
 public class CornerAdapter extends RecyclerView.Adapter<CornerAdapter.CornerViewHolder> {
 
-    private List<CornerAddressModel> mData;
+    private List<RecipientAddressModel> mData;
     private OnItemCliciListener mListener;
 
-    public CornerAdapter(List<CornerAddressModel> mData, OnItemCliciListener listener) {
+    public CornerAdapter(List<RecipientAddressModel> mData, OnItemCliciListener listener) {
         this.mData = mData;
         this.mListener = listener;
     }
@@ -42,6 +43,12 @@ public class CornerAdapter extends RecyclerView.Adapter<CornerAdapter.CornerView
         return mData.size();
     }
 
+    public void addAll(List<RecipientAddressModel> list) {
+        mData.clear();
+        mData.addAll(list);
+        notifyDataSetChanged();
+    }
+
     class CornerViewHolder extends RecyclerView.ViewHolder {
 
         TextView mCornerName, mCornerDesc;
@@ -54,14 +61,15 @@ public class CornerAdapter extends RecyclerView.Adapter<CornerAdapter.CornerView
             mView = itemView;
         }
 
-        public void bind(CornerAddressModel model, OnItemCliciListener listener) {
-            mCornerName.setText(model.getCornerBranchName());
-            mCornerDesc.setText(model.getCornerBranchDesc());
+        public void bind(RecipientAddressModel model, OnItemCliciListener listener) {
+            String desc = model.getDestinationDistrictName() + ", " + model.getCityName();
+            mCornerName.setText(model.getAddressName());
+            mCornerDesc.setText(desc);
             mView.setOnClickListener(view -> listener.onItemClick(model));
         }
     }
 
     public interface OnItemCliciListener {
-        void onItemClick(CornerAddressModel corner);
+        void onItemClick(RecipientAddressModel corner);
     }
 }
