@@ -38,9 +38,10 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerAdap
     private final CornerAdapter mAdapter = new CornerAdapter(mBranchList, this);
 
     private View mEmptyVIew;
+    private SearchInputView mSearchView;
+    private RecyclerView mRvCorner;
 
     @Inject CornerListPresenter mPresenter;
-    private SearchInputView mSearchView;
 
     public static CornerListFragment newInstance() {
         return new CornerListFragment();
@@ -90,7 +91,7 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerAdap
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mSearchView = view.findViewById(R.id.sv_address_search_box);
         mEmptyVIew = view.findViewById(R.id.ll_no_result);
-        RecyclerView mRvCorner = view.findViewById(R.id.rv_corner_list);
+        mRvCorner = view.findViewById(R.id.rv_corner_list);
 
         mRvCorner.setHasFixedSize(true);
         mRvCorner.setLayoutManager(new LinearLayoutManager(getContext()));
