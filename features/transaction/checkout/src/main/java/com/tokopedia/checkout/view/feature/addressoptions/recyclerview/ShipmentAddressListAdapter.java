@@ -2,15 +2,10 @@ package com.tokopedia.checkout.view.feature.addressoptions.recyclerview;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.TextView;
 
-import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
@@ -23,14 +18,14 @@ import java.util.List;
 
 public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private CornerAddressModel mSampaiModel;
+    private CornerAddressModel mCornerData;
     private List<RecipientAddressModel> mAddressModelList;
     private ActionListener mActionListener;
 
     public ShipmentAddressListAdapter(ActionListener actionListener) {
         mActionListener = actionListener;
         mAddressModelList = new ArrayList<>();
-        mSampaiModel = null;
+        mCornerData = null;
     }
 
     @NonNull
@@ -46,7 +41,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == SampaiViewHolder.getTYPE()) {
             SampaiViewHolder sampaiViewHolder = (SampaiViewHolder) holder;
-            sampaiViewHolder.bind(mSampaiModel, mActionListener, position);
+            sampaiViewHolder.bind(mCornerData, mActionListener, position);
         } else {
             int addressPosition = position - getExtraCount();
             RecipientAddressViewHolder addressHolder = (RecipientAddressViewHolder) holder;
@@ -62,7 +57,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0 && mSampaiModel != null) return SampaiViewHolder.getTYPE();
+        if (position == 0 && mCornerData != null) return SampaiViewHolder.getTYPE();
         else return RecipientAddressViewHolder.TYPE;
     }
 
@@ -79,19 +74,19 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
         notifyDataSetChanged();
     }
 
-    public void showSampaiWithoutSelected() {
-        mSampaiModel = new CornerAddressModel();
+    public void showCornerDefault() {
+        mCornerData = new CornerAddressModel();
         notifyDataSetChanged();
     }
 
     public void setCorner(RecipientAddressModel cornerAddressModel) {
-        mSampaiModel.setCornerModel(cornerAddressModel);
+        mCornerData.setCornerModel(cornerAddressModel);
         notifyDataSetChanged();
     }
 
     public void updateSelected(int position) {
-        if (getItemViewType(position) == R.layout.item_sampai) {
-            mSampaiModel.setSelected(true);
+        if (getItemViewType(position) == SampaiViewHolder.getTYPE()) {
+            mCornerData.setSelected(true);
             for (RecipientAddressModel addressModel : mAddressModelList) {
                 addressModel.setSelected(false);
             }
@@ -103,13 +98,13 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
                     mAddressModelList.get(i).setSelected(false);
                 }
             }
-            if (mSampaiModel != null) mSampaiModel.setSelected(false);
+            if (mCornerData != null) mCornerData.setSelected(false);
         }
         notifyDataSetChanged();
     }
 
     private int getExtraCount() {
-        return mSampaiModel != null ? 1 : 0;
+        return mCornerData != null ? 1 : 0;
     }
 
     private void updateHeaderAndFooterPosition() {
