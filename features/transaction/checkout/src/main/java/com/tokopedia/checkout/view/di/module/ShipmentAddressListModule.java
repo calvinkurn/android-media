@@ -3,10 +3,13 @@ package com.tokopedia.checkout.view.di.module;
 import android.content.Context;
 
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
+import com.tokopedia.checkout.domain.usecase.GetAddressCornerUseCase;
+import com.tokopedia.checkout.domain.usecase.GetCornerUseCase;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.di.scope.ShipmentAddressListScope;
 import com.tokopedia.checkout.view.feature.addressoptions.AddressListContract;
 import com.tokopedia.checkout.view.feature.addressoptions.AddressListPresenter;
+import com.tokopedia.checkout.view.feature.addressoptions.bottomsheet.CornerListPresenter;
 import com.tokopedia.checkout.view.feature.addressoptions.recyclerview.ShipmentAddressListAdapter;
 import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListFragment;
 import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListPresenter;
@@ -23,8 +26,12 @@ import dagger.Provides;
 @Module(includes = {TrackingAnalyticsModule.class})
 public class ShipmentAddressListModule {
 
-    private final ShipmentAddressListAdapter.ActionListener actionListener;
+    private ShipmentAddressListAdapter.ActionListener actionListener;
     private Context context;
+
+    public ShipmentAddressListModule(Context context) {
+        this.context = context;
+    }
 
     public ShipmentAddressListModule(Context context, ShipmentAddressListFragment shipmentAddressListFragment) {
         this.context = context;
@@ -41,6 +48,12 @@ public class ShipmentAddressListModule {
     @ShipmentAddressListScope
     AddressListContract.Presenter provideAddressListPresenter(AddressListPresenter presenter) {
         return presenter;
+    }
+
+    @Provides
+    @ShipmentAddressListScope
+    CornerListPresenter provideCornerPresenter(GetCornerUseCase usecase) {
+        return new CornerListPresenter(usecase);
     }
 
     @Provides
