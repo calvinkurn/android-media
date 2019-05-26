@@ -40,6 +40,7 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerAdap
     private View mEmptyVIew;
 
     @Inject CornerListPresenter mPresenter;
+    private SearchInputView mSearchView;
 
     public static CornerListFragment newInstance() {
         return new CornerListFragment();
@@ -95,7 +96,7 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerAdap
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        SearchInputView mSearchView = view.findViewById(R.id.sv_address_search_box);
+        mSearchView = view.findViewById(R.id.sv_address_search_box);
         mEmptyVIew = view.findViewById(R.id.ll_no_result);
         RecyclerView mRvCorner = view.findViewById(R.id.rv_corner_list);
 
@@ -107,9 +108,9 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerAdap
     }
 
     @Override
-    public void onItemClick(RecipientAddressModel corner) {
+    public void onItemClick(RecipientAddressModel address) {
         if (mListener != null) {
-            mListener.onCornerChosen(corner);
+            mListener.onCornerChosen(address);
         }
     }
 
