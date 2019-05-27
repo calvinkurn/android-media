@@ -1,8 +1,10 @@
 package com.tokopedia.report.view.adapter
 
+import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.method.LinkMovementMethod
+import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import android.view.View
 import android.view.ViewGroup
@@ -12,15 +14,18 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.report.R
+import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
+import com.tokopedia.webview.BaseSimpleWebViewActivity
 import kotlinx.android.synthetic.main.item_footer.view.title as titleFooter
 import kotlinx.android.synthetic.main.item_header.view.title as titleHeader
 import kotlinx.android.synthetic.main.item_report_type.view.*
 
-class ReportReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ReportReasonAdapter(private val listener: OnReasonClick): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val filteredId = mutableListOf<Int>()
 
     private var title: String = ""
+    private var baseParent: ProductReportReason? = null
 
     private val reasons = mutableListOf<ProductReportReason>()
     private val filteredReasons = mutableListOf<ProductReportReason>()
@@ -74,6 +79,8 @@ class ReportReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun back() {
         filteredId.removeAt(filteredId.size - 1)
+        if (filteredId.isEmpty())
+            baseParent = null
         updateFilteredReasons()
         notifyDataSetChanged()
     }
@@ -96,13 +103,18 @@ class ReportReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     spannable.removeSpan(it)
                     val urlSpan = WebViewURLSpan( it.url).apply {
                         listener = object : WebViewURLSpan.OnClickListener {
-                            override fun onClick(url: String) {}
+                            override fun onClick(url: String) {
+                                itemView.context.startActivity(BaseSimpleWebViewActivity.getStartIntent(
+                                        itemView.context, GeneralConstant.URL_REPORT_TYPE
+                                ))
+                            }
 
                             override fun showUnderline() = false
 
                         }
                     }
                     spannable.setSpan(urlSpan, start, end, 0)
+                    spannable.setSpan(StyleSpan(Typeface.BOLD), start, end, 0)
                 }
                 titleFooter.text = spannable
             }
@@ -123,12 +135,28 @@ class ReportReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
             itemView.setOnClickListener {
                 if (reason.children.isNotEmpty()) {
+                    if (filteredId.isEmpty()){
+                        baseParent = reason
+                    }
                     filteredId.add(reason.categoryId)
                     updateFilteredReasons()
                     notifyDataSetChanged()
-                } else {}
+                    listener.scrollToTop()
+                } else {
+                    val fieldReason = if (baseParent != null && filteredId.isNotEmpty()){
+                        reason.copy(additionalInfo = baseParent!!.additionalInfo,
+                                additionalFields = baseParent!!.additionalFields)
+                    } else reason
+
+                    listener.gotoForm(fieldReason)
+                }
             }
         }
+    }
+
+    interface OnReasonClick{
+        fun scrollToTop()
+        fun gotoForm(reason: ProductReportReason)
     }
 
     companion object{

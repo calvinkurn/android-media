@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_32"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title_upload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:textColor="@color/clr_f531353b"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:text="Foto bukti Harga Eceran Tertinggi (0/3)"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/description_upload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/clr_f531353b"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:layout_marginTop="@dimen/dp_4"
+        app:typographyWeight="reguler"
+        app:typographyType="body_2"
+        tools:text="Upload foto yang membuktikan Harga Eceran Tertinggi produk."/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_uploaded_foto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        tools:visibility="gone"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btn_add_foto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/product_report_upload_foto"
+        android:textColor="@color/Green_G500"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:layout_marginTop="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
+        android:gravity="center"
+        android:background="@drawable/report_bg_button_white_greenborder"
+        app:typographyWeight="bold"
+        app:typographyType="heading_6"/>
+
+</LinearLayout>

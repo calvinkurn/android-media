@@ -19,15 +19,32 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_report.*
 import javax.inject.Inject
+import android.support.v7.widget.LinearSmoothScroller
+import android.support.v7.widget.RecyclerView
+import com.tokopedia.report.view.activity.ProductReportFormActivity
 
-class ProductReportFragment : BaseDaggerFragment() {
+
+class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReasonClick {
+
+    private lateinit var smoothScroller: RecyclerView.SmoothScroller
+
+    override fun scrollToTop() {
+        //smoothScroller.targetPosition = 0
+    }
+
+    override fun gotoForm(reason: ProductReportReason) {
+        activity?.let {
+            startActivityForResult(ProductReportFormActivity.createIntent(it, reason), 100)
+        }
+    }
+
     val isInRoot: Boolean
         get() = adapter.filteredId.isEmpty()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var viewModel: ProductReportViewModel
-    private val adapter: ReportReasonAdapter by lazy { ReportReasonAdapter() }
+    private lateinit var viewModel: ProductReportViewModel
+    private val adapter: ReportReasonAdapter by lazy { ReportReasonAdapter(this) }
 
     override fun getScreenName(): String? = null
 
@@ -66,6 +83,7 @@ class ProductReportFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         recycler_view.adapter = adapter
         recycler_view.clearItemDecoration()
     }

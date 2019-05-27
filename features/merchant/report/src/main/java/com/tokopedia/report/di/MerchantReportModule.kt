@@ -27,4 +27,10 @@ class MerchantReportModule {
     @Named("product_report_reason")
     fun getProductReportReasonQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_report_reason)
+
+    @MerchantReportScope
+    @Provides
+    @Named("dummy_response")
+    fun getDummyStringJson(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.dummy)
 }

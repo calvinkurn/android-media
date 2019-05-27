@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.design.text.TkpdHintTextInputLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/textInputLayoutReport"
+    android:paddingTop="@dimen/dp_12"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
+    style="@style/HintTextInputLayout"
+    android:hint="@string/product_label_product_report"
+    app:counterEnabled="true"
+    app:counterMaxLength="@integer/product_max_character_report">
+
+    <EditText
+        android:id="@+id/edit_text_report"
+        style="@style/EditText"
+        android:hint="@string/product_hint_product_report"
+        android:inputType="text"
+        android:maxLength="@integer/product_max_character_report" />
+
+</com.tokopedia.design.text.TkpdHintTextInputLayout>
