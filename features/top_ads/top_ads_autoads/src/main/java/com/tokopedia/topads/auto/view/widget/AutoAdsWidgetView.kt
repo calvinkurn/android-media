@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
@@ -13,7 +12,7 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
@@ -77,9 +76,9 @@ class AutoAdsWidgetView : CardView {
     }
 
     private fun renderUI(){
-        widgetViewModel = ViewModelProviders.of(context as Fragment, factory).get(AutoAdsWidgetViewModel::class.java)
+        widgetViewModel = ViewModelProviders.of(context as BaseSimpleActivity, factory).get(AutoAdsWidgetViewModel::class.java)
         widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
-        widgetViewModel.autoAdsData.observe(context as Fragment, Observer {
+        widgetViewModel.autoAdsData.observe(context as BaseSimpleActivity, Observer {
             setStatusAds(it!!.status)
             dailyBudgetStatus.text = String.format(context.getString(R.string.anggaran_harian_status), it!!.dailyBudget)
             dailyUsageStatus.text = String.format(context.getString(R.string.terpakai), it!!.dailyUsage)
