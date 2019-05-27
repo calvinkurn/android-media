@@ -31,7 +31,8 @@ class AddressListPresenter
                 .doOnSubscribe { mView?.showLoading() }
                 .doOnTerminate {
                     mView?.hideLoading()
-                    mView?.stopTrace() }
+                    mView?.stopTrace()
+                }
                 .subscribe(getAddressHandler(EMPTY_STRING))
     }
 
@@ -40,7 +41,8 @@ class AddressListPresenter
                 .doOnSubscribe { mView?.showLoading() }
                 .doOnTerminate {
                     mView?.hideLoading()
-                    mView?.stopTrace() }
+                    mView?.stopTrace()
+                }
                 .subscribe(getAddressHandler(query))
     }
 
@@ -50,13 +52,14 @@ class AddressListPresenter
                 .doOnSubscribe { mView?.showLoading() }
                 .doOnTerminate {
                     mView?.hideLoading()
-                    mView?.stopTrace() }
+                    mView?.stopTrace()
+                }
                 .subscribe(
-                { result ->
-                    mCurrentPage++
-                    mView?.updateList(result.listAddress)
-                }, { e -> mView?.showError(e) }, {}
-        )
+                        { result ->
+                            mCurrentPage++
+                            mView?.updateList(result.listAddress)
+                        }, { e -> mView?.showError(e) }, {}
+                )
     }
 
     private fun getAddressHandler(query: String): Subscriber<AddressListModel> =

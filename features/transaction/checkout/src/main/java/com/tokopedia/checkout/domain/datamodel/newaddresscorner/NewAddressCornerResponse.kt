@@ -3,77 +3,77 @@ package com.tokopedia.checkout.domain.datamodel.newaddresscorner
 import com.google.gson.annotations.SerializedName
 
 data class NewAddressCornerResponse(
-        @SerializedName("keroAddressCorner")
-        val keroAddressCorner: KeroAddressCorner
+    @SerializedName("keroAddressCorner")
+    var keroAddressCorner: KeroAddressCorner = KeroAddressCorner()
 )
 
 data class KeroAddressCorner(
-        @SerializedName("data")
-        val `data`: List<Data>,
-        @SerializedName("config")
-        val config: String,
-        @SerializedName("server_process_time")
-        val serverProcessTime: String,
-        @SerializedName("status")
-        val status: String,
-        @SerializedName("token")
-        val token: Token
-)
-
-data class Data(
-        @SerializedName("addr_id")
-        val addrId: Int,
-        @SerializedName("addr_name")
-        val addrName: String,
-        @SerializedName("address_1")
-        val address1: String,
-        @SerializedName("address_2")
-        val address2: String,
-        @SerializedName("city")
-        val city: Int,
-        @SerializedName("city_name")
-        val cityName: String,
-        @SerializedName("country")
-        val country: String,
-        @SerializedName("district")
-        val district: Int,
-        @SerializedName("district_name")
-        val districtName: String,
-        @SerializedName("is_active")
-        val isActive: Boolean,
-        @SerializedName("is_corner")
-        val isCorner: Boolean,
-        @SerializedName("is_primary")
-        val isPrimary: Boolean,
-        @SerializedName("is_whitelist")
-        val isWhitelist: Boolean,
-        @SerializedName("latitude")
-        val latitude: String,
-        @SerializedName("longitude")
-        val longitude: String,
-        @SerializedName("partner_id")
-        val partnerId: Int,
-        @SerializedName("partner_name")
-        val partnerName: String,
-        @SerializedName("phone")
-        val phone: String,
-        @SerializedName("postal_code")
-        val postalCode: String,
-        @SerializedName("province")
-        val province: Int,
-        @SerializedName("province_name")
-        val provinceName: String,
-        @SerializedName("receiver_name")
-        val receiverName: String,
-        @SerializedName("status")
-        val status: Int,
-        @SerializedName("type")
-        val type: Int
+    @SerializedName("data")
+    var `data`: List<Data> = listOf(),
+    @SerializedName("config")
+    var config: String = "",
+    @SerializedName("server_process_time")
+    var serverProcessTime: String = "",
+    @SerializedName("status")
+    var status: String = "",
+    @SerializedName("token")
+    var token: Token = Token()
 )
 
 data class Token(
-        @SerializedName("district_recommentdation")
-        val districtRecommendation: String,
-        @SerializedName("ut")
-        val ut: String
+    @SerializedName("district_recommendation")
+    var districtRecommendation: String = "",
+    @SerializedName("ut")
+    var ut: String = ""
+)
+
+data class Data(
+    @SerializedName("addr_id")
+    var addrId: Int = 0,
+    @SerializedName("addr_name")
+    var addrName: String = "",
+    @SerializedName("address_1")
+    var address1: String = "",
+    @SerializedName("address_2")
+    var address2: String = "",
+    @SerializedName("city")
+    var city: Int = 0,
+    @SerializedName("city_name")
+    var cityName: String = "",
+    @SerializedName("country")
+    var country: String = "",
+    @SerializedName("district")
+    var district: Int = 0,
+    @SerializedName("district_name")
+    var districtName: String = "",
+    @SerializedName("is_active")
+    var isActive: Boolean = false,
+    @SerializedName("is_corner")
+    var isCorner: Boolean = false,
+    @SerializedName("is_primary")
+    var isPrimary: Boolean = false,
+    @SerializedName("is_whitelist")
+    var isWhitelist: Boolean = false,
+    @SerializedName("latitude")
+    var latitude: String = "",
+    @SerializedName("longitude")
+    var longitude: String = "",
+    @SerializedName("partner_id")
+    var partnerId: Int = 0,
+    @SerializedName("partner_name")
+    var partnerName: String = "",
+    @SerializedName("phone")
+    var phone: String = "",
+    @SerializedName("postal_code")
+    var postalCode: String = "",
+    @SerializedName("province")
+    var province: Int = 0,
+    @SerializedName("province_name")
+    var provinceName: String = "",
+    @SerializedName("receiver_name")
+    var receiverName: String = "",
+    @SerializedName("status")
+    var status: Int = 0,
+    @SerializedName("type")
+    var type: Int = 0
 )

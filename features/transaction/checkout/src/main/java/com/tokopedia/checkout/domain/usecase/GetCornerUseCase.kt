@@ -11,6 +11,7 @@ import com.tokopedia.checkout.view.feature.addressoptions.AddressListModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
 import com.tokopedia.transactiondata.entity.request.AddressRequest
 import rx.Observable
@@ -41,8 +42,14 @@ class GetCornerUseCase
         usecase.clearRequest()
         usecase.addRequest(gqlRequest)
         return usecase.getExecuteObservable(null)
-                .map { graphqlResponse -> graphqlResponse.getData<NewAddressCornerResponse>(NewAddressCornerResponse::class.java) }
-                .map(mapper)
+                .map { graphqlResponse ->
+                    val response: NewAddressCornerResponse? =
+                            graphqlResponse.getData(NewAddressCornerResponse::class.java)
+                    if (response != null) {
+                        mapper(response)
+                    } else throw MessageErrorException(graphqlResponse
+                            .getError(NewAddressCornerResponse::class.java)[0].message)
+                }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

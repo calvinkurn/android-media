@@ -11,14 +11,17 @@ import com.tokopedia.checkout.view.feature.addressoptions.AddressListModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
 import com.tokopedia.transactiondata.entity.request.AddressRequest
+import com.tokopedia.usecase.RequestParams
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 const val PARAM_ADDRESS_USECASE: String = "input"
+
 /**
  * Created by fajarnuha on 2019-05-21.
  */
@@ -37,13 +40,19 @@ class GetAddressCornerUseCase
                 showCorner = isCorner)
         val param = mapOf<String, Any>(PARAM_ADDRESS_USECASE to request)
         val gqlQuery = GraphqlHelper.loadRawString(context.resources, R.raw.address_corner)
-        val gqlRequest = GraphqlRequest(gqlQuery, GqlKeroWithAddressResponse::class.java, param)
+        val gqlRequest = GraphqlRequest(gqlQuery, NewAddressCornerResponse::class.java, param)
 
         usecase.clearRequest()
         usecase.addRequest(gqlRequest)
-        return usecase.getExecuteObservable(null)
-                .map { graphqlResponse -> graphqlResponse.getData<NewAddressCornerResponse>(NewAddressCornerResponse::class.java) }
-                .map(mapper)
+        return usecase.createObservable(RequestParams.EMPTY)
+                .map { graphqlResponse ->
+                    val response: NewAddressCornerResponse? =
+                            graphqlResponse.getData(NewAddressCornerResponse::class.java)
+                    if (response != null) {
+                        mapper(response)
+                    } else throw MessageErrorException(graphqlResponse
+                            .getError(NewAddressCornerResponse::class.java)[0].message)
+                }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
