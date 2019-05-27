@@ -108,4 +108,6 @@ public interface ICartListView extends IBaseView {
     void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);
 
     void onSuccessClearPromoStackAfterClash();
+
+    String getCartId();
 }

@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.SessionHandler;
@@ -43,6 +45,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
 
     public interface TopAdsDetailProductFragmentListener {
         void goToProductActivity(String productUrl);
+
         void startShowCase();
     }
 
@@ -157,7 +160,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     @Override
     public void onAdLoaded(ProductAd ad) {
         super.onAdLoaded(ad);
-        if(!isEnoughDeposit){
+        if (!isEnoughDeposit) {
             final BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
 
             bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
@@ -172,7 +175,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
                 public void onClick(View view) {
                     bottomSheetView.dismiss();
 
-                    Intent intent = ((TopAdsManagementRouter)getActivity().getApplication())
+                    Intent intent = ((TopAdsManagementRouter) getActivity().getApplication())
                             .getTopAdsAddCreditIntent(getActivity());
                     TopAdsDetailProductFragment.this.startActivity(intent);
 
@@ -192,7 +195,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
             bottomSheetView.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialogInterface) {
-                    if(isDismissToTopUp)
+                    if (isDismissToTopUp)
                         return;
 
                     if (listener != null) {
@@ -242,14 +245,14 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     private void fillToAdObject(BulkAction dataResponseActionAds) {
-        if(dataResponseActionAds != null && dataResponseActionAds instanceof ProductAdBulkAction) {
+        if (dataResponseActionAds != null && dataResponseActionAds instanceof ProductAdBulkAction) {
             Integer status = Integer.valueOf(((ProductAdBulkAction) dataResponseActionAds).getAds().get(0).getStatus());
 
-            CommonUtils.dumper("status from network -> "+status);
-            if(adFromIntent != null)
+            CommonUtils.dumper("status from network -> " + status);
+            if (adFromIntent != null)
                 adFromIntent.setStatus(status);
 
-            if(ad != null)
+            if (ad != null)
                 ad.setStatus(status);
         }
     }
@@ -269,8 +272,9 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
 
     private void onNameClicked() {
         UnifyTracking.eventTopAdsProductClickDetailProductPDP(getActivity());
-        if (listener != null && ad != null) {
-            listener.goToProductActivity(ad.getProductUri());
+        if (listener != null && ad != null && getContext() != null) {
+            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    String.valueOf(ad.getItemId()));
         }
     }
 
@@ -296,7 +300,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     // for show case
-    public View getStatusView(){
+    public View getStatusView() {
         return getView().findViewById(R.id.status);
     }
 
@@ -307,24 +311,24 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     private void trackingDateTopAds(int lastSelection, int selectionType) {
-        if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
+        if (selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE) {
             UnifyTracking.eventTopAdsProductDetailProductPageDateCustom(getActivity());
-        }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
-            switch (lastSelection){
+        } else if (selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
+            switch (lastSelection) {
                 case 0:
-                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(getActivity(), AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
                     break;
                 case 1:
-                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(getActivity(), AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
                     break;
                 case 2:
-                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(getActivity(), AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
                     break;
                 case 3:
-                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(getActivity(), AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
                     break;
                 case 4:
-                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
+                    UnifyTracking.eventTopAdsProductDetailProductPageDatePeriod(getActivity(), AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
                     break;
                 default:
                     break;
