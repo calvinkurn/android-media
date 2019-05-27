@@ -1,11 +1,11 @@
-package com.tokopedia.flight.booking.view.presenter;
+package com.tokopedia.common.travel.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.flight.booking.domain.FlightBookingGetPhoneCodeUseCase;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
-import com.tokopedia.flight.common.subscriber.AutoCompleteInputListener;
-import com.tokopedia.flight.common.subscriber.AutoCompleteKeywordListener;
-import com.tokopedia.flight.common.subscriber.AutoCompleteKeywordSubscriber;
+import com.tokopedia.common.travel.domain.GetPhoneCodeUseCase;
+import com.tokopedia.common.travel.domain.subscriber.AutoCompleteInputListener;
+import com.tokopedia.common.travel.domain.subscriber.AutoCompleteKeywordListener;
+import com.tokopedia.common.travel.domain.subscriber.AutoCompleteKeywordSubscriber;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -22,15 +22,15 @@ import rx.schedulers.Schedulers;
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FlightBookingPhoneCodePresenterImpl extends BaseDaggerPresenter<FlightBookingPhoneCodeView>
-        implements FlightBookingPhoneCodePresenter, AutoCompleteKeywordListener {
+public class PhoneCodePickerPresenterImpl extends BaseDaggerPresenter<PhoneCodePickerView>
+        implements PhoneCodePickerPresenter, AutoCompleteKeywordListener {
 
     private AutoCompleteInputListener inputListener;
-    private final FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase;
+    private final GetPhoneCodeUseCase getPhoneCodeUseCase;
 
     @Inject
-    public FlightBookingPhoneCodePresenterImpl(FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase) {
-        this.flightBookingGetPhoneCodeUseCase = flightBookingGetPhoneCodeUseCase;
+    public PhoneCodePickerPresenterImpl(GetPhoneCodeUseCase getPhoneCodeUseCase) {
+        this.getPhoneCodeUseCase = getPhoneCodeUseCase;
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
@@ -50,7 +50,7 @@ public class FlightBookingPhoneCodePresenterImpl extends BaseDaggerPresenter<Fli
 
     @Override
     public void getPhoneCodeList() {
-        flightBookingGetPhoneCodeUseCase.execute(RequestParams.create(), getSubscriberPhoneCode());
+        getPhoneCodeUseCase.execute(RequestParams.create(), getSubscriberPhoneCode());
     }
 
     @Override
@@ -65,8 +65,8 @@ public class FlightBookingPhoneCodePresenterImpl extends BaseDaggerPresenter<Fli
         detachView();
     }
 
-    private Subscriber<List<FlightBookingPhoneCodeViewModel>> getSubscriberPhoneCode() {
-        return new Subscriber<List<FlightBookingPhoneCodeViewModel>>() {
+    private Subscriber<List<CountryPhoneCode>> getSubscriberPhoneCode() {
+        return new Subscriber<List<CountryPhoneCode>>() {
             @Override
             public void onCompleted() {
 
@@ -80,9 +80,9 @@ public class FlightBookingPhoneCodePresenterImpl extends BaseDaggerPresenter<Fli
             }
 
             @Override
-            public void onNext(List<FlightBookingPhoneCodeViewModel> flightBookingPhoneCodeViewModels) {
+            public void onNext(List<CountryPhoneCode> flightBookingPhoneCodes) {
                 if (isViewAttached()) {
-                    getView().renderList(flightBookingPhoneCodeViewModels);
+                    getView().renderList(flightBookingPhoneCodes);
                 }
             }
         };
@@ -90,7 +90,7 @@ public class FlightBookingPhoneCodePresenterImpl extends BaseDaggerPresenter<Fli
 
     @Override
     public void onTextReceive(String keyword) {
-        flightBookingGetPhoneCodeUseCase.execute(flightBookingGetPhoneCodeUseCase.createRequest(keyword), getSubscriberPhoneCode());
+        getPhoneCodeUseCase.execute(getPhoneCodeUseCase.createRequest(keyword), getSubscriberPhoneCode());
     }
 
     @Override

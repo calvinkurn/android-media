@@ -1,7 +1,6 @@
 package com.tokopedia.hotel.common.util
 
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.hotel.homepage.presentation.fragment.HotelHomepageFragment
 import java.util.concurrent.TimeUnit
 
 class HotelUtils {

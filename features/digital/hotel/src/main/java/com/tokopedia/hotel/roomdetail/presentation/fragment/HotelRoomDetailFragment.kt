@@ -20,6 +20,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
@@ -282,8 +283,8 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
         room_detail_button.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 if (userSessionInterface.isLoggedIn) {
-                    roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
-                            addToCartParam)
+//                    roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
+                    startActivity(HotelBookingActivity.getCallingIntent(context!!,""))
                 } else {
                     goToLoginPage()
                 }

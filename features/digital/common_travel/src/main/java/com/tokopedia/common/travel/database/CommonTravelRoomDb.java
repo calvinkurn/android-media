@@ -9,13 +9,18 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.flight.country.database.CountryPhoneCodeDao;
+import com.tokopedia.flight.country.database.CountryPhoneCodeTable;
+
 /**
  * Created by nabillasabbaha on 15/08/18.
  */
-@Database(entities = {TravelPassengerTable.class}, version = 1)
-public abstract class TravelPassengerRoomDb extends RoomDatabase {
+@Database(entities = {TravelPassengerTable.class, CountryPhoneCodeTable.class}, version = 1)
+public abstract class CommonTravelRoomDb extends RoomDatabase {
 
     public abstract TravelPassengerDao travelPassengerDao();
+
+    public abstract CountryPhoneCodeDao countryPhoneCodeDao();
 
     @NonNull
     @Override
@@ -34,14 +39,14 @@ public abstract class TravelPassengerRoomDb extends RoomDatabase {
 
     }
 
-    private static volatile TravelPassengerRoomDb travelPassengerRoomDb;
+    private static volatile CommonTravelRoomDb travelPassengerRoomDb;
 
-    public static TravelPassengerRoomDb getDatabase(final Context context) {
+    public static CommonTravelRoomDb getDatabase(final Context context) {
         if (travelPassengerRoomDb == null) {
-            synchronized (TravelPassengerRoomDb.class) {
+            synchronized (CommonTravelRoomDb.class) {
                 if (travelPassengerRoomDb == null) {
                     travelPassengerRoomDb = Room.databaseBuilder(context.getApplicationContext(),
-                            TravelPassengerRoomDb.class, "TravelPassenger.db")
+                            CommonTravelRoomDb.class, "TravelPassenger.db")
                             .fallbackToDestructiveMigration()
                             .build();
                 }
