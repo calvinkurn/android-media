@@ -60,6 +60,10 @@ data class ShopInfo(
         @Expose
         val statusInfo: StatusInfo = StatusInfo(),
 
+        @SerializedName("topContent")
+        @Expose
+        val topContent: TopContent = TopContent(),
+
         @SerializedName("bbInfo")
         @Expose
         val bbInfo: List<BBInfo> = listOf()
@@ -158,5 +162,15 @@ data class ShopInfo(
             @SerializedName("openSince")
             @Expose
             val openSince: String = ""
+    )
+
+    data class TopContent(
+            @SerializedName("topURL")
+            @Expose
+            val topUrl: String = "",
+
+            @SerializedName("bottomURL")
+            @Expose
+            val bottomUrl: String = ""
     )
 }
