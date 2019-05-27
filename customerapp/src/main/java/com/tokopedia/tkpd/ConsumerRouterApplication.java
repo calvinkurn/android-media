@@ -114,7 +114,6 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.CustomerRouter;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -349,7 +348,6 @@ import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
-import com.tokopedia.tkpd.onboarding.NewOnboardingActivity;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
@@ -412,7 +410,6 @@ import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResp
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
-import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -1555,8 +1552,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response) {
-        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
+                                         boolean isRequestDenied) {
+        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(),
+                isInvalidToken, isRequestDenied);
     }
 
     @Override
@@ -2798,12 +2797,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public ApplicationUpdate getAppUpdate(Context context) {
         return new FirebaseRemoteAppUpdate(context);
     }
-
-    @Override
-    public Intent getOnBoardingIntent(Activity activity) {
-        return new Intent(activity, NewOnboardingActivity.class);
-    }
-
 
     @Override
     public String getStringRemoteConfig(String key) {

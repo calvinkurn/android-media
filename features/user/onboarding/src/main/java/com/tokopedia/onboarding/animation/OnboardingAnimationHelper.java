@@ -4,8 +4,6 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.os.Build;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -17,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
  * Created by stevenfredian on 7/26/17.
  */
 
-public class OnboardingAnimation {
+public class OnboardingAnimationHelper {
 
     public static final long DEFAULT_ANIMATION_DURATION = 1250L;
     public static final int UP_DIRECTION = -1;

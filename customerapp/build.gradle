@@ -402,6 +402,7 @@ dependencies {
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.officialStore)
+    implementation project(rootProject.ext.features.onboarding)
 
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
@@ -438,7 +439,6 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation rootProject.ext.miscDependencies.lottie
-    implementation rootProject.ext.viewDependencies.appIntro
 
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.shopCommon)

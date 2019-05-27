@@ -82,6 +82,7 @@
 
     <string name="shake_shake_success">Berhasil shake shake</string>
     <string name="shake_shake_wrong_deeplink">Sedang terjadi kendala. Mohon coba beberapa saat lagi.</string>
+    <string name="shake_default_error">Untuk saat ini, Tokopedia sedang kepenuhan pengunjung</string>
 
     <string name="drawer_title_shopping_list">Daftar Belanja</string>
     <string name="drawer_title_payment_list">Menunggu Pembayaran</string>
