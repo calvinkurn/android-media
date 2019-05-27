@@ -23,5 +23,6 @@ data class HistoryNotificationDB(
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: Int = 0
+    @Nullable
+    var id: Int? = 0
 }
