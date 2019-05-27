@@ -410,6 +410,25 @@
                 android:background="@color/divider_color"/>
 
             <LinearLayout
+                android:id="@+id/booking_pay_now_promo_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_16"
+                    app:state="empty"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_8"
+                    android:background="@color/divider_color"/>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/invoice_summary_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
