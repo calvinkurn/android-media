@@ -15,6 +15,10 @@ class CornerListPresenter @Inject constructor(val usecase: GetCornerUseCase): Co
         this.mView = view
     }
 
+    override fun detachView() {
+        this.mView = null
+    }
+
     override fun getData() {
         usecase.execute("").subscribe(
                 { mView?.setData(it.listAddress)},
