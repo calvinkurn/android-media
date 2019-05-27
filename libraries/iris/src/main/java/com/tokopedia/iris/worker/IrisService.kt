@@ -2,9 +2,11 @@ package com.tokopedia.iris.worker
 
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import android.os.IBinder
 import android.support.v4.app.JobIntentService
 import android.util.Log
+import android.widget.Toast
 import com.tokopedia.iris.WORKER_SEND_DATA
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
@@ -32,29 +34,32 @@ class IrisService : JobIntentService() {
         mContext = this
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    companion object {
+        fun enqueueWork(context: Context, work: Intent) {
+            enqueueWork(context, IrisService::class.java, 1500, work)
+        }
+    }
+
+    override fun onHandleWork(intent: Intent) {
+        toast("Start work")
         try {
             Log.d("Iris", "onHandleWork")
-            val configuration = intent?.getParcelableExtra<Configuration>(WORKER_SEND_DATA)
+            val configuration = intent.getParcelableExtra<Configuration>(WORKER_SEND_DATA)
             if (configuration != null) {
                 startService(configuration)
             }
         } catch (e: java.lang.Exception) {}
-        return START_STICKY_COMPATIBILITY
-    }
-
-    override fun onHandleWork(intent: Intent) {
     }
 
     private fun startService(configuration: Configuration) {
-        Log.d("Iris", "startService")
+        Log.d("Iris", "startService TimerTask")
         mTimer.scheduleAtFixedRate(IrisTask(configuration), 0, configuration.intervals)
     }
 
     private inner class IrisTask(val configuration: Configuration) : TimerTask() {
         override fun run() {
             send(configuration.maxRow)
-            Log.d("Iris", configuration.maxRow.toString())
+            Log.d("Iris", "configuration.maxRow" + configuration.maxRow.toString())
         }
     }
 
@@ -97,5 +102,12 @@ class IrisService : JobIntentService() {
     override fun onDestroy() {
         super.onDestroy()
         mTimer.cancel()
+    }
+
+    private val mHandler = Handler()
+
+    // Helper for showing tests
+    private fun toast(text: CharSequence) {
+        mHandler.post { Toast.makeText(this@IrisService, text, Toast.LENGTH_SHORT).show() }
     }
 }

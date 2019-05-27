@@ -80,6 +80,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         Log.e("Iris", "startService")
         val intent = Intent(context, IrisService::class.java)
         intent.putExtra(WORKER_SEND_DATA, config)
-        context.startService(intent)
+        IrisService.enqueueWork(context, intent);
     }
 }
