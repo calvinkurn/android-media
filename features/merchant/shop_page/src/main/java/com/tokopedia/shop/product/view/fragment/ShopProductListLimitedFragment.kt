@@ -337,9 +337,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             shopProductAdapter.clearPromoData()
             shopProductAdapter.clearMerchantVoucherData()
             shopProductAdapter.clearFeaturedData()
-
-            //shopProductLimitedListPresenter.loadProductPromoModel(getOfficialWebViewUrl(shopInfo))
-
+            viewModel.renderProductPromoModel(getOfficialWebViewUrl(shopInfo), this::renderShopProductPromo)
             loadVoucherList()
 
             viewModel.getFeaturedProduct(it.shopCore.shopID, false)
