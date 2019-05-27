@@ -2,13 +2,9 @@ package com.tokopedia.flashsale.management.tracking
 
 import android.app.Activity
 import android.text.TextUtils
-import java.sql.RowId
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.track.TrackApp
 
-class FlashSaleTracking() {
+class FlashSaleTracking {
 
     private fun sendScreenName(activity: Activity, screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
@@ -39,7 +35,7 @@ class FlashSaleTracking() {
 
     fun sendFlashSaleEvent(action: String, label: String, shopId: String? = null) {
         val eventMap = createFlashSaleMap(action, label, shopId)
-        //TrackApp.getInstance().gtm.sendEnhanceECommerceEvent(eventMap)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
     }
 
     fun createFlashSaleMap(action: String, label: String, shopId: String? = null): MutableMap<String, Any> {

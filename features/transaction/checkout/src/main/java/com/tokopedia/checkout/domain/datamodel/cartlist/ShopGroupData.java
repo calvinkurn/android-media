@@ -16,6 +16,7 @@ import java.util.List;
 public class ShopGroupData implements Parcelable {
 
     private List<CartItemHolderData> cartItemHolderDataList = new ArrayList<>();
+    private boolean isChecked;
     private boolean isError;
     private String errorTitle;
     private String errorDescription;
@@ -44,6 +45,7 @@ public class ShopGroupData implements Parcelable {
 
     protected ShopGroupData(Parcel in) {
         cartItemHolderDataList = in.createTypedArrayList(CartItemHolderData.CREATOR);
+        isChecked = in.readByte() != 0;
         isError = in.readByte() != 0;
         errorTitle = in.readString();
         errorDescription = in.readString();
@@ -69,6 +71,7 @@ public class ShopGroupData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(cartItemHolderDataList);
+        dest.writeByte((byte) (isChecked ? 1 : 0));
         dest.writeByte((byte) (isError ? 1 : 0));
         dest.writeString(errorTitle);
         dest.writeString(errorDescription);
@@ -119,7 +122,11 @@ public class ShopGroupData implements Parcelable {
             cartItemHolderData.setEditableRemark(false);
             cartItemHolderData.setErrorFormItemValidationMessage("");
             cartItemHolderData.setEditableRemark(false);
-            cartItemHolderData.setSelected(!cartItemData.isError());
+            if (cartItemData.isError()) {
+                cartItemHolderData.setSelected(false);
+            } else {
+                cartItemHolderData.setSelected(cartItemData.getOriginData().isCheckboxState());
+            }
             cartItemHolderDataList.add(cartItemHolderData);
         }
     }
@@ -268,18 +275,35 @@ public class ShopGroupData implements Parcelable {
         this.fulfillmentName = fulfillmentName;
     }
 
-    public boolean isHasPromoList() { return hasPromoList; }
+    public boolean isHasPromoList() {
+        return hasPromoList;
+    }
 
-    public void setHasPromoList(boolean hasPromoList) { this.hasPromoList = hasPromoList; }
+    public void setHasPromoList(boolean hasPromoList) {
+        this.hasPromoList = hasPromoList;
+    }
 
-    public String getCartString() { return cartString; }
+    public String getCartString() {
+        return cartString;
+    }
 
-    public void setCartString(String cartString) { this.cartString = cartString; }
+    public void setCartString(String cartString) {
+        this.cartString = cartString;
+    }
 
-    public VoucherOrdersItemData getVoucherOrdersItemData() { return voucherOrdersItemData; }
+    public VoucherOrdersItemData getVoucherOrdersItemData() {
+        return voucherOrdersItemData;
+    }
 
     public void setVoucherOrdersItemData(VoucherOrdersItemData voucherOrdersItemData) {
         this.voucherOrdersItemData = voucherOrdersItemData;
     }
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 }

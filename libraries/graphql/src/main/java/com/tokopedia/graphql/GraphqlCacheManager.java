@@ -59,11 +59,11 @@ public class GraphqlCacheManager {
 
     }
 
-    public void save(String key, String value, long durationInMilliSeconds) {
+    public void save(String key, String value, long durationInMiliSeconds) {
         GraphqlDatabaseModel simpleDB = new GraphqlDatabaseModel();
         simpleDB.key = key;
         simpleDB.value = value;
-        simpleDB.expiredTime = System.currentTimeMillis() + durationInMilliSeconds;
+        simpleDB.expiredTime = System.currentTimeMillis() + durationInMiliSeconds;
         databaseDao.insertSingle(simpleDB);
     }
 

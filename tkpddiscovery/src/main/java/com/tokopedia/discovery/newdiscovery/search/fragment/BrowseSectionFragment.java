@@ -81,7 +81,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
-    private HashMap<String, String> selectedFilter;
+    protected HashMap<String, String> selectedFilter;
     private FilterFlagSelectedModel flagFilterHelper;
     private boolean isGettingDynamicFilter;
 
@@ -450,10 +450,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     public void renderFailGetDynamicFilter() {
         isGettingDynamicFilter = false;
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_get_dynamic_filter));
-    }
-
-    public void performNewProductSearch(String query, boolean forceSearch) {
-        redirectionListener.performNewProductSearch(query, forceSearch);
     }
 
     public void showSearchInputView() {

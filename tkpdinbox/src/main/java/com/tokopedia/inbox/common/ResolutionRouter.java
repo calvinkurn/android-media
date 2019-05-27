@@ -7,5 +7,9 @@ import android.content.Intent;
  * Created by meta on 21/02/19.
  */
 public interface ResolutionRouter {
+
     Intent getApplinkIntent(Context context, String applink);
+
+    Intent getSellerWebViewIntent(Context context, String webviewUrl);
+
 }
