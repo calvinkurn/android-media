@@ -36,7 +36,6 @@ import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -962,7 +961,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE
                             && layoutManager != null) {
-                        val item: Visitable<*>?
+//                        var item: Visitable<*>?
 //                        val position = when {
 //                            itemIsFullScreen() -> layoutManager.findLastVisibleItemPosition()
 //                            layoutManager.findFirstCompletelyVisibleItemPosition() != -1 -> layoutManager.findFirstCompletelyVisibleItemPosition()
@@ -981,32 +980,39 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 //                                (recyclerView?.findViewHolderForAdapterPosition(position) as VideoViewHolder).playVideo((item as VideoViewModel).url)
 //                            }
 //                        }
-                        var firstPosition = layoutManager.findFirstVisibleItemPosition();
-                        var lastPosition = layoutManager.findLastVisibleItemPosition();
+                        val firstPosition = layoutManager.findFirstVisibleItemPosition();
+                        val lastPosition = layoutManager.findLastVisibleItemPosition();
 
-                        var rvRect = Rect();
+                        val rvRect = Rect();
                         recyclerView?.getGlobalVisibleRect(rvRect);
 
                         for (i in firstPosition..lastPosition) {
-                            var rowRect = Rect();
-                            layoutManager.findViewByPosition(i).getGlobalVisibleRect(rowRect);
-                            var videoViewRect = Rect()
-                            layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.getGlobalVisibleRect(videoViewRect)
+                            if (isVideoCard(i)) {
+                                val item = getVideoCardViewModel(i)
+                                val rowRect = Rect();
+                                layoutManager.findViewByPosition(i).getGlobalVisibleRect(rowRect);
+                                val videoViewRect = Rect()
+                                layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.getGlobalVisibleRect(videoViewRect)
 
-                            var percentVideo = 0
-                            if (rowRect.bottom >= rvRect.bottom) {
-                                layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.let {
-                                    var visibleVideo = rvRect.bottom - videoViewRect.top
-                                    percentVideo = (visibleVideo * 100) / it.height
+                                var percentVideo = 0
+                                if (rowRect.bottom >= rvRect.bottom) {
+                                    layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.let {
+                                        val visibleVideo = rvRect.bottom - videoViewRect.top
+                                        percentVideo = (visibleVideo * 100) / it.height
+                                    }
+                                } else {
+                                    layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.let {
+                                        val visibleVideo = videoViewRect.bottom - rvRect.top
+                                        percentVideo = (visibleVideo * 100) / it.height
+                                    }
                                 }
-                            } else {
-                                layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.let {
-                                    var visibleVideo = videoViewRect.bottom - rvRect.top
-                                    percentVideo = (visibleVideo * 100) / it.height
+                                if (percentVideo > 75) {
+//                                (recyclerView?.findViewHolderForAdapterPosition(i) as DynamicPostViewHolder).playVideo()
+                                    item.canPlayVideo = true
+                                } else {
+                                    item.canPlayVideo = false
                                 }
-                            }
-                            if (percentVideo > 75) {
-                                (recyclerView?.findViewHolderForAdapterPosition(i) as DynamicPostViewHolder).playVideo()
+                                adapter.notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO)
                             }
                         }
                     }
@@ -1015,6 +1021,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
         })
+    }
+
+    private fun isVideoCard(position: Int): Boolean {
+        return adapter.list[position] is DynamicPostViewModel
+                && ((adapter.list[position]) as DynamicPostViewModel).contentList.size == 1
+                && ((adapter.list[position]) as DynamicPostViewModel).contentList.get(0) is VideoViewModel
+    }
+
+    private fun getVideoCardViewModel(position: Int): VideoViewModel {
+        return ((adapter.list[position]) as DynamicPostViewModel).contentList.get(0) as VideoViewModel
     }
 
     private fun hasFeed(): Boolean {

@@ -8,8 +8,6 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_post_video.view.*
 
@@ -20,6 +18,8 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
 
 
     override var layoutRes = R.layout.item_post_video
+    var isPlaying = false
+
 
     companion object {
         const val STRING_DEFAULT_TRANSCODING = "customerTrans"
@@ -56,18 +56,31 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                 }
         )
         itemView.image.loadImage(element.thumbnail)
-//        itemView.image.addOnImpressionListener(element, object : ViewHintListener {
-//            override fun onViewHint() {
-//                playVideo(element.url)
-//            }
-//        })
+        if (element.canPlayVideo) {
+            playVideo(element.url)
+        } else {
+            stopVideo()
+        }
     }
 
     fun playVideo(url: String) {
-        itemView.layout_video.visibility = View.VISIBLE
-        itemView.layout_video.setVideoURI(Uri.parse(url))
-        itemView.layout_video.start()
+        if (!isPlaying) {
+            itemView.layout_video.visibility = View.VISIBLE
+            itemView.layout_video.setVideoURI(Uri.parse(url))
+            itemView.layout_video.setOnPreparedListener {
+                it.isLooping = true
+            }
+            itemView.layout_video.start()
+            isPlaying = true
+        }
+    }
 
+    fun stopVideo() {
+        if (isPlaying) {
+            itemView.layout_video.stopPlayback()
+            itemView.layout_video.visibility = View.GONE
+            isPlaying = false
+        }
     }
 
     interface VideoViewListener {

@@ -10,6 +10,7 @@ data class VideoViewModel(
         var id: String = "",
         var thumbnail: String = "",
         var url: String = "",
+        var canPlayVideo: Boolean = false,
         override var postId: Int = 0,
         override var positionInFeed: Int = 0
 ) : ImpressHolder(), BasePostViewModel {

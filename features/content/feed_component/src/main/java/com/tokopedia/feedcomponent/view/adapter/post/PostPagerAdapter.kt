@@ -41,14 +41,10 @@ class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImageP
         val element: BasePostViewModel = itemList[position]
         val viewHolder: BasePostViewHolder<BasePostViewModel> = when (element) {
             is ImagePostViewModel -> ImagePostViewHolder(imagePostListener) as BasePostViewHolder<BasePostViewModel>
-
             is YoutubeViewModel -> YoutubeViewHolder(youtubePostListener) as BasePostViewHolder<BasePostViewModel>
             is PollContentViewModel -> PollViewHolder(pollOptionListener) as BasePostViewHolder<BasePostViewModel>
             is GridPostViewModel -> GridPostViewHolder(gridItemListener) as BasePostViewHolder<BasePostViewModel>
-            is VideoViewModel -> element.let {
-                container.setTag(VideoViewHolder.TAG)
-                VideoViewHolder(videoViewListener) as BasePostViewHolder<BasePostViewModel>
-            }
+            is VideoViewModel -> VideoViewHolder(videoViewListener) as BasePostViewHolder<BasePostViewModel>
             else -> throw IllegalStateException(this.javaClass.simpleName
                     .plus(" doesn't support view model of this type: ")
                     .plus(element.javaClass.simpleName))
@@ -80,9 +76,5 @@ class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImageP
         this.itemList.clear()
         this.itemList.addAll(imageList)
         notifyDataSetChanged()
-    }
-
-    fun getList() : MutableList<BasePostViewModel> {
-        return this.itemList
     }
 }

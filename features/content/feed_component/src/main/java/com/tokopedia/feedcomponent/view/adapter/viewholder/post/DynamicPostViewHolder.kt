@@ -100,7 +100,7 @@ open class DynamicPostViewHolder(v: View,
             PAYLOAD_COMMENT -> bindComment(element.footer.comment)
             PAYLOAD_FOLLOW -> bindFollow(element.header.followCta)
             PAYLOAD_ANIMATE_FOOTER -> animateFooter()
-//            PAYLOAD_PLAY_VIDEO -> playVideo()
+            PAYLOAD_PLAY_VIDEO -> bindContentList(element.id, element.contentList, element.template.cardpost.body)
             else -> bind(element)
         }
     }
@@ -399,15 +399,15 @@ open class DynamicPostViewHolder(v: View,
     private fun isPostTagAvailable(postTag: PostTag): Boolean {
         return postTag.totalItems != 0 || postTag.items.isNotEmpty()
     }
-
-    fun playVideo() {
-         if (adapter.getList().size == 1
-                 && adapter.getList().get(0) is VideoViewModel
-                 && itemView.contentViewPager.getTag().equals(VideoViewHolder.TAG)) {
-             val viewHolder = (itemView.contentViewPager.findViewWithTag<View>(VideoViewHolder.TAG) as VideoViewHolder)
-             viewHolder.playVideo((adapter.getList().get(0) as VideoViewModel).url)
-         }
-    }
+//
+//    fun playVideo() {
+//         if (adapter.getList().size == 1
+//                 && adapter.getList().get(0) is VideoViewModel
+//                 && itemView.contentViewPager.getTag().equals(VideoViewHolder.TAG)) {
+//             val viewHolder = (itemView.contentViewPager.findViewWithTag<View>(VideoViewHolder.TAG) as VideoViewHolder)
+//             viewHolder.playVideo((adapter.getList().get(0) as VideoViewModel).url)
+//         }
+//    }
 
     interface DynamicPostListener {
         fun onAvatarClick(positionInFeed: Int, redirectUrl: String)
