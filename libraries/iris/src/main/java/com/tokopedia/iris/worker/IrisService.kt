@@ -1,9 +1,9 @@
 package com.tokopedia.iris.worker
 
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import android.support.v4.app.JobIntentService
 import com.tokopedia.iris.WORKER_SEND_DATA
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
@@ -17,7 +17,7 @@ import java.util.*
 /**
  * Created by meta on 24/05/19.
  */
-class IrisService : Service() {
+class IrisService : JobIntentService() {
 
     private val mTimer = Timer()
     private lateinit var mContext: Context
@@ -32,13 +32,16 @@ class IrisService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return START_STICKY_COMPATIBILITY
+    }
+
+    override fun onHandleWork(intent: Intent) {
         try {
-            val configuration = intent?.getParcelableExtra<Configuration>(WORKER_SEND_DATA)
+            val configuration = intent.getParcelableExtra<Configuration>(WORKER_SEND_DATA)
             if (configuration != null) {
                 startService(configuration)
             }
         } catch (e: java.lang.Exception) {}
-        return START_STICKY_COMPATIBILITY
     }
 
     private fun startService(configuration: Configuration) {
