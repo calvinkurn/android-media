@@ -432,7 +432,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.collapsingTabLayout)
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 

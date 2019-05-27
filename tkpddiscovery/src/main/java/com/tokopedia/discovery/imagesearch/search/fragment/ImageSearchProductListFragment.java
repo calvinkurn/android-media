@@ -34,7 +34,7 @@ import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
@@ -75,7 +75,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_
  */
 
 public class ImageSearchProductListFragment extends BaseDaggerFragment implements
-        SearchSectionGeneralAdapter.OnItemChangeView, ImageProductListFragmentView,
+        BrowseSectionGeneralAdapter.OnItemChangeView, ImageProductListFragmentView,
         ProductListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener {
 
     public static final String SCREEN_IMAGE_SEARCH_TAB = "Image Search result - Image tab";

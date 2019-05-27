@@ -22,5 +22,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
-    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.baseListSeller)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 }
