@@ -24,9 +24,9 @@ import kotlinx.android.synthetic.main.fragment_product_info.*
 import javax.inject.Inject
 
 class ProductInfoFragment : BaseDaggerFragment() {
-
-    @Inject
-    lateinit var userSessionInterface : UserSessionInterface
+//
+//    @Inject
+//    lateinit var userSessionInterface : UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

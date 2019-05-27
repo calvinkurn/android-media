@@ -24,8 +24,8 @@ class HomeRecommendationModule {
     @Named("Main")
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
-
-    @Provides
-    @HomeRecommendationScope
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+//
+//    @Provides
+//    @HomeRecommendationScope
+//    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 }

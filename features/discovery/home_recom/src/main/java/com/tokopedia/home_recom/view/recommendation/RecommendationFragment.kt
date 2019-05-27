@@ -29,6 +29,7 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private lateinit var productId: String
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl() }
