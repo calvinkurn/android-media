@@ -440,10 +440,11 @@ public abstract class SearchSectionFragment
     }
 
     @Override
+    @Deprecated
     public void getDynamicFilter() {
         if (canRequestDynamicFilter()) {
             isGettingDynamicFilter = true;
-            getPresenter().requestDynamicFilter(searchParameter.getSearchParameterMap());
+            getPresenter().requestDynamicFilter(searchParameter.getSearchParameterMap(), true);
         }
     }
 

@@ -49,8 +49,7 @@ public class ShopListFragment
         SearchSectionGeneralAdapter.OnItemChangeView,
         ShopListener,
         EmptyStateListener,
-        BannerAdsListener,
-        SearchShopListener {
+        BannerAdsListener {
 
     public static final String SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab";
     private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
@@ -119,7 +118,6 @@ public class ShopListFragment
         presenter.initInjector(this);
         presenter.setFavoriteActionListener(this);
         presenter.setRequestDynamicFilterListener(this);
-        presenter.setSearchShopListener(this);
 
         return inflater.inflate(R.layout.fragment_shop_list_search, null);
     }

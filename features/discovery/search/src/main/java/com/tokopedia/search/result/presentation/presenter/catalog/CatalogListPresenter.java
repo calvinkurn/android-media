@@ -82,7 +82,7 @@ final class CatalogListPresenter
     }
 
     @Override
-    public void requestDynamicFilter(Map<String, Object> searchParameterMap) {
+    public void requestDynamicFilter(Map<String, Object> searchParameterMap, boolean shouldSaveToLocalDynamicFilterDb) {
         checkViewAttached();
 
         RequestParams requestParams = createRequestDynamicFilterParams(searchParameterMap);
