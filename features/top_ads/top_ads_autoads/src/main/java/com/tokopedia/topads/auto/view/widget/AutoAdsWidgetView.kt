@@ -19,7 +19,7 @@ import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.internal.TopAdsWidgetStatus
 import com.tokopedia.topads.auto.view.activity.SettingBudgetAdsActivity
-import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
+//import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
 import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,7 +28,7 @@ import javax.inject.Inject
 /**
  * Author errysuprayogi on 14,May,2019
  */
-class AutoAdsWidgetView : CardView, HasComponent<AutoAdsComponent> {
+class AutoAdsWidgetView : CardView {
 
     private lateinit var statusAdsContainer: View
     private lateinit var activeStatus: TextView
@@ -54,8 +54,8 @@ class AutoAdsWidgetView : CardView, HasComponent<AutoAdsComponent> {
         initView(context)
     }
 
-    override fun getComponent(): AutoAdsComponent = DaggerAutoAdsComponent.builder()
-            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
+//    override fun getComponent(): AutoAdsComponent = DaggerAutoAdsComponent.builder()
+//            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
 
     private fun initView(context: Context) {
         useCompatPadding = true
@@ -67,19 +67,19 @@ class AutoAdsWidgetView : CardView, HasComponent<AutoAdsComponent> {
         dailyUsageStatus = findViewById(R.id.daily_usage_status)
         progressBar = findViewById(R.id.progress_bar)
         setupListener()
-        component.inject(this)
-        widgetViewModel = ViewModelProviders.of(context as Fragment, factory).get(AutoAdsWidgetViewModel::class.java)
-        widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
-        widgetViewModel.autoAdsData.observe(context as Fragment, Observer {
-            setStatusAds(it!!.status)
-            dailyBudgetStatus.text = String.format(context.getString(R.string.anggaran_harian_status), it!!.dailyBudget)
-            dailyUsageStatus.text = String.format(context.getString(R.string.terpakai), it!!.dailyUsage)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                progressBar.setProgress(it!!.dailyUsage, true)
-            } else{
-                progressBar.progress = it!!.dailyUsage
-            }
-        })
+//        component.inject(this)
+//        widgetViewModel = ViewModelProviders.of(context as Fragment, factory).get(AutoAdsWidgetViewModel::class.java)
+//        widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
+//        widgetViewModel.autoAdsData.observe(context as Fragment, Observer {
+//            setStatusAds(it!!.status)
+//            dailyBudgetStatus.text = String.format(context.getString(R.string.anggaran_harian_status), it!!.dailyBudget)
+//            dailyUsageStatus.text = String.format(context.getString(R.string.terpakai), it!!.dailyUsage)
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                progressBar.setProgress(it!!.dailyUsage, true)
+//            } else{
+//                progressBar.progress = it!!.dailyUsage
+//            }
+//        })
     }
 
     private fun setupListener() {
