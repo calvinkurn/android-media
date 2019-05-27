@@ -21,7 +21,7 @@ import javax.inject.Inject
 /**
  * Created by fajarnuha on 2019-05-26.
  */
-open class GetCornerUseCase
+class GetCornerUseCase
 @Inject constructor(@ApplicationContext val context: Context, val usecase: GraphqlUseCase) {
 
     fun execute(query: String): Observable<AddressListModel> =
