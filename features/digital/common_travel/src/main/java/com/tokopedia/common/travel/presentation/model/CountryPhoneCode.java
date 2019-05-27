@@ -1,16 +1,16 @@
-package com.tokopedia.flight.booking.view.viewmodel;
+package com.tokopedia.common.travel.presentation.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.flight.booking.view.adapter.FlightBookingPhoneCodeAdapterTypeFactory;
+import com.tokopedia.common.travel.presentation.adapter.PhoneCodePickerAdapterTypeFactory;
 
 /**
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FlightBookingPhoneCodeViewModel implements Parcelable, Visitable<FlightBookingPhoneCodeAdapterTypeFactory> {
+public class CountryPhoneCode implements Parcelable, Visitable<PhoneCodePickerAdapterTypeFactory> {
 
     private String countryId;
     private String countryName;
@@ -52,28 +52,29 @@ public class FlightBookingPhoneCodeViewModel implements Parcelable, Visitable<Fl
         dest.writeString(this.countryPhoneCode);
     }
 
-    public FlightBookingPhoneCodeViewModel() {
+    public CountryPhoneCode() {
     }
 
-    protected FlightBookingPhoneCodeViewModel(Parcel in) {
+    protected CountryPhoneCode(Parcel in) {
         this.countryId = in.readString();
         this.countryName = in.readString();
         this.countryPhoneCode = in.readString();
     }
 
-    public static final Parcelable.Creator<FlightBookingPhoneCodeViewModel> CREATOR = new Parcelable.Creator<FlightBookingPhoneCodeViewModel>() {
+    public static final Parcelable.Creator<CountryPhoneCode> CREATOR = new Parcelable.Creator<CountryPhoneCode>() {
         @Override
-        public FlightBookingPhoneCodeViewModel createFromParcel(Parcel source) {
-            return new FlightBookingPhoneCodeViewModel(source);
+        public CountryPhoneCode createFromParcel(Parcel source) {
+            return new CountryPhoneCode(source);
         }
 
         @Override
-        public FlightBookingPhoneCodeViewModel[] newArray(int size) {
-            return new FlightBookingPhoneCodeViewModel[size];
+        public CountryPhoneCode[] newArray(int size) {
+            return new CountryPhoneCode[size];
         }
     };
 
-    public int type(FlightBookingPhoneCodeAdapterTypeFactory typeFactory) {
+    @Override
+    public int type(PhoneCodePickerAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 }

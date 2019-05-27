@@ -1,6 +1,7 @@
 package com.tokopedia.flight.bookingV2.presentation.contract
 
 import android.support.annotation.StringRes
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
 import com.tokopedia.flight.booking.view.viewmodel.*
@@ -132,7 +133,7 @@ interface FlightBookingContract {
 
         fun onButtonSubmitClicked()
 
-        fun onPhoneCodeResultReceived(phoneCodeViewModel: FlightBookingPhoneCodeViewModel)
+        fun onPhoneCodeResultReceived(phoneCode: CountryPhoneCode)
 
         fun onPassengerResultReceived(passengerViewModel: FlightBookingPassengerViewModel)
 

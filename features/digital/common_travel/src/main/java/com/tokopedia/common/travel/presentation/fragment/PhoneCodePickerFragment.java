@@ -1,7 +1,6 @@
-package com.tokopedia.flight.booking.view.fragment;
+package com.tokopedia.common.travel.presentation.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,13 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
-import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.di.FlightBookingComponent;
-import com.tokopedia.flight.booking.view.adapter.FlightBookingPhoneCodeAdapterTypeFactory;
-import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodePresenterImpl;
-import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodeView;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.common.travel.R;
+import com.tokopedia.common.travel.di.CommonTravelComponent;
+import com.tokopedia.common.travel.presentation.adapter.PhoneCodePickerAdapterTypeFactory;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
+import com.tokopedia.common.travel.presentation.presenter.PhoneCodePickerPresenterImpl;
+import com.tokopedia.common.travel.presentation.presenter.PhoneCodePickerView;
 
 import javax.inject.Inject;
 
@@ -24,13 +22,13 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<FlightBookingPhoneCodeViewModel, FlightBookingPhoneCodeAdapterTypeFactory> implements
-        FlightBookingPhoneCodeView {
+public class PhoneCodePickerFragment extends BaseSearchListFragment<CountryPhoneCode, PhoneCodePickerAdapterTypeFactory> implements
+        PhoneCodePickerView {
 
     public static final String EXTRA_SELECTED_PHONE_CODE = "EXTRA_SELECTED_PHONE_CODE";
 
     @Inject
-    FlightBookingPhoneCodePresenterImpl flightBookingPhoneCodePresenter;
+    PhoneCodePickerPresenterImpl flightBookingPhoneCodePresenter;
 
     @Override
     protected String getScreenName() {
@@ -39,14 +37,14 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
 
     @Override
     protected void initInjector() {
-        getComponent(FlightBookingComponent.class)
+        getComponent(CommonTravelComponent.class)
                 .inject(this);
     }
 
     @Override
-    public void onItemClicked(FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
+    public void onItemClicked(CountryPhoneCode countryPhoneCode) {
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_SELECTED_PHONE_CODE, flightBookingPhoneCodeViewModel);
+        intent.putExtra(EXTRA_SELECTED_PHONE_CODE, countryPhoneCode);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -60,14 +58,14 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_airport_picker, container, false);
+        View view = inflater.inflate(R.layout.fragment_phone_code_picker, container, false);
         view.requestFocus();
         return view;
     }
 
     @Override
-    protected FlightBookingPhoneCodeAdapterTypeFactory getAdapterTypeFactory() {
-        return new FlightBookingPhoneCodeAdapterTypeFactory();
+    protected PhoneCodePickerAdapterTypeFactory getAdapterTypeFactory() {
+        return new PhoneCodePickerAdapterTypeFactory();
     }
 
     @Override
@@ -86,8 +84,8 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
         super.onDestroyView();
     }
 
-    @Override
-    protected String getMessageFromThrowable(Context context, Throwable t) {
-        return FlightErrorUtil.getMessageFromException(context, t);
-    }
+//    @Override
+//    protected String getMessageFromThrowable(Context context, Throwable t) {
+//        return FlightErrorUtil.getMessageFromException(context, t);
+//    }
 }
