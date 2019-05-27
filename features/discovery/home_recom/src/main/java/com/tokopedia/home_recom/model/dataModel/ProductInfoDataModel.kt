@@ -1,11 +1,13 @@
 package com.tokopedia.home_recom.model.dataModel
 
 import com.tokopedia.home_recom.R
+import com.tokopedia.home_recom.model.entity.Data
+import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 class ProductInfoDataModel(
-        val product: RecommendationItem
+        val productDetailData: ProductDetailData
 ) : BaseHomeRecommendationDataModel {
 
     companion object{

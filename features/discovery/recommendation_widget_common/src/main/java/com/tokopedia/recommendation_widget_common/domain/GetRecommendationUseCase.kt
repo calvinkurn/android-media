@@ -5,6 +5,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.recommendation_widget_common.PARAM_PRODUCT_IDS
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
@@ -42,10 +43,12 @@ constructor(private val context: Context,
 
     fun getRecomParams(pageNumber: Int,
                        xSource: String,
-                       pageName: String): RequestParams {
+                       pageName: String,
+                       productIds: ArrayList<String>): RequestParams {
         val params = RequestParams.create()
         params.putInt(USER_ID, userSession.userId.toInt())
         params.putInt(PAGE_NUMBER, pageNumber)
+        params.putObject(PARAM_PRODUCT_IDS, productIds)
 
         if(xSource.isEmpty()) {
             params.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE)

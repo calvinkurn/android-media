@@ -546,8 +546,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             otherProductDef?.await()?.let { loadOtherProduct.value = it }
             topAdsProductDef?.await()?.let {
-                val recommendationModel = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data?.get(0) ?: return@launch)
-                loadTopAdsProduct.value = Loaded(Success(recommendationModel))
+                val recommendationWidget = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data?: return@launch)
+                loadTopAdsProduct.value = Loaded(Success(recommendationWidget.get(0)))
             }
             lazyNeedForceUpdate = false
         }

@@ -17,14 +17,12 @@ import com.tokopedia.home_recom.model.dataModel.*
 import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home_recom.view.productInfo.ProductInfoFragment
-import com.tokopedia.recommendation_widget_common.RecommendationParams
 import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
-import com.tokopedia.recommendation_widget_common.TYPE_INFO
 import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModelDummy
-import com.tokopedia.recommendation_widget_common.viewmodel.RecommendationItemViewModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
 import javax.inject.Inject
 
 class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationCardView.TrackingListener {
@@ -35,7 +33,7 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl() }
     private val adapter by lazy { HomeRecommendationAdapter(adapterTypeFactory) }
-    private val viewModel by lazy { viewModelProvider.get(RecommendationItemViewModel::class.java) }
+    private val recommendationWidgetViewModel by lazy { viewModelProvider.get(RecommendationPageViewModel::class.java) }
 
     companion object{
         private const val SPAN_COUNT = 2
@@ -53,13 +51,25 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
         super.onActivityCreated(savedInstanceState)
         disableLoadMore()
         getRecyclerView(view).layoutManager = recyclerViewLayoutManager
-        viewModel.recommendationListModel.observe(this, Observer {
-            it?.let { recommendationList ->
-                renderList(mapDataModel(recommendationList.recommendationList))
+        recommendationWidgetViewModel.productInfoDataModel.observe(this, Observer {
+            it?.let {
+                primaryProduct ->
+                displayProductInfo(primaryProduct)
             }
         })
 
-        viewModel.getRecommendationList(RecommendationParams())
+        recommendationWidgetViewModel.recommendationListModel.observe(this, Observer {
+            it?.let { recommendationList ->
+                renderList(mapDataModel(recommendationList))
+            }
+        })
+
+        recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
+                onErrorGetRecommendation = this::onErrorGetRecommendation)
+    }
+
+    private fun onErrorGetRecommendation(errorMessage: String?) {
+
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
@@ -100,18 +110,17 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
                 .commit()
     }
 
-    private fun mapDataModel(listRecommendationModelDummy: List<RecommendationModelDummy>): List<BaseHomeRecommendationDataModel>{
+    private fun mapDataModel(listRecommendationModelDummy: List<RecommendationWidget>): List<BaseHomeRecommendationDataModel>{
         val list = ArrayList<BaseHomeRecommendationDataModel>()
-        listRecommendationModelDummy.forEach { recommendationModelDummy ->
-            when(recommendationModelDummy.type){
+        listRecommendationModelDummy.forEach { recommendationWidget ->
+            when(recommendationWidget.layoutType){
                 TYPE_SCROLL -> {
-                    list.add(TitleDataModel(recommendationModelDummy.title))
-                    recommendationModelDummy.recommendationItemList.forEach {
+                    list.add(TitleDataModel(recommendationWidget.title))
+                    recommendationWidget.recommendationItemList.forEach {
                         list.add(RecommendationItemDataModel(it, this))
                     }
                 }
-                TYPE_INFO -> displayProductInfo(ProductInfoDataModel(recommendationModelDummy.recommendationItemList[0]))
-                TYPE_CAROUSEL -> list.add(RecommendationCarouselDataModel(recommendationModelDummy.title, recommendationModelDummy.recommendationItemList, this))
+                TYPE_CAROUSEL -> list.add(RecommendationCarouselDataModel(recommendationWidget.title, recommendationWidget.recommendationItemList, this))
             }
         }
         return list

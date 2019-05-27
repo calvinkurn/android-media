@@ -64,7 +64,8 @@ public class InboxPresenter extends BaseDaggerPresenter {
             return;
         getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(0,
                 X_SOURCE_RECOM_WIDGET,
-                INBOX_PAGE),
+                INBOX_PAGE,
+                new ArrayList<>()),
                 new Subscriber<List<? extends RecommendationWidget>>() {
                     @Override
                     public void onStart() {
@@ -95,9 +96,11 @@ public class InboxPresenter extends BaseDaggerPresenter {
     public void getRecomData(int page) {
         if (this.inboxView == null)
             return;
-        getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(page,
+        getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(
+                page,
                 X_SOURCE_RECOM_WIDGET,
-                INBOX_PAGE),
+                INBOX_PAGE,
+                new ArrayList<>()),
                 new Subscriber<List<? extends RecommendationWidget>>() {
                     @Override
                     public void onStart() {
