@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
@@ -47,7 +48,7 @@ public class UserIdentificationFormKtpFragment extends
     @Override
     protected void setContentView() {
         title.setText(R.string.ktp_title);
-        subtitle.setText(R.string.ktp_subtitle);
+        subtitle.setText(MethodChecker.fromHtml(getString(R.string.ktp_subtitle)));
         button.setText(R.string.ktp_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
