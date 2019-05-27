@@ -28,5 +28,5 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(PrimaryProductViewModel::class)
-    internal abstract fun recommendationItemViewModel(viewModel: PrimaryProductViewModel): ViewModel
+    internal abstract fun primaryItemViewModel(viewModel: PrimaryProductViewModel): ViewModel
 }
