@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.webkit.WebView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.network.utils.URLGenerator
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseWebViewFragment
@@ -19,8 +21,8 @@ class WebViewFragment : BaseWebViewFragment() {
     val TOKOPEDIA_STRING = "tokopedia"
     private var url: String? = null
     private val Insurance_File_Name = "E-policy Asuransi"
-
     private val pdf_regex_pattern = "^.+\\.([pP][dD][fF])\$"
+    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
 
     companion object {
@@ -48,15 +50,15 @@ class WebViewFragment : BaseWebViewFragment() {
 
 
     override fun getUrl(): String? {
-        if (isTokopediaUrl) {
-            val gcmId = userSession?.getDeviceId()
-            val userId = userSession?.getUserId()
-            return URLGenerator.generateURLSessionLogin(
+        return if (isTokopediaUrl) {
+            val gcmId = userSession?.deviceId
+            val userId = userSession?.userId
+            URLGenerator.generateURLSessionLogin(
                     Uri.encode(getPlainUrl()),
                     gcmId,
                     userId)
         } else {
-            return url
+            url
         }
     }
 
@@ -68,20 +70,15 @@ class WebViewFragment : BaseWebViewFragment() {
 
     override fun getAccessToken(): String? {
         return if (isTokopediaUrl) {
-            userSession?.getAccessToken()
+            userSession?.accessToken
         } else null
     }
 
 
-    @SuppressLint("MissingPermission")
     override fun shouldOverrideUrlLoading(webView: WebView?, url: String): Boolean {
         if (isdownloadable(url)) {
-            val downloadHelper = DownloadHelper(activity!!, url, Insurance_File_Name, object : DownloadHelper.DownloadHelperListener {
-                override fun onDownloadComplete() {
-                }
-            })
 
-            downloadHelper.downloadFile(::isdownloadable)
+            checkPermissionAndDownload(url)
 
             return true
         } else if (RouteManager.isSupportApplink(activity, url)) {
@@ -91,10 +88,44 @@ class WebViewFragment : BaseWebViewFragment() {
         return false
     }
 
+
+    private fun checkPermissionAndDownload(url: String) {
+        permissionCheckerHelper = PermissionCheckerHelper()
+        permissionCheckerHelper.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, object : PermissionCheckerHelper.PermissionCheckListener {
+            override fun onPermissionDenied(permissionText: String) {
+            }
+
+            override fun onNeverAskAgain(permissionText: String) {
+            }
+
+            override fun onPermissionGranted() {
+                downloadFile(url)
+            }
+        })
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun downloadFile(url: String) {
+        val downloadHelper = DownloadHelper(activity!!, url, Insurance_File_Name, object : DownloadHelper.DownloadHelperListener {
+            override fun onDownloadComplete() {
+            }
+        })
+
+        downloadHelper.downloadFile(::isdownloadable)
+    }
+
     private fun isdownloadable(uri: String): Boolean {
         val pattern = Pattern.compile(pdf_regex_pattern)
         val matcher = pattern.matcher(uri)
         return matcher.find()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(activity!!.applicationContext, requestCode, permissions, grantResults)
+        }
     }
 
 
