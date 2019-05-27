@@ -25,7 +25,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
     public ShipmentAddressListAdapter(ActionListener actionListener) {
         mActionListener = actionListener;
         mAddressModelList = new ArrayList<>();
-        mCornerData = null;
+        mCornerData = new CornerAddressModel();
     }
 
     @NonNull
@@ -74,8 +74,8 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
         notifyDataSetChanged();
     }
 
-    public void showCornerDefault() {
-        mCornerData = new CornerAddressModel();
+    public void hideCornerOption() {
+        mCornerData = null;
         notifyDataSetChanged();
     }
 

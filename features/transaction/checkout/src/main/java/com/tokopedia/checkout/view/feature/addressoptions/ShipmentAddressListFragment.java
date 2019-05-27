@@ -239,7 +239,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     protected void initialVar() {
         mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvRecipientAddressList.setAdapter(mShipmentAddressListAdapter);
-        if (!isDisableCorner) mShipmentAddressListAdapter.showCornerDefault();
+        if (isDisableCorner) mShipmentAddressListAdapter.hideCornerOption();
     }
 
     @Override

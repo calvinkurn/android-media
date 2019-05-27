@@ -22,11 +22,11 @@ class SampaiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var mRadio: RadioButton = itemView.findViewById(R.id.radio_button_corner)
 
     fun bind(model: CornerAddressModel, listener: ShipmentAddressListAdapter.ActionListener, position: Int) {
-        if (!TextUtils.isEmpty(model.cornerName)) {
+        if (model.cornerModel != null) {
             mCornerView.visibility = View.VISIBLE
             mCornerView.setOnClickListener { view -> listener.onCornerAddressClicked(model, position) }
-            mCornerName.text = model.cornerName
-            mBranchName.text = model.cornerBranchName
+            mCornerName.text = model.cornerModel.addressName
+            mBranchName.text = model.cornerModel.destinationDistrictName
             mRadio.isChecked = model.isSelected
             mButton.text = itemView.context.getString(R.string.button_change_corner)
         } else {
@@ -37,6 +37,7 @@ class SampaiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     companion object {
-        @JvmStatic val TYPE: Int = R.layout.item_sampai
+        @JvmStatic
+        val TYPE: Int = R.layout.item_sampai
     }
 }
