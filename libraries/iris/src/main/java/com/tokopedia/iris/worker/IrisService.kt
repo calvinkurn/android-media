@@ -33,17 +33,17 @@ class IrisService : JobIntentService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return START_STICKY_COMPATIBILITY
-    }
-
-    override fun onHandleWork(intent: Intent) {
         try {
             Log.d("Iris", "onHandleWork")
-            val configuration = intent.getParcelableExtra<Configuration>(WORKER_SEND_DATA)
+            val configuration = intent?.getParcelableExtra<Configuration>(WORKER_SEND_DATA)
             if (configuration != null) {
                 startService(configuration)
             }
         } catch (e: java.lang.Exception) {}
+        return START_STICKY_COMPATIBILITY
+    }
+
+    override fun onHandleWork(intent: Intent) {
     }
 
     private fun startService(configuration: Configuration) {
