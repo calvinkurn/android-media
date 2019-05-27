@@ -26,5 +26,13 @@ data class HotelReviewParam(
 
         @SerializedName("sortType")
         @Expose
-        var sortType: String = "desc"
+        var sortType: String = "desc",
+
+        @SerializedName("filterByCountry")
+        @Expose
+        var filterByCountry: String = "all",
+
+        @SerializedName("filterByRank")
+        @Expose
+        var filterByRank: Int = 0
 )

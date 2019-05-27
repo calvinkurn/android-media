@@ -277,16 +277,13 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
     }
 
     fun setupRoomPrice() {
-        if (hotelRoom.roomPrice.isNotEmpty())
-        tv_room_detail_price.text = hotelRoom.roomPrice[0].roomPrice
+        tv_room_detail_price.text = hotelRoom.roomPrice.roomPrice
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
         room_detail_button.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 if (userSessionInterface.isLoggedIn) {
                     roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
-                            HotelAddCartParam("", addToCartParam.checkIn,
-                                    addToCartParam.checkOut, addToCartParam.propertyId,
-                                    hotelRoom.roomId, addToCartParam.room, addToCartParam.adult))
+                            addToCartParam)
                 } else {
                     goToLoginPage()
                 }

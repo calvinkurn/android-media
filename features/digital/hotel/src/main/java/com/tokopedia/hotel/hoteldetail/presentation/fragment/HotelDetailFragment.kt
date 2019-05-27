@@ -382,8 +382,8 @@ class HotelDetailFragment : BaseDaggerFragment() {
         container_shimmering_bottom.visibility = View.GONE
         container_bottom.visibility = View.VISIBLE
 
-        if (data.isNotEmpty() && data[0].roomPrice.isNotEmpty()) {
-            tv_hotel_price.text = data[0].roomPrice[0].roomPrice
+        if (data.isNotEmpty()) {
+            tv_hotel_price.text = data[0].roomPrice.roomPrice
             btn_see_room.setOnClickListener {
                 startActivityForResult(HotelRoomListActivity.createInstance(context!!, hotelHomepageModel.locId, hotelName,
                         hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,

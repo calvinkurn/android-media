@@ -268,7 +268,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {
         return HotelAddCartParam("", hotelRoomListPageModel.checkIn,
                 hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
-                room.roomId, hotelRoomListPageModel.room, hotelRoomListPageModel.adult)
+                listOf(HotelAddCartParam.Room(roomId = room.roomId, numOfRooms = room.roomQtyReqiured)))
     }
 
     override fun getScreenName(): String = ""
@@ -342,9 +342,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onClickBookListener(room: HotelRoom) {
         if (userSessionInterface.isLoggedIn) {
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
-                    HotelAddCartParam("", hotelRoomListPageModel.checkIn,
-                            hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
-                            room.roomId, hotelRoomListPageModel.room, hotelRoomListPageModel.adult))
+                    mapToAddCartParam(hotelRoomListPageModel, room))
         } else {
             goToLoginPage()
         }
