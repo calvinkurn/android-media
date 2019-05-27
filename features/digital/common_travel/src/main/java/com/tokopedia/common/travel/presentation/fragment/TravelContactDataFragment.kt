@@ -96,6 +96,7 @@ class TravelContactDataFragment: BaseDaggerFragment() {
             contactData.name = til_contact_name.editText.text.toString()
             contactData.email = til_contact_email.editText.text.toString()
             contactData.phone = til_contact_phone_number.editText.text.toString()
+            contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
 
             val intent = Intent()
             intent.putExtra(EXTRA_CONTACT_DATA, contactData)
@@ -110,7 +111,7 @@ class TravelContactDataFragment: BaseDaggerFragment() {
             til_contact_name.error = getString(R.string.travel_contact_data_name_error)
             isValid = false
         }
-        if (isValidEmail(til_contact_email.editText.text.toString())) {
+        if (!isValidEmail(til_contact_email.editText.text.toString())) {
             til_contact_email.error = getString(R.string.travel_contact_data_email_error)
             isValid = false
         }
@@ -133,7 +134,7 @@ class TravelContactDataFragment: BaseDaggerFragment() {
 
     companion object {
         const val EXTRA_CONTACT_DATA = "extra_contact_data"
-        const val REQUEST_CODE_PHONE_CODE = 1
+        const val REQUEST_CODE_PHONE_CODE = 300
         const val MIN_PHONE_NUMBER_DIGIT = 9
 
         fun getInstance(contactData: TravelContactData): TravelContactDataFragment =
