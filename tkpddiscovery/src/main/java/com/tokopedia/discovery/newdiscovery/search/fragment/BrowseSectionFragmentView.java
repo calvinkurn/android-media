@@ -9,7 +9,7 @@ import java.util.HashMap;
  * Created by henrypriyono on 10/24/17.
  */
 
-public interface SearchSectionFragmentView extends CustomerView {
+public interface BrowseSectionFragmentView extends CustomerView {
     HashMap<String, String> getSelectedSort();
 
     void setSelectedSort(HashMap<String, String> selectedSort);

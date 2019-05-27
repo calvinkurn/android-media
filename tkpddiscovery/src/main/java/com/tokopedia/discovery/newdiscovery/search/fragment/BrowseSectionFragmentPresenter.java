@@ -9,6 +9,6 @@ import java.util.HashMap;
  * Created by henrypriyono on 10/24/17.
  */
 
-public interface SearchSectionFragmentPresenter<V extends CustomerView> extends CustomerPresenter<V> {
+public interface BrowseSectionFragmentPresenter<V extends CustomerView> extends CustomerPresenter<V> {
     void requestDynamicFilter();
 }
