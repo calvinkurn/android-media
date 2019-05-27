@@ -28,7 +28,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -54,7 +53,7 @@ import com.tokopedia.shop.open.view.holder.OpenShopAddressViewHolder;
 import com.tokopedia.shop.open.view.listener.ShopOpenDomainView;
 import com.tokopedia.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
 import com.tokopedia.shop.open.view.watcher.AfterTextWatcher;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -104,9 +103,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Inject
     ShopOpenTracking trackingOpenShop;
     @Inject
-    UserSession userSession;
-    @Inject
-    GlobalCacheManager globalCacheManager;
+    UserSessionInterface userSession;
 
     private boolean fromAppShortCut = false;
 

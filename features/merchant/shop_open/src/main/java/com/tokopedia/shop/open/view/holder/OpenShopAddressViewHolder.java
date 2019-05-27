@@ -26,7 +26,6 @@ public class OpenShopAddressViewHolder {
     private ArrayList<String> postalCode;
 
     public OpenShopAddressViewHolder(View view, Context context, OpenShopAddressListener openShopAddressListener) {
-
         textInputAddress = view.findViewById(com.tokopedia.seller.R.id.text_input_address);
         textInputPostal = view.findViewById(com.tokopedia.seller.R.id.text_input_postal);
         editTextInputShopAddress = view.findViewById(com.tokopedia.seller.R.id.edit_text_input_address);
@@ -112,6 +111,5 @@ public class OpenShopAddressViewHolder {
         void navigateToDistrictChooser();
         void hideSnackBarRetry();
         void navigateToPostalChooser();
-
     }
 }

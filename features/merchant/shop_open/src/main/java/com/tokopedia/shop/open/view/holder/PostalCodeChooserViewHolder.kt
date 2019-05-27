@@ -10,7 +10,6 @@ class PostalCodeChooserViewHolder(itemView: View) : AbstractViewHolder<PostalCod
 
     companion object {
         val LAYOUT = R.layout.listview_postal_code
-
     }
 
     override fun bind(element: PostalCodeViewModel) {

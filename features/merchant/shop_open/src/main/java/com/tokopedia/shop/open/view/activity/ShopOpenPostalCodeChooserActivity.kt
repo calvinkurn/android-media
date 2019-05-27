@@ -33,10 +33,11 @@ class ShopOpenPostalCodeChooserActivity : BaseSimpleActivity(), HasComponent<Bas
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (supportActionBar != null) {
-            supportActionBar!!.elevation = 0f
+        supportActionBar?.let {
+            it.elevation = 0f
             toolbar.setNavigationIcon(R.drawable.ic_close)
         }
+
     }
 
     override fun getComponent(): BaseAppComponent {

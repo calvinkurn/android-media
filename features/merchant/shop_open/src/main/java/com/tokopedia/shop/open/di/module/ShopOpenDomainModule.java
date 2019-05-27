@@ -126,10 +126,4 @@ public class ShopOpenDomainModule {
                 R.raw.shop_domain_suggestion
         );
     }
-
-    @ShopOpenDomainScope
-    @Provides
-    UserSession providesUserSession(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
 }

@@ -18,17 +18,16 @@ import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCa
 import com.tokopedia.seller.SellerModuleRouter
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.di.component.DaggerShopOpenDomainComponent
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_open_create_ready.*
 import javax.inject.Inject
 
 class ShopOpenCreateReadyFragment : BaseDaggerFragment() {
 
     @Inject
-    lateinit var userSession: UserSession
+    lateinit var userSession: UserSessionInterface
 
     companion object {
-
         fun newInstance() =
                 ShopOpenCreateReadyFragment()
     }
