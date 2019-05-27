@@ -46,6 +46,10 @@ data class Basic(
         @Expose
         val isMustInsurance: Boolean = false,
 
+        @SerializedName("needPrescription")
+        @Expose
+        val needPrescription: Boolean = false,
+
         @SerializedName("lastUpdatePrice")
         @Expose
         val lastUpdatePrice: String = "",
