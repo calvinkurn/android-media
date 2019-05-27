@@ -16,7 +16,9 @@ class CornerListPresenter @Inject constructor(val usecase: GetCornerUseCase): Co
     }
 
     override fun getData() {
-        usecase.execute("").subscribe({ mView?.setData(it.listAddress)}, {}, {})
+        usecase.execute("").subscribe(
+                { mView?.setData(it.listAddress)},
+                {e -> mView?.showError(e)}, {})
     }
 
     override fun searchQuery(query: String) {
