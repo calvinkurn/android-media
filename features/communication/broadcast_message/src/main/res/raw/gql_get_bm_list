@@ -29,6 +29,6 @@ query ChatBlastSellerList($page: Int!, $per_page: Int){
             }
         }
         hasNext
-        currentPage
+        position
     }
 }
