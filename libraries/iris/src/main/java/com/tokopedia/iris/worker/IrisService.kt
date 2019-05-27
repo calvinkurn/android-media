@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.support.v4.app.JobIntentService
+import android.util.Log
 import com.tokopedia.iris.WORKER_SEND_DATA
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
@@ -37,6 +38,7 @@ class IrisService : JobIntentService() {
 
     override fun onHandleWork(intent: Intent) {
         try {
+            Log.d("Iris", "onHandleWork")
             val configuration = intent.getParcelableExtra<Configuration>(WORKER_SEND_DATA)
             if (configuration != null) {
                 startService(configuration)
@@ -45,12 +47,14 @@ class IrisService : JobIntentService() {
     }
 
     private fun startService(configuration: Configuration) {
+        Log.d("Iris", "startService")
         mTimer.scheduleAtFixedRate(IrisTask(configuration), 0, configuration.intervals)
     }
 
     private inner class IrisTask(val configuration: Configuration) : TimerTask() {
         override fun run() {
             send(configuration.maxRow)
+            Log.d("Iris", configuration.maxRow.toString())
         }
     }
 
@@ -59,7 +63,10 @@ class IrisService : JobIntentService() {
 
         val trackings: List<Tracking> = trackingRepository.getFromOldest(maxRow)
 
+        Log.d("Iris", "Send Tracking")
         if (trackings.isNotEmpty()) {
+
+            Log.d("Iris", "Send Tracking isNotEmpty")
             try {
                 val request: String = TrackingMapper().transformListEvent(trackings)
 
@@ -79,6 +86,7 @@ class IrisService : JobIntentService() {
                         && response.isSuccessful
                         && response.code() == 200) {
                     trackingRepository.delete(trackings)
+                    Log.d("Iris", "Send Tracking isSuccessful")
                 }
             } catch (e: Exception) {
                 // no op
