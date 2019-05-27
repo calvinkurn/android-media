@@ -365,9 +365,6 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name="com.tokopedia.tkpd.onboarding.NewOnboardingActivity"
-            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

@@ -31,7 +31,7 @@ buildscript {
         classpath('net.sf.proguard:proguard-gradle:5.2.1') {
             force = true
         }
-        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.9.6") {
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.9.0") {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
         if (!project.hasProperty("disable-performance-plugin")) {

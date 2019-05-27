@@ -57,9 +57,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
 
-
-
-
     // ImageReviewGalleryActivity
     @JvmField
     val IMAGE_REVIEW_GALLERY = "$INTERNAL_MARKETPLACE/product/{id}/review/gallery"
@@ -102,5 +99,10 @@ object ApplinkConstInternalMarketplace {
     //DistrictRecommendationShopSettingsActivity
     @JvmField
     val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
+
+
+    // OnboardingActivity
+    @JvmField
+    val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"
 
 }
