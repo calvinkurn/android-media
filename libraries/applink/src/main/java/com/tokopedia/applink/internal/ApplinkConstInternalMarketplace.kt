@@ -64,12 +64,6 @@ object ApplinkConstInternalMarketplace {
     //ShopOpenRoutingActivity
     @JvmField
     val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"
-    @JvmField
-    val SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/shop/setting"
-    @JvmField
-    val SHOP_NOTE_SETTING = "$SHOP_SETTINGS/notes"
-    @JvmField
-    val SHOP_SHIPPING_SETTING = "$SHOP_SETTINGS/shipping"
 
     // GmSubscribeHomeActivity
     @JvmField
