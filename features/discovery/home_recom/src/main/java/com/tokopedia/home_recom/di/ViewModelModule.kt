@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -22,8 +23,10 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(RecommendationPageViewModel::class)
-    internal abstract fun recommendationItemViewModel(viewModel: RecommendationPageViewModel,
-                                                      getRecommendationUseCase: GetRecommendationUseCase,
-                                                      addWishListUseCase: AddWishListUseCase,
-                                                      removeWishListUseCase: RemoveWishListUseCase): ViewModel
+    internal abstract fun recommendationItemViewModel(viewModel: RecommendationPageViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PrimaryProductViewModel::class)
+    internal abstract fun recommendationItemViewModel(viewModel: PrimaryProductViewModel): ViewModel
 }
