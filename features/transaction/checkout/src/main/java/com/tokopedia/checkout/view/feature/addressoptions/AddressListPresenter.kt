@@ -27,27 +27,35 @@ class AddressListPresenter
     }
 
     override fun getAddress() {
-        usecase.execute(EMPTY_STRING).subscribe(getAddressHandler(EMPTY_STRING))
+        usecase.execute(EMPTY_STRING)
+                .doOnSubscribe { mView?.showLoading() }
+                .doOnTerminate {
+                    mView?.hideLoading()
+                    mView?.stopTrace() }
+                .subscribe(getAddressHandler(EMPTY_STRING))
     }
 
     override fun searchAddress(query: String) {
-        usecase.execute(query).subscribe(getAddressHandler(query))
+        usecase.execute(query)
+                .doOnSubscribe { mView?.showLoading() }
+                .doOnTerminate {
+                    mView?.hideLoading()
+                    mView?.stopTrace() }
+                .subscribe(getAddressHandler(query))
     }
 
     override fun loadMore() {
         if (!mHasNext) return
-        usecase.loadMore(mCurrentQuery, mCurrentPage + 1).subscribe(
+        usecase.loadMore(mCurrentQuery, mCurrentPage + 1)
+                .doOnSubscribe { mView?.showLoading() }
+                .doOnTerminate {
+                    mView?.hideLoading()
+                    mView?.stopTrace() }
+                .subscribe(
                 { result ->
                     mCurrentPage++
                     mView?.updateList(result.listAddress)
-                    mView?.hideLoading()
-                    mView?.stopTrace()
-                },
-                { e ->
-                    mView?.showError(e)
-                    mView?.hideLoading()
-                    mView?.stopTrace()
-                }, {}
+                }, { e -> mView?.showError(e) }, {}
         )
     }
 
@@ -57,15 +65,12 @@ class AddressListPresenter
                     t?.let {
                         mView?.setToken(it.token)
                         mHasNext = it.hasNext ?: false
+                        mCurrentQuery = query
+                        mCurrentPage = 1
                         if (it.listAddress.isNotEmpty()) {
                             mView?.showList(it.listAddress)
-                            mCurrentQuery = query
-                            mCurrentPage = 1
                         } else mView?.showListEmpty()
-                        mView?.hideLoading()
-                        mView?.stopTrace()
                     }
-
                 }
 
                 override fun onCompleted() {
@@ -73,8 +78,6 @@ class AddressListPresenter
                 }
 
                 override fun onError(e: Throwable?) {
-                    mView?.hideLoading()
-                    mView?.stopTrace()
                     mView?.showError(e)
                 }
             }
