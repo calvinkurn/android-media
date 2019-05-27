@@ -76,6 +76,7 @@ class AutoAdsWidgetView : CardView {
     }
 
     private fun renderUI(){
+        visibility = View.VISIBLE
         widgetViewModel = ViewModelProviders.of(context as BaseSimpleActivity, factory).get(AutoAdsWidgetViewModel::class.java)
         widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
         widgetViewModel.autoAdsData.observe(context as BaseSimpleActivity, Observer {

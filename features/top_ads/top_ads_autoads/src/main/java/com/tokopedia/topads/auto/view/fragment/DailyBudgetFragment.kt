@@ -81,8 +81,8 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
             seekBar.value = data.minDailyBudget
             seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    priceRange.text = budgetViewModel.getPotentialImpression(data.minBid.toDouble(),
-                            data.maxBid.toDouble(), progress.toDouble())
+                    priceRange.text = budgetViewModel.getPotentialImpression(data.estimation.minBid.toDouble(),
+                            data.estimation.maxBid.toDouble(), progress.toDouble())
                     priceEditText.setText(progress.toString())
                 }
 
@@ -92,6 +92,17 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
 
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
 
+                }
+            })
+            priceEditText.addTextChangedListener(object : NumberTextWatcher(priceEditText, "0") {
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    val error = budgetViewModel.checkBudget(number, data.minDailyBudget.toDouble(), data.maxDailyBudget.toDouble())
+                    if (!TextUtils.isEmpty(error)) {
+                        budgetInputLayout.error = error
+                    } else {
+                        budgetInputLayout.error = null
+                    }
                 }
             })
         })
@@ -116,18 +127,6 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
         }
-
-        priceEditText.addTextChangedListener(object : NumberTextWatcher(priceEditText, "0") {
-            override fun onNumberChanged(number: Double) {
-                super.onNumberChanged(number)
-                val error = budgetViewModel.checkBudget(number, MIN_BUDGET.toDouble(), MAX_BUDGET.toDouble())
-                if (!TextUtils.isEmpty(error)) {
-                    budgetInputLayout.error = error
-                } else {
-                    budgetInputLayout.error = null
-                }
-            }
-        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -148,7 +147,5 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
 
         val REQUEST_CODE_AD_OPTION = 3
         val SELECTED_OPTION = "selected_option"
-        val MIN_BUDGET = 10000
-        val MAX_BUDGET = 20000
     }
 }
