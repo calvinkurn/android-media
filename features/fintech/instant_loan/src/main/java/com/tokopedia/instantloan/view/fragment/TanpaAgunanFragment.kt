@@ -18,6 +18,8 @@ import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.*
+import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.LOAN_AMOUNT_QUERY_PARAM
+import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_NO_COLLATERAL
 import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.activity.SelectLoanParamActivity
 import com.tokopedia.instantloan.view.contractor.OnlineLoanContractor
@@ -89,7 +91,6 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         val adapter = ArrayAdapter.createFromResource(getContext()!!,
                 R.array.values_amount_array, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//        spinner_value_nominal!!.adapter = adapter
     }
 
     private fun initView(view: View) {
@@ -102,86 +103,55 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
 
         widgetAddRemove.setButtonClickListener(this)
 
-
         loanAmountWarning = widgetAddRemove.findViewById(R.id.tv_warning)
 
-        loanPeriodLabelTV.text = "Pilih"
+        loanPeriodLabelTV.text = getString(R.string.il_loan_period_type_label)
         spinner_label_nominal.setOnClickListener {
 
+            loanPeriodLabelTV.error = null
             val intent: Intent = SelectLoanParamActivity.createInstance(context!!, loanPeriodTypeList, null)
             startActivityForResult(intent, LOAN_PERIOD_TYPE)
         }
 
-        loanPeriodValueTV.text = "Pilih Jumlah"
+        loanPeriodValueTV.text = getString(R.string.il_loan_period_value_label)
 
         spinner_value_nominal.setOnClickListener {
-
             if (!::selectedLoanPeriodType.isInitialized) {
                 loanPeriodLabelTV.error = ""
-
-            } else if (selectedLoanPeriodType.value.equals("Year", true)) {
-
+            } else if (selectedLoanPeriodType.value.equals(DEFAULT_YEAR_VALUE, true)) {
                 val intent: Intent = SelectLoanParamActivity.createInstance(context!!, loanPeriodYearList, null)
                 startActivityForResult(intent, LOAN_PERIOD_YEAR)
-
-            } else if (selectedLoanPeriodType.value.equals("Month", true)) {
-
+            } else if (selectedLoanPeriodType.value.equals(DEFAULT_MONTH_VALUE, true)) {
                 val intent: Intent = SelectLoanParamActivity.createInstance(context!!, loanPeriodMonthList, null)
                 startActivityForResult(intent, LOAN_PERIOD_MONTH)
-
             }
-
         }
-        /*text_value_amount.text = resources.getStringArray(R.array.values_amount)[mCurrentTab]
-        text_value_duration.text = resources.getStringArray(R.array.values_duration)[mCurrentTab]
-        text_value_processing_time.text = resources.getStringArray(R.array.values_processing_time)[mCurrentTab]
-        text_value_interest_rate.text = resources.getStringArray(R.array.values_interest_rate)[mCurrentTab]
-        text_form_description.text = resources.getStringArray(R.array.values_description)[mCurrentTab]
 
         view.findViewById<View>(R.id.button_search_pinjaman).setOnClickListener { view1 ->
 
-            if (spinner_value_nominal!!.selectedItem.toString()
-                            .equals(getString(R.string.label_select_nominal), ignoreCase = true)) {
-                val errorText = spinner_value_nominal!!.selectedView as TextView
-                errorText.setTextColor(Color.RED)
+            if (!presenter.isUserLoggedIn()) {
+                navigateToLoginPage()
             } else {
-                sendCariPinjamanClickEvent()
-                openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
-                        spinner_value_nominal!!.selectedItem.toString()
-                                .split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].replace(".", ""))
+                searchLoanOnline()
             }
-        }*/
+        }
+
     }
 
 
-    /*private fun sendCariPinjamanClickEvent() {
-        val eventLabel = screenName + " - " + spinner_value_nominal!!.selectedItem.toString()
+    private fun sendCariPinjamanClickEvent() {
+        val eventLabel = screenName + " - " + loanPeriodValueTV.tag as String
         instantLoanAnalytics.eventCariPinjamanClick(eventLabel)
-    }*/
-
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == LOGIN_REQUEST_CODE) {
-            if (userSession != null && userSession.isLoggedIn) {
-                showToastMessage(resources.getString(R.string.login_to_proceed), Toast.LENGTH_SHORT)
-            } else {
-                openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
-                        spinner_value_nominal!!.selectedItem.toString().split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1])
-            }
-        }
-    }*/
+    }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
         super.onActivityResult(requestCode, resultCode, data)
-
         if (requestCode == LOGIN_REQUEST_CODE) {
             if (userSession != null && userSession.isLoggedIn) {
                 showToastMessage(resources.getString(R.string.login_to_proceed), Toast.LENGTH_SHORT)
             } else {
-                /*openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
-                        spinner_value_nominal!!.selectedItem.toString().split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1])*/
+                searchLoanOnline()
             }
         } else if (resultCode == RESULT_OK && requestCode == LOAN_PERIOD_TYPE) {
 
@@ -193,12 +163,9 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
                     loanPeriodType.isSelected = loanPeriodType.id == selectedLoanPeriodType.id
                 }
                 loanPeriodLabelTV.text = selectedLoanPeriodType.label
-
+                loanPeriodLabelTV.error = null
                 resetLoanValueData()
-
-
             }
-
 
         } else if (resultCode == RESULT_OK && requestCode == LOAN_PERIOD_MONTH) {
 
@@ -208,6 +175,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
                 loanPeriodType.isSelected = loanPeriodType.id == selectedLoanPeriodMonth.id
             }
             loanPeriodValueTV.text = selectedLoanPeriodMonth.label
+            loanPeriodValueTV.tag = selectedLoanPeriodMonth.value
 
         } else if (resultCode == RESULT_OK && requestCode == LOAN_PERIOD_YEAR) {
 
@@ -217,6 +185,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
                 loanPeriodType.isSelected = loanPeriodType.id == selectedLoanPeriodYear.id
             }
             loanPeriodValueTV.text = selectedLoanPeriodYear.label
+            loanPeriodValueTV.tag = selectedLoanPeriodYear.label
 
         }
     }
@@ -233,7 +202,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
             selectedLoanPeriodMonth = LoanPeriodType("", "", -1, false)
         }
 
-        loanPeriodValueTV.text = "Pilih Jumlah"
+        loanPeriodValueTV.text = getString(R.string.il_loan_period_value_label)
     }
 
     override fun setFilterDataForOnlineLoan(gqlFilterData: GqlFilterData) {
@@ -253,16 +222,17 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         loan_amount_limit.visibility = View.VISIBLE
 
         widgetAddRemove.setText(loanAmountList[0].label)
+        widgetAddRemove.setLoanValue(loanAmountList[0].value.toLong())
 
     }
 
     private fun prepareLoanPeriodTypeList() {
 
         loanPeriodTypeList = ArrayList()
-        var loanPeriodType = LoanPeriodType("Month", "Bulan", 1)
+        var loanPeriodType = LoanPeriodType(DEFAULT_MONTH_VALUE, DEFAULT_MONTH_LABEL, 1)
         loanPeriodTypeList.add(loanPeriodType)
 
-        loanPeriodType = LoanPeriodType("Year", "Tahun", 2)
+        loanPeriodType = LoanPeriodType(DEFAULT_YEAR_VALUE, DEFAULT_YEAR_LABEL, 2)
         loanPeriodTypeList.add(loanPeriodType)
 
     }
@@ -272,7 +242,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         var loanPeriodYear: LoanPeriodType
         var i = 0
         for (value in min..max) {
-            loanPeriodYear = LoanPeriodType(value.toString(), "$value Tahun", i++)
+            loanPeriodYear = LoanPeriodType(value.toString(), "$value $DEFAULT_YEAR_LABEL", i++)
             loanPeriodYearList.add(loanPeriodYear)
         }
 
@@ -283,7 +253,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         var loamPeriodMonth: LoanPeriodType
         var i = 0
         for (value in min..max) {
-            loamPeriodMonth = LoanPeriodType(value.toString(), "$value Bulan", i++)
+            loamPeriodMonth = LoanPeriodType(value.toString(), "$value $DEFAULT_MONTH_LABEL", i++)
             loanPeriodMonthList.add(loamPeriodMonth)
         }
     }
@@ -292,9 +262,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         if (currentQuantity in 0 until loanAmountList.size) {
             loanAmountWarning.visibility = View.INVISIBLE
             widgetAddRemove.setText(loanAmountList[currentQuantity].label)
+            widgetAddRemove.setLoanValue(loanAmountList[currentQuantity].value.toLong())
         } else {
             loanAmountWarning.visibility = View.VISIBLE
-            loanAmountWarning.text = "Minimal Pinjaman ${loanAmountList[0].label}"
+            loanAmountWarning.text = String.format(getString(R.string.il_min_loan_amount_warning), loanAmountList[0].label)
         }
     }
 
@@ -304,9 +275,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         if (currentQuantity in 0 until loanAmountList.size) {
             loanAmountWarning.visibility = View.INVISIBLE
             widgetAddRemove.setText(loanAmountList[currentQuantity].label)
+            widgetAddRemove.setLoanValue(loanAmountList[currentQuantity].value.toLong())
         } else {
             loanAmountWarning.visibility = View.VISIBLE
-            loanAmountWarning.text = "Maksimal Pinjaman ${loanAmountList.last().label} "
+            loanAmountWarning.text = String.format(getString(R.string.il_max_loan_amount_warning), loanAmountList.last().label)
         }
     }
 
@@ -327,34 +299,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         return getContext()
     }
 
-    override fun onSuccessLoanProfileStatus(status: UserProfileLoanEntity) {
-
-    }
-
-    override fun setUserOnGoingLoanStatus(status: Boolean, loanId: Int) {
-
-    }
-
-    override fun onErrorLoanProfileStatus(onErrorLoanProfileStatus: String) {
-
-    }
-
-    override fun onSuccessPhoneDataUploaded(data: PhoneDataEntity) {
-
-    }
-
-    override fun onErrorPhoneDataUploaded(errorMessage: String) {
-
-    }
-
     override fun navigateToLoginPage() {
         if (activity != null && activity!!.application is InstantLoanRouter) {
             startActivityForResult((activity!!.application as InstantLoanRouter).getLoginIntent(getContext()), LOGIN_REQUEST_CODE)
         }
-    }
-
-    override fun startIntroSlider() {
-
     }
 
     override fun showToastMessage(message: String, duration: Int) {
@@ -366,32 +314,29 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     }
 
     override fun searchLoanOnline() {
+        if (!::selectedLoanPeriodType.isInitialized) {
+            loanPeriodLabelTV.error = ""
 
-    }
+        } else if (!::selectedLoanPeriodType.isInitialized) {
+            loanPeriodLabelTV.error = ""
 
-    override fun showLoader() {
-
-    }
-
-    override fun hideLoader() {
-
-    }
-
-    override fun showLoaderIntroDialog() {
-
-    }
-
-    override fun hideLoaderIntroDialog() {
-
-    }
-
-    override fun hideIntroDialog() {
-
+        } else {
+            sendCariPinjamanClickEvent()
+            openWebView(WEB_LINK_NO_COLLATERAL + String.format(LOAN_AMOUNT_QUERY_PARAM,
+                    widgetAddRemove.getLoanValue().toString(),
+                    selectedLoanPeriodType.value?.toLowerCase(),
+                    loanPeriodValueTV.tag as String))
+        }
     }
 
     companion object {
 
         private val TAB_POSITION = "tab_position"
+
+        private val DEFAULT_MONTH_VALUE = "Month"
+        private val DEFAULT_MONTH_LABEL = "Bulan"
+        private val DEFAULT_YEAR_VALUE = "Year"
+        private val DEFAULT_YEAR_LABEL = "Tahun"
 
         private val LOAN_PERIOD_TYPE = 12
         private val LOAN_PERIOD_MONTH = 13

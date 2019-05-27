@@ -14,21 +14,9 @@ interface OnlineLoanContractor {
 
         fun getActivityContext(): Context?
 
-        fun onSuccessLoanProfileStatus(status: UserProfileLoanEntity)
-
-        fun setUserOnGoingLoanStatus(status: Boolean, loanId: Int)
-
         fun setFilterDataForOnlineLoan(gqlFilterData: GqlFilterData)
 
-        fun onErrorLoanProfileStatus(onErrorLoanProfileStatus: String)
-
-        fun onSuccessPhoneDataUploaded(data: PhoneDataEntity)
-
-        fun onErrorPhoneDataUploaded(errorMessage: String)
-
         fun navigateToLoginPage()
-
-        fun startIntroSlider()
 
         fun showToastMessage(message: String, duration: Int)
 
@@ -36,28 +24,10 @@ interface OnlineLoanContractor {
 
         fun searchLoanOnline()
 
-        fun showLoader()
-
-        fun hideLoader()
-
-        fun showLoaderIntroDialog()
-
-        fun hideLoaderIntroDialog()
-
-        fun hideIntroDialog()
     }
 
     interface Presenter : CustomerPresenter<View> {
-
         fun isUserLoggedIn(): Boolean
-        fun initialize()
-
         fun getFilterData()
-
-        fun getLoanProfileStatus()
-
-        fun postPhoneData(userId: String)
-
-        fun startDataCollection()
     }
 }

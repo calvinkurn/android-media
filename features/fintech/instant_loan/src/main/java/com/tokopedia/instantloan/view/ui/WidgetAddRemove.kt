@@ -23,6 +23,7 @@ open class WidgetAddRemove @JvmOverloads constructor(
     private var minQuantity: Int = 1
     private var maxQuantity: Int = 1
     private var currentQuantity: Int = 0
+    private var loanValue: Long = 0
     private lateinit var buttonClickListener: OnButtonClickListener
 
 
@@ -122,6 +123,16 @@ open class WidgetAddRemove @JvmOverloads constructor(
     fun setText(text: CharSequence) {
         war_tv_value.text = text
     }
+
+
+    fun setLoanValue(value: Long){
+        loanValue = value
+    }
+
+    fun getLoanValue(): Long {
+        return loanValue
+    }
+
 
     fun setMinQuantity(minQuantity: Int) {
         this.minQuantity = minQuantity

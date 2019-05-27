@@ -109,6 +109,10 @@
     <string name="label_loan_online">Pinjaman Online</string>
     <string name="label_loan_amount">Jumlah Pinjaman</string>
     <string name="il_loan_period">Periode Pinjaman</string>
+    <string name="il_loan_period_type_label">Pilih</string>
+    <string name="il_loan_period_value_label">Pilih Jumlah</string>
+    <string name="il_min_loan_amount_warning">Minimal Pinjaman %s</string>
+    <string name="il_max_loan_amount_warning">Maksimal Pinjaman %s</string>
 
 
 </resources>
