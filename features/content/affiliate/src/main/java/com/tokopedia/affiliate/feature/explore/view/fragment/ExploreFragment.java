@@ -598,6 +598,9 @@ public class ExploreFragment
         if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
             autoCompleteLayout.setVisibility(View.GONE);
         }
+        if (adapter.getFilterList().isEmpty()) {
+            bottomActionView.hideBav2();
+        }
     }
 
     private void populateFilter(List<FilterViewModel> currentFilter) {
