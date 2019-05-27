@@ -180,10 +180,8 @@ class HotelEVoucherFragment : BaseDaggerFragment() {
 
                 tv_additional_notes.text = propertyDetail.extraInfo
 
-                if (propertyDetail.specialRequest.isNotEmpty()) {
-                    tv_request_label.text = propertyDetail.specialRequest[0].title
-                    tv_request_info.text = propertyDetail.specialRequest[0].content
-                }
+                tv_request_label.text = propertyDetail.specialRequest.title
+                tv_request_info.text = propertyDetail.specialRequest.content
 
             }
 

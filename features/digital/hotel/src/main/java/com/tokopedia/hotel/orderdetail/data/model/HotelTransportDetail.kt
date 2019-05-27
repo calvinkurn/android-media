@@ -67,7 +67,7 @@ data class HotelTransportDetail(
 
             @SerializedName("specialRequest")
             @Expose
-            val specialRequest: List<TitleContent> = listOf(),
+            val specialRequest: TitleContent = TitleContent(),
 
             @SerializedName("extraInfo")
             @Expose

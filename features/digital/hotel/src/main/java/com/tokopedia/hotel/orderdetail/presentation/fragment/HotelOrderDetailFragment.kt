@@ -213,12 +213,12 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
             }
         }
 
-        if (propertyDetail.specialRequest.isNotEmpty()) {
+        if (propertyDetail.specialRequest.content.isNotEmpty()) {
             special_request_recycler_view.visibility = View.VISIBLE
             var specialRequestAdapter = TitleTextAdapter(TitleTextAdapter.VERTICAL_LAYOUT)
             special_request_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             special_request_recycler_view.adapter = specialRequestAdapter
-            specialRequestAdapter.addData(propertyDetail.specialRequest.toMutableList())
+            specialRequestAdapter.addData(mutableListOf(propertyDetail.specialRequest))
         } else special_request_recycler_view.visibility = View.GONE
 
         special_notes.text = propertyDetail.extraInfo
