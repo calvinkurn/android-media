@@ -57,7 +57,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         SearchInputView.ResetListener, ShipmentAddressListAdapter.ActionListener {
 
     private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
-    public static final String TAG_CORNER_BOTTOMSHEET = "TAG_CORNER_BOTTOMSHEET";
     public static final String ARGUMENT_DISABLE_CORNER = "ARGUMENT_DISABLE_CORNER";
     public static final String ARGUMENT_ORIGIN_DIRECTION_TYPE = "ARGUMENT_ORIGIN_DIRECTION_TYPE";
     public static final int ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM = 1;
@@ -70,7 +69,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private LinearLayout llNoResult;
     private RelativeLayout rlContent;
     private Button btChangeSearch;
-    private CornerListFragment mCornerListFragment;
 
     private InputMethodManager mInputMethodManager;
     private ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
