@@ -8,13 +8,13 @@ import com.tokopedia.pushnotif.db.HISTORY_NOTIFICATION_TABLE
 @Entity(tableName = HISTORY_NOTIFICATION_TABLE)
 data class HistoryNotificationDB(
     @ColumnInfo(name = "sender_name")
-    val senderName: String,
+    var senderName: String?,
     @ColumnInfo(name = "message")
-    val message: String,
+    var message: String?,
     @ColumnInfo(name = "notification_type")
-    val notificationType: Int,
+    var notificationType: Int?,
     @ColumnInfo(name = "notification_id")
-    val notificationId: Int
+    var notificationId: Int?
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
