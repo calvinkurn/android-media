@@ -17,7 +17,7 @@ dependencies {
 
     
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.useCase)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.network)
@@ -30,14 +30,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.permissionchecker)
 
     implementation project(rootProject.ext.features.userIdentificationCommon)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
