@@ -22,13 +22,13 @@ class ProductInfoViewHolder(private val view: View) : AbstractViewHolder<Product
     private val ratingCountView: TextView by lazy { view.findViewById<TextView>(R.id.review_count) }
 
     override fun bind(element: ProductInfoDataModel) {
-        productName.text = element.product.name
+        productName.text = element.productDetailData.name
         productDiscount.text = "20%"
         setSplashedText("RP100.000")
-        productPrice.text = element.product.price
+        productPrice.text = element.productDetailData.price
         location.text = "Jakarta"
-        ImageHandler.loadImageFitCenter(view.context, productImage, element.product.imageUrl)
-        setRatingReviewCount(element.product.rating, element.product.countReview)
+        ImageHandler.loadImageFitCenter(view.context, productImage, element.productDetailData.imageUrl)
+        setRatingReviewCount(element.productDetailData.rating, element.productDetailData.countReview)
     }
 
     private fun setRatingReviewCount(rating: Int, review: Int){
