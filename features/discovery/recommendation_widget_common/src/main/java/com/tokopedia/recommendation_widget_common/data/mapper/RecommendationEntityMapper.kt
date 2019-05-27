@@ -54,6 +54,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     recomendationData.source ?: "",
                     recomendationData.tid ?: "",
                     recomendationData.widgetUrl ?: "",
+                    recomendationData.layoutType?:"",
                     recomendationData.pagination.currentPage,
                     recomendationData.pagination.nextPage,
                     recomendationData.pagination.prevPage)
