@@ -274,8 +274,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
             shopPageTracking.clickAddNote(CustomDimensionShopPage
                     .create(shopCore.shopID, goldOS.isOfficial == 1, goldOS.isGold == 1))
         }
-        val noteIntent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.SHOP_NOTE_SETTING) ?: return
-        startActivity(noteIntent)
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_NOTE_SETTING)
     }
 
     override fun onNoteClicked(position: Long, shopNoteViewModel: ShopNoteViewModel) {

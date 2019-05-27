@@ -114,7 +114,6 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.CustomerRouter;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -152,7 +151,6 @@ import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteAc
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
-import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -222,13 +220,7 @@ import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareResult;
 import com.tokopedia.linker.model.UserData;
-import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
-import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
-import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
-import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
-import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
-import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
@@ -330,10 +322,8 @@ import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewMode
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
-import com.tokopedia.shop.common.router.ShopSettingRouter;
 import com.tokopedia.shop.open.ShopOpenInternalRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
-import com.tokopedia.shop.settings.ShopSettingsInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
@@ -355,7 +345,6 @@ import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
-import com.tokopedia.tkpd.onboarding.NewOnboardingActivity;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
@@ -418,7 +407,6 @@ import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResp
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
-import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -506,7 +494,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DealsModuleRouter,
         OmsModuleRouter,
         TopAdsWebViewRouter,
-        ShopSettingRouter,
         ChangePasswordRouter,
         TrainRouter,
         WithdrawRouter,
@@ -534,7 +521,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         SaldoDetailsRouter,
         ILoyaltyRouter,
         ChatbotRouter,
-        LoginRegisterPhoneRouter,
         ExpressCheckoutRouter,
         ResolutionRouter,
         NormalCheckoutRouter,
@@ -829,12 +815,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToEtalaseList(Context context) {
-        Intent intent = ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
-        context.startActivity(intent);
-    }
-
-    @Override
     public void goToDraftProductList(Context context) {
         Intent intent = new Intent(context, ProductDraftListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -858,24 +838,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         bundle.putString(WalletActivity.EXTRA_URL, url);
         Intent intent = new Intent(context, WalletActivity.class);
         intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void goToMerchantRedirect(Context context) {
-        Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void goToGmSubscribeMembershipRedirect(Context context) {
-        Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void goToGMSubscribe(Context context) {
-        Intent intent = GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context);
         context.startActivity(intent);
     }
 
@@ -1554,8 +1516,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response) {
-        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
+                                         boolean isRequestDenied) {
+        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(),
+                isInvalidToken, isRequestDenied);
     }
 
     @Override
@@ -2547,36 +2511,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
-    @Override
-    public @NonNull
-    Intent getManageShopEtalaseIntent(@NonNull Context context) {
-        return ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
-    }
-
-    @Override
-    public @NonNull
-    Intent getManageShopNotesIntent(@NonNull Context context) {
-        return ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
-    }
-
-    @Override
-    public @NonNull
-    Intent getManageShopBasicDataIntent(@NonNull Context context) {
-        return ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
-    }
-
-    @Override
-    public @NonNull
-    Intent getManageShopLocationIntent(@NonNull Context context) {
-        return ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
-    }
-
-    @Override
-    public @NonNull
-    Intent getDistrictRecommendationIntent(@NonNull Activity activity) {
-        return DistrictRecommendationShopSettingsActivity.createInstance(activity);
-    }
-
     /**
      * Global Nav Router
      */
@@ -2630,52 +2564,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToHelpCenter(Context context) {
-        context.startActivity(getHelpUsIntent(context));
-    }
-
-    @Override
-    public Intent getManageProfileIntent(Context context) {
-        return new Intent(context, ManagePeopleProfileActivity.class);
-    }
-
-    @Override
     public Intent getManageAddressIntent(Context context) {
         return new Intent(context, ManagePeopleAddressActivity.class);
-    }
-
-    @Override
-    public void goToShopEditor(Context context) {
-        UnifyTracking.eventManageShopInfo(context);
-        Intent intent = ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
-        context.startActivity(intent);
     }
 
     @Override
     public void goToManageShopShipping(Context context) {
         UnifyTracking.eventManageShopShipping(context);
         context.startActivity(new Intent(context, EditShippingActivity.class));
-    }
-
-    @Override
-    public void goToManageShopEtalase(Context context) {
-        UnifyTracking.eventManageShopEtalase(context);
-        Intent intent = ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void goTotManageShopNotes(Context context) {
-        UnifyTracking.eventManageShopNotes(context);
-        Intent intent = ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void goToManageShopLocation(Context context) {
-        UnifyTracking.eventManageShopLocation(context);
-        Intent intent = ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
-        context.startActivity(intent);
     }
 
     @Override
@@ -2751,12 +2647,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public ApplicationUpdate getAppUpdate(Context context) {
         return new FirebaseRemoteAppUpdate(context);
     }
-
-    @Override
-    public Intent getOnBoardingIntent(Activity activity) {
-        return new Intent(activity, NewOnboardingActivity.class);
-    }
-
 
     @Override
     public String getStringRemoteConfig(String key) {
@@ -3261,36 +3151,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getMaintenancePageIntent() {
         return MaintenancePage.createIntentFromNetwork(getAppContext());
-    }
-
-    @Override
-    public Intent getNoTokocashAccountIntent(Context context, String phoneNumber) {
-        return NotConnectedTokocashActivity.getNoTokocashAccountIntent(context, phoneNumber);
-    }
-
-    @NotNull
-    @Override
-    public Intent getCheckRegisterPhoneNumberIntent(@NotNull Context context) {
-        return CheckRegisterPhoneNumberActivity.getCallingIntent(context);
-    }
-
-    @NotNull
-    @Override
-    public Intent getChooseTokocashAccountIntent(@NotNull Context context, @NotNull ChooseTokoCashAccountViewModel data) {
-        return ChooseTokocashAccountActivity.getCallingIntent(context, data);
-    }
-
-    @NotNull
-    @Override
-    public Intent getTokoCashOtpIntent(@NotNull Context context, @NotNull String phoneNumber,
-                                       boolean canUseOtherMethod, @NotNull String defaultRequestMode) {
-        return TokoCashOtpActivity.getCallingIntent(context, phoneNumber, canUseOtherMethod, defaultRequestMode);
-    }
-
-    @NotNull
-    @Override
-    public Intent getCheckLoginPhoneNumberIntent(@NotNull Context context) {
-        return CheckLoginPhoneNumberActivity.getCallingIntent(context);
     }
 
     @SuppressLint("MissingPermission")

@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.note.di.component.DaggerShopNoteComponent;
@@ -87,9 +86,7 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Ol
 
     @Override
     public void onEmptyButtonClicked() {
-        Intent noteIntent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.SHOP_NOTE_SETTING);
-        if (noteIntent != null)
-            startActivity(noteIntent);
+        RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.SHOP_NOTE_SETTING);
     }
 
     @Override
