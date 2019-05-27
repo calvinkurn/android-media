@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -17,14 +17,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <TextView
+            android:id="@+id/prescription_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/v_shadow_top"
+            android:layout_margin="@dimen/dp_16"
+            android:background="@color/Yellow_Y100"
+            android:padding="@dimen/dp_16"
+            android:text="@string/prescription_warning" />
+
         <View
             android:id="@+id/v_shadow_top"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_8"
+            android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
             android:background="@drawable/bottom_sheet_shadow" />
-
-    </FrameLayout>
+    </RelativeLayout>
 
     <view.customview.TradeInTextView
         android:id="@+id/tv_trade_in"
