@@ -30,7 +30,7 @@ class OnboardingAnalytics @Inject constructor() {
     }
 
     fun sendScreen(position: Int) {
-        val screenName = String.format(SCREEN_ONBOARDING, position.toString()),
+        val screenName = String.format(SCREEN_ONBOARDING, position.toString())
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
