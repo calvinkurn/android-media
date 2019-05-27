@@ -3,6 +3,7 @@ package com.tokopedia.contactus.inboxticket2.view.adapter;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -42,6 +43,8 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
     private String searchText;
     private Utils utils;
     private SpannableString hintAttachmentString;
+    private int rating =0;
+
 
 
     public InboxDetailAdapter(Context context, List<CommentsItem> data, boolean needAttachment, InboxDetailContract.InboxDetailPresenter presenter) {
@@ -111,12 +114,17 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         @BindView(R2.id.tv_hint_attachment)
         TextView tvAttachmentHint;
 
+        ImageView ratingThumbsUp;
+        ImageView ratingThumbsDown;
         private AttachmentAdapter attachmentAdapter;
         private LinearLayoutManager layoutManager;
 
         DetailViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            ratingThumbsUp = itemView.findViewById(R.id.iv_csast_status_good);
+            ratingThumbsDown = itemView.findViewById(R.id.iv_csast_status_bad);
+
             layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
             rvAttachedImage.setLayoutManager(layoutManager);
         }
@@ -147,6 +155,8 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvDateRecent.setText(item.getCreateTime());
                 tvCollapsedTime.setText("");
                 tvCollapsedTime.setVisibility(View.GONE);
+                ratingThumbsUp.setVisibility(View.VISIBLE);
+                ratingThumbsDown.setVisibility(View.VISIBLE);
                 if (searchMode) {
                     tvComment.setText(utils.getHighlightText(searchText, item.getMessagePlaintext()));
                 } else {
@@ -168,9 +178,32 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvComment.setText("");
                 tvCollapsedTime.setText(item.getShortTime());
                 tvCollapsedTime.setVisibility(View.VISIBLE);
+                ratingThumbsUp.setVisibility(View.GONE);
+                ratingThumbsDown.setVisibility(View.GONE);
                 tvComment.setVisibility(View.GONE);
                 rvAttachedImage.setVisibility(View.GONE);
             }
+
+
+            ratingThumbsUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
+                    ratingThumbsDown.setVisibility(View.GONE);
+                    rating = 1;
+
+                }
+            });
+
+            ratingThumbsDown.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
+                    ratingThumbsUp.setVisibility(View.GONE);
+                    rating = -1;
+
+                }
+            });
 
         }
 

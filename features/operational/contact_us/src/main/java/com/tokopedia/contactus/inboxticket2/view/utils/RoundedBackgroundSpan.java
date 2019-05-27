@@ -8,7 +8,7 @@ import android.text.style.ReplacementSpan;
 
 public class RoundedBackgroundSpan extends ReplacementSpan {
 
-    private static final int CORNER_RADIUS = 30;
+    private static final int CORNER_RADIUS = 15;
 
     private static float PADDING_X;
     private static float PADDING_Y;

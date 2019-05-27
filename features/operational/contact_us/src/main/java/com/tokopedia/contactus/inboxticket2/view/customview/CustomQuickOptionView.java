@@ -3,6 +3,8 @@ package com.tokopedia.contactus.inboxticket2.view.customview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
 import com.tokopedia.contactus.inboxticket2.view.customview.adapter.CustomQuickOptionViewAdapter;
@@ -29,5 +31,11 @@ public class CustomQuickOptionView extends QuickSingleFilterView {
     @Override
     protected boolean isMultipleSelectionAllowed() {
         return true;
+    }
+
+    @Override
+    protected RecyclerView.LayoutManager getLayoutManager() {
+        return new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL, false);
     }
 }

@@ -137,8 +137,8 @@ public class InboxDetailActivity extends InboxBaseActivity
         if (ticketDetail.getStatus().equalsIgnoreCase(utils.SOLVED)
                 || ticketDetail.getStatus().equalsIgnoreCase(utils.OPEN)) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.on_going),
-                    getResources().getColor(R.color.yellow_110),
-                    getResources().getColor(R.color.black_38), textSizeLabel));
+                    getResources().getColor(R.color.y_200),
+                    getResources().getColor(R.color.orange_500), textSizeLabel));
             rvMessageList.setPadding(0, 0, 0,
                     getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
             if (ticketDetail.isShowRating()) {
@@ -155,8 +155,8 @@ public class InboxDetailActivity extends InboxBaseActivity
 
         } else if (ticketDetail.isShowRating()) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.need_rating),
-                    getResources().getColor(R.color.red_30),
-                    getResources().getColor(R.color.red_150), textSizeLabel));
+                    getResources().getColor(R.color.r_100),
+                    getResources().getColor(R.color.r_400), textSizeLabel));
             toggleTextToolbar(View.GONE);
             rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
         }

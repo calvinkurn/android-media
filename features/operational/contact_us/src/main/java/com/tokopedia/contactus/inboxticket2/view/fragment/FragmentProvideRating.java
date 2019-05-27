@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -177,7 +178,7 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
 
     @Override
     public void setFilterList(List<BadCsatReasonListItem> filterList) {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);
+        LinearLayoutManager gridLayoutManager = new LinearLayoutManager(getContext());
         mFilterReview.updateLayoutManager(gridLayoutManager);
         List<QuickFilterItem> filterItems = new ArrayList<>();
         CustomViewQuickFilterItem finishFilter = null;
