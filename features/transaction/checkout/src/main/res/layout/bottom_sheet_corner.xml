@@ -3,8 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true" />
 
     <RelativeLayout
         android:id="@+id/rl_search_address_container"
@@ -39,7 +47,7 @@
         android:id="@+id/rv_corner_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/ll_no_result"

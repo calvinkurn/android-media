@@ -245,7 +245,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     public void requestCornerList() {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.parent_view, CornerListFragment.newInstance(), TAG_CORNER_FRAGMENT)
+                .replace(R.id.parent_view, CornerListFragment.newInstance(), TAG_CORNER_FRAGMENT)
                 .addToBackStack(null)
                 .commit();
     }
@@ -275,8 +275,8 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
             ((ShipmentAddressListFragment) getCurrentFragment())
                     .checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat();
-            super.onBackPressed();
         }
+        super.onBackPressed();
     }
 
 }

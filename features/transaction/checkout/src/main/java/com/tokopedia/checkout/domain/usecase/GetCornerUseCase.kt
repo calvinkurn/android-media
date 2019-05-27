@@ -37,7 +37,7 @@ class GetCornerUseCase
                 showCorner = isCorner)
         val param = mapOf<String, Any>(PARAM_ADDRESS_USECASE to request)
         val gqlQuery = GraphqlHelper.loadRawString(context.resources, R.raw.address_corner)
-        val gqlRequest = GraphqlRequest(gqlQuery, GqlKeroWithAddressResponse::class.java, param)
+        val gqlRequest = GraphqlRequest(gqlQuery, NewAddressCornerResponse::class.java, param)
 
         usecase.clearRequest()
         usecase.addRequest(gqlRequest)

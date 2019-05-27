@@ -7,7 +7,7 @@ import javax.inject.Inject
 /**
  * Created by fajarnuha on 2019-05-26.
  */
-class CornerListPresenter @Inject constructor(val usecase: GetCornerUseCase): CornerContract.Presenter {
+class CornerListPresenter @Inject constructor(val usecase: GetCornerUseCase) : CornerContract.Presenter {
 
     private var mView: CornerContract.View? = null
 
@@ -20,9 +20,12 @@ class CornerListPresenter @Inject constructor(val usecase: GetCornerUseCase): Co
     }
 
     override fun getData() {
-        usecase.execute("").subscribe(
-                { mView?.setData(it.listAddress)},
-                {e -> mView?.showError(e)}, {})
+        usecase.execute("")
+                .doOnSubscribe { mView?.setLoadingState(true) }
+                .doOnTerminate { mView?.setLoadingState(false) }
+                .subscribe(
+                        { mView?.setData(it.listAddress) },
+                        { e -> mView?.showError(e) }, {})
     }
 
     override fun searchQuery(query: String) {

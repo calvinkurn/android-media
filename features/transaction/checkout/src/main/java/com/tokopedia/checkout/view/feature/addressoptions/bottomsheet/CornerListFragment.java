@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -44,6 +45,7 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
     private RecyclerView mRvCorner;
 
     @Inject CornerListPresenter mPresenter;
+    private ProgressBar mProgressBar;
 
     public static CornerListFragment newInstance() {
         return new CornerListFragment();
@@ -94,6 +96,7 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
         mSearchView = view.findViewById(R.id.sv_address_search_box);
         mEmptyVIew = view.findViewById(R.id.ll_no_result);
         mRvCorner = view.findViewById(R.id.rv_corner_list);
+        mProgressBar = view.findViewById(R.id.progress_bar);
 
         mRvCorner.setHasFixedSize(true);
         mRvCorner.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -116,7 +119,7 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
 
     @Override
     public void setLoadingState(boolean active) {
-
+        mProgressBar.setVisibility(active ? View.VISIBLE : View.GONE);
     }
 
     @Override
