@@ -12,7 +12,7 @@ import java.util.List;
  * Created by henrypriyono on 14/02/18.
  */
 
-public class GuidedSearchViewModel implements Visitable<ProductListTypeFactory>, Parcelable {
+public class GuidedSearchViewModel implements Parcelable {
     private List<Item> itemList;
 
     public List<Item> getItemList() {
@@ -95,11 +95,6 @@ public class GuidedSearchViewModel implements Visitable<ProductListTypeFactory>,
                 return new Item[size];
             }
         };
-    }
-
-    @Override
-    public int type(ProductListTypeFactory typeFactory) {
-        return typeFactory.type(this);
     }
 
     @Override
