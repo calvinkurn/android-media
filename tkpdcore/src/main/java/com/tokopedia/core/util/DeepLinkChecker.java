@@ -60,6 +60,7 @@ public class DeepLinkChecker {
     public static final int PROFILE = 25;
     public static final int CONTENT = 26;
     public static final int SMCREFERRAL = 27;
+    public static final int HOME_RECOMMENDATION = 28;
 
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
@@ -140,6 +141,8 @@ public class DeepLinkChecker {
                 return CONTENT;
             else if (isSMCReferral(linkSegment))
                 return SMCREFERRAL;
+            else if(isHomeRecoomendation(linkSegment))
+                return HOME_RECOMMENDATION;
             else return OTHER;
         } catch (Exception e) {
             e.printStackTrace();
@@ -253,7 +256,8 @@ public class DeepLinkChecker {
                 && !isWalletOvo(linkSegment)
                 && !isKycTerms(linkSegment)
                 && !isProfile(linkSegment)
-                && !isSMCReferral(linkSegment);
+                && !isSMCReferral(linkSegment)
+                && !isHomeRecoomendation(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -298,6 +302,10 @@ public class DeepLinkChecker {
 
     private static boolean isSMCReferral(List<String> linkSegment) {
         return (linkSegment.get(0).equals("kupon-thr"));
+    }
+
+    private static boolean isHomeRecoomendation(List<String> linkSegment){
+        return (linkSegment.get(0).equals("recommendation"));
     }
 
     private static boolean isKycTerms(List<String> linkSegment) {

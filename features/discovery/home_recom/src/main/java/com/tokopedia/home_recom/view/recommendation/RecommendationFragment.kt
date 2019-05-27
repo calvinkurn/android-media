@@ -1,0 +1,128 @@
+package com.tokopedia.home_recom.view.recommendation
+
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
+import android.os.Bundle
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.StaggeredGridLayoutManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.home_recom.R
+import com.tokopedia.home_recom.di.HomeRecommendationComponent
+import com.tokopedia.home_recom.model.dataModel.*
+import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationAdapter
+import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationTypeFactoryImpl
+import com.tokopedia.home_recom.view.productInfo.ProductInfoFragment
+import com.tokopedia.recommendation_widget_common.RecommendationParams
+import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
+import com.tokopedia.recommendation_widget_common.TYPE_INFO
+import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
+import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModelDummy
+import com.tokopedia.recommendation_widget_common.viewmodel.RecommendationItemViewModel
+import javax.inject.Inject
+
+class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationCardView.TrackingListener {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var productId: String
+    private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
+    private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl() }
+    private val adapter by lazy { HomeRecommendationAdapter(adapterTypeFactory) }
+    private val viewModel by lazy { viewModelProvider.get(RecommendationItemViewModel::class.java) }
+
+    companion object{
+        private const val SPAN_COUNT = 2
+
+        fun newInstance(productId: String) = RecommendationFragment().apply {
+            this.productId = productId
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_recommendation, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        disableLoadMore()
+        getRecyclerView(view).layoutManager = recyclerViewLayoutManager
+        viewModel.recommendationListModel.observe(this, Observer {
+            it?.let { recommendationList ->
+                renderList(mapDataModel(recommendationList.recommendationList))
+            }
+        })
+
+        viewModel.getRecommendationList(RecommendationParams())
+    }
+
+    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
+        return StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+    }
+
+    override fun getAdapterTypeFactory(): HomeRecommendationTypeFactoryImpl {
+        return adapterFactory
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<BaseHomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl> {
+        return adapter
+    }
+
+    override fun onItemClicked(t: BaseHomeRecommendationDataModel) {
+        //Do nothing
+    }
+
+    override fun getScreenName(): String = ""
+
+
+    override fun initInjector() {
+        getComponent(HomeRecommendationComponent::class.java).inject(this)
+    }
+
+    override fun loadData(page: Int) {
+        //Do nothing
+    }
+
+    override fun disableLoadMore() {
+        super.disableLoadMore()
+        getRecyclerView(view).isNestedScrollingEnabled = false
+    }
+
+    private fun displayProductInfo(dataModel: ProductInfoDataModel){
+        childFragmentManager.beginTransaction()
+                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(dataModel))
+                .commit()
+    }
+
+    private fun mapDataModel(listRecommendationModelDummy: List<RecommendationModelDummy>): List<BaseHomeRecommendationDataModel>{
+        val list = ArrayList<BaseHomeRecommendationDataModel>()
+        listRecommendationModelDummy.forEach { recommendationModelDummy ->
+            when(recommendationModelDummy.type){
+                TYPE_SCROLL -> {
+                    list.add(TitleDataModel(recommendationModelDummy.title))
+                    recommendationModelDummy.recommendationItemList.forEach {
+                        list.add(RecommendationItemDataModel(it, this))
+                    }
+                }
+                TYPE_INFO -> displayProductInfo(ProductInfoDataModel(recommendationModelDummy.recommendationItemList[0]))
+                TYPE_CAROUSEL -> list.add(RecommendationCarouselDataModel(recommendationModelDummy.title, recommendationModelDummy.recommendationItemList, this))
+            }
+        }
+        return list
+    }
+
+    override fun onImpressionTopAds(item: RecommendationItem) {}
+
+    override fun onImpressionOrganic(item: RecommendationItem) {}
+
+    override fun onClickTopAds(item: RecommendationItem) {}
+
+    override fun onClickOrganic(item: RecommendationItem) {}
+
+}

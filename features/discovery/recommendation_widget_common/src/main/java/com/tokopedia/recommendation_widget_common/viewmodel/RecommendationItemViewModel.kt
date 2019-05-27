@@ -103,7 +103,7 @@ class RecommendationItemViewModel @Inject constructor(private val graphqlReposit
         val listItem: MutableList<RecommendationItem> = arrayListOf()
         listItem.add(RecommendationItem(
                 1,
-                "Product1",
+                "Product1  Product 1 Panjang",
                 "breadcumbs aja",
                 "www.facebook.com",
                 "www.facebook.com",
@@ -160,7 +160,7 @@ class RecommendationItemViewModel @Inject constructor(private val graphqlReposit
         ))
         listItem.add(RecommendationItem(
                 4,
-                "Product4",
+                "Product Product 4 Panjang",
                 "breadcumbs aja",
                 "www.facebook.com",
                 "www.facebook.com",
@@ -255,7 +255,7 @@ class RecommendationItemViewModel @Inject constructor(private val graphqlReposit
         ))
         listItem.add(RecommendationItem(
                 9,
-                "Product9",
+                "Product9  Product 9 Panjang",
                 "breadcumbs aja",
                 "www.facebook.com",
                 "www.facebook.com",
