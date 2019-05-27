@@ -1,6 +1,5 @@
 package com.tokopedia.shop.open.view.holder;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -19,20 +18,14 @@ import java.util.ArrayList;
 
 public class OpenShopAddressViewHolder {
 
-    private View view;
-    private Context context;
     private EditText editTextInputShopAddress;
     private EditText editTextInputShopPostal;
     private TkpdHintTextInputLayout textInputAddress;
     private TkpdHintTextInputLayout textInputPostal;
-    private OpenShopAddressListener openShopAddressListener;
     private Integer districtId;
     private ArrayList<String> postalCode;
 
     public OpenShopAddressViewHolder(View view, Context context, OpenShopAddressListener openShopAddressListener) {
-        this.view = view;
-        this.context = context;
-        this.openShopAddressListener = openShopAddressListener;
 
         textInputAddress = view.findViewById(com.tokopedia.seller.R.id.text_input_address);
         textInputPostal = view.findViewById(com.tokopedia.seller.R.id.text_input_postal);
@@ -82,7 +75,6 @@ public class OpenShopAddressViewHolder {
         });
     }
 
-    // Set and get District ID then use it when submit button clicked
     public Integer getDistrictId() {
         return districtId;
     }
@@ -107,6 +99,11 @@ public class OpenShopAddressViewHolder {
 
     public void updatePostalCodeView(String postalCode){
         editTextInputShopPostal.setText(postalCode);
+    }
+
+    public void clearFocus(){
+        editTextInputShopAddress.clearFocus();
+        editTextInputShopPostal.clearFocus();
     }
 
     public interface OpenShopAddressListener {

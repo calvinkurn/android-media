@@ -22,8 +22,8 @@ class ShopOpenCreateReadyActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (supportActionBar != null) {
-            supportActionBar!!.elevation = 0f
+        supportActionBar?.also {
+            it.elevation = 0f
         }
         toolbar.visibility = View.GONE
     }

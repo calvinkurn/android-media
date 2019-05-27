@@ -2,9 +2,8 @@ package com.tokopedia.shop.open.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
@@ -13,7 +12,6 @@ import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.seller.logistic.data.source.cloud.api.WSLogisticApi;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
-import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.shop.open.R;
 import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.data.repository.ShopOpenRepository;
@@ -102,7 +100,7 @@ public class ShopOpenDomainModule {
     @ShopOpenDomainScope
     @Provides
     @Named(ShopOpenReserveDomainFragment.OPEN_SHOP_SUBMIT_RAW)
-    public String requestQuery(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context){
+    public String requestQuery(@ApplicationContext Context context){
         return GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.create_open_shop
@@ -112,7 +110,7 @@ public class ShopOpenDomainModule {
     @ShopOpenDomainScope
     @Provides
     @Named(ShopOpenReserveDomainFragment.VALIDATE_DOMAIN_NAME_SHOP)
-    public String requestQueryValidate(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context){
+    public String requestQueryValidate(@ApplicationContext Context context){
         return GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.validate_domain_name_shop
@@ -121,7 +119,17 @@ public class ShopOpenDomainModule {
 
     @ShopOpenDomainScope
     @Provides
-    UserSession providesUserSession(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context) {
+    @Named(ShopOpenReserveDomainFragment.VALIDATE_DOMAIN_SUGGESTION_SHOP)
+    public String requestQuerySuggestion(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                R.raw.shop_domain_suggestion
+        );
+    }
+
+    @ShopOpenDomainScope
+    @Provides
+    UserSession providesUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 }

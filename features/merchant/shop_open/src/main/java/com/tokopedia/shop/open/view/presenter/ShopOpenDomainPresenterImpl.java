@@ -7,7 +7,7 @@ import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.shop.open.data.model.response.CreateShop;
-import com.tokopedia.shop.open.data.model.response.ValidateShopDomainNameResult;
+import com.tokopedia.shop.open.data.model.response.ValidateShopDomainSuggestionHeader;
 import com.tokopedia.shop.open.domain.interactor.CheckDomainNameUseCase;
 import com.tokopedia.shop.open.domain.interactor.CheckShopNameUseCase;
 import com.tokopedia.shop.open.domain.interactor.ReserveShopNameDomainUseCase;
@@ -188,8 +188,8 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
         void query(String string);
     }
 
-    public void onSubmitCreateShop(String shopName, String domain ,  Integer districtId , Integer postalCodeId){
-        shopOpenSubmitUseCase.execute(ShopOpenSubmitUseCase.Companion.createRequestParams(shopName,domain,districtId,postalCodeId),
+    public void onSubmitCreateShop(String shopName, String domain, Integer districtId, Integer postalCodeId) {
+        shopOpenSubmitUseCase.execute(ShopOpenSubmitUseCase.Companion.createRequestParams(shopName, domain, districtId, postalCodeId),
                 getCreateShopSubscriber());
     }
 
@@ -202,11 +202,11 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
 
     private void checkShopWS(String shopName) {
         checkShopNameUseCase.unsubscribe();
-        if (!getView().isShopNameInValidRange()){
+        if (!getView().isShopNameInValidRange()) {
             return;
         }
 
-        shopOpenCheckDomainNameUseCase.execute(ShopOpenCheckDomainNameUseCase.Companion.createRequestParams("",shopName), new Subscriber<ValidateShopDomainNameResult>() {
+        shopOpenCheckDomainNameUseCase.execute(ShopOpenCheckDomainNameUseCase.Companion.createRequestParam(shopName), new Subscriber<ValidateShopDomainSuggestionHeader>() {
             @Override
             public void onCompleted() {
 
@@ -220,23 +220,30 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
             }
 
             @Override
-            public void onNext(ValidateShopDomainNameResult validateShopDomainNameResult) {
-                if (!validateShopDomainNameResult.getValidateDomainShopName().isValid() && !validateShopDomainNameResult.getValidateDomainShopName().getError().getMessage().isEmpty()){
-                    getView().onErrorCheckShopName(validateShopDomainNameResult.getValidateDomainShopName().getError().getMessage());
+            public void onNext(ValidateShopDomainSuggestionHeader validateShopDomainSuggestionHeader) {
+                boolean isNameValid = validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().isValid();
+                boolean isNameErrorMessageEmpty = validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().getError().getMessage().isEmpty();
+                boolean isDomainSuggestionErrorEmpty = validateShopDomainSuggestionHeader.getData().getShopDomainSuggestion().getError().getMessage().isEmpty();
+
+                if ((!isNameValid && !isNameErrorMessageEmpty) || !isDomainSuggestionErrorEmpty) {
+                    getView().onErrorCheckShopName(validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().getError().getMessage());
+                    return;
                 }
+
                 if (getView().isShopNameInValidRange()) {
-                    getView().onSuccessCheckShopName(validateShopDomainNameResult.getValidateDomainShopName().isValid());
+                    getView().onSuccessCheckShopName(validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().isValid(),
+                            validateShopDomainSuggestionHeader.getData().getShopDomainSuggestion().getResult().getShopDomain());
                 }
             }
-        });
-    }
+    });
+}
 
     private void checkDomainWS(String domainName) {
         checkDomainNameUseCase.unsubscribe();
-        if (!getView().isShopDomainInValidRange()){
+        if (!getView().isShopDomainInValidRange()) {
             return;
         }
-        shopOpenCheckDomainNameUseCase.execute(ShopOpenCheckDomainNameUseCase.Companion.createRequestParams(domainName,""), new Subscriber<ValidateShopDomainNameResult>() {
+        shopOpenCheckDomainNameUseCase.execute(ShopOpenCheckDomainNameUseCase.Companion.createRequestParams(domainName, ""), new Subscriber<ValidateShopDomainSuggestionHeader>() {
             @Override
             public void onCompleted() {
 
@@ -250,12 +257,13 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
             }
 
             @Override
-            public void onNext(ValidateShopDomainNameResult validateShopDomainNameResult) {
-                if (!validateShopDomainNameResult.getValidateDomainShopName().isValid() && !validateShopDomainNameResult.getValidateDomainShopName().getError().getMessage().isEmpty()){
-                    getView().onErrorCheckShopDomain(validateShopDomainNameResult.getValidateDomainShopName().getError().getMessage());
+            public void onNext(ValidateShopDomainSuggestionHeader validateShopDomainSuggestionHeader) {
+                if (!validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().isValid() && !validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().getError().getMessage().isEmpty()) {
+                    getView().onErrorCheckShopDomain(validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().getError().getMessage());
+                    return;
                 }
                 if (getView().isShopDomainInValidRange()) {
-                    getView().onSuccessCheckShopDomain(validateShopDomainNameResult.getValidateDomainShopName().isValid());
+                    getView().onSuccessCheckShopDomain(validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().isValid());
                 }
             }
         });

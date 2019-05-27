@@ -3,7 +3,6 @@ package com.tokopedia.shop.open.view.fragment
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
-import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -12,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.util.MethodChecker
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity
 import com.tokopedia.seller.SellerModuleRouter
@@ -72,16 +73,10 @@ class ShopOpenCreateReadyFragment : BaseDaggerFragment() {
                 spanText.length - 7, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanText.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
-                shopModuleRouter()
+                RouteManager.route(context,ApplinkConst.SELLER_SHIPPING_EDITOR)
             }
         }, spanText.length - 7, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         tv_tnc_courier.movementMethod = LinkMovementMethod.getInstance();
         tv_tnc_courier.text = spanText
     }
-
-    private fun shopModuleRouter() {
-        val app = activity?.application
-
-    }
-
 }

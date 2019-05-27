@@ -30,7 +30,7 @@ class ShopOpenPostalCodeChooserFragment : BaseSearchListFragment<PostalCodeViewM
         fun newInstance(postalCode: ArrayList<String>) =
                 ShopOpenPostalCodeChooserFragment().also {
                     it.arguments = Bundle().apply {
-                        postalCode.let { postalCode -> putStringArrayList(ARGUMENT_DATA_POSTAL_CODE, postalCode) }
+                        putStringArrayList(ARGUMENT_DATA_POSTAL_CODE, postalCode)
                     }
                 }
     }
@@ -78,7 +78,7 @@ class ShopOpenPostalCodeChooserFragment : BaseSearchListFragment<PostalCodeViewM
                 ?: arrayListOf()
         if (!TextUtils.isEmpty(searchInputView.searchText)) {
             filterList(postalCode, searchInputView.searchText).also {
-                if (!it.isEmpty()) {
+                if (it.isNotEmpty()) {
                     convertToList(it)
                 } else {
                     showNoResultMessage()
@@ -113,10 +113,6 @@ class ShopOpenPostalCodeChooserFragment : BaseSearchListFragment<PostalCodeViewM
     override fun onSearchTextChanged(text: String?) {
         clearAllData()
         loadData(defaultInitialPage)
-    }
-
-    override fun renderList(list: MutableList<PostalCodeViewModel>) {
-        super.renderList(list)
     }
 
     override fun showNoResultMessage() {

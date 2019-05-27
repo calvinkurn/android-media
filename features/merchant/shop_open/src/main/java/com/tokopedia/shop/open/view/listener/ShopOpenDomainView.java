@@ -11,7 +11,7 @@ public interface ShopOpenDomainView extends CustomerView {
 
     boolean isShopNameInValidRange();
 
-    void onSuccessCheckShopName(boolean existed);
+    void onSuccessCheckShopName(boolean existed,String domainSuggestion);
 
     void onErrorCheckShopName(String message);
 
