@@ -16,4 +16,9 @@
         <attr format="dimension" name="tv_circleSpace"/>
         <attr format="dimension" name="tv_circleRadius"/>
     </declare-styleable>
+    <declare-styleable name="InfoTextView">
+        <attr name="titleText" format="string" />
+        <attr name="descriptionText" format="string" />
+        <attr name="truncateDescription" format="boolean" />
+    </declare-styleable>
 </resources>
