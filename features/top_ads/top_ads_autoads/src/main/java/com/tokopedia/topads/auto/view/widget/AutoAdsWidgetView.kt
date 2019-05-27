@@ -44,23 +44,21 @@ class AutoAdsWidgetView : CardView {
 
     constructor(context: Context) : super(context) {
         initView(context)
-        initInjector(context)
+        setupListener()
+        renderUI()
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         initView(context)
-        initInjector(context)
+        setupListener()
+        renderUI()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        initView(context)
-        initInjector(context)
-    }
-
-    fun getComponent(context: Context): AutoAdsComponent = DaggerAutoAdsComponent.builder()
+    private fun getComponent(context: Context): AutoAdsComponent = DaggerAutoAdsComponent.builder()
             .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
 
     private fun initView(context: Context) {
+        getComponent(context).inject(this)
         useCompatPadding = true
         radius = resources.getDimension(R.dimen.dp_8)
         View.inflate(context, R.layout.layout_auto_ads_widget, this)
@@ -78,20 +76,19 @@ class AutoAdsWidgetView : CardView {
         }
     }
 
-    private fun initInjector(context: Context){
-        getComponent(context).inject(this)
-//        widgetViewModel = ViewModelProviders.of(context as Fragment, factory).get(AutoAdsWidgetViewModel::class.java)
-//        widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
-//        widgetViewModel.autoAdsData.observe(context as Fragment, Observer {
-//            setStatusAds(it!!.status)
-//            dailyBudgetStatus.text = String.format(context.getString(R.string.anggaran_harian_status), it!!.dailyBudget)
-//            dailyUsageStatus.text = String.format(context.getString(R.string.terpakai), it!!.dailyUsage)
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                progressBar.setProgress(it!!.dailyUsage, true)
-//            } else{
-//                progressBar.progress = it!!.dailyUsage
-//            }
-//        })
+    private fun renderUI(){
+        widgetViewModel = ViewModelProviders.of(context as Fragment, factory).get(AutoAdsWidgetViewModel::class.java)
+        widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
+        widgetViewModel.autoAdsData.observe(context as Fragment, Observer {
+            setStatusAds(it!!.status)
+            dailyBudgetStatus.text = String.format(context.getString(R.string.anggaran_harian_status), it!!.dailyBudget)
+            dailyUsageStatus.text = String.format(context.getString(R.string.terpakai), it!!.dailyUsage)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                progressBar.setProgress(it!!.dailyUsage, true)
+            } else{
+                progressBar.progress = it!!.dailyUsage
+            }
+        })
     }
 
     fun setStatusAds(status: Int) {
