@@ -1,65 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <com.tokopedia.topupbills.telco.view.widget.DigitalTelcoClientNumberWidget
-        android:id="@+id/telco_input_number"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
-        android:layout_marginRight="@dimen/dp_15"
-        android:layout_marginLeft="@dimen/dp_15"/>
+        android:layout_height="match_parent">
 
-    <com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
-        android:id="@+id/recent_numbers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_15"
-        android:layout_marginLeft="@dimen/dp_15"
-        android:layout_below="@+id/telco_input_number"/>
+        <com.tokopedia.design.component.ticker.TickerView
+            android:id="@+id/ticker_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
+            android:padding="@dimen/dp_10"
+            android:visibility="gone"
+            app:tckv_content_text_size="@dimen/dp_11"
+            app:tckv_indicator_off_color="@color/grey_550"
+            app:tckv_indicator_on_color="@color/tkpd_main_green"
+            tools:visibility="visible" />
 
-    <com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
-        android:id="@+id/promo_widget"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_15"
-        android:layout_marginLeft="@dimen/dp_15"
-        android:layout_below="@+id/recent_numbers"/>
+        <android.support.v7.widget.CardView
+            android:id="@+id/input_number_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_5"
+            app:cardCornerRadius="@dimen/dp_8">
 
-    <com.tokopedia.design.component.Tabs
-        android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
-        android:background="@color/white"
-        android:elevation="@dimen/dp_3"
-        android:theme="@style/ThemeOverlay.AppCompat.Light"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/tkpd_main_green"
-        app:tabMode="fixed"
-        app:tabSelectedTextColor="@color/tkpd_main_green"
-        app:tabTextAppearance="@style/Tabs.Main"
-        app:tabTextColor="@color/font_black_disabled_38"
-        android:layout_below="@+id/telco_input_number"
-        android:layout_marginRight="@dimen/dp_15"
-        android:layout_marginLeft="@dimen/dp_15"
-        android:visibility="gone"/>
+            <com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
+                android:id="@+id/telco_input_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ticker_view"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_15" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/product_view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:layout_below="@+id/tab_layout"
-        android:layout_marginRight="@dimen/dp_15"
-        android:layout_marginLeft="@dimen/dp_15"/>
+        </android.support.v7.widget.CardView>
 
-    <com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
-        android:id="@+id/buy_widget"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"/>
+        <com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
+            android:id="@+id/recent_numbers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_number_area"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15" />
 
-</RelativeLayout>
+        <com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
+            android:id="@+id/promo_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/recent_numbers"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15" />
+
+        <com.tokopedia.design.component.Tabs
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@+id/input_number_area"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
+            android:background="@color/white"
+            android:elevation="@dimen/dp_3"
+            android:theme="@style/ThemeOverlay.AppCompat.Light"
+            android:visibility="gone"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/tkpd_main_green"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@color/tkpd_main_green"
+            app:tabTextAppearance="@style/Tabs.Main"
+            app:tabTextColor="@color/font_black_disabled_38" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/product_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tab_layout"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
+            android:visibility="gone" />
+
+        <com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
+            android:id="@+id/buy_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
+
+    </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>

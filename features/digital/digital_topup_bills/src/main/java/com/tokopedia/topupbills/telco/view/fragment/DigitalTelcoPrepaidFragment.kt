@@ -1,14 +1,9 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
-import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.content.ActivityNotFoundException
-import android.content.ComponentName
-import android.content.Intent
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
@@ -16,13 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
 import com.tokopedia.topupbills.telco.data.TelcoCustomData
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
@@ -30,36 +21,30 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
-import com.tokopedia.topupbills.telco.view.model.DigitalProductTelcoItem
-import com.tokopedia.topupbills.telco.view.model.DigitalPromo
-import com.tokopedia.topupbills.telco.view.model.DigitalRecentNumber
+import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
-import com.tokopedia.topupbills.telco.view.widget.*
+import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
+import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
 import javax.inject.Inject
 
 /**
  * Created by nabillasabbaha on 11/04/19.
  */
-class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
+class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
-    private lateinit var telcoClientNumberWidget: DigitalTelcoClientNumberWidget
-    private lateinit var recentNumbersView: DigitalRecentTransactionWidget
-    private lateinit var promoListView: DigitalPromoListWidget
+    private lateinit var telcoClientNumberWidget: DigitalClientNumberWidget
     private lateinit var viewPager: ViewPager
     private lateinit var tabLayout: TabLayout
     private lateinit var buyWidget: DigitalTelcoBuyWidget
-    private lateinit var telcoCustomData: TelcoCustomComponentData
     private lateinit var customViewModel: DigitalTelcoCustomViewModel
     private lateinit var sharedModel: SharedProductTelcoViewModel
 
-    private val recentNumbers = mutableListOf<DigitalRecentNumber>()
-    private val promoList = mutableListOf<DigitalPromo>()
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
+    private var telcoCustomData: TelcoCustomComponentData =
+            TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
 
     override fun onStart() {
         context?.let {
@@ -111,14 +96,14 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         viewPager = view.findViewById(R.id.product_view_pager)
         tabLayout = view.findViewById(R.id.tab_layout)
         buyWidget = view.findViewById(R.id.buy_widget)
+        tickerView = view.findViewById(R.id.ticker_view)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        telcoCustomData = TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
-
+        renderTicker()
         renderInputNumber()
         renderRecentTransactions()
         renderPromoList()
@@ -159,32 +144,13 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
     }
 
     fun renderInputNumber() {
-        telcoClientNumberWidget.setListener(object : DigitalBaseClientNumberWidget.ActionListener {
+        telcoClientNumberWidget.setListener(object : DigitalClientNumberWidget.ActionListener {
             override fun navigateToContact() {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    activity?.let {
-                        permissionCheckerHelper.checkPermission(it,
-                                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
-                                object : PermissionCheckerHelper.PermissionCheckListener {
-                                    override fun onPermissionDenied(permissionText: String) {
-                                        permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                                    }
-
-                                    override fun onNeverAskAgain(permissionText: String) {
-                                        permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                                    }
-
-                                    override fun onPermissionGranted() {
-                                        openContactPicker()
-                                    }
-                                }, "")
-                    }
-                } else {
-                    openContactPicker()
-                }
+                navigateContact()
             }
 
-            override fun renderProductList() {
+            override fun renderOperator() {
+                // TODO showing image on client number
                 telcoCustomData.rechargeCustomData.customDataCollections.isEmpty()?.let {
                     if (it) {
                         getInputFilterDataCollections()
@@ -204,84 +170,24 @@ class DigitalTelcoPrepaidFragment : BaseDaggerFragment() {
         })
     }
 
-    fun openContactPicker() {
-        val contactPickerIntent = Intent(
-                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
-        try {
-            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
-        } catch (e: ActivityNotFoundException) {
-            NetworkErrorHelper.showSnackbar(activity,
-                    getString(R.string.error_message_contact_not_found))
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        context?.run {
-            permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
-        }
+    override fun setInputNumberFromContact(contactNumber: String) {
+        telcoClientNumberWidget.setInputNumber(contactNumber)
     }
 
     fun renderViewPager(operatorId: String) {
-        val listProductTab = mutableListOf<DigitalProductTelcoItem>()
-        listProductTab.add(DigitalProductTelcoItem(DigitalTelcoProductFragment.newInstance(
+        val listProductTab = mutableListOf<DigitalTabTelcoItem>()
+        listProductTab.add(DigitalTabTelcoItem(DigitalTelcoProductFragment.newInstance(
                 TelcoComponentType.PRODUCT_PULSA, TelcoComponentName.PRODUCT_PULSA, operatorId, TelcoProductType.PRODUCT_GRID),
                 TelcoComponentName.PRODUCT_PULSA))
-        listProductTab.add(DigitalProductTelcoItem(DigitalTelcoProductFragment.newInstance(
+        listProductTab.add(DigitalTabTelcoItem(DigitalTelcoProductFragment.newInstance(
                 TelcoComponentType.PRODUCT_PAKET_DATA, TelcoComponentName.PRODUCT_PAKET_DATA, operatorId, TelcoProductType.PRODUCT_LIST),
                 TelcoComponentName.PRODUCT_PAKET_DATA))
-        listProductTab.add(DigitalProductTelcoItem(DigitalTelcoProductFragment.newInstance(
+        listProductTab.add(DigitalTabTelcoItem(DigitalTelcoProductFragment.newInstance(
                 TelcoComponentType.PRODUCT_ROAMING, TelcoComponentName.PRODUCT_ROAMING, operatorId, TelcoProductType.PRODUCT_LIST),
                 TelcoComponentName.PRODUCT_ROAMING))
         val pagerAdapter = DigitalTelcoProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
         tabLayout.setupWithViewPager(viewPager)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        data?.let {
-            if (resultCode == Activity.RESULT_OK) {
-                if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
-                    activity?.let {
-                        val contactURI = data.data
-                        val contact = contactURI.covertContactUriToContactData(it.contentResolver)
-                        telcoClientNumberWidget.setInputNumber(contact.contactNumber)
-                    }
-                }
-            }
-        }
-    }
-
-    //TODO IMPLEMENT API
-    fun renderRecentTransactions() {
-        recentNumbersView.setListener(object : DigitalRecentTransactionWidget.ActionListener {
-            override fun onClickRecentNumber(digitalRecentNumber: DigitalRecentNumber) {
-                Toast.makeText(activity, digitalRecentNumber.clientNumber, Toast.LENGTH_LONG).show()
-            }
-        })
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 1", "081723823112", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 2", "082313134234", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 3", "081342424234", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 4", "087823173712", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 5", "082343432423", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 6", "081231313233", "", "", 316, "Simpati"))
-        recentNumbersView.setRecentNumbers(recentNumbers)
-    }
-
-    //TODO IMPLEMENT API
-    fun renderPromoList() {
-        promoListView.setListener(object : DigitalPromoListWidget.ActionListener {
-            override fun onCopiedPromoCode(voucherCode: String) {
-                Toast.makeText(activity, "Kode voucher telah di copy ke clipboard", Toast.LENGTH_LONG).show()
-            }
-        })
-        promoList.add(DigitalPromo("1", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLALA", false, ""))
-        promoList.add(DigitalPromo("2", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLELE", false, ""))
-        promoList.add(DigitalPromo("3", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLILI", false, ""))
-        promoList.add(DigitalPromo("4", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLULU", false, ""))
-        promoList.add(DigitalPromo("5", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLOLO", false, ""))
-        promoListView.setPromoList(promoList)
     }
 
     override fun onDestroy() {

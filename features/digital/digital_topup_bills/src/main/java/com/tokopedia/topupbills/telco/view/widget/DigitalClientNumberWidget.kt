@@ -1,6 +1,7 @@
 package com.tokopedia.topupbills.telco.view.widget
 
 import android.content.Context
+import android.support.annotation.AttrRes
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -16,20 +17,21 @@ import org.jetbrains.annotations.NotNull
 /**
  * Created by nabillasabbaha on 25/04/19.
  */
-open class DigitalBaseClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                                   defStyleAttr: Int = 0)
+open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
+                                                               defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private val hintInputNumber: TextView
-    private val imgOperator: ImageView
-    private val btnClear: Button
-    private val autoCompleteInputNumber: AutoCompleteTextView
-    private val btnContactPicker: Button
-    private val errorInputNumber: TextView
+    protected val hintInputNumber: TextView
+    protected val imgOperator: ImageView
+    protected val btnClear: Button
+    protected val autoCompleteInputNumber: AutoCompleteTextView
+    protected val btnContactPicker: Button
+    protected val errorInputNumber: TextView
+    protected val view: View
     private lateinit var listener: ActionListener
 
     init {
-        val view = View.inflate(context, getLayout(), this)
+        view = View.inflate(context, getLayout(), this)
         hintInputNumber = view.findViewById(R.id.hint_input_number)
         imgOperator = view.findViewById(R.id.img_operator)
         btnClear = view.findViewById(R.id.btn_clear_input_number)
@@ -51,7 +53,7 @@ open class DigitalBaseClientNumberWidget @JvmOverloads constructor(@NotNull cont
             }
         })
 
-        autoCompleteInputNumber.addTextChangedListener(object: TextWatcher {
+        autoCompleteInputNumber.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
@@ -65,7 +67,7 @@ open class DigitalBaseClientNumberWidget @JvmOverloads constructor(@NotNull cont
                     listener.clearAutoComplete()
                 }
                 if (count >= 4) {
-                    listener.renderProductList()
+                    listener.renderOperator()
                 }
             }
         })
@@ -78,7 +80,6 @@ open class DigitalBaseClientNumberWidget @JvmOverloads constructor(@NotNull cont
     fun setListener(listener: ActionListener) {
         this.listener = listener
     }
-
 
     fun setInputNumber(inputNumber: String) {
         autoCompleteInputNumber.setText(inputNumber)
@@ -117,7 +118,7 @@ open class DigitalBaseClientNumberWidget @JvmOverloads constructor(@NotNull cont
 
     interface ActionListener {
         fun navigateToContact()
-        fun renderProductList()
+        fun renderOperator()
         fun clearAutoComplete()
     }
 }

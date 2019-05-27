@@ -12,4 +12,5 @@
     <string name="title_promo">Promo</string>
     <string name="title_telco_product_empty_state">%s Tidak Tersedia</string>
     <string name="desc_telco_product_empty_state">Produk %s untuk provider ini belum tersedia, silakan coba provider lainnya.</string>
+    <string name="digital_desc_add_to_mybills">You’ll be reminded to pay your bill every month on %s th</string>
 </resources>
