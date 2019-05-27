@@ -23,13 +23,6 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         toolbar.contentInsetStartWithNavigation = 0
-
-        startActivity(TravelContactDataActivity.getCallingIntent(this, TravelContactData(
-                name = "test",
-                email = "test@test.com",
-                phoneCode = 62,
-                phone = "763246784"
-        )))
     }
 
     override fun getComponent(): HotelHomepageComponent =
