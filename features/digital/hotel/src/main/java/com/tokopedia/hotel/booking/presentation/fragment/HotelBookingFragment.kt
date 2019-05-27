@@ -1,7 +1,9 @@
 package com.tokopedia.hotel.booking.presentation.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -19,6 +21,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
+import com.tokopedia.common.travel.presentation.fragment.PhoneCodePickerFragment
+import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
+import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.hotel.R
@@ -49,6 +56,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
     lateinit var hotelCart: HotelCart
     lateinit var cartId: String
+    lateinit var contactData: TravelContactData
 
     var roomRequest = ""
     var roomRequestMaxCharCount = ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT
@@ -105,10 +113,24 @@ class HotelBookingFragment : BaseDaggerFragment() {
             cartId = savedInstanceState.getString(EXTRA_HOTEL_CART_ID,"")
             roomRequest = savedInstanceState.getString(EXTRA_ROOM_REQUEST,"")
             guestName = savedInstanceState.getString(EXTRA_GUEST_NAME,"")
+            contactData = savedInstanceState.getParcelable(EXTRA_CONTACT_DATA) ?: TravelContactData()
         }
 
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), cartId,
                 GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_cart))
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_CODE_CONTACT_DATA -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    contactData = data!!.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
+                    renderContactData()
+                }
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -116,6 +138,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
         outState.putString(EXTRA_HOTEL_CART_ID, cartId)
         outState.putString(EXTRA_ROOM_REQUEST, roomRequest)
         outState.putString(EXTRA_GUEST_NAME, guestName)
+        outState.putParcelable(EXTRA_CONTACT_DATA, contactData)
     }
 
     private fun initView() {
@@ -161,8 +184,6 @@ class HotelBookingFragment : BaseDaggerFragment() {
             if (!property.rooms[0].isBreakFastIncluded) tv_booking_room_info_breakfast.visibility = View.GONE
 
             val cancellationPolicy = property.rooms[0].cancellationPolicies
-            tv_cancellation_policy_ticker.truncateDescription = false
-            tv_cancellation_policy_ticker.resetMaxLineCount()
             tv_cancellation_policy_ticker.info_title.setFontSize(TextViewCompat.FontSize.MICRO)
 
             var cancellationDesc: CharSequence = cancellationPolicy.content
@@ -201,8 +222,6 @@ class HotelBookingFragment : BaseDaggerFragment() {
             for (policy in property.rooms[0].cancellationPolicies.details) {
                 val policyView = InfoTextView(context!!)
                 policyView.setTitleAndDescription(policy.title, policy.content)
-                policyView.truncateDescription = false
-                policyView.resetMaxLineCount()
                 policyView.info_title.setFontSize(TextViewCompat.FontSize.SMALL)
                 policyView.info_container.setMargin(0,0,0, policyView.info_container.getDimens(R.dimen.dp_16))
                 hotelCancellationPolicyBottomSheets.addContentView(policyView)
@@ -248,11 +267,20 @@ class HotelBookingFragment : BaseDaggerFragment() {
     }
 
     private fun setupContactDetail(cart: HotelCartData) {
-        val contactData = cart.contact
-        tv_contact_name.text = contactData.name
-        tv_contact_email.text = contactData.email
-        tv_contact_phone_number.text = getString(R.string.hotel_booking_contact_detail_phone_number,
-                contactData.phoneCode, contactData.phone)
+        if (!::contactData.isInitialized) {
+            val initContactData = cart.contact
+            contactData = TravelContactData(
+                name = initContactData.name,
+                email = initContactData.email,
+                phoneCode = initContactData.phoneCode,
+                phone = initContactData.phone
+            )
+        }
+        renderContactData()
+
+        iv_edit_contact.setOnClickListener {
+            startActivityForResult(TravelContactDataActivity.getCallingIntent(context!!, contactData), REQUEST_CODE_CONTACT_DATA)
+        }
 
         if (guestName.isNotEmpty()) {
             radio_button_contact_guest.isChecked = true
@@ -267,6 +295,14 @@ class HotelBookingFragment : BaseDaggerFragment() {
         til_guest.setErrorTextAppearance(R.style.ErrorTextAppearance)
         til_guest.setHelperTextAppearance(R.style.HelperTextAppearance)
         toggleGuestFormError(false)
+    }
+
+    private fun renderContactData() {
+        tv_contact_name.text = contactData.name
+        tv_contact_email.text = contactData.email
+        tv_contact_phone_number.text = getString(R.string.hotel_booking_contact_detail_phone_number,
+                contactData.phoneCode, contactData.phone)
+        user_contact_info.invalidate()
     }
 
     private fun toggleShowGuestForm(value: Boolean) {
@@ -335,8 +371,6 @@ class HotelBookingFragment : BaseDaggerFragment() {
             )
 //            bookingViewModel.checkoutCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_checkout), hotelCheckoutParam)
         }
-//        onTaxPolicyClicked()
-        onCancellationPolicyClicked(hotelCart.property)
     }
 
     private fun validateData(): Boolean {
@@ -360,6 +394,8 @@ class HotelBookingFragment : BaseDaggerFragment() {
         const val EXTRA_HOTEL_CART_ID = "extra_hotel_cart_id"
         const val EXTRA_ROOM_REQUEST = "extra_room_request"
         const val EXTRA_GUEST_NAME = "extra_guest_name"
+        const val EXTRA_CONTACT_DATA = "extra_contact_data"
+        const val REQUEST_CODE_CONTACT_DATA = 104
         const val TAG_HOTEL_CANCELLATION_POLICY = "hotel_cancellation_policy"
         const val TAG_HOTEL_TAX_POLICY = "hotel_tax_policy"
         const val ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT = 250
