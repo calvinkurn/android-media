@@ -124,6 +124,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
         setupRoomInfo(hotelCart.property, hotelCart.cart)
         setupRoomRequestForm(hotelCart.cart)
         setupContactDetail(hotelCart.cart)
+        setupPayNowPromoTicker(hotelCart.property)
         setupInvoiceSummary(hotelCart.cart, hotelCart.property)
 
         booking_button.setOnClickListener { onBookingButtonClicked() }
@@ -286,6 +287,12 @@ class HotelBookingFragment : BaseDaggerFragment() {
                 til_guest.setHelper(noticeString)
                 til_guest.error = null
             }
+        }
+    }
+
+    private fun setupPayNowPromoTicker(property: HotelPropertyData) {
+        if (property.rooms.isNotEmpty() && !property.rooms[0].isDirectPayment) {
+            booking_pay_now_promo_container.visibility = View.VISIBLE
         }
     }
 
