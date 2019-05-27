@@ -23,26 +23,4 @@ public abstract class SearchSectionPresenter<T extends SearchSectionContract.Vie
                                                        Map<String, String> additionalParams) {
         requestParams.putAllString(additionalParams);
     }
-
-    protected void enrichWithFilterAndSortParams(RequestParams requestParams) {
-        if (getView() == null) {
-            return;
-        }
-
-        if (getView().getSelectedSort() != null) {
-            requestParams.putAllString(getView().getSelectedSort());
-        }
-        if (getView().getSelectedFilter() != null) {
-            requestParams.putAllString(getView().getSelectedFilter());
-        }
-        if (getView().getExtraFilter() != null) {
-            requestParams.putAllString(getView().getExtraFilter());
-        }
-    }
-
-    protected void removeDefaultCategoryParam(RequestParams params) {
-        if (params.getString(SearchApiConst.SC, "").equals(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SC)) {
-            params.clearValue(SearchApiConst.SC);
-        }
-    }
 }

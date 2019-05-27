@@ -443,7 +443,7 @@ public abstract class SearchSectionFragment
     public void getDynamicFilter() {
         if (canRequestDynamicFilter()) {
             isGettingDynamicFilter = true;
-            getPresenter().requestDynamicFilter();
+            getPresenter().requestDynamicFilter(searchParameter.getSearchParameterMap());
         }
     }
 
@@ -501,19 +501,6 @@ public abstract class SearchSectionFragment
 
     protected boolean isRefreshing() {
         return refreshLayout.isRefreshing();
-    }
-
-    protected TopAdsParams enrichWithFilterAndSortParams(TopAdsParams topAdsParams) {
-        if (getSelectedSort() != null) {
-            topAdsParams.getParam().putAll(getSelectedSort());
-        }
-        if (getSelectedFilter() != null) {
-            topAdsParams.getParam().putAll(getSelectedFilter());
-        }
-        if (getExtraFilter() != null) {
-            topAdsParams.getParam().putAll(getExtraFilter());
-        }
-        return topAdsParams;
     }
 
     @Override

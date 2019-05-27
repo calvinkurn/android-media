@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public interface SearchSectionContract {
 
@@ -40,7 +41,7 @@ public interface SearchSectionContract {
     interface Presenter<T extends View> extends CustomerPresenter<T> {
         void initInjector(T view);
 
-        void requestDynamicFilter();
+        void requestDynamicFilter(Map<String, Object> searchParameter);
 
         void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener);
     }
