@@ -124,19 +124,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
-        return view -> {
-           /* Pattern pattern = Pattern.compile("^.+\\.([pP][dD][fF])$");
-            Matcher matcher = pattern.matcher(uri);
-            if (matcher.find()) {*/
-                presenter.onClick(uri);
-          /*  } else {
-                ((UnifiedOrderListRouter) context.getApplicationContext())
-                        .actionOpenGeneralWebView((Activity) context, uri);
-            }*/
-
-        /*    ((UnifiedOrderListRouter) context.getApplicationContext())
-                    .actionOpenGeneralWebView((Activity) context, uri);*/
-        };
+        return view -> presenter.onClick(uri);
     }
 
 

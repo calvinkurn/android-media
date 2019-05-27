@@ -483,17 +483,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     public void onClick(String uri) {
         pdfUri = uri;
-
-
         if (isdownloadable(uri)) {
-           // presenter.onClick(uri);
             getView().askPermission();
         } else {
             ((UnifiedOrderListRouter) getView().getAppContext().getApplicationContext()).actionOpenGeneralWebView((Activity) getView().getAppContext(), uri);
         }
-
-
-
     }
 
     @SuppressLint("MissingPermission")
