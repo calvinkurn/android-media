@@ -22,13 +22,6 @@ abstract class PushNotificationDB : RoomDatabase() {
         @Volatile
         private var instance: PushNotificationDB? = null
 
-        private val MIGRATION_1_2 = object: Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                // Since we didn't alter the table, there's nothing else to do here.
-                // we just do it as a flag that this db using room since version 2
-            }
-        }
-
         fun getInstance(context: Context): PushNotificationDB {
             return instance ?: synchronized(this) {
                 instance ?: buildDatabase(context).also { instance = it }
@@ -40,7 +33,6 @@ abstract class PushNotificationDB : RoomDatabase() {
                     context,
                     PushNotificationDB::class.java,
                     PUSHNOTIF_DB)
-                    .addMigrations(MIGRATION_1_2)
                     .build()
         }
     }
