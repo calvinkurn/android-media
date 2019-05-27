@@ -23,7 +23,7 @@ const val PARAM_ADDRESS_USECASE: String = "input"
  * Created by fajarnuha on 2019-05-21.
  */
 class GetAddressCornerUseCase
-@Inject constructor(@ApplicationContext val context: Context, val usecase: GraphqlUseCase) {
+@Inject constructor(val context: Context, val usecase: GraphqlUseCase) {
 
     fun execute(query: String): Observable<AddressListModel> =
             this.getObservable(query = query, page = 1, isAddress = true, isCorner = false)

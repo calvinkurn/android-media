@@ -22,7 +22,7 @@ import javax.inject.Inject
  * Created by fajarnuha on 2019-05-26.
  */
 class GetCornerUseCase
-@Inject constructor(@ApplicationContext val context: Context, val usecase: GraphqlUseCase) {
+@Inject constructor(val context: Context, val usecase: GraphqlUseCase) {
 
     fun execute(query: String): Observable<AddressListModel> =
             this.getObservable(query = query, page = 1, isAddress = false, isCorner = true)
