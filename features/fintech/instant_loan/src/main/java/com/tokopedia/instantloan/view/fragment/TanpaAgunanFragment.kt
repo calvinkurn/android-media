@@ -185,7 +185,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
                 loanPeriodType.isSelected = loanPeriodType.id == selectedLoanPeriodYear.id
             }
             loanPeriodValueTV.text = selectedLoanPeriodYear.label
-            loanPeriodValueTV.tag = selectedLoanPeriodYear.label
+            loanPeriodValueTV.tag = selectedLoanPeriodYear.value
 
         }
     }
