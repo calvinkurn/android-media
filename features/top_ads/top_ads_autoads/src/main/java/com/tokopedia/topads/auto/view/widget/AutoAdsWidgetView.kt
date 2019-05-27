@@ -19,7 +19,7 @@ import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.internal.TopAdsWidgetStatus
 import com.tokopedia.topads.auto.view.activity.SettingBudgetAdsActivity
-//import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
+import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
 import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,18 +44,21 @@ class AutoAdsWidgetView : CardView {
 
     constructor(context: Context) : super(context) {
         initView(context)
+        initInjector(context)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         initView(context)
+        initInjector(context)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initView(context)
+        initInjector(context)
     }
 
-//    override fun getComponent(): AutoAdsComponent = DaggerAutoAdsComponent.builder()
-//            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
+    fun getComponent(context: Context): AutoAdsComponent = DaggerAutoAdsComponent.builder()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
 
     private fun initView(context: Context) {
         useCompatPadding = true
@@ -67,7 +70,16 @@ class AutoAdsWidgetView : CardView {
         dailyUsageStatus = findViewById(R.id.daily_usage_status)
         progressBar = findViewById(R.id.progress_bar)
         setupListener()
-//        component.inject(this)
+    }
+
+    private fun setupListener() {
+        statusAdsContainer.setOnClickListener {
+            context.startActivity(Intent(context, SettingBudgetAdsActivity::class.java))
+        }
+    }
+
+    private fun initInjector(context: Context){
+        getComponent(context).inject(this)
 //        widgetViewModel = ViewModelProviders.of(context as Fragment, factory).get(AutoAdsWidgetViewModel::class.java)
 //        widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
 //        widgetViewModel.autoAdsData.observe(context as Fragment, Observer {
@@ -80,12 +92,6 @@ class AutoAdsWidgetView : CardView {
 //                progressBar.progress = it!!.dailyUsage
 //            }
 //        })
-    }
-
-    private fun setupListener() {
-        statusAdsContainer.setOnClickListener {
-            context.startActivity(Intent(context, SettingBudgetAdsActivity::class.java))
-        }
     }
 
     fun setStatusAds(status: Int) {
