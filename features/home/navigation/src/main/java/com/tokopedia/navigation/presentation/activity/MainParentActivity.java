@@ -331,7 +331,8 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        startActivity(HotelHomepageActivity.Companion.getCallingIntent(this));
+//        startActivity(HotelHomepageActivity.Companion.getCallingIntent(this));
+        startActivity(FlightDashboardActivity.getCallingIntent(this));
         return false;
 /*
         int position = getPositionFragmentByMenu(item);
