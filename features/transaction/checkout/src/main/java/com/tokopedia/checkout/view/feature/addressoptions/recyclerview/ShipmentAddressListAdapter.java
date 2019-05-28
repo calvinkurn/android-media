@@ -67,7 +67,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
                 addressModel.setSelected(true);
             } else addressModel.setSelected(false);
         }
-        if (mCornerData != null) {
+        if (mCornerData != null && mCornerData.getCornerModel() != null) {
             mCornerData.setSelected(mCornerData.getCornerModel().getId().equals(selectedId));
         }
         mAddressModelList.clear();
@@ -126,7 +126,7 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
 
         void onAddressContainerClicked(RecipientAddressModel model, int position);
 
-        void onCornerAddressClicked(CornerAddressModel cornerAddressModel, int position);
+        void onCornerAddressClicked(RecipientAddressModel addressModel, int position);
 
         void onEditClick(RecipientAddressModel model);
 

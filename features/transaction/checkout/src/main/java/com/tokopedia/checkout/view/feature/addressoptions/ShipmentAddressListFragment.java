@@ -263,6 +263,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void showCorner(RecipientAddressModel cornerAddressModel) {
         mCurrentAddress = cornerAddressModel;
         mShipmentAddressListAdapter.setCorner(cornerAddressModel);
+        onCornerAddressClicked(cornerAddressModel, 0);
     }
 
     @Override
@@ -366,12 +367,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void onCornerAddressClicked(CornerAddressModel cornerAddressModel, int position) {
+    public void onCornerAddressClicked(RecipientAddressModel addressModel, int position) {
         mShipmentAddressListAdapter.updateSelected(position);
         if (mCartAddressChoiceActivityListener != null && getActivity() != null) {
             mCornerAnalytics.sendChooseCornerAddress();
-            RecipientAddressModel result = cornerAddressModel.getCornerModel();
-            mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(result);
+            mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(addressModel);
         } else {
             // Show error due to unexpected behaviour
             this.showError(null);

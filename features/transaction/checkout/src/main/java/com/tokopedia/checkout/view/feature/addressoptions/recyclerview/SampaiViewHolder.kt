@@ -24,7 +24,7 @@ class SampaiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(model: CornerAddressModel, listener: ShipmentAddressListAdapter.ActionListener, position: Int) {
         if (model.cornerModel != null) {
             mCornerView.visibility = View.VISIBLE
-            mCornerView.setOnClickListener { view -> listener.onCornerAddressClicked(model, position) }
+            mCornerView.setOnClickListener { view -> listener.onCornerAddressClicked(model.cornerModel, position) }
             mCornerName.text = model.cornerModel.addressName
             mBranchName.text = model.cornerModel.destinationDistrictName
             mRadio.isChecked = model.isSelected
