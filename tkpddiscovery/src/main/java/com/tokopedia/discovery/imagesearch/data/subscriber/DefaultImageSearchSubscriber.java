@@ -55,8 +55,8 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
             discoveryView.showErrorNetwork(e.getMessage());
         } else if (e instanceof ServerErrorRequestDeniedException) {
             ServerErrorHandler.sendForceLogoutAnalytics(
-                    ((ServerErrorRequestDeniedException) e).getUrl()
-            );
+                    ((ServerErrorRequestDeniedException) e).getUrl(),
+                    false, true);
             ServerErrorHandler.showForceLogoutDialog();
         } else if (e instanceof ServerErrorMaintenanceException) {
             ServerErrorHandler.showMaintenancePage();

@@ -1,6 +1,6 @@
 package com.tokopedia.datepicker.range.view.presenter;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 
 /**

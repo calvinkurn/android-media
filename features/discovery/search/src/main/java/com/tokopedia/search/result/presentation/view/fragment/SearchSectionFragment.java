@@ -28,8 +28,6 @@ import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.common.data.Sort;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
-import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
@@ -38,7 +36,9 @@ import com.tokopedia.discovery.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
+import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.io.Serializable;
@@ -443,7 +443,7 @@ public abstract class SearchSectionFragment
     public void getDynamicFilter() {
         if (canRequestDynamicFilter()) {
             isGettingDynamicFilter = true;
-            getPresenter().requestDynamicFilter();
+            getPresenter().requestDynamicFilter(searchParameter.getSearchParameterMap());
         }
     }
 
@@ -501,19 +501,6 @@ public abstract class SearchSectionFragment
 
     protected boolean isRefreshing() {
         return refreshLayout.isRefreshing();
-    }
-
-    protected TopAdsParams enrichWithFilterAndSortParams(TopAdsParams topAdsParams) {
-        if (getSelectedSort() != null) {
-            topAdsParams.getParam().putAll(getSelectedSort());
-        }
-        if (getSelectedFilter() != null) {
-            topAdsParams.getParam().putAll(getSelectedFilter());
-        }
-        if (getExtraFilter() != null) {
-            topAdsParams.getParam().putAll(getExtraFilter());
-        }
-        return topAdsParams;
     }
 
     @Override

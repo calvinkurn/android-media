@@ -31,7 +31,6 @@ import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.affiliatecommon.data.network.TopAdsConstantKt;
-import com.tokopedia.analytics.Analytics;
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
@@ -87,6 +86,7 @@ import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.recentview.data.api.RecentViewUrl;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sessioncommon.data.SessionCommonUrl;
+import com.tokopedia.settingbank.addeditaccount.data.AddEditAccountUrl;
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
@@ -372,7 +372,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         tradein_common.Constants.LAKU6_BASEURL = ConsumerAppBaseUrl.LAKU6_BASE_URL;
         com.tokopedia.inbox.common.ResolutionUrl.HOSTNAME=ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
         com.tokopedia.network.constant.TkpdBaseURL.JS_DOMAIN=ConsumerAppBaseUrl.BASE_JS_DOMAIN;
-
+        AddEditAccountUrl.BASE_URL = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
     }
 
 
@@ -390,7 +390,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
-        Analytics.initDB(getApplicationContext());
         CategoryDbFlow.initDatabase(getApplicationContext());
     }
 

@@ -3,8 +3,7 @@ package com.tokopedia.discovery.imagesearch.search.fragment.product.adapter.type
 import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
@@ -13,7 +12,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
  * Created by sachinbansal on 4/13/18.
  */
 
-public interface ImageProductListTypeFactory extends SearchSectionTypeFactory {
+public interface ImageProductListTypeFactory extends BrowseSectionTypeFactory {
 
     int type(ProductItem productItem);
 

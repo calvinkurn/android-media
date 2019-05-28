@@ -16,6 +16,7 @@ import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -44,18 +45,15 @@ final class CatalogListPresenter
     @Override
     public void requestCatalogList() {
         RequestParams requestParams = generateParamSearchCatalog();
-        getView().initTopAdsParamsByQuery(requestParams);
+        getView().initTopAdsParams(requestParams);
         searchCatalogUseCase.execute(requestParams, new SearchCatalogSubscriber(getView()));
     }
 
     private RequestParams generateParamSearchCatalog() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(getView().getSearchParameterMap());
-        requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
 
         setRequestParamsDefaultValues(requestParams);
-        enrichWithFilterAndSortParams(requestParams);
-        removeDefaultCategoryParam(requestParams);
+        requestParams.putAll(getView().getSearchParameterMap());
         return requestParams;
     }
 
@@ -77,69 +75,27 @@ final class CatalogListPresenter
 
     @Override
     public void refreshSort() {
-        if (getView().getDepartmentId() != null && !getView().getDepartmentId().isEmpty()) {
-            searchCatalogUseCase.execute(
-                    generateParamSearchCatalog(getView().getDepartmentId()),
-                    new RefreshCatalogSubscriber(getView())
-            );
-        } else {
-            searchCatalogUseCase.execute(
-                    generateParamSearchCatalog(),
-                    new RefreshCatalogSubscriber(getView())
-            );
-        }
-    }
-
-    private RequestParams generateParamSearchCatalog(String departmentId) {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(getView().getSearchParameterMap());
-        requestParams.putString(SearchApiConst.SC, departmentId);
-
-        setRequestParamsDefaultValues(requestParams);
-        enrichWithFilterAndSortParams(requestParams);
-        removeDefaultCategoryParam(requestParams);
-        return requestParams;
+        searchCatalogUseCase.execute(
+                generateParamSearchCatalog(),
+                new RefreshCatalogSubscriber(getView())
+        );
     }
 
     @Override
-    public void requestCatalogList(String departmentId) {
-        if (getView() == null) {
-            return;
-        }
-        RequestParams requestParams = generateParamSearchCatalog(departmentId);
-        getView().initTopAdsParamsByCategory(requestParams);
-        searchCatalogUseCase.execute(requestParams, new SearchCatalogSubscriber(getView()));
-    }
-
-    @Override
-    public void requestCatalogLoadMore(String departmentId) {
-        searchCatalogUseCase.execute(generateParamSearchCatalog(departmentId), new SearchCatalogLoadMoreSubscriber(getView()));
-    }
-
-    @Override
-    public void requestDynamicFilter() {
+    public void requestDynamicFilter(Map<String, Object> searchParameterMap) {
         checkViewAttached();
 
-        RequestParams requestParams = createRequestDynamicFilterParams();
+        RequestParams requestParams = createRequestDynamicFilterParams(searchParameterMap);
 
         getDynamicFilterUseCase.execute(requestParams, new RequestDynamicFilterSubscriber(requestDynamicFilterListener));
     }
 
-    private RequestParams createRequestDynamicFilterParams() {
+    private RequestParams createRequestDynamicFilterParams(Map<String, Object> searchParameterMap) {
         RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(searchParameterMap);
         requestParams.putAllString(generateParamsNetwork(requestParams));
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_CATALOG);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-
-        if (getView().getDepartmentId() != null && !getView().getDepartmentId().isEmpty()) {
-            requestParams.putString(SearchApiConst.SC, getView().getDepartmentId());
-        } else {
-            requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
-            requestParams.putString(SearchApiConst.SC, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SC);
-        }
-
-        enrichWithFilterAndSortParams(requestParams);
-        removeDefaultCategoryParam(requestParams);
 
         return requestParams;
     }

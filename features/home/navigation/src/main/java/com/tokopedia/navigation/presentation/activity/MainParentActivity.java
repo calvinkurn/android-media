@@ -47,6 +47,8 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
@@ -196,8 +198,9 @@ public class MainParentActivity extends BaseActivity implements
         super.onStart();
         if (presenter.isFirstTimeUser()) {
             setDefaultShakeEnable();
-            startActivity(((GlobalNavRouter) getApplicationContext())
-                    .getOnBoardingIntent(this));
+            Intent intent = RouteManager.getIntent(this,
+                    ApplinkConstInternalMarketplace.ONBOARDING);
+            startActivity(intent);
             finish();
         }
     }

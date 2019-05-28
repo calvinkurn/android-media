@@ -9,6 +9,7 @@ import com.tokopedia.core.util.DataBinder;
 
 /**
  * Use base adapter with visitor pattern from tkpd abstraction
+ * if want the same functionality, use BaseLinearRecyclerViewAdapter from libraries:baseListSeller for temp solution
  */
 @Deprecated
 public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
