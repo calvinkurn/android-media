@@ -262,6 +262,8 @@ public class CatalogListAdapter extends BaseAdapter<CatalogsValueEntity> {
                 if (catalogListingOuter != null) {
                     loadCompleted(catalogListingOuter.getCatalog().getCatalogs(), catalogListingOuter);
                     setLastPage(!catalogListingOuter.getCatalog().getPaging().isHasNext());
+                }else{
+                    loadCompletedWithError();
                 }
             }
         });
