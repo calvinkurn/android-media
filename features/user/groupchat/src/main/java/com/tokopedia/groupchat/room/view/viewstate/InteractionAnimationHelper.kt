@@ -39,7 +39,7 @@ class InteractionAnimationHelper(private var interactionGuideline: FrameLayout) 
 //        defaultParticle = ParticleSystem.changeDrawablesToParticles(interactionDefaultIconList)
     }
 
-    fun shootInteractionButton(anchorView: View?, numParticles: Int) {
+    fun shootInteractionButton(anchorView: View, numParticles: Int) {
         val interactionDirection = Random()
         try {
             interactionDefaultIconList.shuffle()
@@ -57,7 +57,7 @@ class InteractionAnimationHelper(private var interactionGuideline: FrameLayout) 
         }
     }
 
-    private fun getIconInteraction(): ArrayList<Drawable>? {
+    private fun getIconInteraction(): ArrayList<Drawable> {
         if(interactionIconList.size > 0){
             return interactionIconList
         }
