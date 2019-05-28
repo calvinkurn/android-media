@@ -457,6 +457,7 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toStartOf="@id/webview_icon"
             app:layout_constraintGuide_percent="0.85"/>
+
         <RelativeLayout
             android:id="@+id/card_retry"
             android:layout_width="match_parent"

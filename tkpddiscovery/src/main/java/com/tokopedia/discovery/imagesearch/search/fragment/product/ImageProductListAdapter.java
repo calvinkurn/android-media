@@ -9,8 +9,8 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
@@ -23,7 +23,7 @@ import java.util.List;
  * Created by sachinbansal on 4/13/18.
  */
 
-public class ImageProductListAdapter extends SearchSectionGeneralAdapter {
+public class ImageProductListAdapter extends BrowseSectionGeneralAdapter {
 
     private static final int ADAPTER_POSITION_HEADER = 0;
     private List<Visitable> list = new ArrayList<>();
@@ -167,7 +167,7 @@ public class ImageProductListAdapter extends SearchSectionGeneralAdapter {
     }
 
     @Override
-    protected SearchSectionTypeFactory getTypeFactory() {
+    protected BrowseSectionTypeFactory getTypeFactory() {
         return null;
     }
 

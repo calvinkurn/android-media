@@ -35,6 +35,8 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static com.tokopedia.feedplus.FeedPlusConstant.NON_LOGIN_USER_ID;
+
 /**
  * @author by nisie on 5/15/17.
  */
@@ -276,8 +278,8 @@ public class FeedPlusPresenter
         );
     }
 
-    public String getUserId() {
-        return userSession.getUserId();
+    private String getUserId() {
+        return userSession.isLoggedIn() ? userSession.getUserId() : NON_LOGIN_USER_ID;
     }
 
     private void getFirstPageFeed() {
@@ -285,14 +287,8 @@ public class FeedPlusPresenter
         viewListener.showRefresh();
         currentCursor = "";
 
-
-        if (userSession == null || !userSession.isLoggedIn()) {
-            viewListener.onUserNotLogin();
-            return;
-        }
-
         getDynamicFeedFirstPageUseCase.execute(
-                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId(), "", GetDynamicFeedUseCase.SOURCE_FEEDS),
+                GetDynamicFeedFirstPageUseCase.Companion.createRequestParams(getUserId(), "", GetDynamicFeedUseCase.SOURCE_FEEDS, userSession.isLoggedIn()),
                 new Subscriber<DynamicFeedFirstPageDomainModel>() {
                     @Override
                     public void onCompleted() {
@@ -376,7 +372,7 @@ public class FeedPlusPresenter
         }
 
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId(), currentCursor, GetDynamicFeedUseCase.SOURCE_FEEDS),
+                GetDynamicFeedUseCase.Companion.createRequestParams(getUserId(), currentCursor, GetDynamicFeedUseCase.SOURCE_FEEDS),
                 new Subscriber<DynamicFeedDomainModel>() {
                     @Override
                     public void onCompleted() {

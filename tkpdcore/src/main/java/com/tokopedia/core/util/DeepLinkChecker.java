@@ -28,7 +28,10 @@ import java.util.List;
 /**
  * Created by Nisie on 28/10/15.
  * Modified by Alifa
+ *
+ * use DeepLinkChecker from library applink instead.
  */
+@Deprecated
 public class DeepLinkChecker {
 
     public static final int OTHER = -1;
@@ -163,7 +166,7 @@ public class DeepLinkChecker {
         return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(FLIGHT_SEGMENT);
     }
 
-    public static List<String> getLinkSegment(String url) {
+    private static List<String> getLinkSegment(String url) {
         return Uri.parse(url).getPathSegments();
     }
 

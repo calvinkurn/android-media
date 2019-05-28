@@ -266,6 +266,7 @@ open class PlayViewStateImpl(
             setChatListHasSpaceOnTop(false)
             analytics.eventClickShowVideoToggle(viewModel?.channelId)
         }
+        errorView.setOnClickListener {  }
 
         analytics.eventViewInteractionButton(viewModel?.channelId)
         interactionButton.setOnClickListener {
@@ -567,6 +568,7 @@ open class PlayViewStateImpl(
                 loadingView.hide()
                 errorView.show()
                 setToolbarWhite()
+                showLoginButton(false)
             }
         }
 

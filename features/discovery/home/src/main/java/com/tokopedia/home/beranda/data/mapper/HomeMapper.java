@@ -85,8 +85,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     && homeData.getDynamicHomeChannel().getChannels() != null
                     && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
                 int position = 1;
-                List<Object> legoAndCuratedAndSprintSaleBannerList = new ArrayList<>();
-
                 for (DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
                     if (channel.getLayout() != null) {
                         if(!homeData.isCache()) {
@@ -102,7 +100,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - lego banner 3 image - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - legoBanner3Image - $1 - $2", String.valueOf(position)));
-                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO)) {
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_ORGANIC)) {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - sprintSaleProduct - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setPosition(position);
@@ -111,7 +110,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 homeData.getSpotlight().setHomeAttribution(String.format("%s - spotlightBanner - $1 - $2", String.valueOf(position)));
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_HERO)
-                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_ORGANIC)
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_3_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
@@ -138,7 +136,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 );
                                 break;
                             case DynamicHomeChannel.Channels.LAYOUT_3_IMAGE:
-                            case DynamicHomeChannel.Channels.LAYOUT_ORGANIC:
                             case DynamicHomeChannel.Channels.LAYOUT_HERO:
                                 list.add(mappingDynamicChannel(
                                         channel,
@@ -181,6 +178,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                         list.size(),channel);
                                 break;
                             case DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO:
+                            case DynamicHomeChannel.Channels.LAYOUT_ORGANIC:
                                 list.add(mappingDynamicChannel(
                                         channel,
                                         channel.getEnhanceImpressionDynamicSprintLegoHomePage(),
