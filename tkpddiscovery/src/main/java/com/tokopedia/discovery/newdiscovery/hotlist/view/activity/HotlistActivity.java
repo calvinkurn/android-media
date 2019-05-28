@@ -18,9 +18,10 @@ import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistCo
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.DescriptionView;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.fragment.HotlistFragment;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.listener.AppBarState;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistContract;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistPresenter;
-import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.listener.AppBarStateChangeListener;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -106,14 +107,14 @@ public class HotlistActivity extends DiscoveryActivity
         appBarLayout = findViewById(R.id.appbar);
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
             @Override
-            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+            public void onStateChanged(AppBarLayout appBarLayout, @AppBarState int state) {
                 switch (state) {
-                    case COLLAPSED:
+                    case AppBarState.COLLAPSED:
                         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_black_thin);
                         if (searchItem != null)
                             searchItem.setIcon(R.drawable.search_icon);
                         break;
-                    case EXPANDED:
+                    case AppBarState.EXPANDED:
                         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_white);
                         if (searchItem != null)
                             searchItem.setIcon(R.drawable.ic_search_thin);

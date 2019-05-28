@@ -248,10 +248,13 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         crackTokenPresenter.initializePage();
     }
 
+
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        widgetCrackResult.clearCrackResult();
+        widgetTokenView.releaseResourcesOnDestroy();
         crackTokenPresenter.detachView();
+        super.onDestroyView();
     }
 
     @Override
@@ -308,6 +311,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
             @Override
             public void onClick() {
+                if(getContext()==null)
+                    return;
                 fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
                 stopTimer();
                 hideInfoTitle();
@@ -321,6 +326,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
             @Override
             public void showCrackResult(CrackResultEntity crackResult){
+                if(getActivity() == null || getActivity().isFinishing() || getContext() == null || !isAdded() || isRemoving()) {
+                    return;
+                }
                 setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
                 widgetCrackResult.showCrackResult(crackResult);
 

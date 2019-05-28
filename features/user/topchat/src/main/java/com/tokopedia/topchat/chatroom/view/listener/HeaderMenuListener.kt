@@ -9,8 +9,12 @@ interface HeaderMenuListener{
 
     fun onGoToShop()
 
+    fun followUnfollowShop(b: Boolean)
+
     fun onDeleteConversation()
 
     fun onGoToChatSetting(blockedStatus: BlockedStatus)
+
+    fun onGoToReportUser()
 
 }

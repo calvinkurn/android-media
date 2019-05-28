@@ -11,8 +11,8 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.typefactory.CategoryProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.List;
  * Edited to handle Category by alifa
  */
 
-public class CategoryProductListAdapter extends SearchSectionGeneralAdapter {
+public class CategoryProductListAdapter extends BrowseSectionGeneralAdapter {
 
     private CategoryHeaderModel categoryHeaderModel;
     private List<Visitable> list = new ArrayList<>();
@@ -126,7 +126,7 @@ public class CategoryProductListAdapter extends SearchSectionGeneralAdapter {
     }
 
     @Override
-    protected SearchSectionTypeFactory getTypeFactory() {
+    protected BrowseSectionTypeFactory getTypeFactory() {
         return typeFactory;
     }
 

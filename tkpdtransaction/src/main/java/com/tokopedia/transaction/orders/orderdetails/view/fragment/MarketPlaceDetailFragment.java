@@ -287,13 +287,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             doubleTextView.setTopText(detail.label());
             doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
             doubleTextView.setBottomText(detail.value());
-            doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_seventy_percent_));
+            doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70_new));
             doubleTextView.setBottomTextStyle("bold");
             doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
         } else {
             doubleTextView.setTopText(detail.label());
             String text = detail.value() + NO_SANIN_NEXT_LINE;
             SpannableString spannableString = new SpannableString(text);
+            doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70_new));
+            doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
             int startIndexOfLink = text.indexOf("Salin");
             spannableString.setSpan(new ClickableSpan() {
                 @Override
@@ -354,6 +356,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(pricing.label());
         doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
+        doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setBottomText(pricing.value());
         doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
@@ -464,6 +467,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         totalPrice.removeAllViews();
         actionBtnLayout.removeAllViews();
         paymentMethod.removeAllViews();
+    }
+
+    @Override
+    public void askPermission() {
+
     }
 
     @Override
@@ -617,7 +625,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         Uri uri = Uri.parse(actionButton.getUri());
                         invoiceUrl = uri.getQueryParameter("invoiceUrl");
                         String applink = "tokopedia://topchat/askseller/" + shopId;
-                        RouteManager.route(getContext(), applink);
                         Intent intent = RouteManager.getIntent(getContext(), applink);
                         intent.putExtra(ApplinkConst.Chat.CUSTOM_MESSAGE, invoiceUrl);
                         intent.putExtra(ApplinkConst.Chat.SOURCE, "tx_ask_seller");

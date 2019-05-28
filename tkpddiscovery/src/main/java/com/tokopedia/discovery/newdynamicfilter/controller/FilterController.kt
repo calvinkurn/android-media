@@ -1,53 +1,38 @@
 package com.tokopedia.discovery.newdynamicfilter.controller
 
 import android.text.TextUtils
-import com.tokopedia.core.discovery.model.Filter
-import com.tokopedia.core.discovery.model.LevelThreeCategory
-import com.tokopedia.core.discovery.model.LevelTwoCategory
-import com.tokopedia.core.discovery.model.Option
+import com.tokopedia.discovery.common.data.Filter
+import com.tokopedia.discovery.common.data.LevelThreeCategory
+import com.tokopedia.discovery.common.data.LevelTwoCategory
+import com.tokopedia.discovery.common.data.Option
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper
 import java.util.*
 
-class FilterController {
+open class FilterController {
 
-    private val filterParameter = mutableMapOf<String, String>()
-    private val filterViewState = mutableSetOf<String>()
+    private val nonFilterParameter = mutableMapOf<String, String>()
     private val filterList = mutableListOf<Filter>()
-
+    private val filterViewState = mutableSetOf<String>()
     private var pressedSliderMinValueState = -1
     private var pressedSliderMaxValueState = -1
 
-    fun initFilterController(filterParameter: Map<String, String>? = mapOf(),
+    fun initFilterController(parameter: Map<String, String>? = mapOf(),
                              filterList: List<Filter>? = listOf()) {
         resetStatesBeforeLoad()
 
-        loadFilterParameter(filterParameter)
         loadFilterList(filterList)
-        loadFilterViewState()
+        loadParameter(parameter)
+        loadFilterViewState(parameter)
     }
 
     private fun resetStatesBeforeLoad() {
-        filterParameter.clear()
-        filterViewState.clear()
+        nonFilterParameter.clear()
         filterList.clear()
+        filterViewState.clear()
         pressedSliderMaxValueState = -1
         pressedSliderMaxValueState = -1
-    }
-
-    private fun loadFilterParameter(filterParameter: Map<String, String>?) {
-        if(filterParameter == null) return
-
-        this.filterParameter.putAll(filterParameter)
-        filterParameterRemoveDuplicateValues()
-    }
-
-    private fun filterParameterRemoveDuplicateValues() {
-        for(entrySet in filterParameter.entries) {
-            val valueSet = entrySet.value.split(OptionHelper.VALUE_SEPARATOR).toSet()
-            entrySet.setValue(valueSet.joinToString(separator = OptionHelper.VALUE_SEPARATOR))
-        }
     }
 
     private fun loadFilterList(filterList: List<Filter>?) {
@@ -56,113 +41,98 @@ class FilterController {
         this.filterList.addAll(filterList)
     }
 
-    private fun loadFilterViewState() {
-        val optionsForFilterViewState = mutableListOf<Option>()
+    private fun loadParameter(parameter: Map<String, String>?) {
+        if(parameter == null) return
 
-        loopSelectedOptionsInFilterList { _, option ->
-            addOrCombineOptions(optionsForFilterViewState, option)
+        generateNonFilterParameter(parameter)
+    }
+
+    private fun generateNonFilterParameter(parameter: Map<String, String>) {
+        val toNonFilterParameter = mutableMapOf<String, String>()
+
+        for(entry in parameter.entries) {
+            if(!getIsFilterParameter(entry)) {
+                toNonFilterParameter[entry.key] = entry.value
+            }
         }
 
+        nonFilterParameter.putAll(toNonFilterParameter)
+    }
+
+    private fun getIsFilterParameter(parameterEntry: Map.Entry<String, String>) : Boolean {
+        var isFilterParameter = false
+
+        loopOptionsInFilterList { _, option ->
+            if(option.key == parameterEntry.key) {
+                isFilterParameter = true
+                return@loopOptionsInFilterList
+            }
+        }
+
+        return isFilterParameter
+    }
+
+    private fun loadFilterViewState(parameter: Map<String, String>?) {
+        if(parameter == null) return
+
+        val optionsForFilterViewState = mutableListOf<Option>()
+
+        loopOptionsInFilterList { _, option ->
+            if(isOptionSelected(parameter, option)) {
+                optionsForFilterViewState.add(option)
+            }
+            else {
+                addOptionsFromDeeperLevelCategory(parameter, option, optionsForFilterViewState)
+            }
+        }
+
+        iterateOptionAndCheckForBundledOption(optionsForFilterViewState)
+
         for(option in optionsForFilterViewState) {
-            if(option.value == "") option.value = getFilterValue(option.key)
+            if(option.value == "") option.value = parameter[option.key]
             filterViewState.add(option.uniqueId)
         }
     }
 
-    private fun addOrCombineOptions(optionsForFilterViewState: MutableList<Option>, option: Option) {
-        val optionsWithSameKey = optionsForFilterViewState.filter { it.key == option.key }
-
-        if (optionsWithSameKey.isEmpty()) {
-            optionsForFilterViewState.add(option)
-        } else {
-            setBundledOptionsForFilterViewState(optionsForFilterViewState, option)
-        }
-    }
-
-    private fun setBundledOptionsForFilterViewState(optionsForFilterViewState: MutableList<Option>, option: Option) {
-        val iterator = optionsForFilterViewState.listIterator()
-        var optionHasBeenAddedOrReplaced = false
-
-        while (iterator.hasNext()) {
-            val existingOption = iterator.next()
-
-            if(existingOption.key == option.key) {
-                optionHasBeenAddedOrReplaced = addOrReplaceOptionWithSameKey(iterator, existingOption, option)
-            }
-        }
-
-        if(!optionHasBeenAddedOrReplaced) {
-            optionsForFilterViewState.add(option)
-        }
-    }
-
-    private fun addOrReplaceOptionWithSameKey(iterator: MutableListIterator<Option>, existingOption: Option, currentOption: Option) : Boolean {
-        val existingOptionValueList = existingOption.value.split(OptionHelper.VALUE_SEPARATOR).toList()
-        val currentOptionValueList = currentOption.value.split(OptionHelper.VALUE_SEPARATOR).toList()
-
-        return when {
-            shouldReplaceExistingOptionWithCurrentOption(currentOptionValueList, existingOptionValueList)-> {
-                iterator.set(currentOption)
-                true
-            }
-            existingOptionAlreadyContainsCurrentOption(currentOptionValueList, existingOptionValueList) -> true
-            else -> false
-        }
-    }
-
-    private fun shouldReplaceExistingOptionWithCurrentOption(currentOptionValueList: List<String>, existingOptionValueList: List<String>) : Boolean {
-        return currentOptionValueList.containsAll(existingOptionValueList)
-    }
-
-    private fun existingOptionAlreadyContainsCurrentOption(currentOptionValueList: List<String>, existingOptionValueList: List<String>) : Boolean {
-        return existingOptionValueList.containsAll(currentOptionValueList)
-    }
-
-    private fun loopSelectedOptionsInFilterList(action: (filter: Filter, option: Option) -> Unit) {
-        loopOptionsInFilterList { filter, option ->
-            if(isOptionSelected(option)) {
-                action(filter, option)
-            }
-            else {
-                if(!listIsNullOrEmpty(option.levelTwoCategoryList)) {
-                    val categoryAsOption = getSelectedOptionLevelTwoCategoryList(option.levelTwoCategoryList)
-                    if(categoryAsOption != null) {
-                        action(filter, categoryAsOption)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun loopOptionsInFilterList(action: (filter: Filter, option: Option) -> Unit) {
-        for(filter in filterList)
-            for(option in filter.options)
-                action(filter, option)
-    }
-
-    private fun isOptionSelected(option: Option) : Boolean {
-        return if(filterParameter.containsKey(option.key))
+    private fun isOptionSelected(parameter: Map<String, String>, option: Option) : Boolean {
+        return if(parameter.containsKey(option.key))
             return when {
                 option.value == "" -> true
-                isOptionValuesExistsInFilterParameter(option) -> true
+                isOptionValuesExistsInFilterParameter(parameter, option) -> true
                 else -> false
             }
         else false
+    }
+
+    private fun isOptionValuesExistsInFilterParameter(parameter: Map<String, String>, option: Option) : Boolean {
+        val optionValues = option.value.split(OptionHelper.VALUE_SEPARATOR)
+        val filterParameterValues = parameter[option.key]?.split(OptionHelper.VALUE_SEPARATOR) ?: listOf<Option>()
+
+        return filterParameterValues.containsAll(optionValues)
+    }
+
+    private fun addOptionsFromDeeperLevelCategory(parameter: Map<String, String>, option: Option, optionsForFilterViewState: MutableList<Option>) {
+        if(!listIsNullOrEmpty(option.levelTwoCategoryList)) {
+            val categoryAsOption = getSelectedOptionLevelTwoCategoryList(parameter, option.levelTwoCategoryList)
+            if(categoryAsOption != null) {
+                optionsForFilterViewState.add(categoryAsOption)
+            }
+        }
     }
 
     private fun <T: Any> listIsNullOrEmpty(list : List<T>?) : Boolean {
         return list == null || list.isEmpty()
     }
 
-    private fun getSelectedOptionLevelTwoCategoryList(levelTwoCategoryList: List<LevelTwoCategory>) : Option? {
+    private fun getSelectedOptionLevelTwoCategoryList(parameter: Map<String, String>, levelTwoCategoryList: List<LevelTwoCategory>) : Option? {
         for(levelTwoCategory in levelTwoCategoryList) {
-            if(getFilterValue(levelTwoCategory.key) == levelTwoCategory.value) {
+            if(parameter[levelTwoCategory.key] == levelTwoCategory.value) {
                 return OptionHelper.generateOptionFromUniqueId(
                     OptionHelper.constructUniqueId(levelTwoCategory.key, levelTwoCategory.value, levelTwoCategory.name)
                 )
             }
             else if(!listIsNullOrEmpty(levelTwoCategory.levelThreeCategoryList)) {
-                val levelThreeCategoryAsOption = getSelectedOptionLevelThreeCategoryList(levelTwoCategory.levelThreeCategoryList)
+                val levelThreeCategoryAsOption = getSelectedOptionLevelThreeCategoryList(parameter, levelTwoCategory.levelThreeCategoryList)
                 if(levelThreeCategoryAsOption != null)
                     return levelThreeCategoryAsOption
             }
@@ -171,9 +141,9 @@ class FilterController {
         return null
     }
 
-    private fun getSelectedOptionLevelThreeCategoryList(levelThreeCategoryList: List<LevelThreeCategory>) : Option? {
+    private fun getSelectedOptionLevelThreeCategoryList(parameter: Map<String, String>, levelThreeCategoryList: List<LevelThreeCategory>) : Option? {
         for(levelThreeCategory in levelThreeCategoryList)
-            if(getFilterValue(levelThreeCategory.key) == levelThreeCategory.value)
+            if(parameter[levelThreeCategory.key] == levelThreeCategory.value)
                 return OptionHelper.generateOptionFromUniqueId(
                     OptionHelper.constructUniqueId(levelThreeCategory.key, levelThreeCategory.value, levelThreeCategory.name)
                 )
@@ -181,11 +151,34 @@ class FilterController {
         return null
     }
 
-    private fun isOptionValuesExistsInFilterParameter(option: Option) : Boolean {
-        val optionValues = option.value.split(OptionHelper.VALUE_SEPARATOR)
-        val filterParameterValues = getFilterValue(option.key).split(OptionHelper.VALUE_SEPARATOR)
+    private fun iterateOptionAndCheckForBundledOption(optionsForFilterViewState: MutableList<Option>) {
+        val currentIterator = optionsForFilterViewState.listIterator()
 
-        return filterParameterValues.containsAll(optionValues)
+        while(currentIterator.hasNext()) {
+            val currentOption = currentIterator.next()
+            val bundledOptionList = optionsForFilterViewState.filter { it.key == currentOption.key }
+
+            for(bundledOption in bundledOptionList) {
+                if(isOptionAlreadyBundled(currentOption.value, bundledOption.value)) {
+                    currentIterator.remove()
+                    break
+                }
+            }
+        }
+    }
+
+    private fun isOptionAlreadyBundled(optionValue: String, bundledOptionValue: String) : Boolean {
+        val optionValueList = optionValue.split(OptionHelper.VALUE_SEPARATOR).toList()
+        val bundledOptionValueList = bundledOptionValue.split(OptionHelper.VALUE_SEPARATOR).toList()
+
+        return optionValue.length < bundledOptionValue.length
+                && bundledOptionValueList.containsAll(optionValueList)
+    }
+
+    private fun loopOptionsInFilterList(action: (filter: Filter, option: Option) -> Unit) {
+        for(filter in filterList)
+            for(option in filter.options)
+                action(filter, option)
     }
 
     fun saveSliderValueStates(minValue: Int, maxValue: Int) {
@@ -198,24 +191,8 @@ class FilterController {
     }
 
     fun resetAllFilters() {
-        removeActiveFiltersFromFilterParameter()
-
         filterViewState.clear()
-
         resetSliderStates()
-    }
-
-    private fun removeActiveFiltersFromFilterParameter() {
-        val activeFilterKeySet = mutableSetOf<String>()
-
-        for(filterViewStateUniqueId in filterViewState) {
-            val optionKey = OptionHelper.parseKeyFromUniqueId(filterViewStateUniqueId)
-            activeFilterKeySet.add(optionKey)
-        }
-
-        for(activeFilterKey in activeFilterKeySet) {
-            filterParameter.remove(activeFilterKey)
-        }
     }
 
     private fun resetSliderStates() {
@@ -258,8 +235,13 @@ class FilterController {
         } else {
             selectedOptionList.addAll(
                 getCustomSelectedOptionList(filter) { option ->
-                getFilterViewState(option) && isIncludePopularOption(popularOptionList, option)
-            })
+                    if (popularOptionList.isEmpty()) {
+                        getFilterViewState(option)
+                    } else {
+                        getFilterViewState(option) && !option.isPopular
+                    }
+                }
+            )
         }
 
         selectedOptionList.addAll(popularOptionList)
@@ -305,11 +287,8 @@ class FilterController {
                 checkedOptions.add(option)
             }
         }
-        return checkedOptions
-    }
 
-    private fun isIncludePopularOption(popularOptionList: List<Option>, option: Option) : Boolean {
-        return (popularOptionList.isEmpty() || !option.isPopular)
+        return checkedOptions
     }
 
     fun isFilterActive() : Boolean {
@@ -317,7 +296,16 @@ class FilterController {
     }
 
     fun getFilterValue(key: String): String {
-        return filterParameter[key] ?: ""
+        val optionValues = mutableSetOf<String>()
+
+        filterViewState.forEach { optionUniqueId ->
+            if (OptionHelper.parseKeyFromUniqueId(optionUniqueId) == key) {
+                val optionValue = OptionHelper.parseValueFromUniqueId(optionUniqueId)
+                optionValues += optionValue.split(OptionHelper.VALUE_SEPARATOR).toSet()
+            }
+        }
+
+        return optionValues.joinToString(separator = OptionHelper.VALUE_SEPARATOR)
     }
 
     fun getFilterViewState(option: Option) : Boolean {
@@ -332,37 +320,39 @@ class FilterController {
         return filterViewState.size
     }
 
-    fun getFilterParameter() : Map<String, String> {
-        return this.filterParameter
+    fun getParameter() : Map<String, String> {
+        return getActiveFilterMap() + nonFilterParameter
     }
 
     fun getActiveFilterMap() : Map<String, String> {
-        val activeFilter = mutableMapOf<String, String>()
+        val filterParameter = mutableMapOf<String, String>()
 
-        loopOptionsInFilterList { _, option ->
-            if (filterParameter.contains(option.key)) {
-                activeFilter[option.key] = getFilterValue(option.key)
-            }
+        for(optionUniqueId in filterViewState) {
+            val optionKey = OptionHelper.parseKeyFromUniqueId(optionUniqueId)
+            val currentOptionValue = filterParameter[optionKey]
+            val addedOptionValue = OptionHelper.parseValueFromUniqueId(optionUniqueId)
+
+            filterParameter[optionKey] = getAppendedFilterValues(currentOptionValue, addedOptionValue)
         }
 
-        return activeFilter
+        return filterParameter
+    }
+
+    private fun getAppendedFilterValues(currentFilterValue: String?, addedFilterValue: String) : String {
+        val currentFilterValueList = currentFilterValue?.split(OptionHelper.VALUE_SEPARATOR)?.toSet() ?: setOf()
+        val addedFilterValueList = addedFilterValue.split(OptionHelper.VALUE_SEPARATOR).toSet()
+
+        return (currentFilterValueList + addedFilterValueList).joinToString(separator = OptionHelper.VALUE_SEPARATOR)
     }
 
     fun getActiveFilterOptionList() : List<Option> {
         val activeFilterOptionList = mutableListOf<Option>()
 
-        loopSelectedOptionsInFilterList { _, option ->
-            if (isOptionConsideredActiveFilter(option)) {
-                activeFilterOptionList.add(option)
-            }
+        filterViewState.forEach {
+            activeFilterOptionList.add(OptionHelper.generateOptionFromUniqueId(it))
         }
 
         return activeFilterOptionList
-    }
-
-    private fun isOptionConsideredActiveFilter(option: Option) : Boolean {
-        return (option.value == "" && filterParameter.contains(option.key))
-                || getFilterViewState(option)
     }
 
     @JvmOverloads
@@ -374,8 +364,6 @@ class FilterController {
         }
 
         saveFilterViewState(option.uniqueId, isFilterApplied)
-
-        populateFilterViewStateToFilterParameter(option.key)
     }
 
     private fun cleanUpExistingFilterWithSameKey(newOptionKey: String) {
@@ -401,40 +389,9 @@ class FilterController {
     fun setFilter(optionList: List<Option>?) {
         if(optionList == null || optionList.isEmpty() ) return
 
-        val updatedOptionsKey = mutableSetOf<String>()
-
         for(option in optionList) {
-            updatedOptionsKey.add(option.key)
-
             val isFilterApplied = option.inputState?.toBoolean() ?: false
             saveFilterViewState(option.uniqueId, isFilterApplied)
-        }
-
-        populateFilterViewStateToFilterParameter(updatedOptionsKey)
-    }
-
-    private fun populateFilterViewStateToFilterParameter(keyList: Set<String>) {
-        for(key in keyList) {
-            populateFilterViewStateToFilterParameter(key)
-        }
-    }
-
-    private fun populateFilterViewStateToFilterParameter(key: String) {
-        val newFilterParameterValueList = mutableSetOf<String>()
-
-        for(filterViewStateUniqueId in filterViewState) {
-            val optionKeyInViewState = OptionHelper.parseKeyFromUniqueId(filterViewStateUniqueId)
-            if(optionKeyInViewState == key) {
-                val optionValueInViewState = OptionHelper.parseValueFromUniqueId(filterViewStateUniqueId)
-                newFilterParameterValueList.add(optionValueInViewState)
-            }
-        }
-
-        if(!newFilterParameterValueList.isEmpty()) {
-            filterParameter[key] =
-                newFilterParameterValueList.joinToString(separator = OptionHelper.VALUE_SEPARATOR)
-        } else {
-            filterParameter.remove(key)
         }
     }
 }

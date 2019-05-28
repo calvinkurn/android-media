@@ -30,8 +30,11 @@ import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
+import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.EmptyDetailViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.EmptyPostDetailViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.SeeAllCommentsViewHolder;
+import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.EmptyDetailViewModel;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.SeeAllCommentsViewModel;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -54,8 +57,10 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     private final VideoViewHolder.VideoViewListener videoViewListener;
     private final KolComment.View.SeeAll seeAll;
     private final UserSessionInterface userSession;
+    private final KolPostDetailContract.View mainView;
 
-    public KolPostDetailTypeFactoryImpl(KolComment.View.ViewHolder kolCommentListener,
+    public KolPostDetailTypeFactoryImpl(KolPostDetailContract.View mainView,
+                                        KolComment.View.ViewHolder kolCommentListener,
                                         KolComment.View.SeeAll seeAll,
                                         DynamicPostViewHolder.DynamicPostListener listener,
                                         CardTitleView.CardTitleListener cardTitleListener,
@@ -65,6 +70,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                                         GridPostAdapter.GridItemListener gridItemListener,
                                         VideoViewHolder.VideoViewListener videoViewListener,
                                         UserSessionInterface userSession) {
+        this.mainView = mainView;
         this.kolCommentListener = kolCommentListener;
         this.seeAll = seeAll;
         this.listener = listener;
@@ -95,6 +101,11 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(SeeAllCommentsViewModel seeAllCommentsViewModel) {
         return SeeAllCommentsViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(EmptyDetailViewModel emptyDetailViewModel) {
+        return EmptyDetailViewHolder.Companion.getLAYOUT();
     }
 
     @Override
@@ -144,8 +155,8 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
             abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
         else if (viewType == SeeAllCommentsViewHolder.LAYOUT)
             abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);
-        else if (viewType == EmptyPostDetailViewHolder.LAYOUT) {
-            abstractViewHolder = new EmptyPostDetailViewHolder(view);
+        else if (viewType == EmptyDetailViewHolder.Companion.getLAYOUT()) {
+            abstractViewHolder = new EmptyDetailViewHolder(view, mainView);
         } else
             abstractViewHolder = super.createViewHolder(view, viewType);
         return abstractViewHolder;

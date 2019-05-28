@@ -92,7 +92,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_24), getResources().getDimensionPixelSize(R.dimen.dp_24));
         layoutManager = new GridLayoutManager(getContext(), SPAN_COUNT_3, GridLayoutManager.VERTICAL, false);
         recyclerview.setLayoutManager(layoutManager);
-        recyclerview.setAdapter(new DealsBrandAdapter(null, !IS_SHORT_LAYOUT));
+        recyclerview.setAdapter(new DealsBrandAdapter(null, DealsBrandAdapter.ITEM_BRAND_NORMAL));
         searchInputView.setListener(this);
         KeyboardHandler.DropKeyboard(getContext(), searchInputView);
     }

@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -47,10 +46,9 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
-import com.tokopedia.kol.analytics.PostTagAnalytics;
+import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
 import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
@@ -101,6 +99,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
     private static final int OPEN_CONTENT_REPORT = 1310;
+    private static final int OPEN_VIDEO_DETAIL = 1311;
 
     private Integer postId;
     private SwipeToRefresh swipeToRefresh;
@@ -108,7 +107,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private ImageView likeButton, commentButton, shareButton;
     private TextView likeCount, commentCount, shareText;
     private View footer;
-    private KolRouter kolRouter;
     private PerformanceMonitoring performanceMonitoring;
 
     private DynamicPostViewModel dynamicPostViewModel;
@@ -175,19 +173,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (getActivity().getApplicationContext() instanceof KolRouter) {
-            kolRouter = (KolRouter) getActivity().getApplicationContext();
-        } else {
-            throw new IllegalStateException("Application must be an instance of "
-                    + KolRouter.class.getSimpleName());
-        }
-
         initVar();
 
         swipeToRefresh.setOnRefreshListener(this);
 
-        KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this, this, this, this, this, this
+        KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,this, this, this, this, this, this
                 , this, this, this, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -227,17 +217,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onEmptyDetailFeed() {
-        adapter.showEmpty(getContext(), new BaseEmptyViewHolder.Callback() {
-            @Override
-            public void onEmptyContentItemTextClicked() {
-                finishActivity();
-            }
+        adapter.showEmpty();
+    }
 
-            @Override
-            public void onEmptyButtonClicked() {
-                finishActivity();
-            }
-        });
+    @Override
+    public void onEmptyDetailClicked() {
+        getActivity().finish();
     }
 
     private void finishActivity() {
@@ -286,6 +271,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     private void setFooter(PostDetailViewModel postDetailViewModel) {
+        this.postDetailFooterModel = postDetailViewModel.getFooterModel();
         footer.setVisibility(View.VISIBLE);
         TemplateFooter template = null;
         if (postDetailViewModel.getDynamicPostViewModel().getPostList().size() != 0) {
@@ -294,7 +280,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (template != null) {
             bindLike(postDetailFooterModel, template);
             bindComment(postDetailFooterModel, template);
-            bindShare(template);
+            bindShare(postDetailFooterModel, template);
 
         } else {
             footer.setVisibility(View.GONE);
@@ -311,7 +297,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
                 likeCount.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
             }
-            setLikeListener(postDetailFooterModel.isLiked());
+            setLikeListener(model.isLiked());
         } else {
             likeButton.setVisibility(View.GONE);
             likeCount.setVisibility(View.GONE);
@@ -321,27 +307,27 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private void bindComment(PostDetailFooterModel model, TemplateFooter template) {
         if (template.getComment()) {
             setTotalComment(model.getTotalComment());
-            commentCount.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
-            commentButton.setOnClickListener(v -> onGoToKolComment(0, postDetailFooterModel.getContentId()));
+            commentCount.setOnClickListener(v -> onGoToKolComment(0, model.getContentId()));
+            commentButton.setOnClickListener(v -> onGoToKolComment(0, model.getContentId()));
         } else {
             commentButton.setVisibility(View.GONE);
             commentCount.setVisibility(View.GONE);
         }
     }
 
-    private void bindShare(TemplateFooter template) {
+    private void bindShare(PostDetailFooterModel model, TemplateFooter template) {
         if (template.getShare()) {
-            shareButton.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
-                    postDetailFooterModel.getShareData().getTitle(),
-                    postDetailFooterModel.getShareData().getDescription(),
-                    postDetailFooterModel.getShareData().getUrl(),
-                    postDetailFooterModel.getShareData().getImageUrl()));
+            shareButton.setOnClickListener(v -> onShareClick(0, model.getContentId(),
+                    model.getShareData().getTitle(),
+                    model.getShareData().getDescription(),
+                    model.getShareData().getUrl(),
+                    model.getShareData().getImageUrl()));
 
-            shareText.setOnClickListener(v -> onShareClick(0, postDetailFooterModel.getContentId(),
-                    postDetailFooterModel.getShareData().getTitle(),
-                    postDetailFooterModel.getShareData().getDescription(),
-                    postDetailFooterModel.getShareData().getUrl(),
-                    postDetailFooterModel.getShareData().getImageUrl()));
+            shareText.setOnClickListener(v -> onShareClick(0, model.getContentId(),
+                    model.getShareData().getTitle(),
+                    model.getShareData().getDescription(),
+                    model.getShareData().getUrl(),
+                    model.getShareData().getImageUrl()));
         } else {
             shareButton.setVisibility(View.GONE);
             shareText.setVisibility(View.GONE);
@@ -429,7 +415,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.followKol(id, rowNumber);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -437,7 +423,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.unfollowKol(id, rowNumber);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -445,7 +431,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.likeKol(id, rowNumber, this);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -453,7 +439,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.unlikeKol(id, adapterPosition, this);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -463,13 +449,13 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             Intent intent = KolCommentActivity.getCallingIntent(getContext(), id, rowNumber);
             startActivityForResult(intent, OPEN_KOL_COMMENT);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
     @Override
     public void onGoToProfile(String url) {
-        kolRouter.openRedirectUrl(getActivity(), url);
+        onGoToLink(url);
     }
 
     @Override
@@ -627,6 +613,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                         );
                     }
                 }
+            case OPEN_VIDEO_DETAIL: {
+                if (resultCode == Activity.RESULT_OK) {
+                    onRefresh();
+                }
+            }
                 break;
             default:
                 break;
@@ -680,12 +671,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         onGoToLink(redirectUrl);
     }
 
-    public void onGoToLink(String link) {
-        if (!TextUtils.isEmpty(link)) {
-            kolRouter.openRedirectUrl(getActivity(), link);
-        }
-    }
-
     @Override
     public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type, boolean isFollow) {
 
@@ -709,7 +694,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             }
 
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -728,7 +713,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                             if (userSession != null && userSession.isLoggedIn()) {
                                 goToContentReport(postId);
                             } else {
-                                startActivity(kolRouter.getLoginIntent(getActivity()));
+                                RouteManager.route(getActivity(), ApplinkConst.LOGIN);
                             }
                         }
 
@@ -879,18 +864,32 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 presenter.sendVote(0, pollId, optionId);
             }
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
 
     }
 
     @Override
-    public void onGridItemClick(int positionInFeed, int contentPosition, @NotNull String redirectLink) {
+    public void onGridItemClick(int positionInFeed, int contentPosition, int productPosition,
+                                @NotNull String redirectLink) {
         onGoToLink(redirectLink);
     }
 
     @Override
     public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId) {
-        startActivity(VideoDetailActivity.Companion.getInstance(getActivity(), postId));
+        startActivityForResult(VideoDetailActivity.Companion.getInstance(getActivity(), postId), OPEN_VIDEO_DETAIL);
+    }
+
+    private void onGoToLink(String link) {
+        if (getActivity() != null && !TextUtils.isEmpty(link)) {
+            if (RouteManager.isSupportApplink(getActivity(), link)) {
+                RouteManager.route(getActivity(), link);
+            } else {
+                RouteManager.route(
+                        getActivity(),
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                );
+            }
+        }
     }
 }

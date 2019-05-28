@@ -9,9 +9,9 @@ import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseDatePickerFragment;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;

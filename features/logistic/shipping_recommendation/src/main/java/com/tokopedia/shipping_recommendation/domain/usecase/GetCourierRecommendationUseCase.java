@@ -35,8 +35,6 @@ import rx.schedulers.Schedulers;
 
 public class GetCourierRecommendationUseCase extends GraphqlUseCase {
 
-    private static final int KILOGRAM_DIVIDER = 1000;
-
     private final ShippingDurationConverter shippingDurationConverter;
 
     @Inject

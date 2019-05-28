@@ -217,6 +217,9 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
             countDownView.setupTimerFromRemianingMillis(content.getCountdownAttr().getExpiredCountDown() * 1000, () -> {
                 view.setVisibility(View.GONE);
             });
+            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(R.dimen.dp_180);
+        } else {
+            view.findViewById(R.id.text_title).getLayoutParams().width = view.getResources().getDimensionPixelOffset(R.dimen.dp_280);
         }
 
         if (!content.getCta().isEmpty()) {
@@ -238,10 +241,11 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         }
 
         if (content.getLayoutCatalogAttr().getCatalogList() != null) {
+            view.setPadding(0, view.getPaddingTop(), 0, 0);
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
             rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
-            CatalogListCarouselAdapter adapter = new CatalogListCarouselAdapter(mPresenter, content.getLayoutCatalogAttr().getCatalogList(), false);
+            CatalogListCarouselAdapter adapter = new CatalogListCarouselAdapter(mPresenter, content.getLayoutCatalogAttr().getCatalogList(), rvCarousel);
             rvCarousel.setAdapter(adapter);
         }
 
@@ -774,21 +778,25 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
     }
 
     void handledClick(String appLink, String webLink, String action, String label) {
-        if (mLayoutInflater.getContext() == null) {
-            return;
-        }
+        try {
+            if (mLayoutInflater.getContext() == null) {
+                return;
+            }
 
-        if (TextUtils.isEmpty(appLink)) {
-            ((TokopointRouter) mLayoutInflater.getContext().getApplicationContext()).openTokoPoint(mLayoutInflater.getContext(), webLink);
-        } else {
-            RouteManager.route(mLayoutInflater.getContext(), appLink);
-        }
+            if (TextUtils.isEmpty(appLink)) {
+                ((TokopointRouter) mLayoutInflater.getContext().getApplicationContext()).openTokoPoint(mLayoutInflater.getContext(), webLink);
+            } else {
+                RouteManager.route(mLayoutInflater.getContext(), appLink);
+            }
 
-        AnalyticsTrackerUtil.sendEvent(mLayoutInflater.getContext(),
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                action,
-                label);
+            AnalyticsTrackerUtil.sendEvent(mLayoutInflater.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    action,
+                    label);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendBannerImpression(String bannerName) {

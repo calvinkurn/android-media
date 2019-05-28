@@ -261,7 +261,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 "picture", dataDetail.getImageUrl(),
                 "url", dataDetail.getUrl(),
                 "categoryId", DEFAULT_VALUE_NONE_OTHER,
-                "cartId", addToCartResult.getCartId(),
+                "dimension45", addToCartResult.getCartId(),
                 "dimension38", DEFAULT_VALUE_NONE_OTHER
         );
         wishlistAnalytics.trackEventAddToCardProductWishlist(object);
