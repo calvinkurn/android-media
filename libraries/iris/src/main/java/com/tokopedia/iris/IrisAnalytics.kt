@@ -1,16 +1,21 @@
 package com.tokopedia.iris
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
+import com.tokopedia.iris.worker.IrisBroadcastReceiver
 import com.tokopedia.iris.worker.IrisService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.json.JSONObject
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
+
 
 /**
  * @author okasurya on 10/2/18.
@@ -77,9 +82,16 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     }
 
     private fun setWorkManager(config: Configuration) {
-        Log.e("Iris", "startService")
-        val intent = Intent(context, IrisService::class.java)
+//        Log.e("Iris", "startService")
+//        val intent = Intent(context, IrisService::class.java)
+//        intent.putExtra(WORKER_SEND_DATA, config)
+//        IrisService.enqueueWork(context, intent)
+
+        Log.d("Alarm scheduler", "Alarm is being scheduled")
+        val intent = Intent(context, IrisBroadcastReceiver::class.java)
         intent.putExtra(WORKER_SEND_DATA, config)
-        IrisService.enqueueWork(context, intent);
+        val pintent = PendingIntent.getBroadcast(context, 0, intent, 0)
+        val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), TimeUnit.SECONDS.toMillis(5), pintent)
     }
 }

@@ -3,7 +3,6 @@ package com.tokopedia.iris.worker
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
-import android.os.IBinder
 import android.support.v4.app.JobIntentService
 import android.util.Log
 import android.widget.Toast
@@ -13,7 +12,8 @@ import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
 import com.tokopedia.iris.model.Configuration
-import kotlinx.coroutines.runBlocking
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -73,23 +73,20 @@ class IrisService : JobIntentService() {
                 val request: String = TrackingMapper().transformListEvent(trackings)
 
                 val service = ApiService(mContext).makeRetrofitService()
-
-                val response: Response<String>? = runBlocking {
-                    try {
-                        val requestBody = ApiService.parse(request)
-                        val response = service.sendMultiEvent(requestBody)
-                        response.await()
-                    } catch (e: Exception) {
-                        null
+                val requestBody = ApiService.parse(request)
+                service.sendMultiEvent(requestBody).enqueue(object : Callback<String> {
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        Log.d("Iris", "Send Tracking onFailure")
                     }
-                }
 
-                if (response != null
-                        && response.isSuccessful
-                        && response.code() == 200) {
-                    trackingRepository.delete(trackings)
-                    Log.d("Iris", "Send Tracking isSuccessful")
-                }
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        if (response.isSuccessful && response.code() == 200) {
+                            trackingRepository.delete(trackings)
+                            Log.d("Iris", "Send Tracking isSuccessful")
+                        }
+                    }
+
+                })
             } catch (e: Exception) {
                 // no op
             }
