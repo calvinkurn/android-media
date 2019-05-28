@@ -22,6 +22,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import android.widget.VideoView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -961,25 +962,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE
                             && layoutManager != null) {
-//                        var item: Visitable<*>?
-//                        val position = when {
-//                            itemIsFullScreen() -> layoutManager.findLastVisibleItemPosition()
-//                            layoutManager.findFirstCompletelyVisibleItemPosition() != -1 -> layoutManager.findFirstCompletelyVisibleItemPosition()
-//                            layoutManager.findLastCompletelyVisibleItemPosition() != -1 -> layoutManager.findLastCompletelyVisibleItemPosition()
-//                            else -> 0
-//                        }
-//                        (recyclerView?.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-//                        item = adapter.list[position]
-
-//                        if (item is DynamicPostViewModel) {
-//                            if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
-//                                adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
-//                            }
-//                            if (item.contentList.size == 1 && item.contentList.get(0) is VideoViewModel) {
-//                                adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO)
-//                                (recyclerView?.findViewHolderForAdapterPosition(position) as VideoViewHolder).playVideo((item as VideoViewModel).url)
-//                            }
-//                        }
                         val firstPosition = layoutManager.findFirstVisibleItemPosition();
                         val lastPosition = layoutManager.findLastVisibleItemPosition();
 
@@ -993,7 +975,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                                 layoutManager.findViewByPosition(i).getGlobalVisibleRect(rowRect);
                                 val videoViewRect = Rect()
                                 layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.getGlobalVisibleRect(videoViewRect)
-
+                                layoutManager.findViewByPosition(i).findViewById<VideoView>(R.id.image)
                                 var percentVideo = 0
                                 if (rowRect.bottom >= rvRect.bottom) {
                                     layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.let {
@@ -1006,13 +988,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                                         percentVideo = (visibleVideo * 100) / it.height
                                     }
                                 }
+                                var isStateChanged = false;
                                 if (percentVideo > 75) {
-//                                (recyclerView?.findViewHolderForAdapterPosition(i) as DynamicPostViewHolder).playVideo()
+                                    if (!item.canPlayVideo) isStateChanged = true
                                     item.canPlayVideo = true
                                 } else {
+                                    if (item.canPlayVideo) isStateChanged = true
                                     item.canPlayVideo = false
                                 }
-                                adapter.notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO)
+                                if (isStateChanged)
+                                    adapter.notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO)
                             }
                         }
                     }
