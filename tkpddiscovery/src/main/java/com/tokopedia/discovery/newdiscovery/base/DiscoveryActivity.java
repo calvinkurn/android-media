@@ -24,6 +24,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.imagesearch.search.ImageSearchImagePickerActivity;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -74,7 +75,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     public MenuItem searchItem;
 
     private TkpdProgressDialog tkpdProgressDialog;
-    private boolean fromCamera;
+    private boolean isFromCamera = false;
     private String imagePath;
     private UserSessionInterface userSession;
     private PerformanceMonitoring performanceMonitoring;
@@ -272,10 +273,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     private void sendGalleryImageSearchResultGTM(String label) {
-        eventDiscoveryGalleryImageSearchResult(label);
-    }
-
-    public void eventDiscoveryGalleryImageSearchResult(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
                 SearchEventTracking.Category.IMAGE_SEARCH,
@@ -285,10 +282,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
 
     private void sendCameraImageSearchResultGTM(String label) {
-        eventDiscoveryCameraImageSearchResult(label);
-    }
-
-    public void eventDiscoveryCameraImageSearchResult(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
                 SearchEventTracking.Category.IMAGE_SEARCH,
@@ -573,6 +566,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             if (searchView != null) {
                 searchView.clearFocus();
             }
+
+            isFromCamera = data.getBooleanExtra(ImageSearchImagePickerActivity.RESULT_IS_FROM_CAMERA, false);
         } else if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case DiscoverySearchView.REQUEST_VOICE:
@@ -601,7 +596,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             tkpdProgressDialog.dismiss();
         }
 
-        if (fromCamera) {
+        if (isFromCamera) {
             sendCameraImageSearchResultGTM(FAILURE);
         } else {
             sendGalleryImageSearchResultGTM(FAILURE);
@@ -615,7 +610,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             tkpdProgressDialog.dismiss();
         }
 
-        if (fromCamera) {
+        if (isFromCamera) {
             sendCameraImageSearchResultGTM(NO_RESPONSE);
         } else {
             sendGalleryImageSearchResultGTM(NO_RESPONSE);
@@ -657,7 +652,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             tkpdProgressDialog.dismiss();
         }
 
-        if (fromCamera) {
+        if (isFromCamera) {
             sendCameraImageSearchResultGTM(NO_RESPONSE);
         } else {
             sendGalleryImageSearchResultGTM(NO_RESPONSE);
@@ -672,7 +667,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         if (tkpdProgressDialog != null) {
             tkpdProgressDialog.dismiss();
         }
-        if (fromCamera) {
+        if (isFromCamera) {
             sendCameraImageSearchResultGTM(SUCCESS);
         } else {
             sendGalleryImageSearchResultGTM(SUCCESS);

@@ -118,6 +118,22 @@ public class SearchTracking {
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.SEARCH, listViewEvent);
     }
 
+    public void eventSearchImagePickerClickCamera() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
+                SearchEventTracking.Category.IMAGE_SEARCH,
+                SearchEventTracking.Action.SEARCH_IMAGE_PICKER_CLICK_CAMERA,
+                "");
+    }
+
+    public void eventSearchImagePickerClickGallery() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
+                SearchEventTracking.Category.IMAGE_SEARCH,
+                SearchEventTracking.Action.SEARCH_IMAGE_PICKER_CLICK_GALLERY,
+                "");
+    }
+
     public static String getActionFieldString(int pageNumber) {
         return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
     }
@@ -147,27 +163,20 @@ public class SearchTracking {
         );
     }
 
-    public static void trackEventClickImageSearchResultProduct(Context context, Object item, int position) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf("event", "productClick",
-                        "eventCategory", "search result",
-                        "eventAction", "click - product",
-                        "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf("click",
-                                DataLayer.mapOf("actionField",
-                                        DataLayer.mapOf("list", String.format(imageClick, position)),
-                                        "products", DataLayer.listOf(item)
-                                )
-                        )
+    public static void trackEventClickImageSearchResultProduct(Object item, int position) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
+                EVENT_CATEGORY, SearchEventTracking.Category.IMAGE_SEARCH_RESULT,
+                EVENT_ACTION, SearchEventTracking.Action.CLICK_PRODUCT,
+                EVENT_LABEL, "",
+                ECOMMERCE, DataLayer.mapOf(
+                        "click", DataLayer.mapOf(
+                                    "actionField", DataLayer.mapOf("list", String.format(imageClick, position),
+                                             "products", DataLayer.listOf(item))
+                                        )
+                            )
                 )
         );
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.PRODUCT_CLICK,
-                SearchEventTracking.Category.IMAGE_SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_PRODUCT,
-                ""
-        ));
     }
 
     public static void eventImpressionSearchResultProduct(TrackingQueue trackingQueue, List<Object> list, String eventLabel) {
