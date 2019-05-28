@@ -269,7 +269,7 @@ public class TopChatAnalytics {
                         "impressions", DataLayer.mapOf(
                                 "name", product.getProductName(),
                                 "id", product.getProductId(),
-                                "price", product.getPriceInt(),
+                                "price", product.getProductPrice(),
                                 "brand", "none",
                                 "category", product.getCategory(),
                                 "variant", product.getVariant(),
