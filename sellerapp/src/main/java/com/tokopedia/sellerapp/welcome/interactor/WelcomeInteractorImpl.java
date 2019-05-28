@@ -82,7 +82,7 @@ public class WelcomeInteractorImpl implements WelcomeInteractor {
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError("Network Unknown Error!");
+                            listener.onError("Network Unknown ErrorResponse!");
                         }
 
                         @Override

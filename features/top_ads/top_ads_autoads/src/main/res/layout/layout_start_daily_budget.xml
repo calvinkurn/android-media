@@ -96,7 +96,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:lineSpacingExtra="2sp"
-                                        android:text="7.500 - 15.000"
+                                        tools:text="7.500 - 15.000"
                                         android:textColor="#41b54a"
                                         android:textSize="20sp" />
 
@@ -152,7 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_3"
                     android:layout_marginRight="@dimen/dp_3"
-                    android:progress="50"
+                    android:progress="0"
                     android:progressTint="@color/tkpd_main_green"
                     android:thumb="@drawable/seekbar_thumb" />
 

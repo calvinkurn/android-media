@@ -9,7 +9,9 @@ import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData
 data class TopAdsAutoAds (
 
     @SerializedName("data")
-    val data: TopAdsAutoAdsData = TopAdsAutoAdsData()
+    val data: TopAdsAutoAdsData = TopAdsAutoAdsData(),
+    @SerializedName("errors")
+    val error: List<ErrorResponse> = listOf(ErrorResponse())
 
 ) {
     data class Response(

@@ -10,7 +10,9 @@ data class TopadsBidInfo(
         @SerializedName("request_type")
         val requestType: String = "",
         @SerializedName("data")
-        val data: List<BidInfoData> = listOf(BidInfoData())
+        val data: List<BidInfoData> = listOf(BidInfoData()),
+        @SerializedName("errors")
+        val error: List<ErrorResponse> = listOf(ErrorResponse())
 ) {
     data class Response(
             @SerializedName("topadsBidInfo")

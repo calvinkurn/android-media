@@ -75,18 +75,20 @@ class AutoAdsWidgetView : CardView {
         }
     }
 
-    private fun renderUI(){
-        visibility = View.VISIBLE
+    private fun renderUI() {
         widgetViewModel = ViewModelProviders.of(context as BaseSimpleActivity, factory).get(AutoAdsWidgetViewModel::class.java)
         widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
         widgetViewModel.autoAdsData.observe(context as BaseSimpleActivity, Observer {
-            setStatusAds(it!!.status)
-            dailyBudgetStatus.text = String.format(context.getString(R.string.anggaran_harian_status), it!!.dailyBudget)
-            dailyUsageStatus.text = String.format(context.getString(R.string.terpakai), it!!.dailyUsage)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                progressBar.setProgress(it!!.dailyUsage, true)
-            } else{
-                progressBar.progress = it!!.dailyUsage
+            if (it!!.status != 0) {
+                setStatusAds(it!!.status)
+                visibility = View.VISIBLE
+                dailyBudgetStatus.text = String.format(context.getString(R.string.anggaran_harian_status), it!!.dailyBudget)
+                dailyUsageStatus.text = String.format(context.getString(R.string.terpakai), it!!.dailyUsage)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    progressBar.setProgress(it!!.dailyUsage, true)
+                } else {
+                    progressBar.progress = it!!.dailyUsage
+                }
             }
         })
     }
