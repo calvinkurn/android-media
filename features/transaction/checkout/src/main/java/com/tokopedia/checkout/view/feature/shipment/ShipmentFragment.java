@@ -171,7 +171,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     // For shipment recommendation
     private ShippingDurationBottomsheet shippingDurationBottomsheet;
     private ShippingCourierBottomsheet shippingCourierBottomsheet;
-
+    private Snackbar snackbarError;
     private PerformanceMonitoring shipmentTracePerformance;
     private boolean isShipmentTraceStopped;
     private String cornerId;
@@ -316,6 +316,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         rvShipment = view.findViewById(R.id.rv_shipment);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
+
+        snackbarError = Snackbar.make(view, "", BaseToaster.LENGTH_SHORT);
 
         progressDialogNormal = new ProgressDialog(getActivity());
         progressDialogNormal.setMessage(getString(R.string.title_loading));
@@ -523,19 +525,26 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentAdapter == null || shipmentAdapter.getItemCount() == 0) {
                 renderErrorPage(message);
             } else {
-                Snackbar snackbar = Snackbar.make(getView(), message, BaseToaster.LENGTH_SHORT);
-                TextView snackbarTextView = snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-                Button snackbarActionButton = snackbar.getView().findViewById(android.support.design.R.id.snackbar_action);
-                snackbar.getView().setBackground(ContextCompat.getDrawable(getView().getContext(), com.tokopedia.design.R.drawable.bg_snackbar_error));
+                if (snackbarError == null) {
+                    snackbarError = Snackbar.make(getView(), "", BaseToaster.LENGTH_SHORT);
+                }
+                snackbarError.setText(message);
+                TextView snackbarTextView = snackbarError.getView().findViewById(android.support.design.R.id.snackbar_text);
+                Button snackbarActionButton = snackbarError.getView().findViewById(android.support.design.R.id.snackbar_action);
+                snackbarError.getView().setBackground(ContextCompat.getDrawable(getView().getContext(), com.tokopedia.design.R.drawable.bg_snackbar_error));
                 snackbarTextView.setTextColor(ContextCompat.getColor(getView().getContext(), R.color.font_black_secondary_54));
                 snackbarActionButton.setTextColor(ContextCompat.getColor(getView().getContext(), R.color.font_black_primary_70));
                 snackbarTextView.setMaxLines(5);
-                snackbar.setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
+                snackbarError.setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
                     }
                 }).show();
+
+                if (!snackbarError.isShown()) {
+                    snackbarError.show();
+                }
             }
         }
     }
@@ -1614,12 +1623,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCheckoutValidationResult(boolean result, Object shipmentData,
-                                           int errorPosition, int requestCode,
-                                           String defaultErrorMessage) {
-        if (!TextUtils.isEmpty(defaultErrorMessage)) {
-            showToastError(defaultErrorMessage);
-            rvShipment.smoothScrollToPosition(errorPosition);
-        } else if (shipmentData == null && result) {
+                                           int errorPosition, int requestCode) {
+        if (shipmentData == null && result) {
             CheckPromoParam checkPromoParam = new CheckPromoParam();
             checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
             switch (requestCode) {

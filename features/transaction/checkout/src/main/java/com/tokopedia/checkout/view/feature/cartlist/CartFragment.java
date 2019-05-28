@@ -803,7 +803,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onCheckoutValidationResult(boolean result, Object shipmentData, int position, int requestCode, String defaultMessage) {
+    public void onCheckoutValidationResult(boolean result, Object shipmentData, int position, int requestCode) {
 
     }
 

@@ -33,7 +33,7 @@ public interface CartAdapterActionListener {
 
     void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position);
 
-    void onCheckoutValidationResult(boolean result, Object shipmentData, int position, int requestCode, String defaultErrorMessage);
+    void onCheckoutValidationResult(boolean result, Object shipmentData, int position, int requestCode);
 
     void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position);
 
