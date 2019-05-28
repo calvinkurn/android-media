@@ -7,7 +7,6 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
 import android.text.SpannableString
@@ -37,9 +36,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.loginregister.LoginRegisterPhoneRouter
 import com.tokopedia.loginregister.LoginRegisterRouter
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
@@ -62,7 +62,6 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
-import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData
 import com.tokopedia.sessioncommon.data.model.SecurityPojo
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -479,7 +478,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             val fragmentTransaction = fragmentManager!!.beginTransaction()
             val newFragment = WebViewLoginFragment.createInstance(url, name)
             newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW)
-            newFragment.show(fragmentTransaction, "dialog")
+            fragmentTransaction.add(newFragment, "dialog")
+            fragmentTransaction.commitAllowingStateLoss()
 
             activity!!.window.setSoftInputMode(
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
@@ -633,15 +633,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         analytics.trackEventSuccessLoginSosmed(loginMethod)
         TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-            userSession.userId,
-            userSession.name,
-            userSession.email,
-            userSession.phoneNumber,
-            userSession.isGoldMerchant,
-            userSession.shopName,
-            userSession.shopId,
-            userSession.hasShop(),
-            loginMethod
+                userSession.userId,
+                userSession.name,
+                userSession.email,
+                userSession.phoneNumber,
+                userSession.isGoldMerchant,
+                userSession.shopName,
+                userSession.shopId,
+                userSession.hasShop(),
+                loginMethod
         )
         onSuccessLogin()
     }
@@ -654,15 +654,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         analytics.eventSuccessLogin(actionLoginMethod)
 
         TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-            userSession.userId,
-            userSession.name,
-            userSession.email,
-            userSession.phoneNumber,
-            userSession.isGoldMerchant,
-            userSession.shopName,
-            userSession.shopId,
-            userSession.hasShop(),
-            actionLoginMethod
+                userSession.userId,
+                userSession.name,
+                userSession.email,
+                userSession.phoneNumber,
+                userSession.isGoldMerchant,
+                userSession.shopName,
+                userSession.shopId,
+                userSession.hasShop(),
+                actionLoginMethod
         )
 
         if(emailPhoneEditText.text.isNotBlank())
@@ -701,9 +701,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun goToLoginPhoneVerifyPage(phoneNumber: String) {
         analytics.trackLoginPhoneNumber()
         activity?.let {
-            val intent = (it.applicationContext as LoginRegisterPhoneRouter).getTokoCashOtpIntent(
-                    it, phoneNumber, true, RequestOtpUseCase.MODE_SMS
-            )
+            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(it,
+                    RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER, phoneNumber, "")
             startActivityForResult(intent, REQUEST_LOGIN_PHONE)
         }
     }
@@ -711,12 +710,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun goToRegisterPhoneVerifyPage(phoneNumber: String) {
 
         activity?.let {
-            val intent = VerificationActivity.getCallingIntent(
+            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                     it,
-                    phoneNumber,
                     RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
-                    true,
-                    RequestOtpUseCase.MODE_SMS
+                    phoneNumber,
+                    ""
             )
             startActivityForResult(intent, REQUEST_REGISTER_PHONE)
         }
@@ -808,15 +806,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         analytics.eventSuccessLoginEmail()
         analytics.trackClickOnLoginButtonSuccess()
         TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-            userSession.userId,
-            userSession.name,
-            userSession.email,
-            userSession.phoneNumber,
-            userSession.isGoldMerchant,
-            userSession.shopName,
-            userSession.shopId,
-            userSession.hasShop(),
-            LoginRegisterAnalytics.LABEL_EMAIL
+                userSession.userId,
+                userSession.name,
+                userSession.email,
+                userSession.phoneNumber,
+                userSession.isGoldMerchant,
+                userSession.shopName,
+                userSession.shopId,
+                userSession.hasShop(),
+                LoginRegisterAnalytics.LABEL_EMAIL
         )
 
         if(emailPhoneEditText.text.isNotBlank())
@@ -825,22 +823,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         onSuccessLogin()
     }
 
-    private fun goToNoTokocashAccountPage(phoneNumber: String) {
+    private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
         if (activity != null && activity!!.applicationContext != null) {
-            val intent = (activity!!.applicationContext as LoginRegisterPhoneRouter)
-                    .getNoTokocashAccountIntent(
-                            activity!!,
-                            phoneNumber)
-            startActivityForResult(intent, REQUEST_NO_TOKOCASH_ACCOUNT)
-        }
-    }
-
-    private fun goToChooseAccountPage(data: ChooseTokoCashAccountViewModel) {
-        if (activity != null && activity!!.applicationContext != null) {
-
-            val intent = (activity!!.applicationContext as LoginRegisterPhoneRouter)
-                    .getChooseTokocashAccountIntent(activity!!, data)
-
+            val intent = RouteManager.getIntent(activity,
+                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
         }
     }
@@ -901,17 +889,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             } else if (requestCode == REQUEST_LOGIN_PHONE
                     && resultCode == Activity.RESULT_OK
                     && data != null
-                    && data.getParcelableExtra<Parcelable>(ChooseTokoCashAccountViewModel.ARGS_DATA) != null) {
-                val chooseTokoCashAccountViewModel = data.getParcelableExtra<ChooseTokoCashAccountViewModel>(ChooseTokoCashAccountViewModel.ARGS_DATA)
-                if (!chooseTokoCashAccountViewModel.listAccount.isEmpty()) {
-                    goToChooseAccountPage(chooseTokoCashAccountViewModel)
-                } else {
-                    val phoneNumber = emailPhoneEditText.text.toString()
-                    goToNoTokocashAccountPage(phoneNumber)
+                    && data.extras != null) {
+                data.extras?.run {
+                    val accessToken = getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                    val phoneNumber = getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                    goToChooseAccountPage(accessToken, phoneNumber)
                 }
-            } else if (requestCode == REQUEST_LOGIN_PHONE && resultCode ==
-                    LoginRegisterPhoneRouter.RESULT_SUCCESS_AUTO_LOGIN) run {
-                onSuccessLoginPhoneNumber()
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 onSuccessLoginPhoneNumber()
             } else if (requestCode == REQUEST_LOGIN_PHONE

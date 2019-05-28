@@ -72,7 +72,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     protected ProgressBar loadingView;
 
     public MenuItem searchItem;
-    private boolean isLastRequestForceSearch;
 
     private TkpdProgressDialog tkpdProgressDialog;
     private boolean fromCamera;
@@ -215,7 +214,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     @Override
     protected void onProductQuerySubmit() {
         setForceSwipeToShop(false);
-        setForceSearch(false);
         setRequestOfficialStoreBanner(true);
 
         performRequestProduct();
@@ -223,7 +221,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     private void onShopQuerySubmit() {
         setForceSwipeToShop(true);
-        setForceSearch(false);
         setRequestOfficialStoreBanner(true);
 
         performRequestProduct();
@@ -383,7 +380,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         onSearchingStart(searchQuery);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
 
-        getPresenter().initiateSearch(searchParameter, isForceSearch(), getInitiateSearchListener());
+        getPresenter().initiateSearch(searchParameter, getInitiateSearchListener());
     }
 
     private InitiateSearchListener getInitiateSearchListener() {
@@ -393,7 +390,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                 ProductViewModel model = new ProductViewModel();
                 model.setSearchParameter(searchParameter);
                 model.setHasCatalog(isHasCatalog);
-                model.setForceSearch(isForceSearch());
 
                 DiscoveryActivity.this.onHandleResponseSearch(model);
             }
