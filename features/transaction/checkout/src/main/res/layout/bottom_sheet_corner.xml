@@ -21,6 +21,7 @@
 
         <com.tokopedia.design.text.SearchInputView
             android:id="@+id/sv_address_search_box"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:iconifiedByDefault="false"
