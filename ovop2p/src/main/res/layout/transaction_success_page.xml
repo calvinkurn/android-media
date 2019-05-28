@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal">
+
+    <ImageView
+        android:id="@+id/chk_img"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_group_4" />
+
+    <TextView
+        android:id="@+id/sucs_msg"
+        app:layout_constraintTop_toBottomOf="@+id/chk_img"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textColor="#73bd00"
+        android:layout_gravity="center"
+        android:text="Berhasil"/>
+
+    <TextView
+        android:id="@+id/date"
+        app:layout_constraintTop_toBottomOf="@+id/sucs_msg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#6b767e"
+        android:gravity="center_horizontal"
+        android:text="12 Dec 2018, 11.20 WIB"/>
+
+    <TextView
+        android:id="@+id/rp_symbl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Rp"
+        android:textColor="#2d263b"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="65.000"
+        android:textColor="#2d263b"
+        android:textSize="36sp"
+        app:layout_constraintStart_toEndOf="@+id/rp_symbl"
+        app:layout_constraintTop_toTopOf="@+id/rp_symbl"/>
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ovop2p</string>
+    <string name="entr_name_num">Masukkan  nama atau nomor ponsel</string>
+    <string name="lnjktn">Lanjutkan</string>
+    <string name="trnsfr">Transfer</string>
+    <string name="tutup">Tutup</string>
+</resources>

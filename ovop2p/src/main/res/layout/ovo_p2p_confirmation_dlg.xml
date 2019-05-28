@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/txtv_trnsfr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#4c2a86"
+        android:text="Konfirmasi Transfer"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/dp_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/rcvr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#6b767e"
+        android:layout_marginTop="@dimen/dp_30"
+        android:lineSpacingExtra="12sp"
+        app:layout_constraintTop_toBottomOf="@+id/txtv_trnsfr"
+        app:layout_constraintStart_toStartOf="@+id/txtv_trnsfr"
+        android:text="Penerima"/>
+
+    <ImageView
+        android:id="@+id/rcvr_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/group_2"
+        android:layout_marginTop="@dimen/dp_4"
+        app:layout_constraintTop_toBottomOf="@+id/rcvr"
+        app:layout_constraintStart_toStartOf="@+id/txtv_trnsfr"/>
+
+    <TextView
+        android:id="@+id/rcvr_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/rcvr_img"
+        app:layout_constraintTop_toTopOf="@+id/rcvr_img"
+        android:textSize="16sp"
+        android:layout_marginLeft="@dimen/dp_2"
+        android:textColor="#2d263b"
+        android:text="Juwita Restianisa"/>
+
+    <TextView
+        android:id="@+id/rcvr_no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_2"
+        app:layout_constraintStart_toEndOf="@+id/rcvr_img"
+        app:layout_constraintTop_toBottomOf="@+id/rcvr_name"
+        android:textSize="12sp"
+        android:textColor="#6b767e"
+        android:text="082332443770"/>
+
+    <TextView
+        android:id="@+id/trnsfr_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/rcvr_no"
+        app:layout_constraintStart_toStartOf="@+id/rcvr_img"
+        android:textSize="12sp"
+        android:textColor="#6b767e"
+        android:layout_marginTop="@dimen/dp_28"
+        android:lineSpacingExtra="12sp"
+        android:text="Sumber Dana" />
+
+    <TextView
+        android:id="@+id/trnsfr_mode_val"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/trnsfr_mode"
+        app:layout_constraintStart_toStartOf="@+id/trnsfr_mode"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textSize="16sp"
+        android:textColor="#2d263b"
+        android:lineSpacingExtra="8sp"
+        android:text="OVO Cash"/>
+
+    <TextView
+        android:id="@+id/amt_ttl"
+        app:layout_constraintTop_toBottomOf="@+id/trnsfr_mode_val"
+        app:layout_constraintStart_toStartOf="@+id/trnsfr_mode_val"
+        android:layout_marginTop="@dimen/dp_28"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#6b767e"
+        android:lineSpacingExtra="12sp"
+        android:text="Nominal"/>
+
+    <TextView
+        android:id="@+id/trnsfr_amt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/amt_ttl"
+        app:layout_constraintStart_toStartOf="@+id/amt_ttl"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textSize="18sp"
+        android:textColor="#2d263b"
+        android:lineSpacingExtra="6sp"
+        android:text="Rp13.000" />
+
+    <TextView
+        android:id="@+id/msg_ttl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_28"
+        android:textSize="12sp"
+        android:textColor="#6b767e"
+        android:lineSpacingExtra="12sp"
+        app:layout_constraintTop_toBottomOf="@+id/trnsfr_amt"
+        app:layout_constraintStart_toStartOf="@+id/trnsfr_amt"
+        android:text="Pesan"/>
+
+    <TextView
+        android:id="@+id/msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#2d263b"
+        android:lineSpacingExtra="8sp"
+        android:layout_marginTop="@dimen/dp_4"
+        app:layout_constraintTop_toBottomOf="@+id/msg_ttl"
+        app:layout_constraintStart_toStartOf="@+id/msg_ttl"
+        android:text="Terima kasih"/>
+
+    <Button
+        android:id="@+id/proceed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_56"
+        android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_50"
+        android:background="@drawable/btn_bg_rounded_corners"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/msg"
+        android:text="@string/trnsfr"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#06b3ba"
+        android:gravity="center_horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/proceed"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:text="BATALKAN"/>
+
+</android.support.constraint.ConstraintLayout>

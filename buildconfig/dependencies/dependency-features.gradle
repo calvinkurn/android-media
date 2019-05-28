@@ -34,6 +34,7 @@ ext {
     tkpdMerchantVoucherVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdNotifCenterVersion = '2.22'
+    tkpdOvoP2PTransfer = '1.00'
     tkpdPaymentVersion = '2.22'
     tkpdPaymentManagementSystem = '2.22'
     tkpdPhoneVerificationVersion = '2.22'

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditText
+        android:id="@+id/edt_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/entr_name_num"
+        app:layout_constraintEnd_toStartOf="@+id/iv_contact"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/iv_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_contact"
+        app:layout_constraintBottom_toBottomOf="@+id/edt_txt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/edt_txt"
+        app:layout_constraintTop_toTopOf="@+id/edt_txt" />
+
+    <TextView
+        android:id="@+id/src_fnd"
+        app:layout_constraintTop_toBottomOf="@id/edt_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#6b767e"
+        app:layout_constraintStart_toStartOf="@id/edt_txt"
+        android:lineSpacingExtra="2sp"
+        android:layout_marginTop="24dp"
+        tools:text="Sumber Dana" />
+
+    <ImageView
+        android:id="@+id/ovo_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_group"
+        app:layout_constraintTop_toTopOf="@+id/ovo_cash"
+        app:layout_constraintBottom_toBottomOf="@+id/saldo"
+        app:layout_constraintStart_toStartOf="@+id/src_fnd"
+        android:layout_marginLeft="@dimen/dp_10" />
+
+    <TextView
+        android:id="@+id/ovo_cash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:textColor="#2d263b"
+        android:layout_marginTop="@dimen/dp_24"
+        app:layout_constraintStart_toEndOf="@id/ovo_logo"
+        android:text="OVO Cash"
+        app:layout_constraintTop_toBottomOf="@+id/src_fnd"/>
+
+    <TextView
+        android:id="@+id/saldo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#8c949b"
+        android:paddingTop="@dimen/dp_2"
+        android:layout_marginLeft="@dimen/dp_16"
+        app:layout_constraintStart_toEndOf="@+id/ovo_logo"
+        app:layout_constraintTop_toBottomOf="@+id/ovo_cash"
+        android:lineSpacingExtra="6sp"
+        android:text="Saldo Rp800.000" />
+
+    <View
+        android:id="@+id/cntnr_vw"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_72"
+        android:layout_marginLeft="@dimen/dp_7"
+        android:layout_marginRight="@dimen/dp_7"
+        android:background="@drawable/border_transparent_inside"
+        app:layout_constraintBottom_toBottomOf="@+id/saldo"
+        app:layout_constraintTop_toTopOf="@+id/ovo_cash" />
+
+    <View
+        android:id="@+id/cntnr_vw_amt"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_100"
+        android:layout_marginLeft="@dimen/dp_7"
+        android:layout_marginRight="@dimen/dp_7"
+        android:layout_marginTop="@dimen/dp_40"
+        android:background="@color/clr_f8f8f8"
+        app:layout_constraintTop_toBottomOf="@+id/cntnr_vw" />
+
+    <TextView
+        android:id="@+id/nmnl_trnsfr"
+        app:layout_constraintTop_toTopOf="@+id/cntnr_vw_amt"
+        app:layout_constraintStart_toStartOf="@+id/edt_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:paddingTop="@dimen/dp_16"
+        android:textColor="#6b767e"
+        android:lineSpacingExtra="2sp"
+        android:text="Nominal Transfer" />
+
+    <EditText
+        android:id="@+id/trnsfr_amt_edtv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textColor="#2d263b"
+        tools:text="Rp0"
+        android:paddingBottom="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="@+id/edt_txt"
+        app:layout_constraintTop_toBottomOf="@+id/nmnl_trnsfr"/>
+
+    <EditText
+        android:id="@+id/msg"
+        app:layout_constraintTop_toBottomOf="@+id/cntnr_vw_amt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#6b767e"
+        android:layout_marginTop="@dimen/dp_24"
+        app:layout_constraintStart_toStartOf="@+id/edt_txt"
+        tools:text="Pesan (opsional)"/>
+
+    <Button
+        android:id="@+id/proceed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_56"
+        android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_50"
+        android:background="@drawable/btn_bg_rounded_corners"
+        android:enabled="false"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/msg"
+        android:text="@string/lnjktn"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14" />
+
+    <include
+        layout="@layout/branding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>

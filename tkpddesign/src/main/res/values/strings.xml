@@ -11,6 +11,7 @@
     <string name="label_cancel">Batal</string>
     <string name="label_yes">Ya</string>
     <string name="label_login_button">Masuk</string>
+    <string name="branding">Powered by</string>
 
     <string name="label_browse_file">Browse File</string>
     <string name="label_see_all">Lihat Semua</string>
