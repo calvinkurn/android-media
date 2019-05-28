@@ -1067,9 +1067,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                             shipmentCartItemModel.getSelectedShipmentDetailData().setOrderPriority(isChecked);
                             mActionListener.onPriorityChecked(getAdapterPosition());
                             mActionListener.onNeedUpdateRequestData();
-                            if (saveStateDebounceListener != null) {
-                                saveStateDebounceListener.onNeedToSaveState(shipmentCartItemModel);
-                            }
                         }
                     }
                 });

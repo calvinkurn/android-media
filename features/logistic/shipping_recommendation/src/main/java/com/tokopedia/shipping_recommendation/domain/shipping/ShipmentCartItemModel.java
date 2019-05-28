@@ -85,8 +85,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private int fulfillmentId;
     private String fulfillmentName;
 
-
-
     // promo stacking
     private boolean hasPromoList;
     private VoucherOrdersItemUiModel voucherOrdersItemUiModel;
