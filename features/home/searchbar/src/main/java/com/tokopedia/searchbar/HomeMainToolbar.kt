@@ -9,13 +9,14 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.util.AttributeSet
 import android.view.View
+import android.widget.TextView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
-import android.support.v4.graphics.drawable.DrawableCompat
 
 
 class HomeMainToolbar : MainToolbar {
@@ -169,6 +170,15 @@ class HomeMainToolbar : MainToolbar {
 
     fun isShadowApplied() : Boolean {
         return shadowApplied
+    }
+
+    fun setHint(hint: String){
+        val editTextSearch = findViewById<TextView>(R.id.et_search)
+        editTextSearch.hint = hint
+        editTextSearch.setOnClickListener {
+            searchBarAnalytics.eventTrackingSearchBar()
+            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+        }
     }
 
     companion object {

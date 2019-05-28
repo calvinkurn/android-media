@@ -742,6 +742,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
+    public void setHint(String hint) {
+        homeMainToolbar.setHint(hint);
+    }
+
     private void updateFeedRecommendationVisitable(Visitable feedRecommendationVisitable){
         this.feedTabVisitable = feedRecommendationVisitable;
         List<Visitable> currentVisitables = adapter.getItems();
