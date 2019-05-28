@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.data.mapper.AddressCornerMapper;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
@@ -29,7 +28,6 @@ import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.feature.addressoptions.recyclerview.ShipmentAddressListAdapter;
-import com.tokopedia.checkout.view.feature.addressoptions.bottomsheet.CornerListFragment;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
@@ -254,26 +252,19 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void showList(List<RecipientAddressModel> recipientAddressModels) {
+        maxItemPosition = 0;
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void setCorner(RecipientAddressModel cornerAddressModel) {
+    public void showCorner(RecipientAddressModel cornerAddressModel) {
         mShipmentAddressListAdapter.setCorner(cornerAddressModel);
     }
 
     @Override
     public void populateCorner(List<CornerAddressModel> cornerAddressModelList) {
         // Changed the flow
-//        mCornerListFragment = CornerListFragment.newInstance(cornerAddressModelList);
-//        mCornerListFragment.setOnBranchChosenListener(
-//                corner -> mShipmentAddressListAdapter.setCorner(corner));
-    }
-
-    @Override
-    public void showCornerBottomSheet() {
-        mCartAddressChoiceActivityListener.requestCornerList();
     }
 
     @Override

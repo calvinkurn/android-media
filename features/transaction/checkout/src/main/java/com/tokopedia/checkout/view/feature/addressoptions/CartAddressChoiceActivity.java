@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
-import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.feature.addressoptions.bottomsheet.CornerListFragment;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
@@ -253,7 +252,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     public void onCornerChosen(RecipientAddressModel corner) {
         getSupportFragmentManager().popBackStack();
-        ((ShipmentAddressListFragment) getFragment()).setCorner(corner);
+        ((ShipmentAddressListFragment) getFragment()).showCorner(corner);
     }
 
     @Override

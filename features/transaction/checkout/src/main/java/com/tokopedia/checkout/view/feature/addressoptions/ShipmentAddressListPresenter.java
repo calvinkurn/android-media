@@ -106,7 +106,7 @@ public class ShipmentAddressListPresenter
                                                     if (peopleAddressModel.getCornerAddressModelsList() != null &&
                                                             !peopleAddressModel.getCornerAddressModelsList().isEmpty() &&
                                                             !isDisableCorner) {
-//                                                        getMvpView().setCorner(peopleAddressModel.getCornerAddressModelsList().get(0));
+//                                                        getMvpView().showCorner(peopleAddressModel.getCornerAddressModelsList().get(0));
                                                         getMvpView().populateCorner(peopleAddressModel.getCornerAddressModelsList());
                                                     }
                                                     getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
