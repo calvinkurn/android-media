@@ -9,14 +9,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.home_recom.PARAM_PRODUCT_ID
-import com.tokopedia.home_recom.PrimaryProductParams
-import com.tokopedia.home_recom.R
+import com.tokopedia.home_recom.*
 import com.tokopedia.home_recom.model.dataModel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -26,13 +25,15 @@ import javax.inject.Named
 
 class RecommendationPageViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                       private val getRecommendationUseCase: GetRecommendationUseCase,
+                                                      private val userSessionInterface: UserSessionInterface,
                                                       @Named("Main")
                                   val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
     val recommendationListModel = MutableLiveData<List<RecommendationWidget>>()
     val productInfoDataModel = MutableLiveData<ProductInfoDataModel>()
 
-    val xSource = "recom_widget"
+    val xSource = "recom_page"
     val pageName = "recom_page"
+    val xDevice = "android"
 
     fun getPrimaryProduct(productId: String,
                           context: Context) {
@@ -41,9 +42,19 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
                 val cacheStrategy =
                         GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
-                val params = mapOf(
-                        PARAM_PRODUCT_ID to productId
+                var params = mapOf(
+                        PARAM_PRODUCT_ID to productId,
+                        PARAM_X_DEVICE to xDevice,
+                        PARAM_X_DEVICE to xSource
                 )
+                if (userSessionInterface.isLoggedIn) {
+                    params = mapOf(
+                            PARAM_USER_ID to userSessionInterface.userId,
+                            PARAM_PRODUCT_ID to productId,
+                            PARAM_X_DEVICE to xDevice,
+                            PARAM_X_DEVICE to xSource
+                    )
+                }
 
                 val gqlRecommendationRequest = GraphqlRequest(
                         GraphqlHelper.loadRawString(context.resources, R.raw.gql_primary_product),
