@@ -61,11 +61,6 @@ public class CatalogListOldAdapter extends RecyclerView.Adapter<CatalogListOldAd
         }
     }
 
-    public CatalogListOldAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CatalogsValueEntity> items) {
-        this.mPresenter = presenter;
-        this.mItems = items;
-    }
-
     public CatalogListOldAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CatalogsValueEntity> items, boolean isLimitEnable) {
         this.mPresenter = presenter;
         this.mItems = items;
