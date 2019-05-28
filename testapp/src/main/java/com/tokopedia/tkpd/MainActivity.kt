@@ -183,7 +183,6 @@ class MainActivity : AppCompatActivity() {
         val button = findViewById<Button>(R.id.button)
 
         button.setOnClickListener {
-            Timber.e(UnknownHostException())
             RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
         }
     }

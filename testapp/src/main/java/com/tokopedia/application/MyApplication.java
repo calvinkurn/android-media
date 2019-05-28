@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
@@ -16,6 +15,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.application.timber.TimberWrapper;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.Response;
-import timber.log.Timber;
 
 /**
  * Created by hendry on 25/06/18.
@@ -54,10 +53,10 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void onCreate() {
-        GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
+        GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
-        com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
+        com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
 
@@ -77,24 +76,7 @@ public class MyApplication extends BaseMainApplication
         initCacheApi();
 
         LogWrapper.init(this);
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        } else {
-            Timber.plant(new CrashReportingTree());
-        }
-    }
-
-    /** A tree which logs important information for crash reporting. */
-    private static class CrashReportingTree extends Timber.Tree {
-        @Override protected void log(int priority, String tag, @NonNull String message, Throwable t) {
-            if (priority == Log.VERBOSE || priority == Log.DEBUG) {
-                return;
-            }
-            // will be fixed in Timber next major release
-            // https://github.com/JakeWharton/timber/issues/142
-            LogWrapper.log(priority, message);
-        }
-
+        TimberWrapper.init();
     }
 
     public static class GTMAnalytics extends DummyAnalytics {
