@@ -734,10 +734,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items, int repositoryFlag) {
-        if(!items.isEmpty() && items.get(0) instanceof SearchPlaceholderViewModel
-                && ((SearchPlaceholderViewModel) items.get(0)).getSearchPlaceholder().getData() != null
-                && ((SearchPlaceholderViewModel) items.get(0)).getSearchPlaceholder().getData().getPlaceholder() != null){
-            setHint(((SearchPlaceholderViewModel) items.get(0)).getSearchPlaceholder().getData().getPlaceholder());
+        if(!items.isEmpty() && items.get(items.size() - 1) instanceof SearchPlaceholderViewModel
+                && ((SearchPlaceholderViewModel) items.get(items.size() - 1)).getSearchPlaceholder().getData() != null
+                && ((SearchPlaceholderViewModel) items.get(items.size() - 1)).getSearchPlaceholder().getData().getPlaceholder() != null){
+            setHint(((SearchPlaceholderViewModel) items.get(items.size() - 1)).getSearchPlaceholder().getData().getPlaceholder());
+            items.remove(items.size() - 1);
         }
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
             adapter.setItems(items);

@@ -44,10 +44,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
             HomeData homeData = response.body().getData();
 
-            if(homeData.getSearchPlaceholder() != null){
-                list.add(mappingSearchPlaceholder(homeData.getSearchPlaceholder()));
-            }
-
             if (homeData.getSlides() != null
                     && homeData.getSlides().getSlides() != null
                     && !homeData.getSlides().getSlides().isEmpty()) {
@@ -180,6 +176,10 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                         }
                     }
                 }
+            }
+
+            if(homeData.getSearchPlaceholder() != null){
+                list.add(mappingSearchPlaceholder(homeData.getSearchPlaceholder()));
             }
 
             return list;
