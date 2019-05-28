@@ -9,5 +9,5 @@ interface ProductAttachmentListener {
     fun onProductClicked(element: ProductAttachmentViewModel)
     fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel)
     fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel)
-    fun trackSeenProduct(element: ProductAttachmentViewModel, position: Int)
+    fun trackSeenProduct(element: ProductAttachmentViewModel)
 }

@@ -259,7 +259,7 @@ public class TopChatAnalytics {
         ));
     }
 
-    public void eventSeenProductAttachment(@NotNull ProductAttachmentViewModel product, Integer position) {
+    public void eventSeenProductAttachment(@NotNull ProductAttachmentViewModel product) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, Name.EVENT_NAME_PRODUCT_PREVIEW,
                 EVENT_CATEGORY, Category.CHAT_DETAIL,
@@ -274,7 +274,7 @@ public class TopChatAnalytics {
                                 "category", product.getCategory(),
                                 "variant", product.getVariant(),
                                 "list", "",
-                                "position", position
+                                "position", 0
                         )
                 )
         ));
