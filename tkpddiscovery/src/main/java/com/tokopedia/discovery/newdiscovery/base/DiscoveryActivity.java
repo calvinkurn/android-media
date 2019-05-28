@@ -545,7 +545,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                 new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.IMAGE_SEARCH_MIN_RESOLUTION, null, true,
                 imagePickerEditorBuilder, null);
-        Intent intent = ImagePickerActivity.getIntent(this, builder);
+        Intent intent = ImageSearchImagePickerActivity.getIntent(this, builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 
