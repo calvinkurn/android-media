@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.feature.emptycart2.ActionListener
 import com.tokopedia.checkout.view.feature.emptycart2.uimodel.WishlistItemUiModel
-import kotlinx.android.synthetic.main.item_empty_cart_wishlist_inner.view.*
+import kotlinx.android.synthetic.main.item_checkout_product_wishlist_inner.view.*
 
 /**
  * Created by Irfan Khoirul on 2019-05-20.
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.item_empty_cart_wishlist_inner.view.*
 class WishlistItemViewHolder(val view: View, val listener: ActionListener, val itemWidth: Int) : RecyclerView.ViewHolder(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_empty_cart_wishlist_inner
+        val LAYOUT = R.layout.item_checkout_product_wishlist_inner
     }
 
     fun bind(element: WishlistItemUiModel) {

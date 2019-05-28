@@ -7,8 +7,10 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +18,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -36,6 +39,7 @@ import com.tokopedia.checkout.view.feature.emptycart2.uimodel.WishlistUiModel
 import com.tokopedia.checkout.view.feature.emptycart2.viewholder.PromoViewHolder
 import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.PromoViewModel
 import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.RecentViewViewModel
+import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.RecommendationViewModel
 import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.WishlistViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -55,6 +59,7 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
     lateinit var promoViewModel: PromoViewModel
     lateinit var wishlistViewModel: WishlistViewModel
     lateinit var recentViewViewModel: RecentViewViewModel
+    lateinit var recommendationViewModel: RecommendationViewModel
     lateinit var progressDialog: ProgressDialog
     lateinit var adapter: EmptyCartAdapter
 
@@ -88,11 +93,16 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
             promoViewModel = viewModelProvider.get(PromoViewModel::class.java)
             wishlistViewModel = viewModelProvider.get(WishlistViewModel::class.java)
             recentViewViewModel = viewModelProvider.get(RecentViewViewModel::class.java)
+            recommendationViewModel = viewModelProvider.get(RecommendationViewModel::class.java)
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_empty_cart_2, container, false)
+    }
+
+    override fun isLoadMoreEnabledByDefault(): Boolean {
+        return false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -109,6 +119,7 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         renderEmptyCartPlaceholder()
         renderRecentView()
         renderWishlist()
+        renderRecommendation()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -133,6 +144,9 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
                 }
             }
         })
+        recommendationViewModel.recommendationData.observe(this, Observer {
+            onSuccessLoadRecommendation()
+        })
     }
 
     override fun onDestroyView() {
@@ -142,6 +156,8 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         wishlistViewModel.unsubscribeSubscription()
         recentViewViewModel.recentViewData.removeObservers(this)
         recentViewViewModel.unsubscribeSubscription()
+        recommendationViewModel.recommendationData.removeObservers(this)
+        recommendationViewModel.unsubscribeSubscription()
 
         super.onDestroyView()
     }
@@ -338,7 +354,7 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
     private fun onSuccessGetWishlist(wishlistData: MutableList<Wishlist>) {
         val wishlistUiModel = WishlistUiModel()
         wishlistUiModel.wishlistItems = wishlistData
-        if (adapter.itemCount == 3) {
+        if (adapter.itemCount >= 3) {
             adapter.addElement(wishlistUiModel)
         } else {
             adapter.addElement(EmptyCartAdapter.DEFAULT_POSITION_WISHLIST, wishlistUiModel)
@@ -353,7 +369,7 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
     private fun onSuccessGetRecentView(recentViewdata: MutableList<RecentView>) {
         val recentViewUiModel = RecentViewUiModel()
         recentViewUiModel.recentViewItems = recentViewdata
-        if (adapter.itemCount == 2) {
+        if (adapter.itemCount >= 2) {
             adapter.addElement(recentViewUiModel)
         } else {
             adapter.addElement(EmptyCartAdapter.DEFAULT_POSITION_RECENT_VIEW, recentViewUiModel)
@@ -371,4 +387,30 @@ class EmptyCartFragment : BaseListFragment<Visitable<*>, EmptyCartAdapterTypeFac
         startActivityForResult(intent, REQUEST_CODE_ROUTE_RECENT_VIEW)
     }
 
+    private fun renderRecommendation() {
+        recommendationViewModel.getRecommendation()
+    }
+
+    private fun onSuccessLoadRecommendation() {
+        val recommendationUiModel = recommendationViewModel.recommendationData.value
+        if (adapter.getIndexOf(recommendationUiModel) == -1) {
+            if (adapter.itemCount >= 4) {
+                adapter.addElement(recommendationUiModel)
+            } else {
+                adapter.addElement(EmptyCartAdapter.DEFAULT_POSITION_RECOMMENDATION, recommendationUiModel)
+            }
+            notifyItemInserted(adapter.getIndexOf(recommendationUiModel))
+        } else {
+            notifyItemChanged(adapter.getIndexOf(recommendationUiModel))
+        }
+        endlessRecyclerViewScrollListener.updateStateAfterGetData()
+    }
+
+    private fun onErrorLoadRecommendation(e: Throwable) {
+
+    }
+
+    override fun onLoadMoreRecommendation() {
+        recommendationViewModel.getRecommendation()
+    }
 }

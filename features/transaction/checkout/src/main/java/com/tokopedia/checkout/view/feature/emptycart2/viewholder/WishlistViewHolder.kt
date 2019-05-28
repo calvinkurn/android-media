@@ -7,7 +7,7 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.feature.emptycart2.ActionListener
 import com.tokopedia.checkout.view.feature.emptycart2.adapter.WishlistAdapter
 import com.tokopedia.checkout.view.feature.emptycart2.uimodel.WishlistUiModel
-import kotlinx.android.synthetic.main.item_empty_cart_wishlist.view.*
+import kotlinx.android.synthetic.main.item_checkout_product_wishlist.view.*
 
 /**
  * Created by Irfan Khoirul on 2019-05-20.
@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_empty_cart_wishlist.view.*
 class WishlistViewHolder(val view: View, val listener: ActionListener, val itemWidth: Int) : AbstractViewHolder<WishlistUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_empty_cart_wishlist
+        val LAYOUT = R.layout.item_checkout_product_wishlist
     }
 
     override fun bind(element: WishlistUiModel) {

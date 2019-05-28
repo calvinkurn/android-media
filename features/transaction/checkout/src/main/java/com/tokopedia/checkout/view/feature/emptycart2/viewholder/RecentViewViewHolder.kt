@@ -7,7 +7,7 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.feature.emptycart2.ActionListener
 import com.tokopedia.checkout.view.feature.emptycart2.adapter.RecentViewAdapter
 import com.tokopedia.checkout.view.feature.emptycart2.uimodel.RecentViewUiModel
-import kotlinx.android.synthetic.main.item_empty_cart_recent_view.view.*
+import kotlinx.android.synthetic.main.item_checkout_procuct_recent_view.view.*
 
 /**
  * Created by Irfan Khoirul on 2019-05-20.
@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_empty_cart_recent_view.view.*
 class RecentViewViewHolder(val view: View, val listener: ActionListener, val itemWidth: Int) : AbstractViewHolder<RecentViewUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_empty_cart_recent_view
+        val LAYOUT = R.layout.item_checkout_procuct_recent_view
     }
 
     override fun bind(element: RecentViewUiModel) {

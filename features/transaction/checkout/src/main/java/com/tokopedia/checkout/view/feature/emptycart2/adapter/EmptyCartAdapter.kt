@@ -26,6 +26,11 @@ class EmptyCartAdapter(adapterTypeFactory: EmptyCartAdapterTypeFactory) :
         visitables.add(element)
     }
 
+    override fun addElement(visitables: List<Visitable<*>>) {
+        this.visitables.addAll(visitables)
+    }
+
+
     fun removeElement(position: Int) {
         visitables.removeAt(position)
     }

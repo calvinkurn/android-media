@@ -20,4 +20,6 @@ interface ActionListener {
     fun onItemRecentViewClicked(recentView: RecentView, position: Int)
 
     fun onShowAllRecentView();
+
+    fun onLoadMoreRecommendation()
 }

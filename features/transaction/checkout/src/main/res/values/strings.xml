@@ -222,6 +222,7 @@
     <string name="label_empty_cart_see_all">Lihat Semua</string>
     <string name="label_empty_cart_recent_view">Terakhir Dilihat</string>
     <string name="label_empty_cart_see_others">Lihat Lainnya</string>
+    <string name="label_empty_cart_recommendation">Rekomendasi</string>
     <string name="label_no_courier_bottomsheet_title">Pengiriman</string>
     <string name="label_no_courier_bottomsheet_button">Saya Mengerti</string>
     <string name="label_no_courier_bottomsheet_message">Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda.</string>

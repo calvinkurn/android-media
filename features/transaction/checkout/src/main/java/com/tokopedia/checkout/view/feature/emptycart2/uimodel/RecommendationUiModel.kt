@@ -7,7 +7,11 @@ import com.tokopedia.checkout.view.feature.emptycart2.adapter.EmptyCartAdapterTy
  * Created by Irfan Khoirul on 2019-05-20.
  */
 
-class RecommendationUiModel: Visitable<EmptyCartAdapterTypeFactory> {
+class RecommendationUiModel(
+        var recommendationItems: ArrayList<RecommendationItemUiModel> = arrayListOf(),
+        var currentPage: Int = 0,
+        var lastLoadResult: Boolean = false
+) : Visitable<EmptyCartAdapterTypeFactory> {
 
     override fun type(typeFactory: EmptyCartAdapterTypeFactory): Int {
         return typeFactory.type(this)

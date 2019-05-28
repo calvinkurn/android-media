@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.PromoViewModel
 import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.RecentViewViewModel
+import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.RecommendationViewModel
 import com.tokopedia.checkout.view.feature.emptycart2.viewmodel.WishlistViewModel
 import dagger.Binds
 import dagger.Module
@@ -32,6 +33,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(WishlistViewModel::class)
     internal abstract fun wishlistViewModel(viewModel: WishlistViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RecommendationViewModel::class)
+    internal abstract fun recommendationViewModel(viewModel: RecommendationViewModel): ViewModel
 
     @Binds
     @IntoMap
