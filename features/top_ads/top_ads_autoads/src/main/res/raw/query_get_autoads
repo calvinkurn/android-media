@@ -1,5 +1,5 @@
 query GetAutoAds($shopId: Int!){
-  topAdsGetAutoAds(shop_id:$shopId){
+  topAdsGetAutoAds(shopId:$shopId){
     data {
       shop_id
       status
