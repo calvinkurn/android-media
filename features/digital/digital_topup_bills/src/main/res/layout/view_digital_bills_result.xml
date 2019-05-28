@@ -1,67 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/enquiry_layout"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_15"
-    android:visibility="gone">
+    android:layout_marginRight="@dimen/dp_15"
+    android:layout_marginLeft="@dimen/dp_15"
+    android:visibility="visible">
 
     <TextView
-        android:id="@+id/title"
-        style="@style/TextView.Small.Bold"
-        android:lines="1"
-        android:text="Detail Tagihan" />
-
-    <TextView
-        android:id="@+id/operator"
+        android:id="@+id/label"
         style="@style/TextView.Micro"
         android:layout_below="@+id/title"
         android:lines="1"
         android:layout_marginTop="@dimen/dp_10"
-        android:text="Operator" />
+        tools:text="Operator" />
 
     <TextView
-        android:id="@+id/operator_name"
+        android:id="@+id/value"
         style="@style/TextView.Micro.Bold"
         android:layout_below="@+id/title"
         android:layout_alignParentRight="true"
         android:lines="1"
         android:layout_marginTop="@dimen/dp_10"
-        android:text="Simpati" />
-
-    <TextView
-        android:id="@+id/name"
-        style="@style/TextView.Micro"
-        android:layout_below="@+id/operator"
-        android:lines="1"
-        android:layout_marginTop="@dimen/dp_10"
-        android:text="Name" />
-
-    <TextView
-        android:id="@+id/user_name"
-        style="@style/TextView.Micro.Bold"
-        android:layout_below="@+id/operator_name"
-        android:layout_alignParentRight="true"
-        android:lines="1"
-        android:layout_marginTop="@dimen/dp_10"
-        android:text="Guru" />
-
-    <TextView
-        android:id="@+id/total"
-        style="@style/TextView.Micro"
-        android:layout_below="@+id/name"
-        android:lines="1"
-        android:layout_marginTop="@dimen/dp_10"
-        android:text="Jumlah tagihan" />
-
-    <TextView
-        android:id="@+id/total_bills"
-        style="@style/TextView.Micro.Bold"
-        android:layout_below="@+id/user_name"
-        android:layout_alignParentRight="true"
-        android:lines="1"
-        android:layout_marginTop="@dimen/dp_10"
-        android:text="Rp1.221.000" />
+        tools:text="Simpati" />
 
 </RelativeLayout>

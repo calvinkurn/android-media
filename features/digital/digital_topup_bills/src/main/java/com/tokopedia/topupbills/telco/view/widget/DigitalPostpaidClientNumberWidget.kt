@@ -2,13 +2,16 @@ package com.tokopedia.topupbills.telco.view.widget
 
 import android.content.Context
 import android.support.annotation.AttrRes
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.getColorFromResources
+import com.tokopedia.topupbills.telco.data.TelcoEnquiryData
 import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
 
 /**
@@ -17,10 +20,8 @@ import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
 class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
 
     private lateinit var btnEnquiry: Button
-    private lateinit var enquiryLayout: RelativeLayout
-    private lateinit var operatorName: TextView
-    private lateinit var userName: TextView
-    private lateinit var totalBills: TextView
+    private lateinit var enquiryResult: LinearLayout
+    private lateinit var titleEnquiryResult: TextView
     private lateinit var postpaidListener: ClientNumberPostpaidListener
 
     constructor(context: Context) : super(context) {
@@ -41,10 +42,8 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
 
     fun initV() {
         btnEnquiry = view.findViewById(R.id.button_next_enquiry)
-        enquiryLayout = view.findViewById(R.id.enquiry_layout)
-        operatorName = view.findViewById(R.id.operator_name)
-        userName = view.findViewById(R.id.user_name)
-        totalBills = view.findViewById(R.id.total_bills)
+        titleEnquiryResult = view.findViewById(R.id.title_enquiry_result)
+        enquiryResult = view.findViewById(R.id.enquiry_result)
 
         btnEnquiry.setOnClickListener {
             if (btnEnquiry.isEnabled) {
@@ -55,8 +54,9 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
 
     fun resetClientNumberPostpaid() {
         btnEnquiry.isEnabled = false
+        enquiryResult.removeAllViews()
         btnEnquiry.visibility = View.VISIBLE
-        enquiryLayout.visibility = View.GONE
+        titleEnquiryResult.visibility = View.GONE
         btnEnquiry.setBackgroundResource(R.drawable.grey_button_rounded)
         btnEnquiry.setTextColor(context.resources.getColorFromResources(context, R.color.digital_text_enquiry_non_active))
     }
@@ -67,9 +67,18 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
         btnEnquiry.setTextColor(context.resources.getColorFromResources(context, R.color.white))
     }
 
-    fun showEnquiryResultPostpaid() {
+    fun showEnquiryResultPostpaid(telcoEnquiryData: TelcoEnquiryData) {
+        enquiryResult.removeAllViews()
+        for(item in telcoEnquiryData.enquiry.attributes.mainInfoList) {
+            if (!TextUtils.isEmpty(item.value)) {
+                val billsResult = DigitalTelcoBillsResultWidget(context)
+                billsResult.setLabel(item.label)
+                billsResult.setValue(item.value)
+                enquiryResult.addView(billsResult)
+            }
+        }
         btnEnquiry.visibility = View.GONE
-        enquiryLayout.visibility = View.VISIBLE
+        titleEnquiryResult.visibility = View.VISIBLE
     }
 
     fun setPostpaidListener(listener: ClientNumberPostpaidListener) {

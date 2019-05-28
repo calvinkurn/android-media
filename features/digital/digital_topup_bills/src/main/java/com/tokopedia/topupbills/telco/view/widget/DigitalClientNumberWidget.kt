@@ -10,6 +10,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
 import org.jetbrains.annotations.NotNull
@@ -65,9 +66,11 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (count == 0) {
                     listener.clearAutoComplete()
+                    imgOperator.visibility = View.GONE
                 }
                 if (count >= 4) {
                     listener.renderOperator()
+                    imgOperator.visibility = View.VISIBLE
                 }
             }
         })
@@ -87,6 +90,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     fun getInputNumber(): String {
         return formatPrefixClientNumber(autoCompleteInputNumber.text.toString());
+    }
+
+    fun setIconOperator(url: String) {
+        ImageHandler.LoadImage(imgOperator, url)
     }
 
     fun validatePrefixClientNumber(phoneNumber: String): String {

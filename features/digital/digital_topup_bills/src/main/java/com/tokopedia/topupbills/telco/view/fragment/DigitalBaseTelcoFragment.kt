@@ -1,20 +1,27 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
 import android.app.Activity
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.os.Bundle
 import android.provider.ContactsContract
 import android.view.View
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.ticker.TickerView
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.covertContactUriToContactData
+import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
+import com.tokopedia.topupbills.telco.data.TelcoCustomData
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalPromo
 import com.tokopedia.topupbills.telco.view.model.DigitalRecentNumber
+import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
 import javax.inject.Inject
@@ -27,12 +34,23 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     protected lateinit var tickerView: TickerView
     protected lateinit var recentNumbersView: DigitalRecentTransactionWidget
     protected lateinit var promoListView: DigitalPromoListWidget
+    private lateinit var customViewModel: DigitalTelcoCustomViewModel
 
     private val recentNumbers = mutableListOf<DigitalRecentNumber>()
     private val promoList = mutableListOf<DigitalPromo>()
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.let {
+            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            customViewModel = viewModelProvider.get(DigitalTelcoCustomViewModel::class.java)
+        }
+    }
 
     override fun initInjector() {
         activity?.let {
@@ -40,6 +58,18 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
             digitalTopupComponent.inject(this)
         }
     }
+
+    fun getInputFilterDataCollections() {
+        customViewModel.getCustomData(GraphqlHelper.loadRawString(resources,
+                R.raw.query_custom_digital_telco), getMapCustomData(),
+                this::onSuccessCustomData, this::onErrorCustomData)
+    }
+
+    protected abstract fun onSuccessCustomData(telcoData: TelcoCustomComponentData)
+
+    protected abstract fun onErrorCustomData(error: Throwable)
+
+    protected abstract fun getMapCustomData(): Map<String, kotlin.Any>
 
     fun renderTicker() {
         val messages = ArrayList<String>()
@@ -139,4 +169,9 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     }
 
     abstract fun setInputNumberFromContact(contactNumber: String)
+
+    override fun onDestroy() {
+        customViewModel.clear()
+        super.onDestroy()
+    }
 }

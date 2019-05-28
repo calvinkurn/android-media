@@ -1,7 +1,6 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.TabLayout
@@ -11,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
@@ -22,11 +20,9 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
-import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
-import javax.inject.Inject
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -37,13 +33,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var viewPager: ViewPager
     private lateinit var tabLayout: TabLayout
     private lateinit var buyWidget: DigitalTelcoBuyWidget
-    private lateinit var customViewModel: DigitalTelcoCustomViewModel
     private lateinit var sharedModel: SharedProductTelcoViewModel
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private var telcoCustomData: TelcoCustomComponentData =
+    private var operatorData: TelcoCustomComponentData =
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
 
     override fun onStart() {
@@ -57,7 +48,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         super.onCreate(savedInstanceState)
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            customViewModel = viewModelProvider.get(DigitalTelcoCustomViewModel::class.java)
             sharedModel = viewModelProvider.get(SharedProductTelcoViewModel::class.java)
             sharedModel.setShowTotalPrice(false)
         }
@@ -103,33 +93,34 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        getInputFilterDataCollections()
         renderTicker()
         renderInputNumber()
         renderRecentTransactions()
         renderPromoList()
-        getInputFilterDataCollections()
     }
 
-    fun getInputFilterDataCollections() {
+    override fun getMapCustomData(): Map<String, Any> {
         var mapParam = HashMap<String, kotlin.Any>()
-        mapParam.put("componentID", TelcoComponentType.CLIENT_NUMBER)
-        customViewModel.getCustomData(GraphqlHelper.loadRawString(resources, R.raw.query_custom_digital_telco), mapParam,
-                this::onSuccessCustomData, this::onErrorCustomData)
+        mapParam.put("componentID", TelcoComponentType.CLIENT_NUMBER_PREPAID)
+        return mapParam
     }
 
-    fun onSuccessCustomData(telcoData: TelcoCustomComponentData) {
-        this.telcoCustomData = telcoData
-        renderProductListFromInputfilter()
+    override fun onSuccessCustomData(telcoData: TelcoCustomComponentData) {
+        this.operatorData = telcoData
+        renderProductFromCustomData()
     }
 
-    fun renderProductListFromInputfilter() {
+    fun renderProductFromCustomData() {
         val prefixClientNumber = telcoClientNumberWidget.getInputNumber().substring(0, 4)
         try {
-            val dataFound = this.telcoCustomData.rechargeCustomData.customDataCollections.filter {
+            val operatorSelected = this.operatorData.rechargeCustomData.customDataCollections.filter {
                 it.value.equals(prefixClientNumber)
             }.single()
 
-            renderViewPager(dataFound.operator.id)
+            renderViewPager(operatorSelected.operator.id)
+            telcoClientNumberWidget.setIconOperator(operatorSelected.operator.attributes.imageUrl)
+
             recentNumbersView.visibility = View.GONE
             promoListView.visibility = View.GONE
             tabLayout.visibility = View.VISIBLE
@@ -139,7 +130,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    fun onErrorCustomData(throwable: Throwable) {
+    override fun onErrorCustomData(throwable: Throwable) {
         Toast.makeText(activity, "input filter " + throwable.message, Toast.LENGTH_SHORT).show()
     }
 
@@ -151,11 +142,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
             override fun renderOperator() {
                 // TODO showing image on client number
-                telcoCustomData.rechargeCustomData.customDataCollections.isEmpty()?.let {
+                operatorData.rechargeCustomData.customDataCollections.isEmpty()?.let {
                     if (it) {
                         getInputFilterDataCollections()
                     } else {
-                        renderProductListFromInputfilter()
+                        renderProductFromCustomData()
                     }
                 }
             }
@@ -191,7 +182,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun onDestroy() {
-        customViewModel.clear()
+        sharedModel.clear()
         super.onDestroy()
     }
 

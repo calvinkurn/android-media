@@ -1,14 +1,20 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.telco.data.*
+import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
+import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalAddToMyBillsWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPostpaidClientNumberWidget
@@ -22,6 +28,19 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var postpaidClientNumberWidget: DigitalPostpaidClientNumberWidget
     private lateinit var buyWidget: DigitalTelcoBuyWidget
     private lateinit var addToMyBillsWidget: DigitalAddToMyBillsWidget
+    private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
+    private lateinit var operatorSelected: TelcoCustomDataCollection
+
+    private var operatorData: TelcoCustomComponentData =
+            TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.let {
+            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            enquiryViewModel = viewModelProvider.get(DigitalTelcoEnquiryViewModel::class.java)
+        }
+    }
 
     override fun onStart() {
         context?.let {
@@ -55,6 +74,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        getInputFilterDataCollections()
         renderClientNumber()
         renderTicker()
         renderPromoList()
@@ -71,7 +91,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun renderOperator() {
-                // TODO showing image on client number
+                operatorData.rechargeCustomData.customDataCollections.isEmpty()?.let {
+                    if (it) {
+                        getInputFilterDataCollections()
+                    } else {
+                        renderProductFromCustomData()
+                    }
+                }
                 postpaidClientNumberWidget.setButtonEnquiryEnable()
             }
 
@@ -85,17 +111,70 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         })
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
             override fun enquiryNumber() {
-                postpaidClientNumberWidget.showEnquiryResultPostpaid()
-                recentNumbersView.visibility = View.GONE
-                promoListView.visibility = View.GONE
-                addToMyBillsWidget.visibility = View.VISIBLE
-                buyWidget.setVisibilityLayout(true)
+                getEnquiryNumber()
             }
         })
     }
 
+    fun getEnquiryNumber() {
+        if (::operatorSelected.isInitialized) {
+            var mapParam = HashMap<String, kotlin.Any>()
+            mapParam.put("clientNumber", postpaidClientNumberWidget.getInputNumber())
+            mapParam.put("productId",operatorSelected.operator.attributes.defaultProductId.toString())
+            enquiryViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_enquiry_digital_telco),
+                    mapParam, this::onSuccessEnquiry, this::onErrorEnquiry)
+        }
+    }
+
+    override fun getMapCustomData(): Map<String, Any> {
+        var mapParam = HashMap<String, kotlin.Any>()
+        mapParam.put("componentID", TelcoComponentType.CLIENT_NUMBER_PROSTPAID)
+        return mapParam
+    }
+
+    override fun onSuccessCustomData(telcoData: TelcoCustomComponentData) {
+        this.operatorData = telcoData
+        renderProductFromCustomData()
+    }
+
+    fun renderProductFromCustomData() {
+        val prefixClientNumber = postpaidClientNumberWidget.getInputNumber().substring(0, 4)
+        try {
+            operatorSelected = this.operatorData.rechargeCustomData.customDataCollections.filter {
+                it.value.equals(prefixClientNumber)
+            }.single()
+
+            postpaidClientNumberWidget.setIconOperator(operatorSelected.operator.attributes.imageUrl)
+
+        } catch (exception: Exception) {
+            Toast.makeText(activity, "error exception", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onErrorCustomData(throwable: Throwable) {
+        Toast.makeText(activity, "input filter " + throwable.message, Toast.LENGTH_SHORT).show()
+    }
+
+    fun onSuccessEnquiry(telcoEnquiryData: TelcoEnquiryData) {
+        postpaidClientNumberWidget.showEnquiryResultPostpaid(telcoEnquiryData)
+        recentNumbersView.visibility = View.GONE
+        promoListView.visibility = View.GONE
+        addToMyBillsWidget.visibility = View.VISIBLE
+        buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes.price)
+        buyWidget.setVisibilityLayout(true)
+    }
+
+    fun onErrorEnquiry(throwable: Throwable) {
+        Toast.makeText(activity, "enquiry " + throwable.message, Toast.LENGTH_SHORT).show()
+    }
+
     override fun setInputNumberFromContact(contactNumber: String) {
         postpaidClientNumberWidget.setInputNumber(contactNumber)
+    }
+
+    override fun onDestroy() {
+        enquiryViewModel.clear()
+        super.onDestroy()
     }
 
     companion object {
