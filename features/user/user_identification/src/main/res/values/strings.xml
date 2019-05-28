@@ -20,8 +20,8 @@
         name="ktp_subtitle"><![CDATA[<b>Perhatikan panduan berikut agar verifikasi berhasil:</b>]]> </string>
     <string name="ktp_body"><![CDATA[• Gunakan foto asli, bukan fotokopi KTP.<br>
         • Pastikan foto KTP tidak terpotong dan berada dalam bingkai.<br>
-        • Pastikan foto KTP dalam kondisi terang dan jelas.</string>
-    <string name="ktp_button">Ambil Foto KTP]]></string>
+        • Pastikan foto KTP dalam kondisi terang dan jelas.]]></string>
+    <string name="ktp_button">Ambil Foto KTP</string>
 
     <string name="face_title">Foto Diri Bersama KTP</string>
     <string name="face_subtitle">Tunjukkan bagian depan KTP dengan posisi di bawah dagu tanpa menutupi wajah.</string>
