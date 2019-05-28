@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.feature.shipment.viewholder;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
@@ -33,9 +32,9 @@ import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
+import com.tokopedia.checkout.view.feature.shipment.util.Utils;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.component.Tooltip;
-import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
@@ -1120,13 +1119,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             String addressName = recipientAddressModel.getAddressName();
             String recipientName = recipientAddressModel.getRecipientName();
-            tvRecipientName.setText(recipientName);
-            tvAddressName.setText(addressName);
+            tvRecipientName.setText(Utils.getHtmlFormat(recipientName));
+            tvAddressName.setText(Utils.getHtmlFormat(addressName));
             String fullAddress = recipientAddressModel.getStreet() + ", "
                     + recipientAddressModel.getDestinationDistrictName() + ", "
                     + recipientAddressModel.getCityName() + ", "
                     + recipientAddressModel.getProvinceName();
-            tvRecipientAddress.setText(fullAddress);
+            tvRecipientAddress.setText(Utils.getHtmlFormat(fullAddress));
             tvRecipientPhone.setText(recipientAddressModel.getRecipientPhoneNumber());
         } else {
             addressLayout.setVisibility(View.GONE);
