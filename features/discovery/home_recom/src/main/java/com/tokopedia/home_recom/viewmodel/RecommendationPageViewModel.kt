@@ -45,7 +45,6 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
                         PARAM_PRODUCT_ID to productId
                 )
 
-                //still dummy
                 val gqlRecommendationRequest = GraphqlRequest(
                         GraphqlHelper.loadRawString(context.resources, R.raw.gql_primary_product),
                         PrimaryProductEntity::class.java,
