@@ -12,7 +12,9 @@ class OnboardingAnalytics @Inject constructor() {
 
     companion object {
         val SCREEN_ONBOARDING = "Screen OnBoarding - %s"
-        var EVENT_VIEW_WELCOME_PAGE = "viewWelcomePage"
+        var EVENT_ONBOARDING = "onBoardingEvent"
+        var CATEGORY_ONBOARDING = "onboarding"
+
 
         val ACTION_ONBOARDING_LOGIN_AND_REGISTER_PAGE = "login and register page"
 
@@ -37,10 +39,10 @@ class OnboardingAnalytics @Inject constructor() {
     //#OB1
     fun eventOnboardingSkip(context: Context?, currentPosition: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                EVENT_VIEW_WELCOME_PAGE,
-                String.format(SCREEN_ONBOARDING, currentPosition.toString()),
-                ACTION_ONBOARDING_LOGIN_AND_REGISTER_PAGE,
-                "Lewati"
+                EVENT_ONBOARDING,
+                CATEGORY_ONBOARDING,
+                "click - skip button",
+                String.format("skip - %s", position.toString())
         )
 
     }
@@ -48,10 +50,10 @@ class OnboardingAnalytics @Inject constructor() {
     //#OB1
     fun trackClickLogin(currentPosition: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                EVENT_VIEW_WELCOME_PAGE,
-                String.format(SCREEN_ONBOARDING, currentPosition.toString()),
-                ACTION_ONBOARDING_LOGIN_AND_REGISTER_PAGE,
-                "Masuk"
+                EVENT_ONBOARDING,
+                CATEGORY_ONBOARDING,
+                "click - login button",
+                String.format("login - %s", position.toString())
         )
 
     }
@@ -59,10 +61,10 @@ class OnboardingAnalytics @Inject constructor() {
     //#OB1
     fun trackClickRegister(currentPosition: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                EVENT_VIEW_WELCOME_PAGE,
-                String.format(SCREEN_ONBOARDING, currentPosition.toString()),
-                ACTION_ONBOARDING_LOGIN_AND_REGISTER_PAGE,
-                "Daftar"
+                EVENT_ONBOARDING,
+                CATEGORY_ONBOARDING,
+                "click - register button",
+                String.format("register - %s", position.toString())
         )
 
     }
