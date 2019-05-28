@@ -45,14 +45,14 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
                 var params = mapOf(
                         PARAM_PRODUCT_ID to productId,
                         PARAM_X_DEVICE to xDevice,
-                        PARAM_X_DEVICE to xSource
+                        PARAM_X_SOURCE to xSource
                 )
                 if (userSessionInterface.isLoggedIn) {
                     params = mapOf(
                             PARAM_USER_ID to userSessionInterface.userId,
                             PARAM_PRODUCT_ID to productId,
                             PARAM_X_DEVICE to xDevice,
-                            PARAM_X_DEVICE to xSource
+                            PARAM_X_SOURCE to xSource
                     )
                 }
 
