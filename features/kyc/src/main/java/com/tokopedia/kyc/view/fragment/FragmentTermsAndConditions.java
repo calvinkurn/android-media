@@ -54,6 +54,7 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     private TextView tncTxtv;
     public static String TAG = "tnc_page";
     private AlertDialog alertDialog;
+
     @Inject
     TnCConfirmationPresenter tnCConfirmationPresenter;
 
@@ -68,8 +69,12 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
             executePrcdTnC();
         }
         else if (i == R.id.txtv_tnc){
+            String ovotncUrl = ((KYCRouter)getContext().getApplicationContext()).getOvoKycTncUrl();
+            if(TextUtils.isEmpty(ovotncUrl)){
+                ovotncUrl = Constants.URLs.OVO_TNC_PAGE;
+            }
             ((KYCRouter)getContext().getApplicationContext()).actionOpenGeneralWebView(getActivity(),
-                    Constants.URLs.OVO_TNC_PAGE);
+                    ovotncUrl);
         }
         else if(i == R.id.back_btn){
             executeBckBtn();

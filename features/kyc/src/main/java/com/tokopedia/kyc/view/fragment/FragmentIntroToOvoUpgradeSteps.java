@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,8 +81,12 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
             executeStartUpgrade();
         }
         else if(v.getId() == R.id.ovo_tncpage_link){
+            String ovotncUrl = ((KYCRouter)getContext().getApplicationContext()).getOvoKycTncUrl();
+            if(TextUtils.isEmpty(ovotncUrl)){
+                ovotncUrl = Constants.URLs.OVO_TNC_PAGE;
+            }
             ((KYCRouter)getContext().getApplicationContext()).actionOpenGeneralWebView(getActivity(),
-                    Constants.URLs.OVO_TNC_PAGE);
+                    ovotncUrl);
         }
     }
 
