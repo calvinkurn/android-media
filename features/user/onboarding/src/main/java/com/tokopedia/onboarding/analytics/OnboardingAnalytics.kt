@@ -42,7 +42,7 @@ class OnboardingAnalytics @Inject constructor() {
                 EVENT_ONBOARDING,
                 CATEGORY_ONBOARDING,
                 "click - skip button",
-                String.format("skip - %s", position.toString())
+                String.format("skip - %s", currentPosition.toString())
         )
 
     }
@@ -53,7 +53,7 @@ class OnboardingAnalytics @Inject constructor() {
                 EVENT_ONBOARDING,
                 CATEGORY_ONBOARDING,
                 "click - login button",
-                String.format("login - %s", position.toString())
+                String.format("login - %s", currentPosition.toString())
         )
 
     }
@@ -64,7 +64,7 @@ class OnboardingAnalytics @Inject constructor() {
                 EVENT_ONBOARDING,
                 CATEGORY_ONBOARDING,
                 "click - register button",
-                String.format("register - %s", position.toString())
+                String.format("register - %s", currentPosition.toString())
         )
 
     }
