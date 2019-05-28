@@ -67,7 +67,7 @@
             android:id="@+id/subtitle_body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
             android:lineSpacingExtra="@dimen/sp_6"
             android:paddingEnd="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
