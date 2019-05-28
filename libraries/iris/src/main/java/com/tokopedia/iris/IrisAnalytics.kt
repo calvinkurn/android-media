@@ -9,7 +9,6 @@ import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.worker.IrisBroadcastReceiver
-import com.tokopedia.iris.worker.IrisService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.json.JSONObject
@@ -89,7 +88,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
         Log.d("Alarm scheduler", "Alarm is being scheduled")
         val intent = Intent(context, IrisBroadcastReceiver::class.java)
-        intent.putExtra(WORKER_SEND_DATA, config)
+        intent.putExtra(MAX_ROW, config.maxRow)
         val pintent = PendingIntent.getBroadcast(context, 0, intent, 0)
         val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), TimeUnit.SECONDS.toMillis(5), pintent)

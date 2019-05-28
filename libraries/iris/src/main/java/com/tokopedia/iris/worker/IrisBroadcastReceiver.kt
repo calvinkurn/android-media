@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.tokopedia.iris.WORKER_SEND_DATA
-import com.tokopedia.iris.model.Configuration
+import com.tokopedia.iris.DEFAULT_MAX_ROW
+import com.tokopedia.iris.MAX_ROW
 
 /**
  * Created by meta on 28/05/19.
@@ -15,8 +15,8 @@ class IrisBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.e("Iris", "startService")
         val i = Intent(context, IrisService::class.java)
-        val config = intent?.getParcelableExtra<Configuration>(WORKER_SEND_DATA)
-        i.putExtra(WORKER_SEND_DATA, config)
+        val maxRow = intent?.getIntExtra(MAX_ROW, DEFAULT_MAX_ROW)
+        i.putExtra(MAX_ROW, maxRow)
         IrisService.enqueueWork(context!!, i)
     }
 

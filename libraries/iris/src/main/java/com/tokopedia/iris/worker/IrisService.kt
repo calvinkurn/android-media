@@ -6,6 +6,8 @@ import android.os.Handler
 import android.support.v4.app.JobIntentService
 import android.util.Log
 import android.widget.Toast
+import com.tokopedia.iris.DEFAULT_MAX_ROW
+import com.tokopedia.iris.MAX_ROW
 import com.tokopedia.iris.WORKER_SEND_DATA
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
@@ -23,7 +25,7 @@ import java.util.concurrent.TimeUnit
  */
 class IrisService : JobIntentService() {
 
-    private val mTimer = Timer()
+//    private val mTimer = Timer()
     private lateinit var mContext: Context
 
     override fun onCreate() {
@@ -38,27 +40,26 @@ class IrisService : JobIntentService() {
     }
 
     override fun onHandleWork(intent: Intent) {
-        toast("Start work")
+//        toast("Start work")
         try {
             Log.d("Iris", "onHandleWork")
-            val configuration = intent.getParcelableExtra<Configuration>(WORKER_SEND_DATA)
-            if (configuration != null) {
-                startService(configuration)
-            }
+            val maxRow = intent.getIntExtra(MAX_ROW, DEFAULT_MAX_ROW)
+            startService(maxRow)
         } catch (e: java.lang.Exception) {}
     }
 
-    private fun startService(configuration: Configuration) {
+    private fun startService(maxRow: Int) {
         Log.d("Iris", "startService TimerTask")
-        mTimer.scheduleAtFixedRate(IrisTask(configuration), 0, TimeUnit.MINUTES.toMillis(1))
+        send(maxRow)
+//        mTimer.scheduleAtFixedRate(IrisTask(maxRow), 0, TimeUnit.MINUTES.toMillis(1))
     }
 
-    private inner class IrisTask(val configuration: Configuration) : TimerTask() {
-        override fun run() {
-            send(configuration.maxRow)
-            Log.d("Iris", "configuration.maxRow" + configuration.maxRow.toString())
-        }
-    }
+//    private inner class IrisTask(val maxRow: Int) : TimerTask() {
+//        override fun run() {
+//            send(maxRow)
+//            Log.d("Iris", "configuration.maxRow$maxRow")
+//        }
+//    }
 
     private fun send(maxRow: Int) {
         val trackingRepository = TrackingRepository(applicationContext)
@@ -95,13 +96,13 @@ class IrisService : JobIntentService() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mTimer.cancel()
+//        mTimer.cancel()
     }
 
-    private val mHandler = Handler()
-
-    // Helper for showing tests
-    private fun toast(text: CharSequence) {
-        mHandler.post { Toast.makeText(this@IrisService, text, Toast.LENGTH_SHORT).show() }
-    }
+//    private val mHandler = Handler()
+//
+//    // Helper for showing tests
+//    private fun toast(text: CharSequence) {
+//        mHandler.post { Toast.makeText(this@IrisService, text, Toast.LENGTH_SHORT).show() }
+//    }
 }
