@@ -62,7 +62,7 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
 
         recommendationWidgetViewModel.recommendationListModel.observe(this, Observer {
             it?.let { recommendationList ->
-                renderList(mapDataModel(recommendationList))
+//                renderList(mapDataModel(recommendationList))
             }
         })
 
