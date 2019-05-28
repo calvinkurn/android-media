@@ -252,7 +252,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     public void onCornerChosen(RecipientAddressModel corner) {
         getSupportFragmentManager().popBackStack();
-        ((ShipmentAddressListFragment) getFragment()).showCorner(corner);
+        ((ShipmentAddressListFragment) getFragment()).onChooseCorner(corner);
     }
 
     @Override

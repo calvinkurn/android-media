@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.feature.addressoptions.bottomsheet;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -40,7 +41,7 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
     private BranchChosenListener mListener;
     private final CornerAdapter mAdapter = new CornerAdapter(mBranchList, this);
 
-    private View mEmptyVIew;
+    private View mEmptyView;
     private SearchInputView mSearchView;
     private RecyclerView mRvCorner;
 
@@ -94,12 +95,13 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mSearchView = view.findViewById(R.id.sv_address_search_box);
-        mEmptyVIew = view.findViewById(R.id.ll_no_result);
+        mEmptyView = view.findViewById(R.id.ll_no_result);
         mRvCorner = view.findViewById(R.id.rv_corner_list);
         mProgressBar = view.findViewById(R.id.progress_bar);
 
         mRvCorner.setHasFixedSize(true);
         mRvCorner.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRvCorner.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         mRvCorner.setAdapter(mAdapter);
         mPresenter.attachView(this);
         mPresenter.getData();
@@ -129,7 +131,7 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
 
     @Override
     public void showEmptyView() {
-        mEmptyVIew.setVisibility(View.VISIBLE);
+        mEmptyView.setVisibility(View.VISIBLE);
     }
 
     public void setCornerListener(BranchChosenListener listener) {

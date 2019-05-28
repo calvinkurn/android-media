@@ -221,11 +221,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             }
         });
 
+        mPresenter.attachView(this);
     }
 
     @Override
     protected void setViewListener() {
-        mPresenter.attachView(this);
         if (getActivity() != null) {
             mInputMethodManager = (InputMethodManager) getActivity()
                     .getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -260,9 +260,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void showCorner(RecipientAddressModel cornerAddressModel) {
+    public void onChooseCorner(RecipientAddressModel cornerAddressModel) {
         mCurrentAddress = cornerAddressModel;
         mShipmentAddressListAdapter.setCorner(cornerAddressModel);
+
+        // Immediately choose the corner then go to shipment page
         onCornerAddressClicked(cornerAddressModel, 0);
     }
 
