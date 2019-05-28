@@ -18,6 +18,7 @@ import com.tokopedia.track.TrackApp;
 
 /**
  * Created by kris on 2/6/17. Tokopedia
+ * Deeplink: GOLD_MERCHANT_REDIRECT
  */
 
 public class GoldMerchantRedirectActivity extends TActivity{

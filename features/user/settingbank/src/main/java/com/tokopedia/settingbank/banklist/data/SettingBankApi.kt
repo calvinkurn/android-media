@@ -30,21 +30,4 @@ interface SettingBankApi {
     fun deleteBank(@FieldMap params: HashMap<String, Any>):
             Observable<Response<DataResponse<DeleteBankAccountPojo>>>
 
-    @FormUrlEncoded
-    @POST(SettingBankUrl.PATH_VALIDATE_BANK_ACCOUNT)
-    fun validateBankAccount(@FieldMap params: HashMap<String, Any>):
-            Observable<Response<DataResponse<ValidateBankAccountPojo>>>
-
-
-    @FormUrlEncoded
-    @POST(SettingBankUrl.PATH_ADD_BANK_ACCOUNT)
-    fun addBankAccount(@FieldMap params: HashMap<String, Any>):
-            Observable<Response<DataResponse<AddBankAccountPojo>>>
-
-    @FormUrlEncoded
-    @POST(SettingBankUrl.PATH_EDIT_BANK_ACCOUNT)
-    fun editBankAccount(@FieldMap params: HashMap<String, Any>):
-            Observable<Response<DataResponse<EditBankAccountPojo>>>
-
-
 }

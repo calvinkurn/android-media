@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.viewholder.BigGridCatalogViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.viewholder.CatalogHeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.viewholder.GridCatalogViewHolder;
@@ -19,7 +19,7 @@ import com.tokopedia.topads.sdk.base.Config;
  * Created by hangnadi on 10/12/17.
  */
 
-public class CatalogAdapterTypeFactory extends SearchSectionTypeFactoryImpl
+public class CatalogAdapterTypeFactory extends BrowseSectionTypeFactoryImpl
         implements CatalogTypeFactory {
 
     private final CatalogListener mCatalogListener;
