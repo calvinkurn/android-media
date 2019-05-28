@@ -17,11 +17,10 @@
 
     <string name="ktp_title">Foto Bagian Depan KTP</string>
     <string
-        name="ktp_subtitle"><![CDATA[<b>Perhatikan panduan berikut agar verifikasi berhasil:<br></b><ul>
-  <li>Gunakan foto asli, bukan fotokopi KTP.</li>
-  <li>Pastikan foto KTP tidak terpotong dan berada dalam bingkai.</li>
-  <li>Pastikan foto KTP dalam kondisi terang dan jelas.</li>
-</ul>]]> </string>
+        name="ktp_subtitle"><![CDATA[<b>Perhatikan panduan berikut agar verifikasi berhasil:</b>]]> </string>
+    <string name="ktp_body">• Gunakan foto asli, bukan fotokopi KTP.\n
+        • Pastikan foto KTP tidak terpotong dan berada dalam bingkai.\n
+        • Pastikan foto KTP dalam kondisi terang dan jelas.</string>
     <string name="ktp_button">Ambil Foto KTP</string>
 
     <string name="face_title">Foto Diri Bersama KTP</string>
