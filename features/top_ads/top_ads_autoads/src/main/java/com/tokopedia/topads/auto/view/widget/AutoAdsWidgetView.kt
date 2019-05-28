@@ -8,6 +8,7 @@ import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -79,9 +80,10 @@ class AutoAdsWidgetView : CardView {
         widgetViewModel = ViewModelProviders.of(context as BaseSimpleActivity, factory).get(AutoAdsWidgetViewModel::class.java)
         widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
         widgetViewModel.autoAdsData.observe(context as BaseSimpleActivity, Observer {
+            Log.d("AutoAdsWidget", it!!.statusDesc+" status "+it!!.status)
             if (it!!.status != 0) {
-                setStatusAds(it!!.status)
                 visibility = View.VISIBLE
+                setStatusAds(it!!.status)
                 dailyBudgetStatus.text = String.format(context.getString(R.string.anggaran_harian_status), it!!.dailyBudget)
                 dailyUsageStatus.text = String.format(context.getString(R.string.terpakai), it!!.dailyUsage)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

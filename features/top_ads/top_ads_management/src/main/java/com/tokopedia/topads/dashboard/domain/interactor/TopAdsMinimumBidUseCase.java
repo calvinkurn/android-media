@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.domain.interactor;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -11,14 +10,11 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.data.model.request.MinimumBidRequest;
 import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
-import com.tokopedia.topads.dashboard.utils.Utils;
+import com.tokopedia.topads.common.data.util.Utils;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import org.json.JSONException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Func1;

@@ -22,13 +22,8 @@ class StartAutoAdsFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.layout_new_ads_onboarding, container, false)
-
         btnStart = view.findViewById(R.id.btn_start)
-
         btnStart!!.setOnClickListener { startActivity(Intent(activity, DailyBudgetActivity::class.java)) }
-
-        view.findViewById<View>(R.id.tanpa_ribet_btn).setOnClickListener { startActivity(Intent(activity, EmptyProductActivity::class.java)) }
-        view.findViewById<View>(R.id.pasti_tayang_btn).setOnClickListener { startActivity(Intent(activity, InsufficientBalanceActivity::class.java)) }
         return view
     }
 

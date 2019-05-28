@@ -75,15 +75,12 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
         budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source)
         budgetViewModel.budgetInfoData.observe(this@DailyBudgetFragment, Observer {
             val data = it!!.get(0)
-            priceEditText.setText(data.minDailyBudget.toString())
-
+            estimateImpression(data, data.minDailyBudget)
             seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
             seekBar.value = data.minDailyBudget
             seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    priceRange.text = budgetViewModel.getPotentialImpression(data.estimation.minBid.toDouble(),
-                            data.estimation.maxBid.toDouble(), progress.toDouble())
-                    priceEditText.setText(progress.toString())
+                    estimateImpression(data, progress)
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -106,6 +103,12 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
                 }
             })
         })
+    }
+
+    private fun estimateImpression(data: BidInfoData, progress: Int) {
+        priceRange.text = budgetViewModel.getPotentialImpression(data.estimation.minBid.toDouble(),
+                data.estimation.maxBid.toDouble(), progress.toDouble())
+        priceEditText.setText(progress.toString())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
