@@ -268,7 +268,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     private fun onErrorInitiateData(): (Throwable) -> Unit {
         return {
-            SnackbarManager.make(activity, ErrorHandler.getErrorMessage(activity, it), Snackbar.LENGTH_LONG).show()
+            if(activity != null) {
+                SnackbarManager.make(activity, ErrorHandler.getErrorMessage(activity, it), Snackbar.LENGTH_LONG).show()
+            }
         }
     }
 
