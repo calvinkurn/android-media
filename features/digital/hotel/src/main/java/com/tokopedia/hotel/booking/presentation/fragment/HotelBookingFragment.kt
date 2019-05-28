@@ -29,10 +29,7 @@ import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.booking.data.model.HotelCart
-import com.tokopedia.hotel.booking.data.model.HotelCartData
-import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
-import com.tokopedia.hotel.booking.data.model.HotelPropertyData
+import com.tokopedia.hotel.booking.data.model.*
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
@@ -55,13 +52,9 @@ class HotelBookingFragment : BaseDaggerFragment() {
     lateinit var bookingViewModel: HotelBookingViewModel
 
     lateinit var hotelCart: HotelCart
-    lateinit var cartId: String
-    lateinit var contactData: TravelContactData
+    var hotelBookingPageModel = HotelBookingPageModel()
 
-    var roomRequest = ""
     var roomRequestMaxCharCount = ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT
-    var guestName = ""
-    var promoCode = ""
 
     lateinit var saveInstanceCacheManager: SaveInstanceCacheManager
 
@@ -74,10 +67,8 @@ class HotelBookingFragment : BaseDaggerFragment() {
         }
 
         arguments?.let {
-            cartId = it.getString(ARG_CART_ID, "")
+            hotelBookingPageModel.cartId = it.getString(ARG_CART_ID, "")
         }
-
-        saveInstanceCacheManager = SaveInstanceCacheManager(context!!, savedInstanceState)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -109,14 +100,11 @@ class HotelBookingFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_CART_ID)) {
-            cartId = savedInstanceState.getString(EXTRA_HOTEL_CART_ID,"")
-            roomRequest = savedInstanceState.getString(EXTRA_ROOM_REQUEST,"")
-            guestName = savedInstanceState.getString(EXTRA_GUEST_NAME,"")
-            contactData = savedInstanceState.getParcelable(EXTRA_CONTACT_DATA) ?: TravelContactData()
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_BOOKING_MODEL)) {
+            hotelBookingPageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_BOOKING_MODEL) ?: HotelBookingPageModel()
         }
 
-        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), cartId,
+        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId,
                 GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_cart))
     }
 
@@ -126,7 +114,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
         when (requestCode) {
             REQUEST_CODE_CONTACT_DATA -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    contactData = data!!.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
+                    hotelBookingPageModel.contactData = data!!.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
                     renderContactData()
                 }
             }
@@ -135,10 +123,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(EXTRA_HOTEL_CART_ID, cartId)
-        outState.putString(EXTRA_ROOM_REQUEST, roomRequest)
-        outState.putString(EXTRA_GUEST_NAME, guestName)
-        outState.putParcelable(EXTRA_CONTACT_DATA, contactData)
+        outState.putParcelable(EXTRA_HOTEL_BOOKING_MODEL, hotelBookingPageModel)
     }
 
     private fun initView() {
@@ -232,10 +217,10 @@ class HotelBookingFragment : BaseDaggerFragment() {
     }
 
     private fun setupRoomRequestForm(cart: HotelCartData) {
-        if (cart.specialRequest.isNotEmpty()) roomRequest = cart.specialRequest
-        if (roomRequest.isNotEmpty()) {
+        if (cart.specialRequest.isNotEmpty()) hotelBookingPageModel.roomRequest = cart.specialRequest
+        if (hotelBookingPageModel.roomRequest.isNotEmpty()) {
             showRequestForm()
-            tv_room_request_input.setText(roomRequest)
+            tv_room_request_input.setText(hotelBookingPageModel.roomRequest)
         } else {
             add_request_container.setOnClickListener {
                 showRequestForm()
@@ -245,11 +230,6 @@ class HotelBookingFragment : BaseDaggerFragment() {
         til_room_request.setLabel(getString(R.string.hotel_booking_request_form_title))
         til_room_request.setErrorTextAppearance(R.style.ErrorTextAppearance)
         til_room_request.counterMaxLength = roomRequestMaxCharCount
-        til_room_request.editText.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                KeyboardHandler.hideSoftKeyboard(activity)
-            }
-        }
         tv_room_request_input.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
                 when (s.length > roomRequestMaxCharCount) {
@@ -267,9 +247,10 @@ class HotelBookingFragment : BaseDaggerFragment() {
     }
 
     private fun setupContactDetail(cart: HotelCartData) {
-        if (!::contactData.isInitialized) {
+        // Check if contact data is empty
+        if (hotelBookingPageModel.contactData.isEmpty()) {
             val initContactData = cart.contact
-            contactData = TravelContactData(
+            hotelBookingPageModel.contactData = TravelContactData(
                 name = initContactData.name,
                 email = initContactData.email,
                 phoneCode = initContactData.phoneCode,
@@ -279,12 +260,12 @@ class HotelBookingFragment : BaseDaggerFragment() {
         renderContactData()
 
         iv_edit_contact.setOnClickListener {
-            startActivityForResult(TravelContactDataActivity.getCallingIntent(context!!, contactData), REQUEST_CODE_CONTACT_DATA)
+            startActivityForResult(TravelContactDataActivity.getCallingIntent(context!!, hotelBookingPageModel.contactData), REQUEST_CODE_CONTACT_DATA)
         }
 
-        if (guestName.isNotEmpty()) {
+        if (hotelBookingPageModel.guestName.isNotEmpty()) {
             radio_button_contact_guest.isChecked = true
-            tv_guest_input.setText(guestName)
+            tv_guest_input.setText(hotelBookingPageModel.guestName)
             toggleShowGuestForm(true)
         }
         radio_group_contact.setOnCheckedChangeListener { _, checkedId ->
@@ -298,6 +279,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
     }
 
     private fun renderContactData() {
+        val contactData = hotelBookingPageModel.contactData
         tv_contact_name.text = contactData.name
         tv_contact_email.text = contactData.email
         tv_contact_phone_number.text = getString(R.string.hotel_booking_contact_detail_phone_number,
@@ -362,12 +344,15 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
     private fun onBookingButtonClicked() {
         if (validateData()) {
+            hotelBookingPageModel.guestName = tv_guest_input.text.toString()
+            hotelBookingPageModel.roomRequest = tv_room_request_input.text.toString()
+
             val hotelCheckoutParam = HotelCheckoutParam(
-                cartId = cartId,
-                contact = hotelCart.cart.contact,
-                guestName = tv_guest_input.text.toString(),
-                promoCode = promoCode,
-                specialRequest = roomRequest
+                cartId = hotelBookingPageModel.cartId,
+                contact = mapToCheckoutContact(hotelBookingPageModel.contactData),
+                guestName = hotelBookingPageModel.guestName,
+                promoCode = hotelBookingPageModel.promoCode,
+                specialRequest = hotelBookingPageModel.roomRequest
             )
 //            bookingViewModel.checkoutCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_checkout), hotelCheckoutParam)
         }
@@ -383,6 +368,15 @@ class HotelBookingFragment : BaseDaggerFragment() {
         return isValid
     }
 
+    private fun mapToCheckoutContact(contactData: TravelContactData): HotelCartData.BookingContact {
+        return HotelCartData.BookingContact(
+                name = contactData.name,
+                email = contactData.email,
+                phoneCode = contactData.phoneCode,
+                phone = contactData.phone
+        )
+    }
+
     override fun getScreenName(): String = "Pembayaran"
 
     override fun initInjector() {
@@ -391,10 +385,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
     companion object {
         const val ARG_CART_ID = "arg_cart_id"
-        const val EXTRA_HOTEL_CART_ID = "extra_hotel_cart_id"
-        const val EXTRA_ROOM_REQUEST = "extra_room_request"
-        const val EXTRA_GUEST_NAME = "extra_guest_name"
-        const val EXTRA_CONTACT_DATA = "extra_contact_data"
+        const val EXTRA_HOTEL_BOOKING_MODEL = "extra_hotel_booking_model"
         const val REQUEST_CODE_CONTACT_DATA = 104
         const val TAG_HOTEL_CANCELLATION_POLICY = "hotel_cancellation_policy"
         const val TAG_HOTEL_TAX_POLICY = "hotel_tax_policy"

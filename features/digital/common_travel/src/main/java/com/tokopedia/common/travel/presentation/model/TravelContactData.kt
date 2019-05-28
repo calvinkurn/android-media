@@ -29,6 +29,10 @@ class TravelContactData(var name: String = "",
         return 0
     }
 
+    fun isEmpty(): Boolean {
+        return name == "" && email == "" && phoneCode == 0 && phone == ""
+    }
+
     companion object CREATOR : Parcelable.Creator<TravelContactData> {
         override fun createFromParcel(parcel: Parcel): TravelContactData {
             return TravelContactData(parcel)
