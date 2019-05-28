@@ -4,5 +4,4 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomp
  * Created by fwidjaja on 2019-05-20.
  */
 data class AutocompleteDataUiModel (
-        var listPredictions: List<AutocompletePredictionUiModel> = emptyList()
-)
+        var listPredictions: List<AutocompletePredictionUiModel> = emptyList())

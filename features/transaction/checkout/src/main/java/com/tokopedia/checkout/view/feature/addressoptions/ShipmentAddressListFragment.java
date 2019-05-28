@@ -23,7 +23,6 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressCornerMapper;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
-import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent;
@@ -33,8 +32,9 @@ import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.feature.addressoptions.addressadapter.ShipmentAddressListAdapter;
 import com.tokopedia.checkout.view.feature.addressoptions.cornerbtmsheet.CornerBottomSheet;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
-import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressActivity;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -446,7 +446,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 intent = AddAddressActivity.createInstanceEditAddressFromCheckoutMultipleAddressForm(
                         getActivity(), mapper.transform(model), token
                 );
-                // intent = new Intent(getActivity(), AddNewAddressActivity.class);
+                // intent = new Intent(getActivity(), PinpointMapActivity.class);
             } else {
                 intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
                         getActivity(), mapper.transform(model), token
@@ -454,7 +454,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             }
             startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
 
-            /*Intent intent = new Intent(getActivity(), AddNewAddressActivity.class);
+            /*Intent intent = new Intent(getActivity(), PinpointMapActivity.class);
             startActivity(intent);*/
         }
     }
@@ -505,7 +505,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         AddAddressActivity.createInstanceAddAddressFromCheckoutMultipleAddressForm(
                                 getActivity(), token
                         ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
-                // startActivity(new Intent(getActivity(), AddNewAddressActivity.class));
+                // startActivity(new Intent(getActivity(), PinpointMapActivity.class));
             } else {
                 checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
                 checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
@@ -515,13 +515,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
                 );*/
 
-                startActivityForResult(
-                        AddNewAddressActivity.createInstanceFromCheckoutSingleAddressForm(
+                /*startActivityForResult(
+                        PinpointMapActivity.createInstanceFromCheckoutSingleAddressForm(
                                 getActivity(), token
                         ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
-                );
+                );*/
 
-                // startActivity(new Intent(getActivity(), AddNewAddressActivity.class));
+                startActivity(new Intent(getActivity(), PinpointMapActivity.class));
             }
 
 

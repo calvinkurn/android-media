@@ -4,6 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:behavior_hideable="true"
@@ -14,7 +15,6 @@
         android:id="@+id/whole_loading_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         android:paddingLeft="@dimen/dp_16"
@@ -65,16 +65,36 @@
             android:layout_marginTop="@dimen/dp_24"
             android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/tv_title_getdistrict"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_24"
-            android:textStyle="bold"
-            android:textSize="@dimen/sp_16"
-            android:textColor="@color/title_search_location_color"
-            tools:text="Jalan Taman Siswa"/>
+            android:layout_marginTop="@dimen/dp_24">
 
+            <TextView
+                android:id="@+id/tv_title_getdistrict"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/title_search_location_color"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                tools:text="Jalan Taman Siswa"/>
+
+            <ImageView
+                android:id="@+id/ic_research"
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_12"
+                android:layout_toRightOf="@id/tv_title_getdistrict"
+                android:layout_toEndOf="@id/tv_title_getdistrict"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:contentDescription="@string/research_description"
+                android:visibility="visible"
+                android:src="@drawable/ic_search" />
+            
+        </RelativeLayout>
+        
         <TextView
             android:id="@+id/tv_address_getdistrict"
             android:layout_width="wrap_content"
@@ -97,8 +117,6 @@
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/buttonUse"
             app:hintEnabled="false">
 
             <EditText
@@ -133,6 +151,62 @@
             app:buttonCompatType="primary" />
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/invalid_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_24"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/invalid_img"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_100"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_invalid_location"
+            android:contentDescription="@string/invalid_description"/>
+
+        <LinearLayout
+            android:id="@+id/ll_invalid_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@id/invalid_img"
+            android:layout_toStartOf="@id/invalid_img"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/invalid_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                android:textColor="@color/title_search_location_color"
+                tools:text="@string/invalid_title"/>
+
+            <TextView
+                android:id="@+id/invalid_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/label_grey"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>

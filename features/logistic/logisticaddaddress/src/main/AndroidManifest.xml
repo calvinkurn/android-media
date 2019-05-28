@@ -19,7 +19,13 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".features.addnewaddress.AddNewAddressActivity"
+            android:name=".features.addnewaddress.pinpoint.PinpointMapActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+
+        <activity
+            android:name=".features.addnewaddress.addedit.AddEditAddressActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>

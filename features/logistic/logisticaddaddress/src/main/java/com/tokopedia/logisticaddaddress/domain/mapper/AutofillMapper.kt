@@ -3,11 +3,8 @@ package com.tokopedia.logisticaddaddress.domain.mapper
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.domain.model.autofill.AutofillResponse
 import com.tokopedia.logisticaddaddress.domain.model.autofill.Data
-import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillResponseUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictResponseUiModel
 import javax.inject.Inject
 
 /**
@@ -31,7 +28,9 @@ class AutofillMapper @Inject constructor() {
                 title = data.title,
                 formattedAddress = data.formattedAddress,
                 latitude = data.latitude,
-                longitude = data.longitude
+                longitude = data.longitude,
+                districtId = data.districtId,
+                postalCode = data.postalCode
         )
     }
 }

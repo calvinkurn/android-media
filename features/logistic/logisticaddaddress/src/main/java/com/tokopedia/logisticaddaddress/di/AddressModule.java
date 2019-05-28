@@ -8,7 +8,6 @@ import com.tokopedia.logisticaddaddress.data.AddAddressRetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressContract;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressPresenterImpl;
-import com.tokopedia.logisticaddaddress.features.addnewaddress.MapPresenter;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.module.LogisticNetworkModule;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;

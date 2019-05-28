@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompletePredictionUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteResponseUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteStructuredFormattingUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeResultUiModel
-import kotlinx.android.synthetic.main.bottomsheet_autocomplete_geolocation_nearest_loc_item.view.*
+import kotlinx.android.synthetic.main.bottomsheet_autocomplete_item.view.*
 
 /**
  * Created by fwidjaja on 2019-05-14.
@@ -26,7 +24,7 @@ class AutocompleteBottomSheetAdapter(actionListener: ActionListener) : RecyclerV
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bottomsheet_autocomplete_geolocation_nearest_loc_item, parent, false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bottomsheet_autocomplete_item, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -55,7 +53,7 @@ class AutocompleteBottomSheetAdapter(actionListener: ActionListener) : RecyclerV
 
         holder.itemView.place_name.text = placeName
         holder.itemView.place_address.text = placeAddress
-        holder.itemView.rl_nearest_loc.setOnClickListener {
+        holder.itemView.rl_autocomplete_item.setOnClickListener {
             println("## MASUK ONCLICK - placeID : $placeId")
             actionListener.onPoiListClicked(placeId)}
     }

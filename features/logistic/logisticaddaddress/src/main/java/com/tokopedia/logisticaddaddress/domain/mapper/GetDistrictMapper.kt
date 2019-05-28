@@ -28,7 +28,9 @@ open class GetDistrictMapper @Inject constructor() {
                 title = data.title,
                 formattedAddress = data.formattedAddress,
                 latitude = data.latitude,
-                longitude = data.longitude
+                longitude = data.longitude,
+                districtId = data.districtId,
+                postalCode = data.postalCode
         )
     }
 }

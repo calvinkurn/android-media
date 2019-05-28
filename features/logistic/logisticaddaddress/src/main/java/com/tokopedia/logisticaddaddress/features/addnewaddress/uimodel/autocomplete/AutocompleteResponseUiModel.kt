@@ -4,5 +4,4 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomp
  * Created by fwidjaja on 2019-05-20.
  */
 data class AutocompleteResponseUiModel (
-        var data: AutocompleteDataUiModel = AutocompleteDataUiModel()
-)
+        var data: AutocompleteDataUiModel = AutocompleteDataUiModel())

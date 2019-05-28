@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddress
+package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
 import android.content.Context
 import android.location.Location
@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.constant.TkpdCache
  * Created by fwidjaja on 2019-05-10.
  */
 
-object MapUtils {
+object PinpointMapUtils {
 
     @JvmStatic
     fun generateLatLng(latitude: String, longitude: String): LatLng {

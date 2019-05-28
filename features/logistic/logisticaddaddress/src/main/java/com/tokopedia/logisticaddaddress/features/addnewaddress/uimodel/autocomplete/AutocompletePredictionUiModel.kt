@@ -5,5 +5,4 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomp
  */
 data class AutocompletePredictionUiModel (
         var placeId: String = "",
-        var prediction: AutocompleteStructuredFormattingUiModel = AutocompleteStructuredFormattingUiModel()
-)
+        var prediction: AutocompleteStructuredFormattingUiModel = AutocompleteStructuredFormattingUiModel())

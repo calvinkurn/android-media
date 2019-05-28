@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mismatch_scroll_view_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/mismatch_edit_add_address_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16">
+
+            <TextView
+                android:id="@+id/tv_kota_kecamatan_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/label_grey"
+                android:layout_marginTop="@dimen/dp_24"
+                android:text="@string/et_kota_kecamatan_label"/>
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/et_kota_kecamatan_input_layout"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <EditText
+                    android:id="@+id/et_kota_kecamatan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/et_kota_kecamatan_hint"
+                    android:inputType="text"
+                    android:textColor="#ae31353b" />
+
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+            <TextView
+                android:id="@+id/tv_kode_pos_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/label_grey"
+                android:layout_marginTop="@dimen/dp_24"
+                android:text="@string/et_kode_pos_label"/>
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/et_kode_pos_input_layout"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <EditText
+                    android:id="@+id/et_kode_pos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/et_kode_pos_hint"
+                    android:inputType="text"
+                    android:textColor="#ae31353b" />
+
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/label_grey"
+                android:layout_marginTop="@dimen/dp_24"
+                android:text="@string/alamat_label"/>
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/et_alamat_layout"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false">
+
+                <EditText
+                    android:id="@+id/et_alamat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/et_alamat_hint"
+                    android:inputType="text"
+                    android:textColor="#ae31353b" />
+
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+            <TextView
+                android:id="@+id/tv_alamat_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/label_grey"
+                android:text="@string/min_20_char"
+                android:layout_marginBottom="@dimen/dp_24"/>
+
+        <include layout="@layout/form_add_new_address_default_item" />
+
+    </LinearLayout>
+
+</ScrollView>

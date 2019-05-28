@@ -42,4 +42,25 @@ public class AddressConstants {
 
     public static final String EXTRA_DEFAULT_LAT = "EXTRA_DEFAULT_LAT";
     public static final String EXTRA_DEFAULT_LONG = "EXTRA_DEFAULT_LONG";
+
+    public static final String EXTRA_LAT = "EXTRA_LAT";
+    public static final String EXTRA_LONG = "EXTRA_LONG";
+    public static final String EXTRA_DETAIL_ADDRESS = "EXTRA_DETAIL_ADDRESS";
+    public static final String EXTRA_SHOW_AUTOCOMPLETE = "EXTRA_SHOW_AUTOCOMPLETE";
+    public static final String EXTRA_IS_MISMATCH = "EXTRA_IS_MISMATCH";
+    public static final String EXTRA_SAVE_DATA_UI_MODEL = "EXTRA_SAVE_DATA_UI_MODEL";
+    public static final Double MONAS_LAT = -6.175794;
+    public static final Double MONAS_LONG = 106.826457;
+
+    public static final String PARAM_ADDRESS_ID = "address_id";
+    public static final String PARAM_ADDRESS_NAME = "address_name";
+    public static final String PARAM_ADDRESS_STREET = "address_street";
+    public static final String PARAM_CITY = "city";
+    public static final String PARAM_DISTRICT = "district";
+    public static final String PARAM_PROVINCE = "province";
+    public static final String PARAM_POSTAL_CODE = "postal_code";
+    public static final String PARAM_RECEIVER_NAME = "receiver_name";
+    public static final String PARAM_RECEIVER_PHONE = "receiver_phone";
+    public static final String PARAM_LATITUDE = "latitude";
+    public static final String PARAM_LONGITUDE = "longitude";
 }

@@ -17,7 +17,7 @@ import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
-import kotlinx.android.synthetic.main.bottomsheet_autocomplete_geolocation.*
+import kotlinx.android.synthetic.main.bottomsheet_autocomplete.*
 import javax.inject.Inject
 
 
@@ -73,7 +73,7 @@ RecyclerView.OnItemTouchListener{
     }*/
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.bottomsheet_autocomplete_geolocation
+        return R.layout.bottomsheet_autocomplete
     }
 
     override fun title(): String {

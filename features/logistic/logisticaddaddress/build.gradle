@@ -36,10 +36,12 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.transactionanalytics)
 
+
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.places
     implementation rootProject.ext.playServicesDependencies.location
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

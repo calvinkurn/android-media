@@ -1,0 +1,24 @@
+mutation {
+  kero_add_address(input: {
+    addr_name: "#addrName",
+    receiver_name: "#receiverName",
+    address_1: "#address1",
+    address_2: "#address2",
+    postal_code: "#postalCode",
+    phone: "#phoneNo",
+    city: "#cityId",
+    province: "#provinceId",
+    district: "#districtId",
+    latitude: "#lat",
+    longitude: "#long",
+    checksum: ""
+  }) {
+    data {
+      addr_id
+      is_success
+    }
+    status
+    config
+    server_process_time
+	}
+}
