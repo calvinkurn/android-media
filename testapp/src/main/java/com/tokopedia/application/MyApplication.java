@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
@@ -21,17 +22,18 @@ import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.tkpd.network.DataSource;
+import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.tkpd.BuildConfig;
+import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.cachemanager.PersistentCacheManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.Response;
+import timber.log.Timber;
 
 /**
  * Created by hendry on 25/06/18.
@@ -72,23 +75,46 @@ public class MyApplication extends BaseMainApplication
                 .build());
         FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
         initCacheApi();
+
+        LogWrapper.init(this);
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new CrashReportingTree());
+        } else {
+            Timber.plant(new CrashReportingTree());
+        }
     }
 
-    public static class GTMAnalytics extends DummyAnalytics{
+    /** A tree which logs important information for crash reporting. */
+    private static class CrashReportingTree extends Timber.Tree {
+        @Override protected void log(int priority, String tag, @NonNull String message, Throwable t) {
+            if (priority == Log.VERBOSE || priority == Log.DEBUG) {
+                return;
+            }
+            // will be fixed in Timber next major release
+            // https://github.com/JakeWharton/timber/issues/142
+            if (t!= null) {
+                LogWrapper.log(priority, "", t);
+            } else {
+                LogWrapper.log(priority, message);
+            }
+        }
+    }
+
+    public static class GTMAnalytics extends DummyAnalytics {
 
         public GTMAnalytics(Context context) {
             super(context);
         }
     }
 
-    public static class AppsflyerAnalytics extends DummyAnalytics{
+    public static class AppsflyerAnalytics extends DummyAnalytics {
 
         public AppsflyerAnalytics(Context context) {
             super(context);
         }
     }
 
-    public static class MoengageAnalytics extends DummyAnalytics{
+    public static class MoengageAnalytics extends DummyAnalytics {
 
         public MoengageAnalytics(Context context) {
             super(context);
@@ -169,7 +195,7 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response) {
+    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken, boolean isRequestDenied) {
 
     }
 
@@ -323,7 +349,7 @@ public class MyApplication extends BaseMainApplication
     @Override
     public void goToApplinkActivity(Context context, String applink) {
         Toast.makeText(getApplicationContext(), "deprecated - GO TO " + applink, Toast.LENGTH_LONG).show();
-        RouteManager.route(context,applink);
+        RouteManager.route(context, applink);
     }
 
     /**
@@ -333,7 +359,7 @@ public class MyApplication extends BaseMainApplication
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
         Toast.makeText(getApplicationContext(), "deprecated - GO TO " + applink, Toast.LENGTH_LONG).show();
-        RouteManager.route(activity,applink);
+        RouteManager.route(activity, applink);
     }
 
     /**
@@ -342,7 +368,7 @@ public class MyApplication extends BaseMainApplication
     @Deprecated
     @Override
     public Intent getApplinkIntent(Context context, String applink) {
-        return RouteManager.getIntent(context,applink);
+        return RouteManager.getIntent(context, applink);
     }
 
     @Deprecated
