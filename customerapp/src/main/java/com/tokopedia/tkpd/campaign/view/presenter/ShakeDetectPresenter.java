@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkDelegate;
-import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
@@ -140,7 +139,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                             if (((CampaignException) e).isMissingAuthorizationCredentials()) {
                                 intent.putExtra("needLogin", true);
                             } else {
-                                getView().showErrorGetInfo(e.getMessage());
+                                getView().showErrorGetInfo();
                                 return;
                             }
 
@@ -151,7 +150,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                         } else if (e instanceof ServerErrorException) {
                             getView().showErrorNetwork(ErrorHandler.getErrorMessage(context, e));
                         } else {
-                            getView().showErrorGetInfo(SHAKE_SHAKE_ERROR);
+                            getView().showErrorGetInfo();
                             return;
                         }
 
@@ -162,7 +161,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     @Override
                     public void onNext(GraphqlResponse graphqlResponse) {
 
-                        if (graphqlResponse.getError(CampaignGqlResponse.class)!= null
+                        if (graphqlResponse.getError(CampaignGqlResponse.class) != null
                                 && graphqlResponse.getError(CampaignGqlResponse.class).size() > 0) {
                             CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                             getView().showMessage(graphqlResponse.getError(CampaignGqlResponse.class).get(0).getMessage() != null ?
@@ -173,7 +172,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                         CampaignGqlResponse response =
                                 graphqlResponse.getData(CampaignGqlResponse.class);
 
-                        if (response.getCampaignResponseEntity() != null) {
+                        if (response != null && response.getCampaignResponseEntity() != null) {
                             CampaignResponseEntity s = response.getCampaignResponseEntity();
                             if (s.getValidCampaignPojos().size() > 0) {
                                 ValidCampaignPojo campaign = s.getValidCampaignPojos().get(0);
@@ -212,6 +211,9 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                                 //Open next activity based upon the result from server
 
                             }
+                        } else {
+                            CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
+                            getView().showErrorGetInfo();
                         }
                     }
                 });
@@ -225,14 +227,14 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
     private void addLocationParameterBeforeRequest(Activity activity) {
 
-            LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
-                    permissionCheckerHelper,
-                    LocationServices.getFusedLocationProviderClient(activity
-                            .getApplicationContext()),
-                    activity.getApplicationContext());
-            locationDetectorHelper.getLocation(onGetLocation(), activity,
-                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                    activity.getString(R.string.rationale_need_location_for_promotion));
+        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
+                permissionCheckerHelper,
+                LocationServices.getFusedLocationProviderClient(activity
+                        .getApplicationContext()),
+                activity.getApplicationContext());
+        locationDetectorHelper.getLocation(onGetLocation(), activity,
+                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                activity.getString(R.string.rationale_need_location_for_promotion));
 
     }
 

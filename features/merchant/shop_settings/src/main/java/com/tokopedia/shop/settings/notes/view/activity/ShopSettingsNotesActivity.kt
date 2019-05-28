@@ -15,6 +15,9 @@ import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesReorderF
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import java.util.*
 
+/**
+ * Deeplink: SHOP_SETTINGS_NOTES
+ */
 class ShopSettingsNotesActivity : BaseSimpleActivity(),
         ShopSettingsNotesListFragment.OnShopSettingsNoteFragmentListener,
         ShopSettingsNotesReorderFragment.OnShopSettingsNotesReorderFragmentListener {

@@ -10,6 +10,8 @@ public interface SearchConstant {
 
     String EXTRA_ACTIVE_TAB_POSITION = "EXTRA_ACTIVE_TAB_POSITION";
 
+    String EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID";
+
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
     String DEEP_LINK_URI = "deep_link_uri";
 
@@ -73,6 +75,7 @@ public interface SearchConstant {
         String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
         String PATH_GET_DYNAMIC_ATTRIBUTE_V4 = "v4/dynamic_attributes";
         String PATH_BROWSE_SHOP = "search/v1/shop";
+        String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
     }
 
     interface Tome {
@@ -91,5 +94,13 @@ public interface SearchConstant {
         String SEARCH_SHOP_USE_CASE = "search_shop_use_case";
         String TOGGLE_FAVORITE_SHOP_USE_CASE = "toggle_favorite_shop_use_case";
         String TOGGLE_FAVORITE_SHOP_ID = "SHOP_ID";
+    }
+
+    interface SearchCatalog {
+        String SEARCH_CATALOG_USE_CASE = "search_catalog_use_case";
+    }
+
+    interface SearchProfile {
+        String SEARCH_PROFILE_USE_CASE = "search_profile_use_case";
     }
 }

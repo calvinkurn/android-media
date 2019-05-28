@@ -32,15 +32,13 @@ public interface TkpdCoreRouter {
 
     void goToManageProduct(Context context);
 
-    void goToEtalaseList(Context context);
-
     void goToDraftProductList(Context context);
 
     void clearEtalaseCache();
 
     void resetAddProductCache(Context context);
 
-    void goToMerchantRedirect(Context context);
+    void goToWallet(Context context, String url);
 
     void actionAppLink(Context context, String linkUrl);
 
