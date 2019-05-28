@@ -584,32 +584,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void setSelectedPriority(int cartItemPosition,boolean isNow, String priorityInnactiveMessage,int priorityPrice,String priorityFormattedPrice) {
-        ShipmentCartItemModel shipmentCartItemModel;
-        Object currentShipmentData = shipmentDataList.get(cartItemPosition);
-        if (currentShipmentData instanceof ShipmentCartItemModel) {
-            shipmentCartItemModel = (ShipmentCartItemModel) currentShipmentData;
-            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
-                shipmentCartItemModel.setNow(isNow);
-                shipmentCartItemModel.setPriorityInactiveMessage(priorityInnactiveMessage);
-                shipmentCartItemModel.setPriorityPrice(priorityPrice);
-                shipmentCartItemModel.setPriorityFormattedPrice(priorityFormattedPrice);
-            } else {
-                shipmentCartItemModel.setNow(isNow);
-                shipmentCartItemModel.setPriorityInactiveMessage(priorityInnactiveMessage);
-                shipmentCartItemModel.setPriorityPrice(priorityPrice);
-                shipmentCartItemModel.setPriorityFormattedPrice(priorityFormattedPrice);
-            }
-        }
-    }
-
-    private void mapperOrderPriority(ServiceData serviceData, ShipmentCartItemModel shipmentCartItemModel) {
-        shipmentCartItemModel.setNow(serviceData.getOrderPriority().getNow());
-        shipmentCartItemModel.setPriorityInactiveMessage(serviceData.getOrderPriority().getInactiveMessage());
-        shipmentCartItemModel.setPriorityPrice(serviceData.getOrderPriority().getPrice());
-        shipmentCartItemModel.setPriorityFormattedPrice(serviceData.getOrderPriority().getFormattedPrice());
-    }
-
     public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData newCourierItemData) {
         ShipmentCartItemModel shipmentCartItemModel = null;
         Object currentShipmentData = shipmentDataList.get(position);

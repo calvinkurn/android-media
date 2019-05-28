@@ -20,6 +20,10 @@ public class OrderPriority {
     @Expose
     private String inactiveMessage;
 
+    @SerializedName("static_messages")
+    @Expose
+    private OrderPriorityStaticMessage staticMessage;
+
     public Boolean getNow() {
         return isNow;
     }
@@ -50,5 +54,13 @@ public class OrderPriority {
 
     public void setInactiveMessage(String inactiveMessage) {
         this.inactiveMessage = inactiveMessage;
+    }
+
+    public OrderPriorityStaticMessage getStaticMessage() {
+        return staticMessage;
+    }
+
+    public void setStaticMessage(OrderPriorityStaticMessage staticMessage) {
+        this.staticMessage = staticMessage;
     }
 }

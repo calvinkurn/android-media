@@ -3,7 +3,6 @@ package com.tokopedia.shipping_recommendation.domain.shipping;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.VoucherOrdersItem;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
@@ -86,11 +85,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private int fulfillmentId;
     private String fulfillmentName;
 
-    //for order priority
-    private boolean isNow;
-    private int priorityPrice;
-    private String priorityFormattedPrice;
-    private String priorityInactiveMessage;
+
 
     // promo stacking
     private boolean hasPromoList;
@@ -151,10 +146,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         hasPromoList = in.readByte() != 0;
         voucherOrdersItemUiModel = in.readParcelable(VoucherOrdersItemUiModel.class.getClassLoader());
         voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
-        isNow = in.readByte() != 0;
-        priorityPrice = in.readInt();
-        priorityFormattedPrice = in.readString();
-        priorityInactiveMessage = in.readString();
     }
 
     @Override
@@ -209,10 +200,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (hasPromoList ? 1 : 0));
         dest.writeParcelable(voucherOrdersItemUiModel, flags);
         dest.writeParcelable(voucherLogisticItemUiModel, flags);
-        dest.writeByte((byte) (isNow ? 1 : 0));
-        dest.writeInt(priorityPrice);
-        dest.writeString(priorityFormattedPrice);
-        dest.writeString(priorityInactiveMessage);
     }
 
     @Override
@@ -283,43 +270,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setHasPromoList(shipmentCartItemModel.getHasPromoList());
         newShipmentCartItemModel.setVoucherOrdersItemUiModel(shipmentCartItemModel.getVoucherOrdersItemUiModel());
         newShipmentCartItemModel.setVoucherLogisticItemUiModel(shipmentCartItemModel.getVoucherLogisticItemUiModel());
-        newShipmentCartItemModel.setNow(shipmentCartItemModel.isNow);
-        newShipmentCartItemModel.setPriorityFormattedPrice(shipmentCartItemModel.getPriorityFormattedPrice());
-        newShipmentCartItemModel.setPriorityInactiveMessage(shipmentCartItemModel.getPriorityInactiveMessage());
-        newShipmentCartItemModel.setPriorityInactiveMessage(shipmentCartItemModel.getPriorityInactiveMessage());
         return newShipmentCartItemModel;
-    }
-
-    public boolean isNow() {
-        return isNow;
-    }
-
-    public void setNow(boolean now) {
-        isNow = now;
-    }
-
-    public int getPriorityPrice() {
-        return priorityPrice;
-    }
-
-    public void setPriorityPrice(int priorityPrice) {
-        this.priorityPrice = priorityPrice;
-    }
-
-    public String getPriorityFormattedPrice() {
-        return priorityFormattedPrice;
-    }
-
-    public void setPriorityFormattedPrice(String priorityFormattedPrice) {
-        this.priorityFormattedPrice = priorityFormattedPrice;
-    }
-
-    public String getPriorityInactiveMessage() {
-        return priorityInactiveMessage;
-    }
-
-    public void setPriorityInactiveMessage(String priorityInactiveMessage) {
-        this.priorityInactiveMessage = priorityInactiveMessage;
     }
 
     public boolean isAllItemError() {

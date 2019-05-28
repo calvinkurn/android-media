@@ -70,6 +70,7 @@ import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OrderPriorityStaticMessage;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -955,8 +956,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition) {
         checkCourierPromo(courierItemData, itemPosition);
         shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).setStateLoadingCourierState(false);
-        shipmentAdapter.setSelectedPriority(itemPosition, courierItemData.getNow(),courierItemData.getPriorityInnactiveMessage(),
-                courierItemData.getPriorityPrice(),courierItemData.getPriorityFormattedPrice());
         shipmentAdapter.setSelectedCourier(itemPosition, courierItemData);
         onNeedUpdateViewItem(itemPosition);
     }
@@ -1897,9 +1896,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentAdapter.updateShipmentCostModel();
                     shipmentAdapter.updateCheckoutButtonData(null);
                 }
-
-                shipmentAdapter.setSelectedPriority(cartItemPosition,serviceData.getOrderPriority().getNow(),serviceData.getOrderPriority().getInactiveMessage(),
-                        serviceData.getOrderPriority().getPrice(),serviceData.getOrderPriority().getFormattedPrice());
                 shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
                 shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, recommendedCourier, cartItemPosition);

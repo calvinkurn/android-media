@@ -37,6 +37,11 @@ public class ShippingCourierConverter {
         courierItemData.setPriorityPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getPrice());
         courierItemData.setPriorityFormattedPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getFormattedPrice());
         courierItemData.setPriorityInnactiveMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getInactiveMessage());
+        courierItemData.setPriorityDurationMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getDurationMessage());
+        courierItemData.setPriorityFeeMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getFeeMessage());
+        courierItemData.setPriorityWarningboxMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getWarningBoxMessage());
+        courierItemData.setPriorityCheckboxMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getCheckboxMessage());
+        courierItemData.setPriorityPdpMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getPdpMessage());
         courierItemData.setAllowDropshiper(shippingCourierViewModel.isAllowDropshipper());
         courierItemData.setAdditionalPrice(shippingCourierViewModel.getAdditionalFee());
         courierItemData.setPromoCode(shippingCourierViewModel.getProductData().getPromoCode());

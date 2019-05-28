@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.shipping_recommendation.R;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -99,14 +100,13 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
                 String orderPrioritasTxt = itemView.getContext().getString(R.string.order_prioritas);
                 SpannableString orderPrioritasLabel = new SpannableString(orderPrioritasTxt);
                 orderPrioritasLabel.setSpan(new StyleSpan(Typeface.BOLD),16,orderPrioritasTxt.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                tvOrderPrioritas.setText(orderPrioritasLabel);
+                tvOrderPrioritas.setText(MethodChecker.fromHtml(shippingDurationViewModel.getServiceData().getOrderPriority().getStaticMessage().getDurationMessage()));
                 tvOrderPrioritas.setVisibility(View.VISIBLE);
             }else {
                 tvOrderPrioritas.setVisibility(View.GONE);
             }
 
         }
-
 
         tvDuration.setText(shippingDurationViewModel.getServiceData().getServiceName());
         imgCheck.setVisibility(shippingDurationViewModel.isSelected() ? View.VISIBLE : View.GONE);

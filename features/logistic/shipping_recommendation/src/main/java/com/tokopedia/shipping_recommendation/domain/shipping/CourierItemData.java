@@ -40,6 +40,12 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private int priorityPrice;
     private String priorityInnactiveMessage;
     private String priorityFormattedPrice;
+    private String priorityInactiveMessage;
+    private String priorityDurationMessage;
+    private String priorityCheckboxMessage;
+    private String priorityWarningboxMessage;
+    private String priorityFeeMessage;
+    private String priorityPdpMessage;
 
     public CourierItemData() {
     }
@@ -296,6 +302,54 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.priorityFormattedPrice = priorityFormattedPrice;
     }
 
+    public String getPriorityInactiveMessage() {
+        return priorityInactiveMessage;
+    }
+
+    public void setPriorityInactiveMessage(String priorityInactiveMessage) {
+        this.priorityInactiveMessage = priorityInactiveMessage;
+    }
+
+    public String getPriorityDurationMessage() {
+        return priorityDurationMessage;
+    }
+
+    public void setPriorityDurationMessage(String priorityDurationMessage) {
+        this.priorityDurationMessage = priorityDurationMessage;
+    }
+
+    public String getPriorityCheckboxMessage() {
+        return priorityCheckboxMessage;
+    }
+
+    public void setPriorityCheckboxMessage(String priorityCheckboxMessage) {
+        this.priorityCheckboxMessage = priorityCheckboxMessage;
+    }
+
+    public String getPriorityWarningboxMessage() {
+        return priorityWarningboxMessage;
+    }
+
+    public void setPriorityWarningboxMessage(String priorityWarningboxMessage) {
+        this.priorityWarningboxMessage = priorityWarningboxMessage;
+    }
+
+    public String getPriorityFeeMessage() {
+        return priorityFeeMessage;
+    }
+
+    public void setPriorityFeeMessage(String priorityFeeMessage) {
+        this.priorityFeeMessage = priorityFeeMessage;
+    }
+
+    public String getPriorityPdpMessage() {
+        return priorityPdpMessage;
+    }
+
+    public void setPriorityPdpMessage(String priorityPdpMessage) {
+        this.priorityPdpMessage = priorityPdpMessage;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -335,6 +389,11 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeInt(this.priorityPrice);
         dest.writeString(this.priorityInnactiveMessage);
         dest.writeString(this.priorityFormattedPrice);
+        dest.writeString(this.priorityDurationMessage);
+        dest.writeString(this.priorityCheckboxMessage);
+        dest.writeString(this.priorityWarningboxMessage);
+        dest.writeString(this.priorityFeeMessage);
+        dest.writeString(this.priorityPdpMessage);
     }
 
     protected CourierItemData(Parcel in) {
@@ -370,6 +429,11 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.priorityPrice = in.readInt();
         this.priorityInnactiveMessage = in.readString();
         this.priorityFormattedPrice = in.readString();
+        this.priorityDurationMessage = in.readString();
+        this.priorityCheckboxMessage = in.readString();
+        this.priorityWarningboxMessage = in.readString();
+        this.priorityFeeMessage = in.readString();
+        this.priorityPdpMessage = in.readString();
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {

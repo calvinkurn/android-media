@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.feature.shipment.viewholder;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
@@ -12,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
@@ -35,7 +36,6 @@ import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentInnerProduct
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.component.Tooltip;
-import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
@@ -218,6 +218,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvPrioritasFee;
     private TextView tvPrioritasFeePrice;
     private ImageView imgPriorityTnc;
+    private TextView tvPrioritasInfo;
+    private boolean isPriorityChecked = false;
+
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -339,6 +342,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvPrioritasFee = itemView.findViewById(R.id.tv_priority_fee);
         tvPrioritasFeePrice = itemView.findViewById(R.id.tv_priority_fee_price);
         imgPriorityTnc = itemView.findViewById(R.id.img_prioritas_info);
+        tvPrioritasInfo = itemView.findViewById(R.id.tv_order_prioritas_info);
 
         // robinhood III
         llCourierBlackboxStateLoading = itemView.findViewById(R.id.ll_courier_blackbox_state_loading);
@@ -1051,14 +1055,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderPrioritas(final ShipmentCartItemModel shipmentCartItemModel) {
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
+        ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
         if (getAdapterPosition() != RecyclerView.NO_POSITION && shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
             shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-
             if (!cartItemModelList.remove(FIRST_ELEMENT).isPreOrder()) {
                 checkBoxPriority.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                            isPriorityChecked = isChecked;
                             shipmentCartItemModel.getSelectedShipmentDetailData().setOrderPriority(isChecked);
                             mActionListener.onPriorityChecked(getAdapterPosition());
                             mActionListener.onNeedUpdateRequestData();
@@ -1070,15 +1075,40 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 });
             }
 
+
+            SpannableString spanText = new SpannableString(tvPrioritasTicker.getResources().getString(R.string.label_hardcoded_courier_ticker));
+            spanText.setSpan(new StyleSpan(Typeface.BOLD), 43, 52, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
             final CourierItemData courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
-            if (!courierItemData.getNow()) {
-                llPrioritas.setVisibility(View.GONE);
-                llPrioritasTicker.setVisibility(View.GONE);
-            } else {
-                llPrioritas.setVisibility(View.VISIBLE);
-                llPrioritasTicker.setVisibility(View.VISIBLE);
-                tvPrioritasTicker.setText(R.string.label_hardcoded_prioritas_ticker);
+            boolean isCourierSelected = shipmentDetailData != null
+                    && shipmentDetailData.getSelectedCourier() != null;
+
+            if(isCourierSelected) {
+                if (isCourierInstantOrSameday(shipmentDetailData.getSelectedCourier().getShipperId())) {
+                    if (courierItemData.getNow() && !shipmentCartItemModel.isProductIsPreorder()) {
+                        tvPrioritasInfo.setText(courierItemData.getPriorityCheckboxMessage());
+                        llPrioritas.setVisibility(View.VISIBLE);
+                        llPrioritasTicker.setVisibility(View.VISIBLE);
+                        llShipmentInfoTicker.setVisibility(View.GONE);
+                    } else {
+                        llPrioritas.setVisibility(View.GONE);
+                        llPrioritasTicker.setVisibility(View.GONE);
+                        llShipmentInfoTicker.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    hideAllTicker();
+                }
             }
+            else {
+                hideAllTicker();
+            }
+            if(isPriorityChecked) {
+                tvPrioritasTicker.setText(courierItemData.getPriorityWarningboxMessage());
+            } else {
+                tvPrioritasTicker.setText(spanText);
+                tvTickerInfo.setText(spanText);
+            }
+
         }
         imgPriorityTnc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1086,6 +1116,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 mActionListener.onPriorityTncClicker();
             }
         });
+    }
+
+    private void hideAllTicker(){
+        llPrioritas.setVisibility(View.GONE);
+        llShipmentInfoTicker.setVisibility(View.GONE);
+        llPrioritasTicker.setVisibility(View.GONE);
     }
 
     private void renderInsurance(final ShipmentCartItemModel shipmentCartItemModel) {
