@@ -171,11 +171,12 @@ public class SearchTracking {
                 EVENT_LABEL, "",
                 ECOMMERCE, DataLayer.mapOf(
                         "click", DataLayer.mapOf(
-                                    "actionField", DataLayer.mapOf("list", String.format(imageClick, position))),
+                                    "actionField", DataLayer.mapOf("list", String.format(imageClick, position)),
                                              "products", DataLayer.listOf(item)
                                         )
                             )
-                );
+                )
+        );
     }
 
     public static void eventImpressionSearchResultProduct(TrackingQueue trackingQueue, List<Object> list, String eventLabel) {
