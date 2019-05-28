@@ -49,7 +49,7 @@
                     android:layout_marginLeft="@dimen/dp_12"
                     android:layout_marginRight="@dimen/dp_12"
                     android:layout_marginBottom="@dimen/dp_12"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
                 <FrameLayout
                     android:layout_width="match_parent"

@@ -55,6 +55,8 @@ public interface Ad extends ItemType, Parcelable {
 
     String getName();
 
+    boolean isAutoAds();
+
     @Override
     int describeContents();
 

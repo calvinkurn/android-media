@@ -127,6 +127,11 @@ public class TopAdsKeywordViewHolder extends BaseMultipleCheckViewHolder<Keyword
         }
     }
 
+    @Override
+    public void showOptionButton(boolean enable) {
+        optionImageButton.setVisibility(enable ? View.VISIBLE : View.GONE);
+    }
+
     public void setBackground(boolean isChecked) {
         if (isChecked) {
             if (itemView instanceof CardView){

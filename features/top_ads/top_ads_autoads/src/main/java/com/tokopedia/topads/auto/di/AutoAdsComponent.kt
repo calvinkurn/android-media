@@ -6,7 +6,6 @@ import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
 import com.tokopedia.topads.auto.di.module.ViewModelModule
 import com.tokopedia.topads.auto.view.activity.AutoAdsRouteActivity
 import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
-import com.tokopedia.topads.auto.view.fragment.SettingBudgetAdsFragment
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
 import dagger.Component
 

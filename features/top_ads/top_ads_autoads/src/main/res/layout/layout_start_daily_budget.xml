@@ -96,16 +96,16 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:lineSpacingExtra="2sp"
-                                        tools:text="7.500 - 15.000"
+                                        android:text="0 - 0"
                                         android:textColor="#41b54a"
-                                        android:textSize="20sp" />
+                                        android:textSize="18sp" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:gravity="center_horizontal"
                                         android:lineSpacingExtra="6sp"
-                                        android:padding="4dp"
+                                        android:padding="2dp"
                                         android:text="@string/kali_per_hari"
                                         android:textColor="#61000000"
                                         android:textSize="12sp" />
@@ -140,7 +140,7 @@
                                 android:minWidth="@dimen/dp_50"
                                 android:backgroundTint="@color/grey"
                                 app:prefix="@string/title_currency_rp_space"
-                                tools:text="100000" />
+                                android:text="0" />
                         </android.support.design.widget.TextInputLayout>
 
                     </LinearLayout>

@@ -23,4 +23,5 @@ public interface TopAdsProductAdListView extends CustomerView {
     void onGetGroupAdListError();
 
     void onGetGroupAdList(List<GroupAd> groupAds);
+
 }

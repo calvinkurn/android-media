@@ -9,6 +9,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.entity.TopAdsShopInfoData
@@ -31,6 +32,14 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         adsConfirmationSheet = ManualAdsConfirmationSheet.newInstance(activity!!)
+        budgetViewModel.autoAdsData.observe(this, Observer {
+            Toast.makeText(context, "AutoAds Status" + it!!.statusDesc, Toast.LENGTH_SHORT).show()
+            if(it!!.status==200){
+                startActivity(Intent(activity, AutoAdsActivatedActivity::class.java))
+            } else{
+                activity!!.finish()
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -52,7 +61,7 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         if (id == R.id.start_manual_ads_btn) {
             adsConfirmationSheet.show()
         } else if (id == R.id.start_autoads_btn) {
-            startActivity(Intent(activity, AutoAdsActivatedActivity::class.java))
+            activatedAds()
         }
     }
 

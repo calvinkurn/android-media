@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
@@ -130,5 +131,10 @@ public class TopAdsModule {
     @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @Provides
+    public GraphqlUseCase provideGraphqlUseCase() {
+        return new GraphqlUseCase();
     }
 }

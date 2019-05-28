@@ -3,6 +3,7 @@ package com.tokopedia.topads.keyword.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
@@ -32,8 +33,18 @@ public class KeywordAd implements Ad, Parcelable, ItemType, Visitable<TopAdsList
     private String statTotalCtr;
     private String statTotalConversion;
     private String labelPerClick;
+    private boolean isAutoAds;
 
     public KeywordAd() {
+    }
+
+    @Override
+    public boolean isAutoAds() {
+        return isAutoAds;
+    }
+
+    public void setAutoAds(boolean autoAds) {
+        isAutoAds = autoAds;
     }
 
     public int getGroupBid() {
@@ -276,6 +287,7 @@ public class KeywordAd implements Ad, Parcelable, ItemType, Visitable<TopAdsList
         dest.writeString(this.labelPerClick);
         dest.writeString(this.keywordTypeDesc);
         dest.writeInt(this.groupBid);
+        dest.writeByte((byte) (isAutoAds ? 1 : 0));
     }
 
     protected KeywordAd(Parcel in) {
@@ -297,6 +309,7 @@ public class KeywordAd implements Ad, Parcelable, ItemType, Visitable<TopAdsList
         this.labelPerClick = in.readString();
         this.keywordTypeDesc = in.readString();
         this.groupBid = in.readInt();
+        this.isAutoAds = in.readByte() != 0;
     }
 
     public static final Creator<KeywordAd> CREATOR = new Creator<KeywordAd>() {

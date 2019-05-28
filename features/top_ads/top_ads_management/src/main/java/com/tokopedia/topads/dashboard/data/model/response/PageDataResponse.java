@@ -34,4 +34,5 @@ public class PageDataResponse<T> extends DataResponse<T> {
     public void setPage(Page page) {
         this.page = page;
     }
+
 }

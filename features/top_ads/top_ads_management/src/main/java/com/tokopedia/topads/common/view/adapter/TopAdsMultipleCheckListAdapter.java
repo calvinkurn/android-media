@@ -46,6 +46,7 @@ public class TopAdsMultipleCheckListAdapter<T extends Visitable, F extends Adapt
         final T item = (T) visitables.get(position);
         if (holder instanceof BaseMultipleCheckViewHolder && item instanceof Ad){
             ((BaseMultipleCheckViewHolder) holder).showCheckButton(isActionMode);
+            ((BaseMultipleCheckViewHolder) holder).showOptionButton(((Ad) item).isAutoAds());
             ((BaseMultipleCheckViewHolder) holder).itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

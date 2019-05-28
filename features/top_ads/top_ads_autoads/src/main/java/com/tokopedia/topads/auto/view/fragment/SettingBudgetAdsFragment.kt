@@ -8,9 +8,12 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Switch
+import android.widget.Toast
 
 import com.tokopedia.topads.auto.R
+import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
+import com.tokopedia.topads.auto.view.widget.SettingAutoAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsInfoSheet
 
 /**
@@ -40,16 +43,30 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
             SettingAutoAdsInfoSheet.newInstance(context!!).show()
         }
         saveBtn.setOnClickListener {
-            budgetViewModel.postAutoAdsStatus()
+            if (switchBudget.isChecked) {
+                activatedAds()
+            } else {
+                var settingConfirmationSheet =  SettingAutoAdsConfirmationSheet.newInstance(context!!)
+                settingConfirmationSheet.setActionListener(object: SettingAutoAdsConfirmationSheet.ActionListener{
+                    override fun nonActiveAutoAds() {
+                        deactivedAds()
+                    }
+
+                    override fun activeAutoAds() {
+                        activatedAds()
+                    }
+                })
+                settingConfirmationSheet.show()
+            }
             budgetViewModel.autoAdsData.observe(this, Observer {
-                Log.d("Post AutoAds Status", it!!.statusDesc)
+                Toast.makeText(context, "AutoAds Status" + it!!.statusDesc, Toast.LENGTH_SHORT).show()
+                activity!!.finish()
             })
-//            startActivity(Intent(context, ConfirmationDialogActivity::class.java))
         }
         switchBudget.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(isChecked){
+            if (isChecked) {
                 showBudgetContainer()
-            } else{
+            } else {
                 hideBudgetContainer()
             }
         }

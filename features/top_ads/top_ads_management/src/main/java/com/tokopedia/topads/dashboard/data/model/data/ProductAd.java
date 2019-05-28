@@ -14,6 +14,8 @@ public class ProductAd implements Ad, Parcelable, Visitable<TopAdsListAdapterTyp
 
     public static final int TYPE = 1;
 
+    @Expose(serialize = false, deserialize = false)
+    private boolean isAutoAds;
     @SerializedName("ad_id")
     @Expose
     private long id;
@@ -108,6 +110,15 @@ public class ProductAd implements Ad, Parcelable, Visitable<TopAdsListAdapterTyp
     @SerializedName("group_id")
     @Expose
     private long groupId;
+
+    @Override
+    public boolean isAutoAds() {
+        return isAutoAds;
+    }
+
+    public void setAutoAds(boolean autoAds) {
+        isAutoAds = autoAds;
+    }
 
     public void setStatus(int status) {
         this.status = status;
@@ -295,6 +306,7 @@ public class ProductAd implements Ad, Parcelable, Visitable<TopAdsListAdapterTyp
         dest.writeInt(this.productActive);
         dest.writeString(this.groupName);
         dest.writeLong(this.groupId);
+        dest.writeByte((byte) (isAutoAds ? 1 : 0));
     }
 
     protected ProductAd(Parcel in) {
@@ -328,6 +340,7 @@ public class ProductAd implements Ad, Parcelable, Visitable<TopAdsListAdapterTyp
         this.productActive = in.readInt();
         this.groupName = in.readString();
         this.groupId = in.readLong();
+        this.isAutoAds = in.readByte() != 0;
     }
 
     public static final Parcelable.Creator<ProductAd> CREATOR = new Parcelable.Creator<ProductAd>() {

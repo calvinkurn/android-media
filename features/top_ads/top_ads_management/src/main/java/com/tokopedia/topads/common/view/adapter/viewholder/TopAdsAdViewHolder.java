@@ -55,7 +55,7 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
 
         // programmatically styling for ProgressBar
         // http://stackoverflow.com/questions/16893209/how-to-customize-a-progress-bar-in-android
-        Drawable draw=view.getContext().getResources().getDrawable(R.drawable.top_ads_progressbar);
+        Drawable draw = view.getContext().getResources().getDrawable(R.drawable.top_ads_progressbar);
         progressBarPromo.setProgressDrawable(draw);
     }
 
@@ -76,17 +76,17 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
 
         long groupId = -1;
         String groupName = "";
-        if(ad instanceof ProductAd){
+        if (ad instanceof ProductAd) {
             groupId = ((ProductAd) ad).getGroupId();
             groupName = ((ProductAd) ad).getGroupName();
         }
         if (TextUtils.isEmpty(ad.getPriceDailyBar()) || groupId > 0) {
             progressBarLayout.setVisibility(View.GONE);
-            if(groupId > 0){
+            if (groupId > 0) {
                 groupNameView.setVisibility(View.VISIBLE);
                 groupNameView.setText(promoPriceUsed.getContext().getString(R.string.top_ads_group_name_format_text,
                         promoPriceUsed.getContext().getString(R.string.label_top_ads_groups), groupName));
-            }else{
+            } else {
                 groupNameView.setVisibility(View.GONE);
             }
         } else {
@@ -100,7 +100,7 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
         optionImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (optionMoreCallback != null){
+                if (optionMoreCallback != null) {
                     optionMoreCallback.onClickMore(ad);
                 }
             }
@@ -129,10 +129,15 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
         }
     }
 
+    @Override
+    public void showOptionButton(boolean enable) {
+        optionImageButton.setVisibility(enable ? View.VISIBLE : View.GONE);
+    }
+
     public void setBackground(boolean isChecked) {
         if (isChecked) {
-            if (itemView instanceof CardView){
-                ((CardView)itemView).setCardBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
+            if (itemView instanceof CardView) {
+                ((CardView) itemView).setCardBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
             } else {
                 itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
             }
@@ -152,7 +157,7 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkedCallback != null){
+                if (checkedCallback != null) {
                     checkedCallback.onItemChecked(item, checkBox.isChecked());
                 }
                 setChecked(checkBox.isChecked());

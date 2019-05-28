@@ -18,6 +18,8 @@ import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
 public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visitable<TopAdsListAdapterTypeFactory<GroupAd>> {
 
     public static final int TYPE = 19294123;
+    @Expose(serialize = false, deserialize = false)
+    private boolean isAutoAds;
     @SerializedName("group_id")
     @Expose
     private long id;
@@ -117,6 +119,15 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
 
     public GroupAd() {
 
+    }
+
+    @Override
+    public boolean isAutoAds() {
+        return isAutoAds;
+    }
+
+    public void setAutoAds(boolean autoAds) {
+        isAutoAds = autoAds;
     }
 
     public int getPositiveCount() {
@@ -342,6 +353,7 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
         dest.writeInt(this.negativeCount);
         dest.writeString(this.keywordTotal);
         dest.writeParcelable(this.datum, flags);
+        dest.writeByte((byte) (isAutoAds ? 1 : 0));
     }
 
     protected GroupAd(Parcel in) {
@@ -375,6 +387,7 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
         this.negativeCount = in.readInt();
         this.keywordTotal = in.readString();
         this.datum = in.readParcelable(GetSuggestionResponse.Datum.class.getClassLoader());
+        this.isAutoAds = in.readByte() != 0;
     }
 
     public static final Creator<GroupAd> CREATOR = new Creator<GroupAd>() {

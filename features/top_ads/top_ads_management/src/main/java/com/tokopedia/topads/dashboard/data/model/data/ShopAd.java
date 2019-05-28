@@ -15,6 +15,8 @@ public class ShopAd implements Ad, Parcelable {
 
     public static final int TYPE = 2;
 
+    @Expose(serialize = false, deserialize = false)
+    private boolean isAutoAds;
     @SerializedName("ad_id")
     @Expose
     private long id;
@@ -93,6 +95,15 @@ public class ShopAd implements Ad, Parcelable {
     @SerializedName("shop_uri")
     @Expose
     private String shopUri;
+
+    @Override
+    public boolean isAutoAds() {
+        return isAutoAds;
+    }
+
+    public void setAutoAds(boolean autoAds) {
+        isAutoAds = autoAds;
+    }
 
     @Override
     public String getPriceDailyFmt() {
@@ -248,6 +259,7 @@ public class ShopAd implements Ad, Parcelable {
         dest.writeString(this.name);
         dest.writeLong(this.shopId);
         dest.writeString(this.shopUri);
+        dest.writeByte((byte) (isAutoAds ? 1 : 0));
     }
 
     public ShopAd() {
@@ -279,6 +291,7 @@ public class ShopAd implements Ad, Parcelable {
         this.name = in.readString();
         this.shopId = in.readLong();
         this.shopUri = in.readString();
+        this.isAutoAds = in.readByte() != 0;
     }
 
     public static final Creator<ShopAd> CREATOR = new Creator<ShopAd>() {

@@ -50,4 +50,8 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="Button.Submit.Border.Green" parent="Button.Submit.White.Border.Green">
+        <item name="android:background">@drawable/bg_button_border_green</item>
+    </style>
+
 </resources>

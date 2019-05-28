@@ -9,18 +9,12 @@
             android:name=".view.activity.AutoAdsRouteActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Transparent">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.Transparent" />
         <activity
             android:name=".view.activity.StartAutoAdsActivity"
             android:label="@string/autoads_topads"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"></activity>
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.DailyBudgetActivity"
             android:label="@string/autoads_pengaturan_iklan"

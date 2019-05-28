@@ -34,6 +34,7 @@ import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -84,6 +85,9 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
 
     val groupSummaryLabelView: LabelView?
         get() = label_view_group_summary
+
+    val autoAdsWidgetView: AutoAdsWidgetView?
+        get() = autoads_widget
 
     private val pagerAdapter: TopAdsStatisticPagerAdapter? by lazy {
         val fragmentList = listOf(
@@ -349,6 +353,16 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(resources, R.raw.gql_get_deposit))
         topAdsDashboardPresenter.getShopInfo()
         topAdsDashboardPresenter.getTickerTopAds(resources)
+        autoAdsWidgetView?.fetchData()
+        autoAdsWidgetView?.setActiveListener(object : AutoAdsWidgetView.ActiveListener{
+            override fun onActive() {
+                onActiveAutoAds()
+            }
+
+            override fun onInActive() {
+                onDeactiveAutoAds()
+            }
+        })
     }
 
     protected fun loadStatisticsData() {
@@ -630,6 +644,18 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                 btnAction.setOnClickListener { gotoAutoTopup(); dismiss() }
             }.show()
         }
+    }
+
+    private fun onActiveAutoAds() {
+        label_view_group_summary.visibility = View.GONE
+        label_view_keyword.visibility = View.GONE
+        button_topads_add_promo.visibility = View.GONE
+    }
+
+    private fun onDeactiveAutoAds() {
+        label_view_group_summary.visibility = View.VISIBLE
+        label_view_keyword.visibility = View.VISIBLE
+        button_topads_add_promo.visibility = View.VISIBLE
     }
 
     private fun gotoAutoTopup() {

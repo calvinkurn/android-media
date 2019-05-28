@@ -59,16 +59,9 @@ class DailyBudgetViewModel @Inject constructor(
     }
 
 
-    fun postAutoAdsStatus(){
+    fun postAutoAdsStatus(param : AutoAdsParam){
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
-                val param = AutoAdsParam(AutoAdsParam.Input(
-                        "toggle_off",
-                        "topchat",
-                        100000,
-                        480874,
-                        "one-click-promo"
-                ))
                 val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_POST_AUTO_ADS],
                         TopAdsAutoAds.Response::class.java, getParams(param).parameters)
                 val cacheStrategy = GraphqlCacheStrategy

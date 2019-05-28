@@ -63,7 +63,7 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
                     TopAdsAddingOption.PRODUCT_OPT -> gotoCreateProductAd()
                     TopAdsAddingOption.KEYWORDS_OPT -> gotoCreateKeyword()
                 }
-                finishAffinity()
+                finish()
             }
         }
     }
@@ -82,8 +82,6 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
 
     private fun manualAds() {
         startActivity((application as TopAdsAutoRouter).getTopAdsDashboardIntent(this@AutoAdsRouteActivity))
-//        val intent = (application as TopAdsAutoRouter).getTopAdsAddingPromoOptionIntent(this@AutoAdsRouteActivity)
-//        startActivityForResult(intent, DailyBudgetFragment.REQUEST_CODE_AD_OPTION)
     }
 
 }

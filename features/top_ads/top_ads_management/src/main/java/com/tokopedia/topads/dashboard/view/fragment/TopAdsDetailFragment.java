@@ -171,6 +171,16 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
         updateMainView(ad);
     }
 
+    @Override
+    public void onAutoAdsActive() {
+        setHasOptionsMenu(false);
+    }
+
+    @Override
+    public void onAutoAdsInactive() {
+        setHasOptionsMenu(true);
+    }
+
     protected void setResultAdDetailChanged() {
         Intent intent = new Intent();
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);

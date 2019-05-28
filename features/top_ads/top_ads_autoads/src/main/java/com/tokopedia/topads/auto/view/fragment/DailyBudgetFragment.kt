@@ -25,6 +25,7 @@ import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
 import com.tokopedia.topads.auto.data.entity.BidInfoData
 import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData
 import com.tokopedia.topads.auto.data.entity.TopAdsShopInfoData
+import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
@@ -141,9 +142,29 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
                     TopAdsAddingOption.PRODUCT_OPT -> (activity as AutoAdsBaseActivity).gotoCreateProductAd()
                     TopAdsAddingOption.KEYWORDS_OPT -> (activity as AutoAdsBaseActivity).gotoCreateKeyword()
                 }
-                activity!!.finishAffinity()
+                activity!!.finish()
             }
         }
+    }
+
+    fun activatedAds(){
+        budgetViewModel.postAutoAdsStatus(AutoAdsParam(AutoAdsParam.Input(
+                "toggle_on",
+                "topchat",
+                priceEditText.textWithoutPrefix.replace(",", "").toInt(),
+                userSession.shopId.toInt(),
+                "one-click-promo"
+        )))
+    }
+
+    fun deactivedAds(){
+        budgetViewModel.postAutoAdsStatus(AutoAdsParam(AutoAdsParam.Input(
+                "toggle_off",
+                "topchat",
+                priceEditText.textWithoutPrefix.replace(",", "").toInt(),
+                userSession.shopId.toInt(),
+                "one-click-promo"
+        )))
     }
 
     companion object {

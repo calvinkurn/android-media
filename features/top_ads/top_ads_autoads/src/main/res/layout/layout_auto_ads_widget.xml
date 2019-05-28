@@ -45,12 +45,12 @@
 
                 <TextView
                     android:id="@+id/active_status"
-                    style="@style/AutoAdsText.Active"
+                    style="@style/AutoAdsText.Inactive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/title_otomatis"
-                    android:text="@string/ads_active" />
+                    android:text="@string/ads_deactive" />
 
                 <ImageView
                     android:id="@+id/btn_arrow"
@@ -58,25 +58,28 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/dp_8"
                     android:src="@drawable/ic_chevron_autoads" />
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/arrow"
+                android:id="@+id/subtitle"
                 style="@style/TextView.Micro.Black40"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:gravity="left"
                 android:lineSpacingExtra="6sp"
-                android:text="@string/akan_aktif_dalam_beberapa_menit" />
+                tools:text="@string/akan_aktif_dalam_beberapa_menit" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/container_progress_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:visibility="gone"
         android:padding="@dimen/dp_16">
 
         <TextView
@@ -91,7 +94,7 @@
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:progress="20" />
+            android:progress="0" />
 
         <TextView
             android:id="@+id/daily_budget_status"
@@ -100,4 +103,12 @@
             android:layout_height="wrap_content"
             tools:text="@string/anggaran_harian_status" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button_start_autoads"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/mulai_iklan_otomatis"
+        style="@style/Button.Submit.Border.Green"/>
+
 </LinearLayout>

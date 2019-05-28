@@ -18,7 +18,7 @@ class EmptyProductFragment : BaseDaggerFragment() {
         val view = inflater.inflate(R.layout.layout_new_ads_empty_product, container, false)
         view.findViewById<View>(R.id.add_product).setOnClickListener {
             (activity!!.application as TopAdsAutoRouter).goToAddProduct(activity!!)
-            activity!!.finishAffinity()
+            activity!!.finish()
         }
         return view
     }

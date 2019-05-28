@@ -36,13 +36,13 @@ class SettingAutoAdsConfirmationSheet {
 
         nonActiveAutoAdsButton!!.setOnClickListener { view ->
             if (context is DailyBudgetActivity && actionListener != null) {
-                actionListener!!.onAutoAdsClicked()
+                actionListener!!.nonActiveAutoAds()
             }
         }
 
         activeAdsButton!!.setOnClickListener { view ->
             if (context is DailyBudgetActivity && actionListener != null) {
-                actionListener!!.onManualAdsClicked()
+                actionListener!!.activeAutoAds()
             }
         }
 
@@ -58,9 +58,9 @@ class SettingAutoAdsConfirmationSheet {
     }
 
     interface ActionListener {
-        fun onManualAdsClicked()
+        fun activeAutoAds()
 
-        fun onAutoAdsClicked()
+        fun nonActiveAutoAds()
     }
 
     companion object {

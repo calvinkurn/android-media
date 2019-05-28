@@ -104,6 +104,20 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
     }
 
     @Override
+    public void onAutoAdsActive() {
+        super.onAutoAdsActive();
+        setStatusSwitch(false);
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onAutoAdsInactive() {
+        super.onAutoAdsInactive();
+        setStatusSwitch(true);
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
     public void onLoadAdError() {
         super.onLoadAdError();
         getActivity().invalidateOptionsMenu();

@@ -42,4 +42,5 @@ interface TopAdsDashboardView : CustomerView {
     fun onErrorGetAutoTopUpStatus(throwable: Throwable)
 
     fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus)
+
 }

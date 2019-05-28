@@ -16,6 +16,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
+import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory;
+import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.common.view.utils.TopAdsBottomSheetsSelectGroup;
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets;
@@ -39,6 +41,8 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlinx.coroutines.experimental.Dispatchers;
 
 /**
  * Created by hadi.putra on 04/05/18.
