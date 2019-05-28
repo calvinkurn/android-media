@@ -16,6 +16,7 @@ import com.tokopedia.iris.model.Configuration
 import kotlinx.coroutines.runBlocking
 import retrofit2.Response
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by meta on 24/05/19.
@@ -49,7 +50,7 @@ class IrisService : JobIntentService() {
 
     private fun startService(configuration: Configuration) {
         Log.d("Iris", "startService TimerTask")
-        mTimer.scheduleAtFixedRate(IrisTask(configuration), 0, configuration.intervals)
+        mTimer.scheduleAtFixedRate(IrisTask(configuration), 0, TimeUnit.MINUTES.toMillis(1))
     }
 
     private inner class IrisTask(val configuration: Configuration) : TimerTask() {
