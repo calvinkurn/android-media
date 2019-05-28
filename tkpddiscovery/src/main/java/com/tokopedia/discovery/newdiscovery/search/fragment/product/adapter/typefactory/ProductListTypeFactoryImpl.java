@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.BigGridProductItemViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptySearchViewHolder;
@@ -26,7 +26,7 @@ import com.tokopedia.topads.sdk.base.Config;
  * Created by henrypriyono on 10/11/17.
  */
 
-public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implements ProductListTypeFactory {
+public class ProductListTypeFactoryImpl extends BrowseSectionTypeFactoryImpl implements ProductListTypeFactory {
 
     private final ProductListener itemClickListener;
     private final Config topAdsConfig;

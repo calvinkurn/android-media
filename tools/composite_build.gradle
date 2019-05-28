@@ -1,0 +1,17 @@
+task enableLibrariesCompositeBuild{
+    group = 'Tools'
+    description = 'Enable Libraries composite build'
+    doLast {
+        new File("./libraries/composite_lib/.composite-enable").createNewFile()
+    }
+}
+
+task disableLibrariesCompositeBuild{
+    group = 'Tools'
+    description = 'Enable Libraries composite build'
+    doLast {
+        File file = new File("./libraries/composite_lib/.composite-enable")
+        if(file.exists())
+            file.delete()
+    }
+}

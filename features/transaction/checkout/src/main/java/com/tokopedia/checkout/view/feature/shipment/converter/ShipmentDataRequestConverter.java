@@ -116,7 +116,7 @@ public class ShipmentDataRequestConverter {
                             )
                             .checksum(courierItemData.getChecksum())
                             .ut(courierItemData.getUt())
-                            .analyticsDataShippingCourierPrice(courierItemData.getShipperFormattedPrice())
+                            .analyticsDataShippingCourierPrice(String.valueOf(courierItemData.getShipperPrice()))
                             .build())
                     .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0)
                     .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)

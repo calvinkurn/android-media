@@ -31,6 +31,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
+import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.common.TopChatRouter
@@ -440,6 +441,40 @@ class TopChatRoomPresenter @Inject constructor(
                 onSuccess(addToCartResult)
             }
         }
+    }
+
+    override fun sendMessage(
+            messageId: String,
+            sendMessage: String,
+            startTime: String,
+            opponentId: String,
+            onSendingMessage: () -> Unit,
+            productPreview: ProductPreview?
+    ) {
+        if (doesNotHaveMessageToSend(productPreview, sendMessage)) {
+            showErrorSnackbar(com.tokopedia.chat_common.R.string.error_empty_product)
+            return
+        }
+
+        if (hasProductPreview(productPreview)) {
+            sendProductAttachment(
+                    messageId, productPreview!!.generateResultProduct(),
+                    SendableViewModel.generateStartTime(), opponentId
+            )
+            view.clearProductPreview()
+        }
+
+        if (isValidReply(sendMessage)) {
+            sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage)
+        }
+    }
+
+    private fun doesNotHaveMessageToSend(productPreview: ProductPreview?, sendMessage: String): Boolean {
+        return productPreview == null && !isValidReply(sendMessage)
+    }
+
+    private fun hasProductPreview(productPreview: ProductPreview?): Boolean {
+        return productPreview != null
     }
 
     override fun sendProductAttachment(messageId: String, item: ResultProduct,

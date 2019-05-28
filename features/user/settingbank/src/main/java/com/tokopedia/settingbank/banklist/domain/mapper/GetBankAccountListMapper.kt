@@ -8,11 +8,12 @@ import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewMode
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountViewModel
 import retrofit2.Response
 import rx.functions.Func1
+import javax.inject.Inject
 
 /**
  * @author by nisie on 6/8/18.
  */
-class GetBankAccountListMapper : Func1<Response<DataResponse<BankAccountListPojo>>,
+class GetBankAccountListMapper @Inject constructor(): Func1<Response<DataResponse<BankAccountListPojo>>,
         BankAccountListViewModel> {
 
 

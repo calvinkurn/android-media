@@ -31,10 +31,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ScrollView
-
 import com.tokopedia.coachmark.util.ViewHelper
-
-import java.util.ArrayList
+import java.util.*
 
 
 class CoachMark : DialogFragment() {
@@ -144,8 +142,9 @@ class CoachMark : DialogFragment() {
         return CoachMarkPreference.hasShown(activity, tag)
     }
 
-    private fun show(activity: Activity?, tag: String?, tutorList: ArrayList<CoachMarkItem>?, indexToShow: Int = 0) {
-        var indexToShow = indexToShow
+    @JvmOverloads
+    fun show(activity: Activity?, tag: String?, tutorList: ArrayList<CoachMarkItem>?, index: Int = 0) {
+        var indexToShow = index
         if (activity == null || activity.isFinishing) {
             return
         }
@@ -248,9 +247,9 @@ class CoachMark : DialogFragment() {
         layout.hideTutorial()
     }
 
-    private fun layoutShowTutorial(view: View?, title: String, text: String,
+    private fun layoutShowTutorial(view: View?, title: String?, text: String,
                                    coachMarkContentPosition: CoachMarkContentPosition,
-                                   tintBackgroundColor: Int, customTarget: IntArray, radius: Int) {
+                                   tintBackgroundColor: Int, customTarget: IntArray?, radius: Int) {
 
         try {
             val layout = this@CoachMark.view as CoachMarkLayout

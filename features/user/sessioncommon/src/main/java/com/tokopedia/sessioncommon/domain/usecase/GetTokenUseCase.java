@@ -34,12 +34,15 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
 
     public static final String USER_NAME = "username";
     public static final String PASSWORD = "password";
+    public static final String PASSWORD_TYPE = "password_type";
     public static final String CODE = "code";
     public static final String REDIRECT_URI = "redirect_uri";
 
     public static final String GRANT_PASSWORD = "password";
     public static final String GRANT_SDK = "extension";
     public static final String GRANT_WEBVIEW = "authorization_code";
+
+    public static final String PASSWORD_TYPE_LPN = "lpn";
 
     private final TokenApi api;
     private final TokenMapper tokenMapper;
@@ -83,6 +86,18 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
         params.putString(GRANT_TYPE, GRANT_PASSWORD);
         params.putString(PASSWORD, password);
         params.putString(USER_NAME, email);
+        return params;
+    }
+
+    public static RequestParams getParamLoginRegisterPhoneNumber(String accessToken,
+                                                                 String email,
+                                                                 String phoneNumber) {
+        RequestParams params = RequestParams.create();
+        params.putString(GRANT_TYPE, GRANT_PASSWORD);
+        params.putString(USER_NAME, email);
+        params.putString(PASSWORD, accessToken);
+        params.putString(PASSWORD_TYPE, PASSWORD_TYPE_LPN);
+        params.putString(CODE, phoneNumber);
         return params;
     }
 

@@ -1047,7 +1047,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderChangeAddressSuccess(RecipientAddressModel selectedAddress) {
         if (shipmentAdapter.hasAppliedPromoStackCode()) {
             setCornerId(selectedAddress.getCornerId());
-            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment(), isTradeIn(), true, selectedAddress.getCornerId(), getDeviceId());
         }
         if (!TextUtils.isEmpty(selectedAddress.getCornerId()) && shipmentPresenter.getCodData() != null) {
             shipmentAdapter.removeNotifierData();
@@ -1058,6 +1057,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.updateSelectedAddress(selectedAddress);
         courierBottomsheet = null;
         onCartDataDisableToCheckout(null);
+        shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, selectedAddress.getCornerId(), getDeviceId());
     }
 
     @Override
