@@ -374,9 +374,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onCornerAddressClicked(CornerAddressModel cornerAddressModel, int position) {
         mShipmentAddressListAdapter.updateSelected(position);
-        if (mCartAddressChoiceActivityListener != null && getActivity() != null && mCurrentAddress != null) {
+        if (mCartAddressChoiceActivityListener != null && getActivity() != null) {
             mCornerAnalytics.sendChooseCornerAddress();
-            RecipientAddressModel result = AddressCornerMapper.converToCartModel(cornerAddressModel, mCurrentAddress.getId());
+            RecipientAddressModel result = cornerAddressModel.getCornerModel();
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(result);
         } else {
             // Show error due to unexpected behaviour
