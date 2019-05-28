@@ -270,10 +270,10 @@ public class TopChatAnalytics {
                                 "name", product.getProductName(),
                                 "id", product.getProductId(),
                                 "price", product.getPriceInt(),
-                                "brand", "",
+                                "brand", "none",
                                 "category", product.getCategory(),
                                 "variant", product.getVariant(),
-                                "list", "",
+                                "list", getField(String.valueOf(product.getBlastId())),
                                 "position", 0
                         )
                 )
