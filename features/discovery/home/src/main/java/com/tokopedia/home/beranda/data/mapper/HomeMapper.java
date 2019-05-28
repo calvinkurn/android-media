@@ -6,25 +6,10 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
-import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
-import com.tokopedia.home.beranda.domain.model.HomeData;
-import com.tokopedia.home.beranda.domain.model.Spotlight;
-import com.tokopedia.home.beranda.domain.model.SpotlightItem;
-import com.tokopedia.home.beranda.domain.model.Ticker;
+import com.tokopedia.home.beranda.domain.model.*;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUnitViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeIconItem;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightItemViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.UseCaseIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.*;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -58,6 +43,10 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
             List<TrackedVisitable> list = new ArrayList<>();
 
             HomeData homeData = response.body().getData();
+
+            if(homeData.getSearchPlaceholder() != null){
+                list.add(mappingSearchPlaceholder(homeData.getSearchPlaceholder()));
+            }
 
             if (homeData.getSlides() != null
                     && homeData.getSlides().getSlides() != null
@@ -243,6 +232,12 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     private TrackedVisitable mappingTicker(ArrayList<Ticker.Tickers> tickers) {
         TickerViewModel viewModel = new TickerViewModel();
         viewModel.setTickers(tickers);
+        return viewModel;
+    }
+
+    private TrackedVisitable mappingSearchPlaceholder(SearchPlaceholder placeholder){
+        SearchPlaceholderViewModel viewModel = new SearchPlaceholderViewModel();
+        viewModel.setSearchPlaceholder(placeholder);
         return viewModel;
     }
 

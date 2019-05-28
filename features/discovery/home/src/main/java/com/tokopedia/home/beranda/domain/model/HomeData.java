@@ -29,6 +29,10 @@ public class HomeData {
     @SerializedName("spotlight")
     private Spotlight spotlight = new Spotlight();
 
+    @Expose
+    @SerializedName("search_placeholder")
+    private SearchPlaceholder searchPlaceholder;
+
     private boolean isCache;
 
     public DynamicHomeChannel getDynamicHomeChannel() {
@@ -70,6 +74,8 @@ public class HomeData {
     public void setSpotlight(Spotlight spotlight) {
         this.spotlight = spotlight;
     }
+
+    public SearchPlaceholder getSearchPlaceholder() { return searchPlaceholder; }
 
     public boolean isCache() {
         return isCache;

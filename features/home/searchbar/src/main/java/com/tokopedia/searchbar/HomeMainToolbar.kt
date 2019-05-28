@@ -177,7 +177,11 @@ class HomeMainToolbar : MainToolbar {
         editTextSearch.hint = hint
         editTextSearch.setOnClickListener {
             searchBarAnalytics.eventTrackingSearchBar()
-            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+            if(hint.isNotEmpty()){
+                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE, "hint=$hint")
+            }else{
+                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+            }
         }
     }
 
