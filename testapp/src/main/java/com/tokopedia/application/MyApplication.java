@@ -78,7 +78,7 @@ public class MyApplication extends BaseMainApplication
 
         LogWrapper.init(this);
         if (BuildConfig.DEBUG) {
-            Timber.plant(new CrashReportingTree());
+            Timber.plant(new Timber.DebugTree());
         } else {
             Timber.plant(new CrashReportingTree());
         }
@@ -92,12 +92,9 @@ public class MyApplication extends BaseMainApplication
             }
             // will be fixed in Timber next major release
             // https://github.com/JakeWharton/timber/issues/142
-            if (t!= null) {
-                LogWrapper.log(priority, "", t);
-            } else {
-                LogWrapper.log(priority, message);
-            }
+            LogWrapper.log(priority, message);
         }
+
     }
 
     public static class GTMAnalytics extends DummyAnalytics {
