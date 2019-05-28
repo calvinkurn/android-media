@@ -552,8 +552,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        KeyboardHandler.DropKeyboard(this, findViewById(android.R.id.content));
-
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
             ArrayList<String> imagePathList = data.getStringArrayListExtra(ImageSearchImagePickerActivity.PICKER_RESULT_PATHS);
             if (imagePathList == null || imagePathList.size() <= 0) {

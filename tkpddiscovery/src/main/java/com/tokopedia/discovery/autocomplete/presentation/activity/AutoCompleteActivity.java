@@ -90,7 +90,6 @@ public class AutoCompleteActivity extends DiscoveryActivity
     @Inject
     SearchTracking searchTracking;
     private SearchComponent searchComponent;
-    private boolean isHandlingIntent = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,8 +119,6 @@ public class AutoCompleteActivity extends DiscoveryActivity
     }
 
     private void handleIntent(Intent intent) {
-        isHandlingIntent = true;
-
         initPresenter();
 
         boolean isAutoComplete = intent.getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false);
@@ -157,7 +154,6 @@ public class AutoCompleteActivity extends DiscoveryActivity
     }
 
     private void handleIntentAutoComplete(SearchParameter searchParameter) {
-        isHandlingIntent = false;
         searchView.showSearch(true, false, searchParameter);
 
         animateEnterActivityTransition();
@@ -271,20 +267,6 @@ public class AutoCompleteActivity extends DiscoveryActivity
     protected void onResume() {
         super.onResume();
         unregisterShake();
-
-        if (!isHandlingIntent) {
-            showAutoCompleteOnResume();
-        }
-    }
-
-    private void showAutoCompleteOnResume() {
-        if (searchView.isSearchOpen()) {
-            searchView.searchTextViewRequestFocus();
-            searchView.searchTextViewSetCursorSelectionAtTextEnd();
-            forceShowKeyBoard();
-        } else {
-            searchView.showSearch(true, false);
-        }
     }
 
     private void forceShowKeyBoard() {
