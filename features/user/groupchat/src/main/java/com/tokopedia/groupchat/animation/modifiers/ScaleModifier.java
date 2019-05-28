@@ -1,5 +1,6 @@
 package com.tokopedia.groupchat.animation.modifiers;
 
+import android.util.Log;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
@@ -39,9 +40,12 @@ public class ScaleModifier implements ParticleModifier {
 		}
 		else {
 			float interpolaterdValue = mInterpolator.getInterpolation((miliseconds- mStartTime)*1f/mDuration);
+            Log.d("StevenScale int: ", interpolaterdValue +" "+ miliseconds);
 			float newScale = mInitialValue + mValueIncrement*interpolaterdValue;
 			particle.mScale = newScale;
 		}
+
+        Log.d("StevenScale: ", particle.mScale +" "+ miliseconds);
 	}
 
 }

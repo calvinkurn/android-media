@@ -6,7 +6,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
-import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton;
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -546,7 +546,7 @@ public class GroupChatAnalytics {
 
     //#34
     public void eventViewProminentButton(ChannelInfoViewModel channelInfoViewModel,
-                                         DynamicButtonsViewModel.Button prominentButton) {
+                                         DynamicButton prominentButton) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_VIEW_GROUP_CHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
@@ -557,7 +557,7 @@ public class GroupChatAnalytics {
 
     //#35
     public void eventClickProminentButton(ChannelInfoViewModel channelInfoViewModel,
-                                          DynamicButtonsViewModel.Button prominentButton) {
+                                          DynamicButton prominentButton) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
@@ -568,12 +568,12 @@ public class GroupChatAnalytics {
 
     //#36
     public void eventViewDynamicButtons(ChannelInfoViewModel viewModel,
-                                        @NotNull ArrayList<DynamicButtonsViewModel.Button> listDynamicButton) {
+                                        @NotNull ArrayList<DynamicButton> listDynamicButton) {
 
         StringBuilder buttonNames= new StringBuilder();
 
         ArrayList<EEPromotion> list = new ArrayList<>();
-        for(DynamicButtonsViewModel.Button button : listDynamicButton) {
+        for(DynamicButton button : listDynamicButton) {
             list.add(new EEPromotion(button.getButtonId(),
                     EEPromotion.NAME_GROUPCHAT + "-dynamicbuttons",
                     GroupChatAnalytics.DEFAULT_EE_POSITION,
@@ -599,7 +599,7 @@ public class GroupChatAnalytics {
 
     //#36
     public void eventClickDynamicButtons(ChannelInfoViewModel viewModel,
-                                         DynamicButtonsViewModel.Button button) {
+                                         DynamicButton button) {
 
         ArrayList<EEPromotion> list = new ArrayList<>();
             list.add(new EEPromotion(button.getButtonId(),

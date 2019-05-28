@@ -20,81 +20,81 @@ import java.util.concurrent.TimeUnit
 /**
  * @author by StevenFredian on 05/06/18.
  */
-
-class DynamicButtonAdapter(
-        private val activity: Activity,
-        private val listener: PlayContract.View
-) : RecyclerView.Adapter<DynamicButtonAdapter.ViewHolder>() {
-
-    private val list: ArrayList<DynamicButtonsViewModel.Button> = arrayListOf()
-
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var icon: ImageView = view.findViewById(R.id.icon)
-        var notification: View = view.findViewById(R.id.notification)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.dynamic_icon_item, parent, false))
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var element = list[position]
-        ImageHandler.loadImage(activity, holder.icon, element.imageUrl, R.drawable.ic_play_dynamic_icon)
-        holder.icon.setOnClickListener {
-            listener.onDynamicIconClicked(element)
-            element.hasNotification = false
-            notifyItemChanged(position)
-        }
-
-        if (element.hasNotification) {
-            holder.notification.visibility = View.VISIBLE
-        } else {
-            holder.notification.visibility = View.INVISIBLE
-        }
-
-        if (element.tooltip.isNotBlank()) {
-            if(element.tooltipDuration == 0) {
-                element.tooltipDuration = Companion.TOOLTIP_DURATION_DEFAULT
-            }
-
-            var timeToShow = element.tooltipDuration
-            var intervalToHideMs = ((element.tooltipDuration - 1)*1000).toLong()
-            var index = if(element.priority > 0) element.priority-1 else position
-
-            Observable.timer((timeToShow*index).toLong(), TimeUnit.SECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        ViewTooltip.on(activity, holder.icon)
-                                .autoHide(true, intervalToHideMs)
-                                .corner(30)
-                                .clickToHide(false)
-                                .color(MethodChecker.getColor(activity, R.color.white))
-                                .textColor(MethodChecker.getColor(activity, R.color.black_70))
-                                .position(ViewTooltip.Position.TOP)
-                                .text(element.tooltip)
-                                .textSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-                                .show()
-                    }
-        }
-    }
-
-    override fun getItemCount(): Int {
-        return list.size
-    }
-
-    fun getList(): List<DynamicButtonsViewModel.Button> {
-        return list
-    }
-
-    fun setList(list: ArrayList<DynamicButtonsViewModel.Button>) {
-        list.let {
-            this.list.clear()
-            this.list.addAll(it)
-            notifyDataSetChanged()
-        }
-    }
-
-    companion object {
-        private const val TOOLTIP_DURATION_DEFAULT = 3
-    }
-}
+//
+//class DynamicButtonAdapter(
+//        private val activity: Activity,
+//        private val listener: PlayContract.View
+//) : RecyclerView.Adapter<DynamicButtonAdapter.ViewHolder>() {
+//
+//    private val list: ArrayList<DynamicButtonsViewModel.BaseDynamicButton> = arrayListOf()
+//
+//    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+//        var icon: ImageView = view.findViewById(R.id.icon)
+//        var notification: View = view.findViewById(R.id.notification)
+//    }
+//
+//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+//        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.dynamic_icon_item, parent, false))
+//    }
+//
+//    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+//        var element = list[position]
+//        ImageHandler.loadImage(activity, holder.icon, element.imageUrl, R.drawable.ic_play_dynamic_icon)
+//        holder.icon.setOnClickListener {
+//            listener.onDynamicIconClicked(element)
+//            element.hasNotification = false
+//            notifyItemChanged(position)
+//        }
+//
+//        if (element.hasNotification) {
+//            holder.notification.visibility = View.VISIBLE
+//        } else {
+//            holder.notification.visibility = View.INVISIBLE
+//        }
+//
+//        if (element.tooltip.isNotBlank()) {
+//            if(element.tooltipDuration == 0) {
+//                element.tooltipDuration = Companion.TOOLTIP_DURATION_DEFAULT
+//            }
+//
+//            var timeToShow = element.tooltipDuration
+//            var intervalToHideMs = ((element.tooltipDuration - 1)*1000).toLong()
+//            var index = if(element.priority > 0) element.priority-1 else position
+//
+//            Observable.timer((timeToShow*index).toLong(), TimeUnit.SECONDS)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe {
+//                        ViewTooltip.on(activity, holder.icon)
+//                                .autoHide(true, intervalToHideMs)
+//                                .corner(30)
+//                                .clickToHide(false)
+//                                .color(MethodChecker.getColor(activity, R.color.white))
+//                                .textColor(MethodChecker.getColor(activity, R.color.black_70))
+//                                .position(ViewTooltip.Position.TOP)
+//                                .text(element.tooltip)
+//                                .textSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+//                                .show()
+//                    }
+//        }
+//    }
+//
+//    override fun getItemCount(): Int {
+//        return list.size
+//    }
+//
+//    fun getList(): List<DynamicButtonsViewModel.BaseDynamicButton> {
+//        return list
+//    }
+//
+//    fun setList(list: ArrayList<DynamicButtonsViewModel.BaseDynamicButton>) {
+//        list.let {
+//            this.list.clear()
+//            this.list.addAll(it)
+//            notifyDataSetChanged()
+//        }
+//    }
+//
+//    companion object {
+//        private const val TOOLTIP_DURATION_DEFAULT = 3
+//    }
+//}
