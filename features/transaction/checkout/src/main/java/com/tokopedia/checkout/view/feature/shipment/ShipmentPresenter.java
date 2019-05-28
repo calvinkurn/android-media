@@ -1205,6 +1205,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .isDropship((shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper() != null &&
                         shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) ? 1 : 0)
                 .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
+                .warehouseId(shipmentCartItemModel.getFulfillmentId())
                 .dropshipData(dropshipDataBuilder)
                 .shippingInfoData(shippingInfoDataBuilder)
                 .productDataList(shipmentStateProductDataList);
