@@ -14,6 +14,7 @@ import android.content.pm.ShortcutManager;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity;
+import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
