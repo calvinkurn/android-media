@@ -25,10 +25,6 @@ class IrisService : JobIntentService() {
     private val mTimer = Timer()
     private lateinit var mContext: Context
 
-    override fun onBind(arg0: Intent): IBinder? {
-        return null
-    }
-
     override fun onCreate() {
         super.onCreate()
         mContext = this
