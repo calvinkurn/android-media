@@ -46,7 +46,7 @@ constructor(private val context: Context,
                        pageName: String,
                        productIds: ArrayList<String>): RequestParams {
         val params = RequestParams.create()
-        params.putInt(USER_ID, userSession.userId.toInt())
+        params.putString(USER_ID, userSession.userId)
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putObject(PARAM_PRODUCT_IDS, productIds)
 
