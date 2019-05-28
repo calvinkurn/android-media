@@ -13,6 +13,8 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -45,6 +47,7 @@ import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
+import com.tokopedia.topads.auto.internal.AutoAdsLinkConstant;
 import com.tokopedia.topads.auto.view.activity.StartAutoAdsActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.tracking.view.SimpleWebViewActivity;
@@ -374,8 +377,14 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                     UnifyTracking.eventDrawerTopads(context);
-                    intent = new Intent(context, TopAdsDashboardActivity.class);
-                    context.startActivity(intent);
+//                    intent = new Intent(context, TopAdsDashboardActivity.class);
+//                    context.startActivity(intent);
+
+                    if (context.getApplication() instanceof ApplinkRouter) {
+                        ApplinkRouter applinkRouter = ((ApplinkRouter) context.getApplication());
+                        applinkRouter.goToApplinkActivity(context, AutoAdsLinkConstant.AUTOADS_ROUTE_LINK);
+                    }
+
                     break;
                 case TkpdState.DrawerPosition.SELLER_FLASH_SALE:
                     if (context.getApplication() instanceof FlashSaleRouter) {
