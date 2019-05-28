@@ -1613,9 +1613,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, Object shipmentData,
-                                              int errorPosition, int requestCode) {
-        if (shipmentData == null && result) {
+    public void onCheckoutValidationResult(boolean result, Object shipmentData,
+                                           int errorPosition, int requestCode,
+                                           String defaultErrorMessage) {
+        if (!TextUtils.isEmpty(defaultErrorMessage)) {
+            showToastError(defaultErrorMessage);
+            rvShipment.smoothScrollToPosition(errorPosition);
+        } else if (shipmentData == null && result) {
             CheckPromoParam checkPromoParam = new CheckPromoParam();
             checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
             switch (requestCode) {

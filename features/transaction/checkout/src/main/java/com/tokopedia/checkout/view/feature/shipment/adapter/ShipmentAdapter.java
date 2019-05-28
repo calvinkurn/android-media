@@ -35,7 +35,6 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentInsuranceT
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.merchantvoucher.common.widget.LogisticVoucherView;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
@@ -46,7 +45,6 @@ import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckou
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.LogisticPromoViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
@@ -54,7 +52,6 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierView
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
@@ -547,7 +544,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (hasSelectAllCourier) {
             boolean availableCheckout = true;
             int errorPosition = DEFAULT_ERROR_POSITION;
-            Object selectedShipmentData = null;
+            Object errorSelectedShipmentData = null;
             for (int i = 0; i < shipmentDataList.size(); i++) {
                 Object shipmentData = shipmentDataList.get(i);
                 if (shipmentData instanceof ShipmentCartItemModel) {
@@ -560,13 +557,18 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 !((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().isDropshipperPhoneValid()) {
                             availableCheckout = false;
                             errorPosition = i;
-                            selectedShipmentData = shipmentData;
+                            errorSelectedShipmentData = shipmentData;
                         }
                     }
                 }
             }
 
-            shipmentAdapterActionListener.onDropshipperValidationResult(availableCheckout, selectedShipmentData, errorPosition, requestCode);
+            boolean isPromoValid = validatePromoState();
+            if (!isPromoValid) {
+                shipmentAdapterActionListener.onCheckoutValidationResult(false, errorSelectedShipmentData, 0, requestCode, promoGlobalStackData.getDescription());
+            } else {
+                shipmentAdapterActionListener.onCheckoutValidationResult(availableCheckout, errorSelectedShipmentData, errorPosition, requestCode, null);
+            }
         } else {
             int errorPosition = 0;
             if (shipmentCartItemModelList != null && shipmentDataList != null) {
@@ -578,8 +580,16 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
             }
-            shipmentAdapterActionListener.onDropshipperValidationResult(false, null, errorPosition, requestCode);
+            shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition, requestCode, null);
         }
+    }
+
+    private boolean validatePromoState() {
+        if (promoGlobalStackData != null) {
+            return !promoGlobalStackData.getState().equals(TickerPromoStackingCheckoutView.State.FAILED);
+        }
+
+        return true;
     }
 
     public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData newCourierItemData) {
