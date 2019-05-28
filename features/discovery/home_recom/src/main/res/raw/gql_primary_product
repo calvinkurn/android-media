@@ -1,0 +1,52 @@
+query productRecommendation($userID: String!, $productId: String!, $xDevice: String!, $xSource: String!) {
+    productRecommendationProductDetail(userID: $userID, productID: $productId, xDevice: "android", xSource: "os") {
+        data {
+          tID
+          source
+          title
+          foreignTitle
+          widgetUrl
+          recommendation {
+            id
+            name
+            categoryBreadcrumbs
+            url
+            appUrl
+            clickUrl
+            wishlistUrl
+            trackerImageUrl
+            imageUrl
+            price
+            priceInt
+            slashedPrice
+            slashedPriceInt
+            shop {
+              id
+              name
+              shopImage
+            }
+            departmentId
+            labels {
+              title
+              color
+            }
+            badges {
+              title
+              imageUrl
+            }
+            wholesalePrice {
+              price
+              quantityMax
+              quantityMin
+              priceString
+            }
+            rating
+            countReview
+            recommendationType
+            stock
+            isTopads
+            IsWishlist
+          }
+        }
+      }
+}

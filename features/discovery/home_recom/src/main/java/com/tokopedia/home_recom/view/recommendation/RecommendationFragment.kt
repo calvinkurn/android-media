@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.home_recom.PrimaryProductParams
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.dataModel.*
@@ -65,8 +66,11 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
             }
         })
 
+        recommendationWidgetViewModel.getPrimaryProduct(productId, activity!!)
+
         recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
                 onErrorGetRecommendation = this::onErrorGetRecommendation)
+
     }
 
     private fun onErrorGetRecommendation(errorMessage: String?) {
