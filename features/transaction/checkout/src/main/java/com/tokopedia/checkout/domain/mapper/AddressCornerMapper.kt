@@ -21,6 +21,7 @@ class AddressCornerMapper @Inject constructor() : Func1<NewAddressCornerResponse
         return AddressListModel().apply {
             this.token = token
             this.listAddress = it.keroAddressCorner.data.map(recipientModelMapper)
+            this.hasNext = it.keroAddressCorner.hasNext
         }
     }
 

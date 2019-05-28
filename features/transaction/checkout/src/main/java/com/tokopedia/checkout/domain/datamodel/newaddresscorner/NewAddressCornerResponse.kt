@@ -17,7 +17,9 @@ data class KeroAddressCorner(
     @SerializedName("status")
     var status: String = "",
     @SerializedName("token")
-    var token: Token = Token()
+    var token: Token = Token(),
+    @SerializedName("has_next")
+    var hasNext: Boolean = false
 )
 
 data class Token(
