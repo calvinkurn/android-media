@@ -833,8 +833,7 @@ public class MainParentActivity extends BaseActivity implements
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intentHome.setAction(Intent.ACTION_VIEW);
 
-//                    Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchAutoCompletePage(this);
-                    Intent productIntent = RouteManager.getIntent(getContext(), ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
+                    Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchAutoCompletePage(this);
                     productIntent.setAction(Intent.ACTION_VIEW);
                     productIntent.putExtras(args);
 
