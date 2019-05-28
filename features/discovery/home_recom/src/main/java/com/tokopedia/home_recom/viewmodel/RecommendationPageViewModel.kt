@@ -43,14 +43,14 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
                         GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
                 var params = mapOf(
-                        PARAM_PRODUCT_ID to productId,
+                        PARAM_PRODUCT_ID to productId.toInt(),
                         PARAM_X_DEVICE to xDevice,
                         PARAM_X_SOURCE to xSource
                 )
                 if (userSessionInterface.isLoggedIn) {
                     params = mapOf(
-                            PARAM_USER_ID to userSessionInterface.userId,
-                            PARAM_PRODUCT_ID to productId,
+                            PARAM_USER_ID to userSessionInterface.userId.toInt(),
+                            PARAM_PRODUCT_ID to productId.toInt(),
                             PARAM_X_DEVICE to xDevice,
                             PARAM_X_SOURCE to xSource
                     )

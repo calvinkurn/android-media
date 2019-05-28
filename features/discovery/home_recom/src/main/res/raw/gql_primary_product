@@ -1,4 +1,4 @@
-query primaryProduct($userID: String!, $productId: String!, $xDevice: String!, $xSource: String!) {
+query primaryProduct($userID: Int!, $productId: Int!, $xDevice: String!, $xSource: String!) {
     productRecommendationProductDetail(userID: $userID, productID: $productId, xDevice: $xDevice, xSource: $xSource) {
         data {
           tID
