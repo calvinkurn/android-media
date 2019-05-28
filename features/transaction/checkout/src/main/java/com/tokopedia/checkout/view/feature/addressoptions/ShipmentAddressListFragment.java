@@ -156,11 +156,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-        mCartAddressChoiceActivityListener = (ICartAddressChoiceActivityListener) activity;
-    }
-
-    @Override
     protected void setupArguments(Bundle arguments) {
 
     }
@@ -168,6 +163,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_shipment_address_list;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCartAddressChoiceActivityListener = (ICartAddressChoiceActivityListener) activity;
     }
 
     @Override
@@ -253,12 +254,14 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void showList(List<RecipientAddressModel> recipientAddressModels) {
         maxItemPosition = 0;
-        mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
+        String selectedId = mCurrentAddress.getId();
+        mShipmentAddressListAdapter.setAddressList(recipientAddressModels, selectedId);
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showCorner(RecipientAddressModel cornerAddressModel) {
+        mCurrentAddress = cornerAddressModel;
         mShipmentAddressListAdapter.setCorner(cornerAddressModel);
     }
 
@@ -288,7 +291,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void showListEmpty() {
-        mShipmentAddressListAdapter.setAddressList(new ArrayList<>());
+        mShipmentAddressListAdapter.setAddressList(new ArrayList<>(), null);
         mRvRecipientAddressList.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.GONE);
         llNoResult.setVisibility(View.VISIBLE);
@@ -400,7 +403,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE:
-                    RecipientAddressModel newRecipientAddressModel;
+                    RecipientAddressModel newRecipientAddressModel = null;
                     if (data != null && data.hasExtra(LogisticCommonConstant.EXTRA_ADDRESS)) {
                         Destination newAddress = data.getParcelableExtra(LogisticCommonConstant.EXTRA_ADDRESS);
                         newRecipientAddressModel = new RecipientAddressModel();
@@ -413,6 +416,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         newRecipientAddressModel.setStreet(newAddress.getAddressStreet());
                         newRecipientAddressModel.setPostalCode(newAddress.getPostalCode());
                     }
+                    mCurrentAddress = newRecipientAddressModel;
                     onSearchReset();
                     break;
                 case LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT:
@@ -495,6 +499,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public interface ICartAddressChoiceActivityListener {
         void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult);
         void requestCornerList();
+    }
+
+    @Override
+    protected void initialListener(Activity activity) {
+
     }
 
     @Override

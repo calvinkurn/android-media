@@ -61,7 +61,15 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
         else return RecipientAddressViewHolder.TYPE;
     }
 
-    public void setAddressList(List<RecipientAddressModel> addressModelList) {
+    public void setAddressList(List<RecipientAddressModel> addressModelList, String selectedId) {
+        for (RecipientAddressModel addressModel : addressModelList) {
+            if (addressModel.getId().equals(selectedId)) {
+                addressModel.setSelected(true);
+            } else addressModel.setSelected(false);
+        }
+        if (mCornerData != null) {
+            mCornerData.setSelected(mCornerData.getCornerModel().getId().equals(selectedId));
+        }
         mAddressModelList.clear();
         mAddressModelList.addAll(addressModelList);
         updateHeaderAndFooterPosition();
