@@ -22,6 +22,7 @@ public class ErrorKycConfirmation extends BaseDaggerFragment
     private ActivityListener activityListener;
     public static String TAG = "error_kyc_confirm";
     private Button tryAgain;
+    private Button cancelBtn;
     private TextView errorDesc;
 
     @Override
@@ -76,14 +77,18 @@ public class ErrorKycConfirmation extends BaseDaggerFragment
         View view = inflater.inflate(R.layout.error_kyc, container, false);
         tryAgain = view.findViewById(R.id.try_again);
         tryAgain.setOnClickListener(this::onClick);
+        cancelBtn = view.findViewById(R.id.cancel_btn);
+        cancelBtn.setOnClickListener(this::onClick);
         errorDesc = view.findViewById(R.id.error_desc);
         return view;
     }
 
     private void setErrorDesc(){
-        String msg = getArguments().getString(Constants.Keys.MESSAGE, "");
-        if(!TextUtils.isEmpty(msg)){
-            errorDesc.setText(msg);
+        if(getArguments() != null) {
+            String msg = getArguments().getString(Constants.Keys.MESSAGE, "");
+            if (!TextUtils.isEmpty(msg)) {
+                errorDesc.setText(msg);
+            }
         }
     }
 }
