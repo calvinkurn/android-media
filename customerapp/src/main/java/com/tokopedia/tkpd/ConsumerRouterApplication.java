@@ -838,15 +838,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToWallet(Context context, String url) {
-        Bundle bundle = new Bundle();
-        bundle.putString(WalletActivity.EXTRA_URL, url);
-        Intent intent = new Intent(context, WalletActivity.class);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
-    @Override
     public void goToCreateMerchantRedirect(Context context) {
         Intent intent = RedirectCreateShopActivity.getCallingIntent(context);
         context.startActivity(intent);
