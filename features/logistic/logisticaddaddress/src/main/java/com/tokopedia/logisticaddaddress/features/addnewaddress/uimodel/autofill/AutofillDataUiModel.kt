@@ -9,4 +9,6 @@ data class AutofillDataUiModel (
         var latitude: String = "",
         var longitude: String = "",
         var districtId: Int = 0,
+        var provinceId: Int = 0,
+        var cityId: Int = 0,
         var postalCode: String = "")

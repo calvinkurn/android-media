@@ -58,7 +58,7 @@ class AddEditAddressPresenter @Inject constructor(private val context: Context,
     fun saveAddress(saveAddressDataModel: SaveAddressDataModel?) {
         saveAddressDataModel?.let {
             addAddressUseCase.setParams(it)
-            addAddressUseCase.execute(RequestParams.create(), AddAddressSubscriber(view, addAddressMapper))
+            addAddressUseCase.execute(RequestParams.create(), AddAddressSubscriber(view, addAddressMapper, it))
         }
     }
 }

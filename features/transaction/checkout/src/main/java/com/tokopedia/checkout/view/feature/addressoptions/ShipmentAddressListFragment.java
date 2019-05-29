@@ -35,6 +35,7 @@ import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -65,6 +66,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public static final String ARGUMENT_ORIGIN_DIRECTION_TYPE = "ARGUMENT_ORIGIN_DIRECTION_TYPE";
     public static final int ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM = 1;
     public static final int ORIGIN_DIRECTION_TYPE_DEFAULT = 0;
+    public static final int ADD_NEW_ADDRESS_CREATED = 1212;
+    public static final String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
 
     private RecyclerView mRvRecipientAddressList;
     private SearchInputView mSvAddressSearchBox;
@@ -483,6 +486,23 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 case LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT:
                     onSearchReset();
                     break;
+                case ADD_NEW_ADDRESS_CREATED:
+                    RecipientAddressModel newRecipientAddAddressModel;
+                    if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
+                        SaveAddressDataModel saveAddressDataModel = data.getParcelableExtra(EXTRA_ADDRESS_NEW);
+                        newRecipientAddAddressModel = new RecipientAddressModel();
+                        newRecipientAddAddressModel.setAddressName(saveAddressDataModel.getAddressName());
+                        newRecipientAddAddressModel.setDestinationDistrictId(String.valueOf(saveAddressDataModel.getDistrictId()));
+                        newRecipientAddAddressModel.setCityId(String.valueOf(saveAddressDataModel.getCityId()));
+                        newRecipientAddAddressModel.setProvinceId(String.valueOf(saveAddressDataModel.getProvinceId()));
+                        newRecipientAddAddressModel.setRecipientName(saveAddressDataModel.getReceiverName());
+                        newRecipientAddAddressModel.setRecipientPhoneNumber(saveAddressDataModel.getPhone());
+                        newRecipientAddAddressModel.setStreet(saveAddressDataModel.getFormattedAddress());
+                        newRecipientAddAddressModel.setPostalCode(saveAddressDataModel.getPostalCode());
+                        mShipmentAddressListPresenter.resetAddressList(newRecipientAddAddressModel, isDisableCorner);
+                    }
+                    onSearchReset();
+                    break;
                 default:
                     break;
             }
@@ -521,7 +541,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
                 );*/
 
-                startActivity(new Intent(getActivity(), PinpointMapActivity.class));
+                // startActivity(new Intent(getActivity(), PinpointMapActivity.class));
+
+                startActivityForResult(new Intent(getActivity(), PinpointMapActivity.class), ADD_NEW_ADDRESS_CREATED);
             }
 
 

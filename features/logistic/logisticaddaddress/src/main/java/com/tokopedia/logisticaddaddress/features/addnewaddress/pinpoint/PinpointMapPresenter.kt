@@ -1,21 +1,19 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
 import android.content.Context
-import android.content.Intent
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsResult
 import com.google.android.gms.location.places.Places
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.AutofillMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
-import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.AutofillSubscriber
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.GetDistrictSubscriber
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -34,6 +32,7 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
 
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
+    private var saveAddressDataModel = SaveAddressDataModel()
 
     fun connectGoogleApi(mapFragment: PinpointMapFragment) {
         this.googleApiClient = GoogleApiClient.Builder(context)
@@ -50,15 +49,6 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
         if (googleApiClient?.isConnected!!) {
             googleApiClient?.disconnect()
         }
-    }
-
-    fun onResult(locationSettingResult: LocationSettingsResult) {
-        /*val status: Status = locationSettingResult.status
-        when(status.statusCode) {
-            LocationSettingsStatusCodes.SUCCESS -> {
-                view.moveMap(PinpointMapUtils.generateLatLng(defaultLat, defaultLong))
-            }
-        }*/
     }
 
     fun getDistrict(placeId: String) {
@@ -85,17 +75,43 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
         autofillUseCase.clearCache()
     }
 
-    fun loadAddEdit(saveAddressDataModel: SaveAddressDataModel) {
-        if (saveAddressDataModel.districtId == 0 && saveAddressDataModel.postalCode?.isEmpty()!!) {
+    fun loadAddEdit() {
+        if (saveAddressDataModel.districtId == 0 && saveAddressDataModel.postalCode.isEmpty()) {
             view.showFailedDialog()
         } else {
-            val intent = Intent(context, AddEditAddressActivity::class.java)
-            // intent.putExtra(AddressConstants.EXTRA_LAT, lat.toDouble())
-            // intent.putExtra(AddressConstants.EXTRA_LONG, long.toDouble())
-            // intent.putExtra(AddressConstants.EXTRA_DETAIL_ADDRESS, detailAddress)
-            intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH, false)
-            intent.putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
-            context.startActivity(intent)
+            view.goToAddEditActivity()
         }
+    }
+
+    fun convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel: GetDistrictDataUiModel) : SaveAddressDataModel {
+        val saveAddressDataModel = SaveAddressDataModel()
+        saveAddressDataModel.title = getDistrictDataUiModel.title
+        saveAddressDataModel.formattedAddress = getDistrictDataUiModel.formattedAddress
+        saveAddressDataModel.districtId = getDistrictDataUiModel.districtId
+        saveAddressDataModel.provinceId = getDistrictDataUiModel.provinceId
+        saveAddressDataModel.cityId = getDistrictDataUiModel.cityId
+        saveAddressDataModel.postalCode = getDistrictDataUiModel.postalCode
+        saveAddressDataModel.latitude = getDistrictDataUiModel.latitude
+        saveAddressDataModel.longitude = getDistrictDataUiModel.longitude
+        this.saveAddressDataModel = saveAddressDataModel
+        return saveAddressDataModel
+    }
+
+    fun convertAutofillToSaveAddressDataUiModel(autofillDataUiModel: AutofillDataUiModel) : SaveAddressDataModel {
+        val saveAddressDataModel = SaveAddressDataModel()
+        saveAddressDataModel.title = autofillDataUiModel.title
+        saveAddressDataModel.formattedAddress = autofillDataUiModel.formattedAddress
+        saveAddressDataModel.districtId = autofillDataUiModel.districtId
+        saveAddressDataModel.provinceId = autofillDataUiModel.provinceId
+        saveAddressDataModel.cityId = autofillDataUiModel.cityId
+        saveAddressDataModel.postalCode = autofillDataUiModel.postalCode
+        saveAddressDataModel.latitude = autofillDataUiModel.latitude
+        saveAddressDataModel.longitude = autofillDataUiModel.longitude
+        this.saveAddressDataModel = saveAddressDataModel
+        return saveAddressDataModel
+    }
+
+    fun getSaveAddressDataModel() : SaveAddressDataModel {
+        return this.saveAddressDataModel
     }
 }

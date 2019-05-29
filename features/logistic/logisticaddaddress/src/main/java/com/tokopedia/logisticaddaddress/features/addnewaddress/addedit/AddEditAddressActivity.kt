@@ -10,6 +10,8 @@ import com.tokopedia.logisticaddaddress.R
  * Created by fwidjaja on 2019-05-22.
  */
 class AddEditAddressActivity: BaseSimpleActivity() {
+    private val FINISH_FLAG = 1212
+
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         this.window.setFlags(
@@ -28,5 +30,15 @@ class AddEditAddressActivity: BaseSimpleActivity() {
             fragment = AddEditAddressFragment.newInstance(bundle)
         }
         return fragment
+    }
+
+    override fun onStop() {
+        setResult(FINISH_FLAG)
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        setResult(FINISH_FLAG)
+        super.onDestroy()
     }
 }

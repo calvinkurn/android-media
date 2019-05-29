@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -31,6 +32,8 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
+import kotlinx.android.synthetic.main.bottomsheet_getdistrict.et_detail_address
+import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
 import javax.inject.Inject
 
@@ -39,7 +42,8 @@ import javax.inject.Inject
  */
 class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, ResultCallback<LocationSettingsResult>,
-        AutocompleteBottomSheetFragment.ActionListener{
+        AutocompleteBottomSheetFragment.ActionListener {
+
     private var googleMap: GoogleMap? = null
     private var currentLat: Double? = 0.0
     private var currentLong: Double? = 0.0
@@ -48,6 +52,8 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     private var unnamedRoad: String = "Unnamed Road"
     private var isShowingAutocomplete: Boolean? = null
     private var isGetDistrict = false
+    private val FINISH_FLAG = 1212
+    private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
 
     @Inject
     lateinit var presenter: PinpointMapPresenter
@@ -190,7 +196,6 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     }
 
     override fun onResult(locationSettingsResult: LocationSettingsResult) {
-        presenter.onResult(locationSettingsResult)
     }
 
     private fun showAutocompleteGeocodeBottomSheet() {
@@ -213,36 +218,14 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         currentLong = getDistrictDataUiModel.longitude.toDouble()
         isGetDistrict = true
         moveMap(PinpointMapUtils.generateLatLng(currentLat, currentLong))
-        updateGetDistrictBottomSheet(convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel))
+        updateGetDistrictBottomSheet(presenter.convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel))
     }
 
     override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
         invalid_container.visibility = View.GONE
         whole_loading_container.visibility = View.GONE
         getdistrict_container.visibility = View.VISIBLE
-        updateGetDistrictBottomSheet(convertAutofillToSaveAddressDataUiModel(autofillDataUiModel))
-    }
-
-    private fun convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel: GetDistrictDataUiModel) : SaveAddressDataModel {
-        val saveAddressDataUiModel = SaveAddressDataModel()
-        saveAddressDataUiModel.title = getDistrictDataUiModel.title
-        saveAddressDataUiModel.formattedAddress = getDistrictDataUiModel.formattedAddress
-        saveAddressDataUiModel.districtId = getDistrictDataUiModel.districtId
-        saveAddressDataUiModel.postalCode = getDistrictDataUiModel.postalCode
-        saveAddressDataUiModel.latitude = getDistrictDataUiModel.latitude
-        saveAddressDataUiModel.longitude = getDistrictDataUiModel.longitude
-        return saveAddressDataUiModel
-    }
-
-    private fun convertAutofillToSaveAddressDataUiModel(autofillDataUiModel: AutofillDataUiModel) : SaveAddressDataModel {
-        val saveAddressDataUiModel = SaveAddressDataModel()
-        saveAddressDataUiModel.title = autofillDataUiModel.title
-        saveAddressDataUiModel.formattedAddress = autofillDataUiModel.formattedAddress
-        saveAddressDataUiModel.districtId = autofillDataUiModel.districtId
-        saveAddressDataUiModel.postalCode = autofillDataUiModel.postalCode
-        saveAddressDataUiModel.latitude = autofillDataUiModel.latitude
-        saveAddressDataUiModel.longitude = autofillDataUiModel.longitude
-        return saveAddressDataUiModel
+        updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel))
     }
 
     private fun updateGetDistrictBottomSheet(saveAddressDataModel: SaveAddressDataModel) {
@@ -261,9 +244,9 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
 
             tv_title_getdistrict.text = saveAddressDataModel.title
             tv_address_getdistrict.text = saveAddressDataModel.formattedAddress
-            // val detailAddress = "${saveAddressDataModel.title}, ${saveAddressDataModel.formattedAddress}"
             btn_choose_location.setOnClickListener{
-                presenter.loadAddEdit(saveAddressDataModel)
+                saveAddressDataModel.editDetailAddress = et_detail_address.text.toString()
+                presenter.loadAddEdit()
             }
         }
     }
@@ -274,18 +257,32 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         tkpdDialog.setDesc(getString(R.string.mismatch_desc))
         tkpdDialog.setBtnOk(getString(R.string.mismatch_btn_title))
         tkpdDialog.setOnOkClickListener {
-            goToAddEditAddressActivity()
+            goToAddEditActivity()
             tkpdDialog.dismiss()
         }
         tkpdDialog.show()
     }
 
-    private fun goToAddEditAddressActivity() {
+    override fun goToAddEditActivity() {
         val intent = Intent(context, AddEditAddressActivity::class.java)
-        intent.putExtra(AddressConstants.EXTRA_LAT, AddressConstants.MONAS_LAT)
-        intent.putExtra(AddressConstants.EXTRA_LONG, AddressConstants.MONAS_LONG)
-        intent.putExtra(AddressConstants.EXTRA_DETAIL_ADDRESS, "")
-        intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH, true)
-        context?.startActivity(intent)
+        intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH, false)
+        intent.putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, presenter.getSaveAddressDataModel())
+        startActivityForResult(intent, FINISH_FLAG)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == FINISH_FLAG){
+            if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
+                val newAddress = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
+                finishActivity(newAddress)
+            }
+        }
+    }
+
+    private fun finishActivity(saveAddressDataModel: SaveAddressDataModel) {
+        val intent = activity?.intent
+        intent?.putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 }

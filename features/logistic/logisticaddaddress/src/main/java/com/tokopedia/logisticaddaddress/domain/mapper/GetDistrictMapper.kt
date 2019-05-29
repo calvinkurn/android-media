@@ -30,7 +30,9 @@ open class GetDistrictMapper @Inject constructor() {
                 latitude = data.latitude,
                 longitude = data.longitude,
                 districtId = data.districtId,
-                postalCode = data.postalCode
+                postalCode = data.postalCode,
+                cityId = data.cityId,
+                provinceId = data.provinceId
         )
     }
 }

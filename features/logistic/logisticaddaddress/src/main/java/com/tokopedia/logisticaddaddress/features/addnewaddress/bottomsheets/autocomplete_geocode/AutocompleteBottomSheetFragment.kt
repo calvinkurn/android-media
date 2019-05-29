@@ -85,7 +85,6 @@ RecyclerView.OnItemTouchListener{
         rvPoiList = view.findViewById(R.id.rv_poi_list)
         etSearch = view.findViewById(R.id.et_search)
         adapter = AutocompleteBottomSheetAdapter(this)
-        // adapter.setActionListener(this)
         if (activity != null) {
             initInjector()
         }

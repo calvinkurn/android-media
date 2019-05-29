@@ -1,6 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -42,9 +43,9 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     private var saveAddressDataModel: SaveAddressDataModel? = null
     private var currentLat: Double? = 0.0
     private var currentLong: Double? = 0.0
-    private var currentDetailAddress: String? = ""
     private var labelRumah: String? = "Rumah"
     private var isMismatch: Boolean? = false
+    private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
 
     @Inject
     lateinit var presenter: AddEditAddressPresenter
@@ -53,9 +54,6 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     lateinit var userSession: UserSessionInterface
 
     companion object {
-        // private const val CURRENT_LAT = "CURRENT_LAT"
-        // private const val CURRENT_LONG = "CURRENT_LONG"
-        // private const val CURRENT_DETAIL_ADDRESS = "CURRENT_DETAIL_ADDRESS"
         private const val CURRENT_IS_MISMATCH = "CURRENT_IS_MISMATCH"
         private const val CURRENT_SAVE_DATA_UI_MODEL = "CURRENT_SAVE_DATA_UI_MODEL"
 
@@ -64,9 +62,6 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         fun newInstance(extra: Bundle): AddEditAddressFragment {
             return AddEditAddressFragment().apply {
                 arguments = Bundle().apply {
-                    // putDouble(CURRENT_LAT, extra.getDouble(AddressConstants.EXTRA_LAT))
-                    // putDouble(CURRENT_LONG, extra.getDouble(AddressConstants.EXTRA_LONG))
-                    // putString(CURRENT_DETAIL_ADDRESS, extra.getString(AddressConstants.EXTRA_DETAIL_ADDRESS))
                     putBoolean(CURRENT_IS_MISMATCH, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH))
                     putParcelable(CURRENT_SAVE_DATA_UI_MODEL, extra.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL))
                 }
@@ -77,11 +72,10 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            // currentLat = arguments?.getDouble("CURRENT_LAT")
-            // currentLong = arguments?.getDouble("CURRENT_LONG")
-            // currentDetailAddress = arguments?.getString("CURRENT_DETAIL_ADDRESS")
             isMismatch = arguments?.getBoolean(CURRENT_IS_MISMATCH)
             saveAddressDataModel = arguments?.getParcelable(CURRENT_SAVE_DATA_UI_MODEL)
+            currentLat = saveAddressDataModel?.latitude?.toDouble()
+            currentLong = saveAddressDataModel?.longitude?.toDouble()
         }
     }
 
@@ -120,6 +114,7 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
         et_phone.setText(userSession.phoneNumber)
+        et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
 
         /*btn_map.setOnClickListener {
             presenter.changePinpoint(currentLat, currentLong)
@@ -140,8 +135,8 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         saveAddressDataModel?.phone = et_phone.text.toString()
     }
 
-    override fun onSuccessAddAddress(addAddressDataUiModel: AddAddressDataUiModel) {
-        activity?.finish()
+    override fun onSuccessAddAddress(addAddressDataUiModel: AddAddressDataUiModel, saveAddressDataModel: SaveAddressDataModel) {
+        finishActivity(saveAddressDataModel)
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -206,9 +201,13 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
 
     override fun onDestroy() {
         if (this.isMismatch!!) {
-            mismatch_map_view_detail.onDestroy()
+            if (mismatch_map_view_detail != null) {
+                mismatch_map_view_detail.onDestroy()
+            }
         } else {
-            map_view_detail.onDestroy()
+            if (map_view_detail != null) {
+                map_view_detail.onDestroy()
+            }
         }
         super.onDestroy()
     }
@@ -229,5 +228,12 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     }
 
     override fun onConnectionFailed(p0: ConnectionResult) {
+    }
+
+    private fun finishActivity(saveAddressDataModel: SaveAddressDataModel) {
+        val intent = activity?.intent
+        intent?.putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 }

@@ -12,41 +12,11 @@ import com.tokopedia.logisticaddaddress.R
  * Created by fwidjaja on 2019-05-07.
  */
 class PinpointMapActivity: BaseSimpleActivity() {
+    private val FINISH_FLAG = 1212
+
     companion object {
         val defaultLat: Double by lazy { -6.175794 }
         val defaultLong: Double by lazy { 106.826457 }
-
-        /*@JvmStatic
-        fun createInstanceFromCheckoutSingleAddressForm(activity: Activity,
-                                                        token: Token?): Intent {
-            return createInstance(activity, null, token, false,
-                    false, INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT)
-
-        }
-
-        fun createInstance(
-                activity: Activity,
-                data: AddressModel?,
-                token: Token?,
-                isEdit: Boolean,
-                isEmptyAddressFirst: Boolean,
-                typeInstance: Int
-        ): Intent {
-            val intent = Intent(activity, PinpointMapActivity::class.java)
-            val bundle = Bundle()
-            bundle.putBoolean(IS_DISTRICT_RECOMMENDATION, true)
-            bundle.putString(EXTRA_PLATFORM_PAGE, PLATFORM_MARKETPLACE_CART)
-            if (data != null)
-                bundle.putParcelable(EDIT_PARAM, data.convertToDestination())
-            bundle.putBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, isEmptyAddressFirst)
-            bundle.putBoolean(IS_EDIT, isEdit)
-            bundle.putParcelable(KERO_TOKEN, token)
-            bundle.putInt(EXTRA_INSTANCE_TYPE, typeInstance)
-            bundle.putDouble(EXTRA_DEFAULT_LAT, defaultLat)
-            bundle.putDouble(EXTRA_DEFAULT_LONG, defaultLong)
-            intent.putExtras(bundle)
-            return intent
-        }*/
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,5 +38,15 @@ class PinpointMapActivity: BaseSimpleActivity() {
             bundle.putBoolean(EXTRA_SHOW_AUTOCOMPLETE, true)
         }
         return PinpointMapFragment.newInstance(bundle)
+    }
+
+    override fun onStop() {
+        setResult(FINISH_FLAG)
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        setResult(FINISH_FLAG)
+        super.onDestroy()
     }
 }

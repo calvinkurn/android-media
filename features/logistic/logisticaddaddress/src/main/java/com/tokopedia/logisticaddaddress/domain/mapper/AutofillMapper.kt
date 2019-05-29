@@ -30,6 +30,8 @@ class AutofillMapper @Inject constructor() {
                 latitude = data.latitude,
                 longitude = data.longitude,
                 districtId = data.districtId,
+                provinceId = data.provinceId,
+                cityId = data.cityId,
                 postalCode = data.postalCode
         )
     }
