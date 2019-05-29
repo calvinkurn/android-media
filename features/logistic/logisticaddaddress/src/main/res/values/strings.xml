@@ -94,4 +94,18 @@
     <string name="et_alamat_hint">Tulis nama jalan/perumahan komplek</string>
     <string name="define_pinpoint">Tentukan Lokasi Pinpoint Anda</string>
     <string name="kota_kecamatan">Kota atau Kecamatan</string>
+    <string name="kota_populer">Kota populer</string>
+
+    <string-array name="cityList">
+        <item>Jakarta</item>
+        <item>Bekasi</item>
+        <item>Tangerang</item>
+        <item>Tangerang Selatan</item>
+        <item>Bandung</item>
+        <item>Depok</item>
+        <item>Semarang</item>
+        <item>Medan</item>
+        <item>Malang</item>
+        <item>Bogor</item>
+    </string-array>
 </resources>

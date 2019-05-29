@@ -19,7 +19,7 @@ class AutocompleteBottomSheetPresenter @Inject constructor(private val autocompl
                                                            private val autoCompleteGeocodeMapper: AutocompleteGeocodeMapper,
                                                            private val autocompleteUseCase: AutocompleteUseCase,
                                                            private val autoCompleteMapper: AutocompleteMapper)
-    : BaseDaggerPresenter<AutocompleteBottomSheetView>() {
+    : BaseDaggerPresenter<AutocompleteBottomSheetListener>() {
 
     fun getAutocompleteGeocode(lat: Double?, long: Double?) {
         autocompleteGeocodeUseCase.setParams(lat, long)

@@ -257,15 +257,15 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         tkpdDialog.setDesc(getString(R.string.mismatch_desc))
         tkpdDialog.setBtnOk(getString(R.string.mismatch_btn_title))
         tkpdDialog.setOnOkClickListener {
-            goToAddEditActivity()
+            goToAddEditActivity(true)
             tkpdDialog.dismiss()
         }
         tkpdDialog.show()
     }
 
-    override fun goToAddEditActivity() {
+    override fun goToAddEditActivity(isMismatch: Boolean) {
         val intent = Intent(context, AddEditAddressActivity::class.java)
-        intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH, false)
+        intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH, isMismatch)
         intent.putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, presenter.getSaveAddressDataModel())
         startActivityForResult(intent, FINISH_FLAG)
     }

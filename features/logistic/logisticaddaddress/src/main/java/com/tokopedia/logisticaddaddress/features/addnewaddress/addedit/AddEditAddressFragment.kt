@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResultCallback
@@ -22,12 +23,15 @@ import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.DistrictRecommendationBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.add_address.AddAddressDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
+import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
 import kotlinx.android.synthetic.main.fragment_add_edit_new_address.*
 import kotlinx.android.synthetic.main.header_add_new_address_data_item.*
 import kotlinx.android.synthetic.main.header_add_new_address_mismatch_data_item.*
@@ -46,6 +50,9 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     private var labelRumah: String? = "Rumah"
     private var isMismatch: Boolean? = false
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
+    private lateinit var etLabelAlamat: EditText
+    private lateinit var etNamaPenerima: EditText
+    private lateinit var etNoPonsel: EditText
 
     @Inject
     lateinit var presenter: AddEditAddressPresenter
@@ -102,6 +109,13 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             ll_normal.visibility = View.GONE
             ll_mismatch.visibility = View.VISIBLE
             mismatch_btn_map.text = getString(R.string.define_pinpoint)
+            et_label_address_mismatch.setText(labelRumah)
+            et_receiver_name_mismatch.setText(userSession.name)
+            et_phone_mismatch.setText(userSession.phoneNumber)
+            et_kota_kecamatan.setOnClickListener {
+                showDistrictRecommendationBottomSheet()
+            }
+
         } else {
             map_view_detail.onCreate(savedInstanceState)
             map_view_detail.getMapAsync(this)
@@ -109,12 +123,11 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             ll_normal.visibility = View.VISIBLE
             btn_map.text = getString(R.string.change_pinpoint)
             tv_address_based_on_pinpoint.text = "${saveAddressDataModel?.title}, ${saveAddressDataModel?.formattedAddress}"
+            et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
+            et_label_address.setText(labelRumah)
+            et_receiver_name.setText(userSession.name)
+            et_phone.setText(userSession.phoneNumber)
         }
-
-        et_label_address.setText(labelRumah)
-        et_receiver_name.setText(userSession.name)
-        et_phone.setText(userSession.phoneNumber)
-        et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
 
         /*btn_map.setOnClickListener {
             presenter.changePinpoint(currentLat, currentLong)
@@ -127,12 +140,19 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         }
     }
 
+    private fun showDistrictRecommendationBottomSheet() {
+        val districtRecommendationBottomSheetFragment =
+                DistrictRecommendationBottomSheetFragment.newInstance()
+        // districtRecommendationBottomSheetFragment.setActionListener(this)
+        districtRecommendationBottomSheetFragment.show(fragmentManager, "")
+    }
+
     private fun setSaveAddressModel() {
         saveAddressDataModel?.address1 = "${saveAddressDataModel?.title} ${et_detail_address.text}, ${saveAddressDataModel?.formattedAddress}"
         saveAddressDataModel?.address2 = "$currentLat,$currentLong"
-        saveAddressDataModel?.addressName = et_label_address.text.toString()
-        saveAddressDataModel?.receiverName = et_receiver_name.text.toString()
-        saveAddressDataModel?.phone = et_phone.text.toString()
+        saveAddressDataModel?.addressName = etLabelAlamat.text.toString()
+        saveAddressDataModel?.receiverName = etNamaPenerima.text.toString()
+        saveAddressDataModel?.phone = etNoPonsel.text.toString()
     }
 
     override fun onSuccessAddAddress(addAddressDataUiModel: AddAddressDataUiModel, saveAddressDataModel: SaveAddressDataModel) {

@@ -24,7 +24,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-13.
  */
-class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetView, AutocompleteBottomSheetAdapter.ActionListener,
+class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetListener, AutocompleteBottomSheetAdapter.ActionListener,
 RecyclerView.OnItemTouchListener{
     private var bottomSheetView: View? = null
     private var currentLat: Double? = 0.0

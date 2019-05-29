@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    <!--<TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_12"
@@ -90,6 +90,6 @@
         android:text="@string/add_new_address_save"
         android:textAllCaps="false"
         app:buttonCompatSize="big"
-        app:buttonCompatType="primary" />
+        app:buttonCompatType="primary" />-->
 
 </LinearLayout>

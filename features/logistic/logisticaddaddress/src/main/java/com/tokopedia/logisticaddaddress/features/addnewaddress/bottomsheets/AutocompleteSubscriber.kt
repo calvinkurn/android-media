@@ -1,15 +1,14 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.logisticaddaddress.domain.mapper.AutocompleteGeocodeMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.AutocompleteMapper
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetView
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
 import rx.Subscriber
 
 /**
  * Created by fwidjaja on 2019-05-20.
  */
-class AutocompleteSubscriber(val view: AutocompleteBottomSheetView,
+class AutocompleteSubscriber(val view: AutocompleteBottomSheetListener,
                              val mapper: AutocompleteMapper): Subscriber<GraphqlResponse>() {
 
     override fun onNext(t: GraphqlResponse?) {

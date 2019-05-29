@@ -79,7 +79,7 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
         if (saveAddressDataModel.districtId == 0 && saveAddressDataModel.postalCode.isEmpty()) {
             view.showFailedDialog()
         } else {
-            view.goToAddEditActivity()
+            view.goToAddEditActivity(false)
         }
     }
 
