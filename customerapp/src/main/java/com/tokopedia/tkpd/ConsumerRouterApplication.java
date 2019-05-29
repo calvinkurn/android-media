@@ -61,7 +61,6 @@ import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.feature.cartlist.CartActivity;
 import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
-import com.tokopedia.checkout.view.feature.emptycart2.EmptyCartFragment;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.cod.view.CodActivity;
 import com.tokopedia.common.network.util.NetworkClient;
@@ -2707,16 +2706,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getOfficialStoreFragment(Bundle bundle) {
         return ReactNativeOfficialStoreFragment.createInstance();
-    }
-
-    @Override
-    public Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc, String promoCode) {
-        // Todo: remove this
-        autoApplyMessage = "This is auto apply message";
-        state = "green";
-        titleDesc = "THIS IS PROMO TITLE";
-        promoCode = "CODE1000";
-        return EmptyCartFragment.Companion.newInstance(autoApplyMessage, EmptyCartFragment.class.getSimpleName(), state, titleDesc, promoCode);
     }
 
     @Override
