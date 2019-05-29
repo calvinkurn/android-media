@@ -8,7 +8,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 class RecommendationCarouselItemDataModel(
         val productItem: RecommendationItem,
         val listener: RecommendationCardView.TrackingListener
-) : BaseHomeRecommendationDataModel {
+) : HomeRecommendationDataModel {
 
     companion object{
         val LAYOUT = R.layout.fragment_another_product_item

@@ -5,7 +5,7 @@ import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactory
 
 class TitleDataModel (
         val title: String
-) : BaseHomeRecommendationDataModel {
+) : HomeRecommendationDataModel {
 
     companion object {
         val LAYOUT = R.layout.fragment_title

@@ -7,14 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
-import com.tokopedia.home_recom.model.datamodel.BaseHomeRecommendationDataModel
+import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.home_recom.model.datamodel.TitleDataModel
 
 class HomeRecommendationAdapter(
         private val adapterTypeFactory: HomeRecommendationTypeFactoryImpl
-) : BaseListAdapter<BaseHomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(adapterTypeFactory) {
+) : BaseListAdapter<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(adapterTypeFactory) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)

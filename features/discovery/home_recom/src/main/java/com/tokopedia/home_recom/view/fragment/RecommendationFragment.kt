@@ -24,7 +24,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
 import javax.inject.Inject
 
-class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationCardView.TrackingListener {
+class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationCardView.TrackingListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -83,11 +83,11 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
         return adapterFactory
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<BaseHomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl> {
+    override fun createAdapterInstance(): BaseListAdapter<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl> {
         return adapter
     }
 
-    override fun onItemClicked(t: BaseHomeRecommendationDataModel) {
+    override fun onItemClicked(t: HomeRecommendationDataModel) {
         //Do nothing
     }
 
@@ -113,8 +113,8 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
                 .commit()
     }
 
-    private fun mapDataModel(listRecommendationModelDummy: List<RecommendationWidget>): List<BaseHomeRecommendationDataModel>{
-        val list = ArrayList<BaseHomeRecommendationDataModel>()
+    private fun mapDataModel(listRecommendationModelDummy: List<RecommendationWidget>): List<HomeRecommendationDataModel>{
+        val list = ArrayList<HomeRecommendationDataModel>()
         listRecommendationModelDummy.forEach { recommendationWidget ->
             when(recommendationWidget.layoutType){
                 TYPE_SCROLL -> {

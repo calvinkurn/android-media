@@ -9,7 +9,7 @@ class RecommendationCarouselDataModel(
         val title: String,
         val products: List<RecommendationItem>,
         val listener: RecommendationCardView.TrackingListener
-) : BaseHomeRecommendationDataModel {
+) : HomeRecommendationDataModel {
 
     companion object{
         val LAYOUT = R.layout.fragment_recommendation_carousell

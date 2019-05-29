@@ -6,7 +6,7 @@ import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactory
 
 class ProductInfoDataModel(
         val productDetailData: ProductDetailData
-) : BaseHomeRecommendationDataModel {
+) : HomeRecommendationDataModel {
 
     companion object{
         val LAYOUT = R.layout.fragment_product_info
