@@ -38,8 +38,6 @@ public interface TkpdCoreRouter {
 
     void resetAddProductCache(Context context);
 
-    void goToWallet(Context context, String url);
-
     void actionAppLink(Context context, String linkUrl);
 
     /**
