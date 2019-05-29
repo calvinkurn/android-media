@@ -31,7 +31,7 @@ public interface ShopOpenDomainView extends CustomerView {
 
     void onSuccessGetToken(Token token);
 
-    void onSuccessCreateShop(String message);
+    void onSuccessCreateShop(String message, String shopId);
 
     void onErrorCreateShop(String message);
 

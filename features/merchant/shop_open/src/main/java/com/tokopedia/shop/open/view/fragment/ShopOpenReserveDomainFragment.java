@@ -236,6 +236,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
             }
+
             @Override
             public void onClick(@NotNull View textView) {
                 if (getActivity() != null) {
@@ -444,11 +445,11 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     }
 
     @Override
-    public void onSuccessCreateShop(String message) {
+    public void onSuccessCreateShop(String message, String shopId) {
         hideSubmitLoading();
         AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
         if (getActivity() != null) {
-            Intent intent = ShopOpenCreateReadyActivity.Companion.newInstance(getActivity());
+            Intent intent = ShopOpenCreateReadyActivity.Companion.newInstance(getActivity(), shopId);
             startActivity(intent);
             getActivity().finish();
         }
@@ -498,7 +499,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         }
     }
 
-    public void clearFocus(){
+    public void clearFocus() {
         openShopAddressViewHolder.clearFocus();
         editTextInputDomainName.clearFocus();
         editTextInputShopName.clearFocus();

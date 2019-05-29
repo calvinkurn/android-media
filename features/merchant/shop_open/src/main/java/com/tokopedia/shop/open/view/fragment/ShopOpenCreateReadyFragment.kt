@@ -3,6 +3,7 @@ package com.tokopedia.shop.open.view.fragment
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -18,6 +19,7 @@ import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCa
 import com.tokopedia.seller.SellerModuleRouter
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.di.component.DaggerShopOpenDomainComponent
+import com.tokopedia.shop.open.view.activity.ShopOpenCreateReadyActivity.Companion.ARGUMENT_DATA_SHOP_ID
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_open_create_ready.*
 import javax.inject.Inject
@@ -28,8 +30,12 @@ class ShopOpenCreateReadyFragment : BaseDaggerFragment() {
     lateinit var userSession: UserSessionInterface
 
     companion object {
-        fun newInstance() =
-                ShopOpenCreateReadyFragment()
+        fun newInstance(shopId:String) =
+                ShopOpenCreateReadyFragment().also {
+                    it.arguments = Bundle().apply {
+                        putString(ARGUMENT_DATA_SHOP_ID,shopId)
+                    }
+                }
     }
 
     override fun getScreenName(): String = ""
@@ -50,8 +56,10 @@ class ShopOpenCreateReadyFragment : BaseDaggerFragment() {
         button_add_product.setOnClickListener {
             val intent = ProductAddNameCategoryActivity.createInstance(activity);
             startActivity(intent)
+            activity?.finish()
         }
         button_add_product_later.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.SHOP,arguments?.getString(ARGUMENT_DATA_SHOP_ID) ?: "" )
             activity?.finish()
         }
         initTncCourier()
@@ -68,11 +76,18 @@ class ShopOpenCreateReadyFragment : BaseDaggerFragment() {
 
         spanText.setSpan(StyleSpan(Typeface.BOLD),
                 0, 47, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spanText.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.seller.R.color.tkpd_main_green)),
+        spanText.setSpan(ForegroundColorSpan(resources.getColor(R.color.tkpd_main_green)),
                 spanText.length - 7, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanText.setSpan(StyleSpan(Typeface.BOLD),
+                spanText.length -7, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
         spanText.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 RouteManager.route(context,ApplinkConst.SELLER_SHIPPING_EDITOR)
+            }
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
             }
         }, spanText.length - 7, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         tv_tnc_courier.movementMethod = LinkMovementMethod.getInstance();

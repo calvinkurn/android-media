@@ -136,7 +136,7 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
                 }
                 userSession.setShopId(createShop.getCreateShop().getCreatedId());
                 globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
-                getView().onSuccessCreateShop(createShop.getCreateShop().getMessage());
+                getView().onSuccessCreateShop(createShop.getCreateShop().getMessage(),createShop.getCreateShop().getCreatedId());
             }
         };
     }
