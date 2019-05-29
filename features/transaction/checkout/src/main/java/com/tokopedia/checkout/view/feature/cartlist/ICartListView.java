@@ -45,8 +45,6 @@ public interface ICartListView extends IBaseView {
 
     void renderCheckPromoStackingCodeFromSuggestedPromoSuccess(ResponseFirstStep responseFirstStep);
 
-    void renderEmptyCartData(CartListData cartListData);
-
     void disableSwipeRefresh();
 
     void enableSwipeRefresh();

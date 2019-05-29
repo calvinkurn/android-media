@@ -223,7 +223,7 @@ public class CartListPresenter implements ICartListPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(getSubscriberInitialCartListData(initialLoad))
+                .subscribe(getSubscriberInitialCartListData())
         );
     }
 
@@ -552,11 +552,7 @@ public class CartListPresenter implements ICartListPresenter {
                                     if (updateAndRefreshCartListData.getCartListData() != null) {
                                         CartListPresenter.this.cartListData = updateAndRefreshCartListData.getCartListData();
                                         view.renderLoadGetCartDataFinish();
-                                        if (cartListData.getShopGroupDataList().isEmpty()) {
-                                            view.renderEmptyCartData(cartListData);
-                                        } else {
-                                            view.renderInitialGetCartListDataSuccess(cartListData);
-                                        }
+                                        view.renderInitialGetCartListDataSuccess(cartListData);
                                     }
                                 }
                             }
@@ -781,7 +777,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<CartListData> getSubscriberInitialCartListData(boolean initialLoad) {
+    private Subscriber<CartListData> getSubscriberInitialCartListData() {
         return new Subscriber<CartListData>() {
             @Override
             public void onCompleted() {
@@ -806,13 +802,8 @@ public class CartListPresenter implements ICartListPresenter {
                 if (view != null) {
                     CartListPresenter.this.cartListData = cartListData;
                     view.renderLoadGetCartDataFinish();
-                    if (cartListData.getShopGroupDataList().isEmpty()) {
-                        view.stopTrace();
-                        view.renderEmptyCartData(cartListData);
-                    } else {
-                        view.renderInitialGetCartListDataSuccess(cartListData);
-                        view.stopTrace();
-                    }
+                    view.renderInitialGetCartListDataSuccess(cartListData);
+                    view.stopTrace();
                 }
             }
         };
@@ -1034,13 +1025,8 @@ public class CartListPresenter implements ICartListPresenter {
                         view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                         view.stopTrace();
                     } else {
-                        if (resetAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
-                            view.stopTrace();
-                            view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
-                        } else {
-                            view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
-                            view.stopTrace();
-                        }
+                        view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
+                        view.stopTrace();
                     }
                 }
             }
