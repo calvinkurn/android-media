@@ -85,6 +85,6 @@ public class FragmentCardIdCamera extends HomeCreditKTPFragment{
         super.onPause();
         hideLoading();
         cameraView.stop();
-        getActivity().getSupportFragmentManager().popBackStack();
+//        getActivity().getSupportFragmentManager().popBackStack();
     }
 }
