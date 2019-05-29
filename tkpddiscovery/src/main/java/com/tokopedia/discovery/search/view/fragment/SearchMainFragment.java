@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
@@ -49,6 +50,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     public static final String FRAGMENT_TAG = "SearchHistoryFragment";
     public static final String INIT_QUERY = "INIT_QUERY";
     private static final String SEARCH_PARAMETER = "SEARCH_PARAMETER";
+    private static final String MP_SEARCH_AUTOCOMPLETE = "mp_search_autocomplete";
 
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
@@ -61,6 +63,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     private boolean onTabShop;
 
     private SearchParameter searchParameter;
+    private PerformanceMonitoring performanceMonitoring;
 
     public static SearchMainFragment newInstance() {
 
@@ -158,6 +161,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     @Override
     public void showAutoCompleteResult(DefaultAutoCompleteViewModel defaultAutoCompleteViewModel,
                                        TabAutoCompleteViewModel tabAutoCompleteViewModel) {
+        stopTracePerformanceMonitoring();
         adapter.setDefaultViewModel(defaultAutoCompleteViewModel);
         adapter.setSuggestionViewModel(tabAutoCompleteViewModel);
         if (defaultAutoCompleteViewModel.getList().isEmpty()) {
@@ -191,6 +195,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     }
 
     public void search(SearchParameter searchParameter){
+        performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE);
         presenter.search(searchParameter);
     }
 
@@ -335,5 +340,11 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     public void setSearchParameter(SearchParameter searchParameter) {
         this.searchParameter = searchParameter;
+    }
+
+    private void stopTracePerformanceMonitoring() {
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+        }
     }
 }
