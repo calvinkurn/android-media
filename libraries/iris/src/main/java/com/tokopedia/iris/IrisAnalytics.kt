@@ -98,7 +98,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         Log.d("Alarm scheduler", "Alarm is being scheduled")
         val intent = Intent(context, IrisBroadcastReceiver::class.java)
         intent.putExtra(MAX_ROW, config.maxRow)
-        val pintent = PendingIntent.getBroadcast(context, 0, intent, 0)
+        val pintent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(config.intervals), pintent)
     }
