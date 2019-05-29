@@ -95,12 +95,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
             "vernm=${GlobalConfig.VERSION_NAME}#" +
             "vercd=${GlobalConfig.VERSION_CODE}#" +
             "os=${Build.VERSION.RELEASE}#" +
-            "device=${Build.MODEL}#" +
-            if (userSession.deviceId.isNotEmpty()) {
-                "gcmid=${userSession.deviceId}#"
-            } else {
-                ""
-            }
+            "device=${Build.MODEL}#"
     }
 
     companion object {
@@ -126,7 +121,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
                 return
             }
             instance?.run {
-                val messageWithUser = message + "\n" + buildUserMessage()
+                val messageWithUser = buildUserMessage() + "\n" + message
                 if (priority == Log.ERROR) {
                     severe(messageWithUser)
                 } else if (priority == Log.WARN) {
@@ -147,7 +142,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
                 return
             }
             instance?.run {
-                val messageWithUser = (message ?: "") + "\n" + buildUserMessage()
+                val messageWithUser =  buildUserMessage()+ "\n" + (message ?: "")
                 if (throwable != null) {
                     logThrowable(level, messageWithUser, throwable)
                 } else {

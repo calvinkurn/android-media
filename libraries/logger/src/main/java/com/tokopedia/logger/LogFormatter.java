@@ -11,7 +11,7 @@ import java.util.logging.LogRecord;
 public class LogFormatter extends Formatter {
 
     private static final String format = "%1$s: %2$s%3$s%n";
-    private static final int MAX_BUFFER = 4096;
+    private static final int MAX_BUFFER = 3900;
 
     @SuppressLint("DefaultLocale")
     public synchronized String format(LogRecord record) {

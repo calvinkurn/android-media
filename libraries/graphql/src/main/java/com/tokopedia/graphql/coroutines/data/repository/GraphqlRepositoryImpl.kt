@@ -11,6 +11,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.model.GraphqlError
+import timber.log.Timber
 import java.lang.reflect.Type
 import kotlin.Exception
 
@@ -51,6 +52,7 @@ class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataS
 
                 val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
                 if (error != null && !error.isJsonNull){
+                    Timber.w(error.toString())
                     errors.put(typeOfT, gson.fromJson(error, Array<GraphqlError>::class.java).toList())
                 }
             } catch (e: Exception){ e.printStackTrace()}

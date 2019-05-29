@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import kotlin.Unit;
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * This class will responsible for data fetching either from cloud or cache based on provided GraphqlCacheStrategy
@@ -79,6 +80,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
                     JsonElement error = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.ERROR);
                     if (error != null && !error.isJsonNull()) {
+                        Timber.w(error.toString());
                         //Lookup for error
                         errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
                         }.getType()));
