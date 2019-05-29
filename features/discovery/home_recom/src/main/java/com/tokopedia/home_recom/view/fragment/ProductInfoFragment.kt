@@ -74,8 +74,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
         setSplashedText("RP100.000")
         product_price.text = productDataModel.productDetailData.price
         location.text = "Jakarta"
+        if (!productDataModel.productDetailData.badges.isEmpty()) {
+            badge.visibility = View.VISIBLE
+            ImageHandler.loadImageFitCenter(view.context, badge, productDataModel.productDetailData.badges.get(0).imageUrl)
+        } else {
+            badge.visibility = View.GONE
+        }
         updateWishlist(productDataModel.productDetailData.isWishlist)
-        ImageHandler.loadImageFitCenter(view.context, badge, productDataModel.productDetailData.badges.get(0).imageUrl)
         ImageHandler.loadImageFitCenter(view.context, product_image, productDataModel.productDetailData.imageUrl)
         setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
 
