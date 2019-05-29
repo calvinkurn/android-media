@@ -42,7 +42,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation project(rootProject.ext.features.hotel)
-    implementation project(rootProject.ext.features.flight)
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"

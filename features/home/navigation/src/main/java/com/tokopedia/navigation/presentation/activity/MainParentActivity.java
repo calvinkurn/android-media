@@ -14,7 +14,6 @@ import android.content.pm.ShortcutManager;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity;
-import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -332,8 +331,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//        startActivity(HotelHomepageActivity.Companion.getCallingIntent(this));
-        startActivity(FlightDashboardActivity.getCallingIntent(this));
+        startActivity(HotelHomepageActivity.Companion.getCallingIntent(this));
         return false;
 /*
         int position = getPositionFragmentByMenu(item);
