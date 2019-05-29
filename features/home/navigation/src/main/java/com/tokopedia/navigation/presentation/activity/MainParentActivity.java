@@ -23,6 +23,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -72,6 +73,7 @@ import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -300,6 +302,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onNewIntent(intent);
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
         checkApplinkCouponCode(intent);
+        checkAgeVerificationExtra(intent);
     }
 
     private void initInjector() {
@@ -355,6 +358,16 @@ public class MainParentActivity extends BaseActivity implements
             selectFragment(fragment);
         }
         return true;
+    }
+
+    private void checkAgeVerificationExtra(Intent intent) {
+        if (intent.hasExtra("VERIFICATION_SUCCESS")) {
+            Toaster.INSTANCE.showRedWithAction(findViewById(android.R.id.content),
+                    intent.getStringExtra("VERIFICATION_SUCCESS"),
+                    Snackbar.LENGTH_INDEFINITE,
+                    getString(R.string.general_label_ok), (v) -> {
+                    });
+        }
     }
 
     private void hideStatusBar() {

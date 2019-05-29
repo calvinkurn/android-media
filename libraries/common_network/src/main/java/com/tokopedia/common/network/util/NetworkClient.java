@@ -43,6 +43,7 @@ public class NetworkClient {
                     .client(tkpdOkHttpBuilder.build()).build();
 
             sRestDatabase = RestDatabase.getInstance(context);
+            sUserSession = new UserSession(context);
         }
     }
 
@@ -68,6 +69,12 @@ public class NetworkClient {
         return sRestApi;
     }
 
+    public static UserSession getsUserSession() {
+        if (sUserSession != null)
+            return sUserSession;
+        else
+            throw new RuntimeException("Please call NetworkClient.init() to start the network library.");
+    }
 
     public static synchronized FingerprintManager getFingerPrintManager() {
         if (sFingerprintManager == null) {

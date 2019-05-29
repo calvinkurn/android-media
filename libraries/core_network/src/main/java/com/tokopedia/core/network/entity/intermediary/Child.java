@@ -24,6 +24,9 @@ public class Child implements Parcelable {
     @SerializedName("hidden")
     @Expose
     private Integer hidden;
+    @SerializedName("is_adult")
+    @Expose
+    private int isAdult;
     @SerializedName("is_revamp")
     @Expose
     private Boolean isRevamp;
@@ -69,6 +72,14 @@ public class Child implements Parcelable {
 
     public void setHidden(Integer hidden) {
         this.hidden = hidden;
+    }
+
+    public int getIsAdult() {
+        return isAdult;
+    }
+
+    public void setIsAdult(int isAdult) {
+        this.isAdult = isAdult;
     }
 
     public Boolean getIsRevamp() {

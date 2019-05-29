@@ -1,8 +1,10 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -27,7 +29,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategorySectionItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.util.MoEngageEventTracking;
-
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -196,6 +198,12 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
 
     @Override
     public void prepareFragment(ProductViewModel productViewModel) {
+        if (productViewModel.getCategoryHeaderModel().getIsAdult() > 0) {
+            Intent intent = new Intent();
+            intent.setClassName(getPackageName(),
+                    "com.tokopedia.age_restriction.viewcontroller.AgeRestrictionHomeActivity");
+            startActivityForResult(intent, 5838);
+        }
         List<CategorySectionItem> categorySectionItems = new ArrayList<>();
         if (!TextUtils.isEmpty(categoryUrl)) {
             productFragment = ProductFragment.newInstance(productViewModel, categoryUrl, trackerAttribution);
@@ -291,6 +299,20 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         if (resultCode == CategoryNavigationActivity.DESTROY_BROWSE_PARENT) {
             setResult(CategoryNavigationActivity.DESTROY_INTERMEDIARY);
             finish();
+        } else if (requestCode == 5838) {
+            if (resultCode == Activity.RESULT_OK) {
+                //todo something when user logged in and preverified
+            } else if (resultCode == 980) {
+                //User DOb verfied succesfully
+                String message = data.getStringExtra("VERIFICATION_SUCCESS");
+                Toaster.INSTANCE.showGreenWithAction(findViewById(android.R.id.content),
+                        message,
+                        Snackbar.LENGTH_INDEFINITE,
+                        getString(R.string.general_label_ok), (v) -> {
+                        });
+            } else {
+                finish();
+            }
         }
     }
 
