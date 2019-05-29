@@ -76,7 +76,7 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
 
     @Override
     public int type(SearchPlaceholderViewModel searchPlaceholderViewModel) {
-        return 0;
+        return SearchPlaceholderViewModel.SEARCH_PLACE_HOLDER;
     }
 
     @Override

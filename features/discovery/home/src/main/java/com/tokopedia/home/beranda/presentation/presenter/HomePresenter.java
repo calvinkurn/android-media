@@ -15,11 +15,7 @@ import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.*;
 import com.tokopedia.home.beranda.presentation.view.subscriber.GetFeedTabsSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
@@ -400,6 +396,12 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         @Override
         public void onNext(List<TrackedVisitable> visitables) {
             if (homePresenter != null && homePresenter.isViewAttached()) {
+
+                if(visitables.get(visitables.size() - 1) instanceof SearchPlaceholderViewModel){
+                    homePresenter.getView().setHint(((SearchPlaceholderViewModel) visitables.get(visitables.size() - 1)).getSearchPlaceholder());
+                    visitables.remove(visitables.size() - 1);
+                }
+
                 if (homePresenter.getHeaderViewModel() != null && visitables.size() > 1) {
                     if (visitables.get(1) instanceof TickerViewModel) {
                         visitables.add(2, homePresenter.getHeaderViewModel());

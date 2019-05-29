@@ -6,6 +6,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 
 class SearchPlaceholderViewModel : TrackedVisitable<HomeTypeFactory> {
 
+    companion object{
+        const val SEARCH_PLACE_HOLDER = 93812
+    }
 
     private var searchPlaceholder: SearchPlaceholder? = null
     private var trackingData: Map<String, Any>? = null

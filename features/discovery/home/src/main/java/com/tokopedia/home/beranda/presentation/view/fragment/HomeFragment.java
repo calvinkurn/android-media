@@ -46,6 +46,7 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
+import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
@@ -734,12 +735,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items, int repositoryFlag) {
-        if(!items.isEmpty() && items.get(items.size() - 1) instanceof SearchPlaceholderViewModel
-                && ((SearchPlaceholderViewModel) items.get(items.size() - 1)).getSearchPlaceholder().getData() != null
-                && ((SearchPlaceholderViewModel) items.get(items.size() - 1)).getSearchPlaceholder().getData().getPlaceholder() != null){
-            setHint(((SearchPlaceholderViewModel) items.get(items.size() - 1)).getSearchPlaceholder().getData().getPlaceholder());
-            items.remove(items.size() - 1);
-        }
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
             adapter.setItems(items);
             presenter.getFeedTabData();
@@ -749,8 +744,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private void setHint(String hint) {
-        homeMainToolbar.setHint(hint);
+    @Override
+    public void setHint(SearchPlaceholder searchPlaceholder) {
+        if(searchPlaceholder.getData() != null && searchPlaceholder.getData().getPlaceholder() != null){
+            homeMainToolbar.setHint(searchPlaceholder.getData().getPlaceholder());
+        }
     }
 
     private void updateFeedRecommendationVisitable(Visitable feedRecommendationVisitable){
