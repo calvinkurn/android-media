@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
 
-class ProductPreviewViewHolder(itemView: View?, private val itemListener: ItemListener)
+class ProductPreviewViewHolder(itemView: View, private val itemListener: ItemListener)
     : RecyclerView.ViewHolder(itemView) {
 
     private val productImage = itemView?.findViewById<ImageView>(R.id.iv_product)

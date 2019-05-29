@@ -163,7 +163,7 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
     }
 
     private fun checkEnableSendButton() {
-        if (reportTalkAdapter.getItem(2).isChecked && reason.text.isBlank()) {
+        if (reportTalkAdapter.getItem(2).isChecked && reason.text?.isBlank()!!) {
             disableSendButton(sendButton.context)
         } else {
             enableSendButton(sendButton.context)

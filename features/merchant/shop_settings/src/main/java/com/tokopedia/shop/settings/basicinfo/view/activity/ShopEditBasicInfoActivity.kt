@@ -177,11 +177,11 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         //to reserve saveInstanceState from edittext
         if (TextUtils.isEmpty(etShopSlogan.text)) {
             etShopSlogan.setText(shopBasicDataModel.tagline)
-            etShopSlogan.setSelection(etShopSlogan.text.length)
+            etShopSlogan.setSelection(etShopSlogan.text!!.length)
         }
         if (TextUtils.isEmpty(etShopDesc.text)) {
             etShopDesc.setText(shopBasicDataModel.description)
-            etShopDesc.setSelection(etShopDesc.text.length)
+            etShopDesc.setSelection(etShopDesc.text!!.length)
         }
     }
 

@@ -47,7 +47,7 @@ class CodSummaryAdapter(val items: List<PriceSummary>) : RecyclerView.Adapter<Re
     }
 
 
-    class SummaryViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+    class SummaryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         companion object {
             val TYPE = R.layout.item_summary
@@ -63,7 +63,7 @@ class CodSummaryAdapter(val items: List<PriceSummary>) : RecyclerView.Adapter<Re
         }
     }
 
-    class TotalViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+    class TotalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         companion object {
             val TYPE = R.layout.item_grand_total

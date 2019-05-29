@@ -10,16 +10,16 @@ class GalleryItemDecoration(private val spacing: Int) : RecyclerView.ItemDecorat
     override fun getItemOffsets(outRect: Rect,
                                 view: View,
                                 parent: RecyclerView,
-                                state: RecyclerView.State?) {
+                                state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
-        val totalItem = parent.adapter.itemCount
+        val totalItem = parent.adapter?.itemCount
 
         val totalSpanCount = getTotalSpanCount(parent)
 
         outRect.top = if (isTopProductItem(position, totalSpanCount)) spacing * 2 else spacing / 2
         outRect.left = spacing / 2
         outRect.right = spacing / 2
-        outRect.bottom = if (isBottomProductItem(position, totalSpanCount, totalItem)) spacing * 2 else spacing / 2
+        outRect.bottom = if (isBottomProductItem(position, totalSpanCount, totalItem!!)) spacing * 2 else spacing / 2
     }
 
     private fun isTopProductItem(position: Int, totalSpanCount: Int): Boolean {

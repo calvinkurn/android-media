@@ -93,13 +93,13 @@ class NotificationUpdateFilterItemViewHolder(itemView: View, var listener: Notif
     }
 
     private fun bindSelectedView(index: Int) {
-        listFilterItemSectionRecyclerView.adapter.notifyItemChanged(index)
+        listFilterItemSectionRecyclerView.adapter?.notifyItemChanged(index)
     }
 
 
     class SpacingItemDecoration(private val dimen: Int) : RecyclerView.ItemDecoration() {
 
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
             outRect.right = this.dimen
             outRect.top = this.dimen / 2
             outRect.bottom = this.dimen / 2

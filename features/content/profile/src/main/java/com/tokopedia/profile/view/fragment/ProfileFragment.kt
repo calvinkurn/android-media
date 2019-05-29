@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
@@ -943,7 +944,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         layoutManager = LinearLayoutManager(activity)
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
                     if (hasFeed()
@@ -1009,10 +1010,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         iv_back.setOnClickListener {
             activity?.finish()
         }
-        app_bar_layout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+        app_bar_layout.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             try {
                 toolbar.let {
-                    if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
+                    if (Math.abs(verticalOffset) >= appBarLayout!!.totalScrollRange) {
                         it.visibility = View.VISIBLE
                     } else {
                         it.visibility = View.GONE
@@ -1022,6 +1023,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
             }
         }
+        )
 
         val selfProfile = userSession.userId == userId.toString()
                 && element.isAffiliate

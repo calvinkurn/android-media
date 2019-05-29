@@ -29,7 +29,7 @@ class ImageReviewRecyclerView : RecyclerView {
         val gridLayoutManager = GridLayoutManager(context, SPAN_COUNT)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return if (adapter.getItemViewType(position) == GalleryItemViewHolder.LAYOUT) {
+                return if (adapter?.getItemViewType(position) == GalleryItemViewHolder.LAYOUT) {
                     1
                 } else {
                     SPAN_COUNT

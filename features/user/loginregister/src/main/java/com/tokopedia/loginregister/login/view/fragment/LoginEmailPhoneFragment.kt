@@ -781,7 +781,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun setSmartLock() {
-        if (emailPhoneEditText.text.isNotBlank() && passwordEditText.text.isNotBlank()) {
+        if (emailPhoneEditText.text.isNotBlank() && passwordEditText.text?.isNotBlank()!!) {
             saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
                     emailPhoneEditText.text.toString(),
                     passwordEditText.text.toString())
