@@ -16,6 +16,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein.R;
+import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -29,7 +30,7 @@ import model.KYCDetails;
 import model.TradeInParams;
 import rx.Subscriber;
 
-public class FinalPriceViewModel extends ViewModel implements LifecycleObserver {
+public class FinalPriceViewModel extends BaseViewModel implements LifecycleObserver {
     private MutableLiveData<DeviceDataResponse> deviceDiagData;
     private WeakReference<FragmentActivity> activityWeakReference;
     private TradeInParams tradeInParams;

@@ -58,7 +58,7 @@ public class TradeInTextView extends ConstraintLayout {
             viewModel = ViewModelProviders.of((FragmentActivity) getContext(), TradeInVMFactory.getInstance((FragmentActivity) getContext())).get(TradeInTextViewModel.class);
             viewModel.getResponseData().observe((FragmentActivity) getContext(), new TradeInResponseObserver(this));
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                this.setBackgroundResource(R.drawable.bg_rect_white);
+                this.setBackgroundResource(R.drawable.bg_rect_white_round);
                 this.setElevation(TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP,
                         getResources().getDimension(R.dimen.dp_1),

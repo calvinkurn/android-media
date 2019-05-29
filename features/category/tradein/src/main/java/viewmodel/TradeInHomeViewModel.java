@@ -5,7 +5,6 @@ import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.OnLifecycleEvent;
-import android.arch.lifecycle.ViewModel;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +23,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein.R;
+import com.tokopedia.tradein_common.Constants;
+import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
 
 import org.json.JSONObject;
 
@@ -39,10 +40,9 @@ import model.DeviceDiagInputResponse;
 import model.DeviceDiagnostics;
 import model.TradeInParams;
 import rx.Subscriber;
-import tradein_common.Constants;
 import view.viewcontrollers.FinalPriceActivity;
 
-public class TradeInHomeViewModel extends ViewModel implements LifecycleObserver, Laku6TradeIn.TradeInListener {
+public class TradeInHomeViewModel extends BaseViewModel implements LifecycleObserver, Laku6TradeIn.TradeInListener {
     private MutableLiveData<Integer> insertResultData;
     private MutableLiveData<JSONObject> minPriceData;
     private MutableLiveData<JSONObject> priceFailData;

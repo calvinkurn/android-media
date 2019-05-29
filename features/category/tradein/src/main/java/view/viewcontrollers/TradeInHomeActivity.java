@@ -2,7 +2,6 @@ package view.viewcontrollers;
 
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,6 +18,8 @@ import android.widget.TextView;
 
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tradein.R;
+import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity;
+import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +27,7 @@ import org.json.JSONObject;
 import model.TradeInParams;
 import viewmodel.TradeInHomeViewModel;
 
-public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewModel> {
+public class TradeInHomeActivity extends BaseTradeInActivity {
 
     private TextView mTvPriceElligible;
     private ImageView mButtonRemove;
@@ -46,7 +47,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
 
 
     @Override
-    void initView() {
+    protected void initView() {
         mTvPriceElligible = findViewById(R.id.tv_price_elligible);
         mButtonRemove = findViewById(R.id.button_remove);
         mTvModelName = findViewById(R.id.tv_model_name);
@@ -64,7 +65,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     }
 
     @Override
-    void setViewModel(ViewModel viewModel) {
+    protected void setViewModel(BaseViewModel viewModel) {
         tradeInHomeViewModel = (TradeInHomeViewModel) viewModel;
         getLifecycle().addObserver(tradeInHomeViewModel);
     }
@@ -152,8 +153,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     }
 
     @Override
-    int getMenuRes() {
+    protected int getMenuRes() {
         return R.menu.trade_in_home;
+    }
+
+    @Override
+    protected Fragment getTncFragmentInstance(int TncResId) {
+        return TnCFragment.getInstance(TncResId);
     }
 
     @Override
@@ -162,12 +168,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     }
 
     @Override
-    int getBottomSheetLayoutRes() {
+    protected int getBottomSheetLayoutRes() {
         return 0;
     }
 
     @Override
-    boolean doNeedReattach() {
+    protected boolean doNeedReattach() {
         return false;
     }
 

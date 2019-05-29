@@ -18,6 +18,9 @@ import android.widget.TextView;
 
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tradein.R;
+import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity;
+import com.tokopedia.tradein_common.Constants;
+import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +28,10 @@ import java.util.List;
 import model.DeviceDataResponse;
 import model.KYCDetails;
 import model.TradeInParams;
-import tradein_common.Constants;
 import tradein_common.router.TradeInRouter;
 import viewmodel.FinalPriceViewModel;
 
-public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel> implements Observer<DeviceDataResponse> {
+public class FinalPriceActivity extends BaseTradeInActivity implements Observer<DeviceDataResponse> {
     public static final int FINAL_PRICE_REQUEST_CODE = 22456;
     private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
     private FinalPriceViewModel viewModel;
@@ -57,7 +59,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
     }
 
     @Override
-    void initView() {
+    protected void initView() {
         viewArrayList = new ArrayList<>();
         mTvValidTill = findViewById(R.id.tv_valid_till);
         viewArrayList.add(mTvValidTill);
@@ -90,28 +92,33 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
     }
 
     @Override
-    Class<FinalPriceViewModel> getViewModelType() {
+    protected Class<FinalPriceViewModel> getViewModelType() {
         return FinalPriceViewModel.class;
     }
 
     @Override
-    void setViewModel(ViewModel viewModel) {
+    protected void setViewModel(BaseViewModel viewModel) {
         this.viewModel = (FinalPriceViewModel) viewModel;
         getLifecycle().addObserver(this.viewModel);
     }
 
     @Override
-    int getMenuRes() {
+    protected int getMenuRes() {
         return -1;
     }
 
     @Override
-    int getBottomSheetLayoutRes() {
+    protected Fragment getTncFragmentInstance(int TncResId) {
+        return TnCFragment.getInstance(TncResId);
+    }
+
+    @Override
+    protected int getBottomSheetLayoutRes() {
         return 0;
     }
 
     @Override
-    boolean doNeedReattach() {
+    protected boolean doNeedReattach() {
         return false;
     }
 

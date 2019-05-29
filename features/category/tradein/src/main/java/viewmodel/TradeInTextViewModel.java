@@ -12,6 +12,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tradein.R;
+import com.tokopedia.tradein_common.viewcontrollers.AccessRequestFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -22,7 +23,6 @@ import model.ValidateTradeInResponse;
 import model.ValidateTradePDP;
 import rx.Subscriber;
 import view.customview.TradeInTextView;
-import view.viewcontrollers.AccessRequestFragment;
 
 public class TradeInTextViewModel extends ViewModel implements ITradeInParamReceiver {
     private MutableLiveData<ValidateTradeInResponse> responseData;

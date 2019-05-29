@@ -4,9 +4,11 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.view.MenuItem;
 
 import com.tokopedia.tradein.R;
-import com.tokopedia.tradein.viewmodel.TradeInVMFactory;
-import com.tokopedia.tradein_common.TradeInUtils;
+import tradein_common.TradeInUtils;
+import viewmodel.TradeInVMFactory;
 import com.tokopedia.tradein_common.viewcontrollers.BaseViewModelActivity;
+
+
 
 public abstract class BaseTradeInActivity extends BaseViewModelActivity {
 
