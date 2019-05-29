@@ -100,6 +100,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         intent.putExtra(MAX_ROW, config.maxRow)
         val pintent = PendingIntent.getBroadcast(context, 0, intent, 0)
         val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(config.intervals), pintent)
+        alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(config.intervals), pintent)
     }
 }
