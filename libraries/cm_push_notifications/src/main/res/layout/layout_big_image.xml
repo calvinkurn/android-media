@@ -27,6 +27,7 @@
             android:layout_below="@+id/layout_collapsed"
             android:layout_gravity="center_horizontal"
             android:paddingBottom="@dimen/dp_10"
+            android:visibility="gone"
             android:scaleType="fitXY" />
 
         <TextView

@@ -15,7 +15,8 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMEvents;
 import com.tokopedia.notifications.common.CMNotificationUtils;
-import com.tokopedia.notifications.common.CmEventPost;
+import com.tokopedia.notifications.common.IrisAnalyticsEvents;
+import com.tokopedia.notifications.common.PersistentEvent;
 import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 import com.tokopedia.notifications.model.Carousal;
@@ -38,6 +39,12 @@ public class CMNotificationFactory {
 
     public static BaseNotification getNotification(Context context, Bundle bundle) {
         BaseNotificationModel baseNotificationModel = convertToBaseModel(bundle);
+
+        if (CMConstant.NotificationType.SILENT_PUSH.equals(baseNotificationModel.getType())) {
+            handleSilentPush(context,baseNotificationModel);
+            return null;
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isChannelBlocked(context, baseNotificationModel)) {
             //todo notify to server for Blocked Channel By User.
         } else {
@@ -57,8 +64,8 @@ public class CMNotificationFactory {
                     }
                     return (new ImageNotification(context.getApplicationContext(), baseNotificationModel));
                 case CMConstant.NotificationType.PERSISTENT:
-                    CmEventPost.INSTANCE.postEvent(CMEvents.PersistentEvent.EVENT_VIEW_NOTIFICATION, CMEvents.PersistentEvent.EVENT_CATEGORY,
-                            CMEvents.PersistentEvent.EVENT_ACTION_PUSH_RECEIVED, CMEvents.PersistentEvent.EVENT_LABEL);
+                    CMEvents.postGAEvent(PersistentEvent.EVENT_VIEW_NOTIFICATION, PersistentEvent.EVENT_CATEGORY,
+                            PersistentEvent.EVENT_ACTION_PUSH_RECEIVED, PersistentEvent.EVENT_LABEL);
                     return (new PersistentNotification(context.getApplicationContext(), baseNotificationModel));
                 case CMConstant.NotificationType.DELETE_NOTIFICATION:
                     cancelNotification(context, baseNotificationModel.getNotificationId());
@@ -70,6 +77,10 @@ public class CMNotificationFactory {
             }
         }
         return null;
+    }
+
+    private static void handleSilentPush(Context context, BaseNotificationModel baseNotificationModel) {
+        IrisAnalyticsEvents.sendPushReceiveEvent(context, baseNotificationModel);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -162,9 +173,10 @@ public class CMNotificationFactory {
             return null;
         }
         try {
-            Type listType = new TypeToken<ArrayList<ActionButton>>() {
-            }.getType();
-            return new Gson().fromJson(actions, listType);
+            Gson gson = new Gson();
+            Type actionButtonListType = new TypeToken<ArrayList<ActionButton>>(){}.getType();
+            List<ActionButton> actionButtonList = gson.fromJson(actions, actionButtonListType);
+            return actionButtonList;
         } catch (Exception e) {
             Log.e(TAG, "CM-getActionButtons", e);
         }

@@ -55,6 +55,19 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
         }
     }
 
+    override fun sendRawEvent(map: Map<String, Any>, container: String) {
+        launchCatchError(block = {
+            val isSuccess = trackingRepository.sendSingleRawEvent(JSONObject(map).toString(),
+                    session, container)
+            if (isSuccess && BuildConfig.DEBUG) {
+                Log.e("Iris", "Success Send Single Event")
+            }
+        }) {
+            // no-op
+        }
+    }
+
+
     override fun setUserId(userId: String) {
         session.setUserId(userId)
     }

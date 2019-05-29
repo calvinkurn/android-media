@@ -11,6 +11,12 @@ import android.util.Log
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.factory.BaseNotification
 import com.tokopedia.notifications.factory.CMNotificationFactory
+import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.notifications.common.CMEvents
+import com.tokopedia.notifications.common.CMNotificationUtils
+import java.util.*
+import kotlin.collections.HashMap
+
 
 /**
  * @author lalit.singh
@@ -21,13 +27,10 @@ class CMJobIntentService : JobIntentService() {
         try {
             val bundle = intent.getBundleExtra(CMConstant.EXTRA_NOTIFICATION_BUNDLE)
             if (null != bundle) {
-                if (bundle.getString(CMConstant.PayloadKeys.NOTIFICATION_TYPE, "") == CMConstant.NotificationType.SILENT_PUSH) {
-                    handleSilentPush(bundle)
-                } else {
-                    val baseNotification = CMNotificationFactory.getNotification(this.applicationContext, bundle)
-                    if (null != baseNotification)
-                        postNotification(baseNotification)
-                }
+
+                val baseNotification = CMNotificationFactory.getNotification(this.applicationContext, bundle)
+                if (null != baseNotification)
+                    postNotification(baseNotification)
             }
         } catch (e: Exception) {
             Log.e(TAG, e.message)
@@ -38,12 +41,10 @@ class CMJobIntentService : JobIntentService() {
     private fun postNotification(baseNotification: BaseNotification) {
         val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification = baseNotification.createNotification()
-        notificationManager?.notify(baseNotification.baseNotificationModel.notificationId, notification)
+        notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
     }
 
-    private fun handleSilentPush(data: Bundle) {
 
-    }
 
     companion object {
 
@@ -51,10 +52,11 @@ class CMJobIntentService : JobIntentService() {
 
         internal var TAG = CMJobIntentService::class.java.simpleName
 
+        @JvmStatic
         fun enqueueWork(context: Context, bundle: Bundle) {
             val work = Intent()
             work.putExtra(CMConstant.EXTRA_NOTIFICATION_BUNDLE, bundle)
-            JobIntentService.enqueueWork(context, CMJobIntentService::class.java, JOB_ID, work)
+            enqueueWork(context, CMJobIntentService::class.java, JOB_ID, work)
         }
     }
 

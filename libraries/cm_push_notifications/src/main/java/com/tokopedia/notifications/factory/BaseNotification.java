@@ -219,7 +219,6 @@ public abstract class BaseNotification {
     }
 
     private int getDrawableLargeIcon() {
-        //TODO need to discuss on Seller App Icon--- 02-12-2018
         if (GlobalConfig.isSellerApp())
             return R.drawable.ic_big_notif_sellerapp;
         else

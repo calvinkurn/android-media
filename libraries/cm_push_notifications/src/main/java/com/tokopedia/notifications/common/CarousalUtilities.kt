@@ -15,7 +15,6 @@ object CarousalUtilities {
 
     private const val IMAGE_DIR = "imageDir"
 
-
     fun downloadImages(context: Context, carousalList: List<Carousal>) {
         for (carousal in carousalList) {
             if (!TextUtils.isEmpty(carousal.filePath)) {
@@ -66,7 +65,6 @@ object CarousalUtilities {
      * @param path
      * @return
      */
-
     fun carousalLoadImageFromStorage(path: String?): Bitmap? {
         var b: Bitmap? = null
         try {

@@ -15,6 +15,9 @@ public interface CMConstant {
     String UNIQUE_APP_ID_CACHE_KEY = "unique_app_id__cache";
     String APP_VERSION_CACHE_KEY = "app_version_cache_key";
     String EXTRA_CAMPAIGN_ID = "extra_campaign_id";
+    String EXTRA_PRE_DEF_ACTION = "extra_pre_def_action";
+
+
 
     interface NotificationType {
         String GENERAL = "General";
@@ -50,6 +53,8 @@ public interface CMConstant {
         String ACTION_BUTTON = "actionButtons";
         String PERSISTENT_DATA = "persistentButtons";
         String TEXT = "text";
+        String TYPE = "type";
+
 
         String CUSTOM_VALUE = "customValues";
 
@@ -67,7 +72,7 @@ public interface CMConstant {
         String VISUAL_EXPANDED_IMAGE = "expandedImg";
         String ACTION_BUTTON_ICON = "icon";
         String CAMPAIGN_ID = "campaignId";
-
+        String PD_ACTION = "pdAction";
         String NOTIFICATION_PRIORITY = "priorityPreOreo";
     }
 

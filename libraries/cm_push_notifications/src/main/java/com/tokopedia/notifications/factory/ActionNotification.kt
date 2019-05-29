@@ -28,15 +28,23 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         setCollapseData(collapsedView, baseNotificationModel, true)
 
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.notificationId, requestCode))
-        val expandedView = RemoteViews(context.applicationContext.packageName,
+        var expandedView = RemoteViews(context.applicationContext.packageName,
                 R.layout.layout_big_image)
+        if (baseNotificationModel.media == null) {
+              expandedView = RemoteViews(context.applicationContext.packageName,
+                    R.layout.layout_action_button)
+        }
+
         builder.setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandedView)
 
+
+
         baseNotificationModel.media?.let {
             it.mediumQuality.isBlank().let { isBlank ->
-                if (isBlank) {
+                if (!isBlank) {
+                    expandedView.setViewVisibility(R.id.img_big, View.VISIBLE)
                     expandedView.setImageViewBitmap(R.id.img_big,
                             CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality))
                     baseNotificationModel.actionButton.let { buttonList ->
@@ -95,7 +103,13 @@ internal class ActionNotification internal constructor(context: Context, baseNot
                 0 -> {
                     expandedView.setViewVisibility(R.id.tv_button1, View.VISIBLE)
                     expandedView.setTextViewText(R.id.tv_button1, actionButton.text)
-                    expandedView.setOnClickPendingIntent(R.id.ll_button1, getButtonPendingIntent(actionButton, requestCode))
+                    if(actionButton.pdActions!=null){
+                        expandedView.setOnClickPendingIntent(R.id.ll_button1, getShareButtonPendingIntent(actionButton, requestCode))
+
+                    }else{
+                        expandedView.setOnClickPendingIntent(R.id.ll_button1, getButtonPendingIntent(actionButton, requestCode))
+
+                    }
                     if (!TextUtils.isEmpty(actionButton.actionButtonIcon)) {
                         val bitmap: Bitmap? = getActionButtonBitmap(actionButton.actionButtonIcon)
                         if (bitmap != null) {
@@ -107,7 +121,13 @@ internal class ActionNotification internal constructor(context: Context, baseNot
                 1 -> {
                     expandedView.setViewVisibility(R.id.tv_button2, View.VISIBLE)
                     expandedView.setTextViewText(R.id.tv_button2, actionButton.text)
-                    expandedView.setOnClickPendingIntent(R.id.ll_button2, getButtonPendingIntent(actionButton, requestCode))
+                    if(actionButton.pdActions!=null){
+                        expandedView.setOnClickPendingIntent(R.id.ll_button2, getShareButtonPendingIntent(actionButton, requestCode))
+
+                    }else{
+                        expandedView.setOnClickPendingIntent(R.id.ll_button2, getButtonPendingIntent(actionButton, requestCode))
+
+                    }
                     if (!TextUtils.isEmpty(actionButton.actionButtonIcon)) {
                         val bitmap: Bitmap? = getActionButtonBitmap(actionButton.actionButtonIcon)
                         if (bitmap != null) {
@@ -119,7 +139,13 @@ internal class ActionNotification internal constructor(context: Context, baseNot
                 2 -> {
                     expandedView.setViewVisibility(R.id.tv_button3, View.VISIBLE)
                     expandedView.setTextViewText(R.id.tv_button3, actionButton.text)
-                    expandedView.setOnClickPendingIntent(R.id.ll_button3, getButtonPendingIntent(actionButton, requestCode))
+                    if(actionButton.pdActions!=null){
+                        expandedView.setOnClickPendingIntent(R.id.ll_button3, getShareButtonPendingIntent(actionButton, requestCode))
+
+                    }else{
+                        expandedView.setOnClickPendingIntent(R.id.ll_button3, getButtonPendingIntent(actionButton, requestCode))
+
+                    }
                     if (!TextUtils.isEmpty(actionButton.actionButtonIcon)) {
                         val bitmap: Bitmap? = getActionButtonBitmap(actionButton.actionButtonIcon)
                         if (bitmap != null) {
@@ -158,4 +184,32 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         }
         return resultPendingIntent
     }
+
+    private fun getShareButtonPendingIntent(actionButton: ActionButton, requestCode: Int): PendingIntent {
+        val resultPendingIntent: PendingIntent
+        val intent = Intent(context, CMBroadcastReceiver::class.java)
+        intent.action = CMConstant.ReceiverAction.ACTION_BUTTON
+        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
+        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
+        intent.putExtra(CMConstant.EXTRA_PRE_DEF_ACTION, actionButton.pdActions)
+       // intent.putExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK, actionButton.appLink)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            resultPendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    requestCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        } else {
+            resultPendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    requestCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+        return resultPendingIntent
+    }
+
+
 }

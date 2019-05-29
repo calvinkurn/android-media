@@ -44,6 +44,19 @@ class TrackingRepository (
                 response.isSuccessful
             }
 
+    suspend fun sendSingleRawEvent(data: String, session: Session,container: String) : Boolean =
+            withContext(Dispatchers.Default) {
+                val dataRequest = TrackingMapper().transformRawSingleEvent(data, session.getSessionId(),
+                        session.getUserId(), session.getDeviceId(),container)
+                val service = ApiService(context).makeRetrofitService()
+                val requestBody = ApiService.parse(dataRequest)
+                val request = service.sendSingleEvent(requestBody)
+                val response = request.await()
+                response.isSuccessful
+            }
+
+
+
     private fun isSizeOver() : Boolean {
         val f: File? = context.getDatabasePath(DATABASE_NAME)
         if (f != null) {

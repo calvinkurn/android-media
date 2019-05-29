@@ -31,4 +31,6 @@ interface Iris {
     companion object {
         fun init(context: Context): Iris = IrisAnalytics(context)
     }
+
+    fun sendRawEvent(map: Map<String, Any>,container: String)
 }

@@ -182,7 +182,7 @@ public class CMNotificationUtils {
         if (null == str)
             return new SpannableStringBuilder("");
         try {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 return Html.fromHtml(str, Html.FROM_HTML_MODE_LEGACY);
             } else {
                 return Html.fromHtml(str);
