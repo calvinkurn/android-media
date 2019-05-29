@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.ActionListener;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -20,10 +20,10 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
     public static final int TYPE_VIEW_CART_TOPADS = R.layout.layout_cart_topads;
 
     private TopAdsCarouselView topAdsCarouselView;
-    private CartAdapter.ActionListener listener;
+    private ActionListener listener;
     private Context context;
 
-    public CartTopAdsViewHolder(View itemView, CartAdapter.ActionListener listener) {
+    public CartTopAdsViewHolder(View itemView, ActionListener listener) {
         super(itemView);
         this.context = itemView.getContext();
         this.listener = listener;

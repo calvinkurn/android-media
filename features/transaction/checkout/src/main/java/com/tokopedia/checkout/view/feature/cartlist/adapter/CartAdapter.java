@@ -11,12 +11,12 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
-import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
-import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
+import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewHolder;
+import com.tokopedia.checkout.view.feature.cartlist.ActionListener;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartShopViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTopAdsViewHolder;
@@ -28,12 +28,10 @@ import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
-import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -44,26 +42,21 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final CartAdapter.ActionListener cartActionListener;
+    private final ActionListener actionListener;
+    private final PromoActionListener promoActionListener;
     private final CartItemAdapter.ActionListener cartItemActionListener;
     private List<Object> cartDataList;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
     private CompositeSubscription compositeSubscription;
-    private RecyclerView.RecycledViewPool viewPool;
-    private Map<Integer, Boolean> checkedItemState;
 
     @Inject
-    public CartAdapter(CartAdapter.ActionListener cartActionListener,
+    public CartAdapter(ActionListener actionListener, PromoActionListener promoActionListener,
                        CartItemAdapter.ActionListener cartItemActionListener) {
         this.cartDataList = new ArrayList<>();
-        this.cartActionListener = cartActionListener;
+        this.actionListener = actionListener;
         this.cartItemActionListener = cartItemActionListener;
+        this.promoActionListener = promoActionListener;
         compositeSubscription = new CompositeSubscription();
-        viewPool = new RecyclerView.RecycledViewPool();
-    }
-
-    public void setCheckedItemState(Map<Integer, Boolean> checkedItemState) {
-        this.checkedItemState = checkedItemState;
     }
 
     @Override
@@ -91,19 +84,19 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartShopViewHolder.TYPE_VIEW_ITEM_SHOP, parent, false);
-            return new CartShopViewHolder(view, cartActionListener, cartItemActionListener, compositeSubscription, viewPool, cartActionListener);
+            return new CartShopViewHolder(view, actionListener, cartItemActionListener, compositeSubscription);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION, parent, false);
-            return new CartPromoSuggestionViewHolder(view, cartActionListener);
+            return new CartPromoSuggestionViewHolder(view, promoActionListener);
         } else if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartVoucherPromoViewHolder.TYPE_VIEW_PROMO, parent, false);
-            return new CartVoucherPromoViewHolder(view, cartActionListener);
+            return new CartVoucherPromoViewHolder(view, promoActionListener);
         } else if (viewType == CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR, parent, false);
-            return new CartTickerErrorViewHolder(view, cartActionListener);
+            return new CartTickerErrorViewHolder(view, actionListener);
         } else if (viewType == ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK, parent, false);
@@ -111,7 +104,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (viewType == CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS, parent, false);
-            return new CartTopAdsViewHolder(view, cartActionListener);
+            return new CartTopAdsViewHolder(view, actionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -491,9 +484,9 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         if (canProcess && checkedCount > 0) {
-            cartActionListener.onCartDataEnableToCheckout();
+            actionListener.onCartDataEnableToCheckout();
         } else {
-            String errorMessage = cartActionListener.getDefaultCartErrorMessage();
+            String errorMessage = actionListener.getDefaultCartErrorMessage();
             for (Object object : cartDataList) {
                 if (object instanceof CartItemTickerErrorHolderData) {
                     CartTickerErrorData cartTickerErrorData = ((CartItemTickerErrorHolderData) object).getCartTickerErrorData();
@@ -504,7 +497,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
 
-            cartActionListener.onCartDataDisableToCheckout(errorMessage);
+            actionListener.onCartDataDisableToCheckout(errorMessage);
         }
     }
 
@@ -586,14 +579,4 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         cartDataList.add(adsModel);
     }
 
-    public interface ActionListener extends CartAdapterActionListener {
-
-        String getDefaultCartErrorMessage();
-
-        void onCartShopNameClicked(CartShopHolderData cartShopHolderData);
-
-        void onShopItemCheckChanged(int itemPosition, boolean checked);
-
-        void onTopAdsItemClicked(Product product);
-    }
 }

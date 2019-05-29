@@ -66,8 +66,4 @@ public interface ICartListPresenter {
 
     boolean dataHasChanged();
 
-    void setCheckedCartItemState(List<CartItemHolderData> cartItemHolderDataList);
-
-    Map<Integer, Boolean> getCheckedCartItemState();
-
 }

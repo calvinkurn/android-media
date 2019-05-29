@@ -121,7 +121,6 @@ public class CartListPresenter implements ICartListPresenter {
     private final UserSessionInterface userSessionInterface;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
-    private Map<Integer, Boolean> lastCheckedItem = new HashMap<>();
 
     @Inject
     public CartListPresenter(GetCartListUseCase getCartListUseCase,
@@ -1356,19 +1355,4 @@ public class CartListPresenter implements ICartListPresenter {
         return hasChanges;
     }
 
-    @Override
-    public void setCheckedCartItemState(List<CartItemHolderData> cartItemHolderDataList) {
-        if (lastCheckedItem != null) {
-            lastCheckedItem.clear();
-
-            for (CartItemHolderData cartItemHolderData : cartItemHolderDataList) {
-                lastCheckedItem.put(cartItemHolderData.getCartItemData().getOriginData().getCartId(), cartItemHolderData.isSelected());
-            }
-        }
-    }
-
-    @Override
-    public Map<Integer, Boolean> getCheckedCartItemState() {
-        return lastCheckedItem;
-    }
 }

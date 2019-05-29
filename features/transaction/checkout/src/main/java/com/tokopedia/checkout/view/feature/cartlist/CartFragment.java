@@ -47,6 +47,7 @@ import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemDa
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.ResponseFirstStep;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveView;
@@ -111,15 +112,11 @@ import javax.inject.Inject;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartFragment extends BaseCheckoutFragment implements CartAdapter.ActionListener,
-        CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener,
+public class CartFragment extends BaseCheckoutFragment implements ActionListener,
+        CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener, PromoActionListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
         ToolbarRemoveView.OnToolbarRemoveAllCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
         ClashBottomSheetFragment.ActionListener {
-
-    private static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
-    private static final String GLOBAL_COUPON_ATTR_DESC = "GLOBAL_COUPON_ATTR_DESC";
-    private static final String GLOBAL_COUPON_ATTR_QTY = "GLOBAL_COUPON_ATTR_QTY";
 
     public static final int SHOP_INDEX_PROMO_GLOBAL = -1;
 
@@ -469,7 +466,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             dPresenter.getCartListData().setAllSelected(checked);
             cbSelectAll.setChecked(checked);
             cartAdapter.setAllShopSelected(checked);
-            dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
             cartAdapter.notifyDataSetChanged();
             dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         };
@@ -596,6 +592,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void onClickShopNow() {
+
+    }
+
+    @NonNull
+    @Override
     public String getDefaultCartErrorMessage() {
         if (isAdded()) {
             return getString(R.string.cart_error_message_no_count);
@@ -614,7 +616,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onShopItemCheckChanged(int itemPosition, boolean checked) {
-        dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
         dPresenter.setHasPerformChecklistChange();
         cartAdapter.setShopSelected(itemPosition, checked);
         cartAdapter.notifyDataSetChanged();
@@ -803,11 +804,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, Object shipmentData, int position, int requestCode) {
-
-    }
-
-    @Override
     public void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position) {
         dPresenter.processUpdateCartDataPromoStacking(getSelectedCartDataList(), dataGlobal, GO_TO_DETAIL);
     }
@@ -827,11 +823,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel) {
-
-    }
-
-    @Override
     public void onCartItemAfterErrorChecked() {
         cartAdapter.checkForShipmentForm();
     }
@@ -848,7 +839,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public boolean onCartItemCheckChanged(int position, int parentPosition, boolean checked) {
-        dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
         dPresenter.setHasPerformChecklistChange();
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cartAdapter.checkForShipmentForm();
@@ -996,7 +986,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 );
             }
 
-            cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
             cartAdapter.addDataList(cartListData.getShopGroupDataList());
             if (cartListData.getAdsModel() != null) {
                 cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
@@ -1271,8 +1260,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                     }
                 }
             }
-        } else {
-            dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
         }
     }
 

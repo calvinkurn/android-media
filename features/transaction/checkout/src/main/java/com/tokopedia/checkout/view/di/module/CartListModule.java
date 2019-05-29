@@ -12,7 +12,9 @@ import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
+import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
+import com.tokopedia.checkout.view.feature.cartlist.ActionListener;
 import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
 import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.feature.cartlist.CartListPresenter;
@@ -44,13 +46,15 @@ import rx.subscriptions.CompositeSubscription;
 public class CartListModule {
 
     private final ICartListView cartListView;
-    private final CartAdapter.ActionListener cartActionListener;
+    private final ActionListener cartActionListener;
+    private final PromoActionListener promoActionListener;
     private final CartItemAdapter.ActionListener cartItemActionListener;
 
     public CartListModule(CartFragment cartFragment) {
         this.cartListView = cartFragment;
         this.cartActionListener = cartFragment;
         this.cartItemActionListener = cartFragment;
+        this.promoActionListener = cartFragment;
     }
 
     @Provides
@@ -125,7 +129,7 @@ public class CartListModule {
     @Provides
     @CartListScope
     CartAdapter provideCartListAdapter() {
-        return new CartAdapter(cartActionListener, cartItemActionListener);
+        return new CartAdapter(cartActionListener, promoActionListener, cartItemActionListener);
     }
 
     @Provides
