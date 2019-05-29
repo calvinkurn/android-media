@@ -28,7 +28,7 @@ class DownloadHelper(@NotNull val context: Context,
     fun downloadFile(isDownloadable: (String) -> Boolean) {
         val downloadUri = Uri.parse(uri)
 
-        if(!isDownloadable(uri)) return
+        if (!isDownloadable(uri)) return
 
         val downloadManager: DownloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val request = DownloadManager.Request(downloadUri).apply {
@@ -50,7 +50,16 @@ class DownloadHelper(@NotNull val context: Context,
             listener.apply {
                 onDownloadComplete()
             }
+
+            unSubcribeDownLoadHelper()
         }
+    }
+
+    private fun unSubcribeDownLoadHelper() {
+        context.apply {
+            unregisterReceiver(onComplete)
+        }
+
     }
 
 

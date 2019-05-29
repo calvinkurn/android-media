@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.presentation.activity
+package com.tokopedia.webview.download
 
 import android.content.Context
 import android.content.Intent
@@ -7,50 +7,57 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.TextUtils
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.tokopedia.home.account.presentation.fragment.WebViewFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 
-class AppLinkActivity : BaseSimpleWebViewActivity() {
+class BaseDownloadAppLinkActivity : BaseSimpleWebViewActivity() {
 
     companion object {
         private const val KEY_APP_LINK_QUERY_URL = "url"
+        private const val KEY_APP_LINK_QUERY_EXTENSIONS = "ext"
         private const val KEY_APP_LINK_QUERY_NEED_LOGIN = "need_login"
         private const val KEY_APP_LINK_QUERY_TITLEBAR = "titlebar"
         private const val EXTRA_NEED_LOGIN = "EXTRA_NEED_LOGIN"
 
-        private var web_url :String = ""
+        private var web_url: String = ""
+        private var extensions: String = ""
 
 
         private fun newIntent(context: Context, url: String, showToolbar: Boolean,
-                              needLogin: Boolean): Intent {
-            return Intent(context, AppLinkActivity::class.java)
+                              needLogin: Boolean, extensions: String): Intent {
+            return Intent(context, BaseDownloadAppLinkActivity::class.java)
                     .putExtra("KEY_URL", url)
                     .putExtra("KEY_SHOW_TOOLBAR", showToolbar)
                     .putExtra(EXTRA_NEED_LOGIN, needLogin)
+                    .putExtra("ext", extensions)
 
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        web_url =  intent.extras.getString("KEY_URL")
+        web_url = intent.extras.getString("KEY_URL")
+        extensions = intent.extras.getString("ext")
         super.onCreate(savedInstanceState)
     }
 
 
     override fun getNewFragment(): Fragment {
-        return WebViewFragment.newInstance(web_url)
+        return BaseDownloadWebViewFragment.newInstance(web_url, extensions)
     }
 
 
     object DeepLinkIntents {
-        @DeepLink("tokopedia://home/orderlist")
+        @DeepLink(ApplinkConst.WEBVIEW_DOWNLOAD)
         @JvmStatic
         fun getOrderListIntent(context: Context, extras: Bundle): Intent {
 
             var webUrl = extras.getString(
                     KEY_APP_LINK_QUERY_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
             )
+            var extensionsList = extras.getString(
+                    KEY_APP_LINK_QUERY_EXTENSIONS, "")
+
             val showToolbar: Boolean = try {
                 java.lang.Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_TITLEBAR,
                         "true"))
@@ -69,7 +76,7 @@ class AppLinkActivity : BaseSimpleWebViewActivity() {
                 webUrl = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
             }
 
-            return newIntent(context, webUrl, showToolbar, needLogin)
+            return newIntent(context, webUrl, showToolbar, needLogin, extensionsList)
         }
 
     }
