@@ -200,12 +200,12 @@ public class SearchTracking {
         );
     }
 
-    public static void eventClickGuidedSearch(Context context, String previousKey, String page, String nextKey) {
+    public static void eventClickGuidedSearch(String previousKey, int position, String nextKey) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 "clickSearchResult",
                 "search result",
                 "click - guided search",
-                String.format("%s - %s - %s", previousKey, nextKey, page)
+                String.format("%s - %s - %s", previousKey, nextKey, String.valueOf(position + 1))
         ));
     }
 

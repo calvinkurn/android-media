@@ -30,6 +30,7 @@ import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentItemViewH
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentNotifierViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentInsuranceTncModel;
@@ -57,6 +58,7 @@ import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -69,7 +71,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public static final int DEFAULT_ERROR_POSITION = -1;
     public static final int HEADER_POSITION = 0;
-    private static final double LAST_THREE_DIGIT_MODULUS = 1000;
+    private static final long LAST_THREE_DIGIT_MODULUS = 1000;
 
     private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -451,17 +453,40 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void updateEmasCostModel() {
-        double totalPrice = shipmentCostModel.getTotalPrice();
-        int valueTOCheck = (int) (totalPrice % LAST_THREE_DIGIT_MODULUS);
-        int buyEgoldValue = 0;
-        for (int i = egoldAttributeModel.getMinEgoldRange(); i <= egoldAttributeModel.getMaxEgoldRange(); i++) {
+        long totalPrice = (long) shipmentCostModel.getTotalPrice();
+        int valueTOCheck = 0;
+        long buyEgoldValue = 0;
 
-            if (((valueTOCheck + i) % LAST_THREE_DIGIT_MODULUS) == 0) {
+        if (egoldAttributeModel.isTiering()) {
+            Collections.sort(egoldAttributeModel.getEgoldTieringModelArrayList(), (o1, o2) -> (int) (o1.getMinTotalAmount() - o2.getMinTotalAmount()));
+            EgoldTieringModel egoldTieringModel = new EgoldTieringModel();
+            for (EgoldTieringModel data : egoldAttributeModel.getEgoldTieringModelArrayList()) {
+                if (totalPrice >= data.getMinTotalAmount()) {
+                    valueTOCheck = (int) (totalPrice % data.getBasisAmount());
+                    egoldTieringModel = data;
+                }
+            }
+            buyEgoldValue = calculateBuyEgoldValue(valueTOCheck, (int) egoldTieringModel.getMinAmount(), (int) egoldTieringModel.getMaxAmount(), egoldTieringModel.getBasisAmount());
+        } else {
+            valueTOCheck = (int) (totalPrice % LAST_THREE_DIGIT_MODULUS);
+            buyEgoldValue = calculateBuyEgoldValue(valueTOCheck, egoldAttributeModel.getMinEgoldRange(), egoldAttributeModel.getMaxEgoldRange(), LAST_THREE_DIGIT_MODULUS);
+
+        }
+        egoldAttributeModel.setBuyEgoldValue(buyEgoldValue);
+    }
+
+    private long calculateBuyEgoldValue(int valueTOCheck, int minRange, int maxRange, long basisAmount) {
+
+        long buyEgoldValue = 0;
+
+        for (int i = minRange; i <= maxRange; i++) {
+            if ((valueTOCheck + i) % basisAmount == 0) {
                 buyEgoldValue = i;
                 break;
             }
         }
-        egoldAttributeModel.setBuyEgoldValue(buyEgoldValue);
+
+        return buyEgoldValue;
     }
 
     private int getBuyEmasPosition() {
