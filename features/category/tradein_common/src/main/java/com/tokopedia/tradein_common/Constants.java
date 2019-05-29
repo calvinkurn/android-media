@@ -1,4 +1,4 @@
-package tradein_common;
+package com.tokopedia.tradein_common;
 
 public class Constants {
     public static String LAKU6_BASEURL = "https://www.laku6.com";

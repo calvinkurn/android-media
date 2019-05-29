@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
@@ -7,7 +8,7 @@
     android:layout_marginStart="@dimen/dp_16"
     android:layout_marginEnd="@dimen/dp_16"
     android:background="@drawable/bg_rect_white_round"
-    tools:context="view.viewcontrollers.AccessRequestFragment">
+    tools:context="com.tokopedia.tradein_common.viewcontrollers.AccessRequestFragment">
 
     <TextView
         android:id="@+id/tv_title_access"
@@ -52,7 +53,7 @@
         android:paddingTop="@dimen/dp_12"
         android:paddingBottom="@dimen/dp_12"
         android:text="@string/button_cancel"
-        android:textColor="@color/green_tradein_button"
+        android:textColor="@color/green_nob"
         android:textSize="@dimen/sp_16"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/button_accept"
