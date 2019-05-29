@@ -31,6 +31,7 @@ import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.*;
 public class SearchTracking {
 
     private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
+    public static final String ACTION_IMAGE_SEARCH = "/imagesearch";
     public static final String EVENT = "event";
     public static final String EVENT_CATEGORY = "eventCategory";
     public static final String EVENT_ACTION = "eventAction";
@@ -55,7 +56,6 @@ public class SearchTracking {
     public static final String EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET = "click - lihat semua widget";
     public static final String EVENT_ACTION_CLICK_WIDGET_DIGITAL_PRODUCT = "click widget - digital product";
     public static final String EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT = "impression widget - digital product";
-    public static String imageClick = "/imagesearch - p%s";
 
     private UserSessionInterface userSessionInterface;
 
@@ -163,7 +163,7 @@ public class SearchTracking {
         );
     }
 
-    public static void trackEventClickImageSearchResultProduct(Object item, int position) {
+    public static void trackEventClickImageSearchResultProduct(Object item) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
                 EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                 EVENT_CATEGORY, SearchEventTracking.Category.IMAGE_SEARCH_RESULT,
@@ -171,7 +171,7 @@ public class SearchTracking {
                 EVENT_LABEL, "",
                 ECOMMERCE, DataLayer.mapOf(
                         "click", DataLayer.mapOf(
-                                    "actionField", DataLayer.mapOf("list", String.format(imageClick, position)),
+                                    "actionField", DataLayer.mapOf("list", ACTION_IMAGE_SEARCH),
                                              "products", DataLayer.listOf(item)
                                         )
                             )

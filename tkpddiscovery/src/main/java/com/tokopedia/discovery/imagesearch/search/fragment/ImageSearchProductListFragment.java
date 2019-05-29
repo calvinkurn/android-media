@@ -424,8 +424,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                     count++;
                     if (list.get(j) instanceof ProductItem) {
                         ProductItem productItem = (ProductItem)list.get(j);
-                        int productItemRow = (productItem.getPosition() + 1) / 2;
-                        dataLayerList.add(productItem.getProductAsObjectDataLayerForImageSearchImpression(productItemRow));
+                        dataLayerList.add(productItem.getProductAsObjectDataLayerForImageSearchImpression());
                     }
                     j++;
                 }
@@ -683,8 +682,8 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private void sendItemClickTrackingEvent(ProductItem item) {
         SearchTracking.trackEventClickImageSearchResultProduct(
-                item.getProductAsObjectDataLayerForImageSearchClick(),
-                (item.getPosition() + 1) / 2);
+                item.getProductAsObjectDataLayerForImageSearchClick()
+        );
     }
 
     @Override

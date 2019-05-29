@@ -11,7 +11,6 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -312,13 +311,13 @@ public class ProductItem extends ImpressHolder implements Parcelable, Visitable<
         return typeFactory.type(this);
     }
 
-    public Object getProductAsObjectDataLayerForImageSearchImpression(int itemRow) {
+    public Object getProductAsObjectDataLayerForImageSearchImpression() {
         return DataLayer.mapOf(
                 "name", getProductName(),
                 "id", getProductID(),
                 "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
                 "category", getCategoryBreadcrumb(),
-                "list", String.format(SearchTracking.imageClick, itemRow),
+                "list", SearchTracking.ACTION_IMAGE_SEARCH,
                 "position", Integer.toString(getPosition())
         );
     }
