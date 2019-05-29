@@ -1,4 +1,4 @@
-package com.tokopedia.home_recom.view.viewHolder
+package com.tokopedia.home_recom.view.viewholder
 
 import android.graphics.Paint
 import android.view.View
@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.home_recom.model.dataModel.ProductInfoDataModel
+import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.R
 
 class ProductInfoViewHolder(private val view: View) : AbstractViewHolder<ProductInfoDataModel>(view) {

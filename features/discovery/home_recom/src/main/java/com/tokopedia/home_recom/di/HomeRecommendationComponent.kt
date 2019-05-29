@@ -1,8 +1,8 @@
 package com.tokopedia.home_recom.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.home_recom.view.productInfo.ProductInfoFragment
-import com.tokopedia.home_recom.view.recommendation.RecommendationFragment
+import com.tokopedia.home_recom.view.fragment.ProductInfoFragment
+import com.tokopedia.home_recom.view.fragment.RecommendationFragment
 import dagger.Component
 
 @HomeRecommendationScope

@@ -1,8 +1,8 @@
-package com.tokopedia.home_recom.view.adapter.homerecommendation
+package com.tokopedia.home_recom.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_recom.model.dataModel.*
+import com.tokopedia.home_recom.model.datamodel.*
 
 interface HomeRecommendationTypeFactory {
     fun type(dataModel: ProductInfoDataModel): Int

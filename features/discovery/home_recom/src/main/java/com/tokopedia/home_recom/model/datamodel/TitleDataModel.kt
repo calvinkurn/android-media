@@ -1,7 +1,7 @@
-package com.tokopedia.home_recom.model.dataModel
+package com.tokopedia.home_recom.model.datamodel
 
 import com.tokopedia.home_recom.R
-import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationTypeFactory
+import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactory
 
 class TitleDataModel (
         val title: String

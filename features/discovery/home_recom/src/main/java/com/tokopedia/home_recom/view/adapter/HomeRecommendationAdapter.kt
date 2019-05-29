@@ -1,4 +1,4 @@
-package com.tokopedia.home_recom.view.adapter.homerecommendation
+package com.tokopedia.home_recom.view.adapter
 
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_recom.model.dataModel.BaseHomeRecommendationDataModel
-import com.tokopedia.home_recom.model.dataModel.ProductInfoDataModel
-import com.tokopedia.home_recom.model.dataModel.RecommendationCarouselDataModel
-import com.tokopedia.home_recom.model.dataModel.TitleDataModel
+import com.tokopedia.home_recom.model.datamodel.BaseHomeRecommendationDataModel
+import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
+import com.tokopedia.home_recom.model.datamodel.TitleDataModel
 
 class HomeRecommendationAdapter(
         private val adapterTypeFactory: HomeRecommendationTypeFactoryImpl

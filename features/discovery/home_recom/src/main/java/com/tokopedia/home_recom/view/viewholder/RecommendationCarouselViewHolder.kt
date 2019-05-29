@@ -1,4 +1,4 @@
-package com.tokopedia.home_recom.view.viewHolder
+package com.tokopedia.home_recom.view.viewholder
 
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_recom.R
-import com.tokopedia.home_recom.model.dataModel.RecommendationCarouselItemDataModel
-import com.tokopedia.home_recom.model.dataModel.RecommendationCarouselDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
 
 class RecommendationCarouselViewHolder(view: View) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
 

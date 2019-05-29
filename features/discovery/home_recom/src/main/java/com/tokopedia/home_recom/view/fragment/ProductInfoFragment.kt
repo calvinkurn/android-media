@@ -1,4 +1,4 @@
-package com.tokopedia.home_recom.view.productInfo
+package com.tokopedia.home_recom.view.fragment
 
 import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
@@ -14,19 +15,23 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
-import com.tokopedia.home_recom.model.dataModel.ProductInfoDataModel
+import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
+import com.tokopedia.home_recom.util.RecommendationPageErrorHandler
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_product_info.*
 import javax.inject.Inject
 
 class ProductInfoFragment : BaseDaggerFragment() {
-//
-//    @Inject
-//    lateinit var userSessionInterface : UserSessionInterface
+
+    @Inject
+    lateinit var userSessionInterface : UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -35,9 +40,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private val primaryProductViewModel by lazy { viewModelProvider.get(PrimaryProductViewModel::class.java) }
 
-    private lateinit var dataModel: ProductInfoDataModel
-
-    private lateinit var productId: String
+    private lateinit var productDataModel: ProductInfoDataModel
 
     private lateinit var productView: View
     private val productName: TextView by lazy { productView.findViewById<TextView>(R.id.product_name) }
@@ -60,7 +63,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     companion object{
         fun newInstance(dataModel: ProductInfoDataModel) = ProductInfoFragment().apply {
-            this.dataModel = dataModel
+            this.productDataModel = dataModel
         }
 
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
@@ -74,28 +77,32 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        productName.text = dataModel.productDetailData.name
+        productName.text = productDataModel.productDetailData.name
         productDiscount.text = "20%"
         setSplashedText("RP100.000")
-        productPrice.text = dataModel.productDetailData.price
+        productPrice.text = productDataModel.productDetailData.price
         location.text = "Jakarta"
-        ImageHandler.loadImageFitCenter(view.context, productImage, dataModel.productDetailData.imageUrl)
-        setRatingReviewCount(dataModel.productDetailData.rating, dataModel.productDetailData.countReview)
+        ImageHandler.loadImageFitCenter(view.context, productImage, productDataModel.productDetailData.imageUrl)
+        setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
 
         fab_detail.setOnClickListener {
-            if (it.isActivated) {
-                productId?.let {
-                    primaryProductViewModel.removeWishList(it,
-                            onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
-                            onErrorRemoveWishList = this::onErrorRemoveWishList)
-                }
+            if (userSessionInterface.isLoggedIn) {
+                if (it.isActivated) {
+                    productDataModel.productDetailData.id.let {
+                        primaryProductViewModel.removeWishList(it.toString(),
+                                onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
+                                onErrorRemoveWishList = this::onErrorRemoveWishList)
+                    }
 
-            } else {
-                productId?.let {
-                    primaryProductViewModel.addWishList(it,
-                            onSuccessAddWishlist = this::onSuccessAddWishlist,
-                            onErrorAddWishList = this::onErrorAddWishList)
+                } else {
+                    productDataModel.productDetailData.id.let {
+                        primaryProductViewModel.addWishList(it.toString(),
+                                onSuccessAddWishlist = this::onSuccessAddWishlist,
+                                onErrorAddWishList = this::onErrorAddWishList)
+                    }
                 }
+            } else {
+                RouteManager.route(activity, ApplinkConst.LOGIN)
             }
         }
     }
@@ -106,7 +113,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private fun onSuccessRemoveWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_remove_wishlist))
-//        productInfoViewModel.productInfoP3resp.value?.isWishlisted = false
         updateWishlist(false)
         //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", false)
@@ -115,8 +121,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private fun sendIntentResusltWishlistChange(productId: String, isInWishlist: Boolean) {
         val resultIntent = Intent()
-                .putExtra(Companion.WISHLIST_STATUS_UPDATED_POSITION, activity?.intent?.getIntExtra(Companion.WISHLIST_STATUS_UPDATED_POSITION, -1))
-        resultIntent.putExtra(Companion.WIHSLIST_STATUS_IS_WISHLIST, isInWishlist)
+                .putExtra(WISHLIST_STATUS_UPDATED_POSITION, activity?.intent?.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1))
+        resultIntent.putExtra(WIHSLIST_STATUS_IS_WISHLIST, isInWishlist)
         resultIntent.putExtra("product_id", productId)
         activity!!.setResult(Activity.RESULT_CANCELED, resultIntent)
     }
@@ -127,7 +133,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private fun onSuccessAddWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
-//        productInfoViewModel.productInfoP3resp.value?.isWishlisted = true
         updateWishlist(true)
         //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", true)
@@ -135,19 +140,19 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private fun showToastError(throwable: Throwable) {
         activity?.run {
-//            ToasterError.make(findViewById(android.R.id.content),
-//                    ProductDetailErrorHandler.getErrorMessage(this, throwable),
-//                    ToasterError.LENGTH_LONG)
-//                    .show()
+            Toaster.showRed(
+                    findViewById(android.R.id.content),
+                    RecommendationPageErrorHandler.getErrorMessage(activity!!, throwable),
+                    Snackbar.LENGTH_LONG)
         }
     }
 
     private fun showToastSuccess(message: String) {
         activity?.run {
-//            ToasterNormal.make(findViewById(android.R.id.content),
-//                    message,
-//                    ToasterNormal.LENGTH_LONG)
-//                    .show()
+            Toaster.showGreen(
+                    findViewById(android.R.id.content),
+                    message,
+                    Snackbar.LENGTH_LONG)
         }
     }
 
@@ -182,10 +187,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
         context?.let {
             if (wishlisted) {
                 fab_detail.isActivated = true
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_checked))
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_product_action_wishlist_added_24))
             } else {
                 fab_detail.isActivated = false
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_product_action_wishlist_grayscale_24))
             }
         }
     }

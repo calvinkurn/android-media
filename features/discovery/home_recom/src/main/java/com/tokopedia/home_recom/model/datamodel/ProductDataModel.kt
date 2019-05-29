@@ -1,4 +1,4 @@
-package com.tokopedia.home_recom.model.dataModel
+package com.tokopedia.home_recom.model.datamodel
 
 class ProductDataModel(
     val id: Int,

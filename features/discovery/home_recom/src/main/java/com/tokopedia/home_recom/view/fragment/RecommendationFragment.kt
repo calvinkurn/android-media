@@ -1,4 +1,4 @@
-package com.tokopedia.home_recom.view.recommendation
+package com.tokopedia.home_recom.view.fragment
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
@@ -11,13 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.home_recom.PrimaryProductParams
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
-import com.tokopedia.home_recom.model.dataModel.*
-import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationAdapter
-import com.tokopedia.home_recom.view.adapter.homerecommendation.HomeRecommendationTypeFactoryImpl
-import com.tokopedia.home_recom.view.productInfo.ProductInfoFragment
+import com.tokopedia.home_recom.model.datamodel.*
+import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
+import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
 import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
@@ -62,7 +60,7 @@ class RecommendationFragment: BaseListFragment<BaseHomeRecommendationDataModel, 
 
         recommendationWidgetViewModel.recommendationListModel.observe(this, Observer {
             it?.let { recommendationList ->
-//                renderList(mapDataModel(recommendationList))
+                renderList(mapDataModel(recommendationList))
             }
         })
 
