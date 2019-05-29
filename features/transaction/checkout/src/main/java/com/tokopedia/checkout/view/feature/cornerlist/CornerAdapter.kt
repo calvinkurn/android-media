@@ -41,9 +41,9 @@ class CornerAdapter(
         var mCornerDesc: TextView = mView.findViewById(R.id.text_view_branch_desc)
 
         fun bind(model: RecipientAddressModel, listener: OnItemClickListener) {
-            val desc = model.destinationDistrictName + ", " + model.cityName
-            mCornerName.text = model.addressName
-            mCornerDesc.text = desc
+            val description = "${model.addressName}, ${model.destinationDistrictName}, ${model.cityName}"
+            mCornerName.text = model.partnerName
+            mCornerDesc.text = description
             mView.setOnClickListener { listener.onItemClick(model) }
         }
     }
