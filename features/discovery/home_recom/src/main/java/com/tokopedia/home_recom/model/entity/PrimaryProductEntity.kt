@@ -85,7 +85,9 @@ data class Shop(
         @SerializedName("name")
         val name: String,
         @SerializedName("shopImage")
-        val shopImage: String
+        val shopImage: String,
+        @SerializedName("location")
+        val location: String
 )
 
 data class Badge(

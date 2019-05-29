@@ -73,7 +73,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         product_discount.text = "20%"
         setSplashedText("RP100.000")
         product_price.text = productDataModel.productDetailData.price
-        location.text = "Jakarta"
+        location.text = productDataModel.productDetailData.shop.location
         if (!productDataModel.productDetailData.badges.isEmpty()) {
             badge.visibility = View.VISIBLE
             ImageHandler.loadImageFitCenter(view.context, badge, productDataModel.productDetailData.badges.get(0).imageUrl)

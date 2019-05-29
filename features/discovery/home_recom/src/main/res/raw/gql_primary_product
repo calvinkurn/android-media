@@ -24,6 +24,7 @@ query primaryProduct($userID: Int!, $productId: Int!, $xDevice: String!, $xSourc
               id
               name
               shopImage
+              location
             }
             departmentId
             labels {
