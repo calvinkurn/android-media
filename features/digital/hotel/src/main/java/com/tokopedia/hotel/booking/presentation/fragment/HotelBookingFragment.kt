@@ -38,6 +38,8 @@ import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.payment.activity.TopPayActivity
+import com.tokopedia.payment.model.PaymentPassData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
@@ -87,7 +89,10 @@ class HotelBookingFragment : BaseDaggerFragment() {
         bookingViewModel.hotelCheckoutResult.observe(this, android.arch.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    // Start activity
+                    val checkoutData = PaymentPassData()
+                    checkoutData.queryString = it.data.queryString
+                    checkoutData.redirectUrl = it.data.redirectUrl
+                    startActivityForResult(TopPayActivity.createInstance(context, checkoutData), REQUEST_CODE_CHECKOUT)
                 }
                 is Fail -> {}
             }
@@ -387,6 +392,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
         const val ARG_CART_ID = "arg_cart_id"
         const val EXTRA_HOTEL_BOOKING_MODEL = "extra_hotel_booking_model"
         const val REQUEST_CODE_CONTACT_DATA = 104
+        const val REQUEST_CODE_CHECKOUT = 105
         const val TAG_HOTEL_CANCELLATION_POLICY = "hotel_cancellation_policy"
         const val TAG_HOTEL_TAX_POLICY = "hotel_tax_policy"
         const val ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT = 250
