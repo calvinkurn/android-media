@@ -147,6 +147,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (getItemViewType(position) == CartEmptyViewHolder.Companion.getLAYOUT()) {
             final CartEmptyViewHolder holderView = (CartEmptyViewHolder) holder;
             final CartEmptyHolderData data = (CartEmptyHolderData) cartDataList.get(position);
+            holderView.bind(data);
         }
     }
 
@@ -457,6 +458,13 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         cartDataList.add(promoStackingData);
         notifyDataSetChanged();
         checkForShipmentForm();
+    }
+
+    public void removePromoStackingVoucherData() {
+        if (cartDataList.get(0) instanceof PromoStackingData) {
+            cartDataList.remove(cartDataList.get(0));
+            notifyItemRemoved(0);
+        }
     }
 
     public void addCartTickerError(CartItemTickerErrorHolderData cartItemTickerErrorHolderData) {

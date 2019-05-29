@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.feature.cartlist.ActionListener
-import com.tokopedia.checkout.view.feature.emptycart2.uimodel.EmptyCartPlaceholderUiModel
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartEmptyHolderData
 import kotlinx.android.synthetic.main.item_empty_cart_placeholder.view.*
 
 /**
@@ -17,7 +17,7 @@ class CartEmptyViewHolder(val view: View, val listener: ActionListener): Recycle
         val LAYOUT = R.layout.item_empty_cart_placeholder
     }
 
-    fun bind(element: EmptyCartPlaceholderUiModel?) {
+    fun bind(element: CartEmptyHolderData) {
         itemView.btn_shopping_now.setOnClickListener {
             listener.onClickShopNow()
         }

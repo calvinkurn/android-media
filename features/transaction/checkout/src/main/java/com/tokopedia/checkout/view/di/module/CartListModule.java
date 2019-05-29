@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
@@ -105,7 +104,6 @@ public class CartListModule {
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription,
                                                  CartApiRequestParamGenerator cartApiRequestParamGenerator,
-                                                 CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                                                  AddWishListUseCase addWishListUseCase,
                                                  RemoveWishListUseCase removeWishListUseCase,
                                                  UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
@@ -115,8 +113,8 @@ public class CartListModule {
         return new CartListPresenter(getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
-                cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase, addWishListUseCase,
-                removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
+                cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,
+                updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
                 clearCacheAutoApplyStackUseCase);
     }
 

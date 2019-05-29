@@ -42,7 +42,6 @@ import com.tokopedia.checkout.view.feature.emptycart.di.DaggerEmptyCartComponent
 import com.tokopedia.checkout.view.feature.emptycart.di.EmptyCartComponent;
 import com.tokopedia.checkout.view.feature.emptycart.di.EmptyCartModule;
 import com.tokopedia.design.component.TextViewCompat;
-import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
@@ -534,11 +533,11 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     @Override
     public void navigateToCartFragment(CartListData cartListData) {
         cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
-        if (getActivity() instanceof EmptyCartListener) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(EmptyCartListener.ARG_CART_LIST_DATA, cartListData);
-            ((EmptyCartListener) getActivity()).onCartNotEmpty(bundle);
-        }
+//        if (getActivity() instanceof EmptyCartListener) {
+//            Bundle bundle = new Bundle();
+//            bundle.putParcelable(EmptyCartListener.ARG_CART_LIST_DATA, cartListData);
+//            ((EmptyCartListener) getActivity()).onCartNotEmpty(bundle);
+//        }
     }
 
     @Override

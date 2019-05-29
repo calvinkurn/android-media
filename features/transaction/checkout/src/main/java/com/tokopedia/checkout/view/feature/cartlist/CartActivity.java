@@ -10,14 +10,12 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.applink.CheckoutAppLink;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
-import com.tokopedia.checkout.view.feature.emptycart2.EmptyCartFragment;
-import com.tokopedia.navigation_common.listener.EmptyCartListener;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BaseCheckoutActivity implements EmptyCartListener {
+public class CartActivity extends BaseCheckoutActivity {
 
     private Fragment cartFragment;
     private Fragment emptyCartFragment;
@@ -91,31 +89,7 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
     @Override
     protected Fragment getNewFragment() {
         cartFragment = CartFragment.newInstance(null,"");
-        ((CartFragment) cartFragment).setEmptyCartListener(this);
         return cartFragment;
     }
 
-    @Override
-    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc, String promoCode) {
-        if (emptyCartFragment == null) {
-            emptyCartFragment = EmptyCartFragment.Companion.newInstance(autoApplyMessage, "", state, titleDesc, promoCode);
-        }
-        if (emptyCartFragment.isAdded()) return;
-        cartFragment = null;
-        getSupportFragmentManager().beginTransaction()
-                .replace(com.tokopedia.abstraction.R.id.parent_view, emptyCartFragment, getTagFragment())
-                .commit();
-    }
-
-    @Override
-    public void onCartNotEmpty(Bundle bundle) {
-        if (cartFragment == null) {
-            cartFragment = CartFragment.newInstance(bundle,"");
-        }
-        if (cartFragment.isAdded()) return;
-        emptyCartFragment = null;
-        getSupportFragmentManager().beginTransaction()
-                .replace(com.tokopedia.abstraction.R.id.parent_view, cartFragment, getTagFragment())
-                .commit();
-    }
 }

@@ -30,10 +30,6 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorInitialGetCartListData(String message);
 
-    void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList);
-
-    void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData);
-
     void renderToShipmentFormSuccess(Map<String, Object> stringObjectMap,
                                      boolean checkoutProductEligibleForCashOnDelivery, int condition);
 
@@ -42,8 +38,6 @@ public interface ICartListView extends IBaseView {
     void renderErrorToShipmentForm(String message);
 
     void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
-
-    void renderCheckPromoStackingCodeFromSuggestedPromoSuccess(ResponseFirstStep responseFirstStep);
 
     void disableSwipeRefresh();
 
@@ -59,10 +53,6 @@ public interface ICartListView extends IBaseView {
 
     void updateCashback(double cashback);
 
-    void renderPromoVoucher();
-
-    void renderPromoGlobalVoucher();
-
     void showToastMessageRed(String message);
 
     void showToastMessageGreen(String message);
@@ -71,27 +61,15 @@ public interface ICartListView extends IBaseView {
 
     void renderLoadGetCartDataFinish();
 
-    void renderCartTickerError(CartTickerErrorData cartTickerErrorData);
-
-    void renderCancelAutoApplyCouponSuccess();
-
-    void renderCancelAutoApplyCouponStackSuccess(int position);
-
-    void renderCancelAutoApplyCouponError();
-
     void onDeleteCartDataSuccess();
 
     Activity getActivity();
 
     void goToCouponList();
 
-    void goToDetail(PromoData promoData);
-
     void goToDetailPromoStacking(PromoStackingData promoStackingData);
 
     void stopTrace();
-
-    void renderAppliedPromoStacking();
 
     void onSuccessClearPromoStack(int shopIndex);
 

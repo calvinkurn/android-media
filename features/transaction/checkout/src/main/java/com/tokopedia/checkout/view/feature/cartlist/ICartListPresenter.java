@@ -18,13 +18,12 @@ import java.util.Map;
  */
 
 public interface ICartListPresenter {
+
     void attachView(ICartListView view);
 
     void detachView();
 
     void processInitialGetCartData(boolean initialLoad);
-
-    void processDeleteCart(CartItemData cartItemData, boolean addWishList);
 
     void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList);
 
@@ -42,15 +41,11 @@ public interface ICartListPresenter {
 
     void processResetAndRefreshCartData();
 
-    void processCancelAutoApply();
-
     void processCancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
 
     void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);
 
     void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);
-
-    Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction);
 
     Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList, String enhancedECommerceAction);
 

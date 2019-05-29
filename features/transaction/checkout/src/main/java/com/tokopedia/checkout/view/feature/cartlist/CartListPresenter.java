@@ -3,11 +3,9 @@ package com.tokopedia.checkout.view.feature.cartlist;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.checkout.BuildConfig;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -18,7 +16,6 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartList
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
-import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
@@ -33,9 +30,6 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.kotlin.util.ContainNullException;
-import com.tokopedia.kotlin.util.NullCheckerKt;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
@@ -61,9 +55,6 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,7 +62,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -110,7 +100,6 @@ public class CartListPresenter implements ICartListPresenter {
     private final ResetCartGetCartListUseCase resetCartGetCartListUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
-    private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
     private final UpdateAndReloadCartUseCase updateAndReloadCartUseCase;
@@ -133,7 +122,6 @@ public class CartListPresenter implements ICartListPresenter {
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
-                             CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                              AddWishListUseCase addWishListUseCase,
                              RemoveWishListUseCase removeWishListUseCase,
                              UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
@@ -150,7 +138,6 @@ public class CartListPresenter implements ICartListPresenter {
         this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
-        this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
         this.updateAndReloadCartUseCase = updateAndReloadCartUseCase;
@@ -252,30 +239,6 @@ public class CartListPresenter implements ICartListPresenter {
             paramList.add(entry.getKey() + "=" + entry.getValue().replace(" ", "+"));
         }
         return TextUtils.join("&", paramList);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void processDeleteCart(final CartItemData cartItemData, final boolean addWishList) {
-        view.showProgressLoading();
-        List<Integer> ids = new ArrayList<>();
-        ids.add(cartItemData.getOriginData().getCartId());
-        RemoveCartRequest removeCartRequest = new RemoveCartRequest.Builder()
-                .cartIds(ids)
-                .addWishlist(addWishList ? 1 : 0)
-                .build();
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("params", new Gson().toJson(removeCartRequest));
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(DeleteCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
-                view.getGeneratedAuthParamNetwork(param));
-        compositeSubscription.add(
-                deleteCartUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberDeleteCart(cartItemData, addWishList))
-        );
     }
 
     @Override
@@ -810,42 +773,6 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<DeleteCartData> getSubscriberDeleteCart(final CartItemData cartItemData, final boolean addWishList) {
-        return new Subscriber<DeleteCartData>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (view != null) {
-                    e.printStackTrace();
-                    view.hideProgressLoading();
-                    String errorMessage = e.getMessage();
-                    if (!(e instanceof CartResponseErrorException)) {
-                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
-                    }
-                    view.showToastMessageRed(errorMessage);
-                }
-            }
-
-            @Override
-            public void onNext(DeleteCartData deleteCartData) {
-                if (view != null) {
-                    view.hideProgressLoading();
-                    if (deleteCartData.isSuccess())
-                        view.renderActionDeleteCartDataSuccess(
-                                cartItemData, deleteCartData.getMessage(), addWishList
-                        );
-                    else
-                        view.showToastMessageRed(deleteCartData.getMessage());
-                }
-            }
-        };
-    }
-
-    @NonNull
     private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(boolean removeAllItem, ArrayList<String> appliedPromoOnDeletedProductList) {
         return new Subscriber<DeleteAndRefreshCartListData>() {
             @Override
@@ -1139,63 +1066,6 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processCancelAutoApply() {
-        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
-                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new com.tokopedia.network.utils.TKPDMapParam<>());
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(CancelAutoApplyCouponUseCase.PARAM_REQUEST_AUTH_MAP_STRING, authParam);
-
-        compositeSubscription.add(cancelAutoApplyCouponUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (view != null) {
-                            view.renderCancelAutoApplyCouponError();
-                        }
-                    }
-
-                    @Override
-                    public void onNext(String stringResponse) {
-                        if (view != null) {
-                            boolean resultSuccess = false;
-                            try {
-                                JSONObject jsonObject = new JSONObject(stringResponse);
-                                NullCheckerKt.isContainNull(jsonObject, s -> {
-                                    ContainNullException exception = new ContainNullException("Found " + s + " on " + CartListPresenter.class.getSimpleName());
-                                    if (!BuildConfig.DEBUG) {
-                                        Crashlytics.logException(exception);
-                                    }
-                                    return Unit.INSTANCE;
-                                });
-
-                                resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
-                                        .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                            if (resultSuccess) {
-                                view.renderCancelAutoApplyCouponSuccess();
-                            } else {
-                                view.renderCancelAutoApplyCouponError();
-                            }
-                        }
-                    }
-                })
-        );
-    }
-
-    @Override
     public void processAddToWishlist(String productId, String userId, WishListActionListener listener) {
         view.showProgressLoading();
         addWishListUseCase.createObservable(productId, userId, listener);
@@ -1205,12 +1075,6 @@ public class CartListPresenter implements ICartListPresenter {
     public void processRemoveFromWishlist(String productId, String userId, WishListActionListener listener) {
         view.showProgressLoading();
         removeWishListUseCase.createObservable(productId, userId, listener);
-    }
-
-    @Override
-    public Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction) {
-        List<CartItemData> cartItemDataList = new ArrayList<>();
-        return generateCartDataAnalytics(cartItemDataList, enhancedECommerceAction);
     }
 
     @Override

@@ -63,7 +63,6 @@ import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
-import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -84,7 +83,7 @@ import javax.inject.Inject;
  */
 public class MainParentActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
-        MainParentView, ShowCaseListener, CartNotifyListener, EmptyCartListener {
+        MainParentView, ShowCaseListener, CartNotifyListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -774,34 +773,6 @@ public class MainParentActivity extends BaseActivity implements
 
     private void unRegisterNewFeedClickedReceiver() {
         LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
-    }
-
-    @Override
-    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc, String promoCode) {
-        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
-            if (emptyCartFragment == null) {
-                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc, promoCode);
-            }
-            if (emptyCartFragment.isAdded()) return;
-            cartFragment = null;
-            fragmentList.set(CART_MENU, emptyCartFragment);
-            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
-        }
-    }
-
-    @Override
-    public void onCartNotEmpty(Bundle bundle) {
-        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
-            if (cartFragment == null) {
-                cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(bundle);
-            } else if (bundle != null) {
-                cartFragment.setArguments(bundle);
-            }
-            if (cartFragment.isAdded()) return;
-            emptyCartFragment = null;
-            fragmentList.set(CART_MENU, cartFragment);
-            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
-        }
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
