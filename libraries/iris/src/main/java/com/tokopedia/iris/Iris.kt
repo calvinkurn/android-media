@@ -9,6 +9,14 @@ import com.tokopedia.iris.model.Configuration
  */
 interface Iris {
 
+    /**
+     * set custom configuration by json
+     * param:
+     * config, ex: {"row_limit":25,"interval":1}
+     * isEnabled, ex: true
+     */
+    fun setService(config: String, isEnabled: Boolean)
+
     fun setService(config: Configuration)
 
     fun resetService(config: Configuration)
@@ -47,10 +55,6 @@ interface Iris {
             synchronized(lock) {
                 iris = null
             }
-        }
-
-        fun convert(json: String) : Configuration? {
-            return ConfigurationMapper().parse(json)
         }
     }
 }

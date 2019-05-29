@@ -114,7 +114,6 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.CustomerRouter;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -320,7 +319,6 @@ import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
@@ -412,7 +410,6 @@ import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResp
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
-import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -443,6 +440,7 @@ import tradein_common.TradeInUtils;
 import tradein_common.router.TradeInRouter;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
+import static com.tokopedia.iris.ConstantKt.DEFAULT_CONFIG;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
@@ -537,8 +535,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         KYCRouter{
 
 
-    private final static int IRIS_ROW_LIMIT = 50;
-    private final static long IRIS_TIME_MINUTES = 15;
+    private final static int IRIS_ROW_LIMIT = 23;
+    private final static long IRIS_TIME_MINUTES = 2;
 
     private static final String EXTRA = "extra";
 
@@ -585,23 +583,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         mIris = Iris.Companion.getInstance(this);
 
         boolean irisEnable = getBooleanRemoteConfig(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true);
-        String irisConfig = getStringRemoteConfig(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, "");
+        String irisConfig = getStringRemoteConfig(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG);
 
-        Configuration configuration;
         if (!irisConfig.isEmpty()) {
-            configuration = mIris.Companion.convert(irisConfig);
-            if (configuration != null) {
-                configuration.setEnabled(irisEnable);
-            }
+            mIris.setService(irisConfig, irisEnable);
         } else {
-            configuration = new Configuration(
+            Configuration configuration = new Configuration(
                     IRIS_ROW_LIMIT,
                     IRIS_TIME_MINUTES,
                     irisEnable
             );
-        }
-
-        if (configuration != null) {
             mIris.setService(configuration);
         }
     }

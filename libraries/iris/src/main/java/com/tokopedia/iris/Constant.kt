@@ -42,5 +42,7 @@ const val MAX_ROW = "MAX_ROW"
 const val KEY_CONTAINER = "gtm"
 const val KEY_EVENT = "default_app"
 
+const val DEFAULT_CONFIG = "{\"row_limit\":25,\"interval\":2}"
+const val JOB_IRIS_ID = 1500
 const val DEFAULT_SERVICE_TIME: Long = 15
 const val DEFAULT_MAX_ROW = 50

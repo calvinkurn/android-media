@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.tokopedia.iris.data.TrackingRepository
+import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.worker.IrisBroadcastReceiver
@@ -20,15 +21,28 @@ import kotlin.coroutines.CoroutineContext
  * @author okasurya on 10/2/18.
  */
 class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
     private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
     private var cache: Cache = Cache(context)
-    
+
+    override fun setService(config: String, isEnabled: Boolean) {
+        try {
+            cache.setEnabled(isEnabled)
+            if (cache.isEnabled()) {
+                val configuration = ConfigurationMapper().parse(config)
+                if (configuration != null) {
+                    setWorkManager(configuration)
+                }
+            }
+        } catch(ignored: Exception) { }
+    }
+
     override fun setService(config: Configuration) {
         try {
-            cache.setEnabled(config)
+            cache.setEnabled(config.isEnabled)
             if (cache.isEnabled()) {
                 setWorkManager(config)
             }
@@ -81,16 +95,11 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     }
 
     private fun setWorkManager(config: Configuration) {
-//        Log.e("Iris", "startService")
-//        val intent = Intent(context, IrisService::class.java)
-//        intent.putExtra(WORKER_SEND_DATA, config)
-//        IrisService.enqueueWork(context, intent)
-
         Log.d("Alarm scheduler", "Alarm is being scheduled")
         val intent = Intent(context, IrisBroadcastReceiver::class.java)
         intent.putExtra(MAX_ROW, config.maxRow)
         val pintent = PendingIntent.getBroadcast(context, 0, intent, 0)
         val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), TimeUnit.SECONDS.toMillis(5), pintent)
+        alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(config.intervals), pintent)
     }
 }

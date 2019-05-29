@@ -19,5 +19,4 @@ class IrisBroadcastReceiver : BroadcastReceiver() {
         i.putExtra(MAX_ROW, maxRow)
         IrisService.enqueueWork(context!!, i)
     }
-
 }
