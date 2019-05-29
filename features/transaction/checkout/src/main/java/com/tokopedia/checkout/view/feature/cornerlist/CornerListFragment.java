@@ -33,7 +33,7 @@ import javax.inject.Inject;
 /**
  * Created by fajarnuha on 09/02/19.
  */
-public class CornerListFragment extends BaseDaggerFragment implements CornerContract.View, CornerAdapter.OnItemCliciListener {
+public class CornerListFragment extends BaseDaggerFragment implements CornerContract.View, CornerAdapter.OnItemClickListener {
 
     private static final String ARGUMENTS_BRANCH_LIST = "ARGUMENTS_BRANCH_LIST";
 
@@ -108,7 +108,7 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
     }
 
     @Override
-    public void onItemClick(RecipientAddressModel address) {
+    public void onItemClick(@NonNull RecipientAddressModel address) {
         if (mListener != null) {
             mListener.onCornerChosen(address);
         }
