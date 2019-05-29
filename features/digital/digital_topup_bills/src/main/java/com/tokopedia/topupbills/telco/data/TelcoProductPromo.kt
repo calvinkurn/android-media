@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 16/05/19.
  */
-class TelcoPromo(
+class TelcoProductPromo(
         @SerializedName("id")
         @Expose
         val id: Int,
@@ -45,12 +45,12 @@ class TelcoPromo(
                 return 0
         }
 
-        companion object CREATOR : Parcelable.Creator<TelcoPromo> {
-                override fun createFromParcel(parcel: Parcel): TelcoPromo {
-                        return TelcoPromo(parcel)
+        companion object CREATOR : Parcelable.Creator<TelcoProductPromo> {
+                override fun createFromParcel(parcel: Parcel): TelcoProductPromo {
+                        return TelcoProductPromo(parcel)
                 }
 
-                override fun newArray(size: Int): Array<TelcoPromo?> {
+                override fun newArray(size: Int): Array<TelcoProductPromo?> {
                         return arrayOfNulls(size)
                 }
         }
