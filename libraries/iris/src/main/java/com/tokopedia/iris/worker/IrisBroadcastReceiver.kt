@@ -13,7 +13,7 @@ import com.tokopedia.iris.MAX_ROW
 class IrisBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.e("Iris", "startService")
+        Log.e("Iris", "startBroadcastReceiver")
         val i = Intent(context, IrisService::class.java)
         val maxRow = intent?.getIntExtra(MAX_ROW, DEFAULT_MAX_ROW)
         i.putExtra(MAX_ROW, maxRow)

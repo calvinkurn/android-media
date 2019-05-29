@@ -35,8 +35,8 @@ class IrisService : JobIntentService() {
 
     override fun onHandleWork(intent: Intent) {
         try {
-            Log.d("Iris", "onHandleWork")
             val maxRow = intent.getIntExtra(MAX_ROW, DEFAULT_MAX_ROW)
+            Log.d("Iris", "Service onHandleWork")
             startService(maxRow)
         } catch (e: java.lang.Exception) {}
     }

@@ -441,6 +441,8 @@ import tradein_common.router.TradeInRouter;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.iris.ConstantKt.DEFAULT_CONFIG;
+import static com.tokopedia.iris.ConstantKt.DEFAULT_MAX_ROW;
+import static com.tokopedia.iris.ConstantKt.DEFAULT_SERVICE_TIME;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
@@ -534,10 +536,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OvoPayWithQrRouter,
         KYCRouter{
 
-
-    private final static int IRIS_ROW_LIMIT = 23;
-    private final static long IRIS_TIME_MINUTES = 2;
-
     private static final String EXTRA = "extra";
 
     @Inject
@@ -589,8 +587,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             mIris.setService(irisConfig, irisEnable);
         } else {
             Configuration configuration = new Configuration(
-                    IRIS_ROW_LIMIT,
-                    IRIS_TIME_MINUTES,
+                    DEFAULT_MAX_ROW,
+                    DEFAULT_SERVICE_TIME,
                     irisEnable
             );
             mIris.setService(configuration);
