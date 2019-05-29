@@ -19,12 +19,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
-import com.tokopedia.common.travel.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.design.text.watcher.AfterTextWatcher
@@ -38,8 +35,6 @@ import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.payment.activity.TopPayActivity
-import com.tokopedia.payment.model.PaymentPassData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
