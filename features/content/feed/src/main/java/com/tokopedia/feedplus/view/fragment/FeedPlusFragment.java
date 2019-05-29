@@ -1649,6 +1649,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 trackingPostModel);
                     }
                 }
+                onAffiliateTrackClicked(postViewModel.getTracking());
 
             } else if (visitable instanceof BannerViewModel) {
                 BannerViewModel bannerViewModel = (BannerViewModel) visitable;

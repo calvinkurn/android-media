@@ -241,7 +241,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                             feed.content.cardpost.body.caption,
                             contentList,
                             template,
-                            trackingPostModel
+                            trackingPostModel,
+                            mapTrackingData(feed.content.cardpost.tracking)
                     )
             )
         }

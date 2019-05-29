@@ -261,6 +261,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                             i,
                             dynamicPostViewModel.getTrackingPostModel());
                 }
+
+                onAffiliateTrackClicked(dynamicPostViewModel.getTracking());
             }
         }
     }

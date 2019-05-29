@@ -1198,6 +1198,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             }
                         }
                     }
+
+                    onAffiliateTrackClicked(model.tracking)
                 }
             }
         }

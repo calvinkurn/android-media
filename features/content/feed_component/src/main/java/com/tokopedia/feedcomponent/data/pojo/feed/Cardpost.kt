@@ -6,6 +6,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Body
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Footer
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Header
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Title
+import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 
 data class Cardpost(
         @SerializedName("title")
@@ -22,5 +23,9 @@ data class Cardpost(
 
         @SerializedName("footer")
         @Expose
-        val footer: Footer = Footer()
-)
+        val footer: Footer = Footer(),
+
+        @SerializedName("tracking")
+        @Expose
+        val tracking: List<Tracking> = ArrayList()
+        )
