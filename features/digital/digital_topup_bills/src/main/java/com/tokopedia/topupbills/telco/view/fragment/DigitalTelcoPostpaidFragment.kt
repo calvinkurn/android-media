@@ -109,19 +109,19 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         })
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
             override fun enquiryNumber() {
-//                getEnquiryNumber()
-                val mainInfo = mutableListOf<TelcoEnquiryMainInfo>()
-                mainInfo.add(TelcoEnquiryMainInfo("Operator", "Telkomsel Simpati"))
-                mainInfo.add(TelcoEnquiryMainInfo("Nama", "Guru Prasant"))
-                mainInfo.add(TelcoEnquiryMainInfo("Jumlah Tagihan", "Rp1.234.567"))
-                val telcoEnquiryData = TelcoEnquiryData(TelcoEnquiry(
-                        TelcoEnquiryAttribute("","307", "Rp1.234.567", 1234567, mainInfo)))
-                postpaidClientNumberWidget.showEnquiryResultPostpaid(telcoEnquiryData)
-                recentNumbersView.visibility = View.GONE
-                promoListView.visibility = View.GONE
-                addToMyBillsWidget.visibility = View.VISIBLE
-                buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes.price)
-                buyWidget.setVisibilityLayout(true)
+                getEnquiryNumber()
+//                val mainInfo = mutableListOf<TelcoEnquiryMainInfo>()
+//                mainInfo.add(TelcoEnquiryMainInfo("Operator", "Telkomsel Simpati"))
+//                mainInfo.add(TelcoEnquiryMainInfo("Nama", "Guru Prasant"))
+//                mainInfo.add(TelcoEnquiryMainInfo("Jumlah Tagihan", "Rp1.234.567"))
+//                val telcoEnquiryData = TelcoEnquiryData(TelcoEnquiry(
+//                        TelcoEnquiryAttribute("","307", "Rp1.234.567", 1234567, mainInfo)))
+//                postpaidClientNumberWidget.showEnquiryResultPostpaid(telcoEnquiryData)
+//                recentNumbersView.visibility = View.GONE
+//                promoListView.visibility = View.GONE
+//                addToMyBillsWidget.visibility = View.VISIBLE
+//                buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes.price)
+//                buyWidget.setVisibilityLayout(true)
             }
         })
     }
