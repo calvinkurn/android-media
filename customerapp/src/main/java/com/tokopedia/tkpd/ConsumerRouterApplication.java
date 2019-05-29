@@ -412,6 +412,7 @@ import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
+import com.tokopedia.topupbills.telco.view.activity.TelcoProductActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
 import com.tokopedia.train.common.TrainRouter;
@@ -2817,7 +2818,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent gotoQrScannerPage(boolean needResult) {
-        return QrScannerActivity.newInstance(this, needResult);
+        return TelcoProductActivity.Companion.newInstance(this);
+//        return QrScannerActivity.newInstance(this, needResult);
     }
 
 
