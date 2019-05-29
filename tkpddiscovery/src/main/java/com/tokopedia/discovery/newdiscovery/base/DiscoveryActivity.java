@@ -359,11 +359,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    public void onSuggestionProductClick(SearchParameter searchParameter) {
-        this.searchParameter = new SearchParameter(searchParameter);
-        onProductQuerySubmit();
-    }
-
     protected void performRequestProduct() {
         performRequestProduct("");
     }
