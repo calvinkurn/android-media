@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.feature.addressoptions.bottomsheet
 
-import com.tokopedia.checkout.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.checkout.domain.usecase.GetCornerUseCase
 import javax.inject.Inject
 
@@ -24,7 +23,7 @@ class CornerListPresenter @Inject constructor(val usecase: GetCornerUseCase) : C
                 .doOnSubscribe { mView?.setLoadingState(true) }
                 .doOnTerminate { mView?.setLoadingState(false) }
                 .subscribe(
-                        { mView?.setData(it.listAddress) },
+                        { mView?.showData(it.listAddress) },
                         { e -> mView?.showError(e) }, {})
     }
 

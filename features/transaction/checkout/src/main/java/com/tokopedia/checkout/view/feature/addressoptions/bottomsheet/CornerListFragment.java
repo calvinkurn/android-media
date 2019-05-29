@@ -115,8 +115,9 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
     }
 
     @Override
-    public void setData(List<? extends RecipientAddressModel> data) {
-        mAdapter.addAll(data);
+    public void showData(List<? extends RecipientAddressModel> data) {
+        mAdapter.setAddress(data);
+        mEmptyView.setVisibility(View.GONE);
     }
 
     @Override

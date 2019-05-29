@@ -9,7 +9,7 @@ interface CornerContract {
 
     interface View {
         fun showEmptyView()
-        fun setData(data: List<RecipientAddressModel>?)
+        fun showData(data: List<RecipientAddressModel>?)
         fun setLoadingState(active: Boolean)
         fun showError(e: Throwable)
     }
