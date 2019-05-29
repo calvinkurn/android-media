@@ -81,7 +81,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
             badge.visibility = View.GONE
         }
         updateWishlist(productDataModel.productDetailData.isWishlist)
-        ImageHandler.loadImageFitCenter(view.context, product_image, productDataModel.productDetailData.imageUrl)
+        ImageHandler.loadImageRounded2(view.context, product_image, productDataModel.productDetailData.imageUrl)
         setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
 
         product_card.setOnClickListener {

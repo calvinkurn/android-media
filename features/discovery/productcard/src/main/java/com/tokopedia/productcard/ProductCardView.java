@@ -126,9 +126,11 @@ public class ProductCardView extends BaseCustomView {
             reviewCountView.setText("(" + Integer.toString(reviewCount) + ")");
         } else {
             if(fixedHeight) {
-                ratingReviewContainer.setVisibility(View.INVISIBLE);
+                ratingView.setVisibility(View.INVISIBLE);
+                reviewCountView.setVisibility(View.INVISIBLE);
             } else {
-                ratingReviewContainer.setVisibility(View.GONE);
+                ratingView.setVisibility(View.GONE);
+                reviewCountView.setVisibility(View.GONE);
             }
         }
     }
