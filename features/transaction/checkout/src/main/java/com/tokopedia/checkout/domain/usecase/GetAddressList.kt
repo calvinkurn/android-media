@@ -1,21 +1,15 @@
 package com.tokopedia.checkout.domain.usecase
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.checkout.R
-import com.tokopedia.checkout.domain.datamodel.addresscorner.GqlKeroWithAddressResponse
-import com.tokopedia.checkout.domain.datamodel.newaddresscorner.Data
 import com.tokopedia.checkout.domain.datamodel.newaddresscorner.NewAddressCornerResponse
 import com.tokopedia.checkout.domain.mapper.AddressCornerMapper
-import com.tokopedia.checkout.view.feature.addressoptions.AddressListModel
+import com.tokopedia.checkout.domain.datamodel.newaddresscorner.AddressListModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
 import com.tokopedia.transactiondata.entity.request.AddressRequest
-import com.tokopedia.usecase.RequestParams
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers

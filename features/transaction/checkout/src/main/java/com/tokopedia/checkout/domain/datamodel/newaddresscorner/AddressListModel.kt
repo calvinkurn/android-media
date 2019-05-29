@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.feature.addressoptions
+package com.tokopedia.checkout.domain.datamodel.newaddresscorner
 
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel

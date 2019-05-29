@@ -3,13 +3,12 @@ package com.tokopedia.checkout.view.di.module;
 import android.content.Context;
 
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
-import com.tokopedia.checkout.domain.usecase.GetAddressCornerUseCase;
-import com.tokopedia.checkout.domain.usecase.GetCornerUseCase;
+import com.tokopedia.checkout.domain.usecase.GetCornerList;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.di.scope.ShipmentAddressListScope;
 import com.tokopedia.checkout.view.feature.addressoptions.AddressListContract;
 import com.tokopedia.checkout.view.feature.addressoptions.AddressListPresenter;
-import com.tokopedia.checkout.view.feature.addressoptions.bottomsheet.CornerListPresenter;
+import com.tokopedia.checkout.view.feature.cornerlist.CornerListPresenter;
 import com.tokopedia.checkout.view.feature.addressoptions.recyclerview.ShipmentAddressListAdapter;
 import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListFragment;
 import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListPresenter;
@@ -52,7 +51,7 @@ public class ShipmentAddressListModule {
 
     @Provides
     @ShipmentAddressListScope
-    CornerListPresenter provideCornerPresenter(GetCornerUseCase usecase) {
+    CornerListPresenter provideCornerPresenter(GetCornerList usecase) {
         return new CornerListPresenter(usecase);
     }
 

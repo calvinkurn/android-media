@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.feature.addressoptions
 
+import com.tokopedia.checkout.domain.datamodel.newaddresscorner.AddressListModel
 import com.tokopedia.checkout.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
 import rx.Subscriber

@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.feature.addressoptions.bottomsheet
+package com.tokopedia.checkout.view.feature.cornerlist
 
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
 

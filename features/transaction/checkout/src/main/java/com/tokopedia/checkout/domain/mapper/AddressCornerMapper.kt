@@ -2,7 +2,7 @@ package com.tokopedia.checkout.domain.mapper
 
 import com.tokopedia.checkout.domain.datamodel.newaddresscorner.Data
 import com.tokopedia.checkout.domain.datamodel.newaddresscorner.NewAddressCornerResponse
-import com.tokopedia.checkout.view.feature.addressoptions.AddressListModel
+import com.tokopedia.checkout.domain.datamodel.newaddresscorner.AddressListModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
 import rx.functions.Func1

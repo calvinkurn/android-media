@@ -1,12 +1,12 @@
-package com.tokopedia.checkout.view.feature.addressoptions.bottomsheet
+package com.tokopedia.checkout.view.feature.cornerlist
 
-import com.tokopedia.checkout.domain.usecase.GetCornerUseCase
+import com.tokopedia.checkout.domain.usecase.GetCornerList
 import javax.inject.Inject
 
 /**
  * Created by fajarnuha on 2019-05-26.
  */
-class CornerListPresenter @Inject constructor(val usecase: GetCornerUseCase) : CornerContract.Presenter {
+class CornerListPresenter @Inject constructor(val usecase: GetCornerList) : CornerContract.Presenter {
 
     private var mView: CornerContract.View? = null
 
