@@ -12,7 +12,7 @@ import timber.log.Timber;
 public class TimberWrapper {
     public static void init(){
         if (BuildConfig.DEBUG) {
-            Timber.plant(new TimberReportingTree());
+            Timber.plant(new Timber.DebugTree());
         } else {
             Timber.plant(new TimberReportingTree());
         }
