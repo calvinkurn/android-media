@@ -35,7 +35,7 @@
                 android:clickable="true"
                 android:visibility="visible"
                 tools:visibility="visible"
-                app:srcCompat="@drawable/ic_product_action_wishlist_grayscale_24"
+                app:srcCompat="@drawable/ic_product_action_wishlist_gray_28"
                 android:contentDescription="@string/app_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
