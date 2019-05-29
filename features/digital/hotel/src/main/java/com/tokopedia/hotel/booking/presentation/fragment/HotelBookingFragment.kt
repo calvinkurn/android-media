@@ -89,10 +89,10 @@ class HotelBookingFragment : BaseDaggerFragment() {
         bookingViewModel.hotelCheckoutResult.observe(this, android.arch.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    val checkoutData = PaymentPassData()
+                    /*val checkoutData = PaymentPassData()
                     checkoutData.queryString = it.data.queryString
                     checkoutData.redirectUrl = it.data.redirectUrl
-                    startActivityForResult(TopPayActivity.createInstance(context, checkoutData), REQUEST_CODE_CHECKOUT)
+                    startActivityForResult(TopPayActivity.createInstance(context, checkoutData), REQUEST_CODE_CHECKOUT)*/
                 }
                 is Fail -> {}
             }
