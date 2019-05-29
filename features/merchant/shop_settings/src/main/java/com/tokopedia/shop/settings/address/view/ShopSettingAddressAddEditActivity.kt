@@ -3,6 +3,7 @@ package com.tokopedia.shop.settings.address.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -45,6 +46,24 @@ class ShopSettingAddressAddEditActivity: BaseSimpleActivity(), HasComponent<Shop
         }
 
         supportActionBar?.setTitle(if (isAddNew) R.string.shop_settings_add_address else R.string.shop_settings_edit_address)
+    }
+
+    override fun inflateFragment() {
+        val newFragment = newFragment ?: return
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.parent_view, newFragment, tagFragment)
+                .commit()
+    }
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        setContentView(layoutRes)
+        toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        setSupportActionBar(toolbar)
+        if (supportActionBar != null) {
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+            supportActionBar!!.setDisplayShowTitleEnabled(true)
+            supportActionBar!!.title = this.title
+        }
     }
 
     override fun getNewFragment() = ShopSettingAddressAddEditFragment.createInstance(shopLocationViewModel, isAddNew)

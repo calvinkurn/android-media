@@ -191,7 +191,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
     override fun onIconMoreClicked(shopNoteViewModel: ShopNoteViewModel) {
         val menus = Menus(context!!)
         menus.setItemMenuList(resources.getStringArray(R.array.shop_note_menu_more))
-        menus.setActionText(getString(R.string.close))
+        menus.setActionText(getString(com.tokopedia.abstraction.R.string.close))
         menus.setOnActionClickListener { menus.dismiss() }
         menus.setOnItemMenuClickListener { _, pos ->
             if (pos == 0) {
@@ -202,10 +202,10 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
                         setTitle(getString(R.string.title_dialog_delete_shop_note))
                         setDesc(getString(R.string.desc_dialog_delete_shop_note, shopNoteViewModel.title))
                         setBtnOk(getString(R.string.action_delete))
-                        setBtnCancel(getString(R.string.cancel))
+                        setBtnCancel(getString(com.tokopedia.imagepicker.R.string.cancel))
                         setOnOkClickListener {
                             shopNoteIdToDelete = shopNoteViewModel.id
-                            showSubmitLoading(getString(R.string.title_loading))
+                            showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                             shopSettingNoteListPresenter.deleteShopNote(shopNoteIdToDelete!!)
                             dismiss()
                         }

@@ -144,7 +144,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             }
             itemMenuTitle.equals(getString(R.string.label_open_shop_now), ignoreCase = true) -> {
                 // open now
-                showSubmitLoading(getString(R.string.title_loading))
+                showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                 shopSettingsInfoPresenter.updateShopSchedule(ShopScheduleActionDef.OPEN, false,
                         "", "", "")
             }
@@ -233,7 +233,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             if (URLUtil.isNetworkUrl(it)) {
                 it
             } else {
-                getString(R.string.tokopedia_domain) + "/$it"
+                getString(com.tokopedia.design.R.string.tokopedia_domain) + "/$it"
             }
         }
         if (shopBasicDataModel.tagline.isNullOrBlank()) {
@@ -264,7 +264,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun setUIStatus(shopBasicDataModel: ShopBasicDataModel) {
         if (shopBasicDataModel.isOpen) {
-            tvShopStatus.text = getString(R.string.label_open)
+            tvShopStatus.text = getString(com.tokopedia.design.R.string.label_open)
 
             val stringBuilder = StringBuilder()
             val closeScheduleUnixString = shopBasicDataModel.closeSchedule
@@ -287,7 +287,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 tvShopCloseSchedule.visibility = View.VISIBLE
             }
         } else {
-            tvShopStatus.text = getString(R.string.label_close)
+            tvShopStatus.text = getString(com.tokopedia.design.R.string.label_close)
 
             val openScheduleUnixString = shopBasicDataModel.openSchedule
             var openScheduleString: String? = null
@@ -309,7 +309,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         if (shopBasicDataModel.isRegular) {
             ivShopMembership.setImageDrawable(GMConstant.getGMRegularBadgeDrawable(activity))
             ivShopMembership.setPadding(0, 0, 0, 0)
-            tvMembershipName.text = getString(R.string.label_regular_merchant)
+            tvMembershipName.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
 
             val goldMerchantString = getString(GMConstant.getGMTitleResource(context))
             val goldMerchantInviteString = getString(R.string.shop_settings_gold_merchant_invite, goldMerchantString);
@@ -317,7 +317,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             val indexStart = goldMerchantInviteString.indexOf(goldMerchantString)
             val indexEnd = indexStart + goldMerchantString.length
 
-            val color = ContextCompat.getColor(context!!, R.color.tkpd_main_green)
+            val color = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.tkpd_main_green)
             spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {

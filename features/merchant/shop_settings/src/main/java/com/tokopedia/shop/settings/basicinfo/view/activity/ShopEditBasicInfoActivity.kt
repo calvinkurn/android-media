@@ -86,7 +86,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
     }
 
     private fun onSaveButtonClicked() {
-        showSubmitLoading(getString(R.string.title_loading))
+        showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
         val tagLine = etShopSlogan.text.toString()
         val desc = etShopDesc.text.toString()
         if (!savedLocalImageUrl.isNullOrEmpty()) {

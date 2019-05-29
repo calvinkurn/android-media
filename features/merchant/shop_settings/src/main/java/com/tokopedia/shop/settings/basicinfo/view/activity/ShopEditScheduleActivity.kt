@@ -153,7 +153,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
             return
         }
 
-        showSubmitLoading(getString(R.string.title_loading))
+        showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
         @ShopScheduleActionDef val shopAction = if (isClosedNow || shopBasicDataModel.isClosed)
             ShopScheduleActionDef.CLOSED
         else
