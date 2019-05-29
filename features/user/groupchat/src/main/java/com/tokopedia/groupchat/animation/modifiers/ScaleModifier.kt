@@ -4,7 +4,13 @@ import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 import com.tokopedia.groupchat.animation.Particle
 
-class ScaleModifier @JvmOverloads constructor(private val mInitialValue: Float, private val mFinalValue: Float, private val mStartTime: Long, private val mEndTime: Long, private val mInterpolator: Interpolator = LinearInterpolator()) : ParticleModifier {
+class ScaleModifier @JvmOverloads constructor(
+        private val mInitialValue: Float,
+        private val mFinalValue: Float,
+        private val mStartTime: Long,
+        private val mEndTime: Long,
+        private val mInterpolator: Interpolator = LinearInterpolator()
+) : ParticleModifier {
     private val mDuration: Long
     private val mValueIncrement: Float
 

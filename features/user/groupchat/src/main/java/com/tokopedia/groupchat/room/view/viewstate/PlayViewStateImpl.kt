@@ -269,10 +269,6 @@ open class PlayViewStateImpl(
         viewModel?.let { viewModel ->
             dynamicButtonsViewModel = it
 
-            var dummyEnable = true
-            it.interactiveButton = InteractiveButton(dummyEnable,
-                    arrayListOf("https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_400548b1-805f-4ddb-a4e1-86a6e7dd31ec.png",
-                            "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/5/20/3127195/3127195_26ce0623-ad62-4042-ae30-c720141a1661.png"))
             webviewIcon.hide()
             if (!it.floatingButton.imageUrl.isBlank() && !it.floatingButton.contentLinkUrl.isBlank()) {
                 it.floatingButton.run {

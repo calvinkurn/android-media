@@ -36,7 +36,6 @@ class InteractionAnimationHelper(private var interactionGuideline: FrameLayout) 
         for (id in interactionDefaultIconIdList) {
             interactionDefaultIconList.add(MethodChecker.getDrawable(interactionGuideline.context, id))
         }
-//        defaultParticle = ParticleSystem.changeDrawablesToParticles(interactionDefaultIconList)
     }
 
     fun shootInteractionButton(anchorView: View, numParticles: Int) {
@@ -46,7 +45,7 @@ class InteractionAnimationHelper(private var interactionGuideline: FrameLayout) 
             ParticleSystem(interactionGuideline, getIconInteraction(), 2500)
                     .setSpeedModuleAndAngleRange(0.1f, 0.2f, 270, 270)
                     .setFadeOut(1500)
-                    .addModifier(ScaleModifier(0.7f, 1.2f, 1200, 1500))
+                    .addModifier(ScaleModifier(0.7f, 1.0f, 1200, 1500))
                     .addModifier(MovementModifier(2f, interactionDirection.nextBoolean()))
                     .oneShot(anchorView, numParticles)
         } catch (e: Exception) {
@@ -96,8 +95,8 @@ class InteractionAnimationHelper(private var interactionGuideline: FrameLayout) 
     }
 
     fun updateInteractionIcon(balloonList: ArrayList<String>) {
+        interactionIconList.clear()
         if(balloonList.isEmpty()){
-            interactionIconList.clear()
             return
         }
 
