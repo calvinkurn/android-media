@@ -95,7 +95,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     }
 
     private fun setWorkManager(config: Configuration) {
-        Log.d("Iris", "Alarm is being scheduled with maxrow ${config.maxRow} and interval ${config.intervals}" )
         val intent = Intent(context, IrisBroadcastReceiver::class.java)
         intent.putExtra(MAX_ROW, config.maxRow)
         val pintent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
