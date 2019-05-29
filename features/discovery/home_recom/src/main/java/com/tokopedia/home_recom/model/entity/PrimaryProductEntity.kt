@@ -32,7 +32,7 @@ data class ProductDetailData(
         @SerializedName("appUrl")
         val appUrl: String,
         @SerializedName("badges")
-        val badges: List<Any>,
+        val badges: List<Badge>,
         @SerializedName("categoryBreadcrumbs")
         val categoryBreadcrumbs: String,
         @SerializedName("clickUrl")
@@ -86,4 +86,11 @@ data class Shop(
         val name: String,
         @SerializedName("shopImage")
         val shopImage: String
+)
+
+data class Badge(
+        @SerializedName("imageUrl")
+        val imageUrl: String,
+        @SerializedName("title")
+        val title: String
 )

@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
@@ -27,6 +28,8 @@ import kotlinx.android.synthetic.main.fragment_product_info.*
 import javax.inject.Inject
 
 class ProductInfoFragment : BaseDaggerFragment() {
+
+    private val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
 
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
@@ -72,8 +75,16 @@ class ProductInfoFragment : BaseDaggerFragment() {
         product_price.text = productDataModel.productDetailData.price
         location.text = "Jakarta"
         updateWishlist(productDataModel.productDetailData.isWishlist)
+        ImageHandler.loadImageFitCenter(view.context, badge, productDataModel.productDetailData.badges.get(0).imageUrl)
         ImageHandler.loadImageFitCenter(view.context, product_image, productDataModel.productDetailData.imageUrl)
         setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
+
+        product_card.setOnClickListener {
+            RouteManager.route(
+                    context,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    productDataModel.productDetailData.id.toString())
+        }
 
         fab_detail.setOnClickListener {
             if (userSessionInterface.isLoggedIn) {
@@ -151,8 +162,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
             rating.setImageResource(getRatingDrawable(ratingValue))
             review_count.text = getString(R.string.review_count, review)
         } else {
-            rating.visibility = View.INVISIBLE
-            review_count.visibility = View.INVISIBLE
+            rating.visibility = View.GONE
+            review_count.visibility = View.GONE
         }
     }
 
@@ -177,10 +188,21 @@ class ProductInfoFragment : BaseDaggerFragment() {
         context?.let {
             if (wishlisted) {
                 fab_detail.isActivated = true
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_product_action_wishlist_added_24))
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_product_action_wishlist_added_28))
             } else {
                 fab_detail.isActivated = false
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_product_action_wishlist_grayscale_24))
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_product_action_wishlist_gray_28))
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_CANCELED) {
+            data?.let {
+                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
+                        productDataModel.productDetailData.isWishlist)
+                updateWishlist(wishlistStatusFromPdp)
             }
         }
     }
