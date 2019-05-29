@@ -11,8 +11,6 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
@@ -43,15 +41,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private lateinit var productDataModel: ProductInfoDataModel
 
     private lateinit var productView: View
-    private val productName: TextView by lazy { productView.findViewById<TextView>(R.id.product_name) }
-    private val productImage: ImageView by lazy { productView.findViewById<ImageView>(R.id.product_image) }
-    private val productDiscount: TextView by lazy { productView.findViewById<TextView>(R.id.product_discount) }
-    private val productPrice: TextView by lazy { productView.findViewById<TextView>(R.id.product_price) }
-    private val location: TextView by lazy { productView.findViewById<TextView>(R.id.location) }
-
-    private val productSlashedPrice: TextView by lazy { productView.findViewById<TextView>(R.id.product_slashed_price) }
-    private val ratingView: ImageView by lazy { productView.findViewById<ImageView>(R.id.rating) }
-    private val ratingCountView: TextView by lazy { productView.findViewById<TextView>(R.id.review_count) }
 
     override fun getScreenName(): String {
         return ""
@@ -77,12 +66,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        productName.text = productDataModel.productDetailData.name
-        productDiscount.text = "20%"
+        product_name.text = productDataModel.productDetailData.name
+        product_discount.text = "20%"
         setSplashedText("RP100.000")
-        productPrice.text = productDataModel.productDetailData.price
+        product_price.text = productDataModel.productDetailData.price
         location.text = "Jakarta"
-        ImageHandler.loadImageFitCenter(view.context, productImage, productDataModel.productDetailData.imageUrl)
+        updateWishlist(productDataModel.productDetailData.isWishlist)
+        ImageHandler.loadImageFitCenter(view.context, product_image, productDataModel.productDetailData.imageUrl)
         setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
 
         fab_detail.setOnClickListener {
@@ -156,13 +146,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setRatingReviewCount(rating: Int, review: Int){
-        if (rating in 1..5) {
-            ratingView.setImageResource(getRatingDrawable(rating))
-            ratingCountView.text = getString(R.string.review_count, review)
+    private fun setRatingReviewCount(ratingValue: Int, review: Int){
+        if (ratingValue in 1..5) {
+            rating.setImageResource(getRatingDrawable(ratingValue))
+            review_count.text = getString(R.string.review_count, review)
         } else {
-            ratingView.visibility = View.INVISIBLE
-            ratingCountView.visibility = View.INVISIBLE
+            rating.visibility = View.INVISIBLE
+            review_count.visibility = View.INVISIBLE
         }
     }
 
@@ -179,8 +169,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     private fun setSplashedText(text: String){
-        productSlashedPrice.text = text
-        productSlashedPrice.paintFlags = productSlashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        product_slashed_price.text = text
+        product_slashed_price.paintFlags = product_slashed_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 
     private fun updateWishlist(wishlisted: Boolean) {

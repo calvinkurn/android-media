@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.home_recom.model.datamodel.BaseHomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
@@ -26,6 +27,7 @@ class HomeRecommendationAdapter(
             ProductInfoDataModel.LAYOUT -> layout.isFullSpan = true
             RecommendationCarouselDataModel.LAYOUT -> layout.isFullSpan = true
             TitleDataModel.LAYOUT -> layout.isFullSpan = true
+            EmptyViewHolder.LAYOUT -> layout.isFullSpan = true
         }
         holder.bind(visitables[position])
     }
