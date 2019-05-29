@@ -8,7 +8,7 @@ package com.tokopedia.iris
 //const val LIVE = "https://merlin.tokopedia.com/"
 
 const val LIVE = "https://hub.tokopedia.com/"
-const val STAGING = "http://hub-staging.tokopedia.com/"
+const val STAGING = "https://hub-staging.tokopedia.com/"
 
 const val VERSION = "iris/v1/"
 
