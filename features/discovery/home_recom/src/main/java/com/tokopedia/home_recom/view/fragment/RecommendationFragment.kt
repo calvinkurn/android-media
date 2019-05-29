@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
-import com.tokopedia.home_recom.model.dataModel.BaseHomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
