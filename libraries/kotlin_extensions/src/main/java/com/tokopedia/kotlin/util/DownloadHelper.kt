@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull
 class DownloadHelper(@NotNull val context: Context,
                      @NotNull val uri: String,
                      @NotNull val filename: String,
-                     val listener: DownloadHelperListener) {
+                     var listener: DownloadHelperListener?) {
 
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun downloadFile(isDownloadable: (String) -> Boolean) {
@@ -47,11 +47,12 @@ class DownloadHelper(@NotNull val context: Context,
 
     private var onComplete: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(ctxt: Context, intent: Intent) {
-            listener.apply {
+            listener?.apply {
                 onDownloadComplete()
             }
 
             unSubcribeDownLoadHelper()
+            listener = null
         }
     }
 
