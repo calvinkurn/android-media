@@ -76,9 +76,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
         getInputFilterDataCollections()
         renderClientNumber()
-        renderTicker()
-        renderPromoList()
-        renderRecentTransactions()
+        getCatalogMenuDetail()
     }
 
     fun renderClientNumber() {
@@ -111,7 +109,19 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         })
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
             override fun enquiryNumber() {
-                getEnquiryNumber()
+//                getEnquiryNumber()
+                val mainInfo = mutableListOf<TelcoEnquiryMainInfo>()
+                mainInfo.add(TelcoEnquiryMainInfo("Operator", "Telkomsel Simpati"))
+                mainInfo.add(TelcoEnquiryMainInfo("Nama", "Guru Prasant"))
+                mainInfo.add(TelcoEnquiryMainInfo("Jumlah Tagihan", "Rp1.234.567"))
+                val telcoEnquiryData = TelcoEnquiryData(TelcoEnquiry(
+                        TelcoEnquiryAttribute("","307", "Rp1.234.567", 1234567, mainInfo)))
+                postpaidClientNumberWidget.showEnquiryResultPostpaid(telcoEnquiryData)
+                recentNumbersView.visibility = View.GONE
+                promoListView.visibility = View.GONE
+                addToMyBillsWidget.visibility = View.VISIBLE
+                buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes.price)
+                buyWidget.setVisibilityLayout(true)
             }
         })
     }
@@ -170,6 +180,16 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun setInputNumberFromContact(contactNumber: String) {
         postpaidClientNumberWidget.setInputNumber(contactNumber)
+    }
+
+    override fun getMapCatalogMenuDetail(): Map<String, Any> {
+        var mapParam = HashMap<String, kotlin.Any>()
+        mapParam.put("menuID", TelcoComponentType.TELCO_POSTPAID)
+        return mapParam
+    }
+
+    override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation) {
+        Toast.makeText(activity, telcoRecommendation.clientNumber, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {

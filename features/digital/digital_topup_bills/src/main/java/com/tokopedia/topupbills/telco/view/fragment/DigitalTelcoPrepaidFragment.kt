@@ -12,8 +12,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.telco.data.TelcoCatalogMenuDetailData
 import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
 import com.tokopedia.topupbills.telco.data.TelcoCustomData
+import com.tokopedia.topupbills.telco.data.TelcoRecommendation
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
@@ -94,10 +96,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         getInputFilterDataCollections()
-        renderTicker()
         renderInputNumber()
-        renderRecentTransactions()
-        renderPromoList()
+        getCatalogMenuDetail()
     }
 
     override fun getMapCustomData(): Map<String, Any> {
@@ -179,6 +179,16 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         val pagerAdapter = DigitalTelcoProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
         tabLayout.setupWithViewPager(viewPager)
+    }
+
+    override fun getMapCatalogMenuDetail(): Map<String, Any> {
+        var mapParam = HashMap<String, kotlin.Any>()
+        mapParam.put("menuID", TelcoComponentType.TELCO_PREPAID)
+        return mapParam
+    }
+
+    override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation) {
+        Toast.makeText(activity, telcoRecommendation.clientNumber, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {

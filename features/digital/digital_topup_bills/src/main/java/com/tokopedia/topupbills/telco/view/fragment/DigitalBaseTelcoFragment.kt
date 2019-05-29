@@ -16,12 +16,10 @@ import com.tokopedia.design.component.ticker.TickerView
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.covertContactUriToContactData
-import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
-import com.tokopedia.topupbills.telco.data.TelcoCustomData
+import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
-import com.tokopedia.topupbills.telco.view.model.DigitalPromo
-import com.tokopedia.topupbills.telco.view.model.DigitalRecentNumber
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
+import com.tokopedia.topupbills.telco.view.viewmodel.TelcoCatalogMenuDetailViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
 import javax.inject.Inject
@@ -35,9 +33,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     protected lateinit var recentNumbersView: DigitalRecentTransactionWidget
     protected lateinit var promoListView: DigitalPromoListWidget
     private lateinit var customViewModel: DigitalTelcoCustomViewModel
-
-    private val recentNumbers = mutableListOf<DigitalRecentNumber>()
-    private val promoList = mutableListOf<DigitalPromo>()
+    private lateinit var catalogMenuDetailViewModel: TelcoCatalogMenuDetailViewModel
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -49,6 +45,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             customViewModel = viewModelProvider.get(DigitalTelcoCustomViewModel::class.java)
+            catalogMenuDetailViewModel = viewModelProvider.get(TelcoCatalogMenuDetailViewModel::class.java)
         }
     }
 
@@ -71,12 +68,36 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected abstract fun getMapCustomData(): Map<String, kotlin.Any>
 
-    fun renderTicker() {
-        val messages = ArrayList<String>()
-        messages.add("Untuk paket data Indosat, telkomsel dan tri akan tersedia kembali pukul 18.00 WIB")
-        tickerView.setListMessage(messages)
-        tickerView.buildView()
-        tickerView.visibility = View.VISIBLE
+    protected abstract fun getMapCatalogMenuDetail(): Map<String, kotlin.Any>
+
+    fun getCatalogMenuDetail() {
+        catalogMenuDetailViewModel.getCatalogMenuDetail(GraphqlHelper.loadRawString(resources,
+                R.raw.query_telco_catalog_menu_detail), getMapCatalogMenuDetail(),
+                this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
+    }
+
+    fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
+        renderPromoList(catalogMenuDetailData.catalogMenuDetailData.promos)
+        renderRecentTransactions(catalogMenuDetailData.catalogMenuDetailData.recommendations)
+        renderTicker(catalogMenuDetailData.catalogMenuDetailData.tickers)
+    }
+
+    fun onErrorCatalogMenuDetail(error: Throwable) {
+        Toast.makeText(activity, "catalog menu detail " + error.message, Toast.LENGTH_SHORT).show()
+    }
+
+    fun renderTicker(tickers: List<TelcoTicker>) {
+        if (tickers.isNotEmpty()) {
+            val messages = ArrayList<String>()
+            for (item in tickers) {
+                messages.add(item.content)
+            }
+            tickerView.setListMessage(messages)
+            tickerView.buildView()
+            tickerView.visibility = View.VISIBLE
+        } else {
+            tickerView.visibility = View.GONE
+        }
     }
 
     fun navigateContact() {
@@ -136,36 +157,38 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         }
     }
 
-    //TODO IMPLEMENT API
-    fun renderRecentTransactions() {
-        recentNumbersView.setListener(object : DigitalRecentTransactionWidget.ActionListener {
-            override fun onClickRecentNumber(digitalRecentNumber: DigitalRecentNumber) {
-                Toast.makeText(activity, digitalRecentNumber.clientNumber, Toast.LENGTH_LONG).show()
-            }
-        })
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 1", "081723823112", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 2", "082313134234", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 3", "081342424234", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 4", "087823173712", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 5", "082343432423", "", "", 316, "Simpati"))
-        recentNumbers.add(DigitalRecentNumber("https://ecs7.tokopedia.net/img/recharge/category/pulsa.png", "coba title 6", "081231313233", "", "", 316, "Simpati"))
-
-        recentNumbersView.setRecentNumbers(recentNumbers)
+    fun renderRecentTransactions(recentNumbers: List<TelcoRecommendation>) {
+        if (recentNumbers.isNotEmpty()) {
+            recentNumbersView.setListener(object : DigitalRecentTransactionWidget.ActionListener {
+                override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation) {
+                    onClickRecentNumber(telcoRecommendation)
+                }
+            })
+            recentNumbersView.setRecentNumbers(recentNumbers)
+            recentNumbersView.visibility = View.VISIBLE
+        } else {
+            recentNumbersView.visibility = View.GONE
+        }
     }
 
-    //TODO IMPLEMENT API
-    fun renderPromoList() {
-        promoListView.setListener(object : DigitalPromoListWidget.ActionListener {
-            override fun onCopiedPromoCode(voucherCode: String) {
-                Toast.makeText(activity, "Kode voucher telah di copy ke clipboard", Toast.LENGTH_LONG).show()
-            }
-        })
-        promoList.add(DigitalPromo("1", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLALA", false, ""))
-        promoList.add(DigitalPromo("2", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLELE", false, ""))
-        promoList.add(DigitalPromo("3", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLILI", false, ""))
-        promoList.add(DigitalPromo("4", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLULU", false, ""))
-        promoList.add(DigitalPromo("5", "Cashback hingga Rp400.000 (khusus pengguna baru). S&K lengkap klik di sini.", "TOPEDLOLO", false, ""))
-        promoListView.setPromoList(promoList)
+    protected abstract fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation)
+
+    fun renderPromoList(promos: List<TelcoPromo>) {
+        if (promos.isNotEmpty()) {
+            promoListView.visibility = View.VISIBLE
+            promoListView.setListener(object : DigitalPromoListWidget.ActionListener {
+                override fun onCopiedPromoCode(voucherCode: String) {
+                    Toast.makeText(activity, "Kode voucher telah di copy ke clipboard", Toast.LENGTH_LONG).show()
+                }
+
+                override fun onClickItemPromo(telcoPromo: TelcoPromo) {
+                    //TODO route manager to item
+                }
+            })
+            promoListView.setPromoList(promos)
+        } else {
+            promoListView.visibility = View.GONE
+        }
     }
 
     abstract fun setInputNumberFromContact(contactNumber: String)

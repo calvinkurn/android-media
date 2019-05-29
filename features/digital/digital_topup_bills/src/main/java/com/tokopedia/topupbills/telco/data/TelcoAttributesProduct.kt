@@ -36,9 +36,9 @@ class TelcoAttributesProduct(
         @SerializedName("detail_compact")
         @Expose
         val detailCompact: String,
-        @SerializedName("promo")
+        @SerializedName("productPromo")
         @Expose
-        val promo: TelcoPromo,
+        val productPromo: TelcoProductPromo,
         var selected: Boolean = false)
     : Parcelable {
 
@@ -52,7 +52,7 @@ class TelcoAttributesProduct(
             parcel.readInt(),
             parcel.readInt(),
             parcel.readString(),
-            parcel.readParcelable(TelcoPromo::class.java.classLoader)) {
+            parcel.readParcelable(TelcoProductPromo::class.java.classLoader)) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -65,7 +65,7 @@ class TelcoAttributesProduct(
         parcel.writeInt(pricePlain)
         parcel.writeInt(status)
         parcel.writeString(detailCompact)
-        parcel.writeParcelable(promo, flags)
+        parcel.writeParcelable(productPromo, flags)
     }
 
     override fun describeContents(): Int {

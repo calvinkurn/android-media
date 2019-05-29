@@ -11,9 +11,13 @@ import java.lang.annotation.RetentionPolicy;
 @IntDef({TelcoComponentType.CLIENT_NUMBER_PREPAID,
         TelcoComponentType.PRODUCT_PULSA,
         TelcoComponentType.PRODUCT_ROAMING,
-        TelcoComponentType.PRODUCT_PAKET_DATA})
+        TelcoComponentType.PRODUCT_PAKET_DATA,
+        TelcoComponentType.TELCO_PREPAID,
+        TelcoComponentType.TELCO_POSTPAID})
 @Retention(RetentionPolicy.SOURCE)
 public @interface TelcoComponentType {
+    int TELCO_PREPAID = 2;
+    int TELCO_POSTPAID = 3;
     int CLIENT_NUMBER_PREPAID = 5;
     int CLIENT_NUMBER_PROSTPAID = 19;
     int PRODUCT_PULSA = 6;

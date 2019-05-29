@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.digital.topupbillsproduct.adapter.DigitalRecentNumbersAdapter
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.view.model.DigitalRecentNumber
+import com.tokopedia.topupbills.telco.data.TelcoRecommendation
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -22,7 +22,7 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
     private val recyclerView: RecyclerView
     private val titleWidget: TextView
     private val digitalRecentNumbersAdapter: DigitalRecentNumbersAdapter
-    private val recentNumbers = mutableListOf<DigitalRecentNumber>()
+    private val recentNumbers = mutableListOf<TelcoRecommendation>()
     private lateinit var listener: ActionListener
 
     init {
@@ -39,12 +39,12 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
         this.listener = listener
     }
 
-    fun setRecentNumbers(recentNumbers: List<DigitalRecentNumber>) {
+    fun setRecentNumbers(recentNumbers: List<TelcoRecommendation>) {
         titleWidget.visibility = View.VISIBLE
         titleWidget.setText(context.getString(R.string.title_reccent_transaction_widget))
         digitalRecentNumbersAdapter.setListener(object : DigitalRecentNumbersAdapter.ActionListener {
-            override fun onClickRecentNumber(digitalRecentNumber: DigitalRecentNumber, position: Int) {
-                listener.onClickRecentNumber(digitalRecentNumber)
+            override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, position: Int) {
+                listener.onClickRecentNumber(telcoRecommendation)
             }
         })
         this.recentNumbers.addAll(recentNumbers)
@@ -52,6 +52,6 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
     }
 
     interface ActionListener {
-        fun onClickRecentNumber(digitalRecentNumber: DigitalRecentNumber)
+        fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation)
     }
 }

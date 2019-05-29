@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
+import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.model.DigitalProductSubMenu
 import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
@@ -50,12 +52,12 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
         viewPager.adapter = pagerAdapter
 
         val list = mutableListOf<DigitalProductSubMenu>()
-        list.add(DigitalProductSubMenu("2", "telco-prepaid", "Prabayar", ""))
-        list.add(DigitalProductSubMenu("3", "telco-postpaid", "Pascabayar", ""))
+        list.add(DigitalProductSubMenu(TelcoComponentType.TELCO_PREPAID, TelcoComponentName.TELCO_PREPAID))
+        list.add(DigitalProductSubMenu(TelcoComponentType.TELCO_POSTPAID, TelcoComponentName.TELCO_POSTPAID))
         headerView.setHeaderActive(DigitalSubMenuWidget.HEADER_LEFT)
         headerView.setListener(object : DigitalSubMenuWidget.ActionListener {
             override fun onClickSubMenu(subMenu: DigitalProductSubMenu) {
-                if (subMenu.name.equals("telco-prepaid")) {
+                if (subMenu.id == TelcoComponentType.TELCO_PREPAID) {
                     viewPager.setCurrentItem(0)
                 } else {
                     viewPager.setCurrentItem(1)

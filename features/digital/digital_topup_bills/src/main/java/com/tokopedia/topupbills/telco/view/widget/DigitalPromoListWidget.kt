@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.digital.topupbillsproduct.adapter.DigitalPromoListAdapter
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.view.model.DigitalPromo
+import com.tokopedia.topupbills.telco.data.TelcoPromo
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -21,7 +21,7 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
 
     private val recyclerView: RecyclerView
     private val titleWidget: TextView
-    private val promoList = mutableListOf<DigitalPromo>()
+    private val promoList = mutableListOf<TelcoPromo>()
     private val digitalPromoListAdapter: DigitalPromoListAdapter
     private lateinit var listener: ActionListener
 
@@ -39,7 +39,7 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
         this.listener = listener
     }
 
-    fun setPromoList(promoList: List<DigitalPromo>) {
+    fun setPromoList(promoList: List<TelcoPromo>) {
         titleWidget.visibility = View.VISIBLE
         titleWidget.setText(context.getString(R.string.title_promo))
         digitalPromoListAdapter.setListener(object : DigitalPromoListAdapter.ActionListener {
@@ -47,8 +47,8 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
                 listener.onCopiedPromoCode(voucherCode)
             }
 
-            override fun onClickPromoItem(digitalPromo: DigitalPromo) {
-                //implement navigate page to promo detail based on digitalPromo.getUrl
+            override fun onClickPromoItem(telcoPromo: TelcoPromo) {
+                listener.onClickItemPromo(telcoPromo)
             }
         })
         this.promoList.addAll(promoList)
@@ -57,6 +57,8 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
 
     interface ActionListener {
         fun onCopiedPromoCode(voucherCode: String)
+
+        fun onClickItemPromo(telcoPromo: TelcoPromo)
     }
 
 }

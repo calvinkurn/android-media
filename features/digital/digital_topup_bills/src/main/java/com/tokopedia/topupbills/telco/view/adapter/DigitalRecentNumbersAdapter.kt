@@ -9,12 +9,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.topupbills.R
-import  com.tokopedia.topupbills.telco.view.model.DigitalRecentNumber
+import com.tokopedia.topupbills.telco.data.TelcoRecommendation
 
 /**
  * Created by nabillasabbaha on 23/04/19.
  */
-class DigitalRecentNumbersAdapter(val digitalRecentNumbers: List<DigitalRecentNumber>):
+class DigitalRecentNumbersAdapter(val digitalRecentNumbers: List<TelcoRecommendation>) :
         RecyclerView.Adapter<DigitalRecentNumbersAdapter.RecentNumbersItemViewHolder>() {
 
     private lateinit var listener: ActionListener
@@ -36,33 +36,33 @@ class DigitalRecentNumbersAdapter(val digitalRecentNumbers: List<DigitalRecentNu
         holder.bind(digitalRecentNumbers[position])
     }
 
-    inner class RecentNumbersItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class RecentNumbersItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val iconOperator: ImageView = itemView.findViewById(R.id.icon_operator)
         private val textClientNumber: TextView = itemView.findViewById(R.id.text_client_number)
         private val textProductName: TextView = itemView.findViewById(R.id.text_product_name)
 
-        private lateinit var digitalRecentNumber: DigitalRecentNumber
+        private lateinit var telcoRecommendation: TelcoRecommendation
 
         init {
             itemView.setOnClickListener {
-                listener.onClickRecentNumber(digitalRecentNumber, adapterPosition)
+                listener.onClickRecentNumber(telcoRecommendation, adapterPosition)
             }
         }
 
-        fun bind(digitalRecentNumber: DigitalRecentNumber) {
-            this.digitalRecentNumber = digitalRecentNumber
-            ImageHandler.loadImageWithoutPlaceholder(iconOperator, digitalRecentNumber.iconUrl,
+        fun bind(telcoRecommendation: TelcoRecommendation) {
+            this.telcoRecommendation = telcoRecommendation
+            ImageHandler.loadImageWithoutPlaceholder(iconOperator, telcoRecommendation.iconUrl,
                     ContextCompat.getDrawable(itemView.context, R.drawable.status_no_result)
             )
-            textClientNumber.text = digitalRecentNumber.clientNumber
-            textProductName.text = digitalRecentNumber.title
+            textClientNumber.text = telcoRecommendation.clientNumber
+            textProductName.text = telcoRecommendation.title
         }
 
     }
 
     interface ActionListener {
-        fun onClickRecentNumber(digitalRecentNumber : DigitalRecentNumber, position: Int)
+        fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, position: Int)
     }
 
 }
