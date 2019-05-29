@@ -29,6 +29,11 @@ class CornerListPresenter @Inject constructor(val usecase: GetCornerList) : Corn
     }
 
     override fun searchQuery(query: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        usecase.execute(query)
+                .doOnSubscribe { mView?.setLoadingState(true) }
+                .doOnTerminate { mView?.setLoadingState(false) }
+                .subscribe(
+                        { mView?.showData(it.listAddress) },
+                        { e -> mView?.showError(e) }, {})
     }
 }

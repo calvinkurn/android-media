@@ -103,6 +103,20 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
         mRvCorner.setLayoutManager(new LinearLayoutManager(getContext()));
         mRvCorner.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         mRvCorner.setAdapter(mAdapter);
+
+        mSearchView.setSearchHint(getActivity().getString(R.string.hint_search_corner));
+        mSearchView.setListener(new SearchInputView.Listener() {
+            @Override
+            public void onSearchSubmitted(String text) {
+                mPresenter.searchQuery(text);
+            }
+
+            @Override
+            public void onSearchTextChanged(String text) {
+
+            }
+        });
+
         mPresenter.attachView(this);
         mPresenter.getData();
     }
