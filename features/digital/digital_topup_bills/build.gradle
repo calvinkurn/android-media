@@ -23,6 +23,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.permissionchecker)
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation rootProject.ext.miscDependencies.multiDex
 
@@ -36,5 +41,9 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
-    implementation rootProject.ext.debugToolsDependencies.stetho
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
 }
