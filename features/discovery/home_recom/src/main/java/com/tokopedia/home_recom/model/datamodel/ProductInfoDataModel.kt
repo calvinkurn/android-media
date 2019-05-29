@@ -1,6 +1,7 @@
 package com.tokopedia.home_recom.model.datamodel
 
 import com.tokopedia.home_recom.R
+import com.tokopedia.home_recom.model.dataModel.BaseHomeRecommendationDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactory
 
