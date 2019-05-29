@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.feature.cornerlist
 import com.tokopedia.checkout.domain.usecase.GetCornerList
 import javax.inject.Inject
 
+const val EMPTY_QUERY = ""
 /**
  * Created by fajarnuha on 2019-05-26.
  */
@@ -19,7 +20,7 @@ class CornerListPresenter @Inject constructor(val usecase: GetCornerList) : Corn
     }
 
     override fun getData() {
-        usecase.execute("")
+        usecase.execute(EMPTY_QUERY)
                 .doOnSubscribe { mView?.setLoadingState(true) }
                 .doOnTerminate { mView?.setLoadingState(false) }
                 .subscribe(
