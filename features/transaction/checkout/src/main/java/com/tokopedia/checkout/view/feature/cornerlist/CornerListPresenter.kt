@@ -16,6 +16,7 @@ class CornerListPresenter @Inject constructor(val usecase: GetCornerList) : Corn
     }
 
     override fun detachView() {
+        usecase.unsubscribe()
         this.mView = null
     }
 

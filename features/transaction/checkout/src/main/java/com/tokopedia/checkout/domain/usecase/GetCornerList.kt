@@ -18,7 +18,7 @@ import javax.inject.Inject
 const val PARAM_CORNER_USECASE: String = "input"
 
 class GetCornerList
-@Inject constructor(val context: Context, val usecase: GraphqlUseCase, val mapper: AddressCornerMapper) {
+@Inject constructor(val context: Context, val graphqlUseCase: GraphqlUseCase, val mapper: AddressCornerMapper) {
 
     fun execute(query: String): Observable<AddressListModel> =
             this.getObservable(query = query, page = 1, isAddress = false, isCorner = true)
@@ -34,9 +34,9 @@ class GetCornerList
         val gqlQuery = GraphqlHelper.loadRawString(context.resources, R.raw.address_corner)
         val gqlRequest = GraphqlRequest(gqlQuery, NewAddressCornerResponse::class.java, param)
 
-        usecase.clearRequest()
-        usecase.addRequest(gqlRequest)
-        return usecase.getExecuteObservable(null)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(gqlRequest)
+        return graphqlUseCase.getExecuteObservable(null)
                 .map { graphqlResponse ->
                     val response: NewAddressCornerResponse? =
                             graphqlResponse.getData(NewAddressCornerResponse::class.java)
@@ -46,6 +46,10 @@ class GetCornerList
                 .map(mapper)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    fun unsubscribe() {
+        graphqlUseCase.unsubscribe()
     }
 
 
