@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
@@ -30,6 +29,7 @@ class TabBusinessFragment : BaseDaggerFragment(), TabLayout.OnTabSelectedListene
     lateinit var viewModel: TabBusinessViewModel
     lateinit var adapter: TabBusinessViewPagerAdapter
     private var positionWidget: Int = 0
+    private var isFirstTabImpression: Boolean = false
 
     override fun getScreenName(): String {
         return TabBusinessFragment::class.java.simpleName
@@ -70,6 +70,7 @@ class TabBusinessFragment : BaseDaggerFragment(), TabLayout.OnTabSelectedListene
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        isFirstTabImpression = true
         errorView.visibility = View.GONE
         container.visibility = View.GONE
         temporayPlaceHolders.visibility = View.VISIBLE
@@ -152,7 +153,10 @@ class TabBusinessFragment : BaseDaggerFragment(), TabLayout.OnTabSelectedListene
     }
 
     override fun onTabSelected(tab: TabLayout.Tab) {
-        HomePageTracking.eventClickTabHomeWidget(activity, tab.text.toString().toLowerCase())
+        if(!isFirstTabImpression) {
+            HomePageTracking.eventClickTabHomeWidget(activity, tab.text.toString().toLowerCase())
+        }
+        isFirstTabImpression = false
         viewPager.setCurrentItem(tab.position, false)
         adapter.notifyDataSetChanged()
     }
