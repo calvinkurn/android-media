@@ -479,7 +479,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             val fragmentTransaction = fragmentManager!!.beginTransaction()
             val newFragment = WebViewLoginFragment.createInstance(url, name)
             newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW)
-            newFragment.show(fragmentTransaction, "dialog")
+            fragmentTransaction.add(newFragment, "dialog")
+            fragmentTransaction.commitAllowingStateLoss()
 
             activity!!.window.setSoftInputMode(
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)

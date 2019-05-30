@@ -8,6 +8,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
 
 /**
  * @author by StevenFredian on 05/03/18.

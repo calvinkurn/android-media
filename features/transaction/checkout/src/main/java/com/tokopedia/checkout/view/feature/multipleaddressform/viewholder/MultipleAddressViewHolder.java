@@ -71,7 +71,8 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
             MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
             MultipleAddressAdapter.MultipleAddressAdapterListener addressListener,
             CompositeSubscription compositeSubscription,
-            boolean firstItemPosition
+            boolean firstItemPosition,
+            boolean isShowOnboarding
     ) {
         if (data.isOfficialStore()) {
             ImageHandler.LoadImage(imgShopBadge, data.getOfficialStoreLogoUrl());
@@ -95,7 +96,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         ((SimpleItemAnimator) shippingDestinationList.getItemAnimator()).setSupportsChangeAnimations(false);
         btAddNewShipment.setOnClickListener(onAddAddressClickedListener(dataList, addressListener));
         if (firstItemPosition) {
-            setShowCase();
+            setShowCase(isShowOnboarding);
         }
 
         if (data.isFreeReturn()) {
@@ -125,7 +126,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void setShowCase() {
+    private void setShowCase(boolean isShowOnboarding) {
         ShowCaseObject showCase = new ShowCaseObject(
                 btAddNewShipment, context.getString(R.string.label_showcase_multiple_address_title),
                 context.getString(R.string.label_showcase_multiple_address_message),
@@ -137,7 +138,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
         ShowCaseDialog showCaseDialog = createShowCaseDialog();
 
-        if (!ShowCasePreference.hasShown(context, MultipleAddressViewHolder.class.getName()))
+        if (isShowOnboarding)
             showCaseDialog.show(
                     (Activity) context,
                     MultipleAddressViewHolder.class.getName(),

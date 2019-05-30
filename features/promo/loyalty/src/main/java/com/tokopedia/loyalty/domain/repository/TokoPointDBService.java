@@ -3,9 +3,7 @@ package com.tokopedia.loyalty.domain.repository;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.abstraction.constant.TkpdCache;
-import com.tokopedia.loyalty.domain.entity.response.GqlTokoPointDrawerDataResponse;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.loyalty.domain.entity.response.HachikoDrawerDataResponse;
 import com.tokopedia.loyalty.domain.exception.TokoPointDBServiceException;
 
@@ -21,30 +19,30 @@ import rx.functions.Func1;
 
 public class TokoPointDBService implements ITokoPointDBService {
 
-    private final CacheManager globalCacheManager;
+    public static final String KEY_TOKOPOINT_DRAWER_DATA = "KEY_TOKOPOINT_DRAWER_DATA";
+
     private final Gson gson;
 
     @Inject
-    public TokoPointDBService(CacheManager globalCacheManager, Gson gson) {
-        this.globalCacheManager = globalCacheManager;
+    public TokoPointDBService(Gson gson) {
         this.gson = gson;
     }
 
     @Override
     public Observable<HachikoDrawerDataResponse> getPointDrawer() {
-        return Observable.just(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA)
+        return Observable.just(KEY_TOKOPOINT_DRAWER_DATA)
                 .map(new Func1<String, HachikoDrawerDataResponse>() {
                     @Override
                     public HachikoDrawerDataResponse call(String s) {
                         try {
-                            String cacheStr = globalCacheManager.get(s);
+                            String cacheStr = PersistentCacheManager.instance.getString(s);
                             if (cacheStr != null && !cacheStr.isEmpty()) {
                                 HachikoDrawerDataResponse tokoPointDrawerDataResponse =
                                         gson.fromJson(cacheStr, HachikoDrawerDataResponse.class);
 
                                 if (tokoPointDrawerDataResponse.getGqlTokoPointDrawerDataResponse().getGqlTokoPointPopupNotif() != null &&
                                         !TextUtils.isEmpty(tokoPointDrawerDataResponse.getGqlTokoPointDrawerDataResponse().getGqlTokoPointPopupNotif().getTitle())) {
-                                    globalCacheManager.delete(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
+                                    PersistentCacheManager.instance.delete(KEY_TOKOPOINT_DRAWER_DATA);
                                     throw new TokoPointDBServiceException("cant pull from db, cause data has notif flag active");
                                 }
 
@@ -72,23 +70,9 @@ public class TokoPointDBService implements ITokoPointDBService {
                 if (tokoPointDrawerDataResponse.getGqlTokoPointDrawerDataResponse().getGqlTokoPointPopupNotif() == null ||
                         (tokoPointDrawerDataResponse.getGqlTokoPointDrawerDataResponse().getGqlTokoPointPopupNotif() != null &&
                                 TextUtils.isEmpty(tokoPointDrawerDataResponse.getGqlTokoPointDrawerDataResponse().getGqlTokoPointPopupNotif().getTitle()))) {
-                    globalCacheManager.save(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA, gson.toJson(tokoPointDrawerDataResponse), 60);
+                    PersistentCacheManager.instance.put(KEY_TOKOPOINT_DRAWER_DATA, gson.toJson(tokoPointDrawerDataResponse), 60_000);
                 }
             }
         });
-//                .map(new Func1<TokoPointDrawerDataResponse, TokoPointDrawerDataResponse>() {
-//                    @Override
-//                    public TokoPointDrawerDataResponse call(
-//                            TokoPointDrawerDataResponse tokoPointDrawerDataResponse
-//                    ) {
-//                        if (tokoPointDrawerDataResponse.getHasNotif() != 1) {
-//                            globalCacheManager.setCacheDuration(60);
-//                            globalCacheManager.setKey(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
-//                            globalCacheManager.setValue(gson.toJson(tokoPointDrawerDataResponse));
-//                            globalCacheManager.store();
-//                        }
-//                        return tokoPointDrawerDataResponse;
-//                    }
-//                });
     }
 }

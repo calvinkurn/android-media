@@ -5,9 +5,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
+import com.tokopedia.discovery.common.data.Filter;
 
 /**
  * Created by henrypriyono on 8/11/17.
