@@ -39,6 +39,11 @@
             </com.tokopedia.design.loading.LoadingStateView>
 
             <fragment
+                android:id="@+id/mlp"
+                android:name="com.tokopedia.mlp.fragment.MerchantLending"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <fragment
                 android:id="@+id/fragment_preapprove_label"
                 android:name="com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment"
                 android:layout_width="match_parent"
