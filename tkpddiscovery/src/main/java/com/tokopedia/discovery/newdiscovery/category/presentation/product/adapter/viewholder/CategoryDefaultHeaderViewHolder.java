@@ -17,10 +17,15 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.widgets.DividerItemDecoration;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.DefaultCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
@@ -40,13 +45,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * @author by alifa on 10/31/17.
  */
 
-public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<CategoryHeaderModel> {
+public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<CategoryHeaderModel> implements QuickSingleFilterView.ActionListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.default_category_header;
@@ -65,6 +72,7 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
     private Context context;
     private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
     private boolean isUsedUnactiveChildren = false;
+    private CustomMultipleFilterView quickMultipleFilterView;
     private boolean isInit;
 
     public CategoryDefaultHeaderViewHolder(View itemView, DefaultCategoryAdapter.CategoryListener categoryListener) {
@@ -76,7 +84,9 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
         this.hideLayout = (LinearLayout) itemView.findViewById(R.id.hide_layout);
         this.cardViewCategory = (CardView) itemView.findViewById(R.id.card_category);
         this.totalProduct = (TextView) itemView.findViewById(R.id.total_product);
+        this.quickMultipleFilterView = (CustomMultipleFilterView) itemView.findViewById(R.id.quickFilterView);
         this.topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.topAdsBannerView);
+        this.quickMultipleFilterView.setListener(this);
     }
 
     private void initTopAds(String depId, String categoryName) {
@@ -167,6 +177,18 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
                     .format(categoryHeaderModel.getTotalData()).replace(',', '.') + " Produk");
             totalProduct.setVisibility(View.VISIBLE);
         }
+
+        renderQuickFilterView(categoryHeaderModel.getOptionList());
+    }
+
+
+    protected void renderQuickFilterView(List<QuickFilterItem> quickFilterItems) {
+
+        if (quickFilterItems == null || quickFilterItems.isEmpty()) {
+            return;
+        } else {
+            quickMultipleFilterView.renderFilter(quickFilterItems);
+        }
     }
 
     public void eventShowMoreCategory(String parentCat) {
@@ -188,4 +210,9 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
         return width / 2;
     }
 
+    @Override
+    public void selectFilter(String typeFilter) {
+        String[] str = typeFilter.split("=");
+        categoryListener.onQuickFilterSelected(str[0], str[1]);
+    }
 }

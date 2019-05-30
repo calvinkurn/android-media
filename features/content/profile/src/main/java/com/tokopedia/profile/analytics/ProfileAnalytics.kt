@@ -171,7 +171,7 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         )
     }
 
-    fun eventClickShareProfileIni(isOwner: Boolean, profileId: String) {
+    fun eventClickShareProfileIni(isOwner: Boolean, profileId: String, source: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -179,13 +179,13 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
                         screen,
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
                         category,
-                        Action.CLICK_SHARE_THIS_PROFILE,
+                        Action.CLICK_SHARE_THIS_PROFILE + " - " + source,
                         profileId
                 )
         )
     }
 
-    fun eventClickSharePostIni(isOwner: Boolean, profileId: String) {
+    fun eventClickSharePostIni(isOwner: Boolean, profileId: String, source: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -193,7 +193,7 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
                         screen,
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
                         category,
-                        Action.CLICK_SHARE_THIS_POST,
+                        Action.CLICK_SHARE_THIS_POST + " - " + source,
                         profileId
                 )
         )

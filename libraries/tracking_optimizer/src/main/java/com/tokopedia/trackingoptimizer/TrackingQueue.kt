@@ -10,9 +10,9 @@ import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.trackingoptimizer.model.ScreenCustomModel
 import com.tokopedia.trackingoptimizer.repository.ITrackingRepository
 import com.tokopedia.trackingoptimizer.repository.TrackingRepository
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.launch
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 /***
  * This is to optimize the tracking sent to server

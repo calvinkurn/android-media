@@ -16,8 +16,8 @@ import android.widget.TextView;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.widgets.DividerItemDecoration;
+import com.tokopedia.discovery.common.data.Sort;
 
 import java.util.ArrayList;
 import java.util.HashMap;

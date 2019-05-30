@@ -11,8 +11,8 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
-            android:paddingLeft="@dimen/review_gallery_default_padding"
-            android:paddingRight="@dimen/review_gallery_default_padding"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_12"
             android:divider="@android:color/transparent"
             android:descendantFocusability="blocksDescendants"
             android:dividerHeight="@dimen/dp_5"

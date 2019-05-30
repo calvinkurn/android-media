@@ -4,10 +4,18 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions;
+import com.tokopedia.topads.dashboard.data.model.request.MinimumBidRequest;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMinimumBidUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCheckExistGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
+import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsManageGroupPromoView;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -24,15 +32,21 @@ public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupProm
     public static final int TIME_DELAY = 300;
     private final TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase;
     private final TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase;
+    private final TopAdsMinimumBidUseCase topAdsMinimumBidUseCase;
     private final Subscription subscriptionCheckGroupExist;
     private final Subscription subscriptionSearchGroupName;
     private QueryListener listenerCheckGroupExist;
     private QueryListener listenerSearchGroupName;
+    private UserSessionInterface sessionInterface;
 
     public TopAdsManageGroupPromoPresenterImpl(TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase,
-                                               TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase) {
+                                               TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase,
+                                               TopAdsMinimumBidUseCase topAdsMinimumBidUseCase,
+                                               UserSessionInterface sessionInterface) {
         this.topAdsSearchGroupAdsNameUseCase = topAdsSearchGroupAdsNameUseCase;
         this.topAdsCheckExistGroupUseCase = topAdsCheckExistGroupUseCase;
+        this.topAdsMinimumBidUseCase = topAdsMinimumBidUseCase;
+        this.sessionInterface = sessionInterface;
 
         subscriptionCheckGroupExist = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
@@ -232,5 +246,32 @@ public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupProm
 
     private abstract class QueryListener {
         public abstract void getQueryString(String string);
+    }
+
+    @Override
+    public void getMinimumBid(String requestType, List<DataSuggestions> dataSuggestions, String source) {
+        MinimumBidRequest request = new MinimumBidRequest();
+        request.setSource(source);
+        request.setShopId(Integer.parseInt(sessionInterface.getShopId()));
+        request.setRequestType(requestType);
+        request.setDataSuggestions(dataSuggestions);
+        topAdsMinimumBidUseCase.execute(topAdsMinimumBidUseCase.getBidParams(request),
+                new Subscriber<MinimumBidDomain.TopadsBidInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(MinimumBidDomain.TopadsBidInfo topadsBidInfo) {
+
+                    }
+                });
+
     }
 }

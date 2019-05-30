@@ -11,28 +11,13 @@
             android:label="@string/top_ads_title_product"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="https"
-                    android:host="ta.tokopedia.com"
-                    android:pathPrefix="/v2/manage/product"/>
-            </intent-filter>
         </activity>
         <activity
             android:name=".group.view.activity.TopAdsGroupAdListActivity"
             android:label="@string/topads_title_promo_grup_activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="https"
-                    android:host="ta.tokopedia.com"
-                    android:pathPrefix="/v2/manage/group"/>
-            </intent-filter>
+
         </activity>
         <activity
             android:name=".dashboard.view.activity.TopAdsFilterGroupActivity"
@@ -63,14 +48,7 @@
             android:name=".dashboard.view.activity.TopAdsDetailShopActivity"
             android:label="@string/title_shop_ad_detail"
             android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="https"
-                    android:host="ta.tokopedia.com"
-                    android:pathPrefix="/v2/manage/shop"/>
-            </intent-filter>
+
         </activity>
         <activity
             android:name=".dashboard.view.activity.TopAdsDetailProductActivity"
@@ -94,22 +72,7 @@
             android:label="@string/title_top_ads_keyword"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="https"
-                    android:host="ta.tokopedia.com"
-                    android:path="/v2/manage/keyword/positive"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="https"
-                    android:host="ta.tokopedia.com"
-                    android:path="/v2/manage/keyword/negative"/>
-            </intent-filter>
+
         </activity>
         <activity
             android:name=".keyword.view.activity.TopAdsKeywordFilterActivity"
