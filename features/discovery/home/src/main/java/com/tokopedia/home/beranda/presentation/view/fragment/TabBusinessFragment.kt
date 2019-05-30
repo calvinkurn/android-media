@@ -24,8 +24,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_parent_business_unit.*
 import javax.inject.Inject
 
-class TabBusinessFragment : BaseDaggerFragment() {
-
+class TabBusinessFragment : BaseDaggerFragment(), TabLayout.OnTabSelectedListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: TabBusinessViewModel
@@ -142,16 +141,20 @@ class TabBusinessFragment : BaseDaggerFragment() {
     private fun addTabLayoutListener(adapter: TabBusinessViewPagerAdapter) {
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
 
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                HomePageTracking.eventClickTabHomeWidget(activity, tab.text.toString().toLowerCase())
-                viewPager.setCurrentItem(tab.position, false)
-                adapter.notifyDataSetChanged()
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
-
-            override fun onTabReselected(tab: TabLayout.Tab) {}
-        })
+        tabLayout.removeOnTabSelectedListener(this)
+        tabLayout.addOnTabSelectedListener(this)
     }
+
+    override fun onTabReselected(tab: TabLayout.Tab) {
+    }
+
+    override fun onTabUnselected(tab: TabLayout.Tab) {
+    }
+
+    override fun onTabSelected(tab: TabLayout.Tab) {
+        HomePageTracking.eventClickTabHomeWidget(activity, tab.text.toString().toLowerCase())
+        viewPager.setCurrentItem(tab.position, false)
+        adapter.notifyDataSetChanged()
+    }
+
 }

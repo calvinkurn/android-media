@@ -126,7 +126,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventPromoImpression(Context context,
+    public static void eventPromoImpression(TrackingQueue trackingQueue,
                                             List<Promotion> promotions) {
         if (promotions == null || promotions.size() == 0) {
             return;
@@ -139,8 +139,7 @@ public class HomePageTracking {
         if (list.size() == 0) {
             return;
         }
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
+        if (trackingQueue != null) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "promoView",
                     "eventCategory", "homepage",
@@ -155,7 +154,7 @@ public class HomePageTracking {
                     ),
                     "attribution", "1 - sliderBanner"
             );
-            tracker.sendEnhanceEcommerceEvent(map);
+            trackingQueue.putEETracking((HashMap<String, Object>) map);
         }
     }
 
@@ -194,18 +193,6 @@ public class HomePageTracking {
                     ACTION_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_JUMP_RECOMENDATION,
-                    LABEL_EMPTY
-            );
-        }
-    }
-
-    public static void eventImpressionJumpRecomendation(Context context) {
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_IMPRESSION_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_IMPRESSION_JUMP_RECOMENDATION,
                     LABEL_EMPTY
             );
         }

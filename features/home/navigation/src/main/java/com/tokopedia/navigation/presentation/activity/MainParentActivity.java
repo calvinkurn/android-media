@@ -131,6 +131,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private Handler handler = new Handler();
     private CoordinatorLayout fragmentContainer;
+    private boolean isFirstLaunch = false;
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -234,6 +235,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void createView(Bundle savedInstanceState) {
+        isFirstLaunch = true;
         GraphqlClient.init(this);
         setContentView(R.layout.activity_main_parent);
 
@@ -335,7 +337,10 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int position = getPositionFragmentByMenu(item);
-        globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
+        if (!isFirstLaunch) {
+            globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
+        }
+        isFirstLaunch = false;
 
         if (position == OS_MENU && !isNewOfficialStoreEnabled()) {
             startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
