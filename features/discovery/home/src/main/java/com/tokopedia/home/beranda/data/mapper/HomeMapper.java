@@ -63,7 +63,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
             if (homeData.getSlides() != null
                     && homeData.getSlides().getSlides() != null
                     && !homeData.getSlides().getSlides().isEmpty()) {
-                list.add(mappingBanner(homeData.getSlides().getSlides()));
+                list.add(mappingBanner(homeData.getSlides().getSlides(), homeData.isCache()));
             }
 
             if (homeData.getTicker() != null
@@ -247,10 +247,12 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
         return viewModel;
     }
 
-    private TrackedVisitable mappingBanner(List<BannerSlidesModel> slides) {
+    private TrackedVisitable mappingBanner(List<BannerSlidesModel> slides, boolean isCache) {
         BannerViewModel viewModel = new BannerViewModel();
         viewModel.setSlides(slides);
-        viewModel.setTrackingData(getBannerTrackingData(slides));
+        if (!isCache) {
+            viewModel.setTrackingData(getBannerTrackingData(slides));
+        }
         return viewModel;
     }
 
