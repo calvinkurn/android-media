@@ -780,36 +780,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             } else if (!visitable.isTrackingCombined() && visitable.getTrackingData() != null) {
                 HomePageTracking.eventEnhancedImpressionWidgetHomePage(trackingQueue, visitable.getTrackingData());
             }
-
-            if (visitable instanceof BannerViewModel) {
-                sendHomeBannerImpression((BannerViewModel)visitable);
-            }
         }
         if (!combinedTracking.isEmpty()) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, combinedTracking);
         }
-    }
-
-    private void sendHomeBannerImpression(BannerViewModel visitable) {
-        List<BannerSlidesModel> slidesList = visitable.getSlides();
-        if (slidesList != null && slidesList.size() > 0) {
-            List<Promotion> promotionList = new ArrayList<>();
-            for (int i = 0, sizei = slidesList.size(); i < sizei; i++) {
-                promotionList.add(getPromotion(i, slidesList.get(i)));
-            }
-            HomePageTracking.eventPromoImpression(trackingQueue, promotionList);
-        }
-    }
-
-    private Promotion getPromotion(int position, BannerSlidesModel model) {
-        Promotion promotion = new Promotion();
-        promotion.setPromotionID(String.valueOf(model.getId()));
-        promotion.setPromotionName("/ - p1 - promo");
-        promotion.setPromotionAlias(model.getTitle().trim().replaceAll(" ", "_"));
-        promotion.setPromotionPosition(position + 1);
-        promotion.setRedirectUrl(model.getRedirectUrl());
-        promotion.setPromoCode(model.getPromoCode());
-        return promotion;
     }
 
     @Override

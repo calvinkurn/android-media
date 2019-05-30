@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.HomeData;
@@ -249,7 +250,30 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     private TrackedVisitable mappingBanner(List<BannerSlidesModel> slides) {
         BannerViewModel viewModel = new BannerViewModel();
         viewModel.setSlides(slides);
+        viewModel.setTrackingData(getBannerTrackingData(slides));
         return viewModel;
+    }
+
+    private Map<String, Object> getBannerTrackingData(List<BannerSlidesModel> slides) {
+        if (slides != null && slides.size() > 0) {
+            List<Promotion> promotionList = new ArrayList<>();
+            for (int i = 0, sizei = slides.size(); i < sizei; i++) {
+                BannerSlidesModel model = slides.get(i);
+
+                Promotion promotion = new Promotion();
+                promotion.setPromotionID(String.valueOf(model.getId()));
+                promotion.setPromotionName("/ - p1 - promo");
+                promotion.setPromotionAlias(model.getTitle().trim().replaceAll(" ", "_"));
+                promotion.setPromotionPosition(i + 1);
+                promotion.setRedirectUrl(model.getRedirectUrl());
+                promotion.setPromoCode(model.getPromoCode());
+
+                promotionList.add(promotion);
+            }
+            return HomePageTracking.convertToPromoImpression(promotionList);
+        } else {
+            return null;
+        }
     }
 
     private TrackedVisitable mappingUseCaseIcon(List<DynamicHomeIcon.UseCaseIcon> iconList) {
