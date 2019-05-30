@@ -835,8 +835,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.getErrorMessage());
                     if (!checkoutData.getErrorMessage().isEmpty()) {
                         getView().renderCheckoutCartError(checkoutData.getErrorMessage());
-                    } else {
-                        getView().renderCheckoutCartError(getView().getActivityContext().getString(R.string.checkout_module_title_error_empty_address));
                     }
                 }
             }
