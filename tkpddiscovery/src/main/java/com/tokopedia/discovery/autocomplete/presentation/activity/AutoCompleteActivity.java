@@ -155,6 +155,7 @@ public class AutoCompleteActivity extends DiscoveryActivity
 
     private void handleIntentAutoComplete(SearchParameter searchParameter) {
         searchView.showSearch(true, false, searchParameter);
+        searchView.searchTextViewRequestFocus();
 
         animateEnterActivityTransition();
     }
