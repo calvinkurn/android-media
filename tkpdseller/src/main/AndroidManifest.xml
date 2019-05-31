@@ -151,17 +151,6 @@
             android:name=".shopsettings.shipping.EditShippingActivity"
             android:label="@string/shop_shipping_setting"
             android:screenOrientation="portrait">
-            <intent-filter tools:ignore="GoogleAppIndexingWarning">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="com.tokopedia.tkpd"
-                    android:pathPrefix="/myshop-editor.pl"
-                    android:scheme="https" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".shopsettings.shipping.OpenShopEditShipping"
