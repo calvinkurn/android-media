@@ -95,8 +95,9 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
 
     fun initFilterView() {
         filter_recycler_view.listener = this
-        filter_recycler_view.setItem(arrayListOf(FIRST_RANK_REVIEW,
-                SECOND_RANK_REVIEW, THIRD_RANK_REVIEW),
+        filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_review_filter_first_rank),
+                getString(R.string.hotel_review_filter_second_rank),
+                getString(R.string.hotel_review_filter_third_rank)),
                 R.color.snackbar_border_normal)
         filter_recycler_view.selectOnlyOneChip(true)
 
@@ -137,13 +138,13 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
     override fun onChipClickListener(string: String, isSelected: Boolean) {
         if (isSelected) {
             when (string) {
-                FIRST_RANK_REVIEW -> {
+                getString(R.string.hotel_review_filter_first_rank) -> {
                     param.filterByRank = 1
                 }
-                SECOND_RANK_REVIEW -> {
+                getString(R.string.hotel_review_filter_second_rank) -> {
                     param.filterByRank = 2
                 }
-                THIRD_RANK_REVIEW -> {
+                getString(R.string.hotel_review_filter_third_rank) -> {
                     param.filterByRank = 3
                 }
             }
@@ -154,16 +155,13 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         var emptyModel = EmptyModel()
+        emptyModel.iconRes = R.drawable.ic_no_indonesian_review
         emptyModel.title = getString(R.string.hotel_review_indonesia_not_found_title)
         emptyModel.content = getString(R.string.hotel_review_indonesia_not_found_subtitle)
         return emptyModel
     }
 
     companion object {
-
-        const val FIRST_RANK_REVIEW = "Memuaskan (Rating 7+)"
-        const val SECOND_RANK_REVIEW = "Baik (Rating 5-7)"
-        const val THIRD_RANK_REVIEW = "Buruk (Rating 5-)"
 
         const val ARG_PROPERTY_ID = "arg_property_id"
 
