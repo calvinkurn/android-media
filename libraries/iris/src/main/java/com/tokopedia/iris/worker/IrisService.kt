@@ -56,7 +56,9 @@ class IrisService : JobIntentService() {
 
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         if (response.isSuccessful && response.code() == 200) {
-                            trackingRepository.delete(trackings)
+                            Thread {
+                                trackingRepository.delete(trackings)
+                            }.start()
                         }
                     }
 
