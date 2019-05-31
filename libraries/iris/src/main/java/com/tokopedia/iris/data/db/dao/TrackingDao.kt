@@ -14,8 +14,8 @@ interface TrackingDao {
     @Query("SELECT * FROM tracking ORDER BY timeStamp, userId ASC LIMIT :limit")
     fun getFromOldest(limit: Int): List<Tracking>
 
-    @Delete
-    fun delete(dataTracking: List<Tracking>)
+    @Query("DELETE FROM tracking where id in (:listId)")
+    fun delete(listId: List<Int>)
 
     @Insert
     fun insert(tracking: Tracking): Long

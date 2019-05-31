@@ -41,7 +41,8 @@ class TrackingRepository (
 
     fun delete(data: List<Tracking>) {
         try {
-            trackingDao.delete(data)
+            val listId: List<Int> = data.map { it.trackingId }.toMutableList()
+            trackingDao.delete(listId)
         } catch (e: Throwable) {}
     }
 
