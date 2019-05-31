@@ -1,4 +1,4 @@
-package com.tokopedia.payment.model;
+package com.tokopedia.common.payment.model;
 
 /**
  * Created by kris on 3/14/17. Tokopedia

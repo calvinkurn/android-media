@@ -1,4 +1,4 @@
-package com.tokopedia.payment.model;
+package com.tokopedia.common.payment.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -171,7 +171,8 @@ ext {
             userIdentificationCommon: "com.tokopedia.user:user:${tkpdUserIdentificationCommon}",
             vote                    : "com.tokopedia.user:user:${tkpdVoteVersion}",
             wishListCommon          : "com.tokopedia.wishlist:wishlist-common:${tkpdWishlistVersion}",
-            commonTravel            : "com.tokopedia.common.travel:${tkpdTravelVersion}"
+            commonTravel            : "com.tokopedia.common.travel:${tkpdTravelVersion}",
+            commonPayment            : "com.tokopedia.common.payment:${tkpdPaymentVersion}"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -363,6 +364,7 @@ ext {
             transaction                     : ":tkpdtransaction",
             transactioncommon               : ":tkpdtransaction-common",
             commonTravel                    : ":features:digital:common_travel",
+            commonPayment                   : ":features:payment:common_payment",
             ovo                             : ":features:fintech:ovo_pay_with_qr"
     ]
 }

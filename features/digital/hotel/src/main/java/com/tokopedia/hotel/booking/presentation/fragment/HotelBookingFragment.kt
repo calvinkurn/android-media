@@ -19,7 +19,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
 import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
 import com.tokopedia.common.travel.presentation.model.TravelContactData
@@ -84,10 +87,15 @@ class HotelBookingFragment : BaseDaggerFragment() {
         bookingViewModel.hotelCheckoutResult.observe(this, android.arch.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    /*val checkoutData = PaymentPassData()
+                    val checkoutData = PaymentPassData()
                     checkoutData.queryString = it.data.queryString
                     checkoutData.redirectUrl = it.data.redirectUrl
-                    startActivityForResult(TopPayActivity.createInstance(context, checkoutData), REQUEST_CODE_CHECKOUT)*/
+                    val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
+                    val intent = RouteManager.getIntent(context, paymentCheckoutString)
+                    intent?.run {
+                        putExtra("EXTRA_PARAMETER_TOP_PAY_DATA", checkoutData)
+                        startActivityForResult(intent, REQUEST_CODE_CHECKOUT)
+                    }
                 }
                 is Fail -> {}
             }
@@ -354,14 +362,14 @@ class HotelBookingFragment : BaseDaggerFragment() {
                 promoCode = hotelBookingPageModel.promoCode,
                 specialRequest = hotelBookingPageModel.roomRequest
             )
-//            bookingViewModel.checkoutCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_checkout), hotelCheckoutParam)
+            bookingViewModel.checkoutCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_checkout), hotelCheckoutParam)
         }
     }
 
     private fun validateData(): Boolean {
         var isValid = true
-        if (tv_room_request_input.text.isNullOrBlank() || tv_room_request_input.text.length <= roomRequestMaxCharCount) isValid = false
-        if (!radio_button_contact_guest.isSelected || til_guest.editText.text.isNotEmpty()) {
+        if (tv_room_request_input.text.length > roomRequestMaxCharCount) isValid = false
+        if (radio_button_contact_guest.isSelected && til_guest.editText.text.isEmpty()) {
             toggleGuestFormError(true)
             isValid = false
         }
