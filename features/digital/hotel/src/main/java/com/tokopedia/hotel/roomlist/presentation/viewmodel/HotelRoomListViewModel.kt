@@ -27,7 +27,6 @@ class HotelRoomListViewModel @Inject constructor(
 
     var filterFreeBreakfast = false
     var filterFreeCancelable = false
-    var filterPayInHotel = false
     var isFilter = false
 
     fun getRoomList(rawQuery: String, hotelRoomListPageModel: HotelRoomListPageModel, fromCloud: Boolean = true) {
@@ -38,20 +37,18 @@ class HotelRoomListViewModel @Inject constructor(
         }
     }
 
-    fun clickFilter(clickFreeBreakfast: Boolean = false, clickFreeCancelable: Boolean = false, clickPayInHotel: Boolean = false) {
+    fun clickFilter(clickFreeBreakfast: Boolean = false, clickFreeCancelable: Boolean = false) {
         if (clickFreeBreakfast) filterFreeBreakfast = !filterFreeBreakfast
         if (clickFreeCancelable) filterFreeCancelable = !filterFreeCancelable
-        if (clickPayInHotel) filterPayInHotel = !filterPayInHotel
         doFilter()
     }
 
     fun doFilter() {
-        if (filterFreeBreakfast || filterFreeCancelable || filterPayInHotel) {
+        if (filterFreeBreakfast || filterFreeCancelable) {
             isFilter = true
             var list: MutableList<HotelRoom> = arrayListOf()
             for (room in roomList) {
                 var valid = true
-                if (filterPayInHotel && !true) valid = false
                 if (filterFreeCancelable && !room.refundInfo.isRefundable) valid = false
                 if (filterFreeBreakfast && !room.breakfastInfo.isBreakfastIncluded) valid = false
                 if (valid) list.add(room)
@@ -69,7 +66,6 @@ class HotelRoomListViewModel @Inject constructor(
     }
 
     fun clearFilter() {
-        filterPayInHotel = false
         filterFreeCancelable = false
         filterFreeBreakfast = false
         roomListResult.value = Success(roomList.toMutableList())
