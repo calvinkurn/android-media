@@ -246,7 +246,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     }
 
     private void showForceLogoutDialog() {
-        DialogForceLogout.createShow(this,
+        DialogForceLogout.createShow(this, getScreenName(),
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {

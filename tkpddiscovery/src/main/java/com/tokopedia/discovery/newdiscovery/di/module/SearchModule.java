@@ -22,7 +22,6 @@ import dagger.Provides;
 
 @SearchScope
 @Module(includes = {
-        GuidedSearchModule.class,
         ProductModule.class,
         ImageSearchModule.class,
         BannerModule.class,

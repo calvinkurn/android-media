@@ -11,11 +11,7 @@ import android.support.v4.app.Fragment;
 
 public interface ShopModuleRouter {
 
-    void goToEditShop(Context context);
-
     void goToManageShop(Context context);
-
-    void goToEditShopNote(Context context);
 
     void goToManageShipping(Context context);
 
