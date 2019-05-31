@@ -46,13 +46,13 @@ import static android.view.Gravity.CENTER_HORIZONTAL;
 public class WidgetTokenView extends FrameLayout {
 
     public static final float Y_PIVOT_PERCENT = 0.9f;
-    public static final int CRACK_STEP1_DURATION = 175;
+    public static final int CRACK_STEP1_DURATION = 100;
     public static final int CRACK_STEP1_DEGREE = 3;
     public static final int CRACK_STEP2_DEGREE = 3;
-    public static final int CRACK_STEP2_DURATION = 175;
-    public static final int CRACK_STEP2_START_DELAY = 40;
-    public static final int CRACK_STEP3_START_DELAY = 50;
-    public static final int CRACK_STEP3_DURATION = 175;
+    public static final int CRACK_STEP2_DURATION = 100;
+    public static final int CRACK_STEP2_START_DELAY = 25;
+    public static final int CRACK_STEP3_START_DELAY = 40;
+    public static final int CRACK_STEP3_DURATION = 100;
     public static final int STEP2_END_MASKED_PERCENT = 30;
     public static final int STEP1_END_MASKED_PERCENT = 70;
     private static final long INFINITE_BOUNCE_START_DELAY = 2000;
