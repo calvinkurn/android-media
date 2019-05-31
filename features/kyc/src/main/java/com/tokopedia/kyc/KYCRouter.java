@@ -17,5 +17,4 @@ public interface KYCRouter {
             ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType);
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
     String getUserId();
-    String getOvoKycTncUrl();
 }

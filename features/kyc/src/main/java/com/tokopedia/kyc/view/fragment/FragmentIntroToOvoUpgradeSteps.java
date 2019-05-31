@@ -22,6 +22,9 @@ import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,7 +84,8 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
             executeStartUpgrade();
         }
         else if(v.getId() == R.id.ovo_tncpage_link){
-            String ovotncUrl = ((KYCRouter)getContext().getApplicationContext()).getOvoKycTncUrl();
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+            String ovotncUrl = remoteConfig.getString(RemoteConfigKey.OVO_TNC_LINK);
             if(TextUtils.isEmpty(ovotncUrl)){
                 ovotncUrl = Constants.URLs.OVO_TNC_PAGE;
             }

@@ -3398,8 +3398,4 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return baseDaggerFragment;
     }
 
-    @Override
-    public  String getOvoKycTncUrl(){
-        return getStringRemoteConfig(RemoteConfigKey.OVO_TNC_LINK);
-    }
 }

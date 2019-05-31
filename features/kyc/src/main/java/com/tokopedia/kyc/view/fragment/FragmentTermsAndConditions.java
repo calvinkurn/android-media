@@ -32,6 +32,9 @@ import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
 import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
 import com.tokopedia.kyc.view.presenter.TnCConfirmationPresenter;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 
 import java.util.ArrayList;
@@ -69,7 +72,8 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
             executePrcdTnC();
         }
         else if (i == R.id.txtv_tnc){
-            String ovotncUrl = ((KYCRouter)getContext().getApplicationContext()).getOvoKycTncUrl();
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+            String ovotncUrl = remoteConfig.getString(RemoteConfigKey.OVO_TNC_LINK);
             if(TextUtils.isEmpty(ovotncUrl)){
                 ovotncUrl = Constants.URLs.OVO_TNC_PAGE;
             }

@@ -44,7 +44,7 @@ public class ErrorKycConfirmation extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if(activityListener != null) {
-            activityListener.setHeaderTitle(Constants.Values.OVO);
+            activityListener.showHideActionbar(false);
         }
         setErrorDesc();
     }
