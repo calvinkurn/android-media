@@ -31,8 +31,6 @@ import com.tokopedia.search.result.presentation.view.adapter.ShopListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
-import com.tokopedia.search.result.presentation.view.listener.FavoriteActionListener;
-import com.tokopedia.search.result.presentation.view.listener.SearchShopListener;
 import com.tokopedia.search.result.presentation.view.listener.ShopListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactoryImpl;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -45,7 +43,6 @@ public class ShopListFragment
         extends SearchSectionFragment
         implements
         ShopListSectionContract.View,
-        FavoriteActionListener,
         SearchSectionGeneralAdapter.OnItemChangeView,
         ShopListener,
         EmptyStateListener,
@@ -116,7 +113,6 @@ public class ShopListFragment
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
         presenter.initInjector(this);
-        presenter.setFavoriteActionListener(this);
 
         return inflater.inflate(R.layout.fragment_shop_list_search, null);
     }

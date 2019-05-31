@@ -8,8 +8,6 @@ import com.tokopedia.search.result.presentation.ShopListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ShopViewModelMapper;
 import com.tokopedia.search.result.presentation.model.ShopViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
-import com.tokopedia.search.result.presentation.presenter.subscriber.ToggleFavoriteActionSubscriber;
-import com.tokopedia.search.result.presentation.view.listener.FavoriteActionListener;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -36,7 +34,6 @@ final class ShopListPresenter
     @Inject
     UserSessionInterface userSession;
 
-    private FavoriteActionListener favoriteActionListener;
     private boolean isSearchShopReturnedNull = false;
 
     @Override
@@ -49,11 +46,6 @@ final class ShopListPresenter
     }
 
     @Override
-    public void setFavoriteActionListener(FavoriteActionListener favoriteActionListener) {
-        this.favoriteActionListener = favoriteActionListener;
-    }
-
-    @Override
     public void handleFavoriteButtonClicked(ShopViewModel.ShopViewItem shopItem, int adapterPosition) {
         if (getView().isUserHasLogin()) {
             getView().disableFavoriteButton(adapterPosition);
@@ -63,12 +55,41 @@ final class ShopListPresenter
 
             RequestParams requestParams = createToggleFavoriteShopRequestParam(shopItem.getShopId());
 
-            toggleFavouriteShopUseCase.execute(requestParams,
-                    new ToggleFavoriteActionSubscriber(favoriteActionListener, adapterPosition, !shopItem.isFavorited())
+            toggleFavouriteShopUseCase.execute(
+                    requestParams,
+                    getToggleFavoriteShopSubscriber(adapterPosition, !shopItem.isFavorited())
             );
         } else {
             getView().launchLoginActivity(shopItem.getShopId());
         }
+    }
+
+    private Subscriber<Boolean> getToggleFavoriteShopSubscriber(final int adapterPosition, final boolean targetFavoritedStatus) {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onNext(Boolean isSuccess) {
+                toggleFavoriteActionSubscriberOnNext(isSuccess, adapterPosition, targetFavoritedStatus);
+            }
+
+            @Override
+            public void onCompleted() { }
+
+            @Override
+            public void onError(Throwable e) {
+                toggleFavoriteActionSubscriberOnError(e, adapterPosition);
+            }
+        };
+    }
+
+    private void toggleFavoriteActionSubscriberOnNext(boolean isSuccess, int adapterPosition, boolean targetFavoritedStatus) {
+        if (isSuccess)
+            getView().onSuccessToggleFavorite(adapterPosition, targetFavoritedStatus);
+        else
+            getView().onErrorToggleFavorite(adapterPosition);
+    }
+
+    private void toggleFavoriteActionSubscriberOnError(Throwable e, int adapterPosition) {
+        getView().onErrorToggleFavorite(e, adapterPosition);
     }
 
     private RequestParams createToggleFavoriteShopRequestParam(String shopId) {
