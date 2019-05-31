@@ -5,7 +5,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -20,18 +19,11 @@ public abstract class SearchSectionPresenter<T extends SearchSectionContract.Vie
         extends BaseDaggerPresenter<T>
         implements SearchSectionContract.Presenter<T> {
 
-    protected RequestDynamicFilterListener requestDynamicFilterListener;
-
     @Inject
     @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
     public UseCase<DynamicFilterModel> getDynamicFilterUseCase;
     @Inject
     public SearchLocalCacheHandler searchLocalCacheHandler;
-
-    @Override
-    public void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener) {
-        this.requestDynamicFilterListener = requestDynamicFilterListener;
-    }
 
     protected void enrichWithAdditionalParams(RequestParams requestParams,
                                                        Map<String, String> additionalParams) {

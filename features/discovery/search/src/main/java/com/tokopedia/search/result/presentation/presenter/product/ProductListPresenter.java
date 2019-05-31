@@ -13,7 +13,6 @@ import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
-import com.tokopedia.search.result.presentation.presenter.subscriber.RequestDynamicFilterSubscriber;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -77,7 +76,7 @@ final class ProductListPresenter
     }
 
     @Override
-    public void requestDynamicFilter(Map<String, Object> searchParameterMap, boolean shouldSaveToLocalDynamicFilterDb) {
+    public void requestDynamicFilter(Map<String, Object> searchParameterMap) {
         requestDynamicFilterCheckForNulls();
 
         Map<String, String> additionalParamsMap = getView().getAdditionalParamsMap();
@@ -91,7 +90,7 @@ final class ProductListPresenter
             enrichWithAdditionalParams(params, additionalParamsMap);
         }
 
-        getDynamicFilterUseCase.execute(params, new RequestDynamicFilterSubscriber(requestDynamicFilterListener));
+        getDynamicFilterUseCase.execute(params, getDynamicFilterSubscriber(false));
     }
 
     private void requestDynamicFilterCheckForNulls() {
@@ -437,15 +436,14 @@ final class ProductListPresenter
         // Unsubscribe first in case user has slow connection, and the previous loadDataUseCase has not finished yet.
         searchProductFirstPageUseCase.unsubscribe();
 
-        searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(isFirstTimeLoad));
+        searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(searchParameter, isFirstTimeLoad));
     }
 
     private boolean checkShouldEnrichWithAdditionalParams(Map<String, String> additionalParams) {
         return getView().isAnyFilterActive() && additionalParams != null;
     }
 
-    // TODO:: Create a new class that extends Subscriber<SearchProductModel> for easier unit testing. See InitiateSearchSubscriber for reference.
-    private Subscriber<SearchProductModel> getLoadDataSubscriber(final boolean isFirstTimeLoad) {
+    private Subscriber<SearchProductModel> getLoadDataSubscriber(final Map<String, Object> searchParameter, final boolean isFirstTimeLoad) {
         return new Subscriber<SearchProductModel>() {
             @Override
             public void onStart() {
@@ -454,7 +452,7 @@ final class ProductListPresenter
 
             @Override
             public void onCompleted() {
-                loadDataSubscriberOnCompleteIfViewAttached();
+                loadDataSubscriberOnCompleteIfViewAttached(searchParameter);
             }
 
             @Override
@@ -476,10 +474,10 @@ final class ProductListPresenter
         }
     }
 
-    private void loadDataSubscriberOnCompleteIfViewAttached() {
+    private void loadDataSubscriberOnCompleteIfViewAttached(Map<String, Object> searchParameter) {
         if (isViewAttached()) {
             getView().hideRefreshLayout();
-            getView().getDynamicFilter();
+            requestDynamicFilter(searchParameter);
         }
     }
 

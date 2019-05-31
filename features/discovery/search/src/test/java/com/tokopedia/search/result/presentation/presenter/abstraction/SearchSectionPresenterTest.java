@@ -15,6 +15,7 @@ import rx.Observable;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 public class SearchSectionPresenterTest {
@@ -63,7 +64,7 @@ public class SearchSectionPresenterTest {
         UseCase<DynamicFilterModel> dynamicFilterModelUseCase = new TestSuccessGetDynamicFilterUseCase();
         searchSectionPresenterInjectDependencies(dynamicFilterModelUseCase);
 
-        searchSectionPresenterSubclass.requestDynamicFilter(new HashMap<>(), true);
+        searchSectionPresenterSubclass.requestDynamicFilter(new HashMap<>());
 
         verify(view).renderDynamicFilter(dynamicFilterModel);
         verify(searchLocalCacheHandler).saveDynamicFilterModelLocally(any(), any());
@@ -72,5 +73,33 @@ public class SearchSectionPresenterTest {
     @Test
     public void requestDynamicFilterWithNull_ViewShouldRenderFail() {
         UseCase<DynamicFilterModel> dynamicFilterModelUseCase = new TestNullGetDynamicFilterUseCase();
+        searchSectionPresenterInjectDependencies(dynamicFilterModelUseCase);
+
+        searchSectionPresenterSubclass.requestDynamicFilter(new HashMap<>());
+
+        verify(view).renderFailRequestDynamicFilter();
+        verify(searchLocalCacheHandler, never()).saveDynamicFilterModelLocally(any(), any());
+    }
+
+    @Test
+    public void requestDynamicFilterWithError_ViewShouldRenderFail() {
+        UseCase<DynamicFilterModel> dynamicFilterModelUseCase = new TestErrorGetDynamicFilterUseCase();
+        searchSectionPresenterInjectDependencies(dynamicFilterModelUseCase);
+
+        searchSectionPresenterSubclass.requestDynamicFilter(new HashMap<>());
+
+        verify(view).renderFailRequestDynamicFilter();
+        verify(searchLocalCacheHandler, never()).saveDynamicFilterModelLocally(any(), any());
+    }
+
+    @Test
+    public void requestDynamicFilterWithNullError_ViewShouldRenderFail() {
+        UseCase<DynamicFilterModel> dynamicFilterModelUseCase = new TestNullErrorGetDynamicFilterUseCase();
+        searchSectionPresenterInjectDependencies(dynamicFilterModelUseCase);
+
+        searchSectionPresenterSubclass.requestDynamicFilter(new HashMap<>());
+
+        verify(view).renderFailRequestDynamicFilter();
+        verify(searchLocalCacheHandler, never()).saveDynamicFilterModelLocally(any(), any());
     }
 }

@@ -37,6 +37,7 @@ final class ShopListPresenter
     UserSessionInterface userSession;
 
     private FavoriteActionListener favoriteActionListener;
+    private boolean isSearchShopReturnedNull = false;
 
     @Override
     public void initInjector(ShopListSectionContract.View view) {
@@ -116,45 +117,55 @@ final class ShopListPresenter
 
     private Subscriber<SearchShopModel> getSearchShopSubscriber(final Map<String, Object> searchParameter) {
         return new Subscriber<SearchShopModel>() {
-            private boolean isSearchShopReturnedNull = false;
+            @Override
+            public void onNext(SearchShopModel searchShopModel) {
+                searchShopSubscriberOnNext(searchShopModel);
+            }
 
             @Override
             public void onCompleted() {
-                if (!isSearchShopReturnedNull) {
-                    requestDynamicFilter(searchParameter, true);
-                }
+                searchShopSubscriberOnCompleted(searchParameter);
             }
 
             @Override
             public void onError(Throwable e) {
-                if(e != null) {
-                    e.printStackTrace();
-                }
-
-                getView().onSearchShopFailed();
-            }
-
-            @Override
-            public void onNext(SearchShopModel searchShopModel) {
-                if(searchShopModel == null) {
-                    getView().onSearchShopFailed();
-                    isSearchShopReturnedNull = true;
-                    return;
-                }
-
-                isSearchShopReturnedNull = false;
-                ShopViewModel shopViewModel = shopViewModelMapper.convertToShopViewModel(searchShopModel);
-                getView().onSearchShopSuccess(shopViewModel.getShopItemList(), shopViewModel.isHasNextPage());
+                searchShopSubscriberOnError(e);
             }
         };
     }
 
+    private void searchShopSubscriberOnNext(SearchShopModel searchShopModel) {
+        if(searchShopModel == null) {
+            getView().onSearchShopFailed();
+            isSearchShopReturnedNull = true;
+            return;
+        }
+
+        isSearchShopReturnedNull = false;
+        ShopViewModel shopViewModel = shopViewModelMapper.convertToShopViewModel(searchShopModel);
+        getView().onSearchShopSuccess(shopViewModel.getShopItemList(), shopViewModel.isHasNextPage());
+    }
+
+    private void searchShopSubscriberOnCompleted(Map<String, Object> searchParameter) {
+        if (!isSearchShopReturnedNull) {
+            requestDynamicFilter(searchParameter);
+        }
+    }
+
+    private void searchShopSubscriberOnError(Throwable e) {
+        if(e != null) {
+            e.printStackTrace();
+        }
+
+        getView().onSearchShopFailed();
+    }
+
     @Override
-    public void requestDynamicFilter(Map<String, Object> searchParameter, boolean shouldSaveToLocalDynamicFilterDb) {
+    public void requestDynamicFilter(Map<String, Object> searchParameter) {
         requestDynamicFilterCheckForNulls();
 
         RequestParams requestParams = createRequestDynamicFilterParams(searchParameter);
-        getDynamicFilterUseCase.execute(requestParams, getDynamicFilterSubscriber(shouldSaveToLocalDynamicFilterDb));
+        getDynamicFilterUseCase.execute(requestParams, getDynamicFilterSubscriber(true));
     }
 
     private void requestDynamicFilterCheckForNulls() {

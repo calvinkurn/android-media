@@ -117,7 +117,6 @@ public class ShopListFragment
         presenter.attachView(this);
         presenter.initInjector(this);
         presenter.setFavoriteActionListener(this);
-        presenter.setRequestDynamicFilterListener(this);
 
         return inflater.inflate(R.layout.fragment_shop_list_search, null);
     }
@@ -564,7 +563,18 @@ public class ShopListFragment
     }
 
     @Override
-    public boolean shouldSaveToLocalDynamicFilterDb() {
-        return true;
+    public void launchLoginActivity(String shopId) {
+        Bundle extras = new Bundle();
+        extras.putString("shop_id", shopId);
+
+        if (getActivity() == null) return;
+
+        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
+
+        if (router != null) {
+            Intent intent = router.getLoginIntent(getActivity());
+            intent.putExtras(extras);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN);
+        }
     }
 }

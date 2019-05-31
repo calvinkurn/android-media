@@ -2,8 +2,6 @@ package com.tokopedia.search.result.presentation;
 
 import com.tokopedia.search.result.presentation.model.ShopViewModel;
 import com.tokopedia.search.result.presentation.view.listener.FavoriteActionListener;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
-import com.tokopedia.search.result.presentation.view.listener.SearchShopListener;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +20,8 @@ public interface ShopListSectionContract {
         void onSearchShopSuccess(List<ShopViewModel.ShopViewItem> shopViewItemList, boolean isHasNextPage);
 
         void onSearchShopFailed();
+
+        void launchLoginActivity(String shopId);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {

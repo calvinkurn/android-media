@@ -15,7 +15,7 @@ public class TestSearchSectionPresenterSubclass
     }
 
     @Override
-    public void requestDynamicFilter(Map<String, Object> searchParameter, boolean shouldSaveToLocalDynamicFilterDb) {
-        getDynamicFilterUseCase.execute(RequestParams.create(), getDynamicFilterSubscriber(shouldSaveToLocalDynamicFilterDb));
+    public void requestDynamicFilter(Map<String, Object> searchParameter) {
+        getDynamicFilterUseCase.execute(RequestParams.create(), getDynamicFilterSubscriber(true));
     }
 }
