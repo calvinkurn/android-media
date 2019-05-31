@@ -34,7 +34,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.config)
 
-    implementation project(rootProject.ext.libraries.commonPayment)
+    implementation project(rootProject.ext.features.commonPayment)
 
     implementation rootProject.ext.miscDependencies.multiDex
 
