@@ -2787,19 +2787,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return FlightOrderListFragment.createInstance();
     }
 
-    public void onShowRationale(Context context, PermissionRequest request, String permission) {
-        RequestPermissionUtil.onShowRationale(context, request, permission);
-    }
-
-    public void onPermissionDenied(Context context, String permission) {
-        RequestPermissionUtil.onPermissionDenied(context, permission);
-    }
-
-    public void onNeverAskAgain(Context context, String permission) {
-        RequestPermissionUtil.onNeverAskAgain(context, permission);
-    }
-
-
     @Override
     public void logoutToHome(Activity activity) {
         //From DialogLogoutFragment
