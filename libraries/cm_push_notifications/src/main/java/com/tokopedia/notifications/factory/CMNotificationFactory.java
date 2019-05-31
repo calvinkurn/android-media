@@ -50,7 +50,7 @@ public class CMNotificationFactory {
         } else {
             switch (baseNotificationModel.getType()) {
                 case CMConstant.NotificationType.GENERAL:
-                    if (CMNotificationUtils.hasActionButton(baseNotificationModel)) {
+                    if (CMNotificationUtils.INSTANCE.hasActionButton(baseNotificationModel)) {
                         return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
                     }
                     return (new GeneralNotification(context.getApplicationContext(), baseNotificationModel));
@@ -59,7 +59,7 @@ public class CMNotificationFactory {
                 case CMConstant.NotificationType.ACTION_BUTTONS:
                     return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
                 case CMConstant.NotificationType.BIG_IMAGE:
-                    if (CMNotificationUtils.hasActionButton(baseNotificationModel)) {
+                    if (CMNotificationUtils.INSTANCE.hasActionButton(baseNotificationModel)) {
                         return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
                     }
                     return (new ImageNotification(context.getApplicationContext(), baseNotificationModel));

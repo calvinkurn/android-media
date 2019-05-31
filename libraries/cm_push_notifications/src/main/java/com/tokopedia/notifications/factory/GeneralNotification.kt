@@ -21,10 +21,10 @@ class GeneralNotification internal constructor(context: Context, baseNotificatio
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.notificationId, requestCode))
         builder.setAutoCancel(true)
 
-        baseNotificationModel.detailMessage?.let {
-            if (!it.isBlank()) {
+        baseNotificationModel.detailMessage?.apply {
+            if (!this.isBlank()) {
                 builder.setStyle(NotificationCompat.BigTextStyle()
-                        .bigText(it))
+                        .bigText(this))
             }
         }
         return builder.build()

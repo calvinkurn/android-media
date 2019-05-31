@@ -34,7 +34,7 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
         builder.setContentTitle(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
         builder.setContentText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
 
-        if (baseNotificationModel.carousalList == null || baseNotificationModel.carousalList.size == 0)
+        if (baseNotificationModel.carousalList.size == 0)
             return null
 
         builder.setContentIntent(getImagePendingIntent(baseNotificationModel.carousalList[baseNotificationModel.carousalIndex],

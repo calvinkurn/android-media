@@ -1,14 +1,16 @@
 package com.tokopedia.notifications
 
+import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-
 import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.factory.CMNotificationFactory
+import kotlinx.coroutines.experimental.*
 
 /**
  * Created by Ashwani Tyagi on 18/10/18.
@@ -17,7 +19,7 @@ class CMPushNotificationManager {
 
     private val TAG = CMPushNotificationManager::class.java.canonicalName
 
-    internal var applicationContext: Context? = null
+    private var applicationContext: Context? = null
 
     private var cmUserHandler: CMUserHandler? = null
 
@@ -31,15 +33,15 @@ class CMPushNotificationManager {
     private val isForegroundTokenUpdateEnabled: Boolean
         get() = (applicationContext as CMRouter).getBooleanRemoteConfig("app_cm_token_capture_foreground_enable", true)
 
+    private val isPushEnable: Boolean
+        get() = (applicationContext as CMRouter).getBooleanRemoteConfig("app_cm_push_enable", true)
+
     /**
      * initialization of push notification library
      *
      * @param context
      */
     fun init(context: Context) {
-        if (context == null) {
-            throw IllegalArgumentException("Context can not be null")
-        }
         this.applicationContext = context.applicationContext
         GraphqlClient.init(applicationContext!!)
     }
@@ -60,7 +62,7 @@ class CMPushNotificationManager {
             }
             if (cmUserHandler != null)
                 cmUserHandler!!.cancelRunnable()
-            cmUserHandler = CMUserHandler(applicationContext)
+            cmUserHandler = CMUserHandler(applicationContext!!)
             cmUserHandler!!.updateToken(token, remoteDelaySeconds, isForce)
         }
     }
@@ -81,11 +83,10 @@ class CMPushNotificationManager {
             }
             if (cmUserHandler != null)
                 cmUserHandler!!.cancelRunnable()
-            cmUserHandler = CMUserHandler(applicationContext)
+            cmUserHandler = CMUserHandler(applicationContext!!)
             cmUserHandler!!.updateToken(token, remoteDelaySeconds, force)
         }
     }
-
 
     /**
      * To check weather the incoming notification belong to campaign management
@@ -115,6 +116,8 @@ class CMPushNotificationManager {
      * @param remoteMessage
      */
     fun handlePushPayload(remoteMessage: RemoteMessage?) {
+        if (!isPushEnable)
+            return
         if (null == remoteMessage)
             return
         if (applicationContext == null) {
@@ -122,10 +125,13 @@ class CMPushNotificationManager {
         }
         if (null == remoteMessage.data)
             return
+
         try {
             if (isFromCMNotificationPlatform(remoteMessage.data)) {
                 val bundle = convertMapToBundle(remoteMessage.data)
-                CMJobIntentService.enqueueWork(applicationContext!!, bundle)
+                GlobalScope.launch(coroutineExceptionHandler) {
+                    handleNotificationBundle(bundle)
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "CMPushNotificationManager: handlePushPayload ", e)
@@ -141,6 +147,31 @@ class CMPushNotificationManager {
             }
         }
         return bundle
+    }
+
+    private suspend fun handleNotificationBundle(bundle: Bundle){
+        withContext(Dispatchers.IO){
+            try {
+                run {
+                    val applicationContext = instance.applicationContext
+                    val baseNotification = CMNotificationFactory
+                            .getNotification(instance.applicationContext, bundle)
+                    if (null != baseNotification) {
+                        val notificationManager
+                                = applicationContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        val notification = baseNotification.createNotification()
+                        notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
+                    }
+
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, e.message)
+            }
+        }
+    }
+
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Log.e(TAG, ":$throwable")
     }
 
     companion object {

@@ -38,7 +38,7 @@ object IrisAnalyticsEvents{
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             values["event"] = PUSH_RECEIVED
-            values["event_time"] = CMNotificationUtils.getCurrentLocalTimeStamp()
+            values["event_time"] = CMNotificationUtils.currentLocalTimeStamp
             values["campaign_id"] = baseNotificationModel.campaignId
             values["notification_id"] = baseNotificationModel.notificationId
             values["source"] = CMNotificationUtils.getApplicationName(context)
@@ -54,7 +54,7 @@ object IrisAnalyticsEvents{
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             values["event"] = eventName
-            values["event_time"] = CMNotificationUtils.getCurrentLocalTimeStamp()
+            values["event_time"] = CMNotificationUtils.currentLocalTimeStamp
             values["campaign_id"] = campaignID
             values["notification_id"] = notificationID
             values["source"] = CMNotificationUtils.getApplicationName(context)

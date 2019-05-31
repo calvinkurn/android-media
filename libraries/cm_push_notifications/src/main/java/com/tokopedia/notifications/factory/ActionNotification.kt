@@ -40,7 +40,6 @@ internal class ActionNotification internal constructor(context: Context, baseNot
                 .setCustomBigContentView(expandedView)
 
 
-
         baseNotificationModel.media?.let {
             it.mediumQuality.isBlank().let { isBlank ->
                 if (!isBlank) {
@@ -111,7 +110,7 @@ internal class ActionNotification internal constructor(context: Context, baseNot
 
                     }
                     if (!TextUtils.isEmpty(actionButton.actionButtonIcon)) {
-                        val bitmap: Bitmap? = getActionButtonBitmap(actionButton.actionButtonIcon)
+                        val bitmap: Bitmap? = getActionButtonBitmap(actionButton.actionButtonIcon!!)
                         if (bitmap != null) {
                             expandedView.setViewVisibility(R.id.iv_button1, View.VISIBLE)
                             expandedView.setImageViewBitmap(R.id.iv_button1, bitmap)
@@ -129,7 +128,7 @@ internal class ActionNotification internal constructor(context: Context, baseNot
 
                     }
                     if (!TextUtils.isEmpty(actionButton.actionButtonIcon)) {
-                        val bitmap: Bitmap? = getActionButtonBitmap(actionButton.actionButtonIcon)
+                        val bitmap: Bitmap? = getActionButtonBitmap(actionButton.actionButtonIcon!!)
                         if (bitmap != null) {
                             expandedView.setViewVisibility(R.id.iv_button2, View.VISIBLE)
                             expandedView.setImageViewBitmap(R.id.iv_button2, bitmap)
@@ -147,7 +146,7 @@ internal class ActionNotification internal constructor(context: Context, baseNot
 
                     }
                     if (!TextUtils.isEmpty(actionButton.actionButtonIcon)) {
-                        val bitmap: Bitmap? = getActionButtonBitmap(actionButton.actionButtonIcon)
+                        val bitmap: Bitmap? = getActionButtonBitmap(actionButton.actionButtonIcon!!)
                         if (bitmap != null) {
                             expandedView.setViewVisibility(R.id.iv_button3, View.VISIBLE)
                             expandedView.setImageViewBitmap(R.id.iv_button3, bitmap)
@@ -192,7 +191,6 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
         intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
         intent.putExtra(CMConstant.EXTRA_PRE_DEF_ACTION, actionButton.pdActions)
-       // intent.putExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK, actionButton.appLink)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getBroadcast(
                     context,
