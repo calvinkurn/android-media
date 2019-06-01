@@ -252,6 +252,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             dealsHeading.setVisibility(View.VISIBLE);
             rvDeals.clearOnScrollListeners();
             dealsCategoryAdapter.clearList();
+            dealsCategoryAdapter.setSearchText(searchText);
+            dealsCategoryAdapter.setFromSearchResult(true);
             dealsCategoryAdapter.addAll(productItems, false);
             dealsCategoryAdapter.setTopDealsLayout(true);
             if (productItems.size() > 0) {
@@ -268,7 +270,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             rvDeals.setVisibility(View.VISIBLE);
 
             noContent.setVisibility(View.GONE);
-
         } else if (this.brands != null && this.brands.size() > 0 && productItems != null && productItems.size() == 0) {
             rvDeals.setVisibility(View.GONE);
             dealsHeading.setVisibility(View.GONE);
@@ -294,6 +295,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             if (count > 4) {
                 brandCount.setVisibility(View.VISIBLE);
                 brandCount.setText(String.format(getResources().getString(R.string.brand_count_text), searchInputView.getSearchText(),count));
+            } else {
+                brandCount.setVisibility(View.GONE);
             }
             noBrandsFound.setVisibility(View.GONE);
             LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) dealsHeading.getLayoutParams();
@@ -307,6 +310,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             ImageView imageViewBrandItem;
             TextView brandName;
             for (int index = 0; index < maxBrands; index++) {
+                dealsAnalytics.sendBrandsSuggestionImpressionEvent(brandList.get(index), index);
                 LayoutInflater inflater = getLayoutInflater();
                 view = inflater.inflate(R.layout.item_brand_home, brandLayout, false);
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
@@ -320,6 +324,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        dealsAnalytics.sendBrandsSuggestionClickEvent(brandList.get(position1), position1, searchText, DealsAnalytics.CLICK_BRANDS_SEARCH);
                         Intent detailsIntent = new Intent(DealsSearchActivity.this, BrandDetailsActivity.class);
                         detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, brandList.get(position1));
                         startActivity(detailsIntent);
@@ -347,6 +352,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             dealsCategoryAdapter.clearList();
             dealsCategoryAdapter.addAll(items, false);
             dealsCategoryAdapter.setTopDealsLayout(true);
+            dealsCategoryAdapter.setFromSearchResult(false);
             rvDeals.addOnScrollListener(rvOnScrollListener);
             dealsCategoryAdapter.notifyDataSetChanged();
             rvDeals.setVisibility(View.VISIBLE);

@@ -22,8 +22,8 @@
             android:id="@+id/rv_brand_items"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
+
+
             app:layoutManager="android.support.v7.widget.GridLayoutManager"
             app:spanCount="3"
             tools:listitem="@layout/item_brand_normal" />

@@ -72,6 +72,7 @@ public class DealsContract {
 
         void startDealsCategoryFragment(List<CategoryItem> categoryItems, List<CategoriesModel> categoriesModels);
 
+        String getSearchInputText();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

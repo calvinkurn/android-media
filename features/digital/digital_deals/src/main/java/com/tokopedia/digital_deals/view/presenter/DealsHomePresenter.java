@@ -26,13 +26,10 @@ import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCa
 import com.tokopedia.digital_deals.domain.getusecase.GetNextDealPageUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
-import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
-import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
 import com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager;
-import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
@@ -180,12 +177,12 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         if (productItem == null)
             return;
 
-        if (!productItem.isTrack()) {
-            sendEventEcommerce(productItem.getId(), currentPage, productItem.getDisplayName(), DealsAnalytics.EVENT_PROMO_VIEW
-                    , DealsAnalytics.EVENT_IMPRESSION_PROMO_BANNER, DealsAnalytics.LIST_DEALS_TOP_BANNER);
-            productItem.setTrack(true);
-
-        }
+//        if (!productItem.isTrack()) {
+//            sendEventEcommerce(productItem.getId(), currentPage, productItem.getDisplayName(), DealsAnalytics.EVENT_PROMO_VIEW
+//                    , DealsAnalytics.EVENT_IMPRESSION_PROMO_BANNER, DealsAnalytics.LIST_DEALS_TOP_BANNER);
+//            productItem.setTrack(true);
+//
+//        }
     }
 
     @Override
@@ -197,6 +194,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.search_input_view || id == R.id.action_menu_search) {
+            dealsAnalytics.sendSearchClickedEvent(getView().getSearchInputText());
             Intent searchIntent = new Intent(getView().getActivity(), DealsSearchActivity.class);
             TopDealsCacheHandler.init().setTopDeals(getCarouselOrTop(categoryItems, TOP).getItems());
             searchIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
@@ -224,8 +222,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                     "");
             getView().startGeneralWebView(DealsUrl.WebUrl.FAQURL);
         } else if (id == R.id.tv_see_all_brands) {
-            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SEE_ALL_BRANDS,
-                    "");
+            dealsAnalytics.sendAllBrandsClickEvent(DealsAnalytics.SEE_ALL_BRANDS_HOME);
             Intent brandIntent = new Intent(getView().getActivity(), AllBrandsActivity.class);
             brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
             getView().navigateToActivity(brandIntent);
@@ -458,6 +455,14 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
     }
 
+    public void sendCategoryClickEvent(String name, int position) {
+        dealsAnalytics.sendCategoryClickEventHome(name,  position);
+    }
+
+    public void sendSeeAllTrendingDealsEvent() {
+        dealsAnalytics.sendSeeAllTrendingDeals();
+    }
+
     private class CategoryItemComparator implements Comparator<CategoryItem> {
         private Map<Integer, Integer> sortOrder;
 
@@ -504,8 +509,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
     }
 
-    public void sendEventEcommerce(int id, int position, String creative, String event, String action, String name) {
-        dealsAnalytics.sendEcommerceBrand(id, position, creative, event
+    public void sendEventEcommerce(ProductItem item, int position, String creative, String event, String action, String name) {
+        dealsAnalytics.sendPromoClickEvent(item, position, creative, event
                 , action, name);
     }
 

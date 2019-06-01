@@ -172,7 +172,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (location != null) {
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
-            startShowCase();
         } else {
             mPresenter.getLocations(true);
         }
@@ -371,8 +370,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void renderCategoryList(List<CategoryItem> categoryList, List<CategoriesModel> categoriesModels) {
+        startShowCase();
         if (categoryList != null) {
-//            applyFilterOnCategories(categoryList);
             catItems.removeAllViews();
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.weight = 0.5f;
@@ -420,43 +419,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         }
     }
 
-    public void applyFilterOnCategories(List<CategoryItem> categoryRespons) {
-        Map<Integer, Integer> sortOrder = new HashMap<>();
-        for (CategoryItem categoryItem : categoryRespons) {
-            sortOrder.put(categoryItem.getCategoryId(), categoryItem.getPriority());
-            if (sortOrder.size() == categoryRespons.size()) {
-                Collections.sort(categoryRespons, new CategoryItemComparator(sortOrder));
-            }
-        }
-    }
-
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         int id = item.getItemId();
         return mPresenter.onOptionMenuClick(id);
-    }
-
-    private class CategoryItemComparator implements Comparator<CategoryItem> {
-        private Map<Integer, Integer> sortOrder;
-
-        public CategoryItemComparator(Map<Integer, Integer> sortOrder) {
-            this.sortOrder = sortOrder;
-        }
-
-        @Override
-        public int compare(CategoryItem i1, CategoryItem i2) {
-            Integer id1 = sortOrder.get(i1.getCategoryId());
-            if (id1 == null) {
-                throw new IllegalArgumentException("Bad id encountered: " +
-                        i1.getCategoryId());
-            }
-            Integer id2 = sortOrder.get(i2.getCategoryId());
-            if (id2 == null) {
-                throw new IllegalArgumentException("Bad id encountered: " +
-                        i2.getCategoryId());
-            }
-            return id2.compareTo(id1);
-        }
     }
 
     @Override
@@ -470,6 +436,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     @Override
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
+                            mPresenter.sendSeeAllTrendingDealsEvent();
                             mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals));
                         }
                     }
@@ -478,6 +445,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             noContent.setVisibility(View.GONE);
             categoryAdapter.clearList();
             categoryAdapter.setDealsHomeLayout(true);
+            categoryAdapter.setDealType(DealsAnalytics.TRENDING_DEALS);
             rvTrendingDeals.setAdapter(categoryAdapter);
             categoryAdapter.addAll(categoryItem.getItems(), true);
             rvTrendingDeals.setVisibility(View.VISIBLE);
@@ -760,10 +728,16 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
+    public String getSearchInputText() {
+        return searchInputView.getText().toString();
+    }
+
+    @Override
     public void openCategoryDetail(CategoriesModel categoriesModel, List<CategoriesModel> categoriesModels) {
         if (dealsCategoryBottomSheet != null) {
             dealsCategoryBottomSheet.dismiss();
         }
+        mPresenter.sendCategoryClickEvent(categoriesModel.getName(), categoriesModel.getPosition());
         Intent detailsIntent = new Intent(getActivity(), CategoryDetailActivity.class);
         detailsIntent.putExtra(CategoryDetailActivity.CATEGORIES_DATA, categoriesModel);
         detailsIntent.putExtra(CategoryDetailActivity.CATEGORY_NAME, categoriesModel.getTitle());

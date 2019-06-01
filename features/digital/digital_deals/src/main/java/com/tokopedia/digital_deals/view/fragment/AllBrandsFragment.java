@@ -38,7 +38,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsContract.View, SearchInputView.Listener, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet {
+public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsContract.View, SearchInputView.Listener{
 
     private static final boolean IS_SHORT_LAYOUT = true;
     private static final String ARG_PARAM_EXTRA_DEALS_DATA = "ARG_PARAM_EXTRA_DEALS_DATA";
@@ -51,9 +51,10 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     AllBrandsPresenter mPresenter;
     private CategoriesModel categoriesModel;
     private String searchText;
-    CloseableBottomSheetDialog selectLocationFragment;
-    String selectedLocation;
-    UpdateLocation updateLocation;
+    private String selectedLocation;
+    private UpdateLocation updateLocation;
+    private Location currentLocation;
+
 
     public static Fragment newInstance(CategoriesModel categoriesModel, String searchText) {
         AllBrandsFragment categoryFragment = new AllBrandsFragment();
@@ -69,6 +70,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         super.onCreate(savedInstanceState);
         this.categoriesModel = getArguments().getParcelable(ARG_PARAM_EXTRA_DEALS_DATA);
         this.searchText = getArguments().getString(AllBrandsActivity.SEARCH_TEXT);
+        currentLocation = Utils.getSingletonInstance().getLocation(getActivity());
         setHasOptionsMenu(true);
 
     }
@@ -111,7 +113,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         baseMainContent = view.findViewById(R.id.base_main_content);
         layoutManager = new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false);
         recyclerview.setLayoutManager(layoutManager);
-        recyclerview.setAdapter(new DealsBrandAdapter(null, DealsBrandAdapter.ITEM_BRAND_HOME));
+        recyclerview.setAdapter(new DealsBrandAdapter(null, DealsBrandAdapter.ITEM_BRAND_NORMAL));
     }
 
     @Override
@@ -174,6 +176,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         }
         if (brandList != null && brandList.size() > 0) {
             ((DealsBrandAdapter) recyclerview.getAdapter()).updateAdapter(brandList, fromSearch);
+            ((DealsBrandAdapter) recyclerview.getAdapter()).setBrandNativePage(true);
             recyclerview.setVisibility(View.VISIBLE);
             recyclerview.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
@@ -262,9 +265,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     public void startLocationFragment(List<Location> locations) {
-        selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(getContext(), false, locations, this, selectedLocation, this), "", false);
-        selectLocationFragment.show();
+        updateLocation.startLocationFragment(locations);
     }
 
     private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
@@ -286,26 +287,24 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         super.onDestroyView();
     }
 
-    @Override
-    public void onLocationItemSelected(boolean locationUpdated) {
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (locationUpdated && location != null) {
-            updateLocation.onLocationUpdated(location);
+    public void onLocationUpdated() {
+        currentLocation = Utils.getSingletonInstance().getLocation(getActivity());
+        if (currentLocation!= null) {
             mPresenter.getAllBrands();
-        }
-        if (selectLocationFragment != null) {
-            selectLocationFragment.dismiss();
         }
     }
 
-    @Override
-    public void closeBottomsheet() {
-        if (selectLocationFragment != null) {
-            selectLocationFragment.dismiss();
+    public void reloadIfLocationUpdated(){
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if(location!=null) {
+            if (!location.equals(currentLocation)){
+                onLocationUpdated();
+            }
         }
+
     }
 
     public interface UpdateLocation {
-        void onLocationUpdated(Location location);
+        void startLocationFragment(List<Location> locations);
     }
 }

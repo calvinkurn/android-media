@@ -287,6 +287,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                         dealDetails.getDisplayName(), dealDetails.getBrand().getTitle(), promoApplied);
             }
         } else if (v.getId() == R.id.tv_promocode) {
+            dealsAnalytics.sendPromoCodeClickEvent(dealDetails);
             mPresenter.clickGoToPromo();
         } else if (v.getId() == R.id.tv_no_locations) {
             fragmentCallbacks.replaceFragment(mPresenter.getOutlets(), 0);

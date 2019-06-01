@@ -37,10 +37,6 @@ public class DealsCategoryDetailContract {
 
         void hideProgressBar();
 
-        void hideSearchButton();
-
-        void showSearchButton();
-
         void removeFooter();
 
         void addFooter();
@@ -50,8 +46,6 @@ public class DealsCategoryDetailContract {
         LinearLayoutManager getLayoutManager();
 
         void showViews();
-
-        void checkLocationStatus();
 
         void startLocationFragment(List<Location> locations);
     }

@@ -1,6 +1,5 @@
 package com.tokopedia.digital_deals.view.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -12,7 +11,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,7 +20,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AlignmentSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +30,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -49,20 +45,16 @@ import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
-import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsCategoryDetailContract;
-import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
-import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
-import com.tokopedia.digital_deals.view.utils.CategoryDetailCallbacks;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
@@ -71,7 +63,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -98,7 +89,6 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     @Inject
     DealsCategoryDetailPresenter mPresenter;
     private CategoriesModel categoriesModel;
-    private CategoryDetailCallbacks fragmentCallbacks;
     private String locationName;
     private DealsCategoryAdapter dealsAdapter;
     private int adapterPosition = -1;
@@ -235,6 +225,9 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null) {
             toolbarTitle.setText(location.getName());
+            popularLocation.setText(String.format(getActivity().getResources().getString(R.string.popular_deals_in_location), this.categoriesModel.getTitle(), location.getName()));
+            mPresenter.getBrandsList(true);
+            mPresenter.getCategoryDetails(true);
         }
     }
 
@@ -329,22 +322,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        return mPresenter.onOptionMenuClick(id);
         return true;
-    }
-
-    @Override
-    public void hideSearchButton() {
-//        MenuItem item = mMenu.findItem(R.id.action_menu_search);
-//        item.setVisible(false);
-    }
-
-    @Override
-    public void showSearchButton() {
-//        MenuItem item = mMenu.findItem(R.id.action_menu_search);
-//        item.setVisible(true);
-
     }
 
     @Override
@@ -374,18 +352,6 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     @Override
     public void showViews() {
         mainContent.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void checkLocationStatus() {
-
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location == null) {
-            navigateToActivityRequest(new Intent(getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
-        } else {
-            Intent searchIntent = new Intent(getActivity(), DealsSearchActivity.class);
-            navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
-        }
     }
 
     private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
@@ -486,6 +452,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.tv_see_all) {
+            dealsAnalytics.sendAllBrandsClickEvent(DealsAnalytics.SEE_ALL_BRANDS_CATEGORY);
             Intent brandIntent = new Intent(getContext(), AllBrandsActivity.class);
             brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoryList);
             brandIntent.putExtra("cat_id", String.valueOf(categoriesModel.getCategoryId()));
@@ -502,12 +469,6 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         } else {
             mPresenter.onOptionMenuClick(v.getId());
         }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        fragmentCallbacks = (CategoryDetailActivity) activity;
     }
 
     @Override

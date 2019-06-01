@@ -89,6 +89,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private int productCount;
     private Brand brand;
     private boolean isDealsHomeLayout;
+    private String searchText = "";
+    private boolean isFromSearchResult;
+    private String dealType;
 
     public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
         if (categoryItems == null)
@@ -200,18 +203,22 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         switch (getItemViewType(position)) {
             case ITEM_PRODUCT_NORMAL:
+                ((ItemViewHolderNormal) holder).setShown(categoryItems.get(position).isTrack());
                 ((ItemViewHolderNormal) holder).setIndex(position);
                 ((ItemViewHolderNormal) holder).bindData(categoryItems.get(position));
                 break;
             case ITEM_PRODUCT_SHORT:
+                ((ItemViewHolderShort) holder).setShown(categoryItems.get(position).isTrack());
                 ((ItemViewHolderShort) holder).setIndex(position);
                 ((ItemViewHolderShort) holder).bindData(categoryItems.get(position));
                 break;
             case ITEM_PRODUCT_HOME:
+                ((ItemViewHolderNormal) holder).setShown(categoryItems.get(position).isTrack());
                 ((ItemViewHolderNormal) holder).setIndex(position);
                 ((ItemViewHolderNormal) holder).bindData(categoryItems.get(position));
                 break;
             case ITEM_PRODUCT_TOP_DEALS:
+                ((TopSuggestionHolder) holder).setShown(categoryItems.get(position).isTrack());
                 ((TopSuggestionHolder) holder).setIndex(position);
                 ((TopSuggestionHolder) holder).setDealTitle(position, categoryItems.get(position));
                 break;
@@ -325,36 +332,52 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
+
         if (holder instanceof ItemViewHolderNormal) {
             ItemViewHolderNormal holder1 = ((ItemViewHolderNormal) holder);
             if (!holder1.isShown()) {
                 holder1.setShown(true);
-                dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
-                        categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex());
+                categoryItems.get(holder1.getAdapterPosition()).setTrack(true);
+                if (isDealsHomeLayout) {
+                    if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)) {
+                        dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_TRENDING_DEALS, categoryItems.get(holder1.getIndex()), holder1.getIndex());
+                    } else {
+                        dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_CURATED_DEALS, categoryItems.get(holder1.getIndex()), holder1.getIndex());
+                    }
+                } else {
+                    dealsAnalytics.sendProductBrandDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_IMPRESSION_PRODUCT_BRAND, categoryItems.get(holder1.getIndex()), holder1.getIndex());
+                }
             }
         } else if (holder instanceof ItemViewHolderShort) {
             ItemViewHolderShort holder1 = ((ItemViewHolderShort) holder);
             if (!holder1.isShown()) {
                 holder1.setShown(true);
-                dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
-                        categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex());
+                categoryItems.get(holder1.getAdapterPosition()).setTrack(true);
+                dealsAnalytics.sendRecommendedDealImpressionEvent(categoryItems.get(holder1.getIndex()),holder1.getIndex());
             }
         } else if (holder instanceof TopSuggestionHolder) {
 
             TopSuggestionHolder holder1 = ((TopSuggestionHolder) holder);
+            holder1.setFromHomePage(isFromSearchResult);
             if (!isHeaderAdded) {
                 holder1.setShown(false);
+                categoryItems.get(holder1.getAdapterPosition()).setTrack(false);
             }
             if (!holder1.isShown()) {
                 holder1.setShown(true);
+                categoryItems.get(holder1.getAdapterPosition()).setTrack(true);
                 dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
-                        categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex());
+                        categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex(), searchText);
             }
         }
     }
 
     public void showHighLightText(boolean value) {
         this.showHighlightText = value;
+    }
+
+    public void setFromSearchResult(boolean isFromSearchResult) {
+        this.isFromSearchResult = isFromSearchResult;
     }
 
     public void add(ProductItem item, boolean refreshItem) {
@@ -380,6 +403,10 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
 
         }
+    }
+
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
     }
 
     public void removeFooter() {
@@ -425,6 +452,10 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public void setBrand(Brand brand) {
         this.brand = brand;
+    }
+
+    public void setDealType(String dealType) {
+        this.dealType = dealType;
     }
 
     public class ItemViewHolderNormal extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -610,12 +641,15 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
                 toActivityRequest.onNavigateToActivityRequest(detailsIntent, DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY, getIndex());
-                dealsAnalytics.sendDealClickEvent(categoryItems.get(getIndex()), categoryName,
-                        pageType, position);
+                if (isDealsHomeLayout) {
+                    dealsAnalytics.sendDealClickEvent(categoryItems.get(getIndex()), position, DealsAnalytics.EVENT_CLICK_PRODUCT_BRAND);
+                } else if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)){
+                    dealsAnalytics.sendTrendingDealClickEvent(categoryItems.get(getIndex()), DealsAnalytics.EVENT_CLICK_TRENDING_DEALS, position);
+                } else {
+                    dealsAnalytics.sendTrendingDealClickEvent(categoryItems.get(getIndex()), DealsAnalytics.EVENT_CLICK_CURATED_DEALS, position);
+                }
 
             }
-
-
         }
     }
 
@@ -727,7 +761,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
                 context.startActivity(detailsIntent);
-                dealsAnalytics.sendEcommerceClickEvent(categoryItems.get(getIndex()), getIndex(), DealsAnalytics.EVENT_CLICK_RECOMMENDED_PDT_DETAIL, DealsAnalytics.LIST_DEALS_RECOMMENDED_PDP);
+                dealsAnalytics.sendDealClickEvent(categoryItems.get(getIndex()), getIndex(), DealsAnalytics.EVENT_CLICK_RECOMMENDED_DEALS);
             }
         }
     }
@@ -766,6 +800,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private ProductItem valueItem;
         private int index;
         private boolean isShown;
+        private boolean isFromHomePage;
 
         private TopSuggestionHolder(View itemView) {
             super(itemView);
@@ -836,20 +871,27 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             isShown = shown;
         }
 
+        boolean isFromHomePage() {
+            return isFromHomePage;
+        }
+
+        void setFromHomePage(boolean fromHomePage) {
+            isFromHomePage = fromHomePage;
+        }
+
         @Override
         public void onClick(View v) {
             Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
             detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
             context.startActivity(detailsIntent);
             int position = getIndex();
-            String action;
-            if (isHeaderAdded) {
-                action = DealsAnalytics.EVENT_CLICK_SEARCH_TRENDING;
-                position -= 1;
-            } else
-                action = DealsAnalytics.EVENT_CLICK_SEARCH_RESULT;
-            ProductItem productItem = categoryItems.get(getIndex());
-            dealsAnalytics.sendEcommerceClickEvent(categoryItems.get(getIndex()), position, action, DealsAnalytics.LIST_DEALS_SEARCH_TRENDING);
+            String action = null;
+            if (isFromHomePage) {
+                action = DealsAnalytics.EVENT_CLICK_POPULAR_SEARCH_RESULT;
+            } else {
+                action = DealsAnalytics.EVENT_CLICK_POPULAR_SGGESTION;
+            }
+            dealsAnalytics.sendEcommerceClickEvent(categoryItems.get(getIndex()), position, action, DealsAnalytics.LIST_DEALS_SEARCH_TRENDING, searchText);
         }
     }
 

@@ -86,6 +86,7 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
             curatedDealsRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             categoryAdapter = new DealsCategoryAdapter(categoryItem.getItems(), DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
             categoryAdapter.setDealsHomeLayout(true);
+            categoryAdapter.setDealType(DealsAnalytics.CURATED_DEALS);
             curatedDealsRecyclerView.setAdapter(categoryAdapter);
         }
 

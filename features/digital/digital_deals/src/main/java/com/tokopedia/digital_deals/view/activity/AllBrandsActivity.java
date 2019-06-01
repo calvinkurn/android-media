@@ -7,7 +7,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.GridLayoutManager;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -22,20 +21,20 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.adapter.BrandsFragmentPagerAdapter;
+import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
-import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
+import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
-import com.tokopedia.digital_deals.view.presenter.AllBrandsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.user.session.UserSession;
@@ -43,9 +42,7 @@ import com.tokopedia.user.session.UserSession;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-public class AllBrandsActivity extends DealsBaseActivity implements SearchInputView.Listener, View.OnClickListener, AllBrandsFragment.UpdateLocation, PopupMenu.OnMenuItemClickListener {
+public class AllBrandsActivity extends DealsBaseActivity implements SearchInputView.Listener, View.OnClickListener, AllBrandsFragment.UpdateLocation, PopupMenu.OnMenuItemClickListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet, DealsLocationAdapter.ActionListener {
 
     public static final String EXTRA_CATEGOTRY_LIST = "category_item_list";
     private ViewPager categoryViewPager;
@@ -64,6 +61,7 @@ public class AllBrandsActivity extends DealsBaseActivity implements SearchInputV
     private Menu mMenu;
     private int categoryId;
     private int position = 0;
+    CloseableBottomSheetDialog selectLocationFragment;
 
     @Override
     protected int getLayoutRes() {
@@ -163,7 +161,8 @@ public class AllBrandsActivity extends DealsBaseActivity implements SearchInputV
 
             @Override
             public void onPageSelected(int position) {
-                startSearch(searchText, position);
+                dealsAnalytics.sendSelectedHeaderEvent(categoryList.get(position).getTitle());
+                refetchData(searchText, position);
             }
 
             @Override
@@ -182,13 +181,13 @@ public class AllBrandsActivity extends DealsBaseActivity implements SearchInputV
     @Override
     public void onSearchSubmitted(String searchText) {
         this.searchText = searchText;
-        startSearch(searchText, categoryViewPager.getCurrentItem());
+        refetchData(searchText, categoryViewPager.getCurrentItem());
     }
 
     @Override
     public void onSearchTextChanged(String searchText) {
         this.searchText = searchText;
-        startSearch(searchText, categoryViewPager.getCurrentItem());
+        refetchData(searchText, categoryViewPager.getCurrentItem());
     }
 
     @Override
@@ -199,18 +198,28 @@ public class AllBrandsActivity extends DealsBaseActivity implements SearchInputV
     }
 
     @Override
-    public void onLocationUpdated(Location location) {
-        if (location != null) {
-            toolbarTitle.setText(location.getName());
-        }
+    public void startLocationFragment(List<Location> locations) {
+        selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(this);
+        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(this, false, locations, this, toolbarTitle.getText().toString(), this), "", false);
+        selectLocationFragment.show();
     }
 
-    private void startSearch(String searchText, int position) {
+    private void refetchData(String searchText, int position) {
         Fragment fragment = brandsTabsPagerAdapter.getSelectedFragment(position);
         if (fragment instanceof AllBrandsFragment) {
             AllBrandsFragment allBrandsFragment = (AllBrandsFragment) fragment;
             allBrandsFragment.onSearchSubmitted(searchText);
+            allBrandsFragment.reloadIfLocationUpdated();
         }
+    }
+
+    private AllBrandsFragment getCurrentSelectedFragment(){
+        Fragment fragment = brandsTabsPagerAdapter.getSelectedFragment(categoryViewPager.getCurrentItem());
+        if (fragment instanceof AllBrandsFragment) {
+            return (AllBrandsFragment) fragment;
+
+        }
+        return null;
     }
 
     @Override
@@ -238,5 +247,27 @@ public class AllBrandsActivity extends DealsBaseActivity implements SearchInputV
                     .actionOpenGeneralWebView(this, DealsUrl.WebUrl.FAQURL);
         }
         return true;
+    }
+
+    @Override
+    public void closeBottomsheet() {
+        if (selectLocationFragment != null) {
+            selectLocationFragment.dismiss();
+        }
+    }
+
+    @Override
+    public void onLocationItemSelected(boolean locationUpdated) {
+        Location location= Utils.getSingletonInstance().getLocation(this);
+        if (locationUpdated && location!= null) {
+            toolbarTitle.setText(location.getName());
+        }
+        AllBrandsFragment allBrandsFragment=getCurrentSelectedFragment();
+        if(allBrandsFragment!=null && locationUpdated){
+            allBrandsFragment.onLocationUpdated();
+        }
+        if (selectLocationFragment != null) {
+            selectLocationFragment.dismiss();
+        }
     }
 }

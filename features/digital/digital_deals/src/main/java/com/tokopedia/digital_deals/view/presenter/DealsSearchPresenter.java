@@ -1,7 +1,6 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 
-import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
@@ -16,8 +15,6 @@ import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCa
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
-import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
-import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
