@@ -154,6 +154,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 Intent brandIntent = new Intent(DealsSearchActivity.this, AllBrandsActivity.class);
                 brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoryList);
                 brandIntent.putExtra(AllBrandsActivity.SEARCH_TEXT, searchInputView.getSearchText());
+                brandIntent.putExtra("cat_id", categoryId);
                 navigateToActivity(brandIntent);
             }
         });

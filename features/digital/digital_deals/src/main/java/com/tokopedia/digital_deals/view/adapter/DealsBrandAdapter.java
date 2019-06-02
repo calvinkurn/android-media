@@ -100,9 +100,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         public void bindData(final Brand brand, int position) {
-            if (itemViewType == ITEM_BRAND_HOME) {
-                brandName.setText(brand.getTitle());
-            }
+            brandName.setText(brand.getTitle());
             ImageHandler.loadImage(context, imageViewBrandItem, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
             itemView.setOnClickListener(this);
         }
