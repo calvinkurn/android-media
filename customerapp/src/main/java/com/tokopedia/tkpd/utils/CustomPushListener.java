@@ -23,6 +23,7 @@ public class CustomPushListener extends PushMessageListener {
     public static final int NOTIFICATION_ID = 777;
     public static final int GRID_NOTIFICATION_ID = 778;
 
+
     private final static String KEY_ICON_NAME1 = "icon_name1";
     private final static String KEY_ICON_NAME2 = "icon_name2";
     private final static String KEY_ICON_NAME3 = "icon_name3";
@@ -77,8 +78,15 @@ public class CustomPushListener extends PushMessageListener {
 
     private void createGridNotification(Context context, Bundle extras, NotificationCompat.Builder builder) {
         long when = System.currentTimeMillis();
-        RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.grid_notificaiton_layout);
 
+        Intent notificationIntent = new Intent(context, MainParentActivity.class);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+                notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        RemoteViews expandRemoteView = new RemoteViews(context.getPackageName(),
+                R.layout.grid_notificaiton_layout);
+        setCollapseData(expandRemoteView, extras, contentIntent);
         String deeplink1 = extras.getString(KEY_DEEPLINK1);
         String deeplink2 = extras.getString(KEY_DEEPLINK2);
         String deeplink3 = extras.getString(KEY_DEEPLINK3);
@@ -92,26 +100,35 @@ public class CustomPushListener extends PushMessageListener {
         String url5 = extras.getString(KEY_ICON_URL5);
         String url6 = extras.getString(KEY_ICON_URL6);
 
-        createGrid(context, remoteView, R.id.iv_gridOne, url1, deeplink1);
-        createGrid(context, remoteView, R.id.iv_gridTwo, url2, deeplink2);
-        createGrid(context, remoteView, R.id.iv_gridThree, url3, deeplink3);
+        createGrid(context, expandRemoteView, R.id.iv_gridOne, url1, deeplink1);
+        createGrid(context, expandRemoteView, R.id.iv_gridTwo, url2, deeplink2);
+        createGrid(context, expandRemoteView, R.id.iv_gridThree, url3, deeplink3);
+
         if (null != url4 && null != url5 && null != url6) {
-            createGrid(context, remoteView, R.id.iv_gridFour, url4, deeplink4);
-            createGrid(context, remoteView, R.id.iv_gridFive, url5, deeplink5);
-            createGrid(context, remoteView, R.id.iv_gridSix, url6, deeplink6);
+            createGrid(context, expandRemoteView, R.id.iv_gridFour, url4, deeplink4);
+            createGrid(context, expandRemoteView, R.id.iv_gridFive, url5, deeplink5);
+            createGrid(context, expandRemoteView, R.id.iv_gridSix, url6, deeplink6);
         }
 
-        Intent notificationIntent = new Intent(context, MainParentActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        RemoteViews collapsedView = new RemoteViews(context.getApplicationContext().getPackageName(),
+                R.layout.collapsed_notification_layout);
+        setCollapseData(collapsedView, extras, contentIntent);
+
         builder.setSmallIcon(R.drawable.ic_stat_notify_white)
-                .setCustomBigContentView(remoteView)
+                .setCustomContentView(collapsedView)
+                .setCustomBigContentView(expandRemoteView)
                 .setContentTitle(context.getResources().getString(R.string.app_name))
                 .setContentIntent(contentIntent)
-                .setOngoing(true)
                 .setWhen(when);
     }
 
-    public void createGrid(Context context, RemoteViews remoteView, int resId, String url, String deepLink) {
+    private void setCollapseData(RemoteViews remoteView, Bundle extras, PendingIntent pendingIntent) {
+        remoteView.setTextViewText(R.id.tv_collapse_title, extras.getString("gcm_title"));
+        remoteView.setTextViewText(R.id.tv_collapsed_message, "gcm_alert");
+        remoteView.setOnClickPendingIntent(R.id.collapseMainView, pendingIntent);
+    }
+
+    private void createGrid(Context context, RemoteViews remoteView, int resId, String url, String deepLink) {
         if (null == url)
             return;
         remoteView.setViewVisibility(resId, View.VISIBLE);
