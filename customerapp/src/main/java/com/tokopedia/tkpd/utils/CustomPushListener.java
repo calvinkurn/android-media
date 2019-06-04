@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.utils;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
@@ -18,10 +19,10 @@ import com.tokopedia.tkpd.R;
 
 public class CustomPushListener extends PushMessageListener {
 
-    public static final String EXTRA_DELETE_NOTIFICATION_ID = "extra_delete_notification_id";
-    public static final String DELETE_NOTIFY = "com.tokopedia.tkpd.utils.delete";
-    public static final int NOTIFICATION_ID = 777;
-    public static final int GRID_NOTIFICATION_ID = 778;
+    static final String EXTRA_NOTIFICATION_ID = "extra_delete_notification_id";
+    static final String DELETE_NOTIFY = "com.tokopedia.tkpd.utils.delete";
+    private static final int NOTIFICATION_ID = 777;
+    private static final int GRID_NOTIFICATION_ID = 778;
 
 
     private final static String KEY_ICON_NAME1 = "icon_name1";
@@ -41,6 +42,9 @@ public class CustomPushListener extends PushMessageListener {
     private final static String KEY_ICON_URL5 = "icon_url5";
     private final static String KEY_ICON_URL6 = "icon_url6";
 
+    final static String ACTION_GRID_CLICK = "action_grid_click";
+    final static String EXTRA_DEEP_LINK = "extra_deep_link";
+
     @Override
     protected void onPostNotificationReceived(Context context, Bundle extras) {
         super.onPostNotificationReceived(context, extras);
@@ -50,7 +54,6 @@ public class CustomPushListener extends PushMessageListener {
     //if the app wants to modify the logic for showing notifications
     @Override
     public boolean isNotificationRequired(Context context, Bundle extras) {
-
         boolean result = super.isNotificationRequired(context,
                 extras);//if SUPER is not not called then it will throw an exception
         return result;
@@ -60,7 +63,6 @@ public class CustomPushListener extends PushMessageListener {
     @Override
     public NotificationCompat.Builder onCreateNotification(Context context, Bundle extras,
                                                            ConfigurationProvider provider) {
-
         final String KEY_IS_PERSISTENT = "is_persistent";
         final String KEY_IS_GRID = "is_grid";
         final String PERSISTENT = "1";
@@ -133,7 +135,7 @@ public class CustomPushListener extends PushMessageListener {
         configurationProvider.updateNotificationId(NOTIFICATION_ID);
         Intent deleteIntent = new Intent(context, NotificationBroadcast.class);
         deleteIntent.setAction(DELETE_NOTIFY);
-        deleteIntent.putExtra(EXTRA_DELETE_NOTIFICATION_ID, NOTIFICATION_ID);
+        deleteIntent.putExtra(EXTRA_NOTIFICATION_ID, NOTIFICATION_ID);
         PendingIntent pIntent5 = PendingIntent.getBroadcast(
                 context,
                 GRID_NOTIFICATION_ID,
@@ -153,7 +155,6 @@ public class CustomPushListener extends PushMessageListener {
                 .setOngoing(true)
                 .setWhen(when);
     }
-
 
     /**
      * it will create grid notification (2,3,6) images which will have {@link PendingIntent}
@@ -221,14 +222,31 @@ public class CustomPushListener extends PushMessageListener {
     private void createGrid(Context context, RemoteViews remoteView, int resId, String url, String deepLink) {
         if (null == url)
             return;
+        PendingIntent resultPendingIntent;
         remoteView.setViewVisibility(resId, View.VISIBLE);
         remoteView.setImageViewBitmap(resId, MoEHelperUtils.downloadImageBitmap(url));
-        Intent intent = RouteManager.getIntent(context, deepLink);
-        PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(resId, pIntent);
-    }
+        Intent intent = new Intent(context, NotificationBroadcast.class);
+        intent.setAction(ACTION_GRID_CLICK);
+        intent.putExtra(EXTRA_DEEP_LINK, deepLink);
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            resultPendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        } else {
+            resultPendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        }
+
+        remoteView.setOnClickPendingIntent(resId, resultPendingIntent);
+    }
 
     @Override
     public void onNonMoEngageMessageReceived(Context context, Bundle extras) {
