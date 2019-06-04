@@ -71,6 +71,7 @@ public class FragmentCardIdCamera extends HomeCreditKTPFragment{
         super.onCreate(savedInstanceState);
         actionCreator = (ActionCreator) getArguments().getSerializable(ACTION_CREATOR_ARG);
         actionDataProvider = (ActionDataProvider) getArguments().getSerializable(ACTION_KEYS_PROVIDER_ARG);
+        getArguments().clear();
     }
 
     @Override
@@ -80,10 +81,4 @@ public class FragmentCardIdCamera extends HomeCreditKTPFragment{
         super.onDestroy();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        hideLoading();
-        cameraView.stop();
-    }
 }
