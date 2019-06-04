@@ -76,70 +76,7 @@ public class CustomPushListener extends PushMessageListener {
         return builder;
     }
 
-    private void createGridNotification(Context context, Bundle extras, NotificationCompat.Builder builder) {
-        long when = System.currentTimeMillis();
-
-        Intent notificationIntent = new Intent(context, MainParentActivity.class);
-
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        RemoteViews expandRemoteView = new RemoteViews(context.getPackageName(),
-                R.layout.grid_notificaiton_layout);
-        setCollapseData(expandRemoteView, extras, contentIntent);
-        String deeplink1 = extras.getString(KEY_DEEPLINK1);
-        String deeplink2 = extras.getString(KEY_DEEPLINK2);
-        String deeplink3 = extras.getString(KEY_DEEPLINK3);
-        String deeplink4 = extras.getString(KEY_DEEPLINK4);
-        String deeplink5 = extras.getString(KEY_DEEPLINK5);
-        String deeplink6 = extras.getString(KEY_DEEPLINK6);
-        String url1 = extras.getString(KEY_ICON_URL1);
-        String url2 = extras.getString(KEY_ICON_URL2);
-        String url3 = extras.getString(KEY_ICON_URL3);
-        String url4 = extras.getString(KEY_ICON_URL4);
-        String url5 = extras.getString(KEY_ICON_URL5);
-        String url6 = extras.getString(KEY_ICON_URL6);
-
-        createGrid(context, expandRemoteView, R.id.iv_gridOne, url1, deeplink1);
-        createGrid(context, expandRemoteView, R.id.iv_gridTwo, url2, deeplink2);
-        createGrid(context, expandRemoteView, R.id.iv_gridThree, url3, deeplink3);
-
-        if (null != url4 && null != url5 && null != url6) {
-            createGrid(context, expandRemoteView, R.id.iv_gridFour, url4, deeplink4);
-            createGrid(context, expandRemoteView, R.id.iv_gridFive, url5, deeplink5);
-            createGrid(context, expandRemoteView, R.id.iv_gridSix, url6, deeplink6);
-        }
-
-        RemoteViews collapsedView = new RemoteViews(context.getApplicationContext().getPackageName(),
-                R.layout.collapsed_notification_layout);
-        setCollapseData(collapsedView, extras, contentIntent);
-
-        builder.setSmallIcon(R.drawable.ic_stat_notify_white)
-                .setCustomContentView(collapsedView)
-                .setCustomBigContentView(expandRemoteView)
-                .setContentTitle(context.getResources().getString(R.string.app_name))
-                .setContentIntent(contentIntent)
-                .setWhen(when);
-    }
-
-    private void setCollapseData(RemoteViews remoteView, Bundle extras, PendingIntent pendingIntent) {
-        remoteView.setTextViewText(R.id.tv_collapse_title, extras.getString("gcm_title"));
-        remoteView.setTextViewText(R.id.tv_collapsed_message, "gcm_alert");
-        remoteView.setOnClickPendingIntent(R.id.collapseMainView, pendingIntent);
-    }
-
-    private void createGrid(Context context, RemoteViews remoteView, int resId, String url, String deepLink) {
-        if (null == url)
-            return;
-        remoteView.setViewVisibility(resId, View.VISIBLE);
-        remoteView.setImageViewBitmap(resId, MoEHelperUtils.downloadImageBitmap(url));
-        Intent intent = RouteManager.getIntent(context, deepLink);
-        PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(resId, pIntent);
-    }
-
-    public void createPersistentNotification(Context context, Bundle extras, NotificationCompat.Builder builder) {
+    private void createPersistentNotification(Context context, Bundle extras, NotificationCompat.Builder builder) {
         long when = System.currentTimeMillis();
         RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.persistent_notification_layout);
         String title1 = extras.getString(KEY_ICON_NAME1);
@@ -199,7 +136,7 @@ public class CustomPushListener extends PushMessageListener {
         deleteIntent.putExtra(EXTRA_DELETE_NOTIFICATION_ID, NOTIFICATION_ID);
         PendingIntent pIntent5 = PendingIntent.getBroadcast(
                 context,
-                NOTIFICATION_ID,
+                GRID_NOTIFICATION_ID,
                 deleteIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         remoteView.setOnClickPendingIntent(R.id.image_icon5, pIntent5);
@@ -214,6 +151,81 @@ public class CustomPushListener extends PushMessageListener {
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .setWhen(when);
+    }
+
+
+    /**
+     * it will create grid notification (2,3,6) images which will have {@link PendingIntent}
+     * setOnClickPendingIntent
+     *
+     * @param context This context is used to create intent, to get packageName
+     * @param extras  This bundle contains the payload for Grid Type Notification
+     * @param builder This builder object is provided by MoEngage and here we are setting contentView
+     *                and Big ContentView on  basis of extras.
+     */
+    private void createGridNotification(Context context, Bundle extras, NotificationCompat.Builder builder) {
+        long when = System.currentTimeMillis();
+
+        Intent notificationIntent = new Intent(context, MainParentActivity.class);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+                notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        RemoteViews expandRemoteView = new RemoteViews(context.getPackageName(),
+                R.layout.grid_notificaiton_layout);
+        setCollapseData(expandRemoteView, extras, contentIntent);
+        String deeplink1 = extras.getString(KEY_DEEPLINK1);
+        String deeplink2 = extras.getString(KEY_DEEPLINK2);
+        String deeplink3 = extras.getString(KEY_DEEPLINK3);
+        String deeplink4 = extras.getString(KEY_DEEPLINK4);
+        String deeplink5 = extras.getString(KEY_DEEPLINK5);
+        String deeplink6 = extras.getString(KEY_DEEPLINK6);
+        String url1 = extras.getString(KEY_ICON_URL1);
+        String url2 = extras.getString(KEY_ICON_URL2);
+        String url3 = extras.getString(KEY_ICON_URL3);
+        String url4 = extras.getString(KEY_ICON_URL4);
+        String url5 = extras.getString(KEY_ICON_URL5);
+        String url6 = extras.getString(KEY_ICON_URL6);
+
+        createGrid(context, expandRemoteView, R.id.iv_gridOne, url1, deeplink1);
+        createGrid(context, expandRemoteView, R.id.iv_gridTwo, url2, deeplink2);
+        createGrid(context, expandRemoteView, R.id.iv_gridThree, url3, deeplink3);
+
+        if (null != url4 && null != url5 && null != url6) {
+            createGrid(context, expandRemoteView, R.id.iv_gridFour, url4, deeplink4);
+            createGrid(context, expandRemoteView, R.id.iv_gridFive, url5, deeplink5);
+            createGrid(context, expandRemoteView, R.id.iv_gridSix, url6, deeplink6);
+            expandRemoteView.setViewVisibility(R.id.ll_bottomGridParent, View.VISIBLE);
+        }
+
+        RemoteViews collapsedView = new RemoteViews(context.getApplicationContext().getPackageName(),
+                R.layout.collapsed_notification_layout);
+        setCollapseData(collapsedView, extras, contentIntent);
+
+        builder.setSmallIcon(R.drawable.ic_stat_notify_white)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .setCustomContentView(collapsedView)
+                .setCustomBigContentView(expandRemoteView)
+                .setContentTitle(context.getResources().getString(R.string.app_name))
+                .setContentIntent(contentIntent)
+                .setWhen(when);
+    }
+
+    private void setCollapseData(RemoteViews remoteView, Bundle extras, PendingIntent pendingIntent) {
+        remoteView.setTextViewText(R.id.tv_collapse_title, extras.getString("gcm_title"));
+        remoteView.setTextViewText(R.id.tv_collapsed_message, "gcm_alert");
+        remoteView.setOnClickPendingIntent(R.id.collapseMainView, pendingIntent);
+    }
+
+    private void createGrid(Context context, RemoteViews remoteView, int resId, String url, String deepLink) {
+        if (null == url)
+            return;
+        remoteView.setViewVisibility(resId, View.VISIBLE);
+        remoteView.setImageViewBitmap(resId, MoEHelperUtils.downloadImageBitmap(url));
+        Intent intent = RouteManager.getIntent(context, deepLink);
+        PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(resId, pIntent);
     }
 
 
