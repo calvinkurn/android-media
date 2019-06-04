@@ -210,6 +210,7 @@ public class CustomPushListener extends PushMessageListener {
                 .setCustomBigContentView(expandRemoteView)
                 .setContentTitle(context.getResources().getString(R.string.app_name))
                 .setContentIntent(contentIntent)
+                .setOngoing(false)
                 .setWhen(when);
     }
 
@@ -228,6 +229,7 @@ public class CustomPushListener extends PushMessageListener {
         Intent intent = new Intent(context, NotificationBroadcast.class);
         intent.setAction(ACTION_GRID_CLICK);
         intent.putExtra(EXTRA_DEEP_LINK, deepLink);
+        intent.putExtra(EXTRA_NOTIFICATION_ID, GRID_NOTIFICATION_ID);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getBroadcast(
