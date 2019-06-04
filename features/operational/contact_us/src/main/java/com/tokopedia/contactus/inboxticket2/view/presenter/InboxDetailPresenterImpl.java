@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -22,11 +23,13 @@ import com.tokopedia.contactus.inboxticket2.domain.CreatedBy;
 import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse;
 import com.tokopedia.contactus.inboxticket2.domain.RatingResponse;
 import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse;
+import com.tokopedia.contactus.inboxticket2.domain.usecase.CloseTicketByUserUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketDetailUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.InboxOptionUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase2;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostRatingUseCase;
+import com.tokopedia.contactus.inboxticket2.domain.usecase.SubmitRatingUseCase;
 import com.tokopedia.contactus.inboxticket2.view.activity.ProvideRatingActivity;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
@@ -93,15 +96,22 @@ public class InboxDetailPresenterImpl
     private InboxOptionUseCase inboxOptionUseCase;
     boolean isIssueClosed = false;
 
+    private SubmitRatingUseCase submitRatingUseCase;
+    private CloseTicketByUserUseCase closeTicketByUserUseCase;
+
     public InboxDetailPresenterImpl(GetTicketDetailUseCase useCase,
                                     PostMessageUseCase messageUseCase,
                                     PostMessageUseCase2 messageUseCase2,
-                                    PostRatingUseCase ratingUseCase, InboxOptionUseCase inboxOptionUseCase) {
+                                    PostRatingUseCase ratingUseCase, InboxOptionUseCase inboxOptionUseCase,
+                                    SubmitRatingUseCase submitRatingUseCase,
+                                    CloseTicketByUserUseCase closeTicketByUserUseCase) {
         mUsecase = useCase;
         postMessageUseCase = messageUseCase;
         postMessageUseCase2 = messageUseCase2;
         postRatingUseCase = ratingUseCase;
         this.inboxOptionUseCase = inboxOptionUseCase;
+        this.submitRatingUseCase = submitRatingUseCase;
+        this.closeTicketByUserUseCase = closeTicketByUserUseCase;
     }
 
     @Override
@@ -766,6 +776,71 @@ public class InboxDetailPresenterImpl
     @Override
     public void onClickEmoji(int number) {
         mView.startActivityForResult(ProvideRatingActivity.getInstance(mView.getActivity(), number,mView.getCommentID(),mTicketDetail.getBadCsatReasonList()),REQUEST_SUBMIT_FEEDBACK);
+    }
+
+    @Override
+    public void onClick(String agreed, int commentPosition, String commentId) {
+
+        int RATING = agreed.equals("yes")? 101:102;
+
+
+        RequestParams requestParams = submitRatingUseCase.createRequestParams(commentId,RATING+"","-");
+        mView.showProgressBar();
+        submitRatingUseCase.execute(requestParams, new Subscriber<ChipGetInboxDetail>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mView.hideProgressBar();
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(ChipGetInboxDetail chipGetInboxDetail) {
+                mView.hideProgressBar();
+                if(chipGetInboxDetail.getMessageError() != null && chipGetInboxDetail.getMessageError().size() > 0) {
+
+                    mView.showErrorMessage(chipGetInboxDetail.getMessageError().get(0));
+                }
+                else {
+                    mView.onSuccessSubmitOfRating(RATING,commentPosition);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void closeTicket() {
+        RequestParams requestParams = closeTicketByUserUseCase.createRequestParams(mView.getTicketID(),"mobile");
+        mView.showProgressBar();
+        closeTicketByUserUseCase.execute(requestParams, new Subscriber<ChipGetInboxDetail>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mView.hideProgressBar();
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(ChipGetInboxDetail chipGetInboxDetail) {
+                mView.hideProgressBar();
+                if(chipGetInboxDetail.getMessageError() != null && chipGetInboxDetail.getMessageError().size() > 0) {
+
+                    mView.showErrorMessage(chipGetInboxDetail.getMessageError().get(0));
+                }
+                else {
+                    Log.i("closeTicket","sucesss");
+                }
+            }
+        });
     }
 
     private void addNewLocalComment() {

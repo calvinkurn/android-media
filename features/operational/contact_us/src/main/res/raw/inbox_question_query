@@ -24,6 +24,7 @@ chipGetInboxDetail(caseID: $caseID) {
                 thumbnail
               }
               note
+              rating
             }
             number
             subject

@@ -81,5 +81,11 @@
     <string name="survei_layanan">Survei Layanan</string>
     <string name="cu_surey_layana">Survey Layana</string>
     <string name="cu_terima_kasih_atas_masukannya">Terima kasih atas masukannya</string>
+    <string name="_close_this_complaint">Tutup komplain ini?</string>
+    <string name="close_complain_message">Kamu tidak dapat membalas pesan ini lagi dan komplain dianggap telah selesai.</string>
+    <string name="yes_close">Ya,Tutup</string>
+    <string name="not">Tidak</string>
+    <string name="yes">Ya</string>
+    <string name="helped_with_this_answer">Terbantu dengan jawaban ini?</string>
 
 </resources>

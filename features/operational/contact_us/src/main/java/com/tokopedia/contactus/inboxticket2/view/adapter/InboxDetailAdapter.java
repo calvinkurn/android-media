@@ -43,9 +43,6 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
     private String searchText;
     private Utils utils;
     private SpannableString hintAttachmentString;
-    private int rating =0;
-
-
 
     public InboxDetailAdapter(Context context, List<CommentsItem> data, boolean needAttachment, InboxDetailContract.InboxDetailPresenter presenter) {
         mContext = context;
@@ -70,7 +67,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull DetailViewHolder holder, int position) {
-        holder.bindViewHolder(position);
+        holder.bindViewHolder(position,mPresenter);
     }
 
     public void enterSearchMode(String text) {
@@ -129,10 +126,10 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             rvAttachedImage.setLayoutManager(layoutManager);
         }
 
-        void bindViewHolder(int position) {
+        void bindViewHolder(int position, InboxDetailContract.InboxDetailPresenter mPresenter) {
             if (commentList.get(position).getAttachment() != null && commentList.get(position).getAttachment().size() > 0) {
                 if (attachmentAdapter == null) {
-                    attachmentAdapter = new AttachmentAdapter(mContext, commentList.get(position).getAttachment(), mPresenter);
+                    attachmentAdapter = new AttachmentAdapter(mContext, commentList.get(position).getAttachment(), InboxDetailAdapter.this.mPresenter);
                 } else {
                     attachmentAdapter.addAll(commentList.get(position).getAttachment());
                 }
@@ -151,12 +148,29 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 ImageHandler.loadImageCircle2(mContext, ivProfile, item.getCreatedBy().getPicture());
                 tvName.setText(item.getCreatedBy().getName());
             }
+            if(item.getRating()!=null && item.getRating().equals("102")){
+                ratingThumbsDown.setVisibility(View.VISIBLE);
+                ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
+                ratingThumbsUp.setVisibility(View.GONE);
+            }else if(item.getRating()!=null && item.getRating().equals("101")) {
+                ratingThumbsUp.setVisibility(View.VISIBLE);
+                ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
+                ratingThumbsDown.setVisibility(View.GONE);
+            }
             if (position == commentList.size() - 1 || !commentList.get(position).isCollapsed() || searchMode) {
                 tvDateRecent.setText(item.getCreateTime());
                 tvCollapsedTime.setText("");
                 tvCollapsedTime.setVisibility(View.GONE);
-                ratingThumbsUp.setVisibility(View.VISIBLE);
-                ratingThumbsDown.setVisibility(View.VISIBLE);
+                if(!item.getCreatedBy().getRole().equals("agent")||item.getRating()==null){
+                    ratingThumbsUp.setVisibility(View.GONE);
+                    ratingThumbsDown.setVisibility(View.GONE);
+                }
+                else if(item.getCreatedBy().getRole().equals("agent") && !item.getRating().equals("101") && !item.getRating().equals("102") ){
+                    ratingThumbsUp.setVisibility(View.VISIBLE);
+                    ratingThumbsDown.setVisibility(View.VISIBLE);
+                    ratingThumbsUp.clearColorFilter();
+                    ratingThumbsDown.clearColorFilter();
+                }
                 if (searchMode) {
                     tvComment.setText(utils.getHighlightText(searchText, item.getMessagePlaintext()));
                 } else {
@@ -188,9 +202,13 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             ratingThumbsUp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
-                    ratingThumbsDown.setVisibility(View.GONE);
-                    rating = 1;
+                    if(item.getRating()!= null &&(item.getRating().equals("101")||item.getRating().equals("102"))){
+
+                    }else{
+                        ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
+                        ratingThumbsDown.setVisibility(View.GONE);
+                        mPresenter.onClick("yes",position,item.getId());
+                    }
 
                 }
             });
@@ -198,10 +216,12 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             ratingThumbsDown.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(item.getRating().equals("101")||item.getRating().equals("102")){
+                    }else{
                     ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
                     ratingThumbsUp.setVisibility(View.GONE);
-                    rating = -1;
-
+                    mPresenter.onClick("no",position,item.getId());
+                    }
                 }
             });
 

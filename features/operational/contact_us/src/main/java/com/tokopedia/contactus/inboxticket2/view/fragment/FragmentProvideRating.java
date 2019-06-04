@@ -259,6 +259,16 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
         }
     }
 
+    @Override
+    public void hideSubmitButton() {
+        mTxtFinished.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showSubmitButton() {
+        mTxtFinished.setVisibility(View.VISIBLE);
+    }
+
     private void initView(View view) {
         mTxtHelpTitle = view.findViewById(R.id.txt_help_title);
         mSmileLayout = view.findViewById(R.id.smile_layout);

@@ -27,10 +27,14 @@ import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
+import com.tokopedia.contactus.inboxticket2.view.fragment.CloseComplainBottomSheet;
+import com.tokopedia.contactus.inboxticket2.view.fragment.HelpFullBottomSheet;
 import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -49,8 +53,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class InboxDetailActivity extends InboxBaseActivity
-        implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick {
-
+        implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick, View.OnClickListener, HelpFullBottomSheet.CloseSHelpFullBottomSheet, CloseComplainBottomSheet.CloseComplainBottomSheetListner {
 
     @BindView(R2.id.tv_ticket_title)
     TextView tvTicketTitle;
@@ -93,6 +96,9 @@ public class InboxDetailActivity extends InboxBaseActivity
     @BindView(R2.id.tv_priority_label)
     TextView tvPriorityLabel;
 
+    View viewReplyButton;
+    TextView tvReplyButton;
+
 
     private ImageUploadAdapter imageUploadAdapter;
     private InboxDetailAdapter detailAdapter;
@@ -104,6 +110,11 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     public static final String PARAM_TICKET_ID = "ticket_id";
     public static final String IS_OFFICIAL_STORE = "is_official_store";
+    private static final String LIKE = "101";
+    private static final String DISLIKE = "102";
+    private CloseableBottomSheetDialog helpFullBottomSheet,closeComplainBottomSheet;
+
+    List<CommentsItem> commentsItems = new ArrayList<>();
 
     @DeepLink(ApplinkConst.TICKET_DETAIL)
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
@@ -124,7 +135,7 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void renderMessageList(Tickets ticketDetail) {
-        List<CommentsItem> commentsItems = ticketDetail.getComments();
+        commentsItems = ticketDetail.getComments();
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
 
         edMessage.getText().clear();
@@ -143,6 +154,7 @@ public class InboxDetailActivity extends InboxBaseActivity
                     getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
             if (ticketDetail.isShowRating()) {
                 toggleTextToolbar(View.GONE);
+                viewReplyButton.setVisibility(View.VISIBLE);  //----
                 rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
             }
 
@@ -168,7 +180,7 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvIdNum.setVisibility(View.GONE);
 
         if (ticketDetail.getComments() != null && ticketDetail.getComments().size() > 0) {
-            detailAdapter = new InboxDetailAdapter(this, ticketDetail.getComments(), ticketDetail.isNeedAttachment(),
+            detailAdapter = new InboxDetailAdapter(this, commentsItems, ticketDetail.isNeedAttachment(),
                     (InboxDetailContract.InboxDetailPresenter) mPresenter);
             rvMessageList.setAdapter(detailAdapter);
             rvMessageList.setVisibility(View.VISIBLE);
@@ -236,6 +248,11 @@ public class InboxDetailActivity extends InboxBaseActivity
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rvMessageList.setLayoutManager(layoutManager);
         editText.setListener(((InboxDetailContract.InboxDetailPresenter) mPresenter).getSearchListener());
+        tvReplyButton = findViewById(R.id.tv_rply_button);
+        viewReplyButton = findViewById(R.id.view_rply_botton_before_csat_rating);
+
+        tvReplyButton.setOnClickListener(this);
+
     }
 
     @Override
@@ -333,6 +350,10 @@ public class InboxDetailActivity extends InboxBaseActivity
         return rateCommentID;
     }
 
+    @Override
+    public void showErrorMessage(String o) {
+        ToasterError.make(getRootView(), o).show();
+    }
 
     @OnClick(R2.id.iv_send_button)
     void sendMessage() {
@@ -587,6 +608,90 @@ public class InboxDetailActivity extends InboxBaseActivity
                     }).create().show();
         } else {
             super.onBackPressed();
+        }
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.tv_rply_button) {
+            String rating = commentsItems.get(detailAdapter.getItemCount()-1).getRating();
+            if(rating.equals("101")|| rating.equals("102")){
+                viewReplyButton.setVisibility(View.GONE);
+                textToolbar.setVisibility(View.VISIBLE);
+            }else{
+                helpFullBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+                helpFullBottomSheet.setCustomContentView( new HelpFullBottomSheet(InboxDetailActivity.this,this),"", true);
+                helpFullBottomSheet.show();
+                viewReplyButton.setVisibility(View.GONE);
+                textToolbar.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    @Override
+    public void onClick(String agreed) {
+        CommentsItem item =  null;
+        int commentPosition =0;
+        for(int i = detailAdapter.getItemCount()-1;i>=0;i--){
+            CommentsItem item1 =  commentsItems.get(i);
+            if(item1.getCreatedBy().getRole().equals("agent")){
+                item = item1;
+                commentPosition = i;
+                break;
+            }
+        }
+        if(agreed.equals("yes")){
+            closeComplainBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+            closeComplainBottomSheet.setCustomContentView( new CloseComplainBottomSheet(InboxDetailActivity.this,this),"", true);
+            closeComplainBottomSheet.show();
+            viewHelpRate.setVisibility(View.VISIBLE);
+            viewReplyButton.setVisibility(View.GONE);
+            ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick("yes",commentPosition,item.getId());
+            helpFullBottomSheet.dismiss();
+        }else{
+
+            //call peresenter to updagte
+            ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick("no",commentPosition,item.getId());
+            viewReplyButton.setVisibility(View.GONE);
+            textToolbar.setVisibility(View.VISIBLE);
+            helpFullBottomSheet.dismiss();
+        }
+    }
+
+    @Override
+    public void onSuccessSubmitOfRating(int rating,int commentPosition) {
+
+        CommentsItem item =  commentsItems.get(commentPosition);
+        String rate = rating==101?LIKE:DISLIKE;
+        item.setRating(rate);
+        detailAdapter.notifyItemChanged(commentPosition,item);
+
+    }
+
+    @Override
+    public void onClickComplain(String agreed) {
+        CommentsItem item =  null;
+        int commentPosition =0;
+        for(int i = detailAdapter.getItemCount()-1;i>=0;i--){
+            CommentsItem item1 =  commentsItems.get(i);
+            if(item1.getCreatedBy().getRole().equals("agent")){
+                item = item1;
+                commentPosition = i;
+                break;
+            }
+        }
+        if(agreed.equals("yes")){
+            ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick("yes",commentPosition,item.getId());
+            ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(0);
+            ((InboxDetailContract.InboxDetailPresenter) mPresenter).closeTicket();
+            closeComplainBottomSheet.dismiss();
+
+        }else{
+            viewReplyButton.setVisibility(View.GONE);
+            viewHelpRate.setVisibility(View.GONE);
+            textToolbar.setVisibility(View.VISIBLE);
+            closeComplainBottomSheet.dismiss();
         }
 
     }
