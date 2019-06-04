@@ -66,7 +66,7 @@ public class CustomPushListener extends PushMessageListener {
         final String KEY_IS_PERSISTENT = "is_persistent";
         final String KEY_IS_GRID = "is_grid";
         final String PERSISTENT = "1";
-        final String GRID = "2";
+        final String GRID = "1";
 
         NotificationCompat.Builder builder = super.onCreateNotification(context, extras, provider);
         if (PERSISTENT.equalsIgnoreCase(extras.getString(KEY_IS_PERSISTENT))) {
