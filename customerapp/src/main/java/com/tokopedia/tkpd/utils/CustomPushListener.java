@@ -148,7 +148,6 @@ public class CustomPushListener extends PushMessageListener {
         remoteView.setOnClickPendingIntent(R.id.image_icon6, contentIntent);
         builder.setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setCustomContentView(remoteView)
-                .setLargeIcon(null)
                 .setCustomBigContentView(remoteView)
                 .setContentTitle(context.getResources().getString(R.string.app_name))
                 .setContentIntent(contentIntent)
@@ -205,6 +204,7 @@ public class CustomPushListener extends PushMessageListener {
         setCollapseData(collapsedView, extras, contentIntent);
 
         builder.setSmallIcon(R.drawable.ic_stat_notify_white)
+                .setLargeIcon(null)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandRemoteView)
