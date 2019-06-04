@@ -44,6 +44,6 @@
         android:layout_width="38dp"
         android:layout_height="38dp"
         android:layout_gravity="end|right"
-        android:src="@drawable/qc_launcher" />
+        android:src="@drawable/ic_big_notif_customerapp" />
 
 </FrameLayout>

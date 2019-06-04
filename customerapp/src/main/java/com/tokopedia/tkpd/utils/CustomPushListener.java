@@ -146,6 +146,7 @@ public class CustomPushListener extends PushMessageListener {
         remoteView.setOnClickPendingIntent(R.id.image_icon6, contentIntent);
         builder.setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setCustomContentView(remoteView)
+                .setLargeIcon(null)
                 .setCustomBigContentView(remoteView)
                 .setContentTitle(context.getResources().getString(R.string.app_name))
                 .setContentIntent(contentIntent)
@@ -213,7 +214,7 @@ public class CustomPushListener extends PushMessageListener {
 
     private void setCollapseData(RemoteViews remoteView, Bundle extras, PendingIntent pendingIntent) {
         remoteView.setTextViewText(R.id.tv_collapse_title, extras.getString("gcm_title"));
-        remoteView.setTextViewText(R.id.tv_collapsed_message, "gcm_alert");
+        remoteView.setTextViewText(R.id.tv_collapsed_message, extras.getString("gcm_alert"));
         remoteView.setOnClickPendingIntent(R.id.collapseMainView, pendingIntent);
     }
 
