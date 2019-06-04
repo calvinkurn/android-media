@@ -105,6 +105,16 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         mPresenter.initialize();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
+            tvCityName.setText(location.getName());
+            mPresenter.getDealsListBySearch(searchInputView.getSearchText());
+        }
+    }
+
     private void setUpVariables() {
         rvDeals = findViewById(R.id.rv_search_results);
         searchInputView = findViewById(R.id.search_input_view);
@@ -155,7 +165,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoryList);
                 brandIntent.putExtra(AllBrandsActivity.SEARCH_TEXT, searchInputView.getSearchText());
                 brandIntent.putExtra("cat_id", categoryId);
-                navigateToActivity(brandIntent);
+                navigateToActivityRequest(brandIntent, DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
             }
         });
     }

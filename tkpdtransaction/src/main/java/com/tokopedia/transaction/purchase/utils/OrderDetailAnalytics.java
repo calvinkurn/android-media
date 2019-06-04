@@ -12,6 +12,7 @@ import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapDa
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT;
 import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT_ACTION;
@@ -116,9 +117,9 @@ public class OrderDetailAnalytics {
     }
 
     public void sendThankYouEvent(int entityProductId, String entityProductName, int totalTicketPrice, int quantity, String orderId) {
-        HashMap<String, Object> products = new HashMap<>();
-        HashMap<String, Object> purchase = new HashMap<>();
-        HashMap<String, Object> ecommerce = new HashMap<>();
+        Map<String, Object> products = new HashMap<>();
+        Map<String, Object> purchase = new HashMap<>();
+        Map<String, Object> ecommerce = new HashMap<>();
 
         products.put(ID, entityProductId);
         products.put(NAME, entityProductName);
@@ -131,9 +132,9 @@ public class OrderDetailAnalytics {
 
         ecommerce.put(CURRENCY_CODE, IDR);
         ecommerce.put(KEY_PRODUCTS, Collections.singletonList(products));
-        ecommerce.put(KEY_PURCHASE, Collections.singletonList(purchase));
+        ecommerce.put(KEY_PURCHASE, purchase);
 
-        HashMap<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("event", EVENT_TRANSACTION);
         map.put("eventCategory", EVENT_CARTEGORY);
         map.put("eventAction", ACTION);
