@@ -110,7 +110,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/text_time_label"
-                        app:srcCompat="@drawable/bg_tp_time_greeen" />
+                        app:srcCompat="@drawable/ic_tp_time_new" />
 
                     <ProgressBar
                         android:id="@+id/progress_timer"
@@ -148,7 +148,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/text_time_label"
-                        app:srcCompat="@drawable/ic_tp_rp" />
+                        app:srcCompat="@drawable/ic_tp_rp_new" />
 
                     <LinearLayout
                         android:layout_width="0dp"
