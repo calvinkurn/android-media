@@ -206,7 +206,9 @@ class GlCameraPreview extends CameraPreview<GLSurfaceView, SurfaceTexture> imple
         }
         // Future note: passing scale to the viewport?
         // They are scaleX an scaleY, but flipped based on mInputFlipped.
-        mOutputViewport.drawFrame(mOutputTextureId, mTransformMatrix);
+        if (mOutputViewport != null) {
+            mOutputViewport.drawFrame(mOutputTextureId, mTransformMatrix);
+        }
         for (RendererFrameCallback callback : mRendererFrameCallbacks) {
             callback.onRendererFrame(mInputSurfaceTexture, mScaleX, mScaleY);
         }

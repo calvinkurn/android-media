@@ -27,11 +27,13 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.layout_collapsed)
         setCollapseData(collapsedView, baseNotificationModel, true)
 
+        collapsedView.setOnClickPendingIntent(R.id.collapseMainView, createMainPendingIntent(baseNotificationModel, requestCode))
+
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.notificationId, requestCode))
         var expandedView = RemoteViews(context.applicationContext.packageName,
                 R.layout.layout_big_image)
         if (baseNotificationModel.media == null) {
-              expandedView = RemoteViews(context.applicationContext.packageName,
+            expandedView = RemoteViews(context.applicationContext.packageName,
                     R.layout.layout_action_button)
         }
 
@@ -102,10 +104,10 @@ internal class ActionNotification internal constructor(context: Context, baseNot
                 0 -> {
                     expandedView.setViewVisibility(R.id.tv_button1, View.VISIBLE)
                     expandedView.setTextViewText(R.id.tv_button1, actionButton.text)
-                    if(actionButton.pdActions!=null){
+                    if (actionButton.pdActions != null) {
                         expandedView.setOnClickPendingIntent(R.id.ll_button1, getShareButtonPendingIntent(actionButton, requestCode))
 
-                    }else{
+                    } else {
                         expandedView.setOnClickPendingIntent(R.id.ll_button1, getButtonPendingIntent(actionButton, requestCode))
 
                     }
@@ -120,10 +122,10 @@ internal class ActionNotification internal constructor(context: Context, baseNot
                 1 -> {
                     expandedView.setViewVisibility(R.id.tv_button2, View.VISIBLE)
                     expandedView.setTextViewText(R.id.tv_button2, actionButton.text)
-                    if(actionButton.pdActions!=null){
+                    if (actionButton.pdActions != null) {
                         expandedView.setOnClickPendingIntent(R.id.ll_button2, getShareButtonPendingIntent(actionButton, requestCode))
 
-                    }else{
+                    } else {
                         expandedView.setOnClickPendingIntent(R.id.ll_button2, getButtonPendingIntent(actionButton, requestCode))
 
                     }
@@ -138,10 +140,10 @@ internal class ActionNotification internal constructor(context: Context, baseNot
                 2 -> {
                     expandedView.setViewVisibility(R.id.tv_button3, View.VISIBLE)
                     expandedView.setTextViewText(R.id.tv_button3, actionButton.text)
-                    if(actionButton.pdActions!=null){
+                    if (actionButton.pdActions != null) {
                         expandedView.setOnClickPendingIntent(R.id.ll_button3, getShareButtonPendingIntent(actionButton, requestCode))
 
-                    }else{
+                    } else {
                         expandedView.setOnClickPendingIntent(R.id.ll_button3, getButtonPendingIntent(actionButton, requestCode))
 
                     }

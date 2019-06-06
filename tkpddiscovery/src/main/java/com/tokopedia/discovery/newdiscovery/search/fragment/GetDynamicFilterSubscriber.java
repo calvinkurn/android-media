@@ -2,8 +2,8 @@ package com.tokopedia.discovery.newdiscovery.search.fragment;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
-import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdynamicfilter.helper.DynamicFilterDbManager;
 
 import java.lang.reflect.Type;
@@ -17,9 +17,9 @@ import rx.Subscriber;
 
 public class GetDynamicFilterSubscriber extends Subscriber<DynamicFilterModel> {
 
-    protected final SearchSectionFragmentView view;
+    protected final BrowseSectionFragmentView view;
 
-    public GetDynamicFilterSubscriber(SearchSectionFragmentView view) {
+    public GetDynamicFilterSubscriber(BrowseSectionFragmentView view) {
         this.view = view;
     }
 

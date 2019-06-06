@@ -126,37 +126,26 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventPromoImpression(Context context,
-                                            List<Promotion> promotions) {
-        if (promotions == null || promotions.size() == 0) {
-            return;
-        }
+    public static Map<String,Object> convertToPromoImpression(List<Promotion> promotions) {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < promotions.size(); i++) {
             Promotion promotion = promotions.get(i);
             list.add(promotion.getImpressionDataLayerItem());
         }
-        if (list.size() == 0) {
-            return;
-        }
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
-            Map<String, Object> map = DataLayer.mapOf(
-                    "event", "promoView",
-                    "eventCategory", "homepage",
-                    "eventAction", "slider banner impression",
-                    "eventLabel", "",
-                    "ecommerce", DataLayer.mapOf(
-                            "promoView", DataLayer.mapOf(
-                                    "promotions", DataLayer.listOf(
-                                            list.toArray()
-                                    )
-                            )
-                    ),
-                    "attribution", "1 - sliderBanner"
-            );
-            tracker.sendEnhanceEcommerceEvent(map);
-        }
+        return DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "homepage",
+                "eventAction", "slider banner impression",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        list.toArray()
+                                )
+                        )
+                ),
+                "attribution", "1 - sliderBanner"
+        );
     }
 
     public static void eventPromoClick(Context context, Promotion promotion) {
@@ -194,18 +183,6 @@ public class HomePageTracking {
                     ACTION_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_JUMP_RECOMENDATION,
-                    LABEL_EMPTY
-            );
-        }
-    }
-
-    public static void eventImpressionJumpRecomendation(Context context) {
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_IMPRESSION_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_IMPRESSION_JUMP_RECOMENDATION,
                     LABEL_EMPTY
             );
         }
@@ -529,6 +506,9 @@ public class HomePageTracking {
             TrackingQueue trackingQueue,
             HomeFeedViewModel feedViewModel,
             String tabName) {
+        if (trackingQueue == null) {
+            return;
+        }
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
@@ -548,6 +528,10 @@ public class HomePageTracking {
             TrackingQueue trackingQueue,
             HomeFeedViewModel feedViewModel,
             String tabName) {
+
+        if (trackingQueue == null) {
+            return;
+        }
 
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
@@ -751,7 +735,7 @@ public class HomePageTracking {
         }
         Map<String, Object> data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
-                EVENT_CATEGORY, EVENT_CATEGORY_TICKER_HOMEPAGE,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, "impression on bu widget",
                 EVENT_LABEL, "",
                 ECOMMERCE, DataLayer.mapOf(
@@ -782,12 +766,12 @@ public class HomePageTracking {
             @NonNull String promoCode
     ) {
         ContextAnalytics tracker = getTracker(context);
-        if (tracker != null){
+        if (tracker != null) {
             Map<String, Object> data = DataLayer.mapOf(
-                    "event", "promoClick",
-                    "eventCategory", "homepage",
+                    "event", PROMO_CLICK,
+                    "eventCategory", CATEGORY_HOME_PAGE,
                     "eventAction", "click on bu widget",
-                    "eventLabel", name,
+                    "eventLabel", alias,
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(

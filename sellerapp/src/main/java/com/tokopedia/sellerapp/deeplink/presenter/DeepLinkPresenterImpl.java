@@ -160,11 +160,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     @Override
-    public void processAFlistener() {
-
-    }
-
-    @Override
     public void sendCampaignGTM(String campaignUri, String screenName) {
         if (!DeeplinkUTMUtils.isValidCampaignUrl(Uri.parse(campaignUri))) {
             return;
@@ -173,28 +168,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         campaign.setScreenName(screenName);
         UnifyTracking.eventCampaign(context, campaign);
         UnifyTracking.eventCampaign(context, campaignUri);
-    }
-
-    @Override
-    public boolean isLandingPageWebView(Uri uri) {
-        int type = getDeepLinkType(uri);
-        switch (type) {
-            case TOPADS:
-                return false;
-            case PELUANG:
-                return false;
-            case INVOICE:
-                return false;
-            case OTHER:
-                return true;
-            default:
-                return true;
-        }
-    }
-
-    @Override
-    public void checkUriLogin(Uri uriData) {
-
     }
 
     private boolean isExcludedHostUrl(Uri uriData) {

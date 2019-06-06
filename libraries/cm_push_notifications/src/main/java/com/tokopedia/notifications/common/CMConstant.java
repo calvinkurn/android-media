@@ -88,9 +88,9 @@ public interface CMConstant {
     }
 
     interface NotificationGroup {
-        String CHANNEL = "Digital";
-        String CHANNEL_DESCRIPTION = "Digital";
-        String CHANNEL_ID = "Digital";
+        String CHANNEL = "Marketing";
+        String CHANNEL_ID = "Marketing";
+        String CHANNEL_DESCRIPTION = "Marketing";
         String CHANNEL_GROUP_ID = "marketing_group_01";
         String CHANNEL_GROUP_NAME = "Marketing";
     }

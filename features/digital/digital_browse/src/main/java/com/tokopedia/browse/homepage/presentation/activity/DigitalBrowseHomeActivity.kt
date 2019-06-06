@@ -21,7 +21,6 @@ import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.browse.common.DigitalBrowseRouter
 import com.tokopedia.browse.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -32,6 +31,12 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     @Inject lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
 
     private var fragmentDigital: Fragment? = null
+
+    private var autocompleteParam = ""
+
+    private val AUTOCOMPLETE_BELANJA = "belanja"
+
+    private val AUTOCOMPLETE_LAYANAN = "homenav"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,10 +62,11 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     override fun getNewFragment(): Fragment? {
-
         if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_BELANJA) {
+            autocompleteParam = AUTOCOMPLETE_BELANJA
             fragmentDigital = DigitalBrowseMarketplaceFragment.fragmentInstance
         } else if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
+            autocompleteParam = AUTOCOMPLETE_LAYANAN
             fragmentDigital = if (intent.hasExtra(EXTRA_TAB)) {
                 DigitalBrowseServiceFragment.getFragmentInstance(
                         Integer.parseInt(intent.getStringExtra(EXTRA_TAB)))
@@ -73,7 +79,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        getMenuInflater().inflate(R.menu.menu_search, menu)
+        getMenuInflater().inflate(R.menu.menu_digital_browse_search, menu)
         return true
     }
 
@@ -86,7 +92,8 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     fun onSearchClicked() {
-        startActivity(RouteManager.getIntent(this!!, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_SOURCE, "belanja"))
+        digitalBrowseAnalytics.eventClickOnSearchTopNav(screenName)
+        RouteManager.route(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE, autocompleteParam)
     }
 
     private fun setupToolbar() {

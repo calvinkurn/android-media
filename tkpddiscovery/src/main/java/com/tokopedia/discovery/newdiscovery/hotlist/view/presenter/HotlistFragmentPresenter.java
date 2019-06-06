@@ -16,7 +16,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetHotlistIn
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetHotlistLoadMoreSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.RefreshHotlistSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -29,7 +29,7 @@ import javax.inject.Inject;
  * Created by hangnadi on 10/6/17.
  */
 
-public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl<HotlistFragmentContract.View>
+public class HotlistFragmentPresenter extends BrowseSectionFragmentPresenterImpl<HotlistFragmentContract.View>
         implements HotlistFragmentContract.Presenter, WishListActionListener {
 
     @Inject
@@ -83,6 +83,7 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
         if (getView().getQueryModel() != null) {
             requestParams.putString(BrowseApi.OB, getView().getQueryModel().getOrderBy());
             requestParams.putString(BrowseApi.Q, getView().getQueryModel().getQueryKey());
+            requestParams.putBoolean(BrowseApi.IS_CURATED, getView().getQueryModel().getQueryKey().isEmpty());
             requestParams.putString(BrowseApi.H, getView().getQueryModel().getHotlistID());
             requestParams.putString(BrowseApi.SHOP_ID, getView().getQueryModel().getShopID());
             requestParams.putString(BrowseApi.FSHOP, getView().getQueryModel().getFilterGoldMerchant());
@@ -123,6 +124,7 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
         if (getView().getQueryModel() != null) {
             requestParams.putString(BrowseApi.OB, getView().getQueryModel().getOrderBy());
             requestParams.putString(BrowseApi.Q, getView().getQueryModel().getQueryKey());
+            requestParams.putBoolean(BrowseApi.IS_CURATED, getView().getQueryModel().getQueryKey().isEmpty());
             requestParams.putString(BrowseApi.H, getView().getQueryModel().getHotlistID());
             requestParams.putString(BrowseApi.SHOP_ID, getView().getQueryModel().getShopID());
             requestParams.putString(BrowseApi.FSHOP, getView().getQueryModel().getFilterGoldMerchant());
@@ -165,6 +167,7 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
         if (getView().getQueryModel() != null) {
             requestParams.putString(BrowseApi.OB, getView().getQueryModel().getOrderBy());
             requestParams.putString(BrowseApi.Q, getView().getQueryModel().getQueryKey());
+            requestParams.putBoolean(BrowseApi.IS_CURATED, getView().getQueryModel().getQueryKey().isEmpty());
             requestParams.putString(BrowseApi.H, getView().getQueryModel().getHotlistID());
             requestParams.putString(BrowseApi.SHOP_ID, getView().getQueryModel().getShopID());
             requestParams.putString(BrowseApi.FSHOP, getView().getQueryModel().getFilterGoldMerchant());

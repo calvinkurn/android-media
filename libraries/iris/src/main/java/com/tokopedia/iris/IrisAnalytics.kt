@@ -7,11 +7,12 @@ import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.worker.SendDataWorker
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -22,51 +23,54 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
         get() = Dispatchers.IO
     private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
+    private var cache: Cache = Cache(context)
 
     override fun setService(config: Configuration) {
-        setWorkManager(config)
+        try {
+            cache.setEnabled(config)
+            if (cache.isEnabled()) {
+                setWorkManager(config)
+            }
+        } catch(ignored: Exception) { }
     }
 
     override fun resetService(config: Configuration) {
-        WorkManager.getInstance().cancelAllWorkByTag(WORKER_SEND_DATA)
-        setWorkManager(config)
+        try {
+            if (cache.isEnabled()) {
+                WorkManager.getInstance().cancelAllWorkByTag(WORKER_SEND_DATA)
+                setWorkManager(config)
+            }
+        } catch (ignored: Exception) {
+
+        }
     }
 
     override fun saveEvent(map: Map<String, Any>) {
-        launchCatchError(block = {
-            // convert map to json then save as string
-            val event = JSONObject(map).toString()
-            val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
-            trackingRepository.saveEvent(resultEvent.toString(), session)
-        }) {
-            // no-op
+        if (cache.isEnabled()) {
+            launchCatchError(block = {
+                // convert map to json then save as string
+                val event = JSONObject(map).toString()
+                val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
+                trackingRepository.saveEvent(resultEvent.toString(), session)
+            }) {
+                // no-op
+            }
         }
     }
 
     override fun sendEvent(map: Map<String, Any>) {
-        launchCatchError(block = {
-            val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
-                    session)
-            if (isSuccess && BuildConfig.DEBUG) {
-                Log.e("Iris", "Success Send Single Event")
+         if (cache.isEnabled()) {
+             launchCatchError(block = {
+                val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
+                        session)
+                if (isSuccess && BuildConfig.DEBUG) {
+                    Log.e("Iris", "Success Send Single Event")
+                }
+            }) {
+                // no-op
             }
-        }) {
-            // no-op
-        }
+         }
     }
-
-    override fun sendRawEvent(map: Map<String, Any>, container: String) {
-        launchCatchError(block = {
-            val isSuccess = trackingRepository.sendSingleRawEvent(JSONObject(map).toString(),
-                    session, container)
-            if (isSuccess && BuildConfig.DEBUG) {
-                Log.e("Iris", "Success Send Single Event")
-            }
-        }) {
-            // no-op
-        }
-    }
-
 
     override fun setUserId(userId: String) {
         session.setUserId(userId)

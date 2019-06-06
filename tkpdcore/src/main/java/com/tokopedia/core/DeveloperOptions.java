@@ -223,14 +223,14 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         toggleAnalytics.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean state) {
-                GtmLogger.getInstance().enableNotification(DeveloperOptions.this, state);
+                GtmLogger.getInstance(DeveloperOptions.this).enableNotification(state);
             }
         });
 
         vGoToAnalytics.setOnClickListener(new OneOnClick() {
             @Override
             public void oneOnClick(View view) {
-                GtmLogger.getInstance().openActivity(DeveloperOptions.this);
+                GtmLogger.getInstance(DeveloperOptions.this).openActivity();
             }
         });
 
@@ -318,7 +318,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         LocalCacheHandler cache = new LocalCacheHandler(getApplicationContext(), CHUCK_ENABLED);
         toggleChuck.setChecked(cache.getBoolean(IS_CHUCK_ENABLED, false));
 
-        toggleAnalytics.setChecked(GtmLogger.getInstance().isNotificationEnabled(this));
+        toggleAnalytics.setChecked(GtmLogger.getInstance(this).isNotificationEnabled());
     }
 
     private void setMaintenance() {

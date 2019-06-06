@@ -32,26 +32,6 @@ class TrackingMapper {
         return result.toString()
     }
 
-    fun transformRawSingleEvent(track: String, sessionId: String, userId: String,
-                                deviceId: String, container: String) : String {
-
-        val result = JSONObject()
-        val data = JSONArray()
-        val row = JSONObject()
-        val event = JSONArray()
-
-        event.put(reformatRawEvent(track, sessionId, container))
-
-        row.put("device_id", deviceId)
-        row.put("user_id", userId)
-        row.put("event_data", event)
-
-        data.put(row)
-
-        result.put("data", data)
-        return result.toString()
-    }
-
     fun transformListEvent(tracking: List<Tracking>) : String {
         val result = JSONObject()
         val data = JSONArray()
@@ -94,22 +74,6 @@ class TrackingMapper {
                 item.put("iris_session_id", sessionId)
                 item.put("container", KEY_CONTAINER)
                 item.put("event", KEY_EVENT)
-                item.put("hits_time", Calendar.getInstance().timeInMillis)
-                item
-            } catch (e: JSONException) {
-                JSONObject()
-            }
-        }
-
-        fun reformatRawEvent(event: String, sessionId: String, container: String) : JSONObject {
-            return try {
-                val item = JSONObject(event)
-                item.put("iris_session_id", sessionId)
-                if (container != null && !container.isEmpty()){
-                    item.put("container", container)
-                }else{
-                    item.put("container", KEY_CONTAINER)
-                }
                 item.put("hits_time", Calendar.getInstance().timeInMillis)
                 item
             } catch (e: JSONException) {

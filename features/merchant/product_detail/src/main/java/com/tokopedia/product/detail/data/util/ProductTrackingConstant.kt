@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.util
 
 object ProductTrackingConstant {
     object Category {
-        const val PDP = "product petail page"
+        const val PDP = "product detail page"
         const val PRODUCT_PAGE = "Product Page"
     }
 
@@ -10,8 +10,8 @@ object ProductTrackingConstant {
         const val CLICK = "click"
         const val CLICK_CART_BUTTON_VARIANT = "click - cart button on sticky header"
         const val PRODUCT_CLICK = "productClick"
-        const val TOPADS_CLICK = "click - top ads"
-        const val TOPADS_IMPRESSION = "impression - top ads"
+        const val TOPADS_CLICK = "click - product recommendation"
+        const val TOPADS_IMPRESSION = "impression - product recommendation"
         const val CLICK_BY_ME = "click - by.me"
     }
 

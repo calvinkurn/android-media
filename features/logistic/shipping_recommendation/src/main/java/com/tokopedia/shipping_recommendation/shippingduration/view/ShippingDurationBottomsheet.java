@@ -30,6 +30,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.shipping_recommendation.shippingduration.di.DaggerShippingDurationComponent;
 import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationModule;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
     ShippingDurationContract.Presenter presenter;
     @Inject
     ShippingDurationAdapter shippingDurationAdapter;
+    @Inject
+    CheckoutAnalyticsCourierSelection mPromoTracker;
     private String mCornerId = "";
 
     public static ShippingDurationBottomsheet newInstance(ShipmentDetailData shipmentDetailData,
@@ -165,6 +168,13 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
+    protected void configView(View parentView) {
+        super.configView(parentView);
+        parentView.findViewById(R.id.layout_title).setOnClickListener(null);
+        parentView.findViewById(R.id.btn_close).setOnClickListener(view -> onCloseButtonClick());
+    }
+
+    @Override
     protected void onCloseButtonClick() {
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationButtonCloseClicked();
@@ -238,7 +248,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
                 break;
             }
         }
-
         return hasCourierPromo;
     }
 
@@ -298,34 +307,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationChoosen(
                     shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData.getServiceName(),
-                    flagNeedToSetPinpoint, hasCourierPromo, false);
+                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData,
+                    flagNeedToSetPinpoint, true);
         }
-        dismiss();
-    }
 
-    @Override
-    public void onAllShippingDurationItemShown() {
-        if (presenter.getShippingDurationViewModels() != null &&
-                presenter.getShippingDurationViewModels().size() > 0) {
-            presenter.getShippingDurationViewModels().get(0).setShowShowCase(true);
-            if (rvDuration.isComputingLayout()) {
-                rvDuration.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        shippingDurationAdapter.notifyItemChanged(0);
-                    }
-                });
-            } else {
-                shippingDurationAdapter.notifyItemChanged(0);
-            }
-        }
-    }
-
-    @Override
-    public void onDurationShipmentRecommendationShowCaseClosed() {
-        if (shippingDurationBottomsheetListener != null) {
-            shippingDurationBottomsheetListener.onShippingDurationButtonShowCaseDoneClicked();
+        try {
+            dismiss();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
     }
 
@@ -340,23 +329,37 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void onLogisticPromoClicked(LogisticPromoViewModel data) {
+        mPromoTracker.eventClickPromoLogisticTicker(data.getPromoCode());
         Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        tkpdDialog.setTitle("Tokopedia Promo");
+        tkpdDialog.setTitle(getString(R.string.tkpd_promo_brand));
         tkpdDialog.setDesc(MethodChecker.fromHtml(data.getDialogMsg()));
-        tkpdDialog.setBtnOk("Lanjutkan");
-        tkpdDialog.setBtnCancel("Batalkan");
-        tkpdDialog.setOnCancelClickListener(view -> tkpdDialog.dismiss());
+        tkpdDialog.setBtnOk(getString(R.string.shiprecc_next));
+        tkpdDialog.setBtnCancel(getString(R.string.shiprecc_cancel));
+        tkpdDialog.setOnCancelClickListener(view -> {
+            mPromoTracker.eventClickBatalTerapkanPromo(data.getPromoCode());
+            tkpdDialog.dismiss();
+        });
         tkpdDialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ShippingDurationViewModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
+                if (serviceData == null) {
+                    showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
+                    tkpdDialog.dismiss();
+                    return;
+                }
                 CourierItemData courierData = presenter.getCourierItemDataById(data.getShipperProductId(), serviceData.getShippingCourierViewModelList());
+                if (courierData == null) {
+                    showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
+                    tkpdDialog.dismiss();
+                    return;
+                }
                 courierData.setLogPromoCode(data.getPromoCode());
                 courierData.setLogPromoMsg(data.getDisableText());
                 shippingDurationBottomsheetListener.onLogisticPromoChosen(
                         serviceData.getShippingCourierViewModelList(), courierData,
                         presenter.getRecipientAddressModel(), mCartPosition, data.getServiceId(),
-                        serviceData.getServiceData().getServiceName(), false);
+                        serviceData.getServiceData(), false, data.getPromoCode());
                 tkpdDialog.dismiss();
                 dismiss();
             }

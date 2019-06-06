@@ -105,8 +105,8 @@ class CMUserHandler(private val mContext: Context) {
     fun cancelRunnable() {
         try {
             handler.removeCallbacks(runnable)
-            if (graphqlUseCase != null)
-                graphqlUseCase!!.unsubscribe()
+            //if (graphqlUseCase != null)
+                graphqlUseCase?.unsubscribe()
         } catch (e: Exception) {
         }
     }

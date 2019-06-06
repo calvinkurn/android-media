@@ -9,13 +9,19 @@ import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.factory.CMNotificationFactory
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
-class CMPushNotificationManager {
+class CMPushNotificationManager : CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO
 
     private val TAG = CMPushNotificationManager::class.java.canonicalName
 
@@ -129,9 +135,12 @@ class CMPushNotificationManager {
         try {
             if (isFromCMNotificationPlatform(remoteMessage.data)) {
                 val bundle = convertMapToBundle(remoteMessage.data)
-                GlobalScope.launch(coroutineExceptionHandler) {
-                    handleNotificationBundle(bundle)
-                }
+                launchCatchError(
+                        block = {
+                            handleNotificationBundle(bundle)
+                        }, onError = {
+                    Log.e(TAG, "CMPushNotificationManager: handleNotificationBundle ", it)
+                })
             }
         } catch (e: Exception) {
             Log.e(TAG, "CMPushNotificationManager: handlePushPayload ", e)
@@ -149,29 +158,19 @@ class CMPushNotificationManager {
         return bundle
     }
 
-    private suspend fun handleNotificationBundle(bundle: Bundle){
-        withContext(Dispatchers.IO){
-            try {
-                run {
-                    val applicationContext = instance.applicationContext
-                    val baseNotification = CMNotificationFactory
-                            .getNotification(instance.applicationContext, bundle)
-                    if (null != baseNotification) {
-                        val notificationManager
-                                = applicationContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                        val notification = baseNotification.createNotification()
-                        notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
-                    }
-
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, e.message)
+    private fun handleNotificationBundle(bundle: Bundle) {
+        try {
+            val applicationContext = instance.applicationContext
+            val baseNotification = CMNotificationFactory
+                    .getNotification(instance.applicationContext, bundle)
+            if (null != baseNotification) {
+                val notificationManager = applicationContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                val notification = baseNotification.createNotification()
+                notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
             }
+        } catch (e: Exception) {
+            Log.e(TAG, e.message)
         }
-    }
-
-    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        Log.e(TAG, ":$throwable")
     }
 
     companion object {

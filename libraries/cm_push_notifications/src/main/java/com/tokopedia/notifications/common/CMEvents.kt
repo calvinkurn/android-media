@@ -2,7 +2,6 @@ package com.tokopedia.notifications.common
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
-import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -11,7 +10,7 @@ import com.tokopedia.track.TrackAppUtils
  * @author lalit.singh
  */
 
-object PersistentEvent{
+object PersistentEvent {
 
     const val EVENT_VIEW_NOTIFICATION = "viewNotifications"
     const val EVENT_ACTION_PUSH_RECEIVED = "push received"
@@ -27,44 +26,45 @@ object PersistentEvent{
     const val EVENT_ACTION_PERISTENT_CLICK = "Click_Action_Persistent"
 }
 
-object IrisAnalyticsEvents{
+object IrisAnalyticsEvents {
     private const val PUSH_RECEIVED = "push_received"
     const val PUSH_CLICKED = "push_clicked"
     const val PUSH_DISMISSED = "push_dismissed"
 
     @JvmStatic
     fun sendPushReceiveEvent(context: Context, baseNotificationModel: BaseNotificationModel) {
-        val values = HashMap<String, Any>()
-        val irisAnalytics = IrisAnalytics(context)
-        if (irisAnalytics != null) {
+        //will enable in next sprint
+        /*val values = HashMap<String, Any>()
+        val iris = Iris.init(context)
+        if (iris != null) {
             values["event"] = PUSH_RECEIVED
             values["event_time"] = CMNotificationUtils.currentLocalTimeStamp
             values["campaign_id"] = baseNotificationModel.campaignId
             values["notification_id"] = baseNotificationModel.notificationId
             values["source"] = CMNotificationUtils.getApplicationName(context)
             values["is_silent"] = CMConstant.NotificationType.SILENT_PUSH == baseNotificationModel.type
-        }
-        irisAnalytics.sendRawEvent(values, "IM")
+            iris.sendRawEvent(values, "IM")
+        }*/
 
     }
 
     @JvmStatic
     fun sendPushEvent(context: Context, eventName: String, campaignID: String, notificationID: String) {
-        val values = HashMap<String, Any>()
-        val irisAnalytics = IrisAnalytics(context)
-        if (irisAnalytics != null) {
+        //will enable in next sprint
+        /*val values = HashMap<String, Any>()
+        val iris = Iris.init(context)
+        if (iris != null) {
             values["event"] = eventName
             values["event_time"] = CMNotificationUtils.currentLocalTimeStamp
             values["campaign_id"] = campaignID
             values["notification_id"] = notificationID
             values["source"] = CMNotificationUtils.getApplicationName(context)
-        }
-        irisAnalytics.sendRawEvent(values, "IM")
-
+            iris.sendRawEvent(values, "IM")
+        }*/
     }
 }
 
-object CMEvents{
+object CMEvents {
 
     private val TAG = CMEvents::class.java.simpleName
 

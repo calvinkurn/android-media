@@ -13,9 +13,12 @@ import android.text.TextUtils
 import android.util.Log
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.notifications.model.BaseNotificationModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.net.MalformedURLException
 import java.net.UnknownHostException
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by Ashwani Tyagi on 24/10/18.
@@ -202,3 +205,14 @@ object CMNotificationUtils {
         return appName
     }
 }
+
+fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext,
+                                    block: suspend (()->Unit),
+                                    onError: (Throwable)-> Unit) =
+        launch (context){
+            try{
+                block.invoke()
+            } catch (t: Throwable){
+                onError(t)
+            }
+        }

@@ -29,22 +29,24 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
         builder.setSmallIcon(drawableIcon)
         builder.setDefaults(0)
         builder.setAutoCancel(false)
-        //builder.setPriority(Notification.PRIORITY_MAX);
 
         builder.setContentTitle(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
         builder.setContentText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
 
         if (baseNotificationModel.carousalList.size == 0)
             return null
-
-        builder.setContentIntent(getImagePendingIntent(baseNotificationModel.carousalList[baseNotificationModel.carousalIndex],
-                requestCode))
+        baseNotificationModel.appLink?.let {
+            builder.setContentIntent(createMainPendingIntent(baseNotificationModel, requestCode))
+        }
 
         CarousalUtilities.downloadImages(context, baseNotificationModel.carousalList)
 
         val remoteViews = getCarousalRemoteView(baseNotificationModel.carousalList, baseNotificationModel.carousalIndex)
-        builder.setCustomBigContentView(remoteViews)
 
+        remoteViews.setOnClickPendingIntent(R.id.carouselImageMain,
+                getImagePendingIntent(baseNotificationModel.carousalList[baseNotificationModel.carousalIndex], requestCode))
+
+        builder.setCustomBigContentView(remoteViews)
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.notificationId, requestCode))
         return builder.build()
     }

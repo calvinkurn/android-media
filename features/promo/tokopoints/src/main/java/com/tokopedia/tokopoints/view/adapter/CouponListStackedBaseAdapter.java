@@ -272,7 +272,7 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
                 || item.getUpperLeftSection().getTextAttributes().isEmpty()
                 || item.getUpperLeftSection().getTextAttributes().get(0) == null
                 || TextUtils.isEmpty(item.getUpperLeftSection().getTextAttributes().get(0).getText())) {
-            holder.tvStackCount.setVisibility(View.VISIBLE);
+            holder.tvStackCount.setVisibility(View.GONE);
         } else {
             holder.tvStackCount.setVisibility(View.VISIBLE);
             holder.tvStackCount.setText(item.getUpperLeftSection().getTextAttributes().get(0).getText());

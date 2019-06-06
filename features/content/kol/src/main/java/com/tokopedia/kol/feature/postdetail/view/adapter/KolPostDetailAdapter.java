@@ -1,20 +1,17 @@
 package com.tokopedia.kol.feature.postdetail.view.adapter;
 
-import android.content.Context;
 import android.support.v7.util.DiffUtil;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactory;
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.EmptyDetailViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.tokopedia.kol.R;
 
 /**
  * @author by milhamj on 27/07/18.
@@ -41,13 +38,9 @@ public class KolPostDetailAdapter extends BaseAdapter<KolPostDetailTypeFactory> 
         notifyItemRangeRemoved(0, itemCount);
     }
 
-    public void showEmpty(Context context,BaseEmptyViewHolder.Callback callback ) {
+    public void showEmpty() {
         this.visitables.clear();
-        emptyModel.setButtonTitle(context.getString(R.string.feed_post_detail_empty_button));
-        emptyModel.setTitle(context.getString(R.string.feed_post_detail_empty_title));
-        emptyModel.setContent(context.getString(R.string.feed_post_detail_empty_subtitle));
-        emptyModel.setCallback(callback);
-        this.visitables.add(emptyModel);
+        this.visitables.add(new EmptyDetailViewModel());
         notifyDataSetChanged();
     }
 

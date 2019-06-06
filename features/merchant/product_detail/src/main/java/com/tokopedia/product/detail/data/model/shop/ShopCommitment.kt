@@ -10,7 +10,11 @@ data class ShopCommitment(
 
         @SerializedName("staticMessages")
         @Expose
-        val staticMessages: StaticMessages = StaticMessages()
+        val staticMessages: StaticMessages = StaticMessages(),
+
+        @SerializedName("iconURL")
+        @Expose
+        val iconUrl: String = ""
 ){
 
     data class StaticMessages(

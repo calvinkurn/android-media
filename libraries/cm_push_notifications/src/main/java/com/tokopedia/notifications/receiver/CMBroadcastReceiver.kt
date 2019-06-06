@@ -129,8 +129,8 @@ class CMBroadcastReceiver : BroadcastReceiver() {
             val appLinkIntent = RouteManager.getIntent(context.applicationContext, appLinks)
             appLinkIntent.putExtras(intent.extras!!)
             startActivity(context, appLinkIntent)
-            NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         }
+        NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
     }
 
