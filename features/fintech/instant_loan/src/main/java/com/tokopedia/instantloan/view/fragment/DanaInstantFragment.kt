@@ -19,7 +19,6 @@ import com.tokopedia.instantloan.InstantLoanComponentInstance
 import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
-import com.tokopedia.instantloan.data.model.response.GqlFilterData
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
 import com.tokopedia.instantloan.network.InstantLoanUrl
@@ -27,14 +26,14 @@ import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_OTP
 import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity
 import com.tokopedia.instantloan.view.adapter.InstantLoanIntroViewPagerAdapter
-import com.tokopedia.instantloan.view.contractor.InstantLoanContractor
-import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter
+import com.tokopedia.instantloan.view.contractor.DanaInstanLoanContractor
+import com.tokopedia.instantloan.view.presenter.DanaInstanLoanPresenter
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.content_instant_loan_home_page.*
 import javax.inject.Inject
 
 
-class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
+class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View {
 
     private var mDialogIntro: Dialog? = null
 
@@ -42,7 +41,7 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     private var mContext: Context? = null
 
     @Inject
-    lateinit var presenter: InstantLoanPresenter
+    lateinit var presenter: DanaInstanLoanPresenter
     @Inject
     lateinit var instantLoanAnalytics: InstantLoanAnalytics
 
@@ -56,11 +55,6 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
         super.onCreate(savedInstanceState)
         presenter.attachView(this)
         mCurrentTab = arguments?.getInt(TAB_POSITION) ?: 0
-    }
-
-    override fun onResume() {
-        super.onResume()
-        presenter.attachView(this)
     }
 
     override fun initInjector() {
@@ -88,7 +82,7 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
         button_search_pinjaman.setOnClickListener { view1 -> searchLoanOnline() }
         il_learn_more.setOnClickListener {
-            RouteManager.route(mContext, String.format("%s?url=%s", ApplinkConst.WEBVIEW, InstantLoanUrl.COMMON_URL.INSTANT_LOAN_LEARN_MORE))
+            openWebView(InstantLoanUrl.COMMON_URL.INSTANT_LOAN_LEARN_MORE)
         }
     }
 

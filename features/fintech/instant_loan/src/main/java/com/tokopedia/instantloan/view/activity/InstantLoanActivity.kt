@@ -36,13 +36,11 @@ import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.PAYMENT_METHO
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.SUBMISSION_HISTORY_URL
 import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.adapter.*
-import com.tokopedia.instantloan.view.contractor.BannerContractor
-import com.tokopedia.instantloan.view.contractor.OnGoingLoanContractor
+import com.tokopedia.instantloan.view.contractor.InstantLoanLendingDataContractor
 import com.tokopedia.instantloan.view.fragment.DanaInstantFragment
 import com.tokopedia.instantloan.view.fragment.LePartnerFragment
 import com.tokopedia.instantloan.view.fragment.TanpaAgunanFragment
-import com.tokopedia.instantloan.view.presenter.BannerListPresenter
-import com.tokopedia.instantloan.view.presenter.OnGoingLoanPresenter
+import com.tokopedia.instantloan.view.presenter.InstantLoanLendingDataPresenter
 import com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
 import com.tokopedia.instantloan.view.ui.InstantLoanItem
 import com.tokopedia.instantloan.view.ui.PartnerDataPageItem
@@ -55,13 +53,14 @@ import kotlinx.android.synthetic.main.layout_lending_category.*
 import kotlinx.android.synthetic.main.layout_lending_partner.*
 import javax.inject.Inject
 
-class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, BannerContractor.View, OnGoingLoanContractor.View,
+class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, InstantLoanLendingDataContractor.View, /*OnGoingLoanContractor.View*/
         DanaInstantFragment.ActivityInteractor, BannerPagerAdapter.BannerClick {
-    @Inject
-    lateinit var mBannerPresenter: BannerListPresenter
 
     @Inject
-    lateinit var onGoingLoanPresenter: OnGoingLoanPresenter
+    lateinit var mBannerPresenter: InstantLoanLendingDataPresenter
+
+    /*@Inject
+    lateinit var onGoingLoanPresenter: OnGoingLoanPresenter*/
 
     @Inject
     lateinit var instantLoanAnalytics: InstantLoanAnalytics
@@ -82,10 +81,11 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     private var menushown = false
 
     private lateinit var rvSeoLayout: RecyclerView
-
+    private lateinit var layoutManager: GridLayoutManager
+    private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var lendingCategoryAdpater: LendingCategoryAdapter
-
     private lateinit var lendingSeoAdapter: LendingSeoAdapter
+    private var parterDataList: ArrayList<GqlLendingPartnerData> = ArrayList()
 
     internal var instantLoanItemList: MutableList<InstantLoanItem> = ArrayList()
 
@@ -109,21 +109,12 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         super.setupLayout(savedInstanceState)
         initInjector()
         mBannerPresenter.attachView(this)
-        onGoingLoanPresenter.attachView(this)
         initializeView()
         attachViewListener()
         setupToolbar()
         loadSection()
-        mBannerPresenter.getLendingData()
         loadTestimonials()
-        if (userSession != null && userSession.isLoggedIn) {
-            onGoingLoanPresenter.checkUserOnGoingLoanStatus()
-        }
-
     }
-
-    private lateinit var layoutManager: GridLayoutManager
-    private lateinit var linearLayoutManager: LinearLayoutManager
 
     private fun setupSeoLayout() {
         linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -152,6 +143,9 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         }
     }
 
+    override fun IsUserLoggedIn(): Boolean {
+        return userSession != null && userSession.isLoggedIn
+    }
 
     fun renderBannerList(banners: ArrayList<GqlLendingBannerData>) {
         mBannerPager = findViewById(R.id.view_pager_banner)
@@ -174,8 +168,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
         sendBannerImpressionEvent(0)
     }
-
-    private var parterDataList: ArrayList<GqlLendingPartnerData> = ArrayList()
 
     override fun renderLendingData(gqlLendingDataResponse: GqlLendingDataResponse) {
 
@@ -441,7 +433,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     override fun onDestroy() {
         super.onDestroy()
         mBannerPresenter.detachView()
-        onGoingLoanPresenter.detachView()
+//        onGoingLoanPresenter.detachView()
     }
 
 

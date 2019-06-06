@@ -5,10 +5,7 @@ import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.instantloan.constant.DeviceDataKeys
-import com.tokopedia.instantloan.data.model.response.GqlFilterDataResponse
-import com.tokopedia.instantloan.data.model.response.GqlLendingDataResponse
 import com.tokopedia.instantloan.data.model.response.ResponsePhoneData
 import com.tokopedia.instantloan.data.model.response.ResponseUserProfileStatus
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager
@@ -17,21 +14,19 @@ import com.tokopedia.instantloan.ddcollector.PermissionResultCallback
 import com.tokopedia.instantloan.ddcollector.account.Account
 import com.tokopedia.instantloan.ddcollector.app.Application
 import com.tokopedia.instantloan.ddcollector.bdd.BasicDeviceData
-import com.tokopedia.instantloan.domain.interactor.GetFilterDataUseCase
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase
-import com.tokopedia.instantloan.view.contractor.InstantLoanContractor
+import com.tokopedia.instantloan.view.contractor.DanaInstanLoanContractor
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
 
-class InstantLoanPresenter @Inject
+class DanaInstanLoanPresenter @Inject
 constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCase,
-            private val mGetFilterDataUseCase: GetFilterDataUseCase,
             private val mPostPhoneDataUseCase: PostPhoneDataUseCase) :
-        BaseDaggerPresenter<InstantLoanContractor.View>(), InstantLoanContractor.Presenter {
+        BaseDaggerPresenter<DanaInstanLoanContractor.View>(), DanaInstanLoanContractor.Presenter {
 
     @Inject
     lateinit var userSession: UserSession
@@ -53,7 +48,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
         }
     }
 
-    override fun attachView(view: InstantLoanContractor.View) {
+    override fun attachView(view: DanaInstanLoanContractor.View) {
         super.attachView(view)
     }
 
@@ -63,7 +58,6 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
 
     override fun detachView() {
         mGetLoanProfileStatusUseCase.unsubscribe()
-        mGetFilterDataUseCase.unsubscribe()
         mPostPhoneDataUseCase.unsubscribe()
         super.detachView()
     }
@@ -91,10 +85,6 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
 
             }
         })
-    }
-
-    override fun postPhoneData(userId: String) {
-
     }
 
     override fun isUserLoggedIn(): Boolean {

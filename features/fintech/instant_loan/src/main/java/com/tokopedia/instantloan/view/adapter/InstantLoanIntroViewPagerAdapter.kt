@@ -18,10 +18,10 @@ import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_LEARN_MORE
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_TNC
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity
-import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter
+import com.tokopedia.instantloan.view.presenter.DanaInstanLoanPresenter
 
 
-class InstantLoanIntroViewPagerAdapter(private val mActivity: InstantLoanActivity, private val mLayouts: IntArray, private val mPresenter: InstantLoanPresenter) : PagerAdapter() {
+class InstantLoanIntroViewPagerAdapter(private val mActivity: InstantLoanActivity, private val mLayouts: IntArray, private val mPresenter: DanaInstanLoanPresenter) : PagerAdapter() {
     private val mLayoutInflater: LayoutInflater
     private val link = mActivity.resources.getString(R.string.instant_loan_clickable_link)
     internal var instantLoanAnalytics: InstantLoanAnalytics? = null

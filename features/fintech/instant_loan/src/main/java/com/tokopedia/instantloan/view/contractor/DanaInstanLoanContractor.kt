@@ -8,7 +8,7 @@ import com.tokopedia.instantloan.data.model.response.GqlFilterData
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
 
-interface InstantLoanContractor {
+interface DanaInstanLoanContractor {
 
     interface View : CustomerView {
         fun getAppContext(): Context?
@@ -52,8 +52,6 @@ interface InstantLoanContractor {
         fun initialize()
 
         fun getLoanProfileStatus()
-
-        fun postPhoneData(userId: String)
 
         fun startDataCollection()
     }
