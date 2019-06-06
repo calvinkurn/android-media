@@ -75,7 +75,6 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     private fun initView(view: View) {
 
         text_value_amount.text = resources.getStringArray(R.array.values_amount)[mCurrentTab]
-//        text_value_duration.text = resources.getStringArray(R.array.values_duration)[mCurrentTab]
         text_value_processing_time.text = resources.getStringArray(R.array.values_processing_time)[mCurrentTab]
         text_value_interest_rate.text = resources.getStringArray(R.array.values_interest_rate)[mCurrentTab]
         text_form_description.text = resources.getStringArray(R.array.values_description)[mCurrentTab]
@@ -225,7 +224,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
             }
         }
 
-        mDialogIntro = Dialog(getContext()!!)
+        mDialogIntro = Dialog(context!!)
 
 
         mDialogIntro!!.requestWindowFeature(Window.FEATURE_NO_TITLE)

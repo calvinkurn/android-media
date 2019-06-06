@@ -59,9 +59,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     @Inject
     lateinit var mBannerPresenter: InstantLoanLendingDataPresenter
 
-    /*@Inject
-    lateinit var onGoingLoanPresenter: OnGoingLoanPresenter*/
-
     @Inject
     lateinit var instantLoanAnalytics: InstantLoanAnalytics
 
@@ -433,7 +430,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     override fun onDestroy() {
         super.onDestroy()
         mBannerPresenter.detachView()
-//        onGoingLoanPresenter.detachView()
     }
 
 
@@ -464,7 +460,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun setupToolbar() {
-        toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar = findViewById(R.id.toolbar)
         toolbar.setNavigationIcon(R.drawable.ic_webview_back_button)
         setSupportActionBar(toolbar)
         if (supportActionBar != null) {

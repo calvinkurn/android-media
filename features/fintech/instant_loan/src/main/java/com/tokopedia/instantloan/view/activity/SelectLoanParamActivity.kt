@@ -37,7 +37,6 @@ class SelectLoanParamActivity : BaseActivity() {
         buttonClose = findViewById(R.id.top_bar_close_button)
         buttonClose.setOnClickListener { onBackPressed() }
         data = intent.extras!!.getParcelableArrayList(EXTRA_DATA)
-//        generateSelectedKeyValue(intent.getSerializableExtra(EXTRA_SELECTED_SORT) as HashMap<String, String>)
         adapter = ListAdapter(data, selectedKey, selectedValue, object : OnItemClickListener {
             override fun onItemClicked(loanType: LoanPeriodType) {
                 val intent = Intent()
@@ -135,16 +134,11 @@ class SelectLoanParamActivity : BaseActivity() {
     companion object {
 
         val EXTRA_DATA = "EXTRA_DATA"
-        //        val EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT"
         val EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME"
-//        private val TAG = SelectLoanParamActivity::class.java.simpleName
 
         fun createInstance(context: Context, sort: ArrayList<LoanPeriodType>, selectedSort: HashMap<String, String>?): Intent {
             val intent = Intent(context, SelectLoanParamActivity::class.java)
             intent.putParcelableArrayListExtra(EXTRA_DATA, sort)
-            if (selectedSort != null) {
-//                intent.putExtra(EXTRA_SELECTED_SORT, selectedSort)
-            }
             return intent
         }
     }

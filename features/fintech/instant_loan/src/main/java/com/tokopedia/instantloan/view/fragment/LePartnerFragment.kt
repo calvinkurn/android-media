@@ -43,18 +43,15 @@ class LePartnerFragment : TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
+        initView()
     }
 
 
-    private fun initView(view: View) {
-
+    private fun initView() {
         layoutManager = GridLayoutManager(mContext, COLUMN_COUNT_FOR_LOAN_PARTNER)
         lendingPartnerAdpater = LendingPartnerAdapter(partnerDataItemList)
-
         rv_lending_partner.layoutManager = layoutManager
         rv_lending_partner.adapter = lendingPartnerAdpater
-
     }
 
     companion object {
