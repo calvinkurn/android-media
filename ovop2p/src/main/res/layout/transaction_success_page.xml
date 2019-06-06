@@ -13,7 +13,8 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_group_4" />
+        android:src="@drawable/ic_group_4"
+        android:layout_marginTop="@dimen/dp_35"/>
 
     <TextView
         android:id="@+id/sucs_msg"
@@ -23,12 +24,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="24sp"
+        android:layout_marginTop="@dimen/dp_16"
         android:textColor="#73bd00"
         android:layout_gravity="center"
         android:text="Berhasil"/>
 
     <TextView
         android:id="@+id/date"
+        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@+id/sucs_msg"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -43,25 +46,179 @@
         android:id="@+id/rp_symbl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:text="Rp"
+        android:layout_marginTop="@dimen/dp_14"
+        android:paddingTop="@dimen/dp_7"
+        app:layout_constraintHorizontal_chainStyle="packed"
         android:textColor="#2d263b"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date"/>
+        app:layout_constraintEnd_toStartOf="@+id/trnsfr_amt"
+        app:layout_constraintTop_toBottomOf="@+id/date" />
 
     <TextView
+        android:id="@+id/trnsfr_amt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:text="65.000"
         android:textColor="#2d263b"
+        app:layout_constraintTop_toTopOf="@+id/rp_symbl"
         android:textSize="36sp"
         app:layout_constraintStart_toEndOf="@+id/rp_symbl"
-        app:layout_constraintTop_toTopOf="@+id/rp_symbl"/>
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <View
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:id="@+id/info_cntnr"
+        app:layout_constraintStart_toStartOf="@+id/info_desc"
+        app:layout_constraintEnd_toEndOf="@+id/info_icon"
+        android:background="#194c2a86"
+        app:layout_constraintTop_toTopOf="@+id/info_desc"
+        app:layout_constraintBottom_toBottomOf="@+id/info_desc"/>
+
+    <TextView
+        android:id="@+id/info_desc"
+        android:layout_marginTop="@dimen/dp_35"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_48"
+        android:paddingTop="@dimen/dp_14"
+        android:paddingBottom="@dimen/dp_14"
+        android:text="Berpotensi mendapatkan 15.000 OVO Points"
+        android:textColor="#4c2a86"
+        android:textSize="11sp"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintEnd_toStartOf="@id/info_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trnsfr_amt" />
+
+    <ImageView
+        android:id="@+id/info_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_icon_ic_info"
+        app:layout_constraintBottom_toBottomOf="@+id/info_desc"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingRight="@dimen/dp_26"
+        android:paddingLeft="@dimen/dp_30"
+        app:layout_constraintStart_toEndOf="@+id/info_desc"
+        app:layout_constraintTop_toTopOf="@+id/info_desc" />
+
+    <TextView
+        android:id="@+id/from"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#6b767e"
+        android:text="Dari"
+        android:layout_marginLeft="@dimen/dp_26"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/info_desc" />
+
+    <ImageView
+        android:id="@+id/ic_ovo"
+        app:layout_constraintStart_toStartOf="@+id/from"
+        app:layout_constraintTop_toBottomOf="@+id/from"
+        android:src="@drawable/ic_ovo_purple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/name_sender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#2d263b"
+        app:layout_constraintStart_toEndOf="@+id/ic_ovo"
+        android:text="Saka"
+        app:layout_constraintTop_toTopOf="@+id/ic_ovo"/>
+
+    <TextView
+        android:id="@+id/num_sender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#2d263b"
+        android:text="OVO - 081273699476"
+        app:layout_constraintStart_toEndOf="@+id/ic_ovo"
+        app:layout_constraintTop_toBottomOf="@+id/name_sender" />
+
+    <TextView
+        android:id="@+id/to"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#6b767e"
+        android:text="Transfer ke"
+        android:layout_marginLeft="@dimen/dp_26"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/num_sender" />
+
+    <ImageView
+        android:id="@+id/ic_ovo_to"
+        app:layout_constraintStart_toStartOf="@+id/to"
+        app:layout_constraintTop_toBottomOf="@+id/to"
+        android:src="@drawable/ic_ovo_purple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/name_rcvr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#2d263b"
+        app:layout_constraintStart_toEndOf="@+id/ic_ovo_to"
+        android:text="Saka"
+        app:layout_constraintTop_toTopOf="@+id/ic_ovo_to"/>
+
+    <TextView
+        android:id="@+id/num_rcvr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#2d263b"
+        android:text="OVO - 081273699476"
+        app:layout_constraintStart_toEndOf="@+id/ic_ovo_to"
+        app:layout_constraintTop_toBottomOf="@+id/name_rcvr" />
+
+    <TextView
+        android:id="@+id/see_dtl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#06b3ba"
+        android:gravity="center_horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/back_to_app"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:text="LIHAT DETAIL"/>
+
+    <Button
+        android:id="@+id/back_to_app"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_24"
+        android:background="@drawable/btn_bg_rounded_corners"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/branding_lauout"
+        android:text="KEMBALI KE TOKOPEDIA"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14" />
+
+    <include
+        android:id="@+id/branding_lauout"
+        layout="@layout/branding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

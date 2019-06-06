@@ -22,5 +22,5 @@ project.ext {
 dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation project(rootProject.ext.libraries.design)
-
+    implementation project(rootProject.ext.libraries.abstraction)
 }
