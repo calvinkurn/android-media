@@ -70,11 +70,12 @@ public class CustomPushListener extends PushMessageListener {
 
         NotificationCompat.Builder builder = super.onCreateNotification(context, extras, provider);
         if (PERSISTENT.equalsIgnoreCase(extras.getString(KEY_IS_PERSISTENT))) {
+            provider.updateNotificationId(NOTIFICATION_ID);
             createPersistentNotification(context, extras, builder);
         } else if (GRID.equalsIgnoreCase(extras.getString(KEY_IS_GRID))) {
+            provider.updateNotificationId(GRID_NOTIFICATION_ID);
             createGridNotification(context, extras, builder);
         }
-
         return builder;
     }
 
@@ -98,7 +99,7 @@ public class CustomPushListener extends PushMessageListener {
             remoteView.setTextViewText(R.id.title1, title1);
             Intent intent = RouteManager.getIntent(context, deeplink1);
             remoteView.setImageViewBitmap(R.id.image_icon1, MoEHelperUtils.downloadImageBitmap(url1));
-            PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
+            PendingIntent pIntent = PendingIntent.getActivity(context, 100, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.lin_container_1, pIntent);
         }
@@ -107,7 +108,7 @@ public class CustomPushListener extends PushMessageListener {
             remoteView.setTextViewText(R.id.title2, title2);
             remoteView.setImageViewBitmap(R.id.image_icon2, MoEHelperUtils.downloadImageBitmap(url2));
             Intent intent2 = RouteManager.getIntent(context, deeplink2);
-            PendingIntent pIntent2 = PendingIntent.getActivity(context, 0, intent2,
+            PendingIntent pIntent2 = PendingIntent.getActivity(context, 101, intent2,
                     PendingIntent.FLAG_UPDATE_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.lin_container_2, pIntent2);
         }
@@ -117,7 +118,7 @@ public class CustomPushListener extends PushMessageListener {
 
             remoteView.setImageViewBitmap(R.id.image_icon3, MoEHelperUtils.downloadImageBitmap(url3));
             Intent intent3 = RouteManager.getIntent(context, deeplink3);
-            PendingIntent pIntent3 = PendingIntent.getActivity(context, 0, intent3,
+            PendingIntent pIntent3 = PendingIntent.getActivity(context, 102, intent3,
                     PendingIntent.FLAG_UPDATE_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.lin_container_3, pIntent3);
         }
@@ -126,25 +127,23 @@ public class CustomPushListener extends PushMessageListener {
             remoteView.setTextViewText(R.id.title4, title4);
             remoteView.setImageViewBitmap(R.id.image_icon4, MoEHelperUtils.downloadImageBitmap(url4));
             Intent intent4 = RouteManager.getIntent(context, deeplink4);
-            PendingIntent pIntent4 = PendingIntent.getActivity(context, 0, intent4,
+            PendingIntent pIntent4 = PendingIntent.getActivity(context, 103, intent4,
                     PendingIntent.FLAG_UPDATE_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.lin_container_4, pIntent4);
         }
 
-        ConfigurationProvider configurationProvider = ConfigurationProvider.getInstance(context);
-        configurationProvider.updateNotificationId(NOTIFICATION_ID);
         Intent deleteIntent = new Intent(context, NotificationBroadcast.class);
         deleteIntent.setAction(DELETE_NOTIFY);
         deleteIntent.putExtra(EXTRA_NOTIFICATION_ID, NOTIFICATION_ID);
         PendingIntent pIntent5 = PendingIntent.getBroadcast(
                 context,
-                GRID_NOTIFICATION_ID,
+                NOTIFICATION_ID,
                 deleteIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         remoteView.setOnClickPendingIntent(R.id.image_icon5, pIntent5);
 
         Intent notificationIntent = new Intent(context, MainParentActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 104, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         remoteView.setOnClickPendingIntent(R.id.image_icon6, contentIntent);
         builder.setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setCustomContentView(remoteView)
@@ -162,19 +161,19 @@ public class CustomPushListener extends PushMessageListener {
      * @param context This context is used to create intent, to get packageName
      * @param extras  This bundle contains the payload for Grid Type Notification
      * @param builder This builder object is provided by MoEngage and here we are setting contentView
-     *                and Big ContentView on  basis of extras.
      */
     private void createGridNotification(Context context, Bundle extras, NotificationCompat.Builder builder) {
         long when = System.currentTimeMillis();
 
         Intent notificationIntent = new Intent(context, MainParentActivity.class);
-
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+        notificationIntent.putExtra(EXTRA_NOTIFICATION_ID, GRID_NOTIFICATION_ID);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 200,
                 notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         RemoteViews expandRemoteView = new RemoteViews(context.getPackageName(),
                 R.layout.grid_notificaiton_layout);
         setCollapseData(expandRemoteView, extras, contentIntent);
+
         String deeplink1 = extras.getString(KEY_DEEPLINK1);
         String deeplink2 = extras.getString(KEY_DEEPLINK2);
         String deeplink3 = extras.getString(KEY_DEEPLINK3);
@@ -188,14 +187,14 @@ public class CustomPushListener extends PushMessageListener {
         String url5 = extras.getString(KEY_ICON_URL5);
         String url6 = extras.getString(KEY_ICON_URL6);
 
-        createGrid(context, expandRemoteView, R.id.iv_gridOne, url1, deeplink1);
-        createGrid(context, expandRemoteView, R.id.iv_gridTwo, url2, deeplink2);
-        createGrid(context, expandRemoteView, R.id.iv_gridThree, url3, deeplink3);
+        createGrid(context, expandRemoteView, R.id.iv_gridOne, url1, deeplink1, 201);
+        createGrid(context, expandRemoteView, R.id.iv_gridTwo, url2, deeplink2, 202);
+        createGrid(context, expandRemoteView, R.id.iv_gridThree, url3, deeplink3, 203);
 
         if (null != url4 && null != url5 && null != url6) {
-            createGrid(context, expandRemoteView, R.id.iv_gridFour, url4, deeplink4);
-            createGrid(context, expandRemoteView, R.id.iv_gridFive, url5, deeplink5);
-            createGrid(context, expandRemoteView, R.id.iv_gridSix, url6, deeplink6);
+            createGrid(context, expandRemoteView, R.id.iv_gridFour, url4, deeplink4, 204);
+            createGrid(context, expandRemoteView, R.id.iv_gridFive, url5, deeplink5, 205);
+            createGrid(context, expandRemoteView, R.id.iv_gridSix, url6, deeplink6, 206);
             expandRemoteView.setViewVisibility(R.id.ll_bottomGridParent, View.VISIBLE);
         }
 
@@ -220,7 +219,7 @@ public class CustomPushListener extends PushMessageListener {
         remoteView.setOnClickPendingIntent(R.id.collapseMainView, pendingIntent);
     }
 
-    private void createGrid(Context context, RemoteViews remoteView, int resId, String url, String deepLink) {
+    private void createGrid(Context context, RemoteViews remoteView, int resId, String url, String deepLink, int requestCode) {
         if (null == url)
             return;
         PendingIntent resultPendingIntent;
@@ -234,14 +233,14 @@ public class CustomPushListener extends PushMessageListener {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getBroadcast(
                     context,
-                    0,
+                    requestCode,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
         } else {
             resultPendingIntent = PendingIntent.getBroadcast(
                     context,
-                    0,
+                    requestCode,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
