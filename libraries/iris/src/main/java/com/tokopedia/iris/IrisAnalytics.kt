@@ -24,7 +24,7 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
     private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
     private var cache: Cache = Cache(context)
-
+    
     override fun setService(config: Configuration) {
         try {
             cache.setEnabled(config)
@@ -54,8 +54,7 @@ class IrisAnalytics(context: Context) : Iris, CoroutineScope {
                 trackingRepository.saveEvent(resultEvent.toString(), session)
             }) {
                 // no-op
-            }
-
+            } 
         }
     }
 
