@@ -15,7 +15,9 @@ import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.TicketsItem;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
+import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 
 import java.util.List;
 
@@ -150,7 +152,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    class TicketItemHolder extends RecyclerView.ViewHolder {
+    class TicketItemHolder extends RecyclerView.ViewHolder implements ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet{
         @BindView(R2.id.checkbox_delete)
         AppCompatCheckBox checkboxDelete;
         @BindView(R2.id.tv_ticket_status)
@@ -163,6 +165,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView tvTicketDate;
         @BindView(R2.id.tv_priority_label)
         TextView tvPrioritylabel;
+        private CloseableBottomSheetDialog servicePrioritiesBottomSheet;
 
 
         TicketItemHolder(View itemView) {
@@ -206,7 +209,9 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 tvPrioritylabel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //opn tooltip
+                        servicePrioritiesBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(mContext);
+                        servicePrioritiesBottomSheet.setCustomContentView( new ServicePrioritiesBottomSheet(mContext,TicketItemHolder.this),"", false);
+                        servicePrioritiesBottomSheet.show();
                     }
                 });
             }
@@ -220,6 +225,11 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         @OnLongClick(R2.id.layout_item_ticket)
         boolean onLongClick() {
             return false;
+        }
+
+        @Override
+        public void onClickClose() {
+            servicePrioritiesBottomSheet.dismiss();
         }
     }
 
