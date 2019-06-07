@@ -16,6 +16,7 @@ import rx.Observable;
 public class PromoCodeAutoApplyUseCase extends UseCase<GraphqlResponse> {
 
     Context mContext;
+    public static String PROMO_CODE = "promoCode";
 
     public PromoCodeAutoApplyUseCase(Context context) {
         this.mContext = context;

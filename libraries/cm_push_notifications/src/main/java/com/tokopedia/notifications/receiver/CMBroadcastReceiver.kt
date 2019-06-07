@@ -7,6 +7,7 @@ import android.support.v4.app.NotificationManagerCompat
 import android.text.TextUtils
 import android.widget.Toast
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.factory.BaseNotification
@@ -14,6 +15,8 @@ import com.tokopedia.notifications.factory.CMNotificationFactory
 import com.tokopedia.notifications.model.Carousal
 import com.tokopedia.notifications.model.PersistentButton
 import com.tokopedia.notifications.model.PreDefineActions
+import com.tokopedia.usecase.RequestParams
+
 
 /**
  * @author lalit.singh
@@ -21,44 +24,47 @@ import com.tokopedia.notifications.model.PreDefineActions
 class CMBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val action = intent.action
-        if (!intent.hasExtra(CMConstant.EXTRA_NOTIFICATION_ID))
-            return
-        val notificationId = intent.getIntExtra(CMConstant.EXTRA_NOTIFICATION_ID, 0)
-        val campaignId = intent.getIntExtra(CMConstant.EXTRA_CAMPAIGN_ID, 0)
-        if (null != action) {
-            when (action) {
-                CMConstant.ReceiverAction.ACTION_BUTTON -> {
-                    handleActionButtonClick(context, intent, notificationId)
-                    sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
-                }
-                CMConstant.ReceiverAction.ACTION_PERSISTENT_CLICK -> {
-                    handlePersistentClick(context, intent)
-                    sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
-                }
-                CMConstant.ReceiverAction.ACTION_CANCEL_PERSISTENT -> {
-                    cancelPersistentNotification(context, notificationId)
-                    sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
-                }
-                CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS -> {
-                    NotificationManagerCompat.from(context).cancel(notificationId)
-                    sendPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, campaignId, notificationId)
-                }
-                CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK -> {
-                    handleNotificationClick(context, intent, notificationId)
-                    sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
-                }
-                CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK -> handleCarousalButtonClick(context, intent, notificationId, true)
-                CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK -> handleCarousalButtonClick(context, intent, notificationId, false)
-                CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK -> {
-                    handleCarousalImageClick(context, intent, notificationId)
-                    sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
-                }
-                CMConstant.ReceiverAction.ACTION_GRID_CLICK -> {
-                    handleGridNotificationClick(context, intent, notificationId)
-                    sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+        try {
+            val action = intent.action
+            if (!intent.hasExtra(CMConstant.EXTRA_NOTIFICATION_ID))
+                return
+            val notificationId = intent.getIntExtra(CMConstant.EXTRA_NOTIFICATION_ID, 0)
+            val campaignId = intent.getIntExtra(CMConstant.EXTRA_CAMPAIGN_ID, 0)
+            if (null != action) {
+                when (action) {
+                    CMConstant.ReceiverAction.ACTION_BUTTON -> {
+                        handleActionButtonClick(context, intent, notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+                    }
+                    CMConstant.ReceiverAction.ACTION_PERSISTENT_CLICK -> {
+                        handlePersistentClick(context, intent)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+                    }
+                    CMConstant.ReceiverAction.ACTION_CANCEL_PERSISTENT -> {
+                        cancelPersistentNotification(context, notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+                    }
+                    CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS -> {
+                        NotificationManagerCompat.from(context).cancel(notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, campaignId, notificationId)
+                    }
+                    CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK -> {
+                        handleNotificationClick(context, intent, notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+                    }
+                    CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK -> handleCarousalButtonClick(context, intent, notificationId, true)
+                    CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK -> handleCarousalButtonClick(context, intent, notificationId, false)
+                    CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK -> {
+                        handleCarousalImageClick(context, intent, notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+                    }
+                    CMConstant.ReceiverAction.ACTION_GRID_CLICK -> {
+                        handleGridNotificationClick(context, intent, notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+                    }
                 }
             }
+        } catch (e: Exception) {
         }
     }
 
@@ -100,7 +106,9 @@ class CMBroadcastReceiver : BroadcastReceiver() {
         val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Tokopedia", contents)
         clipboard.primaryClip = clip
-        Toast.makeText(context, context.getString(R.string.tv_coupon_code_copied) + contents, Toast.LENGTH_LONG).show()
+        applyPromoCode(context, contents)
+        Toast.makeText(context, "${context.getString(R.string.cm_tv_coupon_code_copied)} $contents"
+                , Toast.LENGTH_LONG).show()
     }
 
     private fun handleNotificationClick(context: Context, intent: Intent, notificationId: Int) {
@@ -192,6 +200,14 @@ class CMBroadcastReceiver : BroadcastReceiver() {
         } catch (e: ActivityNotFoundException) {
         }
 
+    }
+
+    private fun applyPromoCode(context: Context, promoCode: String) {
+        val promoCodeAutoApplyUseCase = PromoCodeAutoApplyUseCase(context)
+        val requestParams = RequestParams.create()
+        requestParams.putString(PromoCodeAutoApplyUseCase.PROMO_CODE, promoCode)
+        promoCodeAutoApplyUseCase.createObservable(requestParams)
+        promoCodeAutoApplyUseCase.execute(null)
     }
 
 }

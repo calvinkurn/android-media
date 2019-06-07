@@ -42,6 +42,7 @@ dependencies {
     implementation rootProject.ext.firebase.messaging
 
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.features.common_promo)
 }
 
 apply from: '../../publish_local.gradle'

@@ -1,11 +1,9 @@
 package com.tokopedia.notifications.factory
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationChannelGroup
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
+import android.app.Notification.BADGE_ICON_SMALL
 import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -18,7 +16,6 @@ import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
-
 import com.bumptech.glide.Glide
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.R
@@ -26,14 +23,10 @@ import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationCacheHandler
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver
-
 import org.json.JSONObject
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
-
-import android.app.Notification.BADGE_ICON_SMALL
-import android.content.Context.NOTIFICATION_SERVICE
 
 /**
  * Created by Ashwani Tyagi on 18/10/18.
@@ -66,7 +59,6 @@ abstract class BaseNotification internal constructor(protected var context: Cont
                 }
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    createChannelGroup()
                     createNotificationChannel()
                     builder.setBadgeIconType(BADGE_ICON_SMALL)
                     builder.setNumber(1)
@@ -101,7 +93,6 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             builder.setSmallIcon(drawableIcon)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createChannelGroup()
                 createNotificationChannel()
                 builder.setBadgeIconType(BADGE_ICON_SMALL)
                 builder.setNumber(1)
@@ -134,10 +125,10 @@ abstract class BaseNotification internal constructor(protected var context: Cont
 
 
     private val imageWidth: Int
-        get() = context.resources.getDimensionPixelSize(R.dimen.notif_width)
+        get() = context.resources.getDimensionPixelSize(R.dimen.cm_notif_width)
 
     private val imageHeight: Int
-        get() = context.resources.getDimensionPixelSize(R.dimen.notif_height)
+        get() = context.resources.getDimensionPixelSize(R.dimen.cm_notif_height)
 
     private val vibratePattern: LongArray
         get() = longArrayOf(500, 500)
@@ -198,7 +189,6 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             channel.vibrationPattern = vibratePattern
 
             channel.setShowBadge(true)
-            channel.group = CMConstant.NotificationGroup.CHANNEL_GROUP_ID
             notificationManager.createNotificationChannel(channel)
         } else {
             createDefaultChannel()
@@ -218,18 +208,9 @@ abstract class BaseNotification internal constructor(protected var context: Cont
         channel.setSound(ringtoneUri, att)
         channel.setShowBadge(true)
         channel.description = CMConstant.NotificationGroup.CHANNEL_DESCRIPTION
-        channel.group = CMConstant.NotificationGroup.CHANNEL_GROUP_ID
         channel.vibrationPattern = vibratePattern
         notificationManager.createNotificationChannel(channel)
 
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    fun createChannelGroup() {
-        val mNotificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        val notificationChannelGroup = NotificationChannelGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID,
-                CMConstant.NotificationGroup.CHANNEL_GROUP_NAME)
-        mNotificationManager.createNotificationChannelGroup(notificationChannelGroup)
     }
 
     private fun setNotificationSound(builder: NotificationCompat.Builder) {
