@@ -25,18 +25,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-
 public class BuyerPurchaseFragment extends BaseDaggerFragment implements PurchaseListContract.View, HasComponent<ContactUsComponent> {
 
     @Inject
     PurchaseListPresenter presenter;
-    @BindView(R2.id.order_list_full)
-    RecyclerView orderListFull;
-    @BindView(R2.id.empty_layout)
-    LinearLayout emptyLayout;
+
+    private RecyclerView orderListFull;
+    private LinearLayout emptyLayout;
     private ContactUsComponent contactUsComponent;
     private PurchaseListAdpater adapter;
 
@@ -65,8 +60,9 @@ public class BuyerPurchaseFragment extends BaseDaggerFragment implements Purchas
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.layout_full_order_list, container, false);
+        orderListFull = view.findViewById(R.id.order_list_full);
+        emptyLayout = view.findViewById(R.id.empty_layout);
         getPresenter().attachView(this);
-        ButterKnife.bind(this, view);
         orderListFull.setAdapter(adapter);
         orderListFull.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         return view;

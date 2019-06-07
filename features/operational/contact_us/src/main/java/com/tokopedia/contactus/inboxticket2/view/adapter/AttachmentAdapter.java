@@ -19,10 +19,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.AttachmentViewHolder> {
 
     private List<AttachmentItem> attachmentList;
@@ -65,12 +61,12 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
     }
 
     class AttachmentViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.iv_attachment)
+
         ImageView ivAttachment;
 
         AttachmentViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            ivAttachment = itemView.findViewById(R.id.iv_attachment);
         }
 
         void bindView(int index) {
@@ -81,9 +77,14 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
                 ivAttachment.setImageURI(Uri.fromFile(new File(thumbnail)));
             }
 
+            ivAttachment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    previewImage();
+                }
+            });
         }
 
-        @OnClick(R2.id.iv_attachment)
         void previewImage() {
             mPresenter.showImagePreview(getAdapterPosition(), attachmentList);
         }

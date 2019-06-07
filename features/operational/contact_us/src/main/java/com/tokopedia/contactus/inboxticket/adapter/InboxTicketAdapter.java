@@ -23,9 +23,6 @@ import com.tokopedia.core.util.LabelUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by Nisie on 4/21/16.
  */
@@ -45,26 +42,27 @@ public class InboxTicketAdapter extends BaseLinearRecyclerViewAdapter implements
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.title)
-        TextView title;
 
-        @BindView(R2.id.status)
-        TextView status;
-
-        @BindView(R2.id.create_time)
-        TextView createTime;
-
-        @BindView(R2.id.main)
-        View main;
+        private TextView title;
+        private TextView status;
+        private TextView createTime;
+        private View main;
 
         LabelUtils label;
         ImageUploadAdapter imageAdapter;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            findingViewsId(itemView);
             label = LabelUtils.getInstance(itemView.getContext(), status);
             imageAdapter = ImageUploadAdapter.createAdapter(itemView.getContext());
+        }
+
+        private void findingViewsId(View view) {
+            title = view.findViewById(R.id.title);
+            status = view.findViewById(R.id.status);
+            createTime = view.findViewById(R.id.create_time);
+            main = view.findViewById(R.id.main);
         }
     }
 

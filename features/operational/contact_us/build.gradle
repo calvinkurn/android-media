@@ -52,9 +52,6 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
     implementation rootProject.ext.viewDependencies.expandableTextview
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor

@@ -25,10 +25,6 @@ import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 
 public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.DetailViewHolder> {
 
@@ -93,32 +89,35 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         return commentList.size();
     }
 
-    class DetailViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.iv_profile)
-        ImageView ivProfile;
-        @BindView(R2.id.tv_name)
-        TextView tvName;
-        @BindView(R2.id.tv_date_recent)
-        TextView tvDateRecent;
-        @BindView(R2.id.tv_comment)
-        TextView tvComment;
-        @BindView(R2.id.tv_collapsed_time)
-        TextView tvCollapsedTime;
-        @BindView(R2.id.layout_item_message)
-        View itemView;
-        @BindView(R2.id.rv_attached_image)
-        RecyclerView rvAttachedImage;
-        @BindView(R2.id.tv_hint_attachment)
-        TextView tvAttachmentHint;
+    class DetailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        ImageView ivProfile;
+        private TextView tvName;
+        private TextView tvDateRecent;
+        private TextView tvComment;
+        private TextView tvCollapsedTime;
+        private View itemView;
+        private RecyclerView rvAttachedImage;
+        private TextView tvAttachmentHint;
         private AttachmentAdapter attachmentAdapter;
         private LinearLayoutManager layoutManager;
 
         DetailViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            findindViewsId(itemView);
             layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
             rvAttachedImage.setLayoutManager(layoutManager);
+        }
+
+        private void findindViewsId(View view) {
+            ivProfile = view.findViewById(R.id.iv_profile);
+            tvName = view.findViewById(R.id.tv_name);
+            tvDateRecent = view.findViewById(R.id.tv_date_recent);
+            tvComment = view.findViewById(R.id.tv_comment);
+            tvCollapsedTime = view.findViewById(R.id.tv_collapsed_time);
+            itemView = view.findViewById(R.id.layout_item_message);
+            rvAttachedImage = view.findViewById(R.id.rv_attached_image);
+            tvAttachmentHint = view.findViewById(R.id.tv_hint_attachment);
         }
 
         void bindViewHolder(int position) {
@@ -172,13 +171,12 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 rvAttachedImage.setVisibility(View.GONE);
             }
 
+           itemView.setOnClickListener(this);
+           tvComment.setOnClickListener(this);
+           tvDateRecent.setOnClickListener(this);
+
         }
 
-        @OnClick({
-                R2.id.layout_item_message,
-                R2.id.tv_comment,
-                R2.id.tv_date_recent
-        })
         void toggleCollapse() {
             int tapIndex = getAdapterPosition();
             if (tapIndex != commentList.size() - 1) {
@@ -188,6 +186,14 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             }
             notifyItemChanged(tapIndex);
             ((InboxDetailActivity) mContext).scrollTo(indexExpanded);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int id = view.getId();
+            if(id==R.id.layout_item_message||id==R.id.tv_comment||id==R.id.tv_date_recent){
+                toggleCollapse();
+            }
         }
     }
 }

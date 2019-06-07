@@ -17,9 +17,6 @@ import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import java.io.File;
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by sandeepgoyal on 18/04/18.
@@ -91,15 +88,13 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     class ImageViewHolder extends RecyclerView.ViewHolder {
 
         ImageUpload image;
-
-        @BindView(R2.id.selected_image)
         ImageView selectedImage;
-        @BindView(R2.id.delete_image)
         ImageView deleteImage;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            selectedImage = itemView.findViewById(R.id.selected_image);
+            deleteImage = itemView.findViewById(R.id.delete_image);
         }
 
         public void setImage(ImageUpload image) {
@@ -118,9 +113,15 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
                 selectedImage.setOnClickListener(null);
                 deleteImage.setVisibility(View.VISIBLE);
             }
+
+            deleteImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onViewClicked();
+                }
+            });
         }
 
-        @OnClick(R2.id.delete_image)
         public void onViewClicked() {
             if (imageUpload.size() == maxPicUpload) {
                 ImageUpload lastImg = imageUpload.get(getAdapterPosition());

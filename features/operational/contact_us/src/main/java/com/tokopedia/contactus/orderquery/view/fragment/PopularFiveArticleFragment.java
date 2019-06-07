@@ -9,10 +9,6 @@ import android.webkit.WebView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by baghira on 01/05/18.
@@ -22,8 +18,7 @@ public class PopularFiveArticleFragment extends BaseDaggerFragment {
 
 
     public static final String KEY_CONTENT = "KEY_CONTENT";
-    @BindView(R2.id.popular_tv)
-    WebView webView;
+    private WebView webView;
 
     public static Fragment newInstance(String slug) {
         Bundle args = new Bundle();
@@ -42,7 +37,7 @@ public class PopularFiveArticleFragment extends BaseDaggerFragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.top_five_popular_layout, container, false);
-        ButterKnife.bind(this, view);
+        webView = view.findViewById(R.id.popular_tv);
         setContent((String) getArguments().getSerializable(KEY_CONTENT));
         return view;
 

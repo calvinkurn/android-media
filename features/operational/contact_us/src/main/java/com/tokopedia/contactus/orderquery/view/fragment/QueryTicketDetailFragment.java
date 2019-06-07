@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.orderquery.data.SubmitTicketInvoiceData;
 import com.tokopedia.contactus.orderquery.di.OrderQueryComponent;
@@ -22,10 +21,6 @@ import com.tokopedia.contactus.orderquery.di.DaggerOrderQueryComponent;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 
 /**
  * Created by sandeepgoyal on 16/04/18.
@@ -34,10 +29,9 @@ import butterknife.OnClick;
 public class QueryTicketDetailFragment extends BaseDaggerFragment implements QueryTicketDetailContract.View {
 
     public static final String KEY_QUERY_TICKET = "KEY_QUERY_TICKET";
-    @BindView(R2.id.txt_title)
-    TextView txtTitle;
-    @BindView(R2.id.txt_detail)
-    WebView txtDetail;
+    private TextView txtTitle;
+    private WebView txtDetail;
+
     @Inject
     QueryTicketDetailPresenter presenter;
 
@@ -69,8 +63,15 @@ public class QueryTicketDetailFragment extends BaseDaggerFragment implements Que
 
         View view = inflater.inflate(R.layout.layout_invoice_detail_article, container, false);
         initInjector();
-        ButterKnife.bind(this, view);
+        txtTitle = view.findViewById(R.id.txt_title);
+        txtDetail = view.findViewById(R.id.txt_detail);
         presenter.attachView(this);
+        view.findViewById(R.id.txt_hyper).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onViewClicked();
+            }
+        });
         return view;
 
     }
@@ -91,9 +92,6 @@ public class QueryTicketDetailFragment extends BaseDaggerFragment implements Que
         return (SubmitTicketInvoiceData) getArguments().getSerializable(KEY_QUERY_TICKET);
     }
 
-
-
-    @OnClick(R2.id.txt_hyper)
     public void onViewClicked() {
         ContactUsTracking.eventArticleHubungiKamiClick();
         getContext().startActivity(SubmitTicketActivity.getSubmitTicketActivity(getContext(), getSubmitTicketInvoiceData()));
