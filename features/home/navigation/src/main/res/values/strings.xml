@@ -68,4 +68,6 @@
     <string name="title_notification_update">Update</string>
     <string name="title_notification_activity">Transaksi</string>
     <string name="exceed_ninety_nine">99+</string>
+
+    <string name="filter">Filter</string>
 </resources>

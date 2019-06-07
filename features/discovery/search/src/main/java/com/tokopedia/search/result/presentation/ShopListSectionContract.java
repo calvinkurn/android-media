@@ -1,30 +1,31 @@
 package com.tokopedia.search.result.presentation;
 
+import com.tokopedia.search.result.presentation.model.ShopViewModel;
+import com.tokopedia.search.result.presentation.view.listener.FavoriteActionListener;
+import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchShopListener;
+
+import java.util.Map;
+
 public interface ShopListSectionContract {
 
     interface View extends SearchSectionContract.View {
-//        void logDebug(String tag, String message);
-//
-//        void launchLoginActivity(String productId);
-//
-//        boolean isUserHasLogin();
-//
-//        String getUserId();
-//
-//        void disableFavoriteButton(int adapterPosition);
-//
-//        void enableFavoriteButton(int adapterPosition);
-//
-//        String getQueryKey();
-//
-//        void backToTop();
+        boolean isUserHasLogin();
+
+        String getUserId();
+
+        void disableFavoriteButton(int adapterPosition);
+
+        void enableFavoriteButton(int adapterPosition);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
-//        void attachView(View view, FavoriteActionListener favoriteActionListener);
-//
-//        void loadShop(Map<String, Object> searchParameter, ShopListLoadMoreListener loadMoreListener);
-//
-//        void handleFavoriteButtonClicked(ShopViewModel.ShopItem shopItem, int adapterPosition);
+        void setFavoriteActionListener(FavoriteActionListener favoriteActionListener);
+
+        void setSearchShopListener(SearchShopListener searchShopListener);
+
+        void loadShop(Map<String, Object> searchParameter);
+
+        void handleFavoriteButtonClicked(ShopViewModel.ShopViewItem shopItem, int adapterPosition);
     }
 }

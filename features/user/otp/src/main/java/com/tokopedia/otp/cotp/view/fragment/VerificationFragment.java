@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
 import com.tokopedia.otp.common.design.PinInputEditText;
@@ -138,7 +139,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void onResume() {
         super.onResume();
-        if(getActivity()!= null) {
+        if (getActivity() != null) {
             smsBroadcastReceiver.register(getActivity(), getOTPReceiverListener());
         }
     }
@@ -147,7 +148,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         return new SmsBroadcastReceiver.ReceiveSMSListener() {
             @Override
             public void onReceiveOTP(@NotNull String otpCode) {
-                        processOTPSMS(otpCode);
+                processOTPSMS(otpCode);
             }
         };
     }
@@ -323,17 +324,25 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     @Override
-    public void onSuccessVerifyOTP() {
+    public void onSuccessVerifyOTP(String uuid, String msisdn) {
         removeErrorOtp();
         resetCountDown();
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
+
+        if (getActivity() != null) {
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_UUID, uuid);
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, msisdn);
+            intent.putExtras(bundle);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        }
 
     }
 
     @Override
     public void onGoToPhoneVerification() {
-        if (getActivity()!= null) {
+        if (getActivity() != null) {
             getActivity().setResult(Activity.RESULT_OK);
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PHONE_VERIFICATION);
             startActivity(intent);
