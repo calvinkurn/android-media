@@ -165,14 +165,9 @@ public class CustomPushListener extends PushMessageListener {
     private void createGridNotification(Context context, Bundle extras, NotificationCompat.Builder builder) {
         long when = System.currentTimeMillis();
 
-        Intent notificationIntent = new Intent(context, MainParentActivity.class);
-        notificationIntent.putExtra(EXTRA_NOTIFICATION_ID, GRID_NOTIFICATION_ID);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 200,
-                notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
         RemoteViews expandRemoteView = new RemoteViews(context.getPackageName(),
                 R.layout.grid_notificaiton_layout);
-        setCollapseData(expandRemoteView, extras, contentIntent);
+        setCollapseData(context, expandRemoteView, extras);
 
         String deeplink1 = extras.getString(KEY_DEEPLINK1);
         String deeplink2 = extras.getString(KEY_DEEPLINK2);
@@ -200,7 +195,7 @@ public class CustomPushListener extends PushMessageListener {
 
         RemoteViews collapsedView = new RemoteViews(context.getApplicationContext().getPackageName(),
                 R.layout.collapsed_notification_layout);
-        setCollapseData(collapsedView, extras, contentIntent);
+        setCollapseData(context, collapsedView, extras);
 
         builder.setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setLargeIcon(null)
@@ -208,15 +203,44 @@ public class CustomPushListener extends PushMessageListener {
                 .setCustomContentView(collapsedView)
                 .setCustomBigContentView(expandRemoteView)
                 .setContentTitle(context.getResources().getString(R.string.app_name))
-                .setContentIntent(contentIntent)
                 .setOngoing(false)
                 .setWhen(when);
     }
 
-    private void setCollapseData(RemoteViews remoteView, Bundle extras, PendingIntent pendingIntent) {
+    private void setCollapseData(Context context, RemoteViews remoteView, Bundle extras) {
+
+        Intent notificationIntent = new Intent(context, NotificationBroadcast.class);
+        notificationIntent.setAction(ACTION_GRID_CLICK);
+
+        String deepLink = extras.getString("dl");
+        if (null != deepLink) {
+            notificationIntent.putExtra(EXTRA_DEEP_LINK, deepLink);
+        } else {
+            notificationIntent.putExtra(EXTRA_DEEP_LINK, "tokopedia://home");
+        }
+
+        notificationIntent.putExtra(EXTRA_NOTIFICATION_ID, GRID_NOTIFICATION_ID);
+        PendingIntent contentIntent = null;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            contentIntent = PendingIntent.getBroadcast(
+                    context,
+                    200,
+                    notificationIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        } else {
+            contentIntent = PendingIntent.getBroadcast(
+                    context,
+                    200,
+                    notificationIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        }
+
+
         remoteView.setTextViewText(R.id.tv_collapse_title, extras.getString("gcm_title"));
         remoteView.setTextViewText(R.id.tv_collapsed_message, extras.getString("gcm_alert"));
-        remoteView.setOnClickPendingIntent(R.id.collapseMainView, pendingIntent);
+        remoteView.setOnClickPendingIntent(R.id.collapseMainView, contentIntent);
     }
 
     private void createGrid(Context context, RemoteViews remoteView, int resId, String url, String deepLink, int requestCode) {
