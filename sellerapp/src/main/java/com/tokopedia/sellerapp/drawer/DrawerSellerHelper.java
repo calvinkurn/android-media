@@ -351,7 +351,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     if (context.getApplication() instanceof TkpdCoreRouter) {
                         TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) context.getApplication();
                         tkpdCoreRouter.goToManageProduct(context);
-                        tkpdCoreRouter.goToAddProduct(context);
+                        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM);
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PRODUCT:

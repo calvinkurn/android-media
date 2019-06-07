@@ -137,15 +137,14 @@
     <string name="rationale_need_location_for_promotion">Akses lokasi diperlukan untuk memudahkan
         pengiriman dan mendapatkan rekomendasi produk. Perbolehkan?</string>
 
+    <!-- Dynamic features Shop Setting -->
     <string name="shop_settings_manage_shop_info">Informasi</string>
     <string name="shop_settings_manage_address">Lokasi</string>
     <string name="shop_settings_manage_etalase">Etalase</string>
     <string name="shop_settings_manage_notes">Catatan</string>
     <string name="shop_settings_basic_info">Informasi Dasar</string>
-
     <string name="shop_settings_add_note">Tambah Catatan</string>
     <string name="shop_settings_add_etalase">Tambah Etalase</string>
     <string name="shop_settings_add_address">Tambah Lokasi</string>
-
     <string name="shop_settings_shop_status">Status Toko</string>
 </resources>

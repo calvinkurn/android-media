@@ -1569,8 +1569,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public String getDeviceId(@NotNull Context context) {
         return "";
     }
-
-    @Override
+    
     @Override
     public Intent getExpressCheckoutIntent(Activity activity,
                                            com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam atcRequestParam) {
@@ -1633,6 +1632,8 @@ public abstract class SellerRouterApplication extends MainApplication
                 .setTrackerListName(trackerListName)
                 .build();
         context.startActivity(ProductInfoActivity.createInstance(context, productPass));
+    }
+    
     @Override
     public void saveCPM(@NonNull String cpm) {
     }
