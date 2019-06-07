@@ -137,6 +137,23 @@ public class BranchWrapper implements WrapperInterface {
                             context, ((LinkerCommerceData) linkerGenericRequest.getDataObj()).getUserData());
                 }
                 break;
+            case LinkerConstants.EVENT_ITEM_VIEW:
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                linkerGenericRequest.getDataObj() instanceof LinkerData){
+                    BranchHelper.sendItemViewEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
+                }
+                break;
+            case LinkerConstants.EVENT_ADD_TO_CART:
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerData){
+                    BranchHelper.sendAddToCartEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
+                }
+                break;
+            case LinkerConstants.EVENT_ADD_TO_WHISHLIST:
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerData){
+                    BranchHelper.sendAddToWishListEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
+                }
         }
     }
 

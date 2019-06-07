@@ -1133,6 +1133,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productDetailTracking.sendMoEngageOpenProduct(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                 ?: "")
             productDetailTracking.eventAppsFylerOpenProduct(this)
+            productDetailTracking.eventBranchItemView(this, (UserSession(activity)).userId)
         }
 
     }
@@ -1399,6 +1400,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
         productInfoViewModel.productInfoP3resp.value?.isWishlisted = true
         updateWishlist(true)
+        productDetailTracking.eventBranchAddToWishlist(productInfo, (UserSession(activity)).userId)
         //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", true)
     }

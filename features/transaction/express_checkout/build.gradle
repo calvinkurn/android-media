@@ -54,5 +54,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation project(rootProject.ext.libraries.linker)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 }

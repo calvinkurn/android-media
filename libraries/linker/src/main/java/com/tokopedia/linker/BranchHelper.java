@@ -111,4 +111,37 @@ public class BranchHelper {
 
     }
 
+    public static void sendItemViewEvent(Context context, LinkerData linkerData){
+        new BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
+                .addCustomDataProperty(LinkerConstants.PRODUCT_ID, linkerData.getId())
+                .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice())
+                .addCustomDataProperty(LinkerConstants.CATEGORY_LEVEL_1, linkerData.getCatLvl1())
+                .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
+                .addCustomDataProperty(LinkerConstants.DESCRIPTION, linkerData.getDescription())
+                .addCustomDataProperty(LinkerConstants.SHOP_ID, linkerData.getShopId())
+                .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency())
+                .logEvent(context);
+    }
+
+    public static void sendAddToCartEvent(Context context, LinkerData linkerData){
+        new BranchEvent(BRANCH_STANDARD_EVENT.ADD_TO_CART)
+                .addCustomDataProperty(LinkerConstants.PRODUCT_ID, linkerData.getId())
+                .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice())
+                .addCustomDataProperty(LinkerConstants.CATEGORY_LEVEL_1, linkerData.getCatLvl1())
+                .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
+                .addCustomDataProperty(LinkerConstants.QTY, linkerData.getQuantity())
+                .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency())
+                .logEvent(context);
+    }
+
+    public static void sendAddToWishListEvent(Context context, LinkerData linkerData){
+        new BranchEvent(BRANCH_STANDARD_EVENT.ADD_TO_WISHLIST)
+                .addCustomDataProperty(LinkerConstants.PRODUCT_ID, linkerData.getId())
+                .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice())
+                .addCustomDataProperty(LinkerConstants.CATEGORY_LEVEL_1, linkerData.getCatLvl1())
+                .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
+                .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency())
+                .logEvent(context);
+    }
+
 }

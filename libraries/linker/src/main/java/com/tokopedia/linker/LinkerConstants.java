@@ -46,6 +46,10 @@ public interface LinkerConstants {
     int EVENT_LOGOUT_VAL = 3;
     int EVENT_USER_REGISTRATION_VAL = 4;
     int EVENT_USER_IDENTITY = 5;
+    int EVENT_ITEM_VIEW = 6;
+    int EVENT_ADD_TO_WHISHLIST =7;
+    int EVENT_ADD_TO_CART = 8;
+
 
     String KEY_ANDROID_DEEPLINK_PATH = "$android_deeplink_path";
     String KEY_IOS_DEEPLINK_PATH = "$ios_deeplink_path";
@@ -70,5 +74,11 @@ public interface LinkerConstants {
     int ERROR_SOMETHING_WENT_WRONG = 103;
 
     String MSG_UNINITIALIZED_LINKER = "Linker manager not initialized";
+
+    String PRODUCT_ID = "product_id";
+    String CATEGORY_LEVEL_1 = "Category Level 1";
+    String DESCRIPTION = "description";
+    String SHOP_ID = "shop_id";
+    String CURRENCY = "currency";
 
 }

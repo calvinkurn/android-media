@@ -38,6 +38,10 @@ import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
@@ -60,6 +64,7 @@ import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import model.TradeInParams
 import rx.Observable
@@ -107,6 +112,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var shopType: String? = null
     var shopName: String? = null
     private var tradeInParams: TradeInParams? = null
+    val currencyLable = "INR"
+
 
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
@@ -609,6 +616,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
      * called when on Success Add to Cart
      */
     fun onFinishAddToCart(atcSuccessMessage: String? = null) {
+
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
@@ -630,8 +638,29 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putExtra(RESULT_ATC_SUCCESS_MESSAGE, atcSuccessMessage)
                 }
             })
+            sendBranchAddToCardEvent()
             finish()
         }
+    }
+
+    private fun sendBranchAddToCardEvent(){
+        if(selectedProductInfo != null) {
+            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_CART, createLinkerData(selectedProductInfo,
+                    (UserSession(activity)).userId)))
+        }
+    }
+
+    private fun createLinkerData(productInfo: ProductInfo?, userId: String?): LinkerData{
+        var linkerData = LinkerData()
+        linkerData.id = productInfo?.basic?.id.toString()
+        linkerData.price = productInfo?.basic?.price?.toInt().toString()
+        linkerData.description = productInfo?.basic?.description
+        linkerData.shopId = productInfo?.basic?.shopID.toString()
+        linkerData.catLvl1 = productInfo?.category?.name
+        linkerData.userId = userId ?: ""
+        linkerData.currency = currencyLable
+        linkerData.quantity = tempQuantity.toString()
+        return linkerData
     }
 
     private fun doBuyOrPreorder(isOcs:Boolean) {
