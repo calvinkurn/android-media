@@ -2,13 +2,6 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.shop.settings">
 
-    <dist:module
-        dist:instant="false"
-        dist:onDemand="true"
-        dist:title="@string/shop_settings_title">
-        <dist:fusing dist:include="true" />
-    </dist:module>
-
     <application android:label="@string/app_name">
         <activity
             android:name=".basicinfo.view.activity.ShopSettingsInfoActivity"

@@ -1,6 +1,6 @@
 ext {
 
     dynamicFeatures = [
-            shopSettings                    : ":dynamic-features:shop_settings"
+            shopSettingsSellerapp           : ":dynamic-features:merchant:shop_settings_sellerapp"
     ]
 }
