@@ -1034,7 +1034,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             commission.text = pdpAffiliate.commissionValueDisplay
             btn_affiliate.setOnClickListener { onAffiliateClick(pdpAffiliate, false) }
             actionButtonView.gone()
-        } else {
+        } else if (!GlobalConfig.isSellerApp()) {
             base_btn_affiliate.gone()
             actionButtonView.byMeClick = this::onAffiliateClick
             actionButtonView.showByMe(true, pdpAffiliate)
@@ -1308,6 +1308,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
                 }
             }
+        }
+        // if when first time and the product is actually a variant product, then select the default variant
+        if (userInputVariant == null && data.variant.isVariant && data.variant.parentID != productId) {
+            userInputVariant = productId
         }
         actionButtonView.renderData(!data.basic.isActive(),
                 (productInfoViewModel.isShopOwner(data.basic.shopID)

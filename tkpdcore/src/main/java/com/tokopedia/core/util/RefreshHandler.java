@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.core2.R;
-import com.tokopedia.core.customwidget.SwipeToRefresh;
 
 /**
  * modify by mnormansyah 18 feb 2017
@@ -30,7 +30,7 @@ public class RefreshHandler {
 	}
 
 	public RefreshHandler(Activity context, View view, OnRefreshHandlerListener RefreshListener) {
-		swipeToRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+		swipeToRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
 		this.RefreshHandlerListener = RefreshListener;
 		swipeToRefreshLayout.setOnRefreshListener(onSwipeRefresh());
 	}

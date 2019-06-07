@@ -208,7 +208,7 @@ ext {
             exoPlayerUi           : "com.google.android.exoplayer:exoplayer-ui:$exoPlayerVersion",
             lifeCycleExtentions   : "android.arch.lifecycle:extensions:$lifeCycleVersion",
             lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.1.11",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.1.11@aar",
     ]
 
     testDependencies = [

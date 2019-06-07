@@ -2528,6 +2528,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getSellerWebViewIntent(Context context, String webviewUrl) {
+        return null;
+    }
+
+    @Override
     public Observable<VoucherViewModel> checkFlightVoucher(String voucherCode, String cartId, String isCoupon) {
         FlightRepository flightRepository = FlightComponentInstance.getFlightComponent(this).flightRepository();
         FlightCheckVoucherCodeUseCase checkVoucherCodeUseCase = new FlightCheckVoucherCodeUseCase(flightRepository);
@@ -2839,6 +2844,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getInboxTalkCallingIntent(Context context) {
         return InboxTalkActivity.Companion.createIntent(context);
+    }
+
+    @Override
+    public Intent getManageAdressIntent(Context context) {
+        return new Intent(context, ManagePeopleAddressActivity.class);
     }
 
     @Override

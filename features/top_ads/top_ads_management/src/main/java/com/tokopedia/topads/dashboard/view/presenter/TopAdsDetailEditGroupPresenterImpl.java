@@ -1,12 +1,16 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
+import com.tokopedia.topads.dashboard.data.model.request.MinimumBidRequest;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMinimumBidUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveDetailGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
@@ -14,6 +18,9 @@ import com.tokopedia.topads.dashboard.view.mapper.TopAdDetailGroupMapper;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
+
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -24,19 +31,22 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
 
     protected TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
     protected TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase;
-    protected TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
+    protected TopAdsMinimumBidUseCase minimumBidUseCase;
     protected TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase;
+    protected UserSessionInterface sessionInterface;
 
     public TopAdsDetailEditGroupPresenterImpl(TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
                                               TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
                                               TopAdsProductListUseCase topAdsProductListUseCase,
-                                              TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                              TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+                                              TopAdsMinimumBidUseCase topAdsMinimumBidUseCase,
+                                              TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+                                              UserSessionInterface sessionInterface) {
         super(topAdsProductListUseCase);
-        this.topAdsGetSuggestionUseCase = topAdsGetSuggestionUseCase;
+        this.minimumBidUseCase = topAdsMinimumBidUseCase;
         this.topAdsGetDetailGroupUseCase = topAdsGetDetailGroupUseCase;
         this.topAdsSaveDetailGroupUseCase = topAdsSaveDetailGroupUseCase;
         this.topAdsGetSourceTaggingUseCase = topAdsGetSourceTaggingUseCase;
+        this.sessionInterface = sessionInterface;
     }
 
     @Override
@@ -84,23 +94,35 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
                 subscriber);
     }
 
-    public void getTopAdsSuggestionBid(GetSuggestionBody getSuggestionBody){
-        topAdsGetSuggestionUseCase.execute(TopAdsGetSuggestionUseCase.createRequestParams(getSuggestionBody), new Subscriber<GetSuggestionResponse>() {
-            @Override
-            public void onCompleted() {
+    @Override
+    public void getBidInfo(String requestType, List<DataSuggestions> dataSuggestions, String source) {
+        MinimumBidRequest request = new MinimumBidRequest();
+        request.setSource(source);
+        request.setShopId(Integer.parseInt(sessionInterface.getShopId()));
+        request.setRequestType(requestType);
+        request.setDataSuggestions(dataSuggestions);
+        minimumBidUseCase.execute(minimumBidUseCase.getBidParams(request),
+                new Subscriber<MinimumBidDomain.TopadsBidInfo>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
+                        if(isViewAttached()) {
+                            getView().onBidInfoError(e);
+                        }
+                    }
 
-            }
+                    @Override
+                    public void onNext(MinimumBidDomain.TopadsBidInfo topadsBidInfo) {
+                        if(isViewAttached()) {
+                            getView().onBidInfoSuccess(topadsBidInfo);
+                        }
+                    }
+                });
 
-            @Override
-            public void onNext(GetSuggestionResponse getSuggestionResponse) {
-
-            }
-        });
     }
 
     private Subscriber<TopAdsDetailGroupDomainModel> getDetailAdSubscriber(){
