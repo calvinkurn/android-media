@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -18,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -28,11 +26,8 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeIconItem;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightItemViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
-import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
 import java.util.ArrayList;
 import java.util.List;

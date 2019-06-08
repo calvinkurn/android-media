@@ -175,7 +175,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     @Override
     public void loadMore(SearchParameter searchParameter, ProductPresenter.LoadMoreListener loadMoreListener) {
         RequestParams requestParams
-                = enrichWithFilterAndSortParams(GetProductUseCase.createInitializeSearchParam(searchParameter, false));
+                = enrichWithFilterAndSortParams(GetProductUseCase.createInitializeSearchParam(searchParameter));
         removeDefaultCategoryParam(requestParams);
         getProductUseCase.execute(requestParams, createLoadMoreSubscriber(loadMoreListener));
     }

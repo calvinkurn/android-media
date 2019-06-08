@@ -6,7 +6,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class CrossSellingConfig : Parcelable {
+class CrossSellingConfig() : Parcelable {
     var isSkipAble: Boolean = false
     var isChecked: Boolean = false
     var headerTitle: String? = null
@@ -15,7 +15,7 @@ class CrossSellingConfig : Parcelable {
     var bodyContentAfter: String? = null
     var checkoutButtonText: String? = null
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel): this() {
         isSkipAble = `in`.readByte().toInt() != 0
         isChecked = `in`.readByte().toInt() != 0
         headerTitle = `in`.readString()
@@ -24,8 +24,6 @@ class CrossSellingConfig : Parcelable {
         bodyContentAfter = `in`.readString()
         checkoutButtonText = `in`.readString()
     }
-
-    constructor() {}
 
     override fun describeContents(): Int {
         return 0

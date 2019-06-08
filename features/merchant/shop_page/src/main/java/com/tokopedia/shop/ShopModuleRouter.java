@@ -11,8 +11,6 @@ import android.support.v4.app.Fragment;
 
 public interface ShopModuleRouter {
 
-    Fragment getKolPostShopFragment(String shopId, String createPostUrl);
-
     void goToEditShop(Context context);
 
     void goToManageShop(Context context);
@@ -20,8 +18,6 @@ public interface ShopModuleRouter {
     void goToEditShopNote(Context context);
 
     void goToManageShipping(Context context);
-
-    void goToAddProduct(Context context);
 
     void goToChatSeller(Context context, String shopId, String shopName, String avatar);
 

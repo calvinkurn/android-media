@@ -20,14 +20,14 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
+import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.discovery.common.data.Filter;
+import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.discovery.common.data.Sort;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
@@ -81,7 +81,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
-    private HashMap<String, String> selectedFilter;
+    protected HashMap<String, String> selectedFilter;
     private FilterFlagSelectedModel flagFilterHelper;
     private boolean isGettingDynamicFilter;
 
@@ -450,10 +450,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     public void renderFailGetDynamicFilter() {
         isGettingDynamicFilter = false;
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_get_dynamic_filter));
-    }
-
-    public void performNewProductSearch(String query, boolean forceSearch) {
-        redirectionListener.performNewProductSearch(query, forceSearch);
     }
 
     public void showSearchInputView() {
