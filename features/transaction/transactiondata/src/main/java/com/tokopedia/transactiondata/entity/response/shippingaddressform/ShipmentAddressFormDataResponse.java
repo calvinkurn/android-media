@@ -50,6 +50,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_robinhood")
     @Expose
     private int isRobinhood;
+    @SerializedName("is_hide_courier_name")
+    @Expose
+    private boolean isHidingCourier;
     @SerializedName("is_blackbox")
     @Expose
     private int isBlackbox;
@@ -71,6 +74,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("global_coupon_attr")
     @Expose
     private GlobalCouponAttr globalCouponAttr;
+    @SerializedName("is_show_onboarding")
+    @Expose
+    private boolean isShowOnboarding;
 
     public AutoapplyV2 getAutoapplyV2() {
         return autoapplyV2;
@@ -120,6 +126,10 @@ public class ShipmentAddressFormDataResponse {
         return isRobinhood;
     }
 
+    public boolean getHideCourier() {
+        return isHidingCourier;
+    }
+
     public int getIsBlackbox() {
         return isBlackbox;
     }
@@ -140,4 +150,8 @@ public class ShipmentAddressFormDataResponse {
     public AutoapplyStack getAutoapplyStack() { return autoapplyStack; }
 
     public GlobalCouponAttr getGlobalCouponAttr() { return globalCouponAttr; }
+
+    public boolean isShowOnboarding() {
+        return isShowOnboarding;
+    }
 }

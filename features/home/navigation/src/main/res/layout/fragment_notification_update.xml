@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/swipeToRefresh">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:reverseLayout="false"
+            tools:listitem="@layout/notification_update_default_item" />
+
+        <com.tokopedia.design.button.BottomActionView
+            android:id="@+id/filterBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            app:bav_1_display="true"
+            app:bav_label_1="@string/filter"
+            app:bav_icon_1="@drawable/ic_system_action_filter_grayscale_24"
+            app:bav_2_display="true"
+            app:bav_label_2="@string/mark_all_as_read"
+            app:bav_icon_2="@drawable/ic_system_action_filter_grayscale_24"
+            app:bav_2_icon_display="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="@dimen/dp_18"/>
+    </android.support.constraint.ConstraintLayout>
+</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

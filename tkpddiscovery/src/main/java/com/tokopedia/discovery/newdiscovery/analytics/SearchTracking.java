@@ -3,12 +3,17 @@ package com.tokopedia.discovery.newdiscovery.analytics;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.appsflyer.AFInAppEventParameterName;
+import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +39,7 @@ public class SearchTracking {
     public static final String EVENT_EMPTY = "";
     public static final String EVENT_CATEGORY_SEARCH_RESULT_PROFILE = "search result profile";
     public static final String EVENT_CATEGORY_EMPTY_SEARCH = "empty search";
+    public static final String EVENT_CATEGORY_SEARCH_RESULT = "search result";
     public static final String EVENT_ACTION_CLICK_PROFILE_RESULT = "click - profile result";
     public static final String PROMO_CLICK = "promoClick";
     public static final String PROMOTIONS = "promotions";
@@ -46,6 +52,9 @@ public class SearchTracking {
     public static final String EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE = "keyword: %s - profile: %s - profile id: %s - po: %s";
     public static final String PROMO_VIEW = "promoView";
     public static final String EVENT_ACTION_IMPRESSION_PROFILE = "impression - profile";
+    public static final String EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET = "click - lihat semua widget";
+    public static final String EVENT_ACTION_CLICK_WIDGET_DIGITAL_PRODUCT = "click widget - digital product";
+    public static final String EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT = "impression widget - digital product";
     public static String imageClick = "/imagesearch - p%s";
 
     private UserSessionInterface userSessionInterface;
@@ -75,6 +84,38 @@ public class SearchTracking {
 
     public void sendGeneralEvent(Map<String, Object> eventTrackingMap) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(eventTrackingMap);
+    }
+
+    public void screenTrackSearchSectionFragment(String screen) {
+        if (TextUtils.isEmpty(screen)) {
+            return;
+        }
+
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screen);
+    }
+
+    public void eventSearchResultSort(String screenName, String sortByValue) {
+        sendGeneralEventWithUserId(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.SORT_BY,
+                SearchEventTracking.Action.SORT_BY + " - " + screenName,
+                sortByValue
+        );
+    }
+
+    public void eventAppsFlyerViewListingSearch(Context context, JSONArray productsId, String keyword, ArrayList<String> prodIds) {
+        Map<String, Object> listViewEvent = new HashMap<>();
+        listViewEvent.put(AFInAppEventParameterName.CONTENT_ID, prodIds);
+        listViewEvent.put(AFInAppEventParameterName.CURRENCY, "IDR");
+        listViewEvent.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+        listViewEvent.put(AFInAppEventParameterName.SEARCH_STRING, keyword);
+        if (productsId.length() > 0) {
+            listViewEvent.put(AFInAppEventParameterName.SUCCESS, "success");
+        } else {
+            listViewEvent.put(AFInAppEventParameterName.SUCCESS, "fail");
+        }
+
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.SEARCH, listViewEvent);
     }
 
     public static String getActionFieldString(int pageNumber) {
@@ -452,6 +493,51 @@ public class SearchTracking {
                 EVENT_CATEGORY_EMPTY_SEARCH,
                 EVENT_ACTION_CLICK_NEW_SEARCH,
                 String.format("tab: %s", screenName)
+        );
+    }
+
+    public static void eventUserClickSeeAllGlobalNavWidget() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_SEARCH_RESULT,
+                EVENT_CATEGORY_SEARCH_RESULT,
+                EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET,
+                ""
+        );
+    }
+
+    public static void trackEventClickGlobalNavWidgetItem(Object item,
+                                                          String keyword) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, PROMO_CLICK,
+                        EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT,
+                        EVENT_ACTION, EVENT_ACTION_CLICK_WIDGET_DIGITAL_PRODUCT,
+                        EVENT_LABEL, keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                PROMO_CLICK, DataLayer.mapOf(
+                                        PROMOTIONS, DataLayer.listOf(item)
+                                )
+                        )
+                )
+        );
+    }
+
+    public static void trackEventImpressionGlobalNavWidgetItem(TrackingQueue trackingQueue,
+                                                               List<Object> list,
+                                                               String keyword) {
+
+        trackingQueue.putEETracking(
+                (HashMap<String, Object>) DataLayer.mapOf(EVENT, PROMO_VIEW,
+                        EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT,
+                        EVENT_ACTION, EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT,
+                        EVENT_LABEL, keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                PROMO_VIEW, DataLayer.mapOf(
+                                        PROMOTIONS, DataLayer.listOf(
+                                                list.toArray(new Object[list.size()])
+                                        )
+                                )
+                        )
+                )
         );
     }
 }
