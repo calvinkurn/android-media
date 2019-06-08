@@ -1,7 +1,6 @@
 package com.tokopedia.sellerapp.drawer;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.view.GravityCompat;
@@ -14,10 +13,9 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
@@ -27,17 +25,8 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
-import com.tokopedia.gm.common.constant.GMParamConstant;
-import com.tokopedia.gm.resource.GMConstant;
-import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
-import com.tokopedia.gm.subscribe.tracking.GMTracking;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.flashsale.management.router.FlashSaleRouter;
@@ -52,7 +41,6 @@ import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
@@ -61,7 +49,6 @@ import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tracking.view.SimpleWebViewActivity;
-import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 
 import java.util.ArrayList;
 
@@ -349,7 +336,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     if (context.getApplication() instanceof TkpdCoreRouter) {
                         TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) context.getApplication();
                         tkpdCoreRouter.goToManageProduct(context);
-                        tkpdCoreRouter.goToAddProduct(context);
+                        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM);
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PRODUCT:

@@ -15,12 +15,11 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.SellerRouterApplication;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
 import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
 import com.tokopedia.sellerapp.drawer.SellerDrawerAdapter;
@@ -45,8 +44,8 @@ public class DashboardActivity extends DrawerPresenterActivity
         super.onCreate(savedInstanceState);
         GraphqlClient.init(this);
         GetShopInfoUseCase getShopInfoUseCase = null;
-        if (getApplicationContext() instanceof SellerModuleRouter) {
-            SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) getApplicationContext();
+        if (getApplicationContext() instanceof SellerRouterApplication) {
+            SellerRouterApplication sellerModuleRouter = (SellerRouterApplication) getApplicationContext();
             getShopInfoUseCase = sellerModuleRouter.getShopInfo();
         }
         presenter = new SellerDashboardDrawerPresenter(this, getShopInfoUseCase);

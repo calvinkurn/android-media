@@ -134,7 +134,6 @@ import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUse
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
-import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
@@ -249,7 +248,7 @@ public abstract class SellerRouterApplication extends MainApplication
         ReputationRouter, LogisticRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
         ApplinkRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
-        NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
+        NetworkRouter, TopChatRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
         ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
         PaymentSettingRouter, TalkRouter, PhoneVerificationRouter,
         TopAdsDashboardRouter,
@@ -292,14 +291,6 @@ public abstract class SellerRouterApplication extends MainApplication
         daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
-    }
-
-    @Override
-    public ProductComponent getProductComponent() {
-        if (productComponent == null) {
-            productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
-        }
-        return productComponent;
     }
 
     public GMComponent getGMComponent() {
@@ -348,11 +339,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void clearEtalaseCache() {
         EtalaseUtils.clearEtalaseCache(getApplicationContext());
-    }
-
-    @Override
-    public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
-        return ProductEditActivity.Companion.createInstance(context, productId);
     }
 
     @Override
@@ -1015,13 +1001,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToAddProduct(Context context) {
-        if (context != null && context instanceof Activity) {
-            context.startActivity(new Intent(context, ProductAddNameCategoryActivity.class));
-        }
-    }
-
-    @Override
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
         if (getSession().isLoggedIn()) {
             UnifyTracking.eventShopSendChat();
@@ -1144,11 +1123,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getSellerWebViewIntent(Context context, String webviewUrl) {
         return SellerappWebViewActivity.createIntent(context, webviewUrl);
-    }
-
-    @Override
-    public Intent getChangePhoneNumberRequestIntent(Context context, String userId, String oldPhoneNumber) {
-        return ChangeInactiveFormRequestActivity.createIntentWithUserId(context, userId, oldPhoneNumber);
     }
 
     @Override
@@ -1280,21 +1254,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return ProductVariantDashboardActivity.getIntent(context, productVariantByCatModelList, productVariant,
                 productPriceCurrency, productPrice, productStock, officialStore, productSku, needRetainImage, productSizeChart,
                 hasOriginalVariantLevel1, hasOriginalVariantLevel2, hasWholesale);
-    }
-
-    @Override
-    public Intent getManageProductIntent(Context context) {
-        return new Intent(context, ProductManageActivity.class);
-    }
-
-    @Override
-    public Intent createIntentProductEtalase(Context context, int etalaseId) {
-        return EtalasePickerActivity.createInstance(context, etalaseId);
-    }
-
-    @Override
-    public Intent getCategoryPickerIntent(Context context, int categoryId) {
-        return CategoryPickerActivity.createIntent(context, categoryId);
     }
 
     @Override
@@ -1711,25 +1670,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void sendForceLogoutAnalytics(Response response) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
-    }
-
-    @Override
-    public Intent getInboxTicketCallingIntent(Context context) {
-        return new Intent(context, InboxListActivity.class);
-    }
-
-    @Override
-    public void goToOldProductDetailPage(@NotNull Context context, @Nullable String productId,
-                                         @Nullable String shopDomain, @Nullable String productKey,
-                                         @Nullable String trackerAttribution, @Nullable String trackerListName) {
-        ProductPass productPass = ProductPass.Builder.aProductPass()
-                .setProductId(productId)
-                .setShopDomain(shopDomain)
-                .setProductKey(productKey)
-                .setTrackerAttribution(trackerAttribution)
-                .setTrackerListName(trackerListName)
-                .build();
-        context.startActivity(ProductInfoActivity.createInstance(context, productPass));
     }
 
     @Override
