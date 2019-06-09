@@ -18,6 +18,7 @@
         style="@style/EditText"
         android:hint="@string/product_hint_product_report"
         android:inputType="text"
-        android:maxLength="@integer/product_max_character_report" />
+        android:maxLength="@integer/product_max_character_report"
+        android:focusable="false"/>
 
 </com.tokopedia.design.text.TkpdHintTextInputLayout>

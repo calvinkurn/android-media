@@ -3,12 +3,18 @@ package com.tokopedia.report.view.activity
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.report.data.model.ProductReportReason
+import com.tokopedia.report.di.DaggerMerchantReportComponent
+import com.tokopedia.report.di.MerchantReportComponent
 import com.tokopedia.report.view.fragment.ProductReportSubmitFragment
 
-class ProductReportFormActivity : BaseSimpleActivity() {
+class ProductReportFormActivity : BaseSimpleActivity(), HasComponent<MerchantReportComponent> {
+    override fun getComponent(): MerchantReportComponent = DaggerMerchantReportComponent.builder()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
     companion object{
         const val REASON_OBJECT = "reason"

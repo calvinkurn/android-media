@@ -1,6 +1,8 @@
 package com.tokopedia.report.view.adapter
 
 import android.graphics.Typeface
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.InputFilter
 import android.text.Spannable
@@ -17,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.report.R
 import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
+import com.tokopedia.report.view.util.SpaceItemDecoration
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import kotlinx.android.synthetic.main.item_header_form.view.*
 import kotlinx.android.synthetic.main.item_link_form.view.*
@@ -24,9 +27,14 @@ import kotlinx.android.synthetic.main.item_photo_form.view.*
 import kotlinx.android.synthetic.main.item_submit_form.view.*
 import kotlinx.android.synthetic.main.item_textarea_form.view.*
 
-class ReportFormAdapter(private val item: ProductReportReason) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+@Suppress("UNCHECKED_CAST")
+class ReportFormAdapter(private val item: ProductReportReason,
+                        private val inputDetailListener:((String, String, Int, Int) -> Unit),
+                        private val addPhotoListener: ((String) -> Unit),
+                        private val submitForm: (()-> Unit)) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items = mutableListOf<Pair<String, Any>>()
+    val inputs = mutableMapOf<String, Any>()
 
     init {
         items.addAll(item.additionalInfo.map { it.type to it })
@@ -56,6 +64,11 @@ class ReportFormAdapter(private val item: ProductReportReason) : RecyclerView.Ad
                 holder.bindLink(field.label, field.value)
             } else if (holder is TextAreaViewHolder && field is ProductReportReason.AdditionalField){
                 holder.bind(field)
+                with(holder.itemView.edit_text_report){
+                    setOnClickListener {
+                        inputDetailListener.invoke(field.key, text.toString(), field.min, field.max)
+                    }
+                }
             } else if (holder is UploadPhotoViewHolder && field is ProductReportReason.AdditionalField){
                 holder.bind(field)
             }
@@ -73,6 +86,18 @@ class ReportFormAdapter(private val item: ProductReportReason) : RecyclerView.Ad
                 else -> super.getItemViewType(position)
             }
         }
+    }
+
+    fun updatePhotoForType(type: String, photoUri: String) {
+        val imgUriList: MutableList<String> = inputs[type] as? MutableList<String> ?: mutableListOf<String>()
+        imgUriList.add(photoUri)
+        inputs[type] = imgUriList
+        notifyDataSetChanged()
+    }
+
+    fun updateTextInput(key: String, input: String?) {
+        inputs[key] = input ?: ""
+        notifyDataSetChanged()
     }
 
     inner class HeaderViewHolder(view: View): RecyclerView.ViewHolder(view){
@@ -119,6 +144,9 @@ class ReportFormAdapter(private val item: ProductReportReason) : RecyclerView.Ad
                 } else {
                     btn_lapor.visible()
                 }
+                btn_lapor.setOnClickListener {
+                    submitForm.invoke()
+                }
             }
         }
     }
@@ -135,27 +163,85 @@ class ReportFormAdapter(private val item: ProductReportReason) : RecyclerView.Ad
         }
     }
 
-    inner class TextAreaViewHolder(view: View): RecyclerView.ViewHolder(view){
+    inner class TextAreaViewHolder(view: View): RecyclerView.ViewHolder(view), ValidateViewHolder{
+        private var minChar = -1
+        private var maxChar = -1
+
+        override fun validate(): Boolean {
+            if (minChar == -1 && maxChar == -1) return true
+            else {
+                val input = itemView.edit_text_report.text.toString()
+                itemView.textInputLayoutReport.error = if (input.isBlank())
+                     itemView.context.getString(R.string.required_error)
+                else if (input.length < minChar){
+                    itemView.context.getString(R.string.product_hint_product_report, minChar.toString())
+                } else null
+                return input.isNotBlank() && input.length in minChar..maxChar
+            }
+        }
 
         fun bind(field: ProductReportReason.AdditionalField){
             with(itemView){
+                minChar = field.min
+                maxChar = field.max
+
+                val input = inputs[field.key]?.toString() ?: ""
                 textInputLayoutReport.setHint(field.value)
                 textInputLayoutReport.counterMaxLength = field.max
                 edit_text_report.filters = arrayOf(InputFilter.LengthFilter(field.max))
                 edit_text_report.hint = context.getString(R.string.product_hint_product_report,
                         field.min.toString())
+                edit_text_report.setText(input)
             }
         }
     }
 
-    inner class UploadPhotoViewHolder(view: View): RecyclerView.ViewHolder(view){
-        fun bind(field: ProductReportReason.AdditionalField){
-            with(itemView){
-                title_upload.text = context.getString(R.string.product_report_upload_title,
-                        field.value, field.min, field.max)
-                description_upload.text = field.detail
+    inner class UploadPhotoViewHolder(view: View): RecyclerView.ViewHolder(view), ValidateViewHolder{
+
+        private var minChar = -1
+        private var maxChar = -1
+        private val photoAdapter: UploadPhotoAdapter by lazy { UploadPhotoAdapter("",
+                addPhotoListener, this::afterRemovePhoto) }
+
+        init {
+            with(itemView.rv_uploaded_foto){
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_6),
+                        LinearLayoutManager.HORIZONTAL))
             }
         }
+
+        override fun validate(): Boolean {
+            if (minChar == -1 && maxChar == -1) return true
+            return photoAdapter.itemCount - 1 >= minChar
+        }
+
+        fun bind(field: ProductReportReason.AdditionalField){
+            with(itemView){
+                minChar = field.min
+                maxChar = field.max
+
+                photoAdapter.type = field.key
+                photoAdapter.updateMax(field.max)
+                val photoUris: List<String> = inputs[field.key] as? List<String> ?: listOf()
+                photoAdapter.updatePhoto(photoUris)
+                title_upload.text = context.getString(R.string.product_report_upload_title,
+                        field.value, photoUris.size, field.max)
+                description_upload.text = field.detail
+                rv_uploaded_foto.adapter = photoAdapter
+            }
+        }
+
+        private fun afterRemovePhoto(key: String, newList: List<String>){
+            val photoUris: MutableList<String> = inputs[key] as? MutableList<String> ?: mutableListOf()
+            photoUris.clear()
+            photoUris.addAll(newList)
+            notifyItemChanged(adapterPosition)
+        }
+    }
+
+    interface ValidateViewHolder{
+        fun validate(): Boolean
     }
 
     companion object{

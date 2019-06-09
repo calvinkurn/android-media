@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.report.view.viewmodel.ProductReportSubmitViewModel
 import com.tokopedia.report.view.viewmodel.ProductReportViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,4 +22,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ProductReportViewModel::class)
     internal abstract fun productInfoViewModel(viewModel: ProductReportViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ProductReportSubmitViewModel::class)
+    internal abstract fun productReportSubmitViewModel(viewModel: ProductReportSubmitViewModel): ViewModel
 }

@@ -39,19 +39,4 @@
         android:layout_marginTop="@dimen/dp_10"
         tools:visibility="gone"/>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/btn_add_foto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/product_report_upload_foto"
-        android:textColor="@color/Green_G500"
-        android:lineSpacingExtra="@dimen/sp_6"
-        android:layout_marginTop="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
-        android:gravity="center"
-        android:background="@drawable/report_bg_button_white_greenborder"
-        app:typographyWeight="bold"
-        app:typographyType="heading_6"/>
-
 </LinearLayout>
