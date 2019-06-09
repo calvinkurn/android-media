@@ -224,7 +224,7 @@ class ProductDetailTracking() {
 
     fun eventRecommendationImpression(position: Int, product: Product, recommendationType: String, isTopAds: Boolean) {
         var listValue = LIST_DEFAULT.plus(recommendationType)
-        if (isTopAds) listValue = "$listValue - product top ads"
+        if (isTopAds) listValue = "$listValue - product topads"
 
         TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(KEY_EVENT, "productView",

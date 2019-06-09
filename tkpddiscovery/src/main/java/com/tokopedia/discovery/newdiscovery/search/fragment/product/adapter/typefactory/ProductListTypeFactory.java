@@ -4,9 +4,8 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactory;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 
@@ -18,8 +17,6 @@ public interface ProductListTypeFactory extends BrowseSectionTypeFactory {
     int type(ProductItem productItem);
 
     int type(HeaderViewModel headerViewModel);
-
-    int type(GuidedSearchViewModel guidedSearchViewModel);
 
     int type(TopAdsViewModel topAdsViewModel);
 

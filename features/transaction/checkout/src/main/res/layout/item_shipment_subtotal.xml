@@ -175,6 +175,26 @@
             android:gravity="end"
             tools:text="Rp 19.000" />
 
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_priority_fee"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_additional_fee"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:text="@string/label_order_priority_cost" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_priority_fee_price"
+            style="@style/TextSmallMediumBlack70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tv_additional_fee"
+            android:gravity="end"
+            tools:text="Rp 19.000" />
+
         <TextView
             android:id="@+id/tv_promo_text"
             style="@style/TextSmallNormalBlack54"

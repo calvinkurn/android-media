@@ -1,3 +1,14 @@
 <resources>
     <string name="title_shop_setting">Pengaturan Toko</string>
+    <string name="title_shop_postal_code">Kode Pos</string>
+    <string name="error_postal_code_empty">Tidak menemukan data, harap mencari sesuai dengan kode pos kota Anda</string>
+    <string name="open_shop_static_title">Yuk, siapkan produk pertamamu dan\nmulai berjualan</string>
+    <string name="open_shop_add_product">Tambah Produk</string>
+    <string name="open_shop_add_product_later">Nanti Saja</string>
+    <string name="open_shop_label_courier">Layanan kurir di daerahmu otomatis\ndiaktifkan. Cek dan atur sesuai\nkebutuhanmu di sini</string>
+    <string name="hello_label_static">sudah siap</string>
+    <string name="hello_user_name">Hore! <![CDATA[<b>%1$s</b>]]>, tokomu</string>
+    <string name="message_advice_search_postal_code">Untuk mempersingkat waktu, isi dengan kode pos tujuan pengiriman</string>
+
+
 </resources>

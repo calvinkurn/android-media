@@ -156,7 +156,9 @@
     <!-- Open Shop -->
     <string name="shop_name">Nama Toko</string>
     <string name="domain_name">Nama Domain</string>
-    <string name="fill_domain_and_shop">Isi nama dan domain toko!</string>
+    <string name="shop_address">Kota atau Kecamatan</string>
+    <string name="shop_postal_code">Kode Pos</string>
+    <string name="fill_domain_and_shop">Isi detail tokomu!</string>
     <string name="hello_x">Halo, <![CDATA[<b>%1$s</b>]]></string>
     <string name="openshop_make_sure_pickup_location">Pastikan Lokasi Pickup Anda telah sesuai untuk jasa pengiriman Go-JEK, Grab &amp; Ninja Express</string>
     <string name="label_pickup_location">Lokasi Pickup</string>
