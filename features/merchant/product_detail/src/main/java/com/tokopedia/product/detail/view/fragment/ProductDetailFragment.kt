@@ -157,6 +157,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     lateinit var performanceMonitoringP1: PerformanceMonitoring
     lateinit var performanceMonitoringP2: PerformanceMonitoring
+    lateinit var performanceMonitoringP2General: PerformanceMonitoring
+    lateinit var performanceMonitoringP2Login: PerformanceMonitoring
     lateinit var performanceMonitoringFull: PerformanceMonitoring
     lateinit var remoteConfig: RemoteConfig
 
@@ -206,6 +208,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         private const val PDP_P1_TRACE = "mp_pdp_p1"
         private const val PDP_P2_TRACE = "mp_pdp_p2"
+        private const val PDP_P2_GENERAL_TRACE = "mp_pdp_p2_general"
+        private const val PDP_P2_LOGIN_TRACE = "mp_pdp_p2_login"
         private const val PDP_P3_TRACE = "mp_pdp_p3"
         private const val ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant"
 
@@ -298,6 +302,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         })
 
         productInfoViewModel.p2General.observe(this, Observer {
+            performanceMonitoringP2General.stopTrace()
             it?.run {
                 renderProductInfo2(this)
                 if (variantResp == null)
@@ -308,6 +313,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         })
 
         productInfoViewModel.p2Login.observe(this, Observer {
+            if (::performanceMonitoringFull.isInitialized)
+                performanceMonitoringP2Login.stopTrace()
             it?.run{ renderProductInfoP2Login(this) }
         })
 
@@ -350,8 +357,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         performanceMonitoringP1 = PerformanceMonitoring.start(PDP_P1_TRACE)
         performanceMonitoringP2 = PerformanceMonitoring.start(PDP_P2_TRACE)
-        if (productInfoViewModel.isUserSessionActive())
+        performanceMonitoringP2General = PerformanceMonitoring.start(PDP_P2_GENERAL_TRACE)
+
+        if (productInfoViewModel.isUserSessionActive()) {
+            performanceMonitoringP2Login = PerformanceMonitoring.start(PDP_P2_LOGIN_TRACE)
             performanceMonitoringFull = PerformanceMonitoring.start(PDP_P3_TRACE)
+        }
 
         initializePartialView(view)
         initView()
