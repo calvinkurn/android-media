@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -20,14 +21,13 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.common.data.Sort;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
-import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
@@ -36,7 +36,9 @@ import com.tokopedia.discovery.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
+import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.io.Serializable;
@@ -59,6 +61,7 @@ public abstract class SearchSectionFragment
         RequestDynamicFilterListener {
 
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
+    public static final int REQUEST_CODE_LOGIN = 561;
 
     protected static final int START_ROW_FIRST_TIME_LOAD = 0;
 
@@ -440,7 +443,7 @@ public abstract class SearchSectionFragment
     public void getDynamicFilter() {
         if (canRequestDynamicFilter()) {
             isGettingDynamicFilter = true;
-            getPresenter().requestDynamicFilter();
+            getPresenter().requestDynamicFilter(searchParameter.getSearchParameterMap());
         }
     }
 
@@ -498,19 +501,6 @@ public abstract class SearchSectionFragment
 
     protected boolean isRefreshing() {
         return refreshLayout.isRefreshing();
-    }
-
-    protected TopAdsParams enrichWithFilterAndSortParams(TopAdsParams topAdsParams) {
-        if (getSelectedSort() != null) {
-            topAdsParams.getParam().putAll(getSelectedSort());
-        }
-        if (getSelectedFilter() != null) {
-            topAdsParams.getParam().putAll(getSelectedFilter());
-        }
-        if (getExtraFilter() != null) {
-            topAdsParams.getParam().putAll(getExtraFilter());
-        }
-        return topAdsParams;
     }
 
     @Override
@@ -651,5 +641,26 @@ public abstract class SearchSectionFragment
         if(getActivity() == null || getActivity().getApplication() == null) return null;
 
         return ((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent();
+    }
+
+    @Override
+    public void logDebug(String tag, String message) {
+        Log.d(tag, message);
+    }
+
+    @Override
+    public void launchLoginActivity(String productId) {
+        Bundle extras = new Bundle();
+        extras.putString("product_id", productId);
+
+        if (getActivity() == null) return;
+
+        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
+
+        if (router != null) {
+            Intent intent = router.getLoginIntent(getActivity());
+            intent.putExtras(extras);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN);
+        }
     }
 }

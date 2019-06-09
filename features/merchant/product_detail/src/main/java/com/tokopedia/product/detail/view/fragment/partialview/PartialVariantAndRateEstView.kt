@@ -7,6 +7,7 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -104,6 +105,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
                     priority_order_divider.gone()
                 }
                 icon_priority_order.visible()
+                ImageHandler.LoadImage(icon_priority_order,shopCommitment.iconUrl)
                 txt_priority_order_title.visible()
                 txt_priority_order_message.visible()
                 txt_priority_order_message.text = MethodChecker.fromHtml(shopCommitment.staticMessages.pdpMessage)

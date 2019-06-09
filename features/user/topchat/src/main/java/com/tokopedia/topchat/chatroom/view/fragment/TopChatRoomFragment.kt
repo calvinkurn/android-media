@@ -660,7 +660,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         activity?.let {
             val router = (it.application as TopChatRouter)
-            val shopName = (arguments?.get(ApplinkConst.Chat.PARAM_HEADER) as ChatRoomHeaderViewModel).name
             (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
             var shopId = this.shopId
             if(shopId == 0) {

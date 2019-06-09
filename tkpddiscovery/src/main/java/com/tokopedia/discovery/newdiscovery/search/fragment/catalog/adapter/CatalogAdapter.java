@@ -13,14 +13,12 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +28,7 @@ import java.util.List;
  */
 
 @SuppressWarnings({"FieldCanBeLocal", "unused", "WeakerAccess"})
-public class CatalogAdapter extends SearchSectionGeneralAdapter {
+public class CatalogAdapter extends BrowseSectionGeneralAdapter {
 
     private static final String INSTANCE_NEXT_PAGE = "INSTANCE_NEXT_PAGE";
     private static final String INSTANCE_LIST_DATA = "INSTANCE_LIST_DATA";
@@ -181,7 +179,7 @@ public class CatalogAdapter extends SearchSectionGeneralAdapter {
     }
 
     @Override
-    protected SearchSectionTypeFactory getTypeFactory() {
+    protected BrowseSectionTypeFactory getTypeFactory() {
         return typeFactory;
     }
 

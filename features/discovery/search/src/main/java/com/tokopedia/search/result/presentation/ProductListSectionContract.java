@@ -95,8 +95,6 @@ public interface ProductListSectionContract {
     interface Presenter extends SearchSectionContract.Presenter<View> {
         void setWishlistActionListener(WishListActionListener wishlistActionListener);
 
-        void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener);
-
         void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams);
 
         void loadData(Map<String, Object> searchParameter, Map<String, String> additionalParams, boolean isFirstTimeLoad);

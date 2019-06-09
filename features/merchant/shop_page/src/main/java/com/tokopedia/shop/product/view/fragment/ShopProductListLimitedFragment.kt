@@ -337,9 +337,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             shopProductAdapter.clearPromoData()
             shopProductAdapter.clearMerchantVoucherData()
             shopProductAdapter.clearFeaturedData()
-
-            //shopProductLimitedListPresenter.loadProductPromoModel(getOfficialWebViewUrl(shopInfo))
-
+            viewModel.renderProductPromoModel(getOfficialWebViewUrl(shopInfo), this::renderShopProductPromo)
             loadVoucherList()
 
             viewModel.getFeaturedProduct(it.shopCore.shopID, false)
@@ -351,8 +349,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         if (shopInfo == null) {
             return ""
         }
-        // TODO APA ITU SHOP OFFICIAL TOP?
-        var officialWebViewUrl = ""/*shopInfo.getInfo().getShopOfficialTop()*/
+
+        var officialWebViewUrl = shopInfo.topContent.topUrl
         officialWebViewUrl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) officialWebViewUrl else ""
         officialWebViewUrl = if (TextApiUtils.isTextEmpty(officialWebViewUrl)) "" else officialWebViewUrl
         return officialWebViewUrl

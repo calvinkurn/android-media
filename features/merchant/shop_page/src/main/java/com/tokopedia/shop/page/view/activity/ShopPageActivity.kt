@@ -606,11 +606,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun openShop() {
-        val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) ?: return
-        if (GlobalConfig.isCustomerApp()){
-            shopPageTracking.sendGeneralManageShop()
-        }
-        startActivity(intent)
+        shopPageTracking.sendOpenShop();
+        RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
     }
 
 

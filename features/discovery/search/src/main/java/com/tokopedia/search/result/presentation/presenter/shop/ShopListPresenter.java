@@ -40,7 +40,6 @@ final class ShopListPresenter
     UserSessionInterface userSession;
 
     private SearchShopListener searchShopListener;
-    private RequestDynamicFilterListener requestDynamicFilterListener;
     private FavoriteActionListener favoriteActionListener;
 
     @Override
@@ -60,11 +59,6 @@ final class ShopListPresenter
     @Override
     public void setFavoriteActionListener(FavoriteActionListener favoriteActionListener) {
         this.favoriteActionListener = favoriteActionListener;
-    }
-
-    @Override
-    public void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener) {
-        this.requestDynamicFilterListener = requestDynamicFilterListener;
     }
 
     @Override
@@ -109,9 +103,8 @@ final class ShopListPresenter
 
     private RequestParams createSearchShopParam(Map<String, Object> searchParameter) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(searchParameter);
-
         putRequestParamsOtherParameters(requestParams);
+        requestParams.putAll(searchParameter);
 
         return requestParams;
     }
@@ -126,10 +119,10 @@ final class ShopListPresenter
     }
 
     @Override
-    public void requestDynamicFilter() {
+    public void requestDynamicFilter(Map<String, Object> searchParameter) {
         requestDynamicFilterCheckForNulls();
 
-        RequestParams requestParams = createRequestDynamicFilterParams();
+        RequestParams requestParams = createRequestDynamicFilterParams(searchParameter);
 
         getDynamicFilterUseCase.execute(requestParams, new RequestDynamicFilterSubscriber(requestDynamicFilterListener));
     }
@@ -141,16 +134,12 @@ final class ShopListPresenter
         if(userSession == null) throw new RuntimeException("UserSession is not injected.");
     }
 
-    private RequestParams createRequestDynamicFilterParams() {
+    private RequestParams createRequestDynamicFilterParams(Map<String, Object> searchParameter) {
         RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(searchParameter);
         requestParams.putAllString(generateParamsNetwork(requestParams));
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SHOP);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
-        requestParams.putString(SearchApiConst.SC, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SC);
-
-        enrichWithFilterAndSortParams(requestParams);
-        removeDefaultCategoryParam(requestParams);
 
         return requestParams;
     }
