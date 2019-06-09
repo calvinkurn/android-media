@@ -1,6 +1,5 @@
 package com.tokopedia.browse.categoryNavigation.view
 
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -35,13 +34,6 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupToolbar()
-        setupActionBarHomeIndicatorIcon()
-    }
-
-    private fun setupActionBarHomeIndicatorIcon() {
-        if (supportActionBar != null && isShowCloseButton) {
-            supportActionBar!!.setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default))
-        }
     }
 
     private fun setupToolbar() {
