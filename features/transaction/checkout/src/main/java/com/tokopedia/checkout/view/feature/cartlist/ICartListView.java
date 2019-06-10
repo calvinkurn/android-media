@@ -110,4 +110,6 @@ public interface ICartListView extends IBaseView {
     void onSuccessClearPromoStackAfterClash();
 
     String getCartId();
+
+    PromoStackingData getPromoStackingGlobalData();
 }

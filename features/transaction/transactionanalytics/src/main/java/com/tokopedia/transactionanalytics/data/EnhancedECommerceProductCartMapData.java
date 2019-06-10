@@ -36,6 +36,10 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_DIMENSION_80 = "dimension80";
     private static final String KEY_DIMENSION_12 = "dimension12";
     private static final String KEY_ATTRIBUTION = "attribution";
+    private static final String KEY_WAREHOUSE_ID = "warehouse_id";
+    private static final String KEY_PRODUCT_WEIGHT = "product weight";
+    private static final String KEY_PROMO_CODE_1 = "promo code 1";
+    private static final String KEY_PROMO_DETAILS = "promo_details";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
@@ -132,4 +136,21 @@ public class EnhancedECommerceProductCartMapData {
     public void setDimension12(String shippingCourierPrice) {
         Product.put(KEY_DIMENSION_12, !TextUtils.isEmpty(shippingCourierPrice) ? shippingCourierPrice : DEFAULT_VALUE_NONE_OTHER);
     }
+
+    public void setWarehouseId(String warehouseId) {
+        Product.put(KEY_WAREHOUSE_ID, !TextUtils.isEmpty(warehouseId) ? warehouseId : DEFAULT_VALUE_NONE_OTHER);
+    }
+
+    public void setProductWeight(String productWeight) {
+        Product.put(KEY_PRODUCT_WEIGHT, !TextUtils.isEmpty(productWeight) ? productWeight : DEFAULT_VALUE_NONE_OTHER);
+    }
+
+    public void setPromoCode1(String promoCodes) {
+        Product.put(KEY_PROMO_CODE_1, !TextUtils.isEmpty(promoCodes) ? promoCodes : "");
+    }
+
+    public void setPromoDetails(String promoDetails) {
+        Product.put(KEY_PROMO_DETAILS, !TextUtils.isEmpty(promoDetails) ? promoDetails : "");
+    }
+
 }
