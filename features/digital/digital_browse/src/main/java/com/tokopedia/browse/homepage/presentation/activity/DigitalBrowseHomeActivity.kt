@@ -145,25 +145,6 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
 }
 
 
-@DeepLink(ApplinkConstant.DIGITAL_BROWSE)
-fun getCallingIntent(context: Context, extras: Bundle): Intent {
-    val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-    val intent = Intent(context, DigitalBrowseHomeActivity::class.java)
-
-    if (!extras.containsKey(DigitalBrowseHomeActivity.EXTRA_TITLE)) {
-        if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_BELANJA) {
-            extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_BELANJA)
-        } else if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_LAYANAN) {
-            extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_LAYANAN)
-        }
-    }
-
-    return intent.setData(uri.build()).putExtras(extras)
-}
-
-
-
-
 /*@DeepLink(ApplinkConstant.DIGITAL_BROWSE)
 fun getCallingIntent(context: Context, extras: Bundle): Intent {
     val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
@@ -179,3 +160,23 @@ fun getCallingIntent(context: Context, extras: Bundle): Intent {
 
     return intent.setData(uri.build()).putExtras(extras)
 }*/
+
+
+
+
+@DeepLink(ApplinkConstant.DIGITAL_BROWSE)
+fun getCallingIntent(context: Context, extras: Bundle): Intent {
+    val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+    var intent = Intent(context, DigitalBrowseHomeActivity::class.java)
+
+    if (!extras.containsKey(DigitalBrowseHomeActivity.EXTRA_TITLE)) {
+        if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_BELANJA) {
+            extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_BELANJA)
+            intent = Intent(context, CategoryBrowseActivity::class.java)
+        } else if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_LAYANAN) {
+            extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_LAYANAN)
+        }
+    }
+
+    return intent.setData(uri.build()).putExtras(extras)
+}
