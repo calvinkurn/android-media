@@ -43,6 +43,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.shippingRecommendation)
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.productDetailCommon)
 
     implementation rootProject.ext.miscDependencies.chips

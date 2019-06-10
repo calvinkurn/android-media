@@ -44,7 +44,11 @@ data class HotelReview(
 
         @SerializedName("createTime")
         @Expose
-        val createTime: String = ""
+        val createTime: String = "",
+
+        @SerializedName("country")
+        @Expose
+        val country: String = ""
 
 ) : Visitable<ReviewAdapterTypeFactory> {
 

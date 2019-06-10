@@ -3,7 +3,7 @@ package com.tokopedia.digital.newcart.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.payment.model.TopPayBaseModel;
+import com.tokopedia.common.payment.model.TopPayBaseModel;
 
 
 /**

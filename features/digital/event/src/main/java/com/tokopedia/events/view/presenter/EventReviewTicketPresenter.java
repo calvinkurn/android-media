@@ -42,7 +42,7 @@ import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartRespons
 import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
-import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -475,7 +475,7 @@ public class EventReviewTicketPresenter
                 @Override
                 public void onNext(CheckoutResponse checkoutResponse) {
 
-                    PaymentPassData paymentPassData = new com.tokopedia.payment.model.PaymentPassData();
+                    PaymentPassData paymentPassData = new com.tokopedia.common.payment.model.PaymentPassData();
                     paymentPassData.setQueryString(checkoutResponse.getQueryString());
                     paymentPassData.setRedirectUrl(checkoutResponse.getRedirectUrl());
                     paymentPassData.setCallbackSuccessUrl(checkoutResponse.getCallbackUrlSuccess());

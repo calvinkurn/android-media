@@ -2,6 +2,7 @@ package com.tokopedia.hotel.booking.presentation.widget
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.design.component.BottomSheets
@@ -21,6 +22,18 @@ class HotelBookingBottomSheets : BottomSheets() {
     override fun initView(view: View) {
         val contentView: LinearLayout = view.findViewById(R.id.hotel_booking_container)
         for (viewItem in contentViewList) contentView.addView(viewItem)
+    }
+
+    override fun configView(parentView: View?) {
+        super.configView(parentView)
+
+        val displaymetrics = DisplayMetrics()
+        activity!!.windowManager.defaultDisplay.getMetrics(displaymetrics)
+        val widthSpec = View.MeasureSpec.makeMeasureSpec(displaymetrics.widthPixels, View.MeasureSpec.EXACTLY)
+        parentView?.post {
+            parentView.measure(widthSpec, 0)
+            updateHeight(parentView.measuredHeight)
+        }
     }
 
     override fun title() = title
