@@ -137,8 +137,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     fun initView() {
         filter_recycler_view.listener = this
-        filter_recycler_view.setItem(arrayListOf(getString(PAY_IN_HOTEL),
-                getString(FREE_BREAKFAST), getString(FREE_CANCELABLE)),
+        filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_room_list_filter_free_breakfast),
+                getString(R.string.hotel_room_list_filter_free_cancelable)),
                 R.color.snackbar_border_normal)
 
         recycler_view.addItemDecoration(object : RecyclerView.ItemDecoration() {
@@ -289,14 +289,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onChipClickListener(string: String, isSelected: Boolean) {
         when (string) {
-            getString(FREE_BREAKFAST) -> {
+            getString(R.string.hotel_room_list_filter_free_breakfast) -> {
                 roomListViewModel.clickFilter(clickFreeBreakfast = true)
             }
-            getString(FREE_CANCELABLE) -> {
+            getString(R.string.hotel_room_list_filter_free_cancelable) -> {
                 roomListViewModel.clickFilter(clickFreeCancelable = true)
-            }
-            getString(PAY_IN_HOTEL) -> {
-                roomListViewModel.clickFilter(clickPayInHotel = true)
             }
         }
     }
@@ -321,6 +318,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         var emptyModel = EmptyModel()
+        emptyModel.iconRes = R.drawable.ic_empty_room_listing
         if (roomListViewModel.isFilter) {
             emptyModel.title = getString(R.string.hotel_room_not_found_title_after_filter)
             emptyModel.content = getString(R.string.hotel_room_not_found_subtitle_after_filter)
@@ -357,9 +355,6 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     companion object {
-        val FREE_BREAKFAST = R.string.hotel_room_list_filter_free_breakfast
-        val FREE_CANCELABLE = R.string.hotel_room_list_filter_free_cancelable
-        val PAY_IN_HOTEL = R.string.hotel_room_list_filter_pay_in_hotel
 
         const val RESULT_ROOM_DETAIL = 102
 
