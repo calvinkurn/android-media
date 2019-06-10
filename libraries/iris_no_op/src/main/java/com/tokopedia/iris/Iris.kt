@@ -26,6 +26,12 @@ interface Iris {
     fun setDeviceId(deviceId: String)
 
     companion object {
-        fun init(context: Context): Iris? = IrisAnalytics(context)
+        @JvmStatic
+        fun getInstance(context: Context) : Iris {
+            return IrisAnalytics(context)
+        }
+
+        fun deleteInstance() {
+        }
     }
 }
