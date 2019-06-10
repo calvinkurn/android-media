@@ -106,19 +106,28 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager.setCurrentItem(tab.position, true)
                 sendAnalytics(tab.position)
+                clearNotifCounter(tab.position)
                 setTabSelectedView(tab.customView)
                 resetCircle(tab.customView)
             }
         })
     }
 
-    private fun clearNotificationUpdateCounter() {
+    private fun clearNotifCounter(position: Int) {
+        if(position == INDEX_NOTIFICATION_UPDATE) {
+            presenter.clearNotifCounter()
+            resetCounterNotificationUpdate()
+        }
+    }
+
+
+    override fun resetCounterNotificationUpdate() {
         updateCounter = 0
         setCounterNotificationUpdate()
     }
 
     private fun sendAnalytics(position: Int) {
-        if(position == 1) {
+        if(position == INDEX_NOTIFICATION_UPDATE) {
             analytics.trackClickNewestInfo()
         }
     }
@@ -182,6 +191,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         super.onDestroy()
         presenter.detachView()
     }
+
 
     companion object {
 

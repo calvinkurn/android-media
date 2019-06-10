@@ -75,28 +75,15 @@
         android:layout_gravity="bottom"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_8"
-        android:paddingStart="@dimen/dp_8"
         android:paddingRight="@dimen/dp_2"
-        android:paddingEnd="@dimen/dp_2"
         android:visibility="gone"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/interaction_button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible"
         tools:itemCount="3"
         tools:listitem="@layout/dynamic_icon_item" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/interaction_button"
-        android:layout_height="@dimen/dp_44"
-        android:layout_width="@dimen/dp_50"
-        android:paddingLeft="@dimen/dp_6"
-        android:paddingStart="@dimen/dp_6"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lottie_fileName="heart_button.json"
-        tools:src="@drawable/password_hint_layout"/>
 
 </android.support.constraint.ConstraintLayout>
