@@ -260,6 +260,7 @@ open class PlayViewStateImpl(
             setChatListHasSpaceOnTop(false)
             analytics.eventClickShowVideoToggle(viewModel?.channelId)
         }
+        errorView.setOnClickListener {  }
 
         interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
 
