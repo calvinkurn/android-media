@@ -8,10 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
@@ -21,6 +19,7 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenter;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenterImpl;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core2.R;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
@@ -28,17 +27,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
-
 /**
  * Created by hangnadi on 1/29/16.
  */
-@RuntimePermissions
 public class GeolocationActivity extends BasePresenterActivity<GeolocationPresenter>
         implements GeolocationView, ITransactionAnalyticsGeoLocationPinPoint {
 
@@ -133,7 +124,6 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
                 //        Manifest.permission.ACCESS_FINE_LOCATION
                 //))
         );
-        GeolocationActivityPermissionsDispatcher.initFragmentWithCheck(this);
     }
 
     @Override
