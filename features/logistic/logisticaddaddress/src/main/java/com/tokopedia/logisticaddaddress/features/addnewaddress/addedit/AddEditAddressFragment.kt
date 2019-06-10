@@ -3,10 +3,14 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
+import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResultCallback
@@ -19,18 +23,27 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.DistrictRecommendationBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapListener
+import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.add_address.AddAddressDataUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
-import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
 import kotlinx.android.synthetic.main.fragment_add_edit_new_address.*
 import kotlinx.android.synthetic.main.header_add_new_address_data_item.*
@@ -41,14 +54,20 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-05-22.
  */
 class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, ResultCallback<LocationSettingsResult>, AddEditAddressListener{
+                              GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback,
+                              ResultCallback<LocationSettingsResult>, AddEditAddressListener,
+                              DistrictRecommendationBottomSheetFragment.ActionListener,
+                              AutocompleteBottomSheetListener,
+                              PinpointMapListener{
 
     private var googleMap: GoogleMap? = null
     private var saveAddressDataModel: SaveAddressDataModel? = null
+    private var token: Token? = null
     private var currentLat: Double? = 0.0
     private var currentLong: Double? = 0.0
     private var labelRumah: String? = "Rumah"
     private var isMismatch: Boolean? = false
+    private var districtId: Int? = 0
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private lateinit var etLabelAlamat: EditText
     private lateinit var etNamaPenerima: EditText
@@ -58,19 +77,23 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     lateinit var presenter: AddEditAddressPresenter
 
     @Inject
+    lateinit var autoCompletePresenter: AutocompleteBottomSheetPresenter
+
+    @Inject
+    lateinit var pinpointMapPresenter: PinpointMapPresenter
+
+    @Inject
     lateinit var userSession: UserSessionInterface
 
     companion object {
-        private const val CURRENT_IS_MISMATCH = "CURRENT_IS_MISMATCH"
-        private const val CURRENT_SAVE_DATA_UI_MODEL = "CURRENT_SAVE_DATA_UI_MODEL"
-
         @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
         @JvmStatic
         fun newInstance(extra: Bundle): AddEditAddressFragment {
             return AddEditAddressFragment().apply {
                 arguments = Bundle().apply {
-                    putBoolean(CURRENT_IS_MISMATCH, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH))
-                    putParcelable(CURRENT_SAVE_DATA_UI_MODEL, extra.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL))
+                    putBoolean(AddressConstants.EXTRA_IS_MISMATCH, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH))
+                    putParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL))
+                    putParcelable(AddressConstants.KERO_TOKEN, extra.getParcelable(AddressConstants.KERO_TOKEN))
                 }
             }
         }
@@ -79,8 +102,9 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            isMismatch = arguments?.getBoolean(CURRENT_IS_MISMATCH)
-            saveAddressDataModel = arguments?.getParcelable(CURRENT_SAVE_DATA_UI_MODEL)
+            isMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)
+            saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
+            token = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
             currentLat = saveAddressDataModel?.latitude?.toDouble()
             currentLong = saveAddressDataModel?.longitude?.toDouble()
         }
@@ -108,7 +132,16 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             mismatch_map_view_detail.getMapAsync(this)
             ll_normal.visibility = View.GONE
             ll_mismatch.visibility = View.VISIBLE
-            mismatch_btn_map.text = getString(R.string.define_pinpoint)
+            mismatch_btn_map.apply {
+                text = getString(R.string.define_pinpoint)
+                setOnClickListener {
+                    if (et_kota_kecamatan.text.isEmpty()) {
+                        showToastError(getString(R.string.choose_district_first))
+                    } else {
+                        presenter.changePinpoint(currentLat, currentLong, token, true, districtId)
+                    }
+                }
+            }
             et_label_address_mismatch.setText(labelRumah)
             et_receiver_name_mismatch.setText(userSession.name)
             et_phone_mismatch.setText(userSession.phoneNumber)
@@ -143,7 +176,7 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     private fun showDistrictRecommendationBottomSheet() {
         val districtRecommendationBottomSheetFragment =
                 DistrictRecommendationBottomSheetFragment.newInstance()
-        // districtRecommendationBottomSheetFragment.setActionListener(this)
+        districtRecommendationBottomSheetFragment.setActionListener(this)
         districtRecommendationBottomSheetFragment.show(fragmentManager, "")
     }
 
@@ -192,6 +225,8 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
                     .build()
                     .inject(this@AddEditAddressFragment)
             presenter.attachView(this@AddEditAddressFragment)
+            autoCompletePresenter.attachView(this@AddEditAddressFragment)
+            pinpointMapPresenter.attachView(this@AddEditAddressFragment)
         }
     }
 
@@ -255,5 +290,56 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         intent?.putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }
+
+    override fun onGetDistrict(districtSelected: String, districtName: String, districtId: Int) {
+        et_kota_kecamatan.setText(districtSelected)
+        autoCompletePresenter.getAutocomplete(districtName)
+        this.districtId = districtId
+    }
+
+    override fun hideListPointOfInterest() {
+    }
+
+    override fun onSuccessGetAutocompleteGeocode(dataUiModel: AutocompleteGeocodeDataUiModel) {
+    }
+
+    override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
+        pinpointMapPresenter.getDistrict(dataUiModel.listPredictions[0].placeId)
+    }
+
+    override fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel) {
+        currentLat = getDistrictDataUiModel.latitude.toDouble()
+        currentLong = getDistrictDataUiModel.longitude.toDouble()
+        moveMap(PinpointMapUtils.generateLatLng(currentLat, currentLong))
+    }
+
+    override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
+    }
+
+    override fun showFailedDialog() {
+    }
+
+    override fun goToAddEditActivity(isMismatch: Boolean) {
+    }
+
+    fun showToastError(message: String) {
+        var msg = message
+        if (view != null && activity != null) {
+            if (message.isEmpty()) {
+                msg = getString(R.string.default_request_error_unknown)
+            }
+            val snackbar = Snackbar.make(view!!, msg, BaseToaster.LENGTH_SHORT)
+            val snackbarTextView = snackbar.view.findViewById<TextView>(android.support.design.R.id.snackbar_text)
+            val snackbarActionButton = snackbar.view.findViewById<Button>(android.support.design.R.id.snackbar_action)
+            snackbar.view.background = ContextCompat.getDrawable(view!!.context, com.tokopedia.design.R.drawable.bg_snackbar_error)
+            snackbarTextView.setTextColor(ContextCompat.getColor(view!!.context, R.color.font_black_secondary_54))
+            snackbarActionButton.setTextColor(ContextCompat.getColor(view!!.context, R.color.font_black_primary_70))
+            snackbarTextView.maxLines = 5
+            snackbar.setAction(getString(R.string.label_action_snackbar_close)) { }.show()
+        }
+    }
+
+    override fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel) {
     }
 }

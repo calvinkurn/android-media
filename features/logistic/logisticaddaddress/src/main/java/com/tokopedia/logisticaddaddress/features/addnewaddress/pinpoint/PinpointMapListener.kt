@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 
 /**
@@ -14,4 +15,5 @@ interface PinpointMapListener: CustomerView {
     fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel)
     fun showFailedDialog()
     fun goToAddEditActivity(isMismatch: Boolean)
+    fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel)
 }

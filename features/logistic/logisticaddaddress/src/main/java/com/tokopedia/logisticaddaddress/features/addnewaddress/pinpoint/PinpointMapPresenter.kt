@@ -7,8 +7,10 @@ import com.google.android.gms.location.places.Places
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.AutofillMapper
+import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.AutofillSubscriber
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.GetDistrictSubscriber
@@ -24,10 +26,12 @@ import javax.inject.Inject
 
 @AddNewAddressScope
 class PinpointMapPresenter @Inject constructor(private val context: Context,
-                                       private val getDistrictUseCase: GetDistrictUseCase,
-                                       private val getDistrictMapper: GetDistrictMapper,
-                                       private val autofillUseCase: AutofillUseCase,
-                                       private val autofillMapper: AutofillMapper): BaseDaggerPresenter<PinpointMapListener>() {
+                                               private val getDistrictUseCase: GetDistrictUseCase,
+                                               private val getDistrictMapper: GetDistrictMapper,
+                                               private val autofillUseCase: AutofillUseCase,
+                                               private val autofillMapper: AutofillMapper,
+                                               private val districtBoundaryUseCase: DistrictBoundaryUseCase,
+                                               private val districtBoundaryMapper: DistrictBoundaryMapper): BaseDaggerPresenter<PinpointMapListener>() {
     var googleApiClient: GoogleApiClient? = null
 
     private val defaultLat: Double by lazy { -6.175794 }
@@ -113,5 +117,10 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
 
     fun getSaveAddressDataModel() : SaveAddressDataModel {
         return this.saveAddressDataModel
+    }
+
+    fun getDistrictBoundary(districtId: Int, keroToken: String, keroUt: Int) {
+        districtBoundaryUseCase.setParams(districtId, keroToken, keroUt)
+        districtBoundaryUseCase.execute(RequestParams.create(), DistrictBoundarySubscriber(view, districtBoundaryMapper))
     }
 }

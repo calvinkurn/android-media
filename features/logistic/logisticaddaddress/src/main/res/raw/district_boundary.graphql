@@ -1,0 +1,11 @@
+{
+  keroGetDistrictBoundaryArray(input: {
+    district_id: #districtId
+    token: "#keroToken"
+    ut: "#keroUt"
+  }) {
+    geometry {
+      coordinates
+    }
+  }
+}

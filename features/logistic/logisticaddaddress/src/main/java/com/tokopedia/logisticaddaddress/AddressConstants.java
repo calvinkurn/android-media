@@ -47,7 +47,10 @@ public class AddressConstants {
     public static final String EXTRA_LONG = "EXTRA_LONG";
     public static final String EXTRA_DETAIL_ADDRESS = "EXTRA_DETAIL_ADDRESS";
     public static final String EXTRA_SHOW_AUTOCOMPLETE = "EXTRA_SHOW_AUTOCOMPLETE";
+    public static final String EXTRA_REQUEST_LOCATION = "EXTRA_REQUEST_LOCATION";
     public static final String EXTRA_IS_MISMATCH = "EXTRA_IS_MISMATCH";
+    public static final String EXTRA_IS_POLYGON = "EXTRA_IS_POLYGON";
+    public static final String EXTRA_DISTRICT_ID = "EXTRA_DISTRICT_ID";
     public static final String EXTRA_SAVE_DATA_UI_MODEL = "EXTRA_SAVE_DATA_UI_MODEL";
     public static final Double MONAS_LAT = -6.175794;
     public static final Double MONAS_LONG = 106.826457;

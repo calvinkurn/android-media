@@ -95,6 +95,8 @@
     <string name="define_pinpoint">Tentukan Lokasi Pinpoint Anda</string>
     <string name="kota_kecamatan">Kota atau Kecamatan</string>
     <string name="kota_populer">Kota populer</string>
+    <string name="label_action_snackbar_close">Tutup</string>
+    <string name="choose_district_first">Silahkan Pilih Kota/Kecamatan terlebih dahulu</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

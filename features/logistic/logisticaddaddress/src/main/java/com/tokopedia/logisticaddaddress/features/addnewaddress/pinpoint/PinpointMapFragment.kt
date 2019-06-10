@@ -1,17 +1,22 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.CoordinatorLayout
+import android.support.v4.app.ActivityCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResultCallback
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationSettingsResult
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -19,6 +24,8 @@ import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.component.Dialog
@@ -29,8 +36,11 @@ import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComp
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.et_detail_address
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
@@ -51,9 +61,15 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     val handler = Handler()
     private var unnamedRoad: String = "Unnamed Road"
     private var isShowingAutocomplete: Boolean? = null
+    private var isRequestingLocation: Boolean? = null
     private var isGetDistrict = false
     private val FINISH_FLAG = 1212
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var permissionCheckerHelper: PermissionCheckerHelper? = null
+    private var token: Token? = null
+    private var isPolygon: Boolean? = null
+    private var districtId: Int? = null
 
     @Inject
     lateinit var presenter: PinpointMapPresenter
@@ -81,18 +97,44 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
                     putDouble(AddressConstants.EXTRA_LAT, extra.getDouble(AddressConstants.EXTRA_LAT))
                     putDouble(AddressConstants.EXTRA_LONG, extra.getDouble(AddressConstants.EXTRA_LONG))
                     putBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, extra.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE))
+                    putBoolean(AddressConstants.EXTRA_REQUEST_LOCATION, extra.getBoolean(AddressConstants.EXTRA_REQUEST_LOCATION))
+                    putParcelable(AddressConstants.KERO_TOKEN, extra.getParcelable(AddressConstants.KERO_TOKEN))
+                    putBoolean(AddressConstants.EXTRA_IS_POLYGON, extra.getBoolean(AddressConstants.EXTRA_IS_POLYGON))
+                    putInt(AddressConstants.EXTRA_DISTRICT_ID, extra.getInt(AddressConstants.EXTRA_DISTRICT_ID))
                 }
             }
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        // current_location
+        /*if (this.isRequestingLocation!!) {
+            if (!checkPermissions()) {
+                requestPermissions()
+            } else {
+                getLastLocation()
+            }
+        }*/
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
+            token = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
             currentLat = arguments?.getDouble(AddressConstants.EXTRA_LAT)
             currentLong = arguments?.getDouble(AddressConstants.EXTRA_LONG)
             isShowingAutocomplete = arguments?.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE)
+            isRequestingLocation = arguments?.getBoolean(AddressConstants.EXTRA_REQUEST_LOCATION)
+            isPolygon = arguments?.getBoolean(AddressConstants.EXTRA_IS_POLYGON)
+            districtId = arguments?.getInt(AddressConstants.EXTRA_DISTRICT_ID)
         }
+
+        // current_location
+        /*if (this.isRequestingLocation!!) {
+            fusedLocationClient = activity?.let { LocationServices.getFusedLocationProviderClient(it) }!!
+        }*/
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -123,6 +165,17 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
         MapsInitializer.initialize(activity!!)
         moveMap(PinpointMapUtils.generateLatLng(currentLat, currentLong))
+
+        // add polygon?
+        if (isPolygon != null) {
+            if (isPolygon as Boolean) {
+                districtId?.let { districtId ->
+                    token?.let { token ->
+                        presenter.getDistrictBoundary(districtId, token.districtRecommendation, token.ut)
+                    }
+                }
+            }
+        }
 
         // nanti cek permission location di sini!
         if (isShowingAutocomplete == true) {
@@ -267,6 +320,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         val intent = Intent(context, AddEditAddressActivity::class.java)
         intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH, isMismatch)
         intent.putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, presenter.getSaveAddressDataModel())
+        intent.putExtra(AddressConstants.KERO_TOKEN, token)
         startActivityForResult(intent, FINISH_FLAG)
     }
 
@@ -284,5 +338,14 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         intent?.putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }
+
+    private fun checkPermissions() =
+            context?.let { ActivityCompat.checkSelfPermission(it, ACCESS_COARSE_LOCATION) } == PERMISSION_GRANTED
+
+    override fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel) {
+        this.googleMap?.addPolygon(PolygonOptions()
+                .addAll(districtBoundaryGeometryUiModel.listCoordinates)
+                .fillColor(R.color.tkpd_green))
     }
 }

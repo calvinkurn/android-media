@@ -31,8 +31,9 @@ class PinpointMapActivity: BaseSimpleActivity() {
 
     override fun getNewFragment(): PinpointMapFragment? {
         var bundle = Bundle()
-        if (intent.extras != null) @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-        bundle = intent.extras else {
+        if (intent.extras != null) {
+            bundle = intent.extras
+        } else {
             bundle.putDouble(EXTRA_LAT, MONAS_LAT)
             bundle.putDouble(EXTRA_LONG, MONAS_LONG)
             bundle.putBoolean(EXTRA_SHOW_AUTOCOMPLETE, true)

@@ -3,13 +3,10 @@ package com.tokopedia.logisticaddaddress.di.addnewaddress
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.logisticaddaddress.data.AddressRepository
-import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
-import com.tokopedia.logisticaddaddress.domain.mapper.AutofillMapper
-import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
-import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
-import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase
-import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
+import com.tokopedia.logisticaddaddress.domain.mapper.*
+import com.tokopedia.logisticaddaddress.domain.usecase.*
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressPresenter
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.DistrictRecommendationBottomSheetPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -29,8 +26,12 @@ class AddNewAddressModule {
             getDistrictUseCase: GetDistrictUseCase,
             getDistrictMapper: GetDistrictMapper,
             autofillUseCase: AutofillUseCase,
-            autofillMapper: AutofillMapper): PinpointMapPresenter {
-        return PinpointMapPresenter(context, getDistrictUseCase, getDistrictMapper, autofillUseCase, autofillMapper)
+            autofillMapper: AutofillMapper,
+            districtBoundaryUseCase: DistrictBoundaryUseCase,
+            districtBoundaryMapper: DistrictBoundaryMapper): PinpointMapPresenter {
+        return PinpointMapPresenter(context, getDistrictUseCase, getDistrictMapper,
+                                    autofillUseCase, autofillMapper,
+                                    districtBoundaryUseCase, districtBoundaryMapper)
     }
 
     @Provides
@@ -45,4 +46,12 @@ class AddNewAddressModule {
     @Provides
     @AddNewAddressScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = com.tokopedia.user.session.UserSession(context)
+
+    @Provides
+    @AddNewAddressScope
+    fun provideDistrictRecommendationPresenter(
+            districtRecommendationUseCase: DistrictRecommendationUseCase,
+            districtRecommendationMapper: DistrictRecommendationMapper): DistrictRecommendationBottomSheetPresenter {
+        return DistrictRecommendationBottomSheetPresenter(districtRecommendationUseCase, districtRecommendationMapper)
+    }
 }

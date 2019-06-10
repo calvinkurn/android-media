@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -24,8 +23,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-13.
  */
-class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetListener, AutocompleteBottomSheetAdapter.ActionListener,
-RecyclerView.OnItemTouchListener{
+class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetListener, AutocompleteBottomSheetAdapter.ActionListener{
     private var bottomSheetView: View? = null
     private var currentLat: Double? = 0.0
     private var currentLong: Double? = 0.0
@@ -88,6 +86,12 @@ RecyclerView.OnItemTouchListener{
         if (activity != null) {
             initInjector()
         }
+
+        val linearLayoutManager = LinearLayoutManager(
+                context, LinearLayoutManager.VERTICAL, false)
+        rvPoiList.layoutManager = linearLayoutManager
+        rvPoiList.adapter = adapter
+
         loadAutocompleteGeocode()
         onAddressTyped()
     }
@@ -132,10 +136,6 @@ RecyclerView.OnItemTouchListener{
             adapter.isAutocompleteGeocode = true
             adapter.dataAutocompleteGeocode = responseAutocompleteGeocodeDataUiModel.results.toMutableList()
             adapter.notifyDataSetChanged()
-            val linearLayoutManager = LinearLayoutManager(
-                    context, LinearLayoutManager.VERTICAL, false)
-            rvPoiList.layoutManager = linearLayoutManager
-            rvPoiList.adapter = adapter
             updateHeight()
         }
     }
@@ -145,10 +145,6 @@ RecyclerView.OnItemTouchListener{
             adapter.isAutocompleteGeocode = false
             adapter.dataAutocomplete = dataUiModel.listPredictions.toMutableList()
             adapter.notifyDataSetChanged()
-            val linearLayoutManager = LinearLayoutManager(
-                    context, LinearLayoutManager.VERTICAL, false)
-            rvPoiList.layoutManager = linearLayoutManager
-            rvPoiList.adapter = adapter
             updateHeight()
         }
     }
@@ -191,8 +187,7 @@ RecyclerView.OnItemTouchListener{
         })
     }
 
-    override fun onTouchEvent(rv: RecyclerView?, e: MotionEvent?) {
-        println("## onTouchEvent")
+    /*override fun onTouchEvent(rv: RecyclerView?, e: MotionEvent?) {
     }
 
     override fun onInterceptTouchEvent(rv: RecyclerView?, e: MotionEvent?): Boolean {
@@ -202,7 +197,7 @@ RecyclerView.OnItemTouchListener{
 
     override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
         println("## onRequestDisallowInterceptTouchEvent")
-    }
+    }*/
 
     private fun hideKeyboard() {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);

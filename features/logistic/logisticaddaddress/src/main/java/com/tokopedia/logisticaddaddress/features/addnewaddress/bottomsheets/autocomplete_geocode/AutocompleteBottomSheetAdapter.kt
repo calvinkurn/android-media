@@ -12,12 +12,11 @@ import kotlinx.android.synthetic.main.bottomsheet_autocomplete_item.view.*
 /**
  * Created by fwidjaja on 2019-05-14.
  */
-class AutocompleteBottomSheetAdapter(actionListener: ActionListener) : RecyclerView.Adapter<AutocompleteBottomSheetAdapter.ViewHolder>() {
+class AutocompleteBottomSheetAdapter(private var actionListener: ActionListener) : RecyclerView.Adapter<AutocompleteBottomSheetAdapter.ViewHolder>() {
 
     var dataAutocompleteGeocode = mutableListOf<AutocompleteGeocodeResultUiModel>()
     var dataAutocomplete = mutableListOf<AutocompletePredictionUiModel>()
     var isAutocompleteGeocode = false
-    private var actionListener: ActionListener = actionListener
 
     interface ActionListener {
         fun onPoiListClicked(placeId: String)

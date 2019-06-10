@@ -8,22 +8,19 @@ import android.view.ViewGroup
 import com.tokopedia.logisticaddaddress.R
 import kotlinx.android.synthetic.main.popular_city_chips_item.view.*
 import android.support.v4.content.ContextCompat
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
 
 
 /**
  * Created by fwidjaja on 2019-05-29.
  */
-class PopularCityRecommendationBottomSheetAdapter(context: Context?, actionListener: PopularCityRecommendationBottomSheetAdapter.ActionListener) : RecyclerView.Adapter<PopularCityRecommendationBottomSheetAdapter.ViewHolder>() {
-    private var cityList = emptyList<String>()
-    var drawablePressed = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips_pressed) }
-    private var actionListener: PopularCityRecommendationBottomSheetAdapter.ActionListener = actionListener
+class PopularCityRecommendationBottomSheetAdapter(context: Context?, private var actionListener: ActionListener) : RecyclerView.Adapter<PopularCityRecommendationBottomSheetAdapter.ViewHolder>() {
+    var cityList = mutableListOf<String>()
+    private var drawablePressed = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips_pressed) }
+    private var drawableDefault = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips) }
 
     interface ActionListener {
         fun onCityChipClicked(city: String)
-    }
-
-    fun setCityList(list: Array<String>) {
-        this.cityList = list.toList()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

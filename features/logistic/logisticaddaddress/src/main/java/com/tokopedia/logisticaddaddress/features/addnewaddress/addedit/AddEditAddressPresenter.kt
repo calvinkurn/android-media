@@ -9,10 +9,13 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.data.AddressRepository
 import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
+import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.AutocompleteSubscriber
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.usecase.RequestParams
@@ -47,11 +50,14 @@ class AddEditAddressPresenter @Inject constructor(private val context: Context,
         }
     }
 
-    fun changePinpoint(lat: Double?, long: Double?) {
+    fun changePinpoint(lat: Double?, long: Double?, token: Token?, isPolygon: Boolean, districtId: Int?) {
         val intent = Intent(context, PinpointMapActivity::class.java)
+        intent.putExtra(AddressConstants.KERO_TOKEN, token)
         intent.putExtra(AddressConstants.EXTRA_LAT, lat)
         intent.putExtra(AddressConstants.EXTRA_LONG, long)
         intent.putExtra(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, false)
+        intent.putExtra(AddressConstants.EXTRA_IS_POLYGON, isPolygon)
+        intent.putExtra(AddressConstants.EXTRA_DISTRICT_ID, districtId)
         context.startActivity(intent)
     }
 
