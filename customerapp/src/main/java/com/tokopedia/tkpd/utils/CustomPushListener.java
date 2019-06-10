@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.utils;
 
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -79,7 +80,7 @@ public class CustomPushListener extends PushMessageListener {
             createPersistentNotification(context, extras, builder);
         } else if (GRID.equalsIgnoreCase(extras.getString(KEY_IS_GRID))) {
             String bundleData = extras.toString();
-            writeStringAsFile(context, bundleData, "bundleData.txt");
+            writeStringAsFile(context, bundleData, "bundleData");
             provider.updateNotificationId(GRID_NOTIFICATION_ID);
             createGridNotification(context, extras, builder);
         }
@@ -294,9 +295,10 @@ public class CustomPushListener extends PushMessageListener {
 
     public static void writeStringAsFile(Context context, final String fileContents, String fileName) {
         try {
-            File data = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator);
-            File file = new File(data, "highscore.txt");
-            FileWriter out = new FileWriter(file);
+            ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
+            File directory = cw.getDir("file", Context.MODE_PRIVATE);
+            File imagePath = new File(directory, fileName + ".txt");
+            FileWriter out = new FileWriter(imagePath);
             out.write(fileContents);
             out.close();
         } catch (IOException e) {
