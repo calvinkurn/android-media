@@ -294,7 +294,9 @@ public class CustomPushListener extends PushMessageListener {
 
     public static void writeStringAsFile(Context context, final String fileContents, String fileName) {
         try {
-            FileWriter out = new FileWriter(new File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), fileName));
+            File data = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator);
+            File file = new File(data, "highscore.txt");
+            FileWriter out = new FileWriter(file);
             out.write(fileContents);
             out.close();
         } catch (IOException e) {
