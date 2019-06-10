@@ -5,7 +5,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
-
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
@@ -17,15 +16,11 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.data.model.TokenResponse
-
-import java.io.IOException
-import java.util.HashMap
-import java.util.Random
-import java.util.UUID
-
 import rx.Completable
 import rx.Subscriber
 import rx.schedulers.Schedulers
+import java.io.IOException
+import java.util.*
 
 /**
  * @author lalit.singh
@@ -33,7 +28,7 @@ import rx.schedulers.Schedulers
 class CMUserHandler(private val mContext: Context) {
     private var token: String? = null
     private val handler = Handler(Looper.getMainLooper())
-    private var graphqlUseCase: GraphqlUseCase? = null
+    private lateinit var graphQlUseCase: GraphqlUseCase
 
     private var runnable: Runnable = Runnable {
         Completable.fromAction { sendFcmTokenToServerGQL(token) }
@@ -85,7 +80,8 @@ class CMUserHandler(private val mContext: Context) {
             if (!TextUtils.isEmpty(userIdStr)) {
                 try {
                     userIdInt = Integer.parseInt(userIdStr.trim { it <= ' ' })
-                } catch (e: NumberFormatException) { }
+                } catch (e: NumberFormatException) {
+                }
             }
             return userIdInt
         }
@@ -105,8 +101,9 @@ class CMUserHandler(private val mContext: Context) {
     fun cancelRunnable() {
         try {
             handler.removeCallbacks(runnable)
-            //if (graphqlUseCase != null)
-                graphqlUseCase?.unsubscribe()
+            graphQlUseCase?.let {
+                it.unsubscribe()
+            }
         } catch (e: Exception) {
         }
     }
@@ -138,13 +135,13 @@ class CMUserHandler(private val mContext: Context) {
                 requestParams[REQUEST_TIMESTAMP] = CMNotificationUtils.currentLocalTimeStamp.toString() + ""
                 requestParams[APP_NAME] = CMNotificationUtils.getApplicationName(mContext)
 
-                graphqlUseCase = GraphqlUseCase()
+                graphQlUseCase = GraphqlUseCase()
 
                 val request = GraphqlRequest(GraphqlHelper.loadRawString(mContext.resources, R.raw.query_send_token_to_server),
                         TokenResponse::class.java, requestParams, "AddToken")
-                graphqlUseCase!!.clearRequest()
-                graphqlUseCase!!.addRequest(request)
-                graphqlUseCase!!.execute(object : Subscriber<GraphqlResponse>() {
+                graphQlUseCase.clearRequest()
+                graphQlUseCase.addRequest(request)
+                graphQlUseCase.execute(object : Subscriber<GraphqlResponse>() {
                     override fun onCompleted() {
 
                     }

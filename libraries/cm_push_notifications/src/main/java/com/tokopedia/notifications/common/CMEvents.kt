@@ -33,34 +33,11 @@ object IrisAnalyticsEvents {
 
     @JvmStatic
     fun sendPushReceiveEvent(context: Context, baseNotificationModel: BaseNotificationModel) {
-        //will enable in next sprint
-        /*val values = HashMap<String, Any>()
-        val iris = Iris.init(context)
-        if (iris != null) {
-            values["event"] = PUSH_RECEIVED
-            values["event_time"] = CMNotificationUtils.currentLocalTimeStamp
-            values["campaign_id"] = baseNotificationModel.campaignId
-            values["notification_id"] = baseNotificationModel.notificationId
-            values["source"] = CMNotificationUtils.getApplicationName(context)
-            values["is_silent"] = CMConstant.NotificationType.SILENT_PUSH == baseNotificationModel.type
-            iris.sendRawEvent(values, "IM")
-        }*/
 
     }
 
     @JvmStatic
     fun sendPushEvent(context: Context, eventName: String, campaignID: String, notificationID: String) {
-        //will enable in next sprint
-        /*val values = HashMap<String, Any>()
-        val iris = Iris.init(context)
-        if (iris != null) {
-            values["event"] = eventName
-            values["event_time"] = CMNotificationUtils.currentLocalTimeStamp
-            values["campaign_id"] = campaignID
-            values["notification_id"] = notificationID
-            values["source"] = CMNotificationUtils.getApplicationName(context)
-            iris.sendRawEvent(values, "IM")
-        }*/
     }
 }
 
