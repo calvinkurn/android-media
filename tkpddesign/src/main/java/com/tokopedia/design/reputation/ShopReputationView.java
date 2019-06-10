@@ -49,6 +49,13 @@ public class ShopReputationView extends BaseCustomView {
         init(attrs);
     }
 
+    public Drawable getDrawable(Context context, int resId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+            return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
+        else
+            return AppCompatResources.getDrawable(context, resId);
+    }
+
     private void init(AttributeSet attrs) {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ShopReputationView);
@@ -136,7 +143,7 @@ public class ShopReputationView extends BaseCustomView {
         imageView.setAdjustViewBounds(true);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(medalWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         imageView.setLayoutParams(param);
-        imageView.setImageResource(imageResource);
+        imageView.setImageResource(getDrawable(imageView.getContext(),imageResource));
         return imageView;
     }
 
