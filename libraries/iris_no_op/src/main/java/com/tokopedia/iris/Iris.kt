@@ -5,6 +5,8 @@ import com.tokopedia.iris.model.Configuration
 
 interface Iris {
 
+    fun setService(config: String, isEnabled: Boolean)
+
     fun setService(config: Configuration)
 
     fun resetService(config: Configuration)
