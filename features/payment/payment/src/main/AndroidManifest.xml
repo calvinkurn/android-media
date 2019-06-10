@@ -15,7 +15,7 @@
         <activity
             android:name=".activity.TopPayActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -26,6 +26,7 @@
                     android:host="@string/host_payment"
                     android:path="@string/path_payment_checkout"/>
             </intent-filter>
+        </activity>
     </application>
 
 </manifest>
