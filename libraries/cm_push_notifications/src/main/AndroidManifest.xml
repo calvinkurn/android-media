@@ -8,9 +8,5 @@
 
         <receiver android:name=".receiver.CMBroadcastReceiver"/>
 
-        <!--<service
-            android:name=".CMJobIntentService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />-->
-
     </application>
 </manifest>
