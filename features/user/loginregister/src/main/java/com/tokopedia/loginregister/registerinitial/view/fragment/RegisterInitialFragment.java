@@ -48,7 +48,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.text.TextDrawable;
-import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
@@ -667,6 +666,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRegisterSosmed(String methodName) {
+
         analytics.eventSuccessRegisterSosmed(methodName);
         startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
                 REQUEST_WELCOME_PAGE);
