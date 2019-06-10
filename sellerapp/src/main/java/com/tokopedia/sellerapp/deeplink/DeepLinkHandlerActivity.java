@@ -165,13 +165,13 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         //map applink to internal if any
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
         if (!TextUtils.isEmpty(mappedDeeplink)) {
-            routeToApplink(mappedDeeplink);
+            routeToApplink(deepLinkDelegate, mappedDeeplink);
         } else {
-            routeToApplink(applinkString);
+            routeToApplink(deepLinkDelegate, applinkString);
         }
     }
 
-    private void routeToApplink(String applinkString) {
+    private void routeToApplink(DeepLinkDelegate deepLinkDelegate, String applinkString) {
         if (deepLinkDelegate.supportsUri(applinkString)) {
             getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             deepLinkDelegate.dispatchFrom(this, getIntent());
