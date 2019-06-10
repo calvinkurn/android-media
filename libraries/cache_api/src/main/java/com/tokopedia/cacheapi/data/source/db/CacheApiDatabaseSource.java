@@ -4,27 +4,24 @@ import android.text.TextUtils;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.sql.language.Where;
-import com.tokopedia.cacheapi.exception.VersionNameNotValidException;
+import com.tokopedia.cacheapi.data.source.db.dao.CacheApiDataDao;
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiData;
-import com.tokopedia.cacheapi.data.source.db.model.CacheApiData_Table;
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiVersion;
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist_Table;
 import com.tokopedia.cacheapi.domain.mapper.CacheApiWhiteListMapper;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cacheapi.exception.VersionNameNotValidException;
+import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
 import com.tokopedia.cacheapi.util.EncryptionUtils;
-import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Response;
 import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Func1;
 
 /**
  * Created by nathan on 9/30/17.
@@ -32,9 +29,13 @@ import rx.functions.Func1;
 
 public class CacheApiDatabaseSource {
 
-    private static final long DIVIDE_FOR_SECONDS = 1000L;
-
     private static final String CACHE_API_KEY = "BU}~GV2(K)%z$1+H";
+
+    private CacheApiDataDao cacheApiDataDao;
+
+    public CacheApiDatabaseSource(CacheApiDataDao cacheApiDataDao) {
+        this.cacheApiDataDao = cacheApiDataDao;
+    }
 
     public Observable<Boolean> isWhiteListVersionUpdated(final String versionName) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
@@ -139,12 +140,7 @@ public class CacheApiDatabaseSource {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 CacheApiLoggingUtils.dumper(String.format("Query cache: %s - %s - %s", host, path, param));
-                Where<CacheApiData> selection = new Select()
-                        .from(CacheApiData.class)
-                        .where(CacheApiData_Table.host.eq(getEncrypted(host)))
-                        .and(CacheApiData_Table.path.eq(getEncrypted(path)))
-                        .and(CacheApiData_Table.request_param.eq(getEncrypted(param)));
-                CacheApiData cacheApiData = selection.querySingle();
+                CacheApiData cacheApiData = cacheApiDataDao.getData(getEncrypted(host), getEncrypted(path), getEncrypted(param))
                 String cachedResponseBody = null;
                 if (cacheApiData != null) {
                     cachedResponseBody = cacheApiData.getResponseBody();
@@ -165,18 +161,19 @@ public class CacheApiDatabaseSource {
                     subscriber.onNext(false);
                     return;
                 }
-                long responseTime = System.currentTimeMillis() / DIVIDE_FOR_SECONDS;
+                long responseTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 
-                CacheApiData cacheApiData = new CacheApiData();
-                cacheApiData.setMethod(response.request().method());
-                cacheApiData.setHost(getEncrypted(response.request().url().host()));
-                cacheApiData.setPath(getEncrypted(CacheApiUtils.getPath(response.request().url().toString())));
-                cacheApiData.setRequestParam(getEncrypted(CacheApiUtils.getRequestParam(response.request())));
-                cacheApiData.setResponseBody(getEncrypted(responseBody));
-                cacheApiData.setResponseTime(responseTime);
-                cacheApiData.setExpiredTime(responseTime + cacheApiWhitelist.getExpiredTime());
-                cacheApiData.setWhiteListId(cacheApiWhitelist.getId());
-                cacheApiData.save();
+                CacheApiData cacheApiData = new CacheApiData(
+                        getEncrypted(response.request().url().host()),
+                        getEncrypted(CacheApiUtils.getPath(response.request().url().toString())),
+                        getEncrypted(CacheApiUtils.getRequestParam(response.request())),
+                        response.request().method(),
+                        getEncrypted(responseBody),
+                        responseTime,
+                        responseTime + cacheApiWhitelist.getExpiredTime(),
+                        cacheApiWhitelist.getId()
+                );
+                cacheApiDataDao.insert(cacheApiData);
                 subscriber.onNext(true);
             }
         });
@@ -196,7 +193,7 @@ public class CacheApiDatabaseSource {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                new Delete().from(CacheApiData.class).execute();
+                cacheApiDataDao.deleteAll();
                 subscriber.onNext(true);
             }
         });
@@ -206,11 +203,8 @@ public class CacheApiDatabaseSource {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                long currentTime = System.currentTimeMillis() / DIVIDE_FOR_SECONDS;
-                new Delete()
-                        .from(CacheApiData.class)
-                        .where(CacheApiData_Table.expired_time.lessThan(currentTime))
-                        .execute();
+                long currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+                cacheApiDataDao.deleteOldData(currentTime);
                 subscriber.onNext(true);
             }
         });
@@ -220,10 +214,7 @@ public class CacheApiDatabaseSource {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                new Delete()
-                        .from(CacheApiData.class)
-                        .where(CacheApiData_Table.white_list_id.eq(whiteListId))
-                        .execute();
+                cacheApiDataDao.deleteWhiteList(whiteListId);
                 CacheApiLoggingUtils.dumper(String.format("Cache whiteListId deleted: %s", whiteListId));
                 subscriber.onNext(true);
             }
