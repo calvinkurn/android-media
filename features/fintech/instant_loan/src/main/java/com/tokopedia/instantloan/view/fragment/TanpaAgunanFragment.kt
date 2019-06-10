@@ -84,14 +84,14 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
-        setupLoanAmountSpinner()
+//        setupLoanAmountSpinner()
     }
 
-    private fun setupLoanAmountSpinner() {
+    /*private fun setupLoanAmountSpinner() {
         val adapter = ArrayAdapter.createFromResource(getContext()!!,
                 R.array.values_amount_array, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-    }
+    }*/
 
     private fun initView(view: View) {
 

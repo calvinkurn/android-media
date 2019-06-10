@@ -69,16 +69,10 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
+        initView()
     }
 
-    private fun initView(view: View) {
-
-        text_value_amount.text = resources.getStringArray(R.array.values_amount)[mCurrentTab]
-        text_value_processing_time.text = resources.getStringArray(R.array.values_processing_time)[mCurrentTab]
-        text_value_interest_rate.text = resources.getStringArray(R.array.values_interest_rate)[mCurrentTab]
-        text_form_description.text = resources.getStringArray(R.array.values_description)[mCurrentTab]
-
+    private fun initView() {
         button_search_pinjaman.setOnClickListener { view1 -> searchLoanOnline() }
         il_learn_more.setOnClickListener {
             openWebView(InstantLoanUrl.COMMON_URL.INSTANT_LOAN_LEARN_MORE)
