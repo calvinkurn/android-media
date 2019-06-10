@@ -335,6 +335,7 @@ dependencies {
     implementation project(rootProject.ext.features.productDetailRevamp)
     implementation project(rootProject.ext.features.discovery)
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.reputationCommon)
