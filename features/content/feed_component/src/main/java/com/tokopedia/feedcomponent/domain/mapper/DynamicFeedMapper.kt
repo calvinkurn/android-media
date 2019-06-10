@@ -129,7 +129,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     id,
                     media.thumbnail,
                     media.appLink,
-                    trackBannerModel
+                    trackBannerModel,
+                    mapTrackingData(media.tracking)
             ))
         }
 
@@ -209,7 +210,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                         card.header.avatarApplink,
                         card.header.followCta,
                         template.cardrecom.item,
-                        trackingRecommendationModel
+                        trackingRecommendationModel,
+                        mapTrackingData(card.tracking)
                 ))
             }
         }

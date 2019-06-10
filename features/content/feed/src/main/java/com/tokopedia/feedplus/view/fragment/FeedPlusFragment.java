@@ -1661,6 +1661,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 ArrayList<TrackingBannerModel> trackingBannerModels = new ArrayList<>();
                 for (BannerItemViewModel banner : bannerViewModel.getItemViewModels()) {
                     trackingBannerModels.add(banner.getTrackingBannerModel());
+                    onAffiliateTrackClicked(banner.getTracking(), false);
                 }
                 analytics.eventBannerImpression(trackingBannerModels, userId);
             } else if (visitable instanceof FeedRecommendationViewModel) {
@@ -1669,6 +1670,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 ArrayList<TrackingRecommendationModel> trackingList = new ArrayList<>();
                 for (RecommendationCardViewModel card : recommendationViewModel.getCards()) {
                     trackingList.add(card.getTrackingRecommendationModel());
+                    onAffiliateTrackClicked(card.getTracking(), false);
                 }
                 analytics.eventRecommendationImpression(
                         trackingList,
@@ -1680,6 +1682,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         topadsShopViewModel.getTrackingList(),
                         userId
                 );
+                onAffiliateTrackClicked(topadsShopViewModel.getTracking(), false);
             }
         }
     }
