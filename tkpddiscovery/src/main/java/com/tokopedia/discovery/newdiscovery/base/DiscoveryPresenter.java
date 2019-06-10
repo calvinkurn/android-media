@@ -43,10 +43,10 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     }
 
     @Override
-    public void initiateSearch(SearchParameter searchParameter, boolean forceSearch, InitiateSearchListener initiateSearchListener) {
-        super.initiateSearch(searchParameter, forceSearch, initiateSearchListener);
+    public void initiateSearch(SearchParameter searchParameter, InitiateSearchListener initiateSearchListener) {
+        super.initiateSearch(searchParameter, initiateSearchListener);
 
-        com.tokopedia.usecase.RequestParams requestParams = createInitiateSearchRequestParams(searchParameter, forceSearch);
+        com.tokopedia.usecase.RequestParams requestParams = createInitiateSearchRequestParams(searchParameter);
 
         GqlSearchHelper.initiateSearch(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_initiate_search),
@@ -56,15 +56,14 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         );
     }
 
-    private com.tokopedia.usecase.RequestParams createInitiateSearchRequestParams(SearchParameter searchParameter, boolean isForceSearch) {
+    private com.tokopedia.usecase.RequestParams createInitiateSearchRequestParams(SearchParameter searchParameter) {
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-
-        requestParams.putAll(searchParameter.getSearchParameterMap());
 
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putBoolean(SearchApiConst.REFINED, isForceSearch);
         requestParams.putBoolean(SearchApiConst.RELATED, true);
+
+        requestParams.putAll(searchParameter.getSearchParameterMap());
 
         return requestParams;
     }

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="16dp"
+    android:orientation="vertical"
+    tools:context=".view.fragment.ShopOpenCreateReadyFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/img_success"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_success" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/img_success"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:gravity="center"
+            android:text="@string/hello_user_name"
+            android:lineSpacingExtra="@dimen/dp_2"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            app:fontSize="subHeadline"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_user_name_static"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_user_name"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="@string/hello_label_static"
+            android:lineSpacingExtra="@dimen/dp_2"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            app:fontSize="subHeadline"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_label_static"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_user_name_static"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_4"
+            android:gravity="center"
+            android:padding="@dimen/dp_4"
+            android:text="@string/open_shop_static_title"
+            android:textAlignment="center"
+            app:fontSize="title"/>
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/button_add_product"
+            style="@style/Button.Submit.Green"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_label_static"
+            android:text="@string/open_shop_add_product" />
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/button_add_product_later"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/button_add_product"
+            android:text="@string/open_shop_add_product_later"
+            style="@style/Button.Submit.White.Border"
+            />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_tnc_courier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button_add_product_later"
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="@string/open_shop_label_courier"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            app:fontSize="title"
+            android:lineSpacingExtra="@dimen/dp_4"
+            />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

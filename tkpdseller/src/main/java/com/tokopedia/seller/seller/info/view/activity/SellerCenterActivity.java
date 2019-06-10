@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 /**
  * @author okasurya on 7/28/18.

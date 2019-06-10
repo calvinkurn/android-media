@@ -29,6 +29,9 @@ public class ShipmentStateShopProductData {
     @SerializedName("dropship_data")
     @Expose
     private ShipmentStateDropshipData dropshipData;
+    @SerializedName("is_order_priority")
+    @Expose
+    private int isOrderPriority;
     @SerializedName("product_data")
     @Expose
     private List<ShipmentStateProductData> productDataList;
@@ -40,6 +43,7 @@ public class ShipmentStateShopProductData {
         shippingInfoData = builder.shippingInfoData;
         isDropship = builder.isDropship;
         dropshipData = builder.dropshipData;
+        isOrderPriority = builder.isOrderPriority;
         productDataList = builder.productDataList;
     }
 
@@ -49,6 +53,7 @@ public class ShipmentStateShopProductData {
         private int finsurance;
         private ShipmentStateShippingInfoData shippingInfoData;
         private int isDropship;
+        private int isOrderPriority;
         private ShipmentStateDropshipData dropshipData;
         private List<ShipmentStateProductData> productDataList;
 
@@ -80,6 +85,11 @@ public class ShipmentStateShopProductData {
             return this;
         }
 
+        public Builder isOrderPriority(int isOrderPriority) {
+            this.isOrderPriority = isOrderPriority;
+            return this;
+        }
+
         public Builder dropshipData(ShipmentStateDropshipData dropshipData) {
             this.dropshipData = dropshipData;
             return this;
@@ -93,6 +103,8 @@ public class ShipmentStateShopProductData {
         public ShipmentStateShopProductData build() {
             return new ShipmentStateShopProductData(this);
         }
+
+
 
     }
 

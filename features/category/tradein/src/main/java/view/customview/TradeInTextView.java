@@ -97,6 +97,13 @@ public class TradeInTextView extends ConstraintLayout {
             throw new NullPointerException("ITradeInParamReceiver is not initialised");
     }
 
+    @Override
+    public void setOnClickListener(OnClickListener listener) {
+        if (listener == null) {
+            listener = this.clickListener;
+        }
+        super.setOnClickListener(listener);
+    }
 
     public void setTrackListener(ClickTrackListener listener) {
         this.trackListener = listener;
