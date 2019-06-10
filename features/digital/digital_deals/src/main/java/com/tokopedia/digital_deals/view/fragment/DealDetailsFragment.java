@@ -78,6 +78,7 @@ import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.PA
 
 public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View, DealsCategoryAdapter.INavigateToActivityRequest {
 
+    private static final String SCREEN_NAME = "/digital/deals/product";
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView tvExpandableDesc;
     private TextView tvExpandableTC;
@@ -237,7 +238,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
 
@@ -248,6 +249,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void renderDealDetails(DealsDetailsResponse detailsViewModel) {
+        dealsAnalytics.sendScreenNameEvent(getScreenName());
         this.dealDetail = detailsViewModel;
         collapsingToolbarLayout.setTitle(detailsViewModel.getDisplayName());
         tvDealDetails.setText(detailsViewModel.getDisplayName());

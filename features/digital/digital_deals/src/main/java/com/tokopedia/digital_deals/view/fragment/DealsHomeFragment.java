@@ -89,6 +89,7 @@ import static android.app.Activity.RESULT_OK;
 public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, DealsLocationAdapter.ActionListener, CloseableBottomSheetDialog.OnCancelListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet, PopupMenu.OnMenuItemClickListener {
 
     private final long SHOW_CASE_DELAY = 400;
+    private final String SCREEN_NAME = "/digital/deals/homepage";
 
     private Menu mMenu;
     @Inject
@@ -163,6 +164,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
         }
+        mPresenter.sendScreenNameEvent(getScreenName());
     }
 
     private void checkLocationStatus() {
@@ -646,7 +648,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
 

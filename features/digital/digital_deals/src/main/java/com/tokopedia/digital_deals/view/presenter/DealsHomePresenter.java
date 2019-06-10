@@ -107,7 +107,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     @Override
     public void initialize() {
         userSession = new UserSession(getView().getActivity());
-
     }
 
     @Override
@@ -315,7 +314,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                     getView().renderBrandList(brands);
                 }
                 isBrandsLoaded = true;
-
                 showHideViews();
                 CommonUtils.dumper("enter onNext");
             }
@@ -601,5 +599,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 }
             });
         }
+    }
+
+    public void sendScreenNameEvent(String screenName) {
+        dealsAnalytics.sendScreenNameEvent(screenName);
     }
 }

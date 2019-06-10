@@ -248,4 +248,8 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
             }
         });
     }
+
+    public void sendScreenNameEvent(String screenName) {
+        dealAnalytics.sendScreenNameEvent(screenName);
+    }
 }

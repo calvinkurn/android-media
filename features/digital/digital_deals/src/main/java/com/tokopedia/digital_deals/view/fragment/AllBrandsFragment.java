@@ -42,6 +42,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     private static final boolean IS_SHORT_LAYOUT = true;
     private static final String ARG_PARAM_EXTRA_DEALS_DATA = "ARG_PARAM_EXTRA_DEALS_DATA";
+    private static final String SCREEN_NAME = "/digital/deals/brand";
     private LinearLayout baseMainContent;
     private LinearLayout noContent;
     private FrameLayout progressBarLayout;
@@ -103,6 +104,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mPresenter.sendScreenNameEvent(getScreenName());
         mPresenter.getAllBrands();
     }
 
@@ -147,7 +149,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override

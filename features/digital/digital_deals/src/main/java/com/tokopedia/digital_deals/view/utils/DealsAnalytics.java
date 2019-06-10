@@ -656,4 +656,8 @@ public class DealsAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(EVENT_CLICK_DEALS, DIGITAL_DEALS, EVENT_CLICK_PROMO,
                 String.format("%s - %s -%s", dealDetails.getBrand().getTitle(), dealDetails.getDisplayName(), "promo/non promo").toLowerCase());
     }
+
+    public void sendScreenNameEvent(String screenName) {
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
+    }
 }

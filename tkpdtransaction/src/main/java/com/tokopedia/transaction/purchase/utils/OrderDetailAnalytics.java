@@ -43,6 +43,7 @@ public class OrderDetailAnalytics {
     private static final String REVENUE = "revenue";
     private static final String KEY_PRODUCTS = "products";
     private static final String KEY_PURCHASE = "purchase";
+    private static final String SCREEN_NAME = "/digital/deals/thanks";
 
     private Context context;
 
@@ -141,5 +142,6 @@ public class OrderDetailAnalytics {
         map.put("eventLabel", LABEL);
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(SCREEN_NAME);
     }
 }

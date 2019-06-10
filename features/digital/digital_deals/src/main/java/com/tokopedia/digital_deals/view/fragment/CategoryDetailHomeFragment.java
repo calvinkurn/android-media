@@ -71,6 +71,7 @@ import static android.app.Activity.RESULT_OK;
 public class CategoryDetailHomeFragment extends BaseDaggerFragment implements DealsCategoryDetailContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet, PopupMenu.OnMenuItemClickListener {
 
     private final boolean IS_SHORT_LAYOUT = true;
+    private final String SCREEN_NAME = "/digital/deals/category";
     private RecyclerView recyclerViewDeals;
     private RecyclerView recyclerViewBrands;
     private View progressBarLayout;
@@ -229,11 +230,12 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
             mPresenter.getBrandsList(true);
             mPresenter.getCategoryDetails(true);
         }
+        dealsAnalytics.sendScreenNameEvent(getScreenName());
     }
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
 

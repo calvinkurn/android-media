@@ -56,6 +56,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     private final boolean IS_SHORT_LAYOUT = true;
     public static final String EXTRA_LIST = "list";
+    public static final String SCREEN_NAME = "/digital/deals/search";
 
     private CoordinatorLayout mainContent;
     private ScrollView noContent;
@@ -113,6 +114,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             tvCityName.setText(location.getName());
             mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
+        dealsAnalytics.sendScreenNameEvent(SCREEN_NAME);
     }
 
     private void setUpVariables() {
@@ -364,7 +366,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             dealsCategoryAdapter.addAll(items, false);
             dealsCategoryAdapter.setTopDealsLayout(true);
             dealsCategoryAdapter.setFromSearchResult(false);
-            rvDeals.addOnScrollListener(rvOnScrollListener);
             dealsCategoryAdapter.notifyDataSetChanged();
             rvDeals.setVisibility(View.VISIBLE);
             brandsHeading.setVisibility(View.GONE);
