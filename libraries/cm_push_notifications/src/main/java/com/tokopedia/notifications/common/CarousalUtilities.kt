@@ -14,6 +14,7 @@ import java.io.*
 object CarousalUtilities {
 
     private const val IMAGE_DIR = "imageDir"
+    private const val PNG_QUALITY = 100
 
     fun downloadImages(context: Context, carousalList: List<Carousal>) {
         for (carousal in carousalList) {
@@ -44,7 +45,7 @@ object CarousalUtilities {
         var fos: FileOutputStream? = null
         try {
             fos = FileOutputStream(imagePath)
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, PNG_QUALITY, fos)
             fileSaved = true
         } catch (e: Exception) {
             e.printStackTrace()
