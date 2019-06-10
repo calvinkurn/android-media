@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -17,7 +16,9 @@ import com.tokopedia.instantloan.InstantLoanComponentInstance
 import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
-import com.tokopedia.instantloan.data.model.response.*
+import com.tokopedia.instantloan.data.model.response.GqlFilterData
+import com.tokopedia.instantloan.data.model.response.GqlLoanAmountResponse
+import com.tokopedia.instantloan.data.model.response.LoanPeriodType
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.LOAN_AMOUNT_QUERY_PARAM
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_NO_COLLATERAL
 import com.tokopedia.instantloan.router.InstantLoanRouter
@@ -28,6 +29,7 @@ import com.tokopedia.instantloan.view.presenter.OnlineLoanPresenter
 import com.tokopedia.instantloan.view.ui.WidgetAddRemove
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.content_tanpa_agunan.*
+import java.net.URLEncoder
 import javax.inject.Inject
 
 
@@ -322,10 +324,14 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
 
         } else {
             sendCariPinjamanClickEvent()
-            openWebView(WEB_LINK_NO_COLLATERAL + String.format(LOAN_AMOUNT_QUERY_PARAM,
-                    widgetAddRemove.getLoanValue().toString(),
-                    selectedLoanPeriodType.value?.toLowerCase(),
-                    loanPeriodValueTV.tag as String))
+
+            startActivity((activity!!
+                    .application as InstantLoanRouter).getWebviewActivityWithIntent(context,
+                    URLEncoder.encode(WEB_LINK_NO_COLLATERAL + String.format(LOAN_AMOUNT_QUERY_PARAM,
+                            widgetAddRemove.getLoanValue().toString(),
+                            selectedLoanPeriodType.value?.toLowerCase(),
+                            loanPeriodValueTV.tag as String), "UTF-8")))
+
         }
     }
 
