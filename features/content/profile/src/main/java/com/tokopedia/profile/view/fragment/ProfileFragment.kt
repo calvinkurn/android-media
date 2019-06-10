@@ -829,9 +829,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>) {
+    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
         for (tracking in trackList) {
-            presenter.trackPostClickUrl(tracking.clickURL)
+            if (isClick) {
+                presenter.trackPostClickUrl(tracking.clickURL)
+            } else {
+                presenter.trackPostClickUrl(tracking.viewURL)
+            }
         }
     }
 
@@ -1199,7 +1203,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         }
                     }
 
-                    onAffiliateTrackClicked(model.tracking)
+                    onAffiliateTrackClicked(model.tracking, false)
                 }
             }
         }

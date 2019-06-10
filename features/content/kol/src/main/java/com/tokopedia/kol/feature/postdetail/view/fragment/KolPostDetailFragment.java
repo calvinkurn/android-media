@@ -262,7 +262,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                             dynamicPostViewModel.getTrackingPostModel());
                 }
 
-                onAffiliateTrackClicked(dynamicPostViewModel.getTracking());
+                onAffiliateTrackClicked(dynamicPostViewModel.getTracking(), false);
             }
         }
     }
@@ -835,9 +835,13 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList) {
+    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList, boolean isClick) {
         for (TrackingViewModel track : trackList) {
-            presenter.trackAffiliate(track.getClickURL());
+            if (isClick) {
+                presenter.trackAffiliate(track.getClickURL());
+            } else {
+                presenter.trackAffiliate(track.getViewURL());
+            }
         }
     }
 

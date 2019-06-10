@@ -422,9 +422,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
-    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>) {
+    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
         for (tracking in trackList) {
-            presenter.trackPostClickUrl(tracking.clickURL)
+            if (isClick) {
+                presenter.trackPostClickUrl(tracking.clickURL)
+            } else {
+                presenter.trackPostClickUrl(tracking.viewURL)
+            }
         }
     }
 
@@ -585,7 +589,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             val adapterPosition = adapter.data.size + position
             when (model) {
                 is DynamicPostViewModel -> {
-                    onAffiliateTrackClicked(model.tracking)
+                    onAffiliateTrackClicked(model.tracking, false)
                 }
             }
         }

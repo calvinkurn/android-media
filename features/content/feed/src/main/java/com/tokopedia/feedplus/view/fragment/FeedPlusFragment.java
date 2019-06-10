@@ -1483,11 +1483,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList) {
+    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList, boolean isClick) {
         for (TrackingViewModel track : trackList) {
-            presenter.trackAffiliate(track.getClickURL());
+            if (isClick) {
+                presenter.trackAffiliate(track.getClickURL());
+            } else  {
+                presenter.trackAffiliate(track.getViewURL());
+            }
         }
     }
+
 
     @Override
     public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition,
@@ -1649,7 +1654,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 trackingPostModel);
                     }
                 }
-                onAffiliateTrackClicked(postViewModel.getTracking());
+                onAffiliateTrackClicked(postViewModel.getTracking(), false);
 
             } else if (visitable instanceof BannerViewModel) {
                 BannerViewModel bannerViewModel = (BannerViewModel) visitable;

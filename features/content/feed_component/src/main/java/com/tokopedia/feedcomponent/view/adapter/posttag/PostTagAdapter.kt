@@ -105,7 +105,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
                 : View.OnClickListener {
              return View.OnClickListener {
                  listener.onPostTagItemClick(positionInFeed, item.applink, item, itemPosition)
-                 listener.onAffiliateTrackClicked(mappingTracking(item.tracking))
+                 listener.onAffiliateTrackClicked(mappingTracking(item.tracking), true)
              }
         }
 
