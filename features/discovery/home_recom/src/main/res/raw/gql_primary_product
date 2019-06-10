@@ -55,7 +55,7 @@ query primaryProduct($productId: Int!, $xSource: String!) {
             stock
             minOrder
             isTopads
-            IsWishlist
+            isWishlist
             productKey
             shopDomain
             urlPath
