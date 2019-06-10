@@ -2,11 +2,9 @@ package com.tokopedia.tkpd.utils;
 
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -21,7 +19,6 @@ import com.tokopedia.tkpd.R;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 
 public class CustomPushListener extends PushMessageListener {
 
@@ -295,13 +292,23 @@ public class CustomPushListener extends PushMessageListener {
 
     public static void writeStringAsFile(Context context, final String fileContents, String fileName) {
         try {
-            ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
-            File directory = cw.getDir("file", Context.MODE_PRIVATE);
-            File imagePath = new File(directory, fileName + ".txt");
-            FileWriter out = new FileWriter(imagePath);
-            out.write(fileContents);
-            out.close();
-        } catch (IOException e) {
+            File file = new File(context.getFilesDir(), "Moengage");
+            if (!file.exists()) {
+                file.mkdir();
+            }
+
+            try {
+                File gpxfile = new File(file, fileName + ".txt");
+                FileWriter writer = new FileWriter(gpxfile);
+                writer.append(fileContents);
+                writer.flush();
+                writer.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+        } catch (Exception e) {
         }
     }
 
