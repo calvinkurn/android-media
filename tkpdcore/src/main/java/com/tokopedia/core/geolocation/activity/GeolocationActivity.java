@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core2.R;
@@ -20,7 +21,10 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenter;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenterImpl;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -45,6 +49,7 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     private Bundle bundleData;
     private Uri uriData;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+    private PermissionCheckerHelper permissionCheck;
 
     // Address -> Router
     public static Intent createInstanceFromAddress(@NonNull Context context,
@@ -95,6 +100,39 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gojek);
+        permissionCheck = new PermissionCheckerHelper();
+        permissionCheck.checkPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        RequestPermissionUtil.onPermissionDenied(
+                                GeolocationActivity.this,
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                        );
+                        finish();
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        RequestPermissionUtil.onNeverAskAgain(
+                                GeolocationActivity.this,
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                        );
+                        finish();
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        presenter.initFragment(GeolocationActivity.this, uriData, bundleData);
+                    }
+                },
+                ""
+                //getString(RequestPermissionUtil.getNeedPermissionMessage(
+                //        Manifest.permission.ACCESS_FINE_LOCATION
+                //))
+        );
         GeolocationActivityPermissionsDispatcher.initFragmentWithCheck(this);
     }
 
@@ -103,11 +141,6 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
         sendAnalyticsOnBackPressClicked();
         super.onBackPressed();
 
-    }
-
-    @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    public void initFragment() {
-        presenter.initFragment(this, uriData, bundleData);
     }
 
     @Override
@@ -165,27 +198,10 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
         //presenter.replaceFragment(this, bundleData);
     }
 
-    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showRationaleForGPS(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.ACCESS_FINE_LOCATION);
-    }
-
-    @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showDeniedForGPS() {
-        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        finish();
-    }
-
-    @OnNeverAskAgain(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showNeverAskForGPS() {
-        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        finish();
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        GeolocationActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        permissionCheck.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     @Override
