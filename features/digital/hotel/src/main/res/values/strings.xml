@@ -31,6 +31,8 @@
     <string name="hotel_search_empty_title">Akomodasi yang kamu cari nggak ketemu</string>
     <string name="hotel_search_empty_subtitle">Tenang, mungkin kamu cuma perlu ubah detail pencarian di awal</string>
     <string name="hotel_search_empty_button">Ganti Pencarian</string>
+    <string name="hotel_search_filter_empty_subtitle">Coba ubah Filter dan cari sekali lagi, yuk!</string>
+    <string name="hotel_search_filter_empty_button">Ubah Filter</string>
 
     <string name="hotel_check_in_calendar_title">Check-in</string>
     <string name="hotel_check_out_calendar_title">Check-out</string>

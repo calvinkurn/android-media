@@ -151,6 +151,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     private fun initializeFilterClick(filter: Filter) {
         onFilterClick = View.OnClickListener {
+            searchResultviewModel.filter = filter
             context?.let {
                 val cacheManager = SaveInstanceCacheManager(it, true).apply {
                     put(CommonParam.ARG_FILTER, filter)
@@ -192,8 +193,14 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         var emptyModel = EmptyModel()
         emptyModel.iconRes = R.drawable.ic_empty_search_result
         emptyModel.title = getString(R.string.hotel_search_empty_title)
-        emptyModel.content = getString(R.string.hotel_search_empty_subtitle)
-        emptyModel.buttonTitle = getString(R.string.hotel_search_empty_button)
+
+        if (!searchResultviewModel.isFilter) {
+            emptyModel.content = getString(R.string.hotel_search_empty_subtitle)
+            emptyModel.buttonTitle = getString(R.string.hotel_search_empty_button)
+        } else {
+            emptyModel.content = getString(R.string.hotel_search_filter_empty_subtitle)
+            emptyModel.buttonTitle = getString(R.string.hotel_search_filter_empty_button)
+        }
 
         return emptyModel
     }
@@ -203,7 +210,16 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun onEmptyButtonClicked() {
-        activity!!.onBackPressed()
+        if (!searchResultviewModel.isFilter) activity!!.onBackPressed()
+        else {
+            context?.let {
+                val cacheManager = SaveInstanceCacheManager(it, true).apply {
+                    put(CommonParam.ARG_FILTER, searchResultviewModel.filter)
+                    put(CommonParam.ARG_SELECTED_FILTER, searchResultviewModel.selectedFilter)
+                }
+                startActivityForResult(HotelSearchFilterActivity.createIntent(it, cacheManager.id), REQUEST_FILTER)
+            }
+        }
     }
 
     override fun getScreenName(): String? = null
