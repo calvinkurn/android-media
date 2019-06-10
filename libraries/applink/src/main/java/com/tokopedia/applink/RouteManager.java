@@ -17,11 +17,6 @@ import java.util.Set;
 /**
  * @author ricoharisin .
  * Central class for routing to activity
- * <p>
- * This will check the deeplink in the manifest
- * If the activity exists, it will route to that activity
- * Else, it will route to ApplinkRouter intent.
- * If still not supported will return null
  */
 
 public class RouteManager {
@@ -58,7 +53,7 @@ public class RouteManager {
      * return intent of ReviewProductActivity (if it is registered in ReviewProductActivity)
      * (2) "tokopedia://inbox" will return InboxActivity (if it is registered in InboxActivity)
      * (3) "tokopedia://wrongpath" will return null.
-     * (4) "https://www.tokopedia.com" will return null. Use isHttpDeeplinkSupportNative instead
+     * (4) "https://www.tokopedia.com" will return null.
      */
     private static @Nullable
     Intent buildInternalExplicitIntent(@NonNull Context context, @NonNull String deeplink) {

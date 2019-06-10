@@ -22,7 +22,7 @@ object DeeplinkMapper {
     fun getRegisteredNavigation(context: Context, deeplink: String): String {
         if (deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true)) {
             return getRegisteredNavigationFromHttp(context, deeplink)
-        } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA, true)) {
+        } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true)) {
             return getRegisteredNavigationFromTokopedia(deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
             return getRegisteredNavigationFromSellerapp(deeplink)

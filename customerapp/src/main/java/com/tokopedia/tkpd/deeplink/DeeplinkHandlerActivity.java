@@ -303,7 +303,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             if (!TextUtils.isEmpty(mappedDeeplink)) {
                 RouteManager.route(this, mappedDeeplink);
             } else {
-                if (deepLinkDelegate.supportsUri(mappedDeeplink)) {
+                if (deepLinkDelegate.supportsUri(applinkString)) {
                     routeFromApplink(applink);
                 } else {
                     Intent intent = RouteManager.getIntentNoFallback(this, applinkString);

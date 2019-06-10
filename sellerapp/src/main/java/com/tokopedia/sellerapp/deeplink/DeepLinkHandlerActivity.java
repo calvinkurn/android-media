@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tokopedia.applink.DeeplinkMapper;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
@@ -23,6 +26,7 @@ import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
@@ -149,18 +153,48 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
     }
 
     private void processApplink(DeepLinkDelegate deepLinkDelegate, DeepLinkAnalyticsImpl presenter) {
-        Intent intent = getIntent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Uri applink = intent.getData();
+        Uri applink = getIntent().getData();
         presenter.processUTM(this, applink);
-        if (deepLinkDelegate.supportsUri(applink.toString())) {
-            deepLinkDelegate.dispatchFrom(this, intent);
+
+        if (applink == null) {
+            return;
+        }
+
+        String applinkString = applink.toString();
+
+        //map applink to internal if any
+        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
+        if (!TextUtils.isEmpty(mappedDeeplink)) {
+            routeToApplink(mappedDeeplink);
+        } else {
+            routeToApplink(applinkString);
+        }
+    }
+
+    private void routeToApplink(String applinkString) {
+        if (deepLinkDelegate.supportsUri(applinkString)) {
+            getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            deepLinkDelegate.dispatchFrom(this, getIntent());
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
                 eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
+        } else {
+            Intent intent = RouteManager.getIntentNoFallback(this, applinkString);
+            if (intent == null) {
+                Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
+                homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
+                if (getIntent() != null && getIntent().getExtras() != null)
+                    homeIntent.putExtras(getIntent().getExtras());
+                homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(homeIntent);
+            } else {
+                startActivity(intent);
+            }
+            this.finish();
         }
     }
+
 
     public void eventPersonalizedClicked(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
