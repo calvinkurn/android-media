@@ -17,6 +17,9 @@ public class ShipmentStateShopProductData {
     @SerializedName("is_preorder")
     @Expose
     private int isPreorder;
+    @SerializedName("warehouse_id")
+    @Expose
+    private int warehouseId;
     @SerializedName("finsurance")
     @Expose
     private int finsurance;
@@ -39,6 +42,7 @@ public class ShipmentStateShopProductData {
     public ShipmentStateShopProductData(Builder builder) {
         shopId = builder.shopId;
         isPreorder = builder.isPreorder;
+        warehouseId = builder.warehouseId;
         finsurance = builder.finsurance;
         shippingInfoData = builder.shippingInfoData;
         isDropship = builder.isDropship;
@@ -50,6 +54,7 @@ public class ShipmentStateShopProductData {
     public static final class Builder {
         private int shopId;
         private int isPreorder;
+        private int warehouseId;
         private int finsurance;
         private ShipmentStateShippingInfoData shippingInfoData;
         private int isDropship;
@@ -67,6 +72,11 @@ public class ShipmentStateShopProductData {
 
         public Builder isPreorder(int isPreorder) {
             this.isPreorder = isPreorder;
+            return this;
+        }
+
+        public Builder warehouseId(int warehouseId) {
+            this.warehouseId = warehouseId;
             return this;
         }
 

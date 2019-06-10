@@ -17,4 +17,15 @@ public class CustomDimensionShopPageAttribution extends CustomDimensionShopPageP
         customDimensionShopPage.attribution = attribution;
         return customDimensionShopPage;
     }
+
+    public static CustomDimensionShopPageAttribution create(String shopId, boolean isOfficial, boolean isGold,
+                                                            String productId, String attribution){
+        CustomDimensionShopPageAttribution customDimensionShopPage = new CustomDimensionShopPageAttribution();
+        customDimensionShopPage.shopId = shopId;
+        customDimensionShopPage.shopType = isOfficial ? TrackShopTypeDef.OFFICIAL_STORE:
+                isGold ? TrackShopTypeDef.GOLD_MERCHANT: TrackShopTypeDef.REGULAR_MERCHANT;
+        customDimensionShopPage.productId = productId;
+        customDimensionShopPage.attribution = attribution;
+        return customDimensionShopPage;
+    }
 }
