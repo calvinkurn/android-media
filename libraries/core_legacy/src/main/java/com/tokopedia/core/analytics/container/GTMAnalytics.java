@@ -27,6 +27,7 @@ import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public GTMAnalytics(Context context) {
         super(context);
-        iris = Iris.Companion.getInstance(context);
+        iris = IrisAnalytics.Companion.getInstance(context);
     }
 
     @Override

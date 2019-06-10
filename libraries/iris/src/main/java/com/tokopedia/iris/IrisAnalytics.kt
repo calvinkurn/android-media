@@ -101,4 +101,26 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(config.intervals), pintent)
     }
+
+    companion object {
+
+        private val lock = Any()
+
+        @Volatile private var iris: Iris? = null
+
+        @JvmStatic
+        fun getInstance(context: Context) : Iris {
+            return iris?: synchronized(lock) {
+                IrisAnalytics(context).also {
+                    iris = it
+                }
+            }
+        }
+
+        fun deleteInstance() {
+            synchronized(lock) {
+                iris = null
+            }
+        }
+    }
 }

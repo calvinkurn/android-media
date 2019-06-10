@@ -37,24 +37,4 @@ interface Iris {
 
     fun setDeviceId(deviceId: String)
 
-    companion object {
-
-        private val lock = Any()
-
-        @Volatile private var iris: Iris? = null
-
-        fun getInstance(context: Context) : Iris {
-            return iris?: synchronized(lock) {
-                IrisAnalytics(context).also {
-                    iris = it
-                }
-            }
-        }
-
-        fun deleteInstance() {
-            synchronized(lock) {
-                iris = null
-            }
-        }
-    }
 }
