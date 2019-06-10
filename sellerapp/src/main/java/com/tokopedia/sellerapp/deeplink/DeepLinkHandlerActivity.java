@@ -20,13 +20,11 @@ import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleL
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
@@ -180,17 +178,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
         } else {
-            Intent intent = RouteManager.getIntentNoFallback(this, applinkString);
-            if (intent == null) {
-                Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
-                homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
-                if (getIntent() != null && getIntent().getExtras() != null)
-                    homeIntent.putExtras(getIntent().getExtras());
-                homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(homeIntent);
-            } else {
-                startActivity(intent);
-            }
+            Intent intent = RouteManager.getIntentAfterMapping(this, applinkString);
+            startActivity(intent);
             this.finish();
         }
     }
