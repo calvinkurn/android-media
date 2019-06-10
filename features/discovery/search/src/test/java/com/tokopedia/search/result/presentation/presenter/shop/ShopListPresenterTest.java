@@ -2,19 +2,17 @@ package com.tokopedia.search.result.presentation.presenter.shop;
 
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.search.result.domain.model.SearchShopModel;
+import com.tokopedia.search.result.domain.usecase.TestErrorUseCase;
 import com.tokopedia.search.result.domain.usecase.TestUseCase;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ShopViewModelMapper;
 import com.tokopedia.search.result.presentation.model.ShopViewModel;
-import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.junit.Test;
 
 import java.util.HashMap;
-
-import rx.Observable;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -25,34 +23,6 @@ import static org.mockito.Mockito.when;
 public class ShopListPresenterTest {
 
     private static abstract class MockDynamicFilterModelUseCase extends UseCase<DynamicFilterModel> { }
-
-    private class TestSuccessSearchShopUseCase extends TestUseCase<SearchShopModel> {
-        @Override
-        public Observable<SearchShopModel> createObservable(RequestParams requestParams) {
-            return Observable.just(searchShopModel);
-        }
-    }
-
-    private class TestNullSearchShopUseCase extends TestUseCase<SearchShopModel> {
-        @Override
-        public Observable<SearchShopModel> createObservable(RequestParams requestParams) {
-            return Observable.just(null);
-        }
-    }
-
-    private class TestErrorSearchShopUseCase extends TestUseCase<SearchShopModel> {
-        @Override
-        public Observable<SearchShopModel> createObservable(RequestParams requestParams) {
-            return Observable.error(new Exception("Mock exception, should be handled in Subscriber onError"));
-        }
-    }
-
-    private class TestNullErrorSearchShopUseCase extends TestUseCase<SearchShopModel> {
-        @Override
-        public Observable<SearchShopModel> createObservable(RequestParams requestParams) {
-            return Observable.error(null);
-        }
-    }
 
     private ShopListSectionContract.View shopListView = mock(ShopListSectionContract.View.class);
     private UseCase<DynamicFilterModel> dynamicFilterModelUseCase = mock(MockDynamicFilterModelUseCase.class);
@@ -73,7 +43,7 @@ public class ShopListPresenterTest {
 
     @Test
     public void loadShopSuccessWithData_RenderViewOnSuccess() {
-        UseCase<SearchShopModel> testSuccessSearchShopUseCase = new TestSuccessSearchShopUseCase();
+        UseCase<SearchShopModel> testSuccessSearchShopUseCase = new TestUseCase<>(searchShopModel);
         shopListPresenterInjectDependencies(testSuccessSearchShopUseCase);
         when(testShopViewModelMapper.convertToShopViewModel(searchShopModel)).thenReturn(shopViewModel);
 
@@ -86,7 +56,7 @@ public class ShopListPresenterTest {
 
     @Test
     public void loadShopSuccessWithNull_RenderViewOnFailed() {
-        UseCase<SearchShopModel> testNullSearchShopUseCase = new TestNullSearchShopUseCase();
+        UseCase<SearchShopModel> testNullSearchShopUseCase = new TestUseCase<>(null);
         shopListPresenterInjectDependencies(testNullSearchShopUseCase);
 
         shopListPresenter.loadShop(new HashMap<>());
@@ -98,7 +68,8 @@ public class ShopListPresenterTest {
 
     @Test
     public void loadShopError_RenderViewOnFailed() {
-        UseCase<SearchShopModel> testErrorSearchShopUseCase = new TestErrorSearchShopUseCase();
+        Exception error = new Exception("Mock exception, should be handled in Subscriber onError");
+        UseCase<SearchShopModel> testErrorSearchShopUseCase = new TestErrorUseCase<>(error);
         shopListPresenterInjectDependencies(testErrorSearchShopUseCase);
 
         shopListPresenter.loadShop(new HashMap<>());
@@ -110,7 +81,7 @@ public class ShopListPresenterTest {
 
     @Test
     public void loadShopErrorWithNulls_RenderViewOnFailed() {
-        UseCase<SearchShopModel> testNullErrorSearchShopUseCase = new TestNullErrorSearchShopUseCase();
+        UseCase<SearchShopModel> testNullErrorSearchShopUseCase = new TestErrorUseCase<>(null);
         shopListPresenterInjectDependencies(testNullErrorSearchShopUseCase);
 
         shopListPresenter.loadShop(new HashMap<>());

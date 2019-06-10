@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.search.result.domain.model.SearchCatalogModel;
+import com.tokopedia.search.result.domain.usecase.TestErrorUseCase;
 import com.tokopedia.search.result.domain.usecase.TestUseCase;
 import com.tokopedia.search.result.presentation.CatalogListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.CatalogViewModelMapper;
-import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -16,8 +16,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import rx.Observable;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -29,56 +27,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class CatalogListPresenterTest {
+
     private static abstract class MockDynamicFilterModelUseCase extends UseCase<DynamicFilterModel> { }
-
-    private class TestSuccessSearchCatalogUseCase extends TestUseCase<SearchCatalogModel> {
-        @Override
-        public Observable<SearchCatalogModel> createObservable(RequestParams requestParams) {
-            return Observable.just(searchCatalogModel);
-        }
-    }
-
-    private class TestNullSearchCatalogUseCase extends TestUseCase<SearchCatalogModel> {
-        @Override
-        public Observable<SearchCatalogModel> createObservable(RequestParams requestParams) {
-            return Observable.just(null);
-        }
-    }
-
-    private class TestRuntimeExceptionSearchCatalogUseCase extends TestUseCase<SearchCatalogModel> {
-        @Override
-        public Observable<SearchCatalogModel> createObservable(RequestParams requestParams) {
-            return Observable.error(new RuntimeException("Mock Runtime exception, should be handled in Subscriber onError"));
-        }
-    }
-
-    private class TestMessageErrorExceptionSearchCatalogUseCase extends TestUseCase<SearchCatalogModel> {
-        @Override
-        public Observable<SearchCatalogModel> createObservable(RequestParams requestParams) {
-            return Observable.error(new MessageErrorException("Mock Message Error exception, should be handled in Subscriber onError"));
-        }
-    }
-
-    private class TestIOExceptionSearchCatalogUseCase extends TestUseCase<SearchCatalogModel> {
-        @Override
-        public Observable<SearchCatalogModel> createObservable(RequestParams requestParams) {
-            return Observable.error(new IOException("Mock IO exception, should be handled in Subscriber onError"));
-        }
-    }
-
-    private class TestErrorSearchCatalogUseCase extends TestUseCase<SearchCatalogModel> {
-        @Override
-        public Observable<SearchCatalogModel> createObservable(RequestParams requestParams) {
-            return Observable.error(new Exception("Mock exception, should be handled in Subscriber onError"));
-        }
-    }
-
-    private class TestNullErrorSearchCatalogUseCase extends TestUseCase<SearchCatalogModel> {
-        @Override
-        public Observable<SearchCatalogModel> createObservable(RequestParams requestParams) {
-            return Observable.error(null);
-        }
-    }
 
     private CatalogListSectionContract.View catalogListSectionView = mock(CatalogListSectionContract.View.class);
     private CatalogViewModelMapper catalogViewModelMapper = mock(CatalogViewModelMapper.class);
@@ -127,7 +77,7 @@ public class CatalogListPresenterTest {
 
     @Test
     public void requestCatalogList_GivenNulls_ShouldRenderRetryInit() {
-        searchCatalogPresenterInitInjector(new TestNullSearchCatalogUseCase());
+        searchCatalogPresenterInitInjector(new TestUseCase<>(null));
 
         searchCatalogPresenter.requestCatalogList();
 
@@ -142,7 +92,7 @@ public class CatalogListPresenterTest {
     public void requestCatalogList_GivenSearchCatalogModel_ShouldRenderResultWithoutError() {
         List<Visitable> dummyListVisitable = new ArrayList<>();
         when(catalogViewModelMapper.mappingCatalogViewModelWithHeader(searchCatalogModel)).thenReturn(dummyListVisitable);
-        searchCatalogPresenterInitInjector(new TestSuccessSearchCatalogUseCase());
+        searchCatalogPresenterInitInjector(new TestUseCase<>(searchCatalogModel));
 
         searchCatalogPresenter.requestCatalogList();
 
@@ -155,7 +105,7 @@ public class CatalogListPresenterTest {
 
     @Test
     public void requestCatalogList_GivenNullError_ShouldRenderUnknown() {
-        searchCatalogPresenterInitInjector(new TestNullErrorSearchCatalogUseCase());
+        searchCatalogPresenterInitInjector(new TestErrorUseCase<>(null));
 
         searchCatalogPresenter.requestCatalogList();
 
@@ -168,7 +118,8 @@ public class CatalogListPresenterTest {
 
     @Test
     public void subscribe_GivenRuntimeException_ShouldRenderErrorView() {
-        searchCatalogPresenterInitInjector(new TestRuntimeExceptionSearchCatalogUseCase());
+        RuntimeException runtimeException = new RuntimeException("Mock Runtime exception, should be handled in Subscriber onError");
+        searchCatalogPresenterInitInjector(new TestErrorUseCase<>(runtimeException));
 
         searchCatalogPresenter.requestCatalogList();
 
@@ -181,7 +132,8 @@ public class CatalogListPresenterTest {
 
     @Test
     public void subscribe_GivenMessageErrorException_ShouldRenderErrorView() {
-        searchCatalogPresenterInitInjector(new TestMessageErrorExceptionSearchCatalogUseCase());
+        MessageErrorException messageErrorException = new MessageErrorException("Mock Message Error exception, should be handled in Subscriber onError");
+        searchCatalogPresenterInitInjector(new TestErrorUseCase<>(messageErrorException));
 
         searchCatalogPresenter.requestCatalogList();
 
@@ -194,7 +146,8 @@ public class CatalogListPresenterTest {
 
     @Test
     public void subscribe_GivenMessageIOException_ShouldRenderRetryInit() {
-        searchCatalogPresenterInitInjector(new TestIOExceptionSearchCatalogUseCase());
+        IOException ioException = new IOException("Mock IO exception, should be handled in Subscriber onError");
+        searchCatalogPresenterInitInjector(new TestErrorUseCase<>(ioException));
 
         searchCatalogPresenter.requestCatalogList();
 
@@ -207,7 +160,8 @@ public class CatalogListPresenterTest {
 
     @Test
     public void subscribe_GivenMessageAnyException_ShouldRenderUnknown() {
-        searchCatalogPresenterInitInjector(new TestErrorSearchCatalogUseCase());
+        Exception exception = new Exception("Mock exception, should be handled in Subscriber onError");
+        searchCatalogPresenterInitInjector(new TestErrorUseCase<>(exception));
 
         searchCatalogPresenter.requestCatalogList();
 

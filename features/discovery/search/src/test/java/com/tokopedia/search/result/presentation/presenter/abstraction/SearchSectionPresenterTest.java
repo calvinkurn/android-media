@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.abstraction;
 
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.search.result.domain.usecase.TestErrorUseCase;
 import com.tokopedia.search.result.domain.usecase.TestUseCase;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler;
@@ -20,34 +21,6 @@ import static org.mockito.Mockito.verify;
 
 public class SearchSectionPresenterTest {
 
-    private class TestSuccessGetDynamicFilterUseCase extends TestUseCase<DynamicFilterModel> {
-        @Override
-        public Observable<DynamicFilterModel> createObservable(RequestParams requestParams) {
-            return Observable.just(dynamicFilterModel);
-        }
-    }
-
-    private class TestNullGetDynamicFilterUseCase extends TestUseCase<DynamicFilterModel> {
-        @Override
-        public Observable<DynamicFilterModel> createObservable(RequestParams requestParams) {
-            return Observable.just(null);
-        }
-    }
-
-    private class TestErrorGetDynamicFilterUseCase extends TestUseCase<DynamicFilterModel> {
-        @Override
-        public Observable<DynamicFilterModel> createObservable(RequestParams requestParams) {
-            return Observable.error(new Exception("Mock exception, should be handled in Subscriber onError"));
-        }
-    }
-
-    private class TestNullErrorGetDynamicFilterUseCase extends TestUseCase<DynamicFilterModel> {
-        @Override
-        public Observable<DynamicFilterModel> createObservable(RequestParams requestParams) {
-            return Observable.error(null);
-        }
-    }
-
     private SearchSectionContract.View view = mock(SearchSectionContract.View.class);
     private DynamicFilterModel dynamicFilterModel = new DynamicFilterModel();
     private SearchLocalCacheHandler searchLocalCacheHandler = mock(SearchLocalCacheHandler.class);
@@ -61,7 +34,7 @@ public class SearchSectionPresenterTest {
 
     @Test
     public void requestDynamicFilterWithData_ViewShouldRenderDynamicFilter() {
-        UseCase<DynamicFilterModel> dynamicFilterModelUseCase = new TestSuccessGetDynamicFilterUseCase();
+        UseCase<DynamicFilterModel> dynamicFilterModelUseCase = new TestUseCase<>(dynamicFilterModel);
         searchSectionPresenterInjectDependencies(dynamicFilterModelUseCase);
 
         searchSectionPresenterSubclass.requestDynamicFilter(new HashMap<>());
@@ -72,7 +45,7 @@ public class SearchSectionPresenterTest {
 
     @Test
     public void requestDynamicFilterWithNull_ViewShouldRenderFail() {
-        UseCase<DynamicFilterModel> dynamicFilterModelUseCase = new TestNullGetDynamicFilterUseCase();
+        UseCase<DynamicFilterModel> dynamicFilterModelUseCase = new TestUseCase<>(null);
         searchSectionPresenterInjectDependencies(dynamicFilterModelUseCase);
 
         searchSectionPresenterSubclass.requestDynamicFilter(new HashMap<>());
@@ -83,7 +56,8 @@ public class SearchSectionPresenterTest {
 
     @Test
     public void requestDynamicFilterWithError_ViewShouldRenderFail() {
-        UseCase<DynamicFilterModel> dynamicFilterModelUseCase = new TestErrorGetDynamicFilterUseCase();
+        Exception error = new Exception("Mock exception, should be handled in Subscriber onError");
+        UseCase<DynamicFilterModel> dynamicFilterModelUseCase = new TestErrorUseCase<>(error);
         searchSectionPresenterInjectDependencies(dynamicFilterModelUseCase);
 
         searchSectionPresenterSubclass.requestDynamicFilter(new HashMap<>());
@@ -94,7 +68,7 @@ public class SearchSectionPresenterTest {
 
     @Test
     public void requestDynamicFilterWithNullError_ViewShouldRenderFail() {
-        UseCase<DynamicFilterModel> dynamicFilterModelUseCase = new TestNullErrorGetDynamicFilterUseCase();
+        UseCase<DynamicFilterModel> dynamicFilterModelUseCase = new TestErrorUseCase<>(null);
         searchSectionPresenterInjectDependencies(dynamicFilterModelUseCase);
 
         searchSectionPresenterSubclass.requestDynamicFilter(new HashMap<>());

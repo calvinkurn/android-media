@@ -10,11 +10,18 @@ import java.util.Map;
 public interface SearchContract {
     interface View extends CustomerView {
         BaseAppComponent getBaseAppComponent();
+
+        void initiateSearchHandleResponseSearch(boolean isHasCatalog);
+
+        void initiateSearchHandleApplink(String applink);
+
+        void initiateSearchHandleResponseUnknown();
+
+        void initiateSearchHandleResponseError();
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void initInjector(View view);
-        void setInitiateSearchListener(InitiateSearchListener initiateSearchListener);
 
         void onPause();
         void onResume();
