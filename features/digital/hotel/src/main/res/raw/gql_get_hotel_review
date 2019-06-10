@@ -10,10 +10,11 @@ query propertyReview($data:PropertyReviewRequest!){
       pros
       cons
       createTime
+      country
     }
     totalReview
+    totalReviewByCountry
     averageScoreReview
-    totalReviewOri
     hasNext
     headline
   }

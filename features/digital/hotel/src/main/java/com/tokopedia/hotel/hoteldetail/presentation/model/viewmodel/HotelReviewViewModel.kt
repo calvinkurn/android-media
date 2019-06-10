@@ -24,7 +24,6 @@ class HotelReviewViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                val graphqlRepository: GraphqlRepository): BaseViewModel(dispatcher) {
 
     val reviewResult = MutableLiveData<Result<HotelReview.ReviewData>>()
-    var isIndonesianReview = false
 
     fun getReview(query: String, hotelReviewParam: HotelReviewParam, dummy: String = "") {
         val dataParams = mapOf(PARAM_REVIEW_KEY to hotelReviewParam)

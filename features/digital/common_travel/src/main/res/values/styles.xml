@@ -39,4 +39,8 @@
         <item name="android:paddingRight">4dp</item>
     </style>
 
+    <style name="ErrorTextAppearance">
+        <item name="android:textColor">@color/red_pink</item>
+    </style>
+
 </resources>

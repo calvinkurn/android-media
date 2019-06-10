@@ -71,7 +71,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
     }
 
     fun onSuccessGetResult(reviews: HotelReview.ReviewData) {
-            showHotelMetaReview(true)
+        showHotelMetaReview(true)
         super.renderList(reviews.reviewList, reviews.hasNext)
         review_point_text_view.text = reviews.averageScoreReview.toString()
         review_headline_text.text = reviews.headline
@@ -87,7 +87,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
 
     fun initSwitch() {
         indonesia_review_switch.setOnCheckedChangeListener { buttonView, isChecked ->
-            reviewViewModel.isIndonesianReview = isChecked
+            param.filterByCountry = if (isChecked) COUNTRY_ID else COUNTRY_ALL
             //add param to get Indo
             loadInitialData()
         }
@@ -95,8 +95,9 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
 
     fun initFilterView() {
         filter_recycler_view.listener = this
-        filter_recycler_view.setItem(arrayListOf(RECENT_REVIEW,
-                HIGHEST_RATING, LOWEST_RATING),
+        filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_review_filter_first_rank),
+                getString(R.string.hotel_review_filter_second_rank),
+                getString(R.string.hotel_review_filter_third_rank)),
                 R.color.snackbar_border_normal)
         filter_recycler_view.selectOnlyOneChip(true)
 
@@ -128,51 +129,48 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
             showHotelMetaReview(false)
             isFirstTime = false
         }
-        if (reviewViewModel.isIndonesianReview) reviewViewModel.test()
-        else {
-            param.page = page
-            reviewViewModel.getReview(GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review), param,
-                    GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_review))
-        }
+        param.page = page
+        reviewViewModel.getReview(GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review), param,
+                GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_review))
+
     }
 
     override fun onChipClickListener(string: String, isSelected: Boolean) {
-        when (string) {
-            RECENT_REVIEW -> {
-                param.sortBy = PARAM_SORT_BY_TIME
-                param.sortType = PARAM_SORT_TYPE_DESC
+        if (isSelected) {
+            when (string) {
+                getString(R.string.hotel_review_filter_first_rank) -> {
+                    param.filterByRank = 1
+                }
+                getString(R.string.hotel_review_filter_second_rank) -> {
+                    param.filterByRank = 2
+                }
+                getString(R.string.hotel_review_filter_third_rank) -> {
+                    param.filterByRank = 3
+                }
             }
-            HIGHEST_RATING -> {
-                param.sortBy = PARAM_SORT_BY_SCORE
-                param.sortType = PARAM_SORT_TYPE_DESC
-            }
-            LOWEST_RATING -> {
-                param.sortBy = PARAM_SORT_BY_SCORE
-                param.sortType = PARAM_SORT_TYPE_ASC
-            }
-        }
+        } else param.filterByRank = 0
+
         loadInitialData()
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         var emptyModel = EmptyModel()
+        emptyModel.iconRes = R.drawable.ic_no_indonesian_review
         emptyModel.title = getString(R.string.hotel_review_indonesia_not_found_title)
         emptyModel.content = getString(R.string.hotel_review_indonesia_not_found_subtitle)
         return emptyModel
     }
 
     companion object {
-        const val RECENT_REVIEW = "Ulasan Terbaru"
-        const val HIGHEST_RATING = "Rating Tertinggi"
-        const val LOWEST_RATING = "Rating Terendah"
 
         const val ARG_PROPERTY_ID = "arg_property_id"
 
         const val PARAM_ROWS = 11
         const val PARAM_SORT_BY_TIME = "create_time"
-        const val PARAM_SORT_BY_SCORE = "score"
         const val PARAM_SORT_TYPE_DESC = "desc"
-        const val PARAM_SORT_TYPE_ASC = "asc"
+
+        const val COUNTRY_ID = "id"
+        const val COUNTRY_ALL = "all"
 
         fun createInstance(propertyId: Int): HotelReviewFragment {
             return HotelReviewFragment().also {

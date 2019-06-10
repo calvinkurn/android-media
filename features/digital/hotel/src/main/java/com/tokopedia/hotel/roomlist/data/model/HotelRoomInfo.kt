@@ -59,7 +59,11 @@ data class HotelRoomInfo(
 
             @SerializedName("icon")
             @Expose
-            val icon: String = ""
+            val icon: String = "",
+
+            @SerializedName("iconUrl")
+            @Expose
+            val iconUrl: String = ""
     )
 
     data class RoomImage(

@@ -22,6 +22,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
@@ -287,16 +288,13 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
     }
 
     fun setupRoomPrice() {
-        if (hotelRoom.roomPrice.isNotEmpty())
-        tv_room_detail_price.text = hotelRoom.roomPrice[0].roomPrice
+        tv_room_detail_price.text = hotelRoom.roomPrice.roomPrice
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
         room_detail_button.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 if (userSessionInterface.isLoggedIn) {
-                    roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
-                            HotelAddCartParam("", addToCartParam.checkIn,
-                                    addToCartParam.checkOut, addToCartParam.propertyId,
-                                    hotelRoom.roomId, addToCartParam.room, addToCartParam.adult))
+//                    roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
+                    startActivity(HotelBookingActivity.getCallingIntent(context!!,""))
                 } else {
                     goToLoginPage()
                 }

@@ -25,7 +25,7 @@ class HotelReviewViewHolder(val view: View): AbstractViewHolder<HotelReview>(vie
             bad_review_text.text = review.cons
 
             reviewer_name.text = review.reviewerName
-            reviewer_origin_and_date.text = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
+            reviewer_origin_and_date.text = review.country + " • " + TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
                     TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, review.createTime))
 
         }

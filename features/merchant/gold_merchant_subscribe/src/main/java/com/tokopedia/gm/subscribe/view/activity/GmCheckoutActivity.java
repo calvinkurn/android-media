@@ -17,7 +17,7 @@ import com.tokopedia.gm.subscribe.R;
 import com.tokopedia.gm.subscribe.view.fragment.GmCheckoutFragment;
 import com.tokopedia.gm.subscribe.view.fragment.GmCheckoutFragmentCallback;
 import com.tokopedia.payment.activity.TopPayActivity;
-import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.common.payment.model.PaymentPassData;
 
 /**
  * @author sebastianuskh on 1/31/17.

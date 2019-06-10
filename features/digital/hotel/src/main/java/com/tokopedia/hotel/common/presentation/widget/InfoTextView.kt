@@ -19,14 +19,41 @@ class InfoTextView: BaseCustomView {
     var truncateDescription = true
 
     var infoViewListener: InfoViewListener? = null
+    set(value) {
+        field = value
+        infoViewListener?.let { listener -> info_more.setOnClickListener{ listener.onMoreClicked() } }
+    }
 
     constructor(context: Context) : super(context) { init() }
     constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet) { init() }
     constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int): super(context, attributeSet, defStyleAttr) { init() }
 
-
-    fun init() {
+    private fun init(attrs: AttributeSet? = null) {
         View.inflate(context, R.layout.widget_info_text_view, this)
+
+        attrs.let {
+            val styledAttributes = context.obtainStyledAttributes(it, R.styleable.InfoTextView)
+            try {
+                info_title.text = styledAttributes.getString(R.styleable.InfoTextView_titleText) ?: ""
+                info_desc.text = styledAttributes.getString(R.styleable.InfoTextView_descriptionText) ?: ""
+                truncateDescription = styledAttributes.getBoolean(R.styleable.InfoTextView_truncateDescription, false)
+
+                if (truncateDescription) {
+                    info_desc.post {
+                        if (info_desc.lineCount > descriptionLineCount) {
+                            info_desc.ellipsize = TextUtils.TruncateAt.END
+                            info_desc.maxLines = descriptionLineCount
+                            info_more.visibility = View.VISIBLE
+                        }
+                    }
+                } else {
+                    resetMaxLineCount()
+                }
+            } finally {
+                styledAttributes.recycle()
+            }
+        }
+
         infoViewListener = object : InfoViewListener {
             override fun onMoreClicked() {
                 resetMaxLineCount()
@@ -39,9 +66,17 @@ class InfoTextView: BaseCustomView {
         fun onMoreClicked()
     }
 
-    fun setTitleAndDescription(title: CharSequence, desc: CharSequence) {
+    fun setTitle(title: CharSequence) {
         info_title.text = title
+    }
+
+    fun setDescription(desc: CharSequence) {
         info_desc.text = desc
+    }
+
+    fun setTitleAndDescription(title: CharSequence, desc: CharSequence) {
+        setTitle(title)
+        setDescription(desc)
     }
 
     fun buildView() {
@@ -56,8 +91,6 @@ class InfoTextView: BaseCustomView {
                 }
             }
         }
-
-        infoViewListener.let { listener -> info_more.setOnClickListener{ listener?.onMoreClicked() } }
     }
 
     fun resetMaxLineCount() {

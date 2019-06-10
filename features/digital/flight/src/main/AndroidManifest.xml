@@ -78,11 +78,6 @@
             android:theme="@style/Theme.White.Flight"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".booking.view.activity.FlightBookingPhoneCodeActivity"
-            android:label="@string/activity_label_flight_booking_phone_code"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
             android:name=".booking.view.activity.FlightBookingNationalityActivity"
             android:label="@string/activity_label_flight_nationality"
             android:screenOrientation="portrait"

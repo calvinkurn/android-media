@@ -212,6 +212,8 @@ dependencies {
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.commonPayment)
+
     implementation project(rootProject.ext.features.phoneVerification)
 
     implementation rootProject.ext.miscDependencies.reactNative

@@ -42,8 +42,6 @@
             </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
-
-
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
 </LinearLayout>
