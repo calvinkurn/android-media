@@ -25,7 +25,7 @@ class CMPushNotificationManager : CoroutineScope {
 
     private val TAG = CMPushNotificationManager::class.java.canonicalName
 
-    private var applicationContext: Context? = null
+    private lateinit var applicationContext: Context
 
     private var cmUserHandler: CMUserHandler? = null
 
@@ -49,7 +49,7 @@ class CMPushNotificationManager : CoroutineScope {
      */
     fun init(context: Context) {
         this.applicationContext = context.applicationContext
-        GraphqlClient.init(applicationContext!!)
+        GraphqlClient.init(applicationContext)
     }
 
     /**
@@ -58,19 +58,17 @@ class CMPushNotificationManager : CoroutineScope {
      * @param token
      */
     fun refreshFCMTokenFromForeground(token: String, isForce: Boolean) {
-        if (isForegroundTokenUpdateEnabled) {
-            CommonUtils.dumper("token: $token")
-            if (applicationContext == null) {
-                return
+        try {
+            if (isForegroundTokenUpdateEnabled) {
+                CommonUtils.dumper("token: $token")
+                if (TextUtils.isEmpty(token)) {
+                    return
+                }
+                cmUserHandler?.cancelRunnable()
+                cmUserHandler = CMUserHandler(applicationContext)
+                cmUserHandler!!.updateToken(token, remoteDelaySeconds, isForce)
             }
-            if (TextUtils.isEmpty(token)) {
-                return
-            }
-            if (cmUserHandler != null)
-                cmUserHandler!!.cancelRunnable()
-            cmUserHandler = CMUserHandler(applicationContext!!)
-            cmUserHandler!!.updateToken(token, remoteDelaySeconds, isForce)
-        }
+        }catch (e: Exception){}
     }
 
     /**
@@ -79,19 +77,18 @@ class CMPushNotificationManager : CoroutineScope {
      * @param token
      */
     fun refreshTokenFromBackground(token: String, force: Boolean) {
-        if (isBackgroundTokenUpdateEnabled) {
-            CommonUtils.dumper("token: $token")
-            if (applicationContext == null) {
-                return
+        try {
+            if (isBackgroundTokenUpdateEnabled) {
+                CommonUtils.dumper("token: $token")
+                if (TextUtils.isEmpty(token)) {
+                    return
+                }
+                if (cmUserHandler != null)
+                    cmUserHandler!!.cancelRunnable()
+                cmUserHandler = CMUserHandler(applicationContext)
+                cmUserHandler?.updateToken(token, remoteDelaySeconds, force)
             }
-            if (TextUtils.isEmpty(token)) {
-                return
-            }
-            if (cmUserHandler != null)
-                cmUserHandler!!.cancelRunnable()
-            cmUserHandler = CMUserHandler(applicationContext!!)
-            cmUserHandler!!.updateToken(token, remoteDelaySeconds, force)
-        }
+        }catch (e: Exception){}
     }
 
     /**
@@ -101,9 +98,6 @@ class CMPushNotificationManager : CoroutineScope {
      * @return
      */
     fun isFromCMNotificationPlatform(extras: Map<String, String>?): Boolean {
-        if (applicationContext == null) {
-            throw IllegalArgumentException("Kindly invoke init before calling notification library")
-        }
         try {
             if (null != extras && extras.containsKey(CMConstant.PayloadKeys.SOURCE)) {
                 val confirmationValue = extras[CMConstant.PayloadKeys.SOURCE]
@@ -126,9 +120,7 @@ class CMPushNotificationManager : CoroutineScope {
             return
         if (null == remoteMessage)
             return
-        if (applicationContext == null) {
-            throw IllegalArgumentException("Kindly invoke init before calling notification library")
-        }
+
         if (null == remoteMessage.data)
             return
 
@@ -164,7 +156,7 @@ class CMPushNotificationManager : CoroutineScope {
             val baseNotification = CMNotificationFactory
                     .getNotification(instance.applicationContext, bundle)
             if (null != baseNotification) {
-                val notificationManager = applicationContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 val notification = baseNotification.createNotification()
                 notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
             }

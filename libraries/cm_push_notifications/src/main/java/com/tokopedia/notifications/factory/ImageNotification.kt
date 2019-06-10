@@ -46,8 +46,6 @@ class ImageNotification internal constructor(context: Context, baseNotificationM
                 bigPictureStyle.setSummaryText(CMNotificationUtils
                         .getSpannedTextFromStr(baseNotificationModel.message))
             builder.setStyle(bigPictureStyle)
-        } else {
-            //TODO use fallbackUrl
         }
     }
 
