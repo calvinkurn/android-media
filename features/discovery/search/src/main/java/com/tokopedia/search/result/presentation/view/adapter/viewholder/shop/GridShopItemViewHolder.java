@@ -18,6 +18,7 @@ import com.tokopedia.search.result.presentation.view.adapter.ShopPreviewItemAdap
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.ShopListener;
 import com.tokopedia.search.result.presentation.view.widget.SquareImageView;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.ShopViewItem> {
 
@@ -70,7 +71,7 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
         if (shopItem.isOfficial() || shopItem.getShopGoldShop().equals(KEY_SHOP_IS_GOLD)) {
             itemShopBadge.setVisibility(View.VISIBLE);
             if (shopItem.isOfficial()) {
-                itemShopBadge.setImageResource(R.drawable.ic_official_store_discovery);
+                itemShopBadge.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_official_store_discovery);
             } else if (shopItem.getShopGoldShop().equals(KEY_SHOP_IS_GOLD)) {
                 itemShopBadge.setImageDrawable(GMConstant.getGMDrawable(context));
             }
@@ -154,12 +155,12 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
             favoriteButton.setBackgroundResource(R.drawable.white_button_rounded);
             favoriteButtonText.setText(context.getString(R.string.label_following_shop));
             favoriteButtonText.setTextColor(context.getResources().getColor(R.color.black_54));
-            favoriteButtonIcon.setImageResource(R.drawable.shop_list_favorite_check);
+            favoriteButtonIcon.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.shop_list_favorite_check));
         } else {
             favoriteButton.setBackgroundResource(R.drawable.green_button_rounded);
             favoriteButtonText.setText(context.getString(R.string.label_follow_shop));
             favoriteButtonText.setTextColor(context.getResources().getColor(R.color.white));
-            favoriteButtonIcon.setImageResource(R.drawable.ic_add);
+            favoriteButtonIcon.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_add));
         }
     }
 }

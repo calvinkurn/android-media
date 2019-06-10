@@ -37,6 +37,7 @@ import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -354,12 +355,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         submissionResult.getMe().setLiked(isLiked);
         if (isLiked) {
             updateLikeCount(true);
-            likeBtn.setImageResource(R.drawable.ic_wishlist_checked);
-            likesImageView.setImageResource(R.drawable.ic_wishlist_checked);
+            likeBtn.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_checked));
+            likesImageView.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_checked));
         } else {
             updateLikeCount(false);
-            likeBtn.setImageResource(R.drawable.ic_wishlist_unchecked);
-            likesImageView.setImageResource(R.drawable.ic_wishlist_unchecked);
+            likeBtn.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_unchecked));
+            likesImageView.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_unchecked));
         }
     }
 

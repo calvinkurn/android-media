@@ -40,6 +40,7 @@ import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -535,9 +536,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 tvLikes.setVisibility(View.GONE);
             }
             if (isLiked) {
-                ivFavourite.setImageResource(R.drawable.ic_wishlist_filled);
+                ivFavourite.setImageDrawable(MethodChecker.getDrawable(ivFavourite.getContext(),R.drawable.ic_wishlist_filled));
             } else {
-                ivFavourite.setImageResource(R.drawable.ic_wishlist_unfilled);
+                ivFavourite.setImageDrawable(MethodChecker.getDrawable(ivFavourite.getContext(),R.drawable.ic_wishlist_unfilled));
             }
         }
 

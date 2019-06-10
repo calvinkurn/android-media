@@ -15,6 +15,7 @@ import com.tokopedia.challenges.view.customview.MExpandableTextView;
 import com.tokopedia.challenges.view.model.User;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.Utils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author lalit.singh
@@ -132,9 +133,9 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder
         if (((SubmissionResult) itemView.getTag()).getMe() != null) {
             ((SubmissionResult) itemView.getTag()).getMe().setLiked(isLiked);
             if (isLiked) {
-                ivFavourite.setImageResource(R.drawable.ic_wishlist_checked);
+                ivFavourite.setImageDrawable(MethodChecker.getDrawable(ivFavourite.getContext(),R.drawable.ic_wishlist_checked));
             } else {
-                ivFavourite.setImageResource(R.drawable.ic_wishlist_unchecked);
+                ivFavourite.setImageDrawable(MethodChecker.getDrawable(ivFavourite.getContext(),R.drawable.ic_wishlist_unchecked));
             }
         }
     }

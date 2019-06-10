@@ -32,6 +32,8 @@ import com.tokopedia.topads.keyword.view.adapter.TopAdsKeywordGroupListAdapter;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordGroupListListener;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordGroupListView;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordOldNewChooseGroupPresenter;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+
 
 import java.util.List;
 
@@ -127,7 +129,7 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordO
         View view = super.onCreateView(inflater, container, savedInstanceState);
         groupFilterSearch = (EditText) view.findViewById(R.id.group_filter_search);
         groupFilterImage = (ImageView) view.findViewById(R.id.group_filter_search_icon);
-        groupFilterImage.setImageResource(R.drawable.ic_group_magnifier);
+        groupFilterImage.setImageDrawable(MethodChecker.getDrawable(getActivity(), R.drawable.ic_group_magnifier));
         hideThings = view.findViewById(R.id.hide_things);
         hideThings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,7 +281,7 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordO
         selection = null;
         groupFilterSearch.setFocusableInTouchMode(true);
         groupFilterSearch.setEnabled(true);
-        groupFilterImage.setImageResource(R.drawable.ic_group_magnifier);
+        groupFilterImage.setImageDrawable(MethodChecker.getDrawable(getActivity(), R.drawable.ic_group_magnifier));
         groupFilterImage.setOnClickListener(null);
         groupFilterSearch.addTextChangedListener(textWatcher);
         groupFilterSearch.setText("");

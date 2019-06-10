@@ -25,6 +25,7 @@ import com.tokopedia.challenges.view.presenter.SubmissionAdapterPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -245,9 +246,9 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (categoryItems.get(getIndex()).getMe() != null) {
                 categoryItems.get(getIndex()).getMe().setLiked(isLiked);
                 if (isLiked) {
-                    ivFavourite.setImageResource(R.drawable.ic_wishlist_checked);
+                    ivFavourite.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_wishlist_checked));
                 } else {
-                    ivFavourite.setImageResource(R.drawable.ic_wishlist_unchecked);
+                    ivFavourite.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_wishlist_unchecked));
                 }
             }
         }

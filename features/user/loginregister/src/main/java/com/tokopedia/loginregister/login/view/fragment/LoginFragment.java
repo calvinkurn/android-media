@@ -74,6 +74,7 @@ import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 
@@ -516,7 +517,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             if (!TextUtils.isEmpty(listProvider.get(i).getImage())) {
                 tv.setImage(listProvider.get(i).getImage());
             } else if (listProvider.get(i).getImageResource() != 0) {
-                tv.setImageResource(listProvider.get(i).getImageResource());
+                tv.setImageDrawable(MethodChecker.getDrawable(getActivity(),listProvider.get(i).getImageResource()));
             }
             tv.setRoundCorner(10);
 

@@ -22,6 +22,7 @@ import com.tokopedia.homecredit.R;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class FragmentCardIdCamera extends HomeCreditKTPFragment{
     private ActionCreator actionCreator;

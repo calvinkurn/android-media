@@ -18,6 +18,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 
@@ -90,7 +91,7 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleAnnouncem
             ImageHandler.loadImageWithIdWithoutPlaceholder(sprintSaleIcon, R.drawable
                     .ic_sprint_sale_active);
         } else {
-            sprintSaleIcon.setImageResource(R.drawable.ic_sprint_sale_active);
+            sprintSaleIcon.setImageDrawable(MethodChecker.getDrawable(sprintSaleIcon.getContext(), R.drawable.ic_sprint_sale_active));
         }
         sprintSaleTitle.setText(R.string.title_sprintsale_started);
         sprintSaleTitle.setTextColor(MethodChecker.getColor(sprintSaleTitle.getContext(), R.color.medium_green));
@@ -101,7 +102,7 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleAnnouncem
             ImageHandler.loadImageWithIdWithoutPlaceholder(sprintSaleIcon, R.drawable
                     .ic_sprint_sale_inactive);
         } else {
-            sprintSaleIcon.setImageResource(R.drawable.ic_sprint_sale_inactive);
+            sprintSaleIcon.setImageDrawable(MethodChecker.getDrawable(sprintSaleIcon.getContext(),R.drawable.ic_sprint_sale_inactive));
         }
 
         sprintSaleTitle.setText(R.string.title_sprintsale_finished);

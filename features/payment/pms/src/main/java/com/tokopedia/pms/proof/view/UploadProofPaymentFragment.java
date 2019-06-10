@@ -40,6 +40,7 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.D
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by zulfikarrahman on 7/6/18.
@@ -150,12 +151,12 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
             containerImageUpload.setVisibility(View.VISIBLE);
             containerHelpUploadProof.setVisibility(View.GONE);
             if(isUploaded) {
-                buttonActionCloseImage.setImageResource(R.drawable.ic_check_green_payment);
+                buttonActionCloseImage.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_check_green_payment));
                 buttonSave.setText(R.string.payment_label_finish);
                 buttonChooseAnotherImage.setVisibility(View.VISIBLE);
                 titleUploadImage.setText(R.string.payment_label_succes_upload_proof);
             }else{
-                buttonActionCloseImage.setImageResource(R.drawable.ic_close_default);
+                buttonActionCloseImage.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_close_default));
                 buttonSave.setText(R.string.payment_label_save_image);
                 buttonChooseAnotherImage.setVisibility(View.GONE);
                 titleUploadImage.setText(R.string.payment_label_confirmation_upload_image);

@@ -73,6 +73,7 @@ import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 
@@ -269,7 +270,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             registerButton.setColor(Color.WHITE);
             registerButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
             registerButton.setRoundCorner(10);
-            registerButton.setImageResource(R.drawable.ic_email);
+            registerButton.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_email));
             registerButton.setOnClickListener(v -> {
                 analytics.eventClickRegisterEmail();
                 TrackApp.getInstance().getMoEngage().sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_EMAIL);
