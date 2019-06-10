@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.cacheapi.data.source.db.dao.CacheApiDataDao;
+import com.tokopedia.cacheapi.data.source.db.dao.CacheApiVersionDao;
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiData;
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiVersion;
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
@@ -32,8 +33,10 @@ public class CacheApiDatabaseSource {
     private static final String CACHE_API_KEY = "BU}~GV2(K)%z$1+H";
 
     private CacheApiDataDao cacheApiDataDao;
+    private CacheApiVersionDao cacheApiVersionDao;
 
-    public CacheApiDatabaseSource(CacheApiDataDao cacheApiDataDao) {
+    public CacheApiDatabaseSource(CacheApiVersionDao cacheApiVersionDao, CacheApiDataDao cacheApiDataDao) {
+        this.cacheApiVersionDao = cacheApiVersionDao;
         this.cacheApiDataDao = cacheApiDataDao;
     }
 
@@ -46,7 +49,7 @@ public class CacheApiDatabaseSource {
                     return;
                 }
                 String storedVersionName = "";
-                CacheApiVersion cacheApiVersion = new Select().from(CacheApiVersion.class).querySingle();
+                CacheApiVersion cacheApiVersion = cacheApiVersionDao.getCurrentVersion();
                 if (cacheApiVersion != null) {
                     storedVersionName = cacheApiVersion.getVersion();
                 }
@@ -71,10 +74,9 @@ public class CacheApiDatabaseSource {
                     subscriber.onError(new VersionNameNotValidException());
                     return;
                 }
-                new Delete().from(CacheApiVersion.class).execute();
-                CacheApiVersion cacheApiVersion = new CacheApiVersion();
-                cacheApiVersion.setVersion(versionName);
-                cacheApiVersion.save();
+                cacheApiVersionDao.deleteAll();
+                CacheApiVersion cacheApiVersion = new CacheApiVersion(versionName);
+                cacheApiVersionDao.insert(cacheApiVersion);
                 subscriber.onNext(true);
             }
         });

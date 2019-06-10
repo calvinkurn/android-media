@@ -6,11 +6,12 @@ import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import com.tokopedia.cacheapi.data.source.db.dao.CacheApiDataDao
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiData
+import com.tokopedia.cacheapi.data.source.db.model.CacheApiVersion
 import com.tokopedia.cachemanager.db.PersistentCacheDatabase.Companion.VERSION
 import com.tokopedia.cachemanager.db.dao.PersistentCacheDatabaseDao
 import com.tokopedia.cachemanager.db.model.PersistentCacheDbModel
 
-@Database(entities = [CacheApiData::class],
+@Database(entities = [CacheApiData::class, CacheApiVersion::class],
         version = CacheApiDatabase.VERSION,
         exportSchema = false)
 abstract class CacheApiDatabase : RoomDatabase() {
