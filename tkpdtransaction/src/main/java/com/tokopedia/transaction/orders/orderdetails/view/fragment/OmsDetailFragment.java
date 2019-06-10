@@ -2,15 +2,20 @@ package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -22,13 +27,19 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
@@ -39,8 +50,10 @@ import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.DropShipper;
+import com.tokopedia.transaction.orders.orderdetails.data.EntityPessenger;
 import com.tokopedia.transaction.orders.orderdetails.data.Invoice;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
+import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
@@ -63,13 +76,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static android.content.Context.CLIPBOARD_SERVICE;
 import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment.ORDER_LIST_URL_ENCODING;
 
 /**
  * Created by baghira on 09/05/18.
  */
 
-public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View {
+public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View, ItemsAdapter.SetEventDetails {
 
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
@@ -103,6 +117,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     FrameLayout progressBarLayout;
     private boolean isSingleButton;
     private PermissionCheckerHelper permissionCheckerHelper;
+    RelativeLayout actionButtonLayout;
+    TextView actionButtonText;
+    LinearLayout userInfo;
+    TextView userInfoLabel;
+    private String categoryName;
 
 
     @Override
@@ -147,10 +166,16 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         recyclerView = view.findViewById(R.id.recycler_view);
         paymentMethodInfo = view.findViewById(R.id.info_payment);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
+        actionButtonLayout = view.findViewById(R.id.actionButton);
+        userInfo = view.findViewById(R.id.user_information_layout);
+        userInfoLabel = view.findViewById(R.id.user_label);
+        actionButtonText = view.findViewById(R.id.actionButton_text);
         recyclerView.setNestedScrollingEnabled(false);
+
 
         initInjector();
         setMainViewVisible(View.GONE);
+
         presenter.attachView(this);
         return view;
     }
@@ -361,7 +386,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setItems(List<Items> items,boolean isTradeIn) {
+    public void setItems(List<Items> items, boolean isTradeIn) {
         List<Items> itemsList = new ArrayList<>();
         for (Items item : items) {
             if (!CATEGORY_GIFT_CARD.equalsIgnoreCase(item.getCategory())) {
@@ -369,7 +394,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             }
         }
         if (itemsList.size() > 0) {
-            recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false, presenter));
+            recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false, presenter, OmsDetailFragment.this));
         } else {
             detailsLayout.setVisibility(View.GONE);
         }
@@ -427,7 +452,14 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setActionButtons(List<ActionButton> actionButtons) {
-
+        actionButtonLayout.setVisibility(View.VISIBLE);
+        actionButtonText.setText(actionButtons.get(0).getLabel());
+        actionButtonLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.route(getContext(), actionButtons.get(0).getBody().getAppURL());
+            }
+        });
     }
 
     @Override
@@ -451,7 +483,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void showErrorMessage (String message) {
+    public void showErrorMessage(String message) {
 
     }
 
@@ -478,7 +510,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             public void onPermissionGranted() {
                 presenter.permissionGrantedContinueDownload();
             }
-        },"");
+        }, "");
     }
 
     @Override
@@ -495,4 +527,61 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         mainView.setVisibility(visibility);
     }
 
+    @Override
+    public void setEventDetails(Items item) {
+        if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
+            actionButtonLayout.setVisibility(View.GONE);
+        } else {
+            presenter.setActionButton(item.getActionButtons(), null, 0, false);
+        }
+
+        MetaDataInfo metaDataInfo = new Gson().fromJson(item.getMetaData(), MetaDataInfo.class);
+        if (metaDataInfo != null && metaDataInfo.getEntityPessengers() != null && metaDataInfo.getEntityPessengers().size() > 0) {
+            userInfoLabel.setVisibility(View.VISIBLE);
+            userInfo.removeAllViews();
+            for (EntityPessenger entityPessenger: metaDataInfo.getEntityPessengers()) {
+                DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
+                doubleTextView.setTopText(entityPessenger.getTitle());
+                doubleTextView.setTopTextColor(ContextCompat.getColor(getContext(), R.color.clr_ae31353b));
+                doubleTextView.setBottomText(entityPessenger.getValue());
+                doubleTextView.setBottomTextColor(ContextCompat.getColor(getContext(), R.color.clr_f531353b));
+                doubleTextView.setBottomTextStyle("bold");
+
+                userInfo.addView(doubleTextView);
+            }
+        }
+    }
+
+    @Override
+    public void openShowQRFragment(ActionButton actionButton) {
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.scan_qr_code_layout, mainView, false);
+        Dialog dialog = new Dialog(getContext());
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(view);
+        View v = dialog.getWindow().getDecorView();
+        v.setBackgroundResource(android.R.color.transparent);
+
+
+        ImageView qrCode = view.findViewById(R.id.qrCode);
+        TextView bookingCode = view.findViewById(R.id.booking_code);
+        RelativeLayout bookingCodeLayout = view.findViewById(R.id.booking_code_layout);
+        TextView copyButton = view.findViewById(R.id.copyCode);
+        TextView closeButton = view.findViewById(R.id.redeem_ticket);
+
+        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), R.color.grey_1100, R.color.grey_1100);
+
+
+        copyButton.setOnClickListener(v1 -> {
+            ClipData myClip;
+            ClipboardManager myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
+             myClip = ClipData.newPlainText("text", bookingCode.getText().toString());
+            myClipboard.setPrimaryClip(myClip);
+            ToasterNormal.showClose(getActivity(), "Kode booking telah disalin");
+        });
+
+        closeButton.setOnClickListener(v1->{
+            dialog.dismiss();
+        });
+        dialog.show();
+    }
 }

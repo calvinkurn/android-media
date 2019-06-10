@@ -180,6 +180,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                         view.setActionButton(position, actionButtonList);
                                     }
                             }
+                        } else {
+                            if (response != null) {
+                                ActionButtonList data = response.getData(ActionButtonList.class);
+                                actionButtonList = data.getActionButtonList();
+                                if (actionButtonList != null && actionButtonList.size() > 0)
+                                getView().setActionButtons(actionButtonList);
+                            }
                         }
                     }
                 });
@@ -355,7 +362,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
 
-    public void updateOrderCancelReason(String cancelReason, String orderId, int cancelOrReplacement, String url) {
+    public void updateOrderCancelReason(String cancelReason, String orderId,
+                                        int cancelOrReplacement, String url) {
         if (getView() == null || getView().getAppContext() == null)
             return;
 
@@ -483,7 +491,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         getView().askPermission();
     }
 
-    public void permissionGrantedContinueDownload(){
+    public void permissionGrantedContinueDownload() {
         download(pdfUri);
     }
 
@@ -493,11 +501,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
         request.setAllowedOverRoaming(true);
-        request.setTitle(Insurance_File_Name+".pdf");
-        request.setDescription(Insurance_File_Name+".pdf");
+        request.setTitle(Insurance_File_Name + ".pdf");
+        request.setDescription(Insurance_File_Name + ".pdf");
         request.setVisibleInDownloadsUi(true);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, Insurance_File_Name+".pdf");
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, Insurance_File_Name + ".pdf");
         downloadManager.enqueue(request);
     }
 }

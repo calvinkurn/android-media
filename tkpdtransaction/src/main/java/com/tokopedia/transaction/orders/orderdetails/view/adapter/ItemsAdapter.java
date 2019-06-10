@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -18,10 +19,12 @@ import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
+import com.tokopedia.transaction.orders.orderdetails.view.fragment.ShowQRCodeFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 
@@ -32,6 +35,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final String KEY_BUTTON = "button";
     public static final String KEY_TEXT = "text";
     public static final String KEY_REDIRECT = "redirect";
+    public static final String KEY_QRCODE = "qrcode";
     private static final int DEALS_CATEGORY_ID = 35;
     private boolean isShortLayout;
     private List<Items> itemsList;
@@ -43,13 +47,15 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     OrderListDetailPresenter presenter;
     private String categoryDeals = "deal";
     private String categoryEvents = "event";
+    SetEventDetails setEventDetails;
 
 
-    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter) {
+    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails) {
         this.context = context;
         this.itemsList = itemsList;
         this.isShortLayout = isShortLayout;
         this.presenter = presenter;
+        this.setEventDetails = setEventDetails;
     }
 
     @Override
@@ -123,7 +129,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    presenter.downloadPdf(uri);
+                ((UnifiedOrderListRouter) context.getApplicationContext())
+                        .actionOpenGeneralWebView((Activity)context, uri);
             }
         };
     }
@@ -148,16 +155,21 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView tvRightCategoryTicket;
         private TextView tvRightNumberOfBooking;
         private TextView tvValidTill;
+        private TextView tanggalEventsTitle, tanggalEvents, eventCity, eventAddress;
         private int index;
 
         public ItemViewHolder(View itemView, int itemType) {
             super(itemView);
             this.itemView = itemView;
-            if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT) {
+            if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT || itemType == ITEM_EVENTS) {
                 dealImage = itemView.findViewById(R.id.iv_deal);
                 dealsDetails = itemView.findViewById(R.id.tv_deal_intro);
                 brandName = itemView.findViewById(R.id.tv_brand_name);
                 cityName = itemView.findViewById(R.id.tv_redeem_locations);
+                tanggalEventsTitle = itemView.findViewById(R.id.tanggal_events_title);
+                tanggalEvents = itemView.findViewById(R.id.tanggal_events);
+                eventCity = itemView.findViewById(R.id.city_event);
+                eventAddress = itemView.findViewById(R.id.address_event);
             }
             if (itemType == ITEM_DEALS || itemType == ITEM_EVENTS) {
                 tvValidTill = itemView.findViewById(R.id.tv_valid_till);
@@ -169,14 +181,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
             }
-            if (itemType == ITEM_EVENTS) {
-                tvRightTypeofEvents = itemView.findViewById(R.id.right_text1);
-                tvRightAddress = itemView.findViewById(R.id.right_text2);
-                tvRightCategoryTicket = itemView.findViewById(R.id.right_text3);
-                tvRightNumberOfBooking = itemView.findViewById(R.id.right_text4);
-                llTanggalEvent = itemView.findViewById(R.id.ll_tanggal_event);
-                tvEventDate = itemView.findViewById(R.id.tv_start_date);
-            }
+//            if (itemType == ITEM_EVENTS) {
+//                tvRightTypeofEvents = itemView.findViewById(R.id.right_text1);
+//                tvRightAddress = itemView.findViewById(R.id.right_text2);
+//                tvRightCategoryTicket = itemView.findViewById(R.id.right_text3);
+//                tvRightNumberOfBooking = itemView.findViewById(R.id.right_text4);
+//                llTanggalEvent = itemView.findViewById(R.id.ll_tanggal_event);
+//                tvEventDate = itemView.findViewById(R.id.tv_start_date);
+//            }
             progressBar = itemView.findViewById(R.id.prog_bar);
 
         }
@@ -190,7 +202,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             }
             if (metaDataInfo != null) {
-                if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT) {
+                if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT || itemType == ITEM_EVENTS) {
                     if (TextUtils.isEmpty(metaDataInfo.getEntityImage())) {
                         ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
                     } else {
@@ -201,16 +213,37 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         dealsDetails.setText(metaDataInfo.getEntityProductName());
                     }
-                    brandName.setText(metaDataInfo.getEntityBrandName());
+//                    brandName.setText(metaDataInfo.getEntityBrandName());
 
                 }
-                if (itemType == ITEM_DEALS || itemType == ITEM_EVENTS) {
+                if (itemType == ITEM_DEALS) {
                     if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
                         validDate.setText(" ".concat(metaDataInfo.getEndDate()));
                         llValid.setVisibility(View.VISIBLE);
                     } else {
                         llValid.setVisibility(View.GONE);
                     }
+                }
+
+                if (itemType == ITEM_EVENTS) {
+                    if (!TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getCity())) {
+                        eventCity.setText(metaDataInfo.getEntityPackages().get(0).getCity());
+                    }
+                    if (!TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getAddress())) {
+                        eventAddress.setText(metaDataInfo.getEntityPackages().get(0).getAddress());
+                    }
+
+                    if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
+                        tanggalEventsTitle.setVisibility(View.VISIBLE);
+                        tanggalEvents.setText(metaDataInfo.getEndDate());
+                    }
+                    if (!TextUtils.isEmpty(item.getCategory())) {
+                        validDate.setText(" ".concat(metaDataInfo.getEntityPackages().get(0).getDisplayName()));
+                        llValid.setVisibility(View.VISIBLE);
+                    } else {
+                        llValid.setVisibility(View.GONE);
+                    }
+                    setEventDetails.setEventDetails(item);
                 }
 
                 EntityAddress entityAddress = metaDataInfo.getEntityAddress();
@@ -220,42 +253,42 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             cityName.setText(entityAddress.getName());
                         }
                 }
-                if (itemType == ITEM_EVENTS) {
-                    if (TextUtils.isEmpty(metaDataInfo.getEntityProductName())) {
-                        itemView.findViewById(R.id.ll_details1).setVisibility(View.GONE);
-                    } else {
-                        tvRightTypeofEvents.setText(metaDataInfo.getEntityProductName());
-                    }
-                    if (metaDataInfo.getEntityPackages() != null && metaDataInfo.getEntityPackages().size() > 0) {
-                        if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getAddress())) {
-                            itemView.findViewById(R.id.ll_details2).setVisibility(View.GONE);
-                        } else {
-                            tvRightAddress.setText(metaDataInfo.getEntityPackages().get(0).getAddress());
-                        }
-                    } else {
-                        itemView.findViewById(R.id.ll_details2).setVisibility(View.GONE);
-                    }
-                    if (metaDataInfo.getEntityPackages() != null && metaDataInfo.getEntityPackages().size() > 0) {
-                        if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getDisplayName())) {
-                            itemView.findViewById(R.id.ll_details3).setVisibility(View.GONE);
-                        } else {
-                            tvRightCategoryTicket.setText(metaDataInfo.getEntityPackages().get(0).getDisplayName());
-                        }
-                    } else {
-                        itemView.findViewById(R.id.ll_details3).setVisibility(View.GONE);
-                    }
-                    if (item.getQuantity() == 0) {
-                        itemView.findViewById(R.id.ll_details4).setVisibility(View.GONE);
-                    } else {
-                        tvRightNumberOfBooking.setText(String.valueOf(metaDataInfo.getTotalTicketCount()));
-                    }
-                    if (!TextUtils.isEmpty(metaDataInfo.getStartDate())) {
-                        tvEventDate.setText(" ".concat(metaDataInfo.getStartDate()));
-                        llTanggalEvent.setVisibility(View.VISIBLE);
-                    } else {
-                        llTanggalEvent.setVisibility(View.GONE);
-                    }
-                }
+//                if (itemType == ITEM_EVENTS) {
+//                    if (TextUtils.isEmpty(metaDataInfo.getEntityProductName())) {
+//                        itemView.findViewById(R.id.ll_details1).setVisibility(View.GONE);
+//                    } else {
+//                        tvRightTypeofEvents.setText(metaDataInfo.getEntityProductName());
+//                    }
+//                    if (metaDataInfo.getEntityPackages() != null && metaDataInfo.getEntityPackages().size() > 0) {
+//                        if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getAddress())) {
+//                            itemView.findViewById(R.id.ll_details2).setVisibility(View.GONE);
+//                        } else {
+//                            tvRightAddress.setText(metaDataInfo.getEntityPackages().get(0).getAddress());
+//                        }
+//                    } else {
+//                        itemView.findViewById(R.id.ll_details2).setVisibility(View.GONE);
+//                    }
+//                    if (metaDataInfo.getEntityPackages() != null && metaDataInfo.getEntityPackages().size() > 0) {
+//                        if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getDisplayName())) {
+//                            itemView.findViewById(R.id.ll_details3).setVisibility(View.GONE);
+//                        } else {
+//                            tvRightCategoryTicket.setText(metaDataInfo.getEntityPackages().get(0).getDisplayName());
+//                        }
+//                    } else {
+//                        itemView.findViewById(R.id.ll_details3).setVisibility(View.GONE);
+//                    }
+//                    if (item.getQuantity() == 0) {
+//                        itemView.findViewById(R.id.ll_details4).setVisibility(View.GONE);
+//                    } else {
+//                        tvRightNumberOfBooking.setText(String.valueOf(metaDataInfo.getTotalTicketCount()));
+//                    }
+//                    if (!TextUtils.isEmpty(metaDataInfo.getStartDate())) {
+//                        tvEventDate.setText(" ".concat(metaDataInfo.getStartDate()));
+//                        llTanggalEvent.setVisibility(View.VISIBLE);
+//                    } else {
+//                        llTanggalEvent.setVisibility(View.GONE);
+//                    }
+//                }
 
             }
 
@@ -292,31 +325,33 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
                     actionLayout.setVisibility(View.GONE);
                 } else {
-                    actionLayout.setVisibility(View.VISIBLE);
-                    actionLayout.removeAllViews();
-                    int size = item.getActionButtons().size();
-                    for (int i = 0; i < size; i++) {
-                        ActionButton actionButton = item.getActionButtons().get(i);
+                    if (!item.getCategory().equalsIgnoreCase(categoryEvents)) {
+                        actionLayout.setVisibility(View.VISIBLE);
+                        actionLayout.removeAllViews();
+                        int size = item.getActionButtons().size();
+                        for (int i = 0; i < size; i++) {
+                            ActionButton actionButton = item.getActionButtons().get(i);
 
-                        TextView actionTextView = renderActionButtons(i, actionButton, item);
-                        if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
-                            if (item.isActionButtonLoaded()) {
-                                setActionButtonClick(null, actionButton);
-                            } else {
-                                actionTextView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                                            presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex(), false);
-                                        } else {
-                                            setActionButtonClick(actionTextView, actionButton);
+                            TextView actionTextView = renderActionButtons(i, actionButton, item);
+                            if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
+                                if (item.isActionButtonLoaded()) {
+                                    setActionButtonClick(null, actionButton);
+                                } else {
+                                    actionTextView.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                                                presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex(), false);
+                                            } else {
+                                                setActionButtonClick(actionTextView, actionButton);
+                                            }
+
                                         }
-
-                                    }
-                                });
+                                    });
+                                }
                             }
+                            actionLayout.addView(actionTextView);
                         }
-                        actionLayout.addView(actionTextView);
                     }
                 }
             }
@@ -331,6 +366,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     else
                         view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
                 }
+            } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
+                view.setOnClickListener(v -> {
+                    setEventDetails.openShowQRFragment(actionButton);
+                });
             }
         }
 
@@ -391,6 +430,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void onClick(View v) {
 
         }
+    }
+
+    public interface SetEventDetails {
+        void setEventDetails(Items item);
+        void openShowQRFragment(ActionButton actionButton);
     }
 
 }
