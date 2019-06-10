@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,6 +17,10 @@ import com.moengage.pushbase.push.PushMessageListener;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.tkpd.R;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class CustomPushListener extends PushMessageListener {
 
@@ -73,11 +78,14 @@ public class CustomPushListener extends PushMessageListener {
             provider.updateNotificationId(NOTIFICATION_ID);
             createPersistentNotification(context, extras, builder);
         } else if (GRID.equalsIgnoreCase(extras.getString(KEY_IS_GRID))) {
+            String bundleData = extras.toString();
+            writeStringAsFile(context, bundleData, "bundleData.txt");
             provider.updateNotificationId(GRID_NOTIFICATION_ID);
             createGridNotification(context, extras, builder);
         }
         return builder;
     }
+
 
     private void createPersistentNotification(Context context, Bundle extras, NotificationCompat.Builder builder) {
         long when = System.currentTimeMillis();
@@ -283,4 +291,14 @@ public class CustomPushListener extends PushMessageListener {
     public void onNotificationNotRequired(Context context, Bundle extras) {
 
     }
+
+    public static void writeStringAsFile(Context context, final String fileContents, String fileName) {
+        try {
+            FileWriter out = new FileWriter(new File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), fileName));
+            out.write(fileContents);
+            out.close();
+        } catch (IOException e) {
+        }
+    }
+
 }
