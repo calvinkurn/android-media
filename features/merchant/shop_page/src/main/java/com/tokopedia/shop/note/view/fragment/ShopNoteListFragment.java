@@ -1,5 +1,6 @@
 package com.tokopedia.shop.note.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;

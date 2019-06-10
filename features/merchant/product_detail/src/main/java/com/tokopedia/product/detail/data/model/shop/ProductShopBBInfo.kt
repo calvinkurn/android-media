@@ -2,26 +2,13 @@ package com.tokopedia.product.detail.data.model.shop
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.view.adapter.CourierTypeFactory
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-data class BBInfo(
-        @SerializedName("bbName")
-        @Expose
+data class ProductShopBBInfo(
         val name: String = "",
-
-        @SerializedName("bbDesc")
-        @Expose
         val desc: String = "",
-
-        @SerializedName("bbNameEN")
-        @Expose
         val nameEN: String = "",
-
-        @SerializedName("bbDescEN")
-        @Expose
         val descEN: String = ""
 ): BlackBoxShipmentHolder(), Parcelable {
 
@@ -45,12 +32,12 @@ data class BBInfo(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<BBInfo> {
-        override fun createFromParcel(parcel: Parcel): BBInfo {
-            return BBInfo(parcel)
+    companion object CREATOR : Parcelable.Creator<ProductShopBBInfo> {
+        override fun createFromParcel(parcel: Parcel): ProductShopBBInfo {
+            return ProductShopBBInfo(parcel)
         }
 
-        override fun newArray(size: Int): Array<BBInfo?> {
+        override fun newArray(size: Int): Array<ProductShopBBInfo?> {
             return arrayOfNulls(size)
         }
     }

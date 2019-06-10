@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
-import com.tokopedia.product.detail.data.model.shop.ShopCommitment
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.view.*
 

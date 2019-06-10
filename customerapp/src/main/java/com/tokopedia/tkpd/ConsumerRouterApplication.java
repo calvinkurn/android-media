@@ -598,14 +598,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return flightConsumerComponent;
     }
 
-    @Override
-    public void goToProfileShop(Context context, String userId) {
-        context.startActivity(
-                getTopProfileIntent(context, userId)
-        );
-    }
-
-
     private void initializeDagger() {
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
                 .appComponent(getApplicationComponent())
@@ -2028,7 +2020,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         new DefaultShare(activity, shareData).show();
     }
 
-    @Override
     public void goToManageShop(Context context) {
         context.startActivity(StoreSettingActivity.createIntent(context));
     }
@@ -2038,19 +2029,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(this, BannerWebView.class);
         intent.putExtra(BannerWebView.EXTRA_URL, url);
         context.startActivity(intent);
-    }
-
-    @Override
-    public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
-        UserSessionInterface userSession = new UserSession(this);
-        if (userSession.isLoggedIn()) {
-            UnifyTracking.eventShopSendChat();
-            Intent intent = getAskSellerIntent(this, shopId, shopName, "", TkpdInboxRouter.SHOP);
-            context.startActivity(intent);
-        } else {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
-            ((Activity) context).startActivityForResult(intent, 100);
-        }
     }
 
     public void init() {
@@ -2519,24 +2497,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToShopReview(Context context, String shopId, String shopDomain) {
-        ReputationTracking tracking = new ReputationTracking(this);
-        UserSessionInterface userSession = new UserSession(this);
-        tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, userSession.getShopId().equals(shopId));
-        context.startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
-    }
-
-    @Override
-    public void goToShopDiscussion(Context context, String shopId) {
-        context.startActivity(ShopTalkActivity.Companion.createIntent(context, shopId));
-    }
-
-    @Override
-    public void goToManageShipping(Context context) {
-        context.startActivity(new Intent(context, EditShippingActivity.class));
-    }
-
-    @Override
     public FingerprintModel getFingerprintModel() {
         return FingerprintModelGenerator.generateFingerprintModel(this);
     }
@@ -2871,10 +2831,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getMitraToppersActivityIntent(Context context) {
         return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
-    }
-
-    public boolean isFeedShopPageEnabled() {
-        return remoteConfig.getBoolean("mainapp_enable_feed_shop_page", Boolean.TRUE);
     }
 
     @Override

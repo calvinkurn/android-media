@@ -7,9 +7,20 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
         result {
             shopCore{
                 shopID
+                description
                 domain
                 name
+                tagLine
                 url
+            }
+            closedInfo{
+                closedNote
+                reason
+                until
+            }
+            createInfo{
+                shopCreated
+                openSince
             }
             shopAssets{
                 avatar
@@ -35,6 +46,7 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
             location
             shopTerms
             isAllowManage
+            isOpen
             isOwner
             goldOS {
                 isGold
@@ -55,6 +67,10 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
                 bbNameEN
                 bbDesc
                 bbDescEN
+            }
+            topContent{
+                topURL
+                bottomURL
             }
         }
         error {
