@@ -1,5 +1,7 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
+import android.content.Context;
+
 import com.tokopedia.cacheapi.constant.CacheApiConstant;
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.CacheApiRepository;
@@ -19,8 +21,8 @@ public class CacheApiSaveToDbUseCase extends UseCase<Boolean> {
 
     private CacheApiRepository cacheApiRepository;
 
-    public CacheApiSaveToDbUseCase() {
-        cacheApiRepository = Injection.provideCacheApiRepository();
+    public CacheApiSaveToDbUseCase(Context context) {
+        cacheApiRepository = Injection.provideCacheApiRepository(context.getApplicationContext());
     }
 
     @Override

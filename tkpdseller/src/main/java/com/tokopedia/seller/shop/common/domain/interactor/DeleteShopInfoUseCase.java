@@ -1,5 +1,7 @@
 package com.tokopedia.seller.shop.common.domain.interactor;
 
+import android.content.Context;
+
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.usecase.RequestParams;
@@ -16,7 +18,8 @@ public class DeleteShopInfoUseCase extends CacheApiDataDeleteUseCase {
 
     private final DeleteShopInfoTomeUseCase deleteShopInfoTomeUseCase;
 
-    public DeleteShopInfoUseCase(DeleteShopInfoTomeUseCase deleteShopInfoTomeUseCase) {
+    public DeleteShopInfoUseCase(Context context, DeleteShopInfoTomeUseCase deleteShopInfoTomeUseCase) {
+        super(context);
         this.deleteShopInfoTomeUseCase = deleteShopInfoTomeUseCase;
     }
 

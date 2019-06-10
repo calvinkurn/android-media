@@ -98,8 +98,8 @@ public class TopAdsServiceModule {
     @TopAdsQualifier
     @SearchScope
     @Provides
-    public CacheApiInterceptor provideCacheApiInterceptor() {
-        return new CacheApiInterceptor();
+    public CacheApiInterceptor provideCacheApiInterceptor(@ApplicationContext Context context) {
+        return new CacheApiInterceptor(context);
     }
 
     private HttpLoggingInterceptor getHttpLoggingInterceptor() {

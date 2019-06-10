@@ -100,7 +100,8 @@ public class TemplateChatModule {
 
     @TemplateChatScope
     @Provides
-    OkHttpClient provideOkHttpClient(@InboxQualifier OkHttpRetryPolicy retryPolicy,
+    OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
+                                     @InboxQualifier OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
                                      ChuckInterceptor chuckInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,
@@ -111,7 +112,7 @@ public class TemplateChatModule {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(new FingerprintInterceptor(networkRouter, userSessionInterface))
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(new CacheApiInterceptor())
+                .addInterceptor(new CacheApiInterceptor(context))
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)

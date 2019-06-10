@@ -1,5 +1,7 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
+import android.content.Context;
+
 import com.tokopedia.cacheapi.constant.CacheApiConstant;
 import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
@@ -17,8 +19,8 @@ public class CacheApiDataDeleteUseCase extends UseCase<Boolean> {
 
     private CacheApiRepository cacheApiRepository;
 
-    public CacheApiDataDeleteUseCase() {
-        cacheApiRepository = Injection.provideCacheApiRepository();
+    public CacheApiDataDeleteUseCase(Context context) {
+        cacheApiRepository = Injection.provideCacheApiRepository(context.getApplicationContext());
     }
 
     @Override

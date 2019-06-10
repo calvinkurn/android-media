@@ -27,8 +27,8 @@ class TopAdsDashboardNetworkModule {
 
     @TopAdsDashboardScope
     @Provides
-    fun provideApiCacheInterceptor(): CacheApiInterceptor {
-        return CacheApiInterceptor(CacheApiTKPDResponseValidator(TopAdsResponseError::class.java))
+    fun provideApiCacheInterceptor(@ApplicationContext context: Context): CacheApiInterceptor {
+        return CacheApiInterceptor(context, CacheApiTKPDResponseValidator(TopAdsResponseError::class.java))
     }
 
     @TopAdsDashboardQualifier

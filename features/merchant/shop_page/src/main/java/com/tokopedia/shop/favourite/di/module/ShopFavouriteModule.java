@@ -22,8 +22,8 @@ public class ShopFavouriteModule {
 
     @ShopFavouriteScope
     @Provides
-    public DeleteShopInfoCacheUseCase provideDeleteShopInfoUseCase() {
-        return new DeleteShopInfoCacheUseCase();
+    public DeleteShopInfoCacheUseCase provideDeleteShopInfoUseCase(@ApplicationContext Context context) {
+        return new DeleteShopInfoCacheUseCase(context);
     }
 
     @ShopFavouriteScope

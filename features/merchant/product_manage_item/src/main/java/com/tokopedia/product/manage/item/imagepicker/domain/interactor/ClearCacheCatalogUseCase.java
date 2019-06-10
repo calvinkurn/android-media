@@ -1,5 +1,8 @@
 package com.tokopedia.product.manage.item.imagepicker.domain.interactor;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
 import com.tokopedia.usecase.RequestParams;
@@ -15,7 +18,8 @@ import rx.Observable;
 public class ClearCacheCatalogUseCase extends CacheApiDataDeleteUseCase{
 
     @Inject
-    public ClearCacheCatalogUseCase() {
+    public ClearCacheCatalogUseCase(@ApplicationContext Context context) {
+        super(context);
     }
 
     public Observable<Boolean> createObservable() {

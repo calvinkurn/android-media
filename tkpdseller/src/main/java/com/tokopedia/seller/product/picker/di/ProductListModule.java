@@ -84,8 +84,8 @@ public class ProductListModule {
     }
 
     @Provides
-    public CacheApiInterceptor provideCacheApiInterceptor() {
-        return new CacheApiInterceptor();
+    public CacheApiInterceptor provideCacheApiInterceptor(@ApplicationContext Context context) {
+        return new CacheApiInterceptor(context);
     }
 
     @Provides

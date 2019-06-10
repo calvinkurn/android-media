@@ -1,5 +1,8 @@
 package com.tokopedia.shop.page.domain.interactor;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
@@ -16,9 +19,10 @@ import rx.Observable;
 public class DeleteFavoriteListCacheUseCase extends CacheApiDataDeleteUseCase {
 
     @Inject
-    public DeleteFavoriteListCacheUseCase(){
-
+    public DeleteFavoriteListCacheUseCase(@ApplicationContext Context context) {
+        super(context);
     }
+
     public Observable<Boolean> createObservable() {
         return createObservable(RequestParams.create());
     }

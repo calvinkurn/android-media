@@ -16,7 +16,6 @@ import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
@@ -255,7 +254,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
             FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
         }
         FlowManager.initModule(ProductDraftGeneratedDatabaseHolder.class);
-        FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
         PushNotification.initDatabase(getApplicationContext());
         CategoryDbFlow.initDatabase(getApplicationContext());
     }

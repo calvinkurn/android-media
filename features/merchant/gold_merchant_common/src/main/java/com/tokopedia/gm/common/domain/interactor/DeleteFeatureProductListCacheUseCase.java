@@ -1,5 +1,8 @@
 package com.tokopedia.gm.common.domain.interactor;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.usecase.RequestParams;
@@ -11,8 +14,8 @@ import rx.Observable;
 public class DeleteFeatureProductListCacheUseCase extends CacheApiDataDeleteUseCase {
 
     @Inject
-    public DeleteFeatureProductListCacheUseCase(){
-        super();
+    public DeleteFeatureProductListCacheUseCase(@ApplicationContext Context context){
+        super(context);
     }
 
     public Observable<Boolean> createObservable() {

@@ -9,8 +9,9 @@ import com.tokopedia.cacheapi.data.source.db.dao.CacheApiVersionDao
 import com.tokopedia.cacheapi.data.source.db.dao.CacheApiWhitelistDao
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiData
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiVersion
+import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist
 
-@Database(entities = [CacheApiVersion::class, CacheApiWhitelistDao::class, CacheApiData::class],
+@Database(entities = [CacheApiVersion::class, CacheApiWhitelist::class, CacheApiData::class],
         version = CacheApiDatabase.VERSION,
         exportSchema = false)
 abstract class CacheApiDatabase : RoomDatabase() {

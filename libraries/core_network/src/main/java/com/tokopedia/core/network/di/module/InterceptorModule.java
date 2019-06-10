@@ -44,8 +44,8 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    public CacheApiInterceptor provideApiCacheInterceptor() {
-        return new CacheApiInterceptor();
+    public CacheApiInterceptor provideApiCacheInterceptor(@ApplicationContext Context context) {
+        return new CacheApiInterceptor(context);
     }
 
     @ApplicationScope

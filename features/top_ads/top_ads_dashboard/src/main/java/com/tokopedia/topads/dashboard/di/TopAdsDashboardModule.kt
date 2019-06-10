@@ -185,11 +185,11 @@ class TopAdsDashboardModule {
 
     @TopAdsDashboardScope
     @Provides
-    fun provideDeleteTopAdsStatisticsUseCase() = DeleteTopAdsStatisticsUseCase()
+    fun provideDeleteTopAdsStatisticsUseCase(@ApplicationContext context: Context) = DeleteTopAdsStatisticsUseCase(context)
 
     @TopAdsDashboardScope
     @Provides
-    fun provideDeleteTopAdsTotalAdUseCase() = DeleteTopAdsTotalAdUseCase()
+    fun provideDeleteTopAdsTotalAdUseCase(@ApplicationContext context: Context) = DeleteTopAdsTotalAdUseCase(context)
 
     @TopAdsDashboardScope
     @Provides

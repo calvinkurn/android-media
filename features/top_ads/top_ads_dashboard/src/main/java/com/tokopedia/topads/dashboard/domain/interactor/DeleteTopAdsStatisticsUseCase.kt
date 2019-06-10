@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.domain.interactor
 
+import android.content.Context
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -11,7 +12,7 @@ import rx.Observable
  * Created by hadi.putra on 17/05/18.
  */
 
-class DeleteTopAdsStatisticsUseCase : CacheApiDataDeleteUseCase() {
+class DeleteTopAdsStatisticsUseCase(context: Context) : CacheApiDataDeleteUseCase(context) {
 
     fun createObservable(): Observable<Boolean> {
         return createObservable(RequestParams.create())

@@ -59,9 +59,9 @@ public class InstagramModule {
 
     @InstagramScope
     @Provides
-    InstagramApi provideInstagramApi(Retrofit.Builder retrofit) {
+    InstagramApi provideInstagramApi(@ApplicationContext Context context, Retrofit.Builder retrofit) {
         return retrofit.client(new OkHttpClient.Builder()
-                .addInterceptor(new CacheApiInterceptor())
+                .addInterceptor(new CacheApiInterceptor(context))
                 .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
