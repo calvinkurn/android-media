@@ -11,7 +11,8 @@ import timber.log.Timber;
  */
 public class TimberWrapper {
     public static void init(){
-        if (BuildConfig.DEBUG) {
+        boolean isDebug = BuildConfig.DEBUG;
+        if (isDebug) {
             Timber.plant(new Timber.DebugTree());
         } else {
             Timber.plant(new TimberReportingTree());

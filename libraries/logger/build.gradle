@@ -36,6 +36,7 @@ android {
 
 dependencies {
     implementation rootProject.ext.analyticsDependencies.rapid7
+    implementation rootProject.ext.analyticsDependencies.sentry
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.config)
 }

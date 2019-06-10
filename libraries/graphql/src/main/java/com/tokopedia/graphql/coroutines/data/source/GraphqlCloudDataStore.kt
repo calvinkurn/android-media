@@ -37,10 +37,7 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
             launch(Dispatchers.IO) {
                 when (cacheStrategy.type) {
                     CacheType.CACHE_FIRST, CacheType.ALWAYS_CLOUD -> {
-                        val (isError, error) = isError(graphqlResponseInternal)
-                        if (isError) {
-                            Timber.w(error)
-                        } else {
+                        if (!isError(graphqlResponseInternal)) {
                             cacheManager.save(fingerprintManager.generateFingerPrint(requests.toString(),
                                 cacheStrategy.isSessionIncluded),
                                 graphqlResponseInternal.originalResponse.toString(),
@@ -55,19 +52,19 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
         }
     }
 
-    fun isError(graphqlResponseInternal: GraphqlResponseInternal): Pair<Boolean, String> {
+    fun isError(graphqlResponseInternal: GraphqlResponseInternal): Boolean {
         var index = 0
         for (item in graphqlResponseInternal.originalResponse) {
             try {
                 val error = item.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
                 if (error != null && !error.isJsonNull) {
-                    return true to error.asString
+                    return true
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
             index++
         }
-        return false to ""
+        return false
     }
 }

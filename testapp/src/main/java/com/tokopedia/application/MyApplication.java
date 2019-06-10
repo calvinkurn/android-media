@@ -26,6 +26,7 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.logger.LogSentryWrapper;
 import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -75,7 +76,7 @@ public class MyApplication extends BaseMainApplication
         FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
         initCacheApi();
 
-        LogWrapper.init(this);
+        LogSentryWrapper.init(this);
         TimberWrapper.init();
     }
 

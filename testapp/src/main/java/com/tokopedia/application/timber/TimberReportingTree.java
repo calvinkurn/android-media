@@ -3,7 +3,7 @@ package com.tokopedia.application.timber;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.tokopedia.logger.LogWrapper;
+import com.tokopedia.logger.LogSentryWrapper;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +22,7 @@ public class TimberReportingTree extends Timber.DebugTree {
         }
         // throwable is concatenated to message. This will be fixed in Timber next major release
         // https://github.com/JakeWharton/timber/issues/142
-        LogWrapper.log(priority, tag + " " + message);
+        LogSentryWrapper.log(priority, tag + " " + message);
     }
 
     @Nullable
