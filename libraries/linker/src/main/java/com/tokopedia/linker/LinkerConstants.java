@@ -62,6 +62,7 @@ public interface LinkerConstants {
     String KEY_OG_IMAGE_URL = "$og_image_url";
     String KEY_OG_DESC = "$og_description";
     String KEY_GA_CLIENT_ID = "$google_analytics_client_id";
+    String KEY_NEW_BUYER = "new_buyer";
 
     String EMAIL_LABLE = "email";
     String PHONE_LABLE = "phone";

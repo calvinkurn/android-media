@@ -40,6 +40,18 @@ public class PaymentData {
     @SerializedName("stacked_promos")
     @Expose
     private StackedPromos stackedPromos;
+    @SerializedName("new_buyer_flag")
+    @Expose
+    private boolean newBuyerFlag;
+
+    public boolean isNewBuyerFlag() {
+        return newBuyerFlag;
+    }
+
+    public void setNewBuyerFlag(boolean newBuyerFlag) {
+        this.newBuyerFlag = newBuyerFlag;
+    }
+
 
     public int getPaymentId() {
         return paymentId;

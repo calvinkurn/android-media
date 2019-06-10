@@ -1,6 +1,7 @@
 {
   payment(payment_id:%s){
     payment_id
+    new_buyer_flag
     payment_ref_num
     fee_amount
     orders{

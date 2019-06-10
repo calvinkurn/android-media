@@ -347,6 +347,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         branchIOPayment.setRevenue(String.valueOf((long)paymentData.getPaymentAmount()));
         branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE);
         branchIOPayment.setItemPrice(String.valueOf((long)orderData.getItemPrice()));
+        branchIOPayment.setNewBuyer(paymentData.isNewBuyerFlag());
         for (OrderDetail orderDetail : orderData.getOrderDetail()) {
             HashMap<String, String> product = new HashMap<>();
             product.put(LinkerConstants.ID, String.valueOf(orderDetail.getProductId()));
