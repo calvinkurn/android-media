@@ -19,6 +19,7 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment;
 import com.tokopedia.loginregister.login.view.fragment.LoginFragment;
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract;
+import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;

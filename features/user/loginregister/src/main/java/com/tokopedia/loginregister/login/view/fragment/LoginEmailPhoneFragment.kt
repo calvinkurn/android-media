@@ -44,6 +44,7 @@ import com.tokopedia.loginregister.LoginRegisterRouter
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
@@ -123,6 +124,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     @Inject
     lateinit var analytics: LoginRegisterAnalytics
+
+    @Inject
+    lateinit var registerAnalytics: RegisterAnalytics
 
     @Inject
     lateinit var presenter: LoginEmailPhonePresenter
@@ -210,7 +214,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val id = item!!.itemId
         if (id == ID_ACTION_REGISTER) {
-            analytics.trackClickRegisterOnMenu()
+            registerAnalytics.trackClickTopSignUpButton()
 
             goToRegisterInitial()
             return true
@@ -379,7 +383,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
             register_button.setText(spannable, TextView.BufferType.SPANNABLE)
             register_button.setOnClickListener {
-                analytics.trackClickRegisterOnFooter()
+                registerAnalytics.trackClickBottomSignUpButton()
                 goToRegisterInitial()
             }
 
@@ -652,6 +656,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         analytics.trackLoginPhoneNumberSuccess()
         analytics.eventSuccessLogin(actionLoginMethod)
+        registerAnalytics.trackSuccessClickYesButtonRegisteredPhoneDialog()
 
         TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
                 userSession.userId,
@@ -664,6 +669,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 userSession.hasShop(),
                 actionLoginMethod
         )
+
+        if(emailPhoneEditText.text.isNotBlank())
+            userSession.autofillUserData = emailPhoneEditText.text.toString()
+
         onSuccessLogin()
     }
 
@@ -801,6 +810,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
         analytics.eventSuccessLoginEmail()
         analytics.trackClickOnLoginButtonSuccess()
+        registerAnalytics.trackSuccessClickYesButtonRegisteredEmailDialog()
         TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
                 userSession.userId,
                 userSession.name,
@@ -812,6 +822,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 userSession.hasShop(),
                 LoginRegisterAnalytics.LABEL_EMAIL
         )
+
+        if(emailPhoneEditText.text.isNotBlank())
+            userSession.autofillUserData = emailPhoneEditText.text.toString()
 
         onSuccessLogin()
     }
@@ -842,6 +855,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 activity?.let {
                     analytics.eventClickLoginButton(it.applicationContext)
                 }
+            } else if (requestCode == REQUEST_SMART_LOCK
+                    && resultCode == SmartLockActivity.RC_READ
+                    && !userSession.autofillUserData.isNullOrEmpty()) {
+                emailPhoneEditText.setText(userSession.autofillUserData)
+                emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
             } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 handleGoogleSignInResult(task)

@@ -52,8 +52,8 @@ class TopChatViewStateImpl(
         toolbar: Toolbar,
         val analytics: TopChatAnalytics
 ) : BaseChatViewStateImpl(view, toolbar, typingListener), TopChatViewState {
-
     private var attachButton: ImageView = view.findViewById(R.id.add_url)
+
     private var maximize: View = view.findViewById(R.id.maximize)
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
@@ -63,12 +63,12 @@ class TopChatViewStateImpl(
 
     lateinit var productPreviewAdapter: ProductPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
+
     lateinit var templateChatTypeFactory: TemplateChatTypeFactory
     var isUploading: Boolean = false
     var isFirstTime: Boolean = true
     var isShopFollowed: Boolean = false
     lateinit var chatRoomViewModel: ChatroomViewModel
-
     init {
         initView()
     }
@@ -481,5 +481,28 @@ class TopChatViewStateImpl(
         replyEditText.requestFocus()
     }
 
+    override fun sendAnalyticsClickBuyNow(element: ProductAttachmentViewModel) {
+        analytics.eventClickAddToCartProductAttachment(
+                element.blastId.toString(),
+                element.productName,
+                element.productId.toString(),
+                element.productPrice,
+                1,
+                element.shopId.toString(),
+                chatRoomViewModel.headerModel.name
+        )
+    }
+
+    override fun sendAnalyticsClickATC(element: ProductAttachmentViewModel) {
+        analytics.eventClickAddToCartProductAttachment(
+                element.blastId.toString(),
+                element.productName,
+                element.productId.toString(),
+                element.productPrice,
+                1,
+                element.shopId.toString(),
+                chatRoomViewModel.headerModel.name
+        )
+    }
 }
 

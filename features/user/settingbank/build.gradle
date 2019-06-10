@@ -1,8 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -28,13 +25,16 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.applink)
 
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation project(rootProject.ext.features.otp)
-    implementation project(rootProject.ext.features.bankdb)
 
     kapt rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore

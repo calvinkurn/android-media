@@ -82,9 +82,9 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onResume() {
         super.onResume();
-        if (isLoaded) {
+        if (isOpenShop) {
             getData();
-            isLoaded = false;
+            isOpenShop = false;
         }
     }
 

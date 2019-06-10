@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.ImageView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -15,7 +16,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.addeditaccount.di.AddEditBankDependencyInjector
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
 import com.tokopedia.settingbank.addeditaccount.view.listener.AddEditBankContract
 import com.tokopedia.settingbank.addeditaccount.view.presenter.AddEditBankPresenter
@@ -24,7 +24,9 @@ import com.tokopedia.settingbank.banklist.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
+import com.tokopedia.settingbank.addeditaccount.di.DaggerAddEditAccountComponent
 import kotlinx.android.synthetic.main.fragment_add_edit_bank_form.*
+import javax.inject.Inject
 
 /**
  * @author by nisie on 6/21/18.
@@ -39,7 +41,10 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     private val REQUEST_CHOOSE_BANK: Int = 102
     private val REQUEST_OTP: Int = 103
 
+    @Inject
     lateinit var presenter: AddEditBankPresenter
+
+
     lateinit var bottomInfoDialog: BottomSheetDialog
     lateinit var alertDialog: Dialog
     lateinit var analyticTracker: SettingBankAnalytics
@@ -56,8 +61,14 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     override fun initInjector() {
-        presenter = AddEditBankDependencyInjector.Companion.inject(activity!!.applicationContext)
-        presenter.attachView(this)
+        if (activity != null && (activity as Activity).application != null) {
+            val addEditBankComponent = DaggerAddEditAccountComponent.builder().baseAppComponent(
+                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                    .build()
+
+            addEditBankComponent.inject(this)
+            presenter.attachView(this)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
