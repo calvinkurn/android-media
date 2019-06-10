@@ -208,6 +208,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.model.Configuration;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
@@ -578,7 +579,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initIris() {
-        mIris = Iris.Companion.getInstance(this);
+        mIris = IrisAnalytics.Companion.getInstance(this);
 
         boolean irisEnable = getBooleanRemoteConfig(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true);
         String irisConfig = getStringRemoteConfig(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG);
