@@ -750,12 +750,18 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     private void textViewRequestFocus() {
         mSearchSrcTextView.setText(lastQuery);
-        searchTextViewRequestFocus();
-        searchTextViewSetCursorSelectionAtTextEnd();
+
+        searchTextViewShowKeyboard();
     }
 
-    public void searchTextViewRequestFocus() {
-        mSearchSrcTextView.requestFocus();
+    public void searchTextViewShowKeyboard() {
+        mSearchSrcTextView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showKeyboard(mSearchSrcTextView);
+                mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
+            }
+        }, 200);
     }
 
     public void searchTextViewSetCursorSelectionAtTextEnd() {

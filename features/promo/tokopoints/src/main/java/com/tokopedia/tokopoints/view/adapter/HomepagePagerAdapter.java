@@ -28,7 +28,7 @@ public class HomepagePagerAdapter extends PagerAdapter {
     private LayoutInflater mLayoutInflater;
     private List<CatalogsValueEntity> mCatalogs;
     private List<CouponValueEntity> mCoupons;
-    private CatalogListAdapter mCatalogsAdapter;
+    private CatalogListOldAdapter mCatalogsAdapter;
     private CouponListAdapter mCouponsAdapter;
     private HomepagePresenter mPresenter;
     private Map<String, String> mEmptyMessages;
@@ -40,7 +40,7 @@ public class HomepagePagerAdapter extends PagerAdapter {
         this.mCatalogs = catalogs;
         this.mCoupons = coupons;
         this.mPresenter = presenter;
-        this.mCatalogsAdapter = new CatalogListAdapter(presenter, mCatalogs, true);
+        this.mCatalogsAdapter = new CatalogListOldAdapter(presenter, mCatalogs, true);
         this.mCouponsAdapter = new CouponListAdapter(presenter, mCoupons, true);
     }
 

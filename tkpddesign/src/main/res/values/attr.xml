@@ -157,6 +157,7 @@
     <declare-styleable name="BottomActionView">
         <attr name="bav_1_display" format="boolean" />
         <attr name="bav_2_display" format="boolean" />
+        <attr name="bav_2_icon_display" format="boolean" />
         <attr name="bav_icon_1" format="reference" />
         <attr name="bav_label_1" format="reference" />
         <attr name="bav_icon_2" format="reference" />
@@ -255,6 +256,7 @@
             <enum name="transaction" value="3" />
             <enum name="disable" value="4" />
             <enum name="white_transparent" value="5" />
+            <enum name="white" value="6" />
         </attr>
         <attr name="buttonCompatSize" format="enum">
             <enum name="big" value="4" />
