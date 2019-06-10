@@ -39,6 +39,8 @@ data class ProductDetailData(
         val clickUrl: String,
         @SerializedName("countReview")
         val countReview: Int,
+        @SerializedName("countReviewFloat")
+        val countReviewFloat: Int,
         @SerializedName("departmentId")
         val departmentId: Int,
         @SerializedName("id")
@@ -67,8 +69,12 @@ data class ProductDetailData(
         val slashedPrice: String,
         @SerializedName("slashedPriceInt")
         val slashedPriceInt: Int,
+        @SerializedName("discountPercentage")
+        val discountPercentage: Int,
         @SerializedName("stock")
         val stock: Int,
+        @SerializedName("minOrder")
+        val minOrder: Int,
         @SerializedName("trackerImageUrl")
         val trackerImageUrl: String,
         @SerializedName("url")
@@ -76,18 +82,36 @@ data class ProductDetailData(
         @SerializedName("wholesalePrice")
         val wholesalePrice: List<Any>,
         @SerializedName("wishlistUrl")
-        val wishlistUrl: String
-)
+        val wishlistUrl: String,
+        @SerializedName("productKey")
+        val productKey: String,
+        @SerializedName("shopDomain")
+        val shopDomain: String,
+        @SerializedName("urlPath")
+        val urlPath: String
+        )
 
 data class Shop(
         @SerializedName("id")
         val id: Int,
         @SerializedName("name")
         val name: String,
-        @SerializedName("shopImage")
-        val shopImage: String,
+        @SerializedName("url")
+        val url: String,
+        @SerializedName("appUrl")
+        val appUrl: String,
+        @SerializedName("isGold")
+        val isGold: Boolean,
         @SerializedName("location")
-        val location: String
+        val location: String,
+        @SerializedName("city")
+        val city: String,
+        @SerializedName("reputation")
+        val reputation: String,
+        @SerializedName("clover")
+        val clover: String,
+        @SerializedName("shopImage")
+        val shopImage: String
 )
 
 data class Badge(

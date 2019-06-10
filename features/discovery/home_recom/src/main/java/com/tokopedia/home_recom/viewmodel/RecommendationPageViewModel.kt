@@ -44,17 +44,8 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
 
                 var params = mapOf(
                         PARAM_PRODUCT_ID to productId.toInt(),
-                        PARAM_X_DEVICE to xDevice,
                         PARAM_X_SOURCE to xSource
                 )
-                if (userSessionInterface.isLoggedIn) {
-                    params = mapOf(
-                            PARAM_USER_ID to userSessionInterface.userId.toInt(),
-                            PARAM_PRODUCT_ID to productId.toInt(),
-                            PARAM_X_DEVICE to xDevice,
-                            PARAM_X_SOURCE to xSource
-                    )
-                }
 
                 val gqlRecommendationRequest = GraphqlRequest(
                         GraphqlHelper.loadRawString(context.resources, R.raw.gql_primary_product),

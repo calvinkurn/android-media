@@ -1,5 +1,5 @@
-query primaryProduct($userID: Int!, $productId: Int!, $xDevice: String!, $xSource: String!) {
-    productRecommendationProductDetail(userID: $userID, productID: $productId, xDevice: $xDevice, xSource: $xSource) {
+query primaryProduct($productId: Int!, $xSource: String!) {
+    productRecommendationProductDetail(productID: $productId, xSource: $xSource) {
         data {
           tID
           source
@@ -20,11 +20,18 @@ query primaryProduct($userID: Int!, $productId: Int!, $xDevice: String!, $xSourc
             priceInt
             slashedPrice
             slashedPriceInt
+            discountPercentage
             shop {
               id
               name
-              shopImage
+              url
+              appUrl
+              isGold
               location
+              city
+              reputation
+              clover
+              shopImage
             }
             departmentId
             labels {
@@ -43,10 +50,15 @@ query primaryProduct($userID: Int!, $productId: Int!, $xDevice: String!, $xSourc
             }
             rating
             countReview
+            countReviewFloat
             recommendationType
             stock
+            minOrder
             isTopads
             IsWishlist
+            productKey
+            shopDomain
+            urlPath
           }
         }
       }
