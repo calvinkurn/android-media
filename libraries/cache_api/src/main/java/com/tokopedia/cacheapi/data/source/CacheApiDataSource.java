@@ -6,7 +6,6 @@ import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cacheapi.exception.WhiteListNotFoundException;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 

@@ -5,7 +5,6 @@ import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import android.arch.persistence.room.Update
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiData
-import com.tokopedia.cachemanager.db.model.CacheDbModel
 
 interface CacheApiDataDao {
 
