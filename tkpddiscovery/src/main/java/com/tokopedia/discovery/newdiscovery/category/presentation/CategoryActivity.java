@@ -202,6 +202,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             Intent intent = new Intent();
             intent.setClassName(getPackageName(),
                     "com.tokopedia.age_restriction.viewcontroller.AgeRestrictionHomeActivity");
+            intent.putExtra("ORIGIN", 1);
             startActivityForResult(intent, 5838);
         }
         List<CategorySectionItem> categorySectionItems = new ArrayList<>();

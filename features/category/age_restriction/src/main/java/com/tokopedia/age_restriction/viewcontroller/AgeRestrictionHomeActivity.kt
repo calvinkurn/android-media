@@ -28,17 +28,39 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
             notLogin -> {
                 navigateToActivityRequest(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST)
                 selection = 0
+                sendGeneralEvent(eventClick,
+                        event,
+                        "click - adult pop up - login",
+                        "before login - {origin url/external} - {destination url}")
             }
 
             notAdult -> {
-                startActivity(RouteManager.getIntent(this,ApplinkConst.HOME)
+                sendGeneralEvent(eventClick,
+                        event,
+                        "click - adult pop up - kembali",
+                        "not eligible - {origin url/external} - {destination url}")
+                startActivity(RouteManager.getIntent(this, ApplinkConst.HOME)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        .putExtra("VERIFICATION_SUCCESS",getString(R.string.ar_text_age_not_adult)))
+                        .putExtra("VERIFICATION_SUCCESS", getString(R.string.ar_text_age_not_adult)))
                 selection = 0
             }
 
             notVerified, notFilledDob -> {
-                navigateToActivityRequest(Intent(this, VerifyDOBActivity::class.java), VERIFICATION_REQUEST)
+                if (selection == notFilledDob) {
+                    navigateToActivityRequest(Intent(this, VerifyDOBActivity::class.java), VERIFICATION_REQUEST)
+                    sendGeneralEvent(eventClick,
+                            event,
+                            "click - adult pop up - verifikasi tanggal lahir",
+                            "not yet verified - empty DOB - {origin url/external} - {destination url}")
+                } else {
+                    navigateToActivityRequest(Intent(this, VerifyDOBActivity::class.java)
+                            .putExtra("VERIFY DOB", arHomeViewModel.notVerified.value), VERIFICATION_REQUEST)
+                    sendGeneralEvent(eventClick,
+                            event,
+                            "click - adult pop up - benar lanjutkan",
+                            "not yet verified - "
+                                    + arHomeViewModel.notVerified.value + " - {origin url/external} - {destination url}")
+                }
                 selection = 0
             }
         }
@@ -46,7 +68,36 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     }
 
     override fun clickDeny() {
-        finish()
+        when (selection) {
+            notLogin -> {
+                sendGeneralEvent(eventClick,
+                        event,
+                        "click - adult pop up - kembali",
+                        "before login - {origin url/external} - {destination url}")
+                finish()
+            }
+            notAdult -> {
+                finish()
+            }
+
+            notVerified -> {
+                navigateToActivityRequest(Intent(this, VerifyDOBActivity::class.java), VERIFICATION_REQUEST)
+                sendGeneralEvent(eventClick,
+                        event,
+                        "click - adult pop up - ubah tanggal lahir",
+                        "not yet verified - "
+                                + arHomeViewModel.notVerified.value + " - {origin url/external} - {destination url}")
+            }
+
+            notFilledDob -> {
+                sendGeneralEvent(eventClick,
+                        event,
+                        "click - adult pop up - kembali",
+                        "not yet verified - empty DOB - {origin url/external} - {destination url}")
+                finish()
+            }
+        }
+
     }
 
     override fun getViewModelType(): Class<ARHomeViewModel> {
@@ -57,6 +108,10 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         arHomeViewModel = viewModel as ARHomeViewModel
         arHomeViewModel.getAskUserLogin().observe(this, Observer<Int> {
             selection = notLogin
+            sendGeneralEvent(eventView,
+                    event,
+                    "view - adult pop up - before login",
+                    "view - adult pop up - before login")
             showDialogFragment(R.layout.age_restriction_verifcation_dialog, "",
                     getString(R.string.ar_text_login_first),
                     getString(R.string.label_login_button),
@@ -96,13 +151,17 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                     getString(R.string.ar_text_not_adult),
                     getString(R.string.ar_text_goto_home),
                     null)
+            sendGeneralEvent(eventView,
+                    event,
+                    "view - adult pop up - not eligible",
+                    "not eligible - {origin url/external} - {destination url}")
         })
 
         arHomeViewModel.userAdult.observe(this, Observer {
             Toaster.showGreenWithAction(findViewById(android.R.id.content),
                     getString(R.string.ar_text_verification_success),
                     Snackbar.LENGTH_INDEFINITE,
-                    getString(R.string.general_label_ok), View.OnClickListener {  })
+                    getString(R.string.general_label_ok), View.OnClickListener { })
             setResult(Activity.RESULT_OK)
             finish()
         })
@@ -116,6 +175,10 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                     getString(R.string.ar_text_dob_verify),
                     getString(R.string.ar_text_verify_dob),
                     getString(R.string.ar_label_back))
+            sendGeneralEvent(eventView,
+                    event,
+                    "view - adult pop up - not yet verified",
+                    "not yet verified - {origin url} - {destination url}")
         })
 
         arHomeViewModel.notVerified.observe(this, Observer<String> {
@@ -124,6 +187,10 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                     String.format(getString(R.string.ar_text_filled_not_verfied), it),
                     getString(R.string.ar_text_yes_continue),
                     getString(R.string.ar_text_no_update))
+            sendGeneralEvent(eventView,
+                    event,
+                    "view - adult pop up - not yet verified",
+                    "not yet verified - {origin url} - {destination url}")
         })
     }
 
@@ -134,11 +201,11 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                 arHomeViewModel.fetchUserDOB()
             }
             VERIFICATION_REQUEST -> if (resultCode == RESULT_IS_ADULT) {
-                setResult(RESULT_IS_ADULT,Intent().putExtra("VERIFICATION_SUCCESS",getString(R.string.ar_text_verification_success)))
+                setResult(RESULT_IS_ADULT, Intent().putExtra("VERIFICATION_SUCCESS", getString(R.string.ar_text_verification_success)))
                 Toaster.showGreenWithAction(findViewById(android.R.id.content),
                         getString(R.string.ar_text_verification_success),
                         Snackbar.LENGTH_INDEFINITE,
-                        getString(R.string.general_label_ok), View.OnClickListener {  })
+                        getString(R.string.general_label_ok), View.OnClickListener { })
                 finish()
             } else if (resultCode == RESULT_IS_NOT_ADULT) {
                 selection = notAdult

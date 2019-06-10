@@ -28,7 +28,7 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
 
     private boolean isRevamp = false;
     private String departementId = "0";
-    private int isAdult = 1;
+    private int isAdult;
     private String template = DEFAULT_TEMPLATE;
     private HeaderModel headerModel;
     private List<ChildCategoryModel> childCategoryModelList = new ArrayList<>();

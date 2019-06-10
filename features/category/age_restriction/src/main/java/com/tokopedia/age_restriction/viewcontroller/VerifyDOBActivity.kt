@@ -46,6 +46,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
         iv_arrow_down.setOnClickListener(clickListenerCalender)
 
         tv_update_dob.setOnClickListener {
+            val simpleDateFormat = SimpleDateFormat.getDateInstance()
             if (selectedDate != null) {
                 val calendar = Calendar.getInstance()
                 calendar.time = selectedDate
@@ -57,6 +58,11 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
             } else {
                 showMessage("Silakan pilih tanggal yang valid")
             }
+
+            sendGeneralEvent(eventClick,
+                    event,
+                    "click - adult pop up - simpan",
+                    "tanggal lahir page - " + simpleDateFormat.format(selectedDate) + "- {origin url/external} - {destination url}")
         }
     }
 
@@ -71,6 +77,14 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
             setResult(RESULT_IS_NOT_ADULT)
             finish()
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sendGeneralEvent(eventView,
+                event,
+                "view - adult pop up - tanggal lahir page",
+                "tanggal lahir page - {origin url/external} - {destination url}")
     }
 
     override fun getMenuRes(): Int {

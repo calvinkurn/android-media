@@ -1246,6 +1246,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             activity?.let {
                 intent.setClassName(it.packageName,
                         "com.tokopedia.age_restriction.viewcontroller.AgeRestrictionHomeActivity")
+                intent.putExtra("ORIGIN",2)
                 startActivityForResult(intent, 5838)
             }
         }
