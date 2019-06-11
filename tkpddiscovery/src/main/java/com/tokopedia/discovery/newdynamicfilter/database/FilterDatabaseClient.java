@@ -9,7 +9,8 @@ public class FilterDatabaseClient {
     private FilterDatabase filterDatabase;
 
     private FilterDatabaseClient(Context context) {
-        filterDatabase = Room.databaseBuilder(context, FilterDatabase.class, "FilterDatabase").build();
+        filterDatabase = Room.databaseBuilder(context.getApplicationContext(),
+                FilterDatabase.class, "FilterDatabase").fallbackToDestructiveMigration().build();
     }
 
     public static synchronized FilterDatabaseClient getInstance(Context context) {

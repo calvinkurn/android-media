@@ -93,6 +93,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
