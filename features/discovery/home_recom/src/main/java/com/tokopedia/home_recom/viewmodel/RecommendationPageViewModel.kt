@@ -33,7 +33,6 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
 
     val xSource = "recom_landing_page"
     val pageName = "default"
-    val xDevice = "android"
 
     fun getPrimaryProduct(productId: String,
                           context: Context) {
@@ -70,7 +69,7 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
             onErrorGetRecommendation: ((errorMessage: String?) -> Unit)?) {
         getRecommendationUseCase.execute(
                 getRecommendationUseCase.getRecomParams(
-                        0,
+                        1,
                         xSource,
                         pageName,
                         productIds), object : Subscriber<List<RecommendationWidget>>() {
