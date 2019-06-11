@@ -23,4 +23,31 @@
         android:layout_marginTop="@dimen/dp_16"
         android:src="@drawable/ic_video_close"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/dp_16"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnHttp"
+            android:text="Http"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnRtmp"
+            android:text="Rtmp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnFile"
+            android:text="File"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
 </RelativeLayout>

@@ -6,6 +6,7 @@ import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.app.FragmentManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,8 +22,10 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DataSpec
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.FileDataSource
 import com.tokopedia.videoplayer.R
+import com.tokopedia.videoplayer.utils.VideoSourceProtocol
 import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.utils.showToast
 import kotlinx.android.synthetic.main.fragment_video_preview.*
@@ -51,7 +54,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         }
 
         fun show(videoSource: String, fragmentManager: FragmentManager) {
-            val tag = "VideoDetailPlayer"
+            val tag = VideoDetailPlayer::class.java.simpleName
             set(videoSource).show(fragmentManager, tag)
         }
     }
@@ -90,19 +93,43 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         sendViewToBack(playerView)
 
         //get video source path
-        val videoSource = "http://video.tokopedia.com/toplive/toplive.m3u8?auth_key=1560407795-0-0-010d1f30685f644c0e3e85902656422a" as String?
+        val videoSource = arguments?.getString(VIDEO_SOURCE, "")
         if (videoSource == null || videoSource.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)
             dismiss()
         } else {
-            //video source: file/uri
-            if (File(videoSource).exists()) {
+            //testing purpose
+            btnFile.setOnClickListener {
                 initPlayer(videoSource)
-            } else {
-                //video source: URL
-                val url = Uri.parse(videoSource)
-                initPlayer(url)
             }
+
+            btnHttp.setOnClickListener {
+                //video source: URL
+                val url = Uri.parse("http://clips.vorwaerts-gmbh.de/VfE_html5.mp4")
+                Log.d("VideoDetailPlayer", videoSource)
+                val protocol = VideoSourceProtocol.protocol(videoSource)
+                initPlayer(url, protocol)
+            }
+
+            btnRtmp.setOnClickListener {
+                //video source: URL
+                val url = Uri.parse("rtmp://video.tokopedia.com/toplive/toplive?auth_key=1560407795-0-0-5706f231ac5a1c0718f17eac9669950b")
+                Log.d("VideoDetailPlayer", videoSource)
+                val protocol = VideoSourceProtocol.protocol(videoSource)
+                initPlayer(url, protocol)
+            }
+
+
+//            //video source: file/uri
+//            if (File(videoSource).exists()) {
+//                initPlayer(videoSource)
+//            } else {
+//                //video source: URL
+//                val url = Uri.parse(videoSource)
+//                Log.d("VideoDetailPlayer", videoSource)
+//                val protocol = VideoSourceProtocol.protocol(videoSource)
+//                initPlayer(url, protocol)
+//            }
         }
     }
 
@@ -113,14 +140,20 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         } catch (ignored: Exception) {}
     }
 
+    //file path
     private fun initPlayer(path: String) {
         val file = File(path)
-        val mediaSource = buildMediaSource(Uri.fromFile(file), true)
+        val mediaSource = buildMediaSource(
+                source = Uri.fromFile(file),
+                protocol = VideoSourceProtocol.File)
         initPlayer(mediaSource)
     }
 
-    private fun initPlayer(uri: Uri) {
-        val mediaSource = buildMediaSource(uri, false)
+    //uri type
+    private fun initPlayer(uri: Uri, protocol: VideoSourceProtocol) {
+        val mediaSource = buildMediaSource(
+                source = uri,
+                protocol = protocol)
         initPlayer(mediaSource)
     }
 
@@ -147,25 +180,27 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         }
     }
 
-    private fun buildMediaSource(uri: Uri, isFile: Boolean): MediaSource {
-        return if (isFile) {
-            val dataSpec = DataSpec(uri)
-            val fileDataSource = FileDataSource()
-            fileDataSource.open(dataSpec)
-            val dataFactory = DataSource.Factory { fileDataSource }
-            ExtractorMediaSource.Factory(dataFactory)
-                    .setExtractorsFactory(DefaultExtractorsFactory())
-                    .createMediaSource(uri)
-        } else {
-            //rtmp
-            ExtractorMediaSource.Factory(
-                    RtmpDataSourceFactory())
-                    .createMediaSource(uri)
-
-            //http
-//            ExtractorMediaSource.Factory(
-//                    DefaultHttpDataSourceFactory(EXOPLAYER_AGENT))
-//                    .createMediaSource(uri)
+    private fun buildMediaSource(source: Uri, protocol: VideoSourceProtocol): MediaSource {
+        return when (protocol) {
+            VideoSourceProtocol.Http -> {
+                ExtractorMediaSource.Factory(
+                        DefaultHttpDataSourceFactory(EXOPLAYER_AGENT))
+                        .createMediaSource(source)
+            }
+            VideoSourceProtocol.Rtmp -> {
+                ExtractorMediaSource.Factory(
+                        RtmpDataSourceFactory())
+                        .createMediaSource(source)
+            }
+            VideoSourceProtocol.File -> {
+                val dataSpec = DataSpec(source)
+                val fileDataSource = FileDataSource()
+                fileDataSource.open(dataSpec)
+                val dataFactory = DataSource.Factory { fileDataSource }
+                ExtractorMediaSource.Factory(dataFactory)
+                        .setExtractorsFactory(DefaultExtractorsFactory())
+                        .createMediaSource(source)
+            }
         }
     }
 
