@@ -23,21 +23,24 @@ class BaseDownloadAppLinkActivity : BaseSimpleWebViewActivity() {
         private var web_url: String = ""
         private var extensions: String = ""
 
+        val ARGS_URL = "KEY_URL"
+        private const val KEY_SHOW_TOOLBAR = "KEY_SHOW_TOOLBAR"
+        private const val KEY_EXT = "EXT"
 
-        private fun newIntent(context: Context, url: String, showToolbar: Boolean,
+
+        fun newIntent(context: Context, url: String, showToolbar: Boolean,
                               needLogin: Boolean, extensions: String): Intent {
             return Intent(context, BaseDownloadAppLinkActivity::class.java)
-                    .putExtra("KEY_URL", url)
-                    .putExtra("KEY_SHOW_TOOLBAR", showToolbar)
+                    .putExtra(ARGS_URL, url)
+                    .putExtra(KEY_SHOW_TOOLBAR, showToolbar)
                     .putExtra(EXTRA_NEED_LOGIN, needLogin)
-                    .putExtra("ext", extensions)
-
+                    .putExtra(KEY_EXT, extensions)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        web_url = intent.extras.getString("KEY_URL")
-        extensions = intent.extras.getString("ext")
+        web_url = intent.extras.getString(ARGS_URL)
+        extensions = intent.extras.getString(KEY_EXT)
         super.onCreate(savedInstanceState)
     }
 

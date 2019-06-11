@@ -40,9 +40,9 @@ class BaseDownloadWebViewFragment : BaseWebViewFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        url = arguments!!.getString("KEY_URL")
+        url = arguments!!.getString(ARGS_URL)
         val converter = Gson()
-        extArray= converter.fromJson<Array<String>>(arguments!!.getString("KEY_EXT"),Array<String>::class.java)
+        extArray= converter.fromJson<Array<String>>(arguments!!.getString(ARGS_EXT),Array<String>::class.java)
         isTokopediaUrl = Uri.parse(url).host!!.contains(TOKOPEDIA_STRING)
         userSession = UserSession(activity!!.applicationContext)
     }

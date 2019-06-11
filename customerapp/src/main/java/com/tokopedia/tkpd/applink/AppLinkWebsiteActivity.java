@@ -21,6 +21,7 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 
 /**
  * @author anggaprasetiyo on 7/20/17.
@@ -35,6 +36,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     private static final String KEY_APP_LINK_QUERY_URL = "url";
     private static final String KEY_APP_LINK_QUERY_TITLEBAR = "titlebar";
     private static final String KEY_APP_LINK_QUERY_NEED_LOGIN = "need_login";
+    private static final String INSURANCE_TEXT = "asuransi-mudik";
+    private static final String INSURANCE_EXTENSIONS = "[pdf]";
 
 
     private FragmentGeneralWebView fragmentGeneralWebView;
@@ -84,7 +87,11 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         if (TextUtils.isEmpty(webUrl)) {
             webUrl = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL;
         }
-        return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar, needLogin);
+        if (webUrl.contains(INSURANCE_TEXT)) {
+            return BaseDownloadAppLinkActivity.Companion.newIntent(context, webUrl, showToolbar, needLogin, INSURANCE_EXTENSIONS);
+        } else {
+            return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar, needLogin);
+        }
     }
 
     @SuppressWarnings("unused")
