@@ -56,8 +56,6 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
     var roomRequestMaxCharCount = ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT
 
-    lateinit var saveInstanceCacheManager: SaveInstanceCacheManager
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -112,6 +110,8 @@ class HotelBookingFragment : BaseDaggerFragment() {
             hotelBookingPageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_BOOKING_MODEL) ?: HotelBookingPageModel()
         }
 
+        showLoadingBar()
+
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId,
                 GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_cart))
     }
@@ -135,6 +135,8 @@ class HotelBookingFragment : BaseDaggerFragment() {
     }
 
     private fun initView() {
+        hideLoadingBar()
+
         setupHotelInfo(hotelCart.property)
         setupRoomDuration(hotelCart.cart)
         setupRoomInfo(hotelCart.property, hotelCart.cart)
@@ -144,6 +146,16 @@ class HotelBookingFragment : BaseDaggerFragment() {
         setupInvoiceSummary(hotelCart.cart, hotelCart.property)
 
         booking_button.setOnClickListener { onBookingButtonClicked() }
+    }
+
+    private fun showLoadingBar() {
+        hotel_booking_container.visibility = View.GONE
+        hotel_booking_loading_bar.visibility = View.VISIBLE
+    }
+
+    private fun hideLoadingBar() {
+        hotel_booking_container.visibility = View.VISIBLE
+        hotel_booking_loading_bar.visibility = View.GONE
     }
 
     private fun setupHotelInfo(property: HotelPropertyData) {
