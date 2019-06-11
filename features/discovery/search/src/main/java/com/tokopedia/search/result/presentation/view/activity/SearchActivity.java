@@ -35,14 +35,9 @@ import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
-import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
@@ -50,8 +45,13 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchContract;
+import com.tokopedia.search.result.presentation.view.fragment.CatalogListFragment;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
+import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment;
 import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragment;
+import com.tokopedia.search.result.presentation.view.fragment.ShopListFragment;
+import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class SearchActivity extends BaseActivity
     private static final int TAB_SECOND_POSITION = 1;
 
     private ProductListFragment productListFragment;
-    private CatalogFragment catalogFragment;
+    private CatalogListFragment catalogListFragment;
     private ShopListFragment shopListFragment;
     private ProfileListFragment profileListFragment;
 
@@ -442,7 +442,7 @@ public class SearchActivity extends BaseActivity
 
     private void initFragments() {
         productListFragment = getProductFragment();
-        if(isHasCatalog) catalogFragment = getCatalogFragment();
+        if(isHasCatalog) catalogListFragment = getCatalogFragment();
         shopListFragment = getShopFragment();
         profileListFragment = getProfileListFragment();
     }
@@ -455,8 +455,8 @@ public class SearchActivity extends BaseActivity
         return ShopListFragment.newInstance(searchParameter);
     }
 
-    private CatalogFragment getCatalogFragment() {
-        return CatalogFragment.newInstance(searchParameter);
+    private CatalogListFragment getCatalogFragment() {
+        return CatalogListFragment.newInstance(searchParameter);
     }
 
     private ProfileListFragment getProfileListFragment() {
@@ -465,7 +465,7 @@ public class SearchActivity extends BaseActivity
 
     private void addFragmentsToList(List<SearchSectionItem> searchSectionItemList) {
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
-        if(isHasCatalog) searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
+        if(isHasCatalog) searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
         searchSectionItemList.add(new SearchSectionItem(profileTabTitle, profileListFragment));
     }
@@ -491,7 +491,7 @@ public class SearchActivity extends BaseActivity
                 productListFragment.backToTop();
                 break;
             case TAB_SECOND_POSITION:
-                if(isHasCatalog) catalogFragment.backToTop();
+                if(isHasCatalog) catalogListFragment.backToTop();
                 else shopListFragment.backToTop();
                 break;
             case TAB_THIRD_POSITION:

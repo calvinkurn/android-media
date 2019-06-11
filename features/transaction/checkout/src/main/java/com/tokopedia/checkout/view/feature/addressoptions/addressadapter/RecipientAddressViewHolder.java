@@ -6,6 +6,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.view.feature.shipment.util.Utils;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 /**
@@ -48,11 +49,11 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(RecipientAddressModel address, ShipmentAddressListAdapter.ActionListener listener, int position) {
         mListener = listener;
-        mTvAddressName.setText(address.getAddressName());
+        mTvAddressName.setText(Utils.getHtmlFormat(address.getAddressName()));
         mTvAddressStatus.setVisibility(address.getAddressStatus() == PRIME_ADDRESS ?
                 View.VISIBLE : View.GONE);
-        mTvRecipientName.setText(address.getRecipientName());
-        mTvRecipientAddress.setText(getFullAddress(address));
+        mTvRecipientName.setText(Utils.getHtmlFormat(address.getRecipientName()));
+        mTvRecipientAddress.setText(Utils.getHtmlFormat(getFullAddress(address)));
         mTvRecipientPhone.setText(address.getRecipientPhoneNumber());
         mHeaderText.setVisibility(address.isHeader() ? View.VISIBLE : View.GONE);
         mButtonAddAddress.setVisibility(address.isFooter() ? View.VISIBLE : View.GONE);

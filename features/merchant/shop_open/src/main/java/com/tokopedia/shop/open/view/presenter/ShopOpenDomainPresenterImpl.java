@@ -1,11 +1,17 @@
 package com.tokopedia.shop.open.view.presenter;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.shop.open.domain.interactor.CheckDomainNameUseCase;
-import com.tokopedia.shop.open.domain.interactor.CheckShopNameUseCase;
-import com.tokopedia.shop.open.domain.interactor.ReserveShopNameDomainUseCase;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
+import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
+import com.tokopedia.shop.open.data.model.response.CreateShop;
+import com.tokopedia.shop.open.data.model.response.ValidateShopDomainSuggestionHeader;
+import com.tokopedia.shop.open.domain.interactor.ShopOpenCheckDomainNameUseCase;
+import com.tokopedia.shop.open.domain.interactor.ShopOpenSubmitUseCase;
 import com.tokopedia.shop.open.view.listener.ShopOpenDomainView;
-import com.tokopedia.shop.open.data.model.response.ResponseReserveDomain;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,22 +28,29 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
     private static final int DELAY_DEBOUNCE = 700; // ms
     public static final String SUCCESS = "1";
 
-    private final CheckDomainNameUseCase checkDomainNameUseCase;
-    private final CheckShopNameUseCase checkShopNameUseCase;
-    private final ReserveShopNameDomainUseCase reserveShopNameDomainUseCase;
     private Subscription domainDebounceSubscription;
     private Subscription shopDebounceSubscription;
+    private boolean isHitToken;
+    private GetOpenShopTokenUseCase getOpenShopTokenUseCase;
+    private ShopOpenSubmitUseCase shopOpenSubmitUseCase;
+    private ShopOpenCheckDomainNameUseCase shopOpenCheckDomainNameUseCase;
 
     private ShopOpenDomainPresenterImpl.QueryListener domainListener;
     private ShopOpenDomainPresenterImpl.QueryListener shopListener;
+    private GlobalCacheManager globalCacheManager;
+    private UserSessionInterface userSession;
 
     @Inject
-    public ShopOpenDomainPresenterImpl(CheckDomainNameUseCase checkDomainNameUseCase,
-                                       CheckShopNameUseCase checkShopNameUseCase,
-                                       ReserveShopNameDomainUseCase reserveShopNameDomainUseCase) {
-        this.checkDomainNameUseCase = checkDomainNameUseCase;
-        this.checkShopNameUseCase = checkShopNameUseCase;
-        this.reserveShopNameDomainUseCase = reserveShopNameDomainUseCase;
+    public ShopOpenDomainPresenterImpl(ShopOpenSubmitUseCase shopOpenSubmitUseCase,
+                                       GlobalCacheManager globalCacheManager,
+                                       UserSessionInterface userSession,
+                                       ShopOpenCheckDomainNameUseCase shopOpenCheckDomainNameUseCase,
+                                       GetOpenShopTokenUseCase getOpenShopTokenUseCase) {
+        this.shopOpenSubmitUseCase = shopOpenSubmitUseCase;
+        this.getOpenShopTokenUseCase = getOpenShopTokenUseCase;
+        this.shopOpenCheckDomainNameUseCase = shopOpenCheckDomainNameUseCase;
+        this.globalCacheManager = globalCacheManager;
+        this.userSession = userSession;
 
         domainDebounceSubscription = Observable.unsafeCreate(
                 new Observable.OnSubscribe<String>() {
@@ -101,8 +114,8 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
                 });
     }
 
-    private Subscriber<ResponseReserveDomain> getReserveShopSubscriber() {
-        return new Subscriber<ResponseReserveDomain>() {
+    private Subscriber<CreateShop> getCreateShopSubscriber() {
+        return new Subscriber<CreateShop>() {
             @Override
             public void onCompleted() {
 
@@ -116,19 +129,56 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
             }
 
             @Override
-            public void onNext(ResponseReserveDomain responseReserveDomain) {
-                if (SUCCESS.equals( responseReserveDomain.getShopDomainStatus()) &&
-                        SUCCESS.equals( responseReserveDomain.getShopNameStatus())) {
-                    getView().onSuccessReserveShop(responseReserveDomain.getShopName());
-                } else {
-                    getView().onErrorReserveShop(null);
+            public void onNext(CreateShop createShop) {
+                if (!createShop.getCreateShop().getSuccess()) {
+                    getView().onErrorCreateShop(createShop.getCreateShop().getMessage());
+                    return;
                 }
+                userSession.setShopId(createShop.getCreateShop().getCreatedId());
+                globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
+                getView().onSuccessCreateShop(createShop.getCreateShop().getMessage(),createShop.getCreateShop().getCreatedId());
             }
         };
     }
 
+    public void openDistrictRecommendation(RequestParams requestParams) {
+        if (isHitToken) {
+            return;
+        }
+        isHitToken = true;
+        if (isViewAttached()) {
+            getView().showSubmitLoading();
+        }
+        getOpenShopTokenUseCase.execute(requestParams, new Subscriber<Token>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                isHitToken = false;
+                if (isViewAttached()) {
+                    getView().hideSubmitLoading();
+                    getView().onErrorReserveShop(e);
+                }
+            }
+
+            @Override
+            public void onNext(Token token) {
+                isHitToken = false;
+                getView().hideSubmitLoading();
+                getView().onSuccessGetToken(token);
+            }
+        });
+    }
+
     private interface QueryListener {
         void query(String string);
+    }
+
+    public void onSubmitCreateShop(String shopName, String domain, Integer districtId, Integer postalCodeId) {
+        shopOpenSubmitUseCase.execute(ShopOpenSubmitUseCase.Companion.createRequestParams(shopName, domain, districtId, postalCodeId),
+                getCreateShopSubscriber());
     }
 
     @Override
@@ -138,17 +188,12 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
         }
     }
 
-    public void submitReserveNameAndDomainShop(String shopName, String shopDomain) {
-        reserveShopNameDomainUseCase.execute(
-                ReserveShopNameDomainUseCase.createRequestParams(shopName, shopDomain), getReserveShopSubscriber());
-    }
-
     private void checkShopWS(String shopName) {
-        checkShopNameUseCase.unsubscribe();
-        if (!getView().isShopNameInValidRange()){
+        if (!getView().isShopNameInValidRange()) {
             return;
         }
-        checkShopNameUseCase.execute(CheckShopNameUseCase.createRequestParams(shopName), new Subscriber<Boolean>() {
+
+        shopOpenCheckDomainNameUseCase.execute(ShopOpenCheckDomainNameUseCase.Companion.createRequestParam(shopName), new Subscriber<ValidateShopDomainSuggestionHeader>() {
             @Override
             public void onCompleted() {
 
@@ -157,25 +202,34 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().onErrorCheckShopName(e);
+                    getView().onErrorReserveShop(e);
                 }
             }
 
             @Override
-            public void onNext(Boolean existed) {
+            public void onNext(ValidateShopDomainSuggestionHeader validateShopDomainSuggestionHeader) {
+                boolean isNameValid = validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().isValid();
+                boolean isNameErrorMessageEmpty = validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().getError().getMessage().isEmpty();
+                boolean isDomainSuggestionErrorEmpty = validateShopDomainSuggestionHeader.getData().getShopDomainSuggestion().getError().getMessage().isEmpty();
+
+                if ((!isNameValid && !isNameErrorMessageEmpty) || !isDomainSuggestionErrorEmpty) {
+                    getView().onErrorCheckShopName(validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().getError().getMessage());
+                    return;
+                }
+
                 if (getView().isShopNameInValidRange()) {
-                    getView().onSuccessCheckShopName(existed);
+                    getView().onSuccessCheckShopName(validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().isValid(),
+                            validateShopDomainSuggestionHeader.getData().getShopDomainSuggestion().getResult().getShopDomain());
                 }
             }
-        });
-    }
+    });
+}
 
     private void checkDomainWS(String domainName) {
-        checkDomainNameUseCase.unsubscribe();
-        if (!getView().isShopDomainInValidRange()){
+        if (!getView().isShopDomainInValidRange()) {
             return;
         }
-        checkDomainNameUseCase.execute(CheckDomainNameUseCase.createRequestParams(domainName), new Subscriber<Boolean>() {
+        shopOpenCheckDomainNameUseCase.execute(ShopOpenCheckDomainNameUseCase.Companion.createRequestParams(domainName, ""), new Subscriber<ValidateShopDomainSuggestionHeader>() {
             @Override
             public void onCompleted() {
 
@@ -184,14 +238,20 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().onErrorCheckShopDomain(e);
+                    getView().onErrorReserveShop(e);
                 }
             }
 
             @Override
-            public void onNext(Boolean existed) {
+            public void onNext(ValidateShopDomainSuggestionHeader validateShopDomainSuggestionHeader) {
+                boolean isDomainValid = validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().isValid();
+                boolean isDomainErrorMessageEmpty = validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().getError().getMessage().isEmpty();
+                if (!isDomainValid && !isDomainErrorMessageEmpty){
+                    getView().onErrorCheckShopDomain(validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().getError().getMessage());
+                    return;
+                }
                 if (getView().isShopDomainInValidRange()) {
-                    getView().onSuccessCheckShopDomain(existed);
+                    getView().onSuccessCheckShopDomain(validateShopDomainSuggestionHeader.getValidateDomainShopName().getValidateDomainShopName().isValid());
                 }
             }
         });
@@ -207,9 +267,9 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
     @Override
     public void detachView() {
         super.detachView();
-        checkDomainNameUseCase.unsubscribe();
-        checkShopNameUseCase.unsubscribe();
-        reserveShopNameDomainUseCase.unsubscribe();
+        shopOpenCheckDomainNameUseCase.unsubscribe();
+        getOpenShopTokenUseCase.unsubscribe();
+        shopOpenSubmitUseCase.unsubscribe();
         domainDebounceSubscription.unsubscribe();
         shopDebounceSubscription.unsubscribe();
     }
