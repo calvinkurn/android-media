@@ -1331,7 +1331,7 @@ public class CartListPresenter implements ICartListPresenter {
                 !TextUtils.isEmpty(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode()) &&
                 cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getMessageData() != null) {
             if (!TextUtils.isEmpty(promoCodes)) {
-                promoCodes.append(":");
+                promoCodes.append("|");
             }
             promoCodes.append(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode());
             int amount = 0;
@@ -1344,7 +1344,7 @@ public class CartListPresenter implements ICartListPresenter {
                 type = PromoStackingData.CREATOR.getTYPE_VOUCHER();
             }
             if (!TextUtils.isEmpty(promoDetails)) {
-                promoDetails.append(":");
+                promoDetails.append("|");
             }
             promoDetails.append(type)
                     .append(":")

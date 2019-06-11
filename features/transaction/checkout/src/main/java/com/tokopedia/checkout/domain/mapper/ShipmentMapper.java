@@ -21,6 +21,7 @@ import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldTieringModel;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductCheckoutData;
 import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
@@ -371,6 +372,78 @@ public class ShipmentMapper implements IShipmentMapper {
                                 analyticsProductCheckoutData.setProductVariant("");
                                 analyticsProductCheckoutData.setProductBrand("");
                                 analyticsProductCheckoutData.setProductQuantity(product.getProductQuantity());
+                                analyticsProductCheckoutData.setWarehouseId(String.valueOf(groupShop.getWarehouse().getWarehouseId()));
+                                analyticsProductCheckoutData.setProductWeight(String.valueOf(product.getProductWeight()));
+                                StringBuilder promoCodes = new StringBuilder();
+                                StringBuilder promoDetails = new StringBuilder();
+                                if (dataResult.getAutoApplyStackData() != null) {
+                                    if (!TextUtils.isEmpty(dataResult.getAutoApplyStackData().getCode())) {
+                                        promoCodes.append(dataResult.getAutoApplyStackData().getCode());
+                                        int amount = 0;
+                                        int type = 0;
+                                        if (shipmentAddressFormDataResponse.getAutoapplyStack().getDiscountAmount() > 0) {
+                                            amount = shipmentAddressFormDataResponse.getAutoapplyStack().getDiscountAmount();
+                                            type = PromoStackingData.CREATOR.getTYPE_COUPON();
+                                        } else if (shipmentAddressFormDataResponse.getAutoapplyStack().getCashbackWalletAmount() > 0) {
+                                            amount = shipmentAddressFormDataResponse.getAutoapplyStack().getCashbackWalletAmount();
+                                            type = PromoStackingData.CREATOR.getTYPE_VOUCHER();
+                                        }
+                                        promoDetails.append(type)
+                                                .append(":")
+                                                .append(amount)
+                                                .append(":")
+                                                .append(shipmentAddressFormDataResponse.getAutoapplyStack().getMessage().getState());
+                                    }
+                                    if (dataResult.getAutoApplyStackData().getVoucherOrders() != null) {
+                                        for (VoucherOrdersItemData voucherOrdersItemData : dataResult.getAutoApplyStackData().getVoucherOrders()) {
+                                            if (voucherOrdersItemData.getUniqueId().equalsIgnoreCase(groupShop.getCartString())) {
+                                                if (!TextUtils.isEmpty(promoCodes)) {
+                                                    promoCodes.append("|");
+                                                }
+                                                promoCodes.append(voucherOrdersItemData.getCode());
+                                                int amount = 0;
+                                                int type = 0;
+                                                if (voucherOrdersItemData.getDiscountAmount() > 0) {
+                                                    amount = voucherOrdersItemData.getDiscountAmount();
+                                                    type = PromoStackingData.CREATOR.getTYPE_COUPON();
+                                                } else if (voucherOrdersItemData.getCashbackWalletAmount() > 0) {
+                                                    amount = voucherOrdersItemData.getCashbackWalletAmount();
+                                                    type = PromoStackingData.CREATOR.getTYPE_VOUCHER();
+                                                }
+                                                promoDetails.append(type)
+                                                        .append(":")
+                                                        .append(amount)
+                                                        .append(":")
+                                                        .append(voucherOrdersItemData.getMessageData().getState());
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (!TextUtils.isEmpty(promoCodes)) {
+                                    analyticsProductCheckoutData.setPromoCode1(promoCodes.toString());
+                                }
+                                if (!TextUtils.isEmpty(promoDetails)) {
+                                    analyticsProductCheckoutData.setPromoDetails(promoDetails.toString());
+                                }
+                                if (groupAddressResult.getUserAddress() != null) {
+                                    analyticsProductCheckoutData.setBuyerAddressId(String.valueOf(groupAddressResult.getUserAddress().getAddressId()));
+                                }
+                                analyticsProductCheckoutData.setShippingDuration("");
+                                analyticsProductCheckoutData.setCourier("");
+                                analyticsProductCheckoutData.setShippingPrice("");
+                                if (dataResult.getCod() != null) {
+                                    analyticsProductCheckoutData.setCodFlag(String.valueOf(dataResult.getCod().isCod()));
+                                } else {
+                                    analyticsProductCheckoutData.setCodFlag(String.valueOf(false));
+                                }
+                                if (groupAddressResult.getUserAddress() != null && groupAddressResult.getUserAddress().getCornerId() != 0) {
+                                    analyticsProductCheckoutData.setTokopediaCornerFlag(String.valueOf(true));
+                                } else {
+                                    analyticsProductCheckoutData.setTokopediaCornerFlag(String.valueOf(false));
+                                }
+                                analyticsProductCheckoutData.setIsFulfillment(String.valueOf(groupShop.isFulfillment()));
 
                                 productResult.setError(!mapperUtil.isEmpty(product.getErrors()));
                                 if (product.getErrors() != null) {

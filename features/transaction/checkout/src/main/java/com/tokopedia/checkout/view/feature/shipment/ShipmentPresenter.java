@@ -110,7 +110,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -370,7 +369,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         int buyEgoldValue = 0;
 
         for (int i = minRange; i <= maxRange; i++) {
-            if ((valueTOCheck + i ) % basisAmount == 0) {
+            if ((valueTOCheck + i) % basisAmount == 0) {
                 buyEgoldValue = i;
                 break;
             }
@@ -405,6 +404,78 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public boolean isShowOnboarding() {
         return isShowOnboarding;
+    }
+
+    @Override
+    public void triggerSendEnhancedEcommerceCheckoutAnalytics() {
+        CheckPromoParam checkPromoParam = new CheckPromoParam();
+        checkPromoParam.setPromo(getView().generateCheckPromoFirstStepParam());
+        CheckoutRequest checkoutRequest = generateCheckoutRequest(checkPromoParam,
+                shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
+        );
+        Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest);
+        String transactionId = "";
+        if (checkoutData != null) {
+            transactionId = checkoutData.getTransactionId();
+        }
+        analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(eeDataLayer, transactionId);
+    }
+
+    @Override
+    public void updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(String cartString, String shippingDuration, String shippingPrice, String courierName) {
+        if (dataCheckoutRequestList != null) {
+            for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequestList) {
+                if (dataCheckoutRequest.shopProducts != null) {
+                    boolean foundItem = false;
+                    for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
+                        if (shopProductCheckoutRequest.cartString.equalsIgnoreCase(cartString) && shopProductCheckoutRequest.productData != null) {
+                            for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
+                                productDataCheckoutRequest.setShippingDuration(shippingDuration);
+                                productDataCheckoutRequest.setShippingPrice(shippingPrice);
+                                productDataCheckoutRequest.setCourier(courierName);
+                            }
+                            foundItem = true;
+                            break;
+                        }
+                    }
+                    if (foundItem) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoGlobalData(PromoStackingData promoStackingData, List<ShipmentCartItemModel> shipmentCartItemModels) {
+        if (dataCheckoutRequestList != null) {
+
+        }
+    }
+
+    public void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoMerchantOrLogisticData(ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
+        if (dataCheckoutRequestList != null) {
+
+        }
+    }
+
+    public void updateEnhancedEcommerceCheckoutAnalyticsDataLayerAddressData(String buyerAddressId, String tokopediaCornerFlag) {
+        if (dataCheckoutRequestList != null) {
+            for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequestList) {
+                try {
+                    dataCheckoutRequest.addressId = Integer.parseInt(buyerAddressId);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+                if (dataCheckoutRequest.shopProducts != null) {
+                    for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
+                        for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
+                            productDataCheckoutRequest.setBuyerAddressId(buyerAddressId);
+                            productDataCheckoutRequest.setTokopediaCornerFlag(tokopediaCornerFlag);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -851,7 +922,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodSuccess();
-                    analyticsActionListener.sendAnalyticsCheckoutStep2(generateCheckoutAnalyticsStep2DataLayer(checkoutRequest), checkoutData.getTransactionId());
+                    triggerSendEnhancedEcommerceCheckoutAnalytics();
                     if (isPurchaseProtectionPage) {
                         mTrackerPurchaseProtection.eventClickOnBuy(
                                 checkoutRequest.isHavingPurchaseProtectionEnabled() ?
@@ -871,7 +942,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         };
     }
 
-    private Map<String, Object> generateCheckoutAnalyticsStep2DataLayer(CheckoutRequest checkoutRequest) {
+    private Map<String, Object> generateCheckoutAnalyticsDataLayer(CheckoutRequest checkoutRequest) {
         if (checkoutRequest != null) {
             Map<String, Object> checkoutMapData = new HashMap<>();
             EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
@@ -900,6 +971,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         enhancedECommerceProductCartMapData.setDimension45(String.valueOf(productDataCheckoutRequest.getCartId()));
                         enhancedECommerceProductCartMapData.setDimension54(getFulfillmentStatus(shopProductCheckoutRequest.getShopId()));
                         enhancedECommerceProductCartMapData.setDimension12(shopProductCheckoutRequest.shippingInfo.analyticsDataShippingCourierPrice);
+                        enhancedECommerceProductCartMapData.setWarehouseId(productDataCheckoutRequest.getWarehouseId());
+                        enhancedECommerceProductCartMapData.setProductWeight(productDataCheckoutRequest.getProductWeight());
+                        enhancedECommerceProductCartMapData.setPromoCode1(productDataCheckoutRequest.getPromoCode1());
+                        enhancedECommerceProductCartMapData.setPromoDetails(productDataCheckoutRequest.getPromoDetails());
+                        enhancedECommerceProductCartMapData.setCartId(String.valueOf(productDataCheckoutRequest.getCartId()));
+                        enhancedECommerceProductCartMapData.setBuyerAddressId(productDataCheckoutRequest.getBuyerAddressId());
+                        enhancedECommerceProductCartMapData.setShippingDuration(productDataCheckoutRequest.getShippingDuration());
+                        enhancedECommerceProductCartMapData.setCourier(productDataCheckoutRequest.getCourier());
+                        enhancedECommerceProductCartMapData.setShippingPrice(productDataCheckoutRequest.getShippingPrice());
+                        enhancedECommerceProductCartMapData.setCodFlag(productDataCheckoutRequest.getCodFlag());
+                        enhancedECommerceProductCartMapData.setTokopediaCornerFlag(productDataCheckoutRequest.getTokopediaCornerFlag());
+                        enhancedECommerceProductCartMapData.setIsFulfillment(productDataCheckoutRequest.getIsFulfillment());
+
                         enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
                     }
                 }

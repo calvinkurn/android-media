@@ -124,6 +124,7 @@ public class ShipmentDataRequestConverter {
                     .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
                     .shopId(shipmentCartItemModel.getShopId())
                     .warehouseId(shipmentCartItemModel.getFulfillmentId())
+                    .cartString(shipmentCartItemModel.getCartString())
                     .productData(convertToProductDataCheckout(shipmentCartItemModel.getCartItemModels()));
 
             ArrayList<String> promoCodes = new ArrayList<>();
@@ -211,6 +212,17 @@ public class ShipmentDataRequestConverter {
                 .productListName(cartItem.getAnalyticsProductCheckoutData().getProductListName())
                 .productAttribution(cartItem.getAnalyticsProductCheckoutData().getProductAttribution())
                 .cartId(cartItem.getCartId())
+                .warehouseId(cartItem.getAnalyticsProductCheckoutData().getWarehouseId())
+                .productWeight(cartItem.getAnalyticsProductCheckoutData().getProductWeight())
+                .promoCode1(cartItem.getAnalyticsProductCheckoutData().getPromoCode1())
+                .promoDetails(cartItem.getAnalyticsProductCheckoutData().getPromoDetails())
+                .buyerAddressId(cartItem.getAnalyticsProductCheckoutData().getBuyerAddressId())
+                .shippingDuration(cartItem.getAnalyticsProductCheckoutData().getShippingDuration())
+                .courier(cartItem.getAnalyticsProductCheckoutData().getCourier())
+                .shippingPrice(cartItem.getAnalyticsProductCheckoutData().getShippingPrice())
+                .codFlag(cartItem.getAnalyticsProductCheckoutData().getCodFlag())
+                .tokopediaCornerFlag(cartItem.getAnalyticsProductCheckoutData().getTokopediaCornerFlag())
+                .isFulfillment(cartItem.getAnalyticsProductCheckoutData().getIsFulfillment())
                 .build();
     }
 

@@ -347,6 +347,16 @@ public interface ShipmentContract {
         Token getKeroToken();
 
         boolean isShowOnboarding();
+
+        void triggerSendEnhancedEcommerceCheckoutAnalytics();
+
+        void updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(String cartString, String shippingDuration, String shippingPrice, String courierName);
+
+        void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoGlobalData(PromoStackingData promoStackingData, List<ShipmentCartItemModel> shipmentCartItemModels);
+
+        void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoMerchantOrLogisticData(ResponseGetPromoStackUiModel responseGetPromoStackUiModel);
+
+        void updateEnhancedEcommerceCheckoutAnalyticsDataLayerAddressData(String buyerAddressId, String tokopediaCornerFlag);
     }
 
 }

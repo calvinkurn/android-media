@@ -1909,6 +1909,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 if (!TextUtils.isEmpty(recommendedCourier.getPromoCode())) {
                     checkCourierPromo(recommendedCourier, cartItemPosition);
                 }
+                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                        shipmentCartItemModel.getCartString(),
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getEstimatedTimeDelivery(),
+                        String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperPrice()),
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getName());
+                shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics();
             }
         }
     }
