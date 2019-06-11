@@ -70,8 +70,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         product_name.text = productDataModel.productDetailData.name
-        product_discount.text = "20%"
-        setSplashedText("RP100.000")
+        handleDiscount()
         product_price.text = productDataModel.productDetailData.price
         location.text = productDataModel.productDetailData.shop.location
         if (!productDataModel.productDetailData.badges.isEmpty()) {
@@ -198,6 +197,18 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 fab_detail.isActivated = false
                 fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_product_action_wishlist_gray_28))
             }
+        }
+    }
+
+    private fun handleDiscount(){
+        if(productDataModel.productDetailData.discountPercentage > 0){
+            product_discount.visibility = View.VISIBLE
+            product_slashed_price.visibility = View.VISIBLE
+            product_discount.text = "${productDataModel.productDetailData.discountPercentage}%"
+            setSplashedText(productDataModel.productDetailData.slashedPrice)
+        } else {
+            product_discount.visibility = View.GONE
+            product_slashed_price.visibility = View.GONE
         }
     }
 

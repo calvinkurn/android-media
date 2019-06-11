@@ -33,6 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:focusable="true"
                 android:visibility="visible"
                 tools:visibility="visible"
                 app:srcCompat="@drawable/ic_product_action_wishlist_gray_28"
@@ -96,11 +97,13 @@
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
                 android:textColor="@color/price"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/product_discount"
+                app:layout_constraintStart_toEndOf="@+id/product_image"
                 app:layout_constraintTop_toBottomOf="@+id/product_discount"
                 tools:text="Rp100.001.000" />
 
@@ -115,6 +118,7 @@
                     app:layout_constraintStart_toEndOf="@+id/product_image"
                     app:layout_constraintTop_toBottomOf="@+id/product_price"
                     tools:background="@color/red_150"
+                    tools:visibility="gone"
             />
             <TextView
                     android:id="@+id/location"
@@ -127,6 +131,7 @@
                     android:layout_marginTop="@dimen/dp_4"
                     android:layout_marginLeft="@dimen/dp_4"
                     android:layout_marginStart="@dimen/dp_4"
+                    app:layout_goneMarginStart="@dimen/dp_8"
                     app:layout_constraintTop_toBottomOf="@+id/product_price"
                     app:layout_constraintStart_toEndOf="@+id/badge"
                     tools:text="Town Location"
@@ -140,7 +145,7 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginTop="@dimen/dp_4"
                     android:contentDescription="@string/app_name"
-                    app:layout_constraintTop_toBottomOf="@+id/badge"
+                    app:layout_constraintTop_toBottomOf="@+id/location"
                     app:layout_constraintStart_toEndOf="@+id/product_image"
                     tools:background="@color/red_150"
                     tools:layout_height="20dp" />
