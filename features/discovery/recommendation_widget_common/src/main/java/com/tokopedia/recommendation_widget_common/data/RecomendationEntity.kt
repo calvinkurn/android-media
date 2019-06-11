@@ -23,6 +23,8 @@ class RecomendationEntity {
         var nextPage: Int = 0
         @SerializedName("prev_page")
         var prevPage: Int = 0
+        @SerializedName("hasNext")
+        var hasNext: Boolean = false
     }
 
     class Recommendation {
@@ -98,6 +100,8 @@ class RecomendationEntity {
         var foreignTitle: String? = ""
         @SerializedName("widgetUrl")
         var widgetUrl: String? = ""
+        @SerializedName("pageName")
+        var pageName: String? = ""
         @SerializedName("layoutType")
         var layoutType: String? = ""
         @SerializedName("pagination")

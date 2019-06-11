@@ -6,6 +6,9 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
       title
       foreignTitle
       widgetUrl
+      pageName
+      layoutType
+      pagination
       recommendation {
         id
         name

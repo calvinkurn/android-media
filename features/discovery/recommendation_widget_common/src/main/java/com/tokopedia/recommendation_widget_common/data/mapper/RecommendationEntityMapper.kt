@@ -57,7 +57,9 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     recomendationData.layoutType?:"",
                     recomendationData.pagination.currentPage,
                     recomendationData.pagination.nextPage,
-                    recomendationData.pagination.prevPage)
+                    recomendationData.pagination.prevPage,
+                    recomendationData.pagination.hasNext,
+                    recomendationData.pageName?:"")
         }
 
         private fun convertToRecommendationItem(data: RecomendationEntity.Recommendation): RecommendationItem {

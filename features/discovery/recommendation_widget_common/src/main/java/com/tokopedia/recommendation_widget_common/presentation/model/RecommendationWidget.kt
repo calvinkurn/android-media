@@ -10,5 +10,7 @@ class RecommendationWidget(
         val layoutType: String,
         val currentPage: Int,
         val nextPage: Int,
-        val prevPage: Int) {
+        val prevPage: Int,
+        val hasNext: Boolean,
+        val pageName: String) {
 }
