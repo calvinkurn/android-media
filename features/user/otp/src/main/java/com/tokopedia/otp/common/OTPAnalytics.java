@@ -63,6 +63,15 @@ public class OTPAnalytics {
         ));
     }
 
+    public void eventClickBackRegisterOTPPage() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_REGISTER,
+                "register with phone number otp",
+                "click on button back",
+                ""
+        ));
+    }
+
     public void eventClickVerifyButton(int otpType) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_CONFIRM,
