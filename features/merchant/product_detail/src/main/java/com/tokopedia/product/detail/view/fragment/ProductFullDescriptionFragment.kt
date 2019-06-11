@@ -105,7 +105,7 @@ class ProductFullDescriptionFragment: BaseDaggerFragment() {
                 startActivity(ProductYoutubePlayerActivity.createIntent(it, vids.map { it.url }, index))
             } else {
                 startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://www.youtube.com/watch?v=" + vids[index].url)));
+                        Uri.parse("https://www.youtube.com/watch?v=" + vids[index].url)));
             }
         }
     }
