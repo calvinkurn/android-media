@@ -30,7 +30,7 @@ public class HomeData {
     private Spotlight spotlight = new Spotlight();
 
     @Expose
-    @SerializedName("search_placeholder")
+    @SerializedName("universe_placeholder")
     private SearchPlaceholder searchPlaceholder;
 
     private boolean isCache;
