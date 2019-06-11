@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.product.manage.item.main.add.view.listener.ProductAddView;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
+import com.tokopedia.product.manage.item.main.draft.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCase;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
@@ -25,23 +26,33 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
 
     private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final GetShopInfoUseCase getShopInfoUseCase;
+    private final PopupManagerAddProductUseCase popupManagerAddProductUseCase;
     protected final FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase;
     private UserSessionInterface userSession;
+    public static final String GQL_POPUP_NAME = "gql_popup";
 
     public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                    GetShopInfoUseCase getShopInfoUseCase,
                                    UserSessionInterface userSession,
-                                   FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase) {
+                                   FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
+                                   PopupManagerAddProductUseCase popupManagerAddProductUseCase) {
         this.saveDraftProductUseCase = saveDraftProductUseCase;
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.userSession = userSession;
         this.fetchProductVariantByCatUseCase = fetchProductVariantByCatUseCase;
+        this.popupManagerAddProductUseCase = popupManagerAddProductUseCase;
     }
 
     @Override
     public void saveDraft(ProductViewModel viewModel, boolean isUploading) {
         saveDraftProductUseCase.execute(generateRequestParamAddDraft(viewModel, isUploading),
                 new SaveDraftSubscriber(isUploading));
+    }
+
+    @Override
+    public void getPopupsInfo() {
+        popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.Companion.createRequestParams(Integer.parseInt(userSession.getShopId())),
+                getPopupsInfoSubscriber());
     }
 
     @Override
@@ -75,6 +86,28 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
         fetchProductVariantByCatUseCase.execute(requestParam, getProductVariantSubscriber());
     }
 
+    private Subscriber<Boolean> getPopupsInfoSubscriber() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (!isViewAttached()) {
+                    return;
+                }
+                getView().onErrorGetPopupInfo(e);
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                getView().onSuccessGetPopupInfo(aBoolean);
+            }
+        };
+    }
+
     private Subscriber<List<ProductVariantByCatModel>> getProductVariantSubscriber() {
         return new Subscriber<List<ProductVariantByCatModel>>() {
             @Override
@@ -101,9 +134,11 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
     private class SaveDraftSubscriber extends Subscriber<Long> {
 
         boolean isUploading;
+
         SaveDraftSubscriber(boolean isUploading) {
             this.isUploading = isUploading;
         }
+
         @Override
         public void onCompleted() {
 
@@ -133,7 +168,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
                 isUploading);
     }
 
-    private long getProductDraftId(){
+    private long getProductDraftId() {
         return getView().getProductDraftId();
     }
 
@@ -142,5 +177,6 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
         getShopInfoUseCase.unsubscribe();
         saveDraftProductUseCase.unsubscribe();
         fetchProductVariantByCatUseCase.unsubscribe();
+        popupManagerAddProductUseCase.unsubscribe();
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
 import com.tokopedia.core.common.category.data.source.CategoryDataSource;
@@ -15,6 +16,7 @@ import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.product.manage.item.R;
 import com.tokopedia.product.manage.item.catalog.data.repository.CatalogRepositoryImpl;
 import com.tokopedia.product.manage.item.catalog.data.source.CatalogDataSource;
 import com.tokopedia.product.manage.item.catalog.domain.CatalogRepository;
@@ -28,6 +30,7 @@ import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.MerlinA
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.SearchApi;
 import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource;
+import com.tokopedia.product.manage.item.main.draft.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCase;
 import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantRepository;
@@ -38,6 +41,8 @@ import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -54,9 +59,11 @@ public class ProductAddModule {
     @ProductAddScope
     @Provides
     ProductAddPresenterImpl<ProductAddView> provideProductAddPresenter(SaveDraftProductUseCase saveDraftProductUseCase,
-                                                                       GetShopInfoUseCase getShopInfoUseCase, UserSessionInterface userSession,
-                                                                       FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase){
-        return new ProductAddPresenterImpl<>(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
+                                                                       GetShopInfoUseCase getShopInfoUseCase,
+                                                                       UserSessionInterface userSession,
+                                                                       FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
+                                                                       PopupManagerAddProductUseCase popupManagerAddProductUseCase){
+        return new ProductAddPresenterImpl<>(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase,popupManagerAddProductUseCase);
     }
 
     @ProductAddScope
@@ -145,5 +152,16 @@ public class ProductAddModule {
     ProductVariantRepository productVariantRepository(ProductVariantDataSource productVariantDataSource){
         return new ProductVariantRepositoryImpl(productVariantDataSource);
     }
+
+    @ProductAddScope
+    @Provides
+    @Named(ProductAddPresenterImpl.GQL_POPUP_NAME)
+    public String requestQuery(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                R.raw.gql_popup_manager
+        );
+    }
+
 
 }

@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.item.main.draft.di;
 import com.tokopedia.product.manage.item.main.add.di.ProductAddModule;
 import com.tokopedia.product.manage.item.main.add.di.ProductAddScope;
 import com.tokopedia.product.manage.item.main.draft.domain.FetchDraftProductUseCase;
+import com.tokopedia.product.manage.item.main.draft.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCase;
 import com.tokopedia.product.manage.item.main.draft.view.presenter.ProductDraftPresenterImpl;
@@ -26,8 +27,9 @@ public class ProductDraftModule {
                                                         GetShopInfoUseCase getShopInfoUseCase,
                                                         UserSessionInterface userSession,
                                                         FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
-                                                        FetchDraftProductUseCase fetchDraftProductUseCase){
-        return new ProductDraftPresenterImpl(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase, fetchDraftProductUseCase);
+                                                        FetchDraftProductUseCase fetchDraftProductUseCase,
+                                                        PopupManagerAddProductUseCase popupManagerAddProductUseCase){
+        return new ProductDraftPresenterImpl(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase, fetchDraftProductUseCase,popupManagerAddProductUseCase);
     }
 
     @ProductAddScope
