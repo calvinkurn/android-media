@@ -218,6 +218,7 @@ public class ShopListFragment
         } else {
             if (performanceMonitoring != null) {
                 performanceMonitoring.stopTrace();
+                performanceMonitoring = null;
             }
             handleSearchResult(shopItemList, isHasNextPage, loadShopRow);
         }
