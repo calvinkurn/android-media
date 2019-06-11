@@ -39,4 +39,6 @@
 
     <string name="path_district_recommendation_shop_settings" translatable="false">/district-recommendation-shop-settings</string>
 
+    <string name="path_user_notification_setting" translatable="false">/user-notification-setting</string>
+
 </resources>

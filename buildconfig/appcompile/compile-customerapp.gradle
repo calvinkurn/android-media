@@ -159,6 +159,7 @@ include "features:user:onboarding"
 include "features:user:otp"
 include "features:user:phoneverification"
 include "features:user:settingbank"
+include "features:user:settingnotif"
 include "features:user:sessioncommon"
 include "features:user:talk"
 include "features:user:topchat"
@@ -169,7 +170,6 @@ include "features:user:user_identification"
 include "features:user:user_identification_common"
 include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
-include "features:user:settingnotif"
 
 include 'logisticanalytics'
 include 'tkpdfeed'

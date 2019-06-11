@@ -105,4 +105,8 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"
 
+    // SettingFieldActivity
+    @JvmField
+    val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
+
 }
