@@ -245,7 +245,6 @@ public class PreviewProductImage extends TActivity {
                                     }
                                 },
                                 ""
-                                //getString(RequestPermissionUtil.getNeedPermissionMessage(Manifest.permission.WRITE_EXTERNAL_STORAGE))
                         );
                     }
                 });

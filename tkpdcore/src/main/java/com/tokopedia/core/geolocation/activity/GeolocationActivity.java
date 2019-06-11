@@ -120,9 +120,6 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
                     }
                 },
                 ""
-                //getString(RequestPermissionUtil.getNeedPermissionMessage(
-                //        Manifest.permission.ACCESS_FINE_LOCATION
-                //))
         );
     }
 
