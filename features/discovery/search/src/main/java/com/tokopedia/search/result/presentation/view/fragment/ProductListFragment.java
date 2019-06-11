@@ -322,7 +322,7 @@ public class ProductListFragment
     }
 
     public void setProductList(List<Visitable> list) {
-        adapter.clear();
+        adapter.clearDataBeforeSet();
 
         addProductList(list);
 
@@ -751,7 +751,6 @@ public class ProductListFragment
 
         showRefreshLayout();
         adapter.clearData();
-        adapter.notifyDataSetChanged();
         initTopAdsParams();
         generateLoadMoreParameter(0);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
