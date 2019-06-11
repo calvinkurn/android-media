@@ -242,7 +242,7 @@ public class ProductManageModule {
     @ProductManageScope
     @Provides
     @Named(GQL_POPUP_NAME)
-    public String requestQuery(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context){
+    public String requestQuery(@ApplicationContext Context context){
         return GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.gql_popup_manager
