@@ -33,10 +33,8 @@ open class RequestDynamicFilterSubscriber(
         val gson = Gson()
         val filterData = gson.toJson(model.data.filter, listType)
 
-        val cache = DynamicFilterDbManager()
-        cache.filterID = requestDynamicFilterListener.screenNameId
-        cache.filterData = filterData
-        cache.store()
+        DynamicFilterDbManager.store(requestDynamicFilterListener.context,
+                requestDynamicFilterListener.screenNameId, filterData)
     }
 
     override fun onCompleted() { }

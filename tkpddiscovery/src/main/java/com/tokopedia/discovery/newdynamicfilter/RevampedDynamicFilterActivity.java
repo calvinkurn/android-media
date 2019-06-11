@@ -167,7 +167,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     private List<Filter> getFilterListFromDbManager(DynamicFilterDbManager manager) throws RuntimeException {
-        String data = manager.getValueString(getIntent().getStringExtra(EXTRA_FILTER_LIST));
+        String data = DynamicFilterDbManager.getFilterData(this, getIntent().getStringExtra(EXTRA_FILTER_LIST));
         if (data == null) {
             throw new RuntimeException("error get filter cache");
         } else {
@@ -292,7 +292,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     private void handleResultFromLocationPage() {
         Observable.create(
-                (Observable.OnSubscribe<List<Option>>) subscriber -> subscriber.onNext(FilterDbHelper.loadLocationFilterOptions()))
+                (Observable.OnSubscribe<List<Option>>) subscriber -> subscriber.onNext(FilterDbHelper.loadLocationFilterOptions(RevampedDynamicFilterActivity.this)))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Option>>() {

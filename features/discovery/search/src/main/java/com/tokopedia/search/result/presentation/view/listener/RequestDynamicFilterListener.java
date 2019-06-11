@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.presentation.view.listener;
 
+import android.content.Context;
+
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 
 public interface RequestDynamicFilterListener {
@@ -11,4 +13,6 @@ public interface RequestDynamicFilterListener {
     void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
 
     void renderFailRequestDynamicFilter();
+
+    Context getContext();
 }

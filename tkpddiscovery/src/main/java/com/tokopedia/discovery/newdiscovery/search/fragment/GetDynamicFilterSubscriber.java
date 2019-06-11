@@ -51,9 +51,6 @@ public class GetDynamicFilterSubscriber extends Subscriber<DynamicFilterModel> {
         Gson gson = new Gson();
         String filterData = gson.toJson(model.getData().getFilter(), listType);
 
-        DynamicFilterDbManager cache = new DynamicFilterDbManager();
-        cache.setFilterID(view.getScreenNameId());
-        cache.setFilterData(filterData);
-        cache.store();
+        DynamicFilterDbManager.store(view.getContext(), view.getScreenNameId(), filterData);
     }
 }
