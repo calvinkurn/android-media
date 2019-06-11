@@ -77,7 +77,8 @@
     <string name="menu_copy">Salin</string>
 
     <string name="msg_copy">Teks berhasil disalin.</string>
-
+    <string name="sticky_footer_follow">Dapetin update-nya!</string>
+    <string name="sticky_footer_following">Kasih tahu temanmu yuk!</string>
 
     <string name="error_apps_not_installed">Aplikasi tidak ditemukan</string>
 </resources>

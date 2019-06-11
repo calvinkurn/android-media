@@ -962,11 +962,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                                 adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
                             }
                         }
+
+                        if (!isOwner) {
+                            showFooterOthers()
+                        }
+                    } else {
+                        hideFootersOthers()
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
             }
-
         })
     }
 
@@ -979,6 +984,25 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun itemIsFullScreen(): Boolean {
         return layoutManager.findLastVisibleItemPosition() - layoutManager.findFirstVisibleItemPosition() == 0
+    }
+
+    private fun showFooterOthers() {
+        profileHeader?.let {
+            if (!it.isFollowed) {
+                footerOthers.show()
+                footerOthersText.text = getString(R.string.sticky_footer_follow)
+                footerOthersFollow.show()
+                footerOthersFollow.setOnClickListener { _ ->
+                    followUnfollowUser(it.userId, !it.isFollowed)
+                }
+            } else {
+                footerOthers.hide()
+            }
+        }
+    }
+
+    private fun hideFootersOthers() {
+        footerOthers.hide()
     }
 
     private fun setToolbarTitle(title: String) {
