@@ -43,4 +43,8 @@ public interface ProductManageView extends CustomerView {
     void onErrorGetFreeClaim(Throwable throwable);
 
     void onSuccessGetFreeClaim(DataDeposit dataDeposit);
+
+    void onSuccessGetPopUp(boolean isShowPopup);
+
+    void onErrorGetPopUp(Throwable e);
 }

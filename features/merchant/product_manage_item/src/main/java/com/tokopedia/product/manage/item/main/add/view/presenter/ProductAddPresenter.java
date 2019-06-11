@@ -12,5 +12,4 @@ public interface ProductAddPresenter<T extends ProductAddView> {
     void saveDraft(ProductViewModel viewModel, boolean isUploading);
     void getShopInfo();
     void fetchProductVariantByCat(long categoryId);
-    void getPopupsInfo();
 }

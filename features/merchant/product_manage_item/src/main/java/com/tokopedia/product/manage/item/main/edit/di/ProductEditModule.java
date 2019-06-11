@@ -14,7 +14,6 @@ import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.EditPro
 import com.tokopedia.product.manage.item.main.base.domain.EditProductFormRepository;
 import com.tokopedia.product.manage.item.main.base.domain.ProductRepository;
 import com.tokopedia.product.manage.item.main.base.domain.mapper.ProductUploadMapper;
-import com.tokopedia.product.manage.item.main.draft.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCase;
 import com.tokopedia.product.manage.item.main.edit.view.presenter.ProductEditPresenterImpl;
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
@@ -40,9 +39,8 @@ public class ProductEditModule{
                                                              GetShopInfoUseCase getShopInfoUseCase,
                                                              UserSessionInterface userSession,
                                                              FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
-                                                             GetProductDetailUseCase getProductDetailUseCase,
-                                                             PopupManagerAddProductUseCase popupManagerAddProductUseCase){
-        return new ProductEditPresenterImpl(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase, getProductDetailUseCase,popupManagerAddProductUseCase);
+                                                             GetProductDetailUseCase getProductDetailUseCase){
+        return new ProductEditPresenterImpl(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase, getProductDetailUseCase);
     }
 
     @ProductAddScope

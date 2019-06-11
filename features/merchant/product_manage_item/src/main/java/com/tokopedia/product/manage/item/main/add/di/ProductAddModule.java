@@ -30,7 +30,6 @@ import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.MerlinA
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.SearchApi;
 import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource;
-import com.tokopedia.product.manage.item.main.draft.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCase;
 import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantRepository;
@@ -61,9 +60,8 @@ public class ProductAddModule {
     ProductAddPresenterImpl<ProductAddView> provideProductAddPresenter(SaveDraftProductUseCase saveDraftProductUseCase,
                                                                        GetShopInfoUseCase getShopInfoUseCase,
                                                                        UserSessionInterface userSession,
-                                                                       FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
-                                                                       PopupManagerAddProductUseCase popupManagerAddProductUseCase){
-        return new ProductAddPresenterImpl<>(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase,popupManagerAddProductUseCase);
+                                                                       FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase){
+        return new ProductAddPresenterImpl<>(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
     }
 
     @ProductAddScope
@@ -152,16 +150,4 @@ public class ProductAddModule {
     ProductVariantRepository productVariantRepository(ProductVariantDataSource productVariantDataSource){
         return new ProductVariantRepositoryImpl(productVariantDataSource);
     }
-
-    @ProductAddScope
-    @Provides
-    @Named(ProductAddPresenterImpl.GQL_POPUP_NAME)
-    public String requestQuery(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(
-                context.getResources(),
-                R.raw.gql_popup_manager
-        );
-    }
-
-
 }

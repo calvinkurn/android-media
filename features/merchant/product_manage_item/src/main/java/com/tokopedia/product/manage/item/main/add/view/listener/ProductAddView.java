@@ -27,7 +27,4 @@ public interface ProductAddView extends CustomerView {
 
     long getProductDraftId();
 
-    void onSuccessGetPopupInfo(boolean isShowPopup);
-
-    void onErrorGetPopupInfo(Throwable throwable);
 }

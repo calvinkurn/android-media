@@ -2,32 +2,20 @@ package com.tokopedia.product.manage.item.main.base.view.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.text.Spannable
-import android.text.TextPaint
 import android.text.TextUtils
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -71,7 +59,6 @@ import com.tokopedia.product.manage.item.variant.data.model.variantbycat.Product
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import kotlinx.android.synthetic.main.dialog_product_add.*
 import kotlinx.android.synthetic.main.fragment_base_product_edit.*
 import kotlinx.android.synthetic.main.fragment_product_add_video_recommendation.*
 import javax.inject.Inject
@@ -314,44 +301,44 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     }
 
-    private fun showDialogSuccessAddProduct(): Dialog {
-         activity?.let { activity ->
-            val dialog = Dialog(activity)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(false)
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.setContentView(R.layout.dialog_product_add)
-            dialog.btn_submit.setOnClickListener {
-                RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
-                activity.finish()
-            }
-            dialog.btn_product_list.setOnClickListener {
-                RouteManager.route(context, ApplinkConst.PRODUCT_MANAGE)
-                activity.finish()
-            }
-            val spanText = android.text.SpannableString(getString(R.string.popup_tips_trick_clickable))
-            spanText.setSpan(StyleSpan(Typeface.BOLD),
-                    5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spanText.setSpan(ForegroundColorSpan(resources.getColor(R.color.tkpd_main_green)),
-                    5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-            spanText.setSpan(object : ClickableSpan() {
-                override fun onClick(widget: View) {
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK))
-                    activity.finish()
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                }
-            }, 5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            dialog.txt_tips_trick.movementMethod = LinkMovementMethod.getInstance()
-            dialog.txt_tips_trick.text = spanText
-
-             return dialog
-        }
-    }
+//    private fun showDialogSuccessAddProduct(): Dialog {
+//         activity?.let { activity ->
+//            val dialog = Dialog(activity)
+//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+//            dialog.setCancelable(false)
+//            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//            dialog.setContentView(R.layout.dialog_product_add)
+//            dialog.btn_submit.setOnClickListener {
+//                RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
+//                activity.finish()
+//            }
+//            dialog.btn_product_list.setOnClickListener {
+//                RouteManager.route(context, ApplinkConst.PRODUCT_MANAGE)
+//                activity.finish()
+//            }
+//            val spanText = android.text.SpannableString(getString(R.string.popup_tips_trick_clickable))
+//            spanText.setSpan(StyleSpan(Typeface.BOLD),
+//                    5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//            spanText.setSpan(ForegroundColorSpan(resources.getColor(R.color.tkpd_main_green)),
+//                    5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//
+//            spanText.setSpan(object : ClickableSpan() {
+//                override fun onClick(widget: View) {
+//                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK))
+//                    activity.finish()
+//                }
+//
+//                override fun updateDrawState(ds: TextPaint) {
+//                    super.updateDrawState(ds)
+//                    ds.isUnderlineText = false
+//                }
+//            }, 5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//            dialog.txt_tips_trick.movementMethod = LinkMovementMethod.getInstance()
+//            dialog.txt_tips_trick.text = spanText
+//
+//             return dialog
+//        }
+//    }
 
     override fun onSuccessStoreProductToDraft(productId: Long, isUploading: Boolean) {
         if (isUploading) {
@@ -360,7 +347,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         } else {
             CommonUtils.UniversalToast(activity, getString(R.string.product_draft_product_has_been_saved_as_draft))
         }
-        presenter.getPopupsInfo()
     }
 
     override fun onErrorStoreProductToDraftWhenUpload(errorMessage: String?) {
@@ -473,15 +459,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         }
     }
 
-    override fun onSuccessGetPopupInfo(isShowPopup: Boolean) {
-        if (isShowPopup) {
-            showDialogSuccessAddProduct().show()
-        } else {
-            RouteManager.route(context, ApplinkConst.PRODUCT_MANAGE)
-            activity?.finish()
-        }
-    }
-
     fun saveDraft(isUploading: Boolean) {
         if (isUploading) {
             sendAnalyticsAdd(currentProductAddViewModel?.convertToProductViewModel())
@@ -530,10 +507,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     override fun onErrorGetProductVariantByCat(throwable: Throwable?) {
         onSuccessGetProductVariantCat(null)
-    }
-
-    override fun onErrorGetPopupInfo(throwable: Throwable?) {
-        onSuccessGetPopupInfo(false)
     }
 
     private fun startProductVariantActivity() {
@@ -679,7 +652,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     companion object {
 
         const val DEFAULT_PARENT_STOCK_IF_VARIANT = 1
-        const val URL_TIPS_TRICK = "https://seller.tokopedia.com/edu/cara-cepat-dapat-transaksi/"
         const val REQUEST_CODE_GET_IMAGES = 1
         const val REQUEST_CODE_GET_CATALOG_CATEGORY = 2
         const val REQUEST_CODE_GET_NAME = 3

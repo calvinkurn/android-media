@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.item.main.edit.view.presenter;
 import com.tokopedia.product.manage.item.common.domain.GetProductDetailUseCase;
 import com.tokopedia.product.manage.item.main.add.view.presenter.ProductAddPresenterImpl;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
-import com.tokopedia.product.manage.item.main.draft.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCase;
 import com.tokopedia.product.manage.item.main.edit.view.listener.ProductEditView;
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
@@ -27,9 +26,8 @@ public class ProductEditPresenterImpl extends ProductAddPresenterImpl<ProductEdi
                                     GetShopInfoUseCase getShopInfoUseCase,
                                     UserSessionInterface userSession,
                                     FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
-                                    GetProductDetailUseCase getProductDetailUseCase,
-                                    PopupManagerAddProductUseCase popupManagerAddProductUseCase) {
-        super(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase,popupManagerAddProductUseCase);
+                                    GetProductDetailUseCase getProductDetailUseCase) {
+        super(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
         this.getProductDetailUseCase = getProductDetailUseCase;
     }
 

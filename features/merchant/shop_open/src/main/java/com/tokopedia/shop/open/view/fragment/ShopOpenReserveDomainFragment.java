@@ -494,6 +494,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                                 address.getCityName(),
                                 address.getDistrictName()
                         );
+                        openShopAddressViewHolder.updatePostalCodeView("");
                     }
                 }
         }
