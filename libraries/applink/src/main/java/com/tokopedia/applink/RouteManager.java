@@ -181,11 +181,11 @@ public class RouteManager {
      * <p>
      * See getIntent
      */
-    private static @Nullable
-    Intent getIntentNoFallback(Context context, String deeplink) {
+    public static @Nullable Intent getIntentNoFallback(Context context, String deeplinkPattern, String... parameter) {
         if (context == null) {
             return null;
         }
+        String deeplink = UriUtil.buildUri(deeplinkPattern, parameter);
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(context, deeplink);
         if (TextUtils.isEmpty(mappedDeeplink)) {
             mappedDeeplink = deeplink;
