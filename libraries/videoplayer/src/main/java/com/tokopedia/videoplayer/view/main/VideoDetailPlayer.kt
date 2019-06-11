@@ -106,16 +106,16 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
             btnHttp.setOnClickListener {
                 //video source: URL
                 val url = Uri.parse("http://clips.vorwaerts-gmbh.de/VfE_html5.mp4")
+                val protocol = VideoSourceProtocol.protocol("http://clips.vorwaerts-gmbh.de/VfE_html5.mp4")
                 Log.d("VideoDetailPlayer", videoSource)
-                val protocol = VideoSourceProtocol.protocol(videoSource)
                 initPlayer(url, protocol)
             }
 
             btnRtmp.setOnClickListener {
                 //video source: URL
                 val url = Uri.parse("rtmp://video.tokopedia.com/toplive/toplive?auth_key=1560407795-0-0-5706f231ac5a1c0718f17eac9669950b")
+                val protocol = VideoSourceProtocol.protocol("rtmp://video.tokopedia.com/toplive/toplive?auth_key=1560407795-0-0-5706f231ac5a1c0718f17eac9669950b")
                 Log.d("VideoDetailPlayer", videoSource)
-                val protocol = VideoSourceProtocol.protocol(videoSource)
                 initPlayer(url, protocol)
             }
 
