@@ -12,6 +12,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.design.component.Tooltip;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author Irfan Khoirul on 13/07/18.

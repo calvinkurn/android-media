@@ -59,6 +59,7 @@ import com.tokopedia.seller.selling.view.listener.SellingTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class ActivitySellingTransaction extends TkpdActivity
         implements FragmentSellingTxCenter.OnCenterMenuClickListener,
@@ -488,10 +489,11 @@ public class ActivitySellingTransaction extends TkpdActivity
             LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new_active);
+                menu.findItem(R.id.action_cart)
+                        .setIcon(MethodChecker.getDrawable(this,R.drawable.ic_cart_white_new_active));
             } else {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.
-                        ic_cart_white_new);
+                menu.findItem(R.id.action_cart)
+                        .setIcon(MethodChecker.getDrawable(this,R.drawable.ic_cart_white_new));
             }
             return true;
         } else {
