@@ -77,7 +77,7 @@ public class MyApplication extends BaseMainApplication
         initCacheApi();
 
         LogSentryWrapper.init(this);
-        TimberWrapper.init();
+        TimberWrapper.init(this);
     }
 
     public static class GTMAnalytics extends DummyAnalytics {
