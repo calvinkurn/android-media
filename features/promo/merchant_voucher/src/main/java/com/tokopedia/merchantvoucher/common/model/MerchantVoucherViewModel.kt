@@ -17,7 +17,7 @@ import com.tokopedia.merchantvoucher.voucherList.adapter.MerchantVoucherAdapterT
 /**
  * Created by hendry on 01/10/18.
  */
-class MerchantVoucherViewModel : Visitable<MerchantVoucherAdapterTypeFactory>, Parcelable {
+class MerchantVoucherViewModel() : Visitable<MerchantVoucherAdapterTypeFactory>, Parcelable {
 
     var voucherId: Int = 0
     var voucherName: String? = ""
@@ -36,10 +36,11 @@ class MerchantVoucherViewModel : Visitable<MerchantVoucherAdapterTypeFactory>, P
     var status: Int? = MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
     @MerchantVoucherOwnerTypeDef
     var ownerId: Int? = MerchantVoucherOwnerTypeDef.TYPE_MERCHANT
+    var enableButtonUse = false
 
     fun isAvailable() = status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
 
-    constructor(merchantVoucherModel: MerchantVoucherModel) {
+    constructor(merchantVoucherModel: MerchantVoucherModel): this() {
         voucherId = merchantVoucherModel.voucherId
         voucherName = merchantVoucherModel.voucherName
         voucherCode = merchantVoucherModel.voucherCode ?: ""
@@ -77,7 +78,7 @@ class MerchantVoucherViewModel : Visitable<MerchantVoucherAdapterTypeFactory>, P
         return 0
     }
 
-    constructor(parcel: Parcel) {
+    constructor(parcel: Parcel): this() {
         voucherId = parcel.readInt()
         voucherName = parcel.readString()
         voucherCode = parcel.readString()

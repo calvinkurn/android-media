@@ -14,12 +14,13 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.helper
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenterImpl;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -35,7 +36,7 @@ import rx.Subscriber;
  * @author by alifa on 10/26/17.
  */
 
-public class ProductPresenter extends SearchSectionFragmentPresenterImpl<ProductContract.View> implements ProductContract.Presenter {
+public class ProductPresenter extends BrowseSectionFragmentPresenterImpl<ProductContract.View> implements ProductContract.Presenter {
 
     @Inject
     GetProductUseCase getProductUseCase;
@@ -135,7 +136,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
             @Override
             public void onNext(SearchResultModel searchResultModel) {
                 if (isViewAttached()) {
-                    int page = (searchParameter.getStartRow() / 12) + 1;
+                    int page = (searchParameter.getInteger(SearchApiConst.START) / 12) + 1;
                     getView().clearLastProductTracker(page == 1);
                     ProductViewModel productViewModel
                             = CategoryModelHelper.convertToProductViewModel(searchResultModel, categoryHeaderModel);
@@ -174,7 +175,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     @Override
     public void loadMore(SearchParameter searchParameter, ProductPresenter.LoadMoreListener loadMoreListener) {
         RequestParams requestParams
-                = enrichWithFilterAndSortParams(GetProductUseCase.createInitializeSearchParam(searchParameter, false));
+                = enrichWithFilterAndSortParams(GetProductUseCase.createInitializeSearchParam(searchParameter));
         removeDefaultCategoryParam(requestParams);
         getProductUseCase.execute(requestParams, createLoadMoreSubscriber(loadMoreListener));
     }

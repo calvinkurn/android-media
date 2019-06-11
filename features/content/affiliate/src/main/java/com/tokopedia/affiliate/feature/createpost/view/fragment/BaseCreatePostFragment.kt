@@ -3,14 +3,11 @@ package com.tokopedia.affiliate.feature.createpost.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.TaskStackBuilder
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -35,7 +32,7 @@ import com.tokopedia.affiliate.feature.createpost.view.service.SubmitPostService
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -212,6 +209,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateMedia()
         updateThumbnail()
         updateAddTagText()
+        updateButton()
         updateHeader(feedContentForm.authors)
     }
 
@@ -235,18 +233,28 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     override fun onItemDeleted(position: Int) {
-        val relatedProductItem = viewModel.relatedProducts[position]
+        val relatedProductItem = viewModel.relatedProducts.getOrNull(position) ?: return
 
         viewModel.relatedProducts.removeAt(position)
         adapter.notifyItemRemoved(position)
 
-        if (isTypeAffiliate()) {
-            viewModel.adIdList.removeAll { it == relatedProductItem.id }
+        if (viewModel.urlImageList.getOrNull(position)?.path == relatedProductItem.image) {
+            viewModel.urlImageList.removeAt(position)
         } else {
-            viewModel.productIdList.removeAll { it == relatedProductItem.id }
+            viewModel.urlImageList.removeFirst { it.path == relatedProductItem.image }
         }
 
-        viewModel.urlImageList.removeAll { it.path == relatedProductItem.image }
+        val idPosition = if (isTypeAffiliate()) {
+            viewModel.adIdList.indexOf(relatedProductItem.id)
+        } else {
+            viewModel.productIdList.indexOf(relatedProductItem.id)
+        }
+        if (idPosition != -1 && viewModel.adIdList.size > idPosition) {
+            viewModel.adIdList.removeAt(idPosition)
+        }
+        if (idPosition != -1 && viewModel.productIdList.size > idPosition) {
+            viewModel.productIdList.removeAt(idPosition)
+        }
 
         updateThumbnail()
         updateAddTagText()
@@ -256,8 +264,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     abstract fun fetchContentForm()
 
     abstract fun onRelatedAddProductClick()
-
-    protected open fun getAddRelatedProductText(): String = getString(R.string.af_add_product_tag)
 
     protected open fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
@@ -286,8 +292,15 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 .toMutableList()
                 .apply { removeAll { it.trim() == "" } }
 
-        viewModel.productIdList.addAll(productIds)
-        viewModel.adIdList.addAll(adIds)
+        if (!isDuplicateFound(productIds, adIds)) {
+            viewModel.productIdList.addAll(productIds)
+            viewModel.adIdList.addAll(adIds)
+        } else {
+            view?.showErrorToaster(
+                    getString(R.string.af_duplicate_product),
+                    getString(R.string.af_title_ok)
+            ) { }
+        }
 
         updateAddTagText()
     }
@@ -312,7 +325,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun initDraft(arguments: Bundle) {
         activity?.let {
             val draftId = arguments.getString(DRAFT_ID)
-            val cacheManager = PersistentCacheManager(it, draftId)
+            val cacheManager = SaveInstanceCacheManager(it, draftId)
             val draft: CreatePostViewModel? = cacheManager.get(
                     CreatePostViewModel.TAG,
                     CreatePostViewModel::class.java
@@ -431,6 +444,21 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun isDuplicateFound(productIds: MutableList<String>,
+                                 adIds: MutableList<String>): Boolean {
+        viewModel.productIdList.forEach { productId ->
+            if (productIds.any { productId == it }) {
+                return true
+            }
+        }
+        viewModel.adIdList.forEach { adId ->
+            if (adIds.any { adId == it }) {
+                return true
+            }
+        }
+        return false
+    }
+
     private fun isFormInvalid(): Boolean {
         var isFormInvalid = false
         if (isTypeAffiliate() && viewModel.adIdList.isEmpty()) {
@@ -460,7 +488,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         activity?.let {
             showLoading()
 
-            val cacheManager = PersistentCacheManager(it, true)
+            val cacheManager = SaveInstanceCacheManager(it, true)
             cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
 
             SubmitPostService.startService(it, cacheManager.id!!)
@@ -484,7 +512,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun updateThumbnail() {
         if (viewModel.completeImageList.isNotEmpty()) {
-            thumbnail.loadImageRounded(viewModel.completeImageList.first().path?:"", 25f)
+            thumbnail.loadImageRounded(viewModel.completeImageList.first().path, 25f)
+            btnPlay.showWithCondition(viewModel.completeImageList.first().type == MediaType.VIDEO)
             edit.show()
             carouselIcon.setOnClickListener {
                 goToMediaPreview()

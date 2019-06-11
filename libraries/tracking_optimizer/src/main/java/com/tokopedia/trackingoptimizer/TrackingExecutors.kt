@@ -1,7 +1,7 @@
 package com.tokopedia.trackingoptimizer
 
-import kotlinx.coroutines.experimental.CoroutineExceptionHandler
-import kotlinx.coroutines.experimental.asCoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.asCoroutineDispatcher
 import java.util.concurrent.Executors
 
 /**

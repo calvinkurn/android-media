@@ -27,10 +27,10 @@ constructor(private val digitalBrowseServiceUseCase: DigitalBrowseServiceUseCase
     private val compositeSubscription: CompositeSubscription = CompositeSubscription()
 
     override fun onInit() {
-        getCategoryDataFromCache()
+        getDigitalCategory()
     }
 
-    override fun getDigitalCategoryCloud() {
+    override fun getDigitalCategory() {
         compositeSubscription.add(
                 digitalBrowseServiceUseCase.createObservable(
                         GraphqlHelper.loadRawString(view.fragmentContext!!.resources,
@@ -101,29 +101,6 @@ constructor(private val digitalBrowseServiceUseCase: DigitalBrowseServiceUseCase
 
     override fun onSuccessGetDigitalCategory(digitalBrowseServiceViewModel: DigitalBrowseServiceViewModel) {
         view.renderData(digitalBrowseServiceViewModel)
-    }
-
-    private fun getCategoryDataFromCache() {
-        compositeSubscription.add(
-                digitalBrowseServiceUseCase.getCategoryDataFromCache()
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(GetDigitalCategorySubscriber(object : GetDigitalCategorySubscriber.DigitalCategoryActionListener {
-                            override fun onErrorGetDigitalCategory(throwable: Throwable) {
-                                getDigitalCategoryCloud()
-                            }
-
-                            override fun onSuccessGetDigitalCategory(digitalBrowseServiceViewModel: DigitalBrowseServiceViewModel) {
-                                if (digitalBrowseServiceViewModel.categoryViewModelList != null &&
-                                        digitalBrowseServiceViewModel.categoryViewModelList.isNotEmpty()) {
-                                    view.renderData(digitalBrowseServiceViewModel)
-                                }
-
-                                getDigitalCategoryCloud()
-                            }
-                        }, view.fragmentContext!!))
-        )
     }
 
     override fun onDestroyView() {

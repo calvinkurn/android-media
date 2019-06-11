@@ -22,7 +22,7 @@ public interface ShakeDetectContract {
 
         void hideProgressDialog();
 
-        void showErrorGetInfo(String message);
+        void showErrorGetInfo();
 
         void showErrorNetwork(String message);
 

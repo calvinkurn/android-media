@@ -41,9 +41,6 @@ import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /**
  * Created by stevenfredian on 6/22/17.
  */
@@ -69,7 +66,6 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     private ProfileCompletionViewModel data;
     private String filled;
     private View skip;
-    private Unbinder unbinder;
     private Pair<Integer, Integer> pair;
     private NetworkErrorHelper.RetryClickedListener retryAction;
 
@@ -90,7 +86,6 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View parentView = inflater.inflate(R.layout.fragment_profile_completion, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
         setHasOptionsMenu(true);
         initView(parentView);
         initialVar();
@@ -138,7 +133,6 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         presenter.detachView();
     }
 

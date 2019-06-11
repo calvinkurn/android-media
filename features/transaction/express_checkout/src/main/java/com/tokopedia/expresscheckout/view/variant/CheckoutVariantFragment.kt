@@ -921,14 +921,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onShippingDurationChoosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>?,
-                                           courierItemData: CourierItemData?,
-                                           recipientAddressModel: RecipientAddressModel?,
+    override fun onShippingDurationChoosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>,
+                                           courierItemData: CourierItemData,
+                                           recipientAddressModel: RecipientAddressModel,
                                            cartPosition: Int,
                                            selectedServiceId: Int,
-                                           selectedServiceName: String,
+                                           serviceData: ServiceData,
                                            flagNeedToSetPinpoint: Boolean,
-                                           hasCourierPromo: Boolean) {
+                                           isClearPromo: Boolean) {
         if (shippingCourierViewModels != null) {
             val summaryViewModel = fragmentViewModel.getSummaryViewModel()
             if (summaryViewModel != null) {
@@ -956,10 +956,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun onShippingDurationButtonCloseClicked() {
         shippingDurationBottomsheet.dismiss()
-    }
-
-    override fun onShippingDurationButtonShowCaseDoneClicked() {
-
     }
 
     override fun onShowDurationListWithCourierPromo(isCourierPromo: Boolean, duration: String?) {
@@ -1056,6 +1052,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     }
                 }
             }))
+    }
+
+    override fun onLogisticPromoChosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>, courierData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, selectedServiceId: Int, serviceData: ServiceData, flagNeedToSetPinpoint: Boolean, promoCode: String) {
+        // Haven't discussed yet
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

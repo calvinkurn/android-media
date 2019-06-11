@@ -1,6 +1,6 @@
 <resources>
     <string name="vidpick_app_name">Video Recorder</string>
-    <string name="vidpick_menu_video_picker">Ambil Video</string>
+    <string name="vidpick_menu_video_picker">Pilih Video</string>
     <string name="vidpick_menu_recorder">Recorder</string>
     <string name="vidpick_duration_default">01:00</string>
     <string name="vidpick_duration_format">%1$s:%2$s</string>
@@ -10,4 +10,5 @@
     <string name="vidpick_btn_delete">Hapus Rekaman</string>
     <string name="vidpick_progress_loader">Loading…</string>
     <string name="vidpick_permission">Aplikasi ini membutuhkan izin untuk menambah video. Anda bisa memberikan izin melalui pengaturan.</string>
+    <string name="vidpick_permission_denied">Maaf, anda harus mengizinkan akses.</string>
 </resources>
