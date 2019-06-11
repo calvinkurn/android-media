@@ -6,7 +6,6 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.recommendation_widget_common.PARAM_PRODUCT_IDS
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
@@ -53,7 +52,7 @@ constructor(private val context: Context,
             params.putInt(USER_ID, userSession.userId.toInt())
         }
         params.putInt(PAGE_NUMBER, pageNumber)
-        params.putString(PARAM_PRODUCT_IDS, productIdsString)
+        params.putString(PRODUCT_IDS, productIdsString)
 
         if(xSource.isEmpty()) {
             params.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE)
@@ -80,5 +79,6 @@ constructor(private val context: Context,
         val DEFAULT_VALUE_X_SOURCE = "recom_widget"
         val DEFAULT_VALUE_X_DEVICE = "android"
         val DEFAULT_PAGE_NAME = ""
+        val PRODUCT_IDS = "productIDs"
     }
 }
