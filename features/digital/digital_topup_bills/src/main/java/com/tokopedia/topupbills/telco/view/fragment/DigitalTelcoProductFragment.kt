@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -31,6 +32,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var emptyStateProductView: LinearLayout
     private lateinit var titleEmptyState: TextView
     private lateinit var descEmptyState: TextView
+    private lateinit var progressBar: ProgressBar
     private lateinit var sharedModel: SharedProductTelcoViewModel
     private lateinit var productViewModel: DigitalTelcoProductViewModel
 
@@ -81,6 +83,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         emptyStateProductView = view.findViewById(R.id.telco_empty_state_layout)
         titleEmptyState = view.findViewById(R.id.title_empty_product)
         descEmptyState = view.findViewById(R.id.desc_empty_product)
+        progressBar = view.findViewById(R.id.progress_bar)
         return view
     }
 
@@ -97,7 +100,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             mapParam.put(KEY_COMPONENT_ID, componentId)
             mapParam.put(KEY_OPERATOR_ID, operatorId)
             productViewModel.getProductCollections(GraphqlHelper.loadRawString(resources, R.raw.query_product_digital_telco),
-                    mapParam, productType, this::onSuccessProductList, this::onErrorProductList)
+                    mapParam, productType, this::onLoadingProductList, this::onSuccessProductList, this::onErrorProductList)
         }
 
         telcoTelcoProductView.setListener(object : DigitalTelcoProductWidget.ActionListener {
@@ -119,6 +122,16 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         descEmptyState.setText(getString(R.string.desc_telco_product_empty_state, titleProduct.toLowerCase()))
         emptyStateProductView.visibility = View.VISIBLE
         telcoTelcoProductView.visibility = View.GONE
+    }
+
+    fun onLoadingProductList(showLoading: Boolean) {
+        emptyStateProductView.visibility = View.GONE
+        telcoTelcoProductView.visibility = View.GONE
+        if (showLoading) {
+            progressBar.visibility = View.VISIBLE
+        } else {
+            progressBar.visibility = View.GONE
+        }
     }
 
     companion object {

@@ -24,8 +24,10 @@ class DigitalTelcoProductViewModel @Inject constructor(private val graphqlReposi
 
     // cache in 10 minutes
     fun getProductCollections(rawQuery: String, mapParam: Map<String, kotlin.Any>, productType: Int,
+                              onLoading: (Boolean) -> Unit,
                               onSuccess: (TelcoProductComponentData) -> Unit,
                               onError: (Throwable) -> Unit) {
+        onLoading(true)
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoProductComponentData::class.java, mapParam)
@@ -34,6 +36,7 @@ class DigitalTelcoProductViewModel @Inject constructor(private val graphqlReposi
                                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
             }.getSuccessData<TelcoProductComponentData>()
 
+            onLoading(false)
             if (data.rechargeProductData.productDataCollections.isNotEmpty()) {
                 data.productType = productType
                 onSuccess(data)
@@ -41,6 +44,7 @@ class DigitalTelcoProductViewModel @Inject constructor(private val graphqlReposi
                 onError(ResponseErrorException())
             }
         }) {
+            onLoading(false)
             onError(it)
         }
     }

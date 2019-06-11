@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.GraphqlClient
@@ -29,6 +30,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var buyWidget: DigitalTelcoBuyWidget
     private lateinit var addToMyBillsWidget: DigitalAddToMyBillsWidget
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
+    private lateinit var layoutProgressBar: RelativeLayout
     private lateinit var operatorSelected: TelcoCustomDataCollection
 
     private var operatorData: TelcoCustomComponentData =
@@ -68,6 +70,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         buyWidget = view.findViewById(R.id.buy_widget)
         tickerView = view.findViewById(R.id.ticker_view)
         addToMyBillsWidget = view.findViewById(R.id.addtomybills_widget)
+        layoutProgressBar = view.findViewById(R.id.layout_progress_bar)
         return view
     }
 
@@ -130,7 +133,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         if (::operatorSelected.isInitialized) {
             var mapParam = HashMap<String, kotlin.Any>()
             mapParam.put("clientNumber", postpaidClientNumberWidget.getInputNumber())
-            mapParam.put("productId",operatorSelected.operator.attributes.defaultProductId.toString())
+            mapParam.put("productId", operatorSelected.operator.attributes.defaultProductId.toString())
             enquiryViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_enquiry_digital_telco),
                     mapParam, this::onSuccessEnquiry, this::onErrorEnquiry)
         }
@@ -163,6 +166,18 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun onErrorCustomData(throwable: Throwable) {
         Toast.makeText(activity, "input filter " + throwable.message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
+        if (showLoading) {
+            layoutProgressBar.visibility = View.VISIBLE
+            recentNumbersView.visibility = View.GONE
+            promoListView.visibility = View.GONE
+        } else {
+            layoutProgressBar.visibility = View.GONE
+            recentNumbersView.visibility = View.VISIBLE
+            promoListView.visibility = View.VISIBLE
+        }
     }
 
     fun onSuccessEnquiry(telcoEnquiryData: TelcoEnquiryData) {

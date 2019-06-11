@@ -68,12 +68,14 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected abstract fun getMapCustomData(): Map<String, kotlin.Any>
 
+    protected abstract fun onLoadingMenuDetail(showLoading: Boolean)
+
     protected abstract fun getMapCatalogMenuDetail(): Map<String, kotlin.Any>
 
     fun getCatalogMenuDetail() {
         catalogMenuDetailViewModel.getCatalogMenuDetail(GraphqlHelper.loadRawString(resources,
                 R.raw.query_telco_catalog_menu_detail), getMapCatalogMenuDetail(),
-                this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
+                this::onLoadingMenuDetail, this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
     }
 
     fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {

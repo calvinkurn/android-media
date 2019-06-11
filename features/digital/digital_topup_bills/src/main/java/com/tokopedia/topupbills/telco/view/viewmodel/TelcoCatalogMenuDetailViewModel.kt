@@ -20,20 +20,24 @@ class TelcoCatalogMenuDetailViewModel @Inject constructor(private val graphqlRep
     : BaseViewModel(dispatcher) {
 
     fun getCatalogMenuDetail(rawQuery: String, mapParam: Map<String, kotlin.Any>,
+                             onLoading: (Boolean) -> Unit,
                              onSuccess: (TelcoCatalogMenuDetailData) -> Unit,
                              onError: (Throwable) -> Unit) {
+        onLoading(true)
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoCatalogMenuDetailData>()
 
+            onLoading(false)
             if (data.catalogMenuDetailData != null) {
                 onSuccess(data)
             } else {
                 onError(ResponseErrorException())
             }
         }) {
+            onLoading(false)
             onError(it)
         }
     }

@@ -9,10 +9,10 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.Toast
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.data.TelcoCatalogMenuDetailData
 import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
 import com.tokopedia.topupbills.telco.data.TelcoCustomData
 import com.tokopedia.topupbills.telco.data.TelcoRecommendation
@@ -36,6 +36,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var tabLayout: TabLayout
     private lateinit var buyWidget: DigitalTelcoBuyWidget
     private lateinit var sharedModel: SharedProductTelcoViewModel
+    private lateinit var layoutProgressBar: RelativeLayout
     private var operatorData: TelcoCustomComponentData =
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
 
@@ -89,6 +90,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         tabLayout = view.findViewById(R.id.tab_layout)
         buyWidget = view.findViewById(R.id.buy_widget)
         tickerView = view.findViewById(R.id.ticker_view)
+        layoutProgressBar = view.findViewById(R.id.layout_progress_bar)
         return view
     }
 
@@ -134,6 +136,18 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         Toast.makeText(activity, "input filter " + throwable.message, Toast.LENGTH_SHORT).show()
     }
 
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
+        if (showLoading) {
+            layoutProgressBar.visibility = View.VISIBLE
+            recentNumbersView.visibility = View.GONE
+            promoListView.visibility = View.GONE
+        } else {
+            layoutProgressBar.visibility = View.GONE
+            recentNumbersView.visibility = View.VISIBLE
+            promoListView.visibility = View.VISIBLE
+        }
+    }
+
     fun renderInputNumber() {
         telcoClientNumberWidget.setListener(object : DigitalClientNumberWidget.ActionListener {
             override fun navigateToContact() {
@@ -141,7 +155,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun renderOperator() {
-                // TODO showing image on client number
                 operatorData.rechargeCustomData.customDataCollections.isEmpty()?.let {
                     if (it) {
                         getInputFilterDataCollections()
