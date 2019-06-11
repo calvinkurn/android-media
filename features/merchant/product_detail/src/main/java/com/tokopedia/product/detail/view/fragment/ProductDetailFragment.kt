@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
@@ -24,6 +25,7 @@ import android.support.v4.util.ArrayMap
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.*
+import android.widget.TextView
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -356,6 +358,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         initializePartialView(view)
         initView()
         refreshLayout = view.findViewById(R.id.swipeRefresh)
+         et_search.setOnClickListener { v ->
+            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+        }
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
@@ -699,9 +704,15 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
         }
     }
-
+    private fun isViewVisible(view: View): Boolean {
+        val scrollBounds = Rect()
+        nested_scroll.getDrawingRect(scrollBounds)
+        val top = view.y
+        val bottom = top + view.height - 100;
+        return !(scrollBounds.top > bottom)
+    }
     private fun initView() {
-        collapsing_toolbar.title = ""
+        //collapsing_toolbar.title = ""
         toolbar.title = ""
         activity?.let {
             toolbar.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
@@ -709,6 +720,17 @@ class ProductDetailFragment : BaseDaggerFragment() {
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
         setupByConfiguration(resources.configuration)
+        nested_scroll.viewTreeObserver.addOnScrollChangedListener(ViewTreeObserver.OnScrollChangedListener {
+            activity?.run {
+                if(isAdded) {
+                    if (isViewVisible(view_picture)) {
+                        fab_detail.show()
+                    } else {
+                        fab_detail.hide()
+                    }
+                }
+            }
+        })
         appbar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: Int) {
                 when (state) {
@@ -737,7 +759,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun expandedAppBar() {
         initStatusBarDark()
-        initToolbarTransparent()
+        initToolbarLight()
         showFabDetailAfterLoadData()
         label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
     }
@@ -745,8 +767,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun initToolbarLight() {
         activity?.run {
             if (isAdded) {
-                collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
-                collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
+                //collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
+               // collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
                 toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
                 toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
@@ -776,10 +798,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun initToolbarTransparent() {
         activity?.run {
-            if (isAdded) {
+            if (isAdded) {/*
                 collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.white))
                 collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
-                toolbar.background = ContextCompat.getDrawable(this, R.drawable.gradient_shadow_black_vertical)
+                toolbar.background = ContextCompat.getDrawable(this, R.drawable.gradient_shadow_black_vertical)*/
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_light)
                 menu?.let {
                     if (it.size() > 2) {
@@ -816,12 +838,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (it.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
                 val height = screenWidth / 3
-                layoutParams.height = height
+                //layoutParams.height = height
                 view_picture.layoutParams.height = height
                 appbar.visibility = View.VISIBLE
             } else if (it.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
-                layoutParams.height = screenWidth
+                //layoutParams.height = screenWidth
                 view_picture.layoutParams.height = screenWidth
                 appbar.visibility = View.VISIBLE
             }
@@ -959,7 +981,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     if (isAppBarCollapsed) {
                         initToolbarLight()
                     } else {
-                        initToolbarTransparent()
+                        initToolbarLight()
                     }
                 }
             })
@@ -1193,6 +1215,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
+        et_search.hint = String.format(getString(R.string.pdp_search_hint),productInfo?.category?.name)
         shouldShowCod = data.shouldShowCod
         headerView.renderData(data)
         view_picture.renderData(data.pictures, this::onPictureProductClicked)
