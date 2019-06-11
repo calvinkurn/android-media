@@ -40,6 +40,13 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_PRODUCT_WEIGHT = "product weight";
     private static final String KEY_PROMO_CODE_1 = "promo code 1";
     private static final String KEY_PROMO_DETAILS = "promo_details";
+    private static final String KEY_BUYER_ADDRESS_ID = "buyer address id";
+    private static final String KEY_SHIPPING_DURATION = "shipping duration";
+    private static final String KEY_COURIER = "courier";
+    private static final String KEY_SHIPPING_PRICE = "shipping price";
+    private static final String KEY_COD_FLAG = "cod_flag";
+    private static final String KEY_TOKOPEDIA_CORNER_FLAG = "tokopedia corner flag";
+    private static final String KEY_IS_FULFILLMENT = "is fulfillment";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
@@ -153,4 +160,31 @@ public class EnhancedECommerceProductCartMapData {
         Product.put(KEY_PROMO_DETAILS, !TextUtils.isEmpty(promoDetails) ? promoDetails : "");
     }
 
+    public void setBuyerAddressId(String buyerAddressId) {
+        Product.put(KEY_BUYER_ADDRESS_ID, !TextUtils.isEmpty(buyerAddressId) ? buyerAddressId : "");
+    }
+
+    public void setShippingDuration(String shippingDuration) {
+        Product.put(KEY_SHIPPING_DURATION, !TextUtils.isEmpty(shippingDuration) ? shippingDuration : "");
+    }
+
+    public void setCourier(String courier) {
+        Product.put(KEY_COURIER, !TextUtils.isEmpty(courier) ? courier : "");
+    }
+
+    public void setShippingPrice(String shippingPrice) {
+        Product.put(KEY_SHIPPING_PRICE, !TextUtils.isEmpty(shippingPrice) ? shippingPrice : "");
+    }
+
+    public void setCodFlag(String codFlag) {
+        Product.put(KEY_COD_FLAG, !TextUtils.isEmpty(codFlag) ? codFlag : "");
+    }
+
+    public void setTokopediaCornerFlag(String tokopediaCornerFlag) {
+        Product.put(KEY_TOKOPEDIA_CORNER_FLAG, !TextUtils.isEmpty(tokopediaCornerFlag) ? tokopediaCornerFlag : "");
+    }
+
+    public void setIsFulfillment(String isFulfillment) {
+        Product.put(KEY_IS_FULFILLMENT, !TextUtils.isEmpty(isFulfillment) ? isFulfillment : "");
+    }
 }

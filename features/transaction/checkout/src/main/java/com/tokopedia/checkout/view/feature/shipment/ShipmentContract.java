@@ -158,7 +158,7 @@ public interface ShipmentContract {
         @Deprecated
         void sendAnalyticsChoosePaymentMethodCourierNotComplete();
 
-        void sendAnalyticsCheckoutStep2(Map<String, Object> stringObjectMap, String transactionId);
+        void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap, String transactionId);
 
         void sendAnalyticsOnClickChooseOtherAddressShipment();
 
