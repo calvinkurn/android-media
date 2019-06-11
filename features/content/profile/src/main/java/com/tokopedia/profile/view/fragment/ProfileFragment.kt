@@ -142,6 +142,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         }
     }
+
     private lateinit var layoutManager: LinearLayoutManager
 
     override lateinit var profileRouter: ProfileModuleRouter
@@ -940,15 +941,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         isOwner = userId.toString() == userSession.userId
 
-        layoutManager = LinearLayoutManager(activity)
+        layoutManager = recyclerView.layoutManager as LinearLayoutManager
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
-                    if (hasFeed()
-                            && newState == RecyclerView.SCROLL_STATE_IDLE
-                            && layoutManager != null) {
+                    if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
                         val item: Visitable<*>?
                         val position = when {
                             itemIsFullScreen() -> layoutManager.findLastVisibleItemPosition()
@@ -956,7 +955,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             layoutManager.findLastCompletelyVisibleItemPosition() != -1 -> layoutManager.findLastCompletelyVisibleItemPosition()
                             else -> 0
                         }
-
                         item = adapter.list[position]
 
                         if (item is DynamicPostViewModel) {
