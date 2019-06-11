@@ -320,35 +320,6 @@ public class SearchActivity extends BaseActivity
     private void initPresenter() {
         searchPresenter.attachView(this);
         searchPresenter.initInjector(this);
-        searchPresenter.setInitiateSearchListener(getInitiateSearchListener());
-    }
-
-    private InitiateSearchListener getInitiateSearchListener() {
-        return new InitiateSearchListener() {
-            @Override
-            public void onHandleResponseSearch(boolean isHasCatalog) {
-                stopPerformanceMonitoring();
-                moveToSearchActivity(isHasCatalog);
-            }
-
-            @Override
-            public void onHandleApplink(@NonNull String applink) {
-                moveWithApplink(applink);
-            }
-
-            @Override
-            public void onHandleResponseError() {
-                NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
-                    if(searchParameter == null) return;
-                    SearchActivity.this.performProductSearch("");
-                });
-            }
-
-            @Override
-            public void onHandleResponseUnknown() {
-                throw new RuntimeException("Not yet handle unknown response");
-            }
-        };
     }
 
     protected void stopPerformanceMonitoring() {
@@ -708,6 +679,30 @@ public class SearchActivity extends BaseActivity
 
     private void showContainer(boolean visible) {
         container.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void initiateSearchHandleResponseSearch(boolean isHasCatalog) {
+        stopPerformanceMonitoring();
+        moveToSearchActivity(isHasCatalog);
+    }
+
+    @Override
+    public void initiateSearchHandleApplink(@NonNull String applink) {
+        moveWithApplink(applink);
+    }
+
+    @Override
+    public void initiateSearchHandleResponseError() {
+        NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
+            if(searchParameter == null) return;
+            SearchActivity.this.performProductSearch("");
+        });
+    }
+
+    @Override
+    public void initiateSearchHandleResponseUnknown() {
+        throw new RuntimeException("Not yet handle unknown response");
     }
 
     @Override
