@@ -3,14 +3,18 @@ package com.tokopedia.settingnotif.usersetting.view.fragment
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.*
-import android.widget.Button
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.view.adapter.SettingTypeAdapter
+import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
 
 class SettingTypeFragment : BaseDaggerFragment() {
 
-    private lateinit var dummyButton: Button
+    private lateinit var rvSettingType: RecyclerView
 
     private lateinit var settingTypeContract: SettingTypeContract
 
@@ -36,12 +40,12 @@ class SettingTypeFragment : BaseDaggerFragment() {
         return LayoutInflater.from(context).inflate(R.layout.fragment_setting_type, container, false).also {
             bindView(it)
             setupToolbar()
-            addListenerDummyButton()
+            setupSettingTypes()
         }
     }
 
     private fun bindView(view: View) {
-        dummyButton = view.findViewById(R.id.dummy_button)
+        rvSettingType = view.findViewById(R.id.rv_setting_type)
     }
 
     private fun setupToolbar() {
@@ -50,9 +54,10 @@ class SettingTypeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun addListenerDummyButton() {
-        dummyButton.setOnClickListener {
-            settingTypeContract.openSettingField("Push Notification")
+    private fun setupSettingTypes() {
+        with (rvSettingType) {
+            setHasFixedSize(true)
+            adapter = SettingTypeAdapter(SettingType.createSettingTypes())
         }
     }
 }
