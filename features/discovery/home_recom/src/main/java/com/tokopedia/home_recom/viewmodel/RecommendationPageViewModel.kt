@@ -31,7 +31,7 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
     val recommendationListModel = MutableLiveData<List<RecommendationWidget>>()
     val productInfoDataModel = MutableLiveData<ProductInfoDataModel>()
 
-    val xSource = "recom_page"
+    val xSource = "recom_landing_page"
     val pageName = "default"
     val xDevice = "android"
 
