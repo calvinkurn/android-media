@@ -8,7 +8,12 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
       widgetUrl
       pageName
       layoutType
-      pagination
+      pagination {
+        currentPage
+        nextPage
+        prevPage
+        hasNext
+      }
       recommendation {
         id
         name
