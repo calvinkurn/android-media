@@ -35,7 +35,6 @@ import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -607,7 +606,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         .show()
             }
 
-            setProfileToolbar(it, false)
+            setFollowBtn(it, false)
 
             if (activity != null && arguments != null) {
                 if (resultIntent == null) {
@@ -1084,25 +1083,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             followers.text = getFollowersText(element)
             followers.movementMethod = LinkMovementMethod.getInstance()
 
-            if (GlobalConfig.isCustomerApp()) {
-                if (!element.isOwner) {
-                    editButton.visibility = View.GONE
-                    followBtn.visibility = View.VISIBLE
-                    followBtn.setOnClickListener {
-                        followUnfollowUser(element.userId, !element.isFollowed)
-                    }
-                    updateButtonState(element.isFollowed)
-                    if (isFromLogin) {
-                        followBtn.performClick()
-                    }
-                } else {
-                    editButton.visibility = View.VISIBLE
-                    followBtn.visibility = View.GONE
-                    editButton.setOnClickListener {
-                        onChangeAvatarClicked()
-                    }
-                }
-            }
+            setFollowBtn(element, isFromLogin)
         } else {
             kolBadge.visibility = View.GONE
             if (element.isOwner) {
@@ -1113,6 +1094,28 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 followers.movementMethod = LinkMovementMethod.getInstance()
             } else {
                 followers.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun setFollowBtn(element: ProfileHeaderViewModel, isFromLogin: Boolean) {
+        if (GlobalConfig.isCustomerApp()) {
+            if (!element.isOwner) {
+                editButton.visibility = View.GONE
+                followBtn.visibility = View.VISIBLE
+                followBtn.setOnClickListener {
+                    followUnfollowUser(element.userId, !element.isFollowed)
+                }
+                updateButtonState(element.isFollowed)
+                if (isFromLogin) {
+                    followBtn.performClick()
+                }
+            } else {
+                editButton.visibility = View.VISIBLE
+                followBtn.visibility = View.GONE
+                editButton.setOnClickListener {
+                    onChangeAvatarClicked()
+                }
             }
         }
     }
