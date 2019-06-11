@@ -50,6 +50,8 @@ constructor(private val context: Context,
 
         if (userSession.isLoggedIn) {
             params.putInt(USER_ID, userSession.userId.toInt())
+        } else {
+            params.putInt(USER_ID, 0)
         }
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putString(PRODUCT_IDS, productIdsString)
