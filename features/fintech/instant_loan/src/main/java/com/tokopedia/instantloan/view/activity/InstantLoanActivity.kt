@@ -11,7 +11,6 @@ import android.support.v4.view.ViewPager
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.*
 import com.airbnb.deeplinkdispatch.DeepLink
@@ -51,6 +50,10 @@ import kotlinx.android.synthetic.main.layout_bottom_banner.*
 import kotlinx.android.synthetic.main.layout_il_testimonials.*
 import kotlinx.android.synthetic.main.layout_lending_category.*
 import kotlinx.android.synthetic.main.layout_lending_partner.*
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, InstantLoanLendingDataContractor.View, /*OnGoingLoanContractor.View*/
@@ -245,6 +248,23 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         il_view_pager_testimonials.pageMargin = resources.getDimensionPixelOffset(R.dimen.il_margin_medium)
         il_view_pager_testimonials.adapter = DanaInstanTestimonialsPagerAdapter(this, testimonialList)
         (il_view_pager_testimonials.adapter as DanaInstanTestimonialsPagerAdapter).notifyDataSetChanged()
+
+        var currentItem = 0
+        il_view_pager_testimonials.setCurrentItem(currentItem)
+
+        Observable.interval(8, TimeUnit.SECONDS)
+                .timeInterval()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    currentItem++
+                    if (currentItem <= testimonialList.size - 1) {
+                        il_view_pager_testimonials.setCurrentItem(currentItem)
+                    } else {
+                        currentItem = 0
+                        il_view_pager_testimonials.setCurrentItem(currentItem)
+                    }
+                }
+
     }
 
     private fun showCategoryLayout() {
