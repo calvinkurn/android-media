@@ -8,10 +8,12 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.relativeWeekDay
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.shop.ShopBadge
-import com.tokopedia.product.detail.data.model.shop.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import kotlinx.android.synthetic.main.partial_product_shop_info.view.*
 import java.util.*
 
@@ -66,7 +68,6 @@ class PartialShopView private constructor(private val view: View, private val cl
             shop_ava.setOnClickListener(this@PartialShopView)
             btn_favorite.setOnClickListener(this@PartialShopView)
             send_msg_shop.setOnClickListener(this@PartialShopView)
-            shop
             visible()
         }
     }
@@ -88,6 +89,14 @@ class PartialShopView private constructor(private val view: View, private val cl
 
     fun renderShopBadge(shopBadge: ShopBadge) {
         ImageHandler.loadImage(view.context, view.l_medal, shopBadge.badge, -1)
+    }
+
+    fun renderShopFeature(shopFeatureData: ShopFeatureData) {
+        with(view) {
+            shop_feature.shouldShowWithAction(shopFeatureData.value) {
+                shop_feature.text = shopFeatureData.title
+            }
+        }
     }
 
     fun updateFavorite(isFavorite: Boolean) {

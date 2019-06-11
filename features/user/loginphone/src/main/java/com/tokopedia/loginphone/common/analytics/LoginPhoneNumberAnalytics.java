@@ -3,6 +3,8 @@ package com.tokopedia.loginphone.common.analytics;
 import android.app.Activity;
 
 import javax.inject.Inject;
+
+import com.tokopedia.otp.common.OTPAnalytics;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
@@ -27,6 +29,7 @@ public class LoginPhoneNumberAnalytics {
 
     public static class Event {
         static final String EVENT_CLICK_LOGIN = "clickLogin";
+        public static final String CLICK_REGISTER = "clickRegister";
     }
 
     public static class Category {
@@ -99,4 +102,12 @@ public class LoginPhoneNumberAnalytics {
         ));
     }
 
+    public void eventClickBackRegisterVerificationPage() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_REGISTER,
+                "register with phone number otp",
+                "click on button back",
+                ""
+        ));
+    }
 }

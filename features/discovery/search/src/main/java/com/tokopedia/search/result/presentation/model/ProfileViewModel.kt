@@ -13,8 +13,7 @@ data class ProfileViewModel (
     var isKol: Boolean,
     var isAffiliate: Boolean,
     var followers: Int,
-    var post_count: Int,
-    var position: Int
+    var post_count: Int
 ) : Visitable<ProfileListTypeFactory> {
 
     val KEY_ID = "id"
@@ -23,6 +22,8 @@ data class ProfileViewModel (
     val KEY_POSITION = "position"
 
     val VAL_NAME = "/search result - profile"
+
+    var position = 0
 
     override fun type(typeFactory: ProfileListTypeFactory): Int {
         return typeFactory.type(this)

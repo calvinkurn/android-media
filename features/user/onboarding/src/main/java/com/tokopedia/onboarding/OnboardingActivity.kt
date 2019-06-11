@@ -53,6 +53,7 @@ class OnboardingActivity : BaseActivity() {
     lateinit var loginButton: ButtonCompat
     lateinit var registerButton: ButtonCompat
     lateinit var skipButton: TextView
+    var currentPosition = 1
 
 
     protected var indicatorItems = java.util.ArrayList<ImageView>()
@@ -112,17 +113,19 @@ class OnboardingActivity : BaseActivity() {
 
             override fun onPageSelected(position: Int) {
                 setIndicator(position)
-
+                currentPosition = position + 1
                 analytics.sendScreen(position)
 
             }
         })
 
         loginButton.setOnClickListener {
+            analytics.trackClickLogin(currentPosition)
             startActivityWithBackTask(ApplinkConst.LOGIN)
         }
 
         registerButton.setOnClickListener {
+            analytics.trackClickRegister(currentPosition)
             startActivityWithBackTask(ApplinkConst.REGISTER)
         }
 
