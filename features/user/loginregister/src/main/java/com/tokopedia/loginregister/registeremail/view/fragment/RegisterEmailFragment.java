@@ -161,9 +161,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        registerAnalytics.trackSuccessClickEmailSignUpButton();
-    }
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) { }
 
 
     private void prepareView() {
@@ -599,6 +597,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     public void onErrorRegister(String errorMessage) {
         dismissLoadingProgress();
+        onFailedRegisterEmail(errorMessage);
         setActionsEnabled(true);
         if (errorMessage.equals(""))
             NetworkErrorHelper.showSnackbar(getActivity());
@@ -612,6 +611,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             dismissLoadingProgress();
             setActionsEnabled(true);
             lostViewFocus();
+            registerAnalytics.trackSuccessClickEmailSignUpButton();
             analytics.eventSuccessRegisterEmail(getActivity().getApplicationContext(),
                     pojo.getuId(), name, email, phone);
         }
@@ -712,6 +712,10 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     public int getIsAutoVerify() {
         return isEmailAddressFromDevice() ? 1 : 0;
+    }
+
+    private void onFailedRegisterEmail(String errorMessage){
+        registerAnalytics.trackFailedClickEmailSignUpButton(errorMessage);
     }
 
     @Override

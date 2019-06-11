@@ -322,7 +322,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             registerAnalytics.trackClickBottomSignInButton();
             if (getActivity() != null) {
                 getActivity().finish();
-                analytics.eventClickOnLoginFromRegister();
                 goToLoginPage();
             }
         });
@@ -361,89 +360,167 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-
         if (getActivity() != null) {
-            if (requestCode == REQUEST_REGISTER_WEBVIEW) {
-                handleRegisterWebview(resultCode, data);
-            } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) {
-                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                if (task != null) {
-                    handleGoogleSignInResult(task);
-                }
-            } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
-                getActivity().setResult(Activity.RESULT_OK);
-                getActivity().finish();
-            } else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity
-                    .RESULT_OK) {
-                String uuid =
-                        data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
-                goToAddName(uuid);
-            } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity
-                    .RESULT_CANCELED) {
-                dismissProgressBar();
-                getActivity().setResult(Activity.RESULT_CANCELED);
-                userSession.clearToken();
-            } else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity
-                    .RESULT_CANCELED) {
-                dismissProgressBar();
-                getActivity().setResult(Activity.RESULT_CANCELED);
-            } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
-                getActivity().setResult(Activity.RESULT_OK);
-                getActivity().finish();
-            } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity
-                    .RESULT_CANCELED) {
-                dismissProgressBar();
-                getActivity().setResult(Activity.RESULT_CANCELED);
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-                getActivity().setResult(Activity.RESULT_OK);
-                getActivity().finish();
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity
-                    .RESULT_CANCELED) {
-                dismissProgressBar();
-                getActivity().setResult(Activity.RESULT_CANCELED);
-            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE
-                    && resultCode == Activity.RESULT_OK
-                    && data != null
-                    && data.getExtras() != null) {
-                String uuid =
-                        data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
-                goToAddName(uuid);
-            } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                registerAnalytics.trackSuccessClickYesButtonPhoneDialog();
-                startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
-                        REQUEST_WELCOME_PAGE);
-            } else if (requestCode == REQUEST_WELCOME_PAGE) {
-                if (resultCode == Activity.RESULT_OK) {
-                    goToProfileCompletionPage();
-                } else {
-                    getActivity().setResult(Activity.RESULT_OK);
-                    getActivity().finish();
-                }
-            } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
-                    && resultCode == Activity.RESULT_OK
-                    && data != null
-                    && data.getExtras() != null) {
-                String accessToken =
-                        data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
-                String phoneNumber =
-                        data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "");
-                goToChooseAccountPage(accessToken, phoneNumber);
 
-            } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
-                    && resultCode == Activity.RESULT_OK) {
-                getActivity().setResult(Activity.RESULT_OK);
-                getActivity().finish();
-            } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
-                startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
-                        REQUEST_WELCOME_PAGE);
-            } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
-                userSession.logoutSession();
-                dismissProgressBar();
-                getActivity().setResult(Activity.RESULT_CANCELED);
-                getActivity().finish();
-            } else {
-                super.onActivityResult(requestCode, resultCode, data);
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+
+            switch (resultCode){
+                case Activity.RESULT_OK :{
+                    switch (requestCode){
+                        case REQUEST_REGISTER_WEBVIEW :{
+                            handleRegisterWebview(resultCode, data);
+                            break;
+                        }
+                        case REQUEST_REGISTER_EMAIL :{
+                            getActivity().setResult(Activity.RESULT_OK);
+                            getActivity().finish();
+                            break;
+                        }
+                        case REQUEST_CREATE_PASSWORD :{
+                            getActivity().setResult(Activity.RESULT_OK);
+                            getActivity().finish();
+                            break;
+                        }
+                        case REQUEST_SECURITY_QUESTION :{
+                            getActivity().setResult(Activity.RESULT_OK);
+                            getActivity().finish();
+                            break;
+                        }
+                        case REQUEST_REGISTER_PHONE_NUMBER :{
+                            String uuid = data.getExtras()
+                                    .getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
+                            goToAddName(uuid);
+                            break;
+                        }
+                        case REQUEST_VERIFY_PHONE_REGISTER_PHONE :{
+                            if(data != null && data.getExtras() != null) {
+                                String uuid = data.getExtras()
+                                        .getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
+                                goToAddName(uuid);
+                            }
+                            break;
+                        }
+                        case REQUEST_WELCOME_PAGE :{
+                            goToProfileCompletionPage();
+                            break;
+                        }
+                        case REQUEST_ADD_NAME_REGISTER_PHONE :{
+                            registerAnalytics.trackSuccessClickYesButtonPhoneDialog();
+                            startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
+                                    REQUEST_WELCOME_PAGE);
+                            break;
+                        }
+                        case REQUEST_VERIFY_PHONE_TOKOCASH :{
+                            if(data != null
+                                    && data.getExtras() != null) {
+                                String accessToken = data.getExtras()
+                                        .getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
+                                String phoneNumber = data.getExtras()
+                                        .getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "");
+                                goToChooseAccountPage(accessToken, phoneNumber);
+
+                            }
+                            break;
+                        }
+                        case REQUEST_CHOOSE_ACCOUNT :{
+                            onSuccessRegisterPhoneNumber();
+                            getActivity().setResult(Activity.RESULT_OK);
+                            getActivity().finish();
+                            break;
+                        }
+                        case REQUEST_ADD_NAME :{
+                            startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
+                                    REQUEST_WELCOME_PAGE);
+                            break;
+                        }
+                        case REQUEST_LOGIN_GOOGLE :{
+                            if(data != null){
+                                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                                if (task != null) {
+                                    handleGoogleSignInResult(task);
+                                }
+                            }
+                            break;
+                        }
+                        default :{
+                            super.onActivityResult(requestCode, resultCode, data);
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case Activity.RESULT_CANCELED :{
+                    switch (requestCode){
+                        case REQUEST_REGISTER_WEBVIEW :{
+                            handleRegisterWebview(resultCode, data);
+                            break;
+                        }
+                        case REQUEST_REGISTER_EMAIL :{
+                            //registerAnalytics.trackFailedClickEmailSignUpButton();
+                            dismissProgressBar();
+                            getActivity().setResult(Activity.RESULT_CANCELED);
+                            userSession.clearToken();
+                            break;
+                        }
+                        case REQUEST_CREATE_PASSWORD :{
+                            dismissProgressBar();
+                            getActivity().setResult(Activity.RESULT_CANCELED);
+                            break;
+                        }
+                        case REQUEST_REGISTER_PHONE_NUMBER :{
+                            dismissProgressBar();
+                            getActivity().setResult(Activity.RESULT_CANCELED);
+                            break;
+                        }
+                        case REQUEST_VERIFY_PHONE_REGISTER_PHONE :{
+                            onFailedRegisterPhoneNumber(getString(R.string.verify_phone_error_condition));
+                            break;
+                        }
+                        case REQUEST_WELCOME_PAGE :{
+                            onFailedRegisterPhoneNumber(getString(R.string.welcome_page_error_condition));
+                            getActivity().setResult(Activity.RESULT_OK);
+                            getActivity().finish();
+                            break;
+                        }
+                        case REQUEST_ADD_NAME_REGISTER_PHONE :{
+                            onFailedRegisterPhoneNumber(getString(R.string.add_name_error_condition));
+                            break;
+                        }
+                        case REQUEST_VERIFY_PHONE_TOKOCASH :{
+                            onFailedRegisterPhoneNumber(getString(R.string.verification_tokocash_otp_error_condition));
+                            break;
+                        }
+                        case REQUEST_CHOOSE_ACCOUNT :{
+                            onFailedRegisterPhoneNumber(getString(R.string.choose_account_error_condition));
+                            break;
+                        }
+                        case REQUEST_ADD_NAME :{
+                            userSession.logoutSession();
+                            dismissProgressBar();
+                            getActivity().setResult(Activity.RESULT_CANCELED);
+                            getActivity().finish();
+                            break;
+                        }
+                        case REQUEST_LOGIN_GOOGLE :{
+                            if(data != null){
+                                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                                if (task != null) {
+                                    handleGoogleSignInResult(task);
+                                }
+                            }
+                            break;
+                        }
+                        default :{
+                            super.onActivityResult(requestCode, resultCode, data);
+                            break;
+                        }
+                    }
+                    break;
+                }
+                default :{
+                    super.onActivityResult(requestCode, resultCode, data);
+                    break;
+                }
             }
         }
     }
@@ -455,7 +532,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
      */
     private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
         if (getContext() != null) {
-            boolean onRegisterGoogleSuccess = true;
             try {
                 GoogleSignInAccount account = completedTask.getResult(ApiException.class);
                 String accessToken = account.getIdToken();
@@ -466,17 +542,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                         ErrorHandlerSession.getDefaultErrorCodeMessage(
                                 ErrorHandlerSession.ErrorCode.GOOGLE_FAILED_ACCESS_TOKEN,
                                 getContext()));
-                onRegisterGoogleSuccess = false;
             } catch (ApiException e) {
                 onErrorRegisterSosmed(LoginRegisterAnalytics.GOOGLE,
                         String.format(getString(R.string.loginregister_failed_login_google),
                                 String.valueOf(e.getStatusCode())));
-                onRegisterGoogleSuccess = false;
-            }finally {
-                if(onRegisterGoogleSuccess)
-                    registerAnalytics.trackSuccessClickRegisterGoogleButton();
             }
-
         }
     }
 
@@ -502,6 +572,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     private void goToProfileCompletionPage() {
+        onSuccessRegisterPhoneNumber();
         if (getActivity() != null) {
             ((ApplinkRouter) getActivity().getApplicationContext()).goToApplinkActivity(getActivity
                     (), ApplinkConst.PROFILE_COMPLETION);
@@ -653,11 +724,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void onErrorRegisterSosmed(String methodName, String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         switch (methodName){
-            case LoginRegisterAnalytics.GOOGLE : {
+            case RegisterAnalytics.GOOGLE : {
                 registerAnalytics.trackFailedClickRegisterGoogleButton(errorMessage);
                 break;
             }
-            case LoginRegisterAnalytics.FACEBOOK : {
+            case RegisterAnalytics.FACEBOOK : {
                 registerAnalytics.trackFailedClickRegisterFacebookButton(errorMessage);
                 break;
             }
@@ -667,9 +738,29 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public void onSuccessRegisterSosmed(String methodName) {
 
-        analytics.eventSuccessRegisterSosmed(methodName);
+        switch (methodName){
+            case RegisterAnalytics.GOOGLE : {
+                registerAnalytics.trackSuccessClickRegisterGoogleButton();
+                break;
+            }
+            case RegisterAnalytics.FACEBOOK : {
+                registerAnalytics.trackSuccessClickRegisterFacebookButton();
+                break;
+            }
+        }
+
         startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
                 REQUEST_WELCOME_PAGE);
+    }
+
+    private void onFailedRegisterPhoneNumber(String errorMessage){
+        dismissProgressBar();
+        registerAnalytics.trackFailedClickPhoneSignUpButton(errorMessage);
+    }
+
+    private void onSuccessRegisterPhoneNumber(){
+        dismissProgressBar();
+        registerAnalytics.trackSuccessClickPhoneSignUpButton();
     }
 
     @Override
@@ -753,15 +844,10 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
             @Override
             public void onSuccessGetFacebookCredential(AccessToken accessToken, String email) {
-                boolean onRegisterFacebookSuccess = true;
                 try {
                     presenter.registerFacebook(accessToken, email);
                 }catch (Exception e){
-                    onRegisterFacebookSuccess = false;
                     onErrorRegisterSosmed(LoginRegisterAnalytics.FACEBOOK, e.getMessage());
-                }finally {
-                    if(onRegisterFacebookSuccess)
-                        registerAnalytics.trackSuccessClickRegisterFacebookButton();
                 }
             }
         };
@@ -771,7 +857,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public void showRegisteredEmailDialog(String email) {
         registerAnalytics.trackClickEmailSignUpButton();
-        registerAnalytics.trackFailedClickEmailSignUpButton(RegisterAnalytics.LABEL_EMAIL_EXIST);
         if (getActivity() != null) {
             final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
             dialog.setTitle(getString(R.string.email_already_registered));
@@ -781,6 +866,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             dialog.setBtnOk(getString(R.string.already_registered_yes));
             dialog.setOnOkClickListener(v -> {
                 registerAnalytics.trackClickYesButtonRegisteredEmailDialog();
+                registerAnalytics.trackSuccessClickEmailSignUpButton();
                 dialog.dismiss();
                 startActivity(LoginActivity.getIntentLoginFromRegister(getActivity(), email));
                 getActivity().finish();
@@ -788,6 +874,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             dialog.setBtnCancel(getString(R.string.already_registered_no));
             dialog.setOnCancelClickListener(v -> {
                 registerAnalytics.trackClickChangeButtonRegisteredEmailDialog();
+                registerAnalytics.trackFailedClickEmailSignUpButton(getString(R.string.change_email_error_condition));
                 dialog.dismiss();
             });
             dialog.show();
@@ -797,7 +884,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public void showRegisteredPhoneDialog(String phone) {
         registerAnalytics.trackClickPhoneSignUpButton();
-        registerAnalytics.trackFailedClickPhoneSignUpButton(RegisterAnalytics.LABEL_PHONE_EXIST);
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.phone_number_already_registered));
         dialog.setDesc(
@@ -813,6 +899,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         dialog.setBtnCancel(getString(R.string.already_registered_no));
         dialog.setOnCancelClickListener(v -> {
             registerAnalytics.trackClickChangeButtonRegisteredPhoneDialog();
+            registerAnalytics.trackFailedClickPhoneSignUpButton(getString(R.string.change_phone_number_error_condition));
             dialog.dismiss();
         });
         dialog.show();
@@ -859,6 +946,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         dialog.setBtnCancel(getString(R.string.already_registered_no));
         dialog.setOnCancelClickListener(v -> {
             registerAnalytics.trackClickChangeButtonPhoneDialog();
+            registerAnalytics.trackFailedClickPhoneSignUpButton(getString(R.string.change_phone_number_error_condition));
             dialog.dismiss();
         });
         dialog.show();

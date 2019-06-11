@@ -810,7 +810,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
         analytics.eventSuccessLoginEmail()
         analytics.trackClickOnLoginButtonSuccess()
-        registerAnalytics.trackSuccessClickYesButtonRegisteredEmailDialog()
         TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
                 userSession.userId,
                 userSession.name,

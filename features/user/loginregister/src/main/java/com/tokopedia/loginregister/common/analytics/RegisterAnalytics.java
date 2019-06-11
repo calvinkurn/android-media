@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.analytics.firebase.FirebaseParams;
+import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -169,6 +170,16 @@ public class RegisterAnalytics {
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
                 LABEL_CLICK
+        ));
+    }
+
+    //#R5
+    public void trackSuccessClickPhoneSignUpButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
+                LABEL_SUCCESS
         ));
     }
 
