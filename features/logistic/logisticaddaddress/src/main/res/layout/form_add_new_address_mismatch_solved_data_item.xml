@@ -110,7 +110,30 @@
                 android:text="@string/min_20_char"
                 android:layout_marginBottom="@dimen/dp_24"/>
 
-        <!--<include layout="@layout/form_add_new_address_default_item" />-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/label_grey"
+            android:layout_marginTop="@dimen/dp_24"
+            android:text="@string/alamat_label"/>
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/et_detail_alamat_layout"
+            style="@style/HintTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false">
+
+            <EditText
+                android:id="@+id/et_detail_alamat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/et_alamat_hint"
+                android:inputType="text"
+                android:textColor="#ae31353b" />
+
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
         <TextView
             android:layout_width="wrap_content"

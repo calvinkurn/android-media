@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -39,6 +40,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocompl
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
@@ -67,11 +69,14 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     private var currentLong: Double? = 0.0
     private var labelRumah: String? = "Rumah"
     private var isMismatch: Boolean? = false
+    private var isMismatchSolved: Boolean? = false
     private var districtId: Int? = 0
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private lateinit var etLabelAlamat: EditText
     private lateinit var etNamaPenerima: EditText
     private lateinit var etNoPonsel: EditText
+    private lateinit var zipCodeChipsAdapter: ZipCodeChipsAdapter
+    private lateinit var zipCodes: List<String>
 
     @Inject
     lateinit var presenter: AddEditAddressPresenter
@@ -94,6 +99,7 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH))
                     putParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL))
                     putParcelable(AddressConstants.KERO_TOKEN, extra.getParcelable(AddressConstants.KERO_TOKEN))
+                    putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
                 }
             }
         }
@@ -107,6 +113,7 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             token = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
             currentLat = saveAddressDataModel?.latitude?.toDouble()
             currentLong = saveAddressDataModel?.longitude?.toDouble()
+            isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
         }
     }
 
@@ -131,14 +138,16 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             mismatch_map_view_detail.onCreate(savedInstanceState)
             mismatch_map_view_detail.getMapAsync(this)
             ll_normal.visibility = View.GONE
+            ll_mismatch_solved.visibility = View.GONE
             ll_mismatch.visibility = View.VISIBLE
             mismatch_btn_map.apply {
                 text = getString(R.string.define_pinpoint)
                 setOnClickListener {
                     if (et_kota_kecamatan.text.isEmpty()) {
+                        hideKeyboard()
                         showToastError(getString(R.string.choose_district_first))
                     } else {
-                        presenter.changePinpoint(currentLat, currentLong, token, true, districtId)
+                        isMismatchSolved?.let { it1 -> presenter.changePinpoint(currentLat, currentLong, token, true, districtId, it1) }
                     }
                 }
             }
@@ -148,18 +157,40 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             et_kota_kecamatan.setOnClickListener {
                 showDistrictRecommendationBottomSheet()
             }
+            /*et_kode_pos.setOnClickListener {
+                showZipCodes()
+            }*/
 
-        } else {
+        } else if (this.isMismatchSolved!!) {
             map_view_detail.onCreate(savedInstanceState)
             map_view_detail.getMapAsync(this)
             ll_mismatch.visibility = View.GONE
-            ll_normal.visibility = View.VISIBLE
-            btn_map.text = getString(R.string.change_pinpoint)
+            ll_normal.visibility = View.GONE
+            ll_mismatch_solved.visibility = View.VISIBLE
+            et_kota_kecamatan.setText(saveAddressDataModel?.selectedDistrict)
             tv_address_based_on_pinpoint.text = "${saveAddressDataModel?.title}, ${saveAddressDataModel?.formattedAddress}"
             et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
             et_label_address.setText(labelRumah)
             et_receiver_name.setText(userSession.name)
             et_phone.setText(userSession.phoneNumber)
+
+        } else {
+            map_view_detail.onCreate(savedInstanceState)
+            map_view_detail.getMapAsync(this)
+            ll_mismatch.visibility = View.GONE
+            ll_mismatch_solved.visibility = View.GONE
+            ll_normal.visibility = View.VISIBLE
+            tv_address_based_on_pinpoint.text = "${saveAddressDataModel?.title}, ${saveAddressDataModel?.formattedAddress}"
+            et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
+            et_label_address.setText(labelRumah)
+            et_receiver_name.setText(userSession.name)
+            et_phone.setText(userSession.phoneNumber)
+            btn_map.apply {
+                text = getString(R.string.change_pinpoint)
+                setOnClickListener {
+                    presenter.changePinpoint(currentLat, currentLong, token, false, districtId, isMismatchSolved!!)
+                }
+            }
         }
 
         /*btn_map.setOnClickListener {
@@ -178,6 +209,21 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
                 DistrictRecommendationBottomSheetFragment.newInstance()
         districtRecommendationBottomSheetFragment.setActionListener(this)
         districtRecommendationBottomSheetFragment.show(fragmentManager, "")
+    }
+
+    private fun showZipCodes() {
+        et_kode_pos_input_layout.visibility = View.GONE
+        // rv_kodepos_chips.visibility = View.VISIBLE
+
+        /*val cityList = res.getStringArray(R.array.cityList)
+        val chipsLayoutManager = ChipsLayoutManager.newBuilder(view.context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
+        val staticDimen8dp = view.context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
+        ViewCompat.setLayoutDirection(rvChips, ViewCompat.LAYOUT_DIRECTION_LTR)
+        popularCityAdapter = PopularCityRecommendationBottomSheetAdapter(context, this)
+        popularCityAdapter.cityList = cityList.toMutableList()*/
     }
 
     private fun setSaveAddressModel() {
@@ -292,10 +338,20 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         activity?.finish()
     }
 
-    override fun onGetDistrict(districtSelected: String, districtName: String, districtId: Int) {
+    override fun onGetDistrict(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel) {
+        val provinceName = districtRecommendationItemUiModel.provinceName
+        val cityName = districtRecommendationItemUiModel.cityName
+        val districtName = districtRecommendationItemUiModel.districtName
+        val districtSelected = "$provinceName, $cityName, $districtName"
+        zipCodes = districtRecommendationItemUiModel.zipCodes
+        zipCodes.forEach {
+            println("## Kode Pos : $it")
+        }
+
         et_kota_kecamatan.setText(districtSelected)
+        saveAddressDataModel?.selectedDistrict = districtSelected
         autoCompletePresenter.getAutocomplete(districtName)
-        this.districtId = districtId
+        this.districtId = districtRecommendationItemUiModel.districtId
     }
 
     override fun hideListPointOfInterest() {
@@ -320,8 +376,9 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     override fun showFailedDialog() {
     }
 
-    override fun goToAddEditActivity(isMismatch: Boolean) {
+    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean) {
     }
+
 
     fun showToastError(message: String) {
         var msg = message
@@ -341,5 +398,10 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     }
 
     override fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel) {
+    }
+
+    private fun hideKeyboard() {
+        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
     }
 }

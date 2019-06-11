@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationResponseUiModel
 import kotlinx.android.synthetic.main.bottomsheet_district_recommendation_item.view.*
 
 /**
@@ -16,7 +17,8 @@ class DistrictRecommendationBottomSheetAdapter(private var actionListener: Actio
     var listDistrictRecommendation = mutableListOf<DistrictRecommendationItemUiModel>()
 
     interface ActionListener {
-        fun onDistrictItemClicked(districtSelected: String, districtName: String, districtId: Int)
+        fun onDistrictItemClicked(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel)
+        fun onSuccessGetDistrictRecommendation(getDistrictRecommendationResponseUiModel: DistrictRecommendationResponseUiModel, numPage: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,10 +35,9 @@ class DistrictRecommendationBottomSheetAdapter(private var actionListener: Actio
         val cityName = listDistrictRecommendation[position].cityName
         val districtName = listDistrictRecommendation[position].districtName
         val districtSelected = "$provinceName, $cityName, $districtName"
-        val districtId = listDistrictRecommendation[position].districtId
         holder.itemView.tv_district_name.text = districtSelected
         holder.itemView.tv_district_name.setOnClickListener {
-            actionListener.onDistrictItemClicked(districtSelected, districtName, districtId)
+            actionListener.onDistrictItemClicked(listDistrictRecommendation[position])
         }
     }
 

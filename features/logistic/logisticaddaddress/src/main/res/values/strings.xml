@@ -97,6 +97,7 @@
     <string name="kota_populer">Kota populer</string>
     <string name="label_action_snackbar_close">Tutup</string>
     <string name="choose_district_first">Silahkan Pilih Kota/Kecamatan terlebih dahulu</string>
+    <string name="invalid_district">Alamat tidak sesuai dengan peta. Mohon pilih kembali alamat pada peta.</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

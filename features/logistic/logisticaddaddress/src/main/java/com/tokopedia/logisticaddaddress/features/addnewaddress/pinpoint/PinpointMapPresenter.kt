@@ -79,11 +79,11 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
         autofillUseCase.clearCache()
     }
 
-    fun loadAddEdit() {
+    fun loadAddEdit(isOriginMismatched: Boolean?) {
         if (saveAddressDataModel.districtId == 0 && saveAddressDataModel.postalCode.isEmpty()) {
             view.showFailedDialog()
         } else {
-            view.goToAddEditActivity(false)
+            isOriginMismatched?.let { view.goToAddEditActivity(false, it) }
         }
     }
 

@@ -14,6 +14,6 @@ interface PinpointMapListener: CustomerView {
     fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel)
     fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel)
     fun showFailedDialog()
-    fun goToAddEditActivity(isMismatch: Boolean)
+    fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean)
     fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel)
 }

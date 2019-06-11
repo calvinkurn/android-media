@@ -4,15 +4,18 @@ import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.CoordinatorLayout
+import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResultCallback
@@ -28,6 +31,7 @@ import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.R
@@ -70,6 +74,8 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     private var token: Token? = null
     private var isPolygon: Boolean? = null
     private var districtId: Int? = null
+    private val COLOR_GREEN_ARGB = 0x40388E3C
+    private var isOriginMismatch: Boolean? = null
 
     @Inject
     lateinit var presenter: PinpointMapPresenter
@@ -101,6 +107,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
                     putParcelable(AddressConstants.KERO_TOKEN, extra.getParcelable(AddressConstants.KERO_TOKEN))
                     putBoolean(AddressConstants.EXTRA_IS_POLYGON, extra.getBoolean(AddressConstants.EXTRA_IS_POLYGON))
                     putInt(AddressConstants.EXTRA_DISTRICT_ID, extra.getInt(AddressConstants.EXTRA_DISTRICT_ID))
+                    putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
                 }
             }
         }
@@ -129,6 +136,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
             isRequestingLocation = arguments?.getBoolean(AddressConstants.EXTRA_REQUEST_LOCATION)
             isPolygon = arguments?.getBoolean(AddressConstants.EXTRA_IS_POLYGON)
             districtId = arguments?.getInt(AddressConstants.EXTRA_DISTRICT_ID)
+            isOriginMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
         }
 
         // current_location
@@ -166,9 +174,8 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         MapsInitializer.initialize(activity!!)
         moveMap(PinpointMapUtils.generateLatLng(currentLat, currentLong))
 
-        // add polygon?
-        if (isPolygon != null) {
-            if (isPolygon as Boolean) {
+        this.isPolygon?.let {
+            if (this.isPolygon as Boolean) {
                 districtId?.let { districtId ->
                     token?.let { token ->
                         presenter.getDistrictBoundary(districtId, token.districtRecommendation, token.ut)
@@ -278,7 +285,18 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         invalid_container.visibility = View.GONE
         whole_loading_container.visibility = View.GONE
         getdistrict_container.visibility = View.VISIBLE
-        updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel))
+
+        this.isPolygon?.let {
+            if (this.isPolygon as Boolean) {
+                if (autofillDataUiModel.districtId != districtId) {
+                    showToastError(getString(R.string.invalid_district))
+                } else {
+                    updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel))
+                }
+            } else {
+                updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel))
+            }
+        }
     }
 
     private fun updateGetDistrictBottomSheet(saveAddressDataModel: SaveAddressDataModel) {
@@ -299,8 +317,30 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
             tv_address_getdistrict.text = saveAddressDataModel.formattedAddress
             btn_choose_location.setOnClickListener{
                 saveAddressDataModel.editDetailAddress = et_detail_address.text.toString()
-                presenter.loadAddEdit()
+                this.isPolygon?.let {
+                    if (this.isPolygon as Boolean) {
+                        isOriginMismatch = true
+                    }
+                }
+                presenter.loadAddEdit(isOriginMismatch)
             }
+        }
+    }
+
+    private fun showToastError(message: String) {
+        var msg = message
+        if (view != null && activity != null) {
+            if (message.isEmpty()) {
+                msg = getString(R.string.default_request_error_unknown)
+            }
+            val snackbar = Snackbar.make(view!!, msg, BaseToaster.LENGTH_SHORT)
+            val snackbarTextView = snackbar.view.findViewById<TextView>(android.support.design.R.id.snackbar_text)
+            val snackbarActionButton = snackbar.view.findViewById<Button>(android.support.design.R.id.snackbar_action)
+            snackbar.view.background = ContextCompat.getDrawable(view!!.context, com.tokopedia.design.R.drawable.bg_snackbar_error)
+            snackbarTextView.setTextColor(ContextCompat.getColor(view!!.context, R.color.font_black_secondary_54))
+            snackbarActionButton.setTextColor(ContextCompat.getColor(view!!.context, R.color.font_black_primary_70))
+            snackbarTextView.maxLines = 5
+            snackbar.setAction(getString(R.string.label_action_snackbar_close)) { }.show()
         }
     }
 
@@ -310,17 +350,18 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         tkpdDialog.setDesc(getString(R.string.mismatch_desc))
         tkpdDialog.setBtnOk(getString(R.string.mismatch_btn_title))
         tkpdDialog.setOnOkClickListener {
-            goToAddEditActivity(true)
+            goToAddEditActivity(true, true)
             tkpdDialog.dismiss()
         }
         tkpdDialog.show()
     }
 
-    override fun goToAddEditActivity(isMismatch: Boolean) {
+    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean) {
         val intent = Intent(context, AddEditAddressActivity::class.java)
         intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH, isMismatch)
         intent.putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, presenter.getSaveAddressDataModel())
         intent.putExtra(AddressConstants.KERO_TOKEN, token)
+        intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
         startActivityForResult(intent, FINISH_FLAG)
     }
 
@@ -346,6 +387,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     override fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel) {
         this.googleMap?.addPolygon(PolygonOptions()
                 .addAll(districtBoundaryGeometryUiModel.listCoordinates)
-                .fillColor(R.color.tkpd_green))
+                .fillColor(COLOR_GREEN_ARGB)
+                .strokeWidth(3F))
     }
 }

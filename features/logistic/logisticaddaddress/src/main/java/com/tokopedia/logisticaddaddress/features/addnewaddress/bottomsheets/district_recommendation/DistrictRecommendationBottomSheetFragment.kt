@@ -18,6 +18,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationResponseUiModel
 import javax.inject.Inject
 
@@ -49,7 +50,7 @@ class DistrictRecommendationBottomSheetFragment: BottomSheets(),
     lateinit var presenter: DistrictRecommendationBottomSheetPresenter
 
     interface ActionListener {
-        fun onGetDistrict(districtSelected: String, districtName: String, districtId: Int)
+        fun onGetDistrict(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel)
     }
 
     companion object {
@@ -200,10 +201,10 @@ class DistrictRecommendationBottomSheetFragment: BottomSheets(),
         }
     }
 
-    override fun onDistrictItemClicked(districtSelected: String, districtName: String, districtId: Int) {
+    override fun onDistrictItemClicked(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel) {
         context?.let {
-            districtSelected.run {
-                actionListener.onGetDistrict(districtSelected, districtName, districtId)
+            districtRecommendationItemUiModel.run {
+                actionListener.onGetDistrict(districtRecommendationItemUiModel)
                 dismiss()
             }
         }

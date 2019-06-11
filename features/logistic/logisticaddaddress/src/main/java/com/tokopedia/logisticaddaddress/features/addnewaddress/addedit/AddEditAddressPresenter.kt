@@ -50,7 +50,7 @@ class AddEditAddressPresenter @Inject constructor(private val context: Context,
         }
     }
 
-    fun changePinpoint(lat: Double?, long: Double?, token: Token?, isPolygon: Boolean, districtId: Int?) {
+    fun changePinpoint(lat: Double?, long: Double?, token: Token?, isPolygon: Boolean, districtId: Int?, isOriginMismatch: Boolean) {
         val intent = Intent(context, PinpointMapActivity::class.java)
         intent.putExtra(AddressConstants.KERO_TOKEN, token)
         intent.putExtra(AddressConstants.EXTRA_LAT, lat)
@@ -58,6 +58,7 @@ class AddEditAddressPresenter @Inject constructor(private val context: Context,
         intent.putExtra(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, false)
         intent.putExtra(AddressConstants.EXTRA_IS_POLYGON, isPolygon)
         intent.putExtra(AddressConstants.EXTRA_DISTRICT_ID, districtId)
+        intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isOriginMismatch)
         context.startActivity(intent)
     }
 

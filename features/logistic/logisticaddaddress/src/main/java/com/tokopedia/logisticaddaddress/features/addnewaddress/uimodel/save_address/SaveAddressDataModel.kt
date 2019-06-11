@@ -22,7 +22,8 @@ data class SaveAddressDataModel (
         var districtId: Int = 0,
         var latitude: String = "",
         var longitude: String = "",
-        var editDetailAddress: String = "") : Parcelable {
+        var editDetailAddress: String = "",
+        var selectedDistrict: String = "") : Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),
@@ -36,6 +37,7 @@ data class SaveAddressDataModel (
             parcel.readInt(),
             parcel.readInt(),
             parcel.readInt(),
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString()) {
@@ -56,6 +58,7 @@ data class SaveAddressDataModel (
         parcel.writeString(latitude)
         parcel.writeString(longitude)
         parcel.writeString(editDetailAddress)
+        parcel.writeString(selectedDistrict)
     }
 
     override fun describeContents(): Int {
