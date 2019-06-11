@@ -5,7 +5,6 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
-import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
@@ -13,7 +12,6 @@ import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.EmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GridProductItemViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GuidedSearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.HeaderViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RelatedSearchViewHolder;
@@ -69,11 +67,6 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     }
 
     @Override
-    public int type(GuidedSearchViewModel guidedSearchViewModel) {
-        return GuidedSearchViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(ProductItemViewModel productItem) {
         switch (getRecyclerViewItem()) {
             case SearchConstant.RecyclerView.VIEW_PRODUCT:
@@ -117,8 +110,6 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
                     guidedSearchListener, globalNavWidgetListener, bannerAdsListener);
         } else if (type == EmptySearchViewHolder.LAYOUT) {
             viewHolder = new EmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, topAdsConfig);
-        } else if (type == GuidedSearchViewHolder.LAYOUT) {
-            viewHolder = new GuidedSearchViewHolder(view, guidedSearchListener);
         } else if (type == TopAdsViewHolder.LAYOUT) {
             viewHolder = new TopAdsViewHolder(view, productListener);
         } else if (type == RelatedSearchViewHolder.LAYOUT) {

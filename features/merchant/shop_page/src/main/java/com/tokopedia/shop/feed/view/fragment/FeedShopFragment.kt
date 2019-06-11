@@ -50,7 +50,7 @@ import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
 import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
@@ -58,7 +58,6 @@ import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -181,6 +180,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 OPEN_DETAIL -> {
                     showSnackbar(data!!.getStringExtra("message"))
                 }
+                LOGIN_CODE -> {
+                    loadInitialData()
+                }
             }
         }
     }
@@ -189,11 +191,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (shopId.isNotEmpty() && !isLoading) {
             isLoading = true
             if (isLoadingInitialData) {
-                presenter.getFeedFirstPage(shopId)
+                presenter.getFeedFirstPage(shopId, false)
             } else {
                 presenter.getFeed(shopId)
             }
         }
+    }
+
+    override fun onSwipeRefresh() {
+        hideSnackBarRetry()
+        swipeToRefresh.isRefreshing = true
+        presenter.getFeedFirstPage(shopId, true)
     }
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain) {
@@ -488,7 +496,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     fun updateShopInfo(shopInfo: ShopInfo) {
-        shopId = shopInfo.info.shopId
+        shopId = shopInfo.shopCore.shopID
         loadInitialData()
     }
 
@@ -541,7 +549,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun goToLogin() {
-        RouteManager.route(getActivity(), ApplinkConst.LOGIN);
+        activity?.let {
+            startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), LOGIN_CODE)
+        }
     }
 
     private fun getEmptyResultViewModel(): EmptyFeedShopViewModel {

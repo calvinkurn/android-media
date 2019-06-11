@@ -13,7 +13,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneral
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 
 import java.util.ArrayList;
@@ -32,7 +31,6 @@ public class ImageProductListAdapter extends BrowseSectionGeneralAdapter {
     private int startFrom;
     private int totalData;
     private Context context;
-    private GuidedSearchViewModel guidedSearch;
 
     public ImageProductListAdapter(Context context, OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         super(itemChangeView);

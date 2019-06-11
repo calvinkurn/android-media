@@ -51,6 +51,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER;
+
 /**
  * @author by nisie on 11/30/17.
  */
@@ -411,6 +413,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void trackOnBackPressed() {
         if (analytics != null && viewModel != null) {
             analytics.eventClickBackOTPPage(viewModel.getOtpType());
+            if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+                analytics.eventClickBackRegisterOTPPage();
+            }
         }
 
     }

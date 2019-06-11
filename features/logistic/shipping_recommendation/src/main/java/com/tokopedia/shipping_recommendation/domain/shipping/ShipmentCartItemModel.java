@@ -3,7 +3,6 @@ package com.tokopedia.shipping_recommendation.domain.shipping;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.VoucherOrdersItem;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;

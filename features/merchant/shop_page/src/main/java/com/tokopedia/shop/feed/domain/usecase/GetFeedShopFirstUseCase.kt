@@ -4,6 +4,9 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kolcommon.data.pojo.WhitelistQuery
 import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
@@ -28,10 +31,13 @@ class GetFeedShopFirstUseCase
     : UseCase<DynamicFeedShopDomain>() {
 
     companion object {
-        fun createRequestParams(selfUserId: String, sourceId: String): RequestParams {
+        const val IS_PULL_TO_REFRESH = "IS_PULL_TO_REFRESH"
+        fun createRequestParams(userId: String, sourceId: String = "", isPullToRefresh: Boolean)
+                : RequestParams {
             val requestParams = GetDynamicFeedUseCase.createRequestParams(
-                    selfUserId, "", GetDynamicFeedUseCase.SOURCE_SHOP, sourceId)
+                    userId, "", GetDynamicFeedUseCase.SOURCE_SHOP, sourceId)
             requestParams.putString(GetWhitelistUseCase.WHITELIST_SHOP, sourceId)
+            requestParams.putBoolean(IS_PULL_TO_REFRESH, isPullToRefresh)
             return requestParams
         }
     }
@@ -44,6 +50,11 @@ class GetFeedShopFirstUseCase
     }
 
     private fun getDynamicFeedData(requestParams: RequestParams?): Observable<DynamicFeedDomainModel> {
+        requestParams?.let {
+            if (it.getBoolean(IS_PULL_TO_REFRESH, false).not()) {
+                getDynamicFeedUseCase.graphqlUseCase.setCacheStrategy(getCacheFirstStrategy())
+            }
+        }
         return getDynamicFeedUseCase
                 .createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
@@ -54,6 +65,11 @@ class GetFeedShopFirstUseCase
         getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
                 GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_ENTRY_POINT))
         )
+        requestParams?.let {
+            if (it.getBoolean(IS_PULL_TO_REFRESH, false).not()) {
+                getWhitelistUseCase.setCacheStrategy(getCacheFirstStrategy())
+            }
+        }
         return getWhitelistUseCase
                 .createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
@@ -83,5 +99,12 @@ class GetFeedShopFirstUseCase
             domain.authors = query.whitelist.authors ?: ArrayList()
             return domain
         }
+    }
+
+    private fun getCacheFirstStrategy() : GraphqlCacheStrategy {
+       return GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
+                .setSessionIncluded(true)
+                .build()
     }
 }
