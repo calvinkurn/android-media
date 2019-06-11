@@ -567,6 +567,9 @@ dependencies {
     implementation project(rootProject.ext.features.referral)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.features.kyc)
+
+    implementation project(rootProject.ext.libraries.logger)
+    implementation rootProject.ext.debugToolsDependencies.timber
 }
 
 

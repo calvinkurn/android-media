@@ -29,6 +29,10 @@ class LogSentryWrapper(val application: Application) {
         logManager.getLogger(Logger.GLOBAL_LOGGER_NAME)
     }
 
+    val userSession: UserSession by lazy {
+        UserSession(application)
+    }
+
     /**
      * To give "INFO" message log to logging server
      * INFO means generally useful information to log
@@ -63,7 +67,6 @@ class LogSentryWrapper(val application: Application) {
     }
 
     private fun setUser() {
-        val userSession = UserSession(application)
         if (userSession.userId.isNullOrEmpty()) {
             Sentry.getContext().user = UserBuilder().setId("").build()
         } else {
