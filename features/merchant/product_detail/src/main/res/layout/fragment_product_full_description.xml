@@ -97,12 +97,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:autoLink="all"
-            android:transitionName="@string/transition_description"
-            android:textIsSelectable="true"
             android:lineSpacingExtra="@dimen/sp_6"
-            tools:text="Pilihan tepat untuk dekorasi rumah minimalis modern Anda, atau untuk mengimbangi interior unik pilihan Anda. Tersedia dalam 4 pilihan warna, hitam, putih, biru, dan jingga. .."
+            android:longClickable="true"
+            android:textIsSelectable="true"
+            android:transitionName="@string/transition_description"
             app:fontSize="small"
-            app:textViewTheme="lightPrimary"/>
+            app:textViewTheme="lightPrimary"
+            tools:text="Pilihan tepat untuk dekorasi rumah minimalis modern Anda, atau untuk mengimbangi interior unik pilihan Anda. Tersedia dalam 4 pilihan warna, hitam, putih, biru, dan jingga. .." />
 
     </LinearLayout>
 
