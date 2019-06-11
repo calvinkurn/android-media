@@ -24,7 +24,6 @@ import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
-import com.tokopedia.transaction.orders.orderdetails.view.fragment.ShowQRCodeFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 
@@ -171,15 +170,18 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 eventCity = itemView.findViewById(R.id.city_event);
                 eventAddress = itemView.findViewById(R.id.address_event);
             }
+            if (itemType == ITEM_DEALS) {
+                actionLayout = itemView.findViewById(R.id.actionButton);
+
+            }
+
             if (itemType == ITEM_DEALS || itemType == ITEM_EVENTS) {
                 tvValidTill = itemView.findViewById(R.id.tv_valid_till);
                 validDate = itemView.findViewById(R.id.tv_valid_till_date);
                 tapActionLayout = itemView.findViewById(R.id.tapAction);
-                actionLayout = itemView.findViewById(R.id.actionButton);
                 clCard = itemView.findViewById(R.id.cl_card);
                 llValid = itemView.findViewById(R.id.ll_valid);
                 itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
             }
 //            if (itemType == ITEM_EVENTS) {
 //                tvRightTypeofEvents = itemView.findViewById(R.id.right_text1);
@@ -323,7 +325,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
                 if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
-                    actionLayout.setVisibility(View.GONE);
+                    if (!item.getCategory().equalsIgnoreCase(categoryEvents)) {
+                        actionLayout.setVisibility(View.GONE);
+                    }
                 } else {
                     if (!item.getCategory().equalsIgnoreCase(categoryEvents)) {
                         actionLayout.setVisibility(View.VISIBLE);

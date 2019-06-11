@@ -65,6 +65,19 @@ public class Items {
     @Expose
     private String weight;
 
+    @SerializedName("trackingURL")
+    @Expose
+    private String trackingUrl;
+
+    @SerializedName("trackingNumber")
+    @Expose
+    private String trackingNumber;
+
+
+    @SerializedName("invoiceID")
+    @Expose
+    private String invoiceId;
+
     private boolean isTapActionsLoaded;
 
     private boolean isActionButtonLoaded;
@@ -202,6 +215,30 @@ public class Items {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTrackingUrl() {
+        return trackingUrl;
+    }
+
+    public void setTrackingUrl(String trackingUrl) {
+        this.trackingUrl = trackingUrl;
+    }
+
+    public String getTrackingNumber() {
+        return trackingNumber;
+    }
+
+    public void setTrackingNumber(String trackingNumber) {
+        this.trackingNumber = trackingNumber;
+    }
+
+    public String getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(String invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
     @Override
