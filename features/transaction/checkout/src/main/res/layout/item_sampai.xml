@@ -6,16 +6,33 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:text="@string/brand_tokopedia_corner"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/brand_tokopedia_corner"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/img_info"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:contentDescription="@string/information_icon"
+            android:src="@drawable/ic_info_black" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/text_view_ticker"
