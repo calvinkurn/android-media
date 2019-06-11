@@ -22,18 +22,6 @@
     <string name="label_connect_device">Hubungkan Perangkat</string>
     <string name="label_select_nominal">Pilih Nominal</string>
 
-    <!--<string-array name="values_amount_array">
-        <item>@string/label_select_nominal</item>
-        <item>Rp 2.000.000</item>
-        <item>Rp 5.000.000</item>
-        <item>Rp 8.000.000</item>
-        <item>Rp 12.000.000</item>
-        <item>Rp 25.000.000</item>
-        <item>Rp 50.000.000</item>
-        <item>Rp 100.000.000</item>
-        <item>Rp 200.000.000</item>
-    </string-array>-->
-
     <string-array name="values_title">
         <item>@string/label_loan_online</item>
         <item>@string/label_instant_fund</item>
