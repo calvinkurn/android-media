@@ -72,7 +72,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     private fun onErrorGetRecommendation(errorMessage: String?) {
-
+        showGetListError(Throwable(errorMessage))
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
