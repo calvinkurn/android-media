@@ -51,8 +51,18 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
 
     @Override
     public void getPopupsInfo() {
-        popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.Companion.createRequestParams(Integer.parseInt(userSession.getShopId())),
+        int shopId = convertStringToInterger();
+        popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.Companion.createRequestParams(shopId),
                 getPopupsInfoSubscriber());
+    }
+
+    private int convertStringToInterger() {
+        try {
+            return Integer.parseInt(userSession.getShopId());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     @Override

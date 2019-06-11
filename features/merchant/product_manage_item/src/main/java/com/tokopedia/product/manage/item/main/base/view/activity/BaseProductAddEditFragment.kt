@@ -315,7 +315,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun showDialogSuccessAddProduct(): Dialog {
-        activity?.let { activity ->
+         activity?.let { activity ->
             val dialog = Dialog(activity)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(false)
@@ -327,7 +327,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             }
             dialog.btn_product_list.setOnClickListener {
                 RouteManager.route(context, ApplinkConst.PRODUCT_MANAGE)
-                activity?.finish()
+                activity.finish()
             }
             val spanText = android.text.SpannableString(getString(R.string.popup_tips_trick_clickable))
             spanText.setSpan(StyleSpan(Typeface.BOLD),
@@ -349,9 +349,8 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             dialog.txt_tips_trick.movementMethod = LinkMovementMethod.getInstance()
             dialog.txt_tips_trick.text = spanText
 
-            return dialog
+             return dialog
         }
-
     }
 
     override fun onSuccessStoreProductToDraft(productId: Long, isUploading: Boolean) {
