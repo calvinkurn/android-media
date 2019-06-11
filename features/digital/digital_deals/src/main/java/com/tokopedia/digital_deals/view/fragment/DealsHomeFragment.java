@@ -493,7 +493,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             curatedDealsLayout.setVisibility(View.VISIBLE);
             curatedDealsLayout.removeAllViews();
             boolean isItemsAvailable = false;
-            for (CategoryItem categoryItem : categoryItems) {
+            for (int i=0; i<categoryItems.size(); i++) {
+                CategoryItem categoryItem = categoryItems.get(i);
                 if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
                     isItemsAvailable = true;
                     DealsCategoryAdapter.INavigateToActivityRequest listener = new DealsCategoryAdapter.INavigateToActivityRequest() {
@@ -502,7 +503,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                             startActivityForResult(intent, requestCode);
                         }
                     };
-                    CuratedDealsView curatedDealsView = new CuratedDealsView(getActivity(), categoryItem, listener, openTrendingDeals, "", mPresenter);
+                    CuratedDealsView curatedDealsView = new CuratedDealsView(getActivity(), categoryItem, listener, openTrendingDeals, "", mPresenter, i);
                     curatedDealsLayout.addView(curatedDealsView);
                 }
             }

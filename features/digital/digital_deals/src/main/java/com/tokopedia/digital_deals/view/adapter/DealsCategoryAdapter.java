@@ -92,6 +92,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private String searchText = "";
     private boolean isFromSearchResult;
     private String dealType;
+    private int homePosition;
 
     public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
         if (categoryItems == null)
@@ -342,7 +343,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                     if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)) {
                         dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_TRENDING_DEALS, categoryItems.get(holder1.getIndex()), holder1.getIndex());
                     } else {
-                        dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_CURATED_DEALS, categoryItems.get(holder1.getIndex()), holder1.getIndex());
+                        dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PROMO_VIEW,
+                                String.format("%s - %s", DealsAnalytics.EVENT_IMPRESSION_CURATED_DEALS, String.valueOf(this.homePosition)), categoryItems.get(holder1.getIndex()), holder1.getIndex());
                     }
                 } else {
                     dealsAnalytics.sendProductBrandDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_IMPRESSION_PRODUCT_BRAND, categoryItems.get(holder1.getIndex()), holder1.getIndex());
@@ -456,6 +458,10 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public void setDealType(String dealType) {
         this.dealType = dealType;
+    }
+
+    public void setHomePosition(int homePosition) {
+        this.homePosition = homePosition;
     }
 
     public class ItemViewHolderNormal extends RecyclerView.ViewHolder implements View.OnClickListener {
