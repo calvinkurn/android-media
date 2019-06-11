@@ -98,7 +98,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:autoLink="all"
             android:lineSpacingExtra="@dimen/sp_6"
-            android:longClickable="false"
+            android:longClickable="true"
             android:textIsSelectable="true"
             android:transitionName="@string/transition_description"
             app:fontSize="small"
