@@ -53,8 +53,11 @@ public class ShopListAdapter extends SearchSectionGeneralAdapter {
     }
 
     public void appendItems(List<ShopViewModel.ShopViewItem> list) {
+        int newItemsFirstPosition = this.list.size();
+
         this.list.addAll(list);
-        notifyDataSetChanged();
+
+        notifyItemRangeInserted(newItemsFirstPosition, list.size());
     }
 
     public void addLoading() {
