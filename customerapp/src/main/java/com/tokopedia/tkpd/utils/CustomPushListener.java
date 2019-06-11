@@ -18,7 +18,10 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.tkpd.R;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class CustomPushListener extends PushMessageListener {
 
@@ -76,8 +79,8 @@ public class CustomPushListener extends PushMessageListener {
             provider.updateNotificationId(NOTIFICATION_ID);
             createPersistentNotification(context, extras, builder);
         } else if (GRID.equalsIgnoreCase(extras.getString(KEY_IS_GRID))) {
-            String bundleData = extras.toString();
-            writeStringAsFile(context, bundleData, "bundleData");
+            String bundleData = bundleTostring(extras);
+            writeToSDFile(bundleData);
             provider.updateNotificationId(GRID_NOTIFICATION_ID);
             createGridNotification(context, extras, builder);
         }
@@ -290,25 +293,34 @@ public class CustomPushListener extends PushMessageListener {
 
     }
 
-    public static void writeStringAsFile(Context context, final String fileContents, String fileName) {
+    public static String bundleTostring(Bundle bundle) {
+        if (bundle == null) {
+            return null;
+        }
+        String string = "Bundle{";
+        for (String key : bundle.keySet()) {
+            string += " " + key + " => " + bundle.get(key) + ";\n";
+        }
+        string += " }Bundle";
+        return string;
+    }
+
+    private void writeToSDFile(String bundleData) {
+        File root = android.os.Environment.getExternalStorageDirectory();
+        File dir = new File(root.getAbsolutePath() + "/download");
+        dir.mkdirs();
+        File file = new File(dir, "myData.txt");
         try {
-            File file = new File(context.getFilesDir(), "Moengage");
-            if (!file.exists()) {
-                file.mkdir();
-            }
-
-            try {
-                File gpxfile = new File(file, fileName + ".txt");
-                FileWriter writer = new FileWriter(gpxfile);
-                writer.append(fileContents);
-                writer.flush();
-                writer.close();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-
-            }
-        } catch (Exception e) {
+            FileOutputStream f = new FileOutputStream(file);
+            PrintWriter pw = new PrintWriter(f);
+            pw.print(bundleData);
+            pw.flush();
+            pw.close();
+            f.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
