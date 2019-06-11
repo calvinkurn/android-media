@@ -19,9 +19,9 @@ import java.net.UnknownHostException;
  */
 
 public class ViewUtils {
-    public static String getErrorMessage(Context context, Throwable t){
+    public static String getErrorMessage(Context context, Throwable t) {
         String errorMessage = getErrorMessage(t);
-        if (TextUtils.isEmpty(errorMessage)){
+        if (TextUtils.isEmpty(errorMessage)) {
             return getGeneralErrorMessage(context, t);
         } else {
             return errorMessage;
@@ -36,11 +36,11 @@ public class ViewUtils {
         return errorMessage;
     }
 
-    public static String getClickBudgetError(Context context, double clickBudget) {
-        if (clickBudget < TopAdsConstant.BUDGET_MULTIPLE_BY) {
+    public static String getClickBudgetError(Context context, double clickBudget, double multiply, double maxBid, double minBid) {
+        if (clickBudget <= 0) {
             return context.getString(R.string.error_top_ads_click_budget_must_be_filled);
         }
-        return getDefaultClickBudgetError(context, clickBudget);
+        return getDefaultClickBudgetError(context, clickBudget, maxBid, minBid);
     }
 
     public static String getKeywordClickBudgetError(Context context, double clickBudget) {
@@ -60,22 +60,28 @@ public class ViewUtils {
         return null;
     }
 
-    public static String getDefaultClickBudgetError(Context context, double clickBudget) {
-        if (clickBudget % TopAdsConstant.BUDGET_MULTIPLE_BY != 0) {
+    public static String getDefaultClickBudgetError(Context context, double clickBudget, double maxBid, double minBid) {
+        if (clickBudget < maxBid && clickBudget > minBid && clickBudget % TopAdsConstant.BUDGET_MULTIPLE_BY != 0) {
             return context.getString(R.string.error_top_ads_click_budget_multiple_by, String.valueOf(TopAdsConstant.BUDGET_MULTIPLE_BY));
         }
-        if (clickBudget > TopAdsConstant.BUDGET_MAX) {
-            return context.getString(R.string.error_top_ads_click_budget_max, CurrencyFormatter.formatRupiah(String.valueOf(TopAdsConstant.BUDGET_MAX)));
+        if (clickBudget > maxBid) {
+            return context.getString(R.string.error_top_ads_click_budget_max, CurrencyFormatter.formatRupiah(String.format("%.0f", maxBid)));
+        }
+        if (clickBudget < minBid) {
+            return context.getString(R.string.error_top_ads_click_budget_minimum, CurrencyFormatter.formatRupiah(String.format("%.0f", minBid)));
         }
         return null;
     }
 
-    public static String getDailyBudgetError(Context context, float clickBudget, double dailyBudget) {
+    public static String getDailyBudgetError(Context context, double minDailyBudget, double suggestionBid, double multiply, double dailyBudget) {
         if (dailyBudget <= 0) {
             return context.getString(R.string.error_top_ads_daily_budget_cannot_empyt);
         }
-        if (dailyBudget < clickBudget * TopAdsConstant.BUDGET_MIN_MULTIPLE_BY) {
-            return context.getString(R.string.error_top_ads_daily_budget_minimal, String.valueOf(TopAdsConstant.BUDGET_MIN_MULTIPLE_BY));
+        double calc = suggestionBid * multiply;
+        if(dailyBudget < calc && calc >= minDailyBudget){
+            return context.getString(R.string.error_top_ads_daily_budget_minimal, CurrencyFormatter.formatRupiah(String.format("%.0f", calc)));
+        } else if (dailyBudget < calc && calc <= minDailyBudget){
+            return context.getString(R.string.error_top_ads_daily_budget_minimal, CurrencyFormatter.formatRupiah(String.format("%.0f", minDailyBudget)));
         }
         return null;
     }

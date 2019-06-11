@@ -13,5 +13,6 @@
     <string name="tkpd_promo_brand">Tokopedia Promo</string>
     <string name="shiprecc_next">Lanjutkan</string>
     <string name="shiprecc_cancel">Batalkan</string>
+    <string name="logistic_promo_serviceid_mismatch_message">Tidak tersedia kurir untuk promo tersebut</string>
 
 </resources>

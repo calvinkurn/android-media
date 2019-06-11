@@ -328,10 +328,10 @@ dependencies {
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transaction)
     implementation project(rootProject.ext.features.seller)
-    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.productDetailRevamp)
     implementation project(rootProject.ext.features.discovery)
+    implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.profile)
@@ -433,11 +433,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.collapsingTabLayout)
 
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.viewDependencies.appIntro
-    implementation rootProject.ext.miscDependencies.bcaOneClick
 
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.shopCommon)

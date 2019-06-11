@@ -32,7 +32,7 @@ import com.tokopedia.affiliate.feature.createpost.view.service.SubmitPostService
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -209,6 +209,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateMedia()
         updateThumbnail()
         updateAddTagText()
+        updateButton()
         updateHeader(feedContentForm.authors)
     }
 
@@ -237,24 +238,22 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         viewModel.relatedProducts.removeAt(position)
         adapter.notifyItemRemoved(position)
 
-        if (isTypeAffiliate()) {
-            if (viewModel.adIdList.getOrNull(position) == relatedProductItem.id) {
-                viewModel.adIdList.removeAt(position)
-            } else {
-                viewModel.adIdList.removeFirst { it == relatedProductItem.id }
-            }
-        } else {
-            if (viewModel.productIdList.getOrNull(position) == relatedProductItem.id) {
-                viewModel.productIdList.removeAt(position)
-            } else {
-                viewModel.productIdList.removeFirst { it == relatedProductItem.id }
-            }
-        }
-
         if (viewModel.urlImageList.getOrNull(position)?.path == relatedProductItem.image) {
             viewModel.urlImageList.removeAt(position)
         } else {
             viewModel.urlImageList.removeFirst { it.path == relatedProductItem.image }
+        }
+
+        val idPosition = if (isTypeAffiliate()) {
+            viewModel.adIdList.indexOf(relatedProductItem.id)
+        } else {
+            viewModel.productIdList.indexOf(relatedProductItem.id)
+        }
+        if (idPosition != -1 && viewModel.adIdList.size > idPosition) {
+            viewModel.adIdList.removeAt(idPosition)
+        }
+        if (idPosition != -1 && viewModel.productIdList.size > idPosition) {
+            viewModel.productIdList.removeAt(idPosition)
         }
 
         updateThumbnail()
@@ -326,7 +325,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun initDraft(arguments: Bundle) {
         activity?.let {
             val draftId = arguments.getString(DRAFT_ID)
-            val cacheManager = PersistentCacheManager(it, draftId)
+            val cacheManager = SaveInstanceCacheManager(it, draftId)
             val draft: CreatePostViewModel? = cacheManager.get(
                     CreatePostViewModel.TAG,
                     CreatePostViewModel::class.java
@@ -489,7 +488,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         activity?.let {
             showLoading()
 
-            val cacheManager = PersistentCacheManager(it, true)
+            val cacheManager = SaveInstanceCacheManager(it, true)
             cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
 
             SubmitPostService.startService(it, cacheManager.id!!)

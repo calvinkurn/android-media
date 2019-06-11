@@ -247,6 +247,8 @@ open class PlayViewStateImpl(
             setChatListHasSpaceOnTop(false)
             analytics.eventClickShowVideoToggle(viewModel?.channelId)
         }
+
+        errorView.setOnClickListener {  }
     }
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
@@ -501,6 +503,7 @@ open class PlayViewStateImpl(
                 loadingView.hide()
                 errorView.show()
                 setToolbarWhite()
+                showLoginButton(false)
             }
         }
 
@@ -798,7 +801,11 @@ open class PlayViewStateImpl(
     }
 
     override fun autoPlayVideo() {
-        youtubeRunnable?.postDelayed({ youTubePlayer?.play() }, PlayFragment.YOUTUBE_DELAY.toLong())
+        try {
+            youtubeRunnable?.postDelayed({ youTubePlayer?.play() }, PlayFragment.YOUTUBE_DELAY.toLong())
+        } catch(e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean) {
@@ -1021,8 +1028,20 @@ open class PlayViewStateImpl(
     }
 
     override fun onErrorGetInfo(it: String) {
-        setEmptyState(R.drawable.ic_play_overload, it,
-                getStringResource(R.string.try_again_later),
+        setEmptyState(R.drawable.ic_play_overload,
+                getStringResource(R.string.error_overload_play),
+                it.replace("channelName", viewModel?.title?: "", false),
+                getStringResource(R.string.title_try_again),
+                listener::onRetryGetInfo)
+        loadingView.hide()
+        errorView.show()
+        setToolbarWhite()
+    }
+
+    override fun onNoInternetConnection() {
+        setEmptyState(R.drawable.ic_play_no_connection,
+                getStringResource(R.string.no_connection_play),
+                getStringResource(R.string.try_connection_play),
                 getStringResource(R.string.title_try_again),
                 listener::onRetryGetInfo)
         loadingView.hide()

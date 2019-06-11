@@ -5,4 +5,5 @@
     <string name="digital_browse_popular_brand_title">Brand Pilihan</string>
     <string name="digital_browse_lihat_semua">Lihat Semua</string>
     <string name="digital_browse_new_label">BARU</string>
+    <string name="search_hint">Cari produk atau Toko</string>
 </resources>

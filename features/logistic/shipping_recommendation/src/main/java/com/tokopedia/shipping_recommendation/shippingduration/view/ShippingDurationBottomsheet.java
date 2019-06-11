@@ -168,6 +168,13 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
+    protected void configView(View parentView) {
+        super.configView(parentView);
+        parentView.findViewById(R.id.layout_title).setOnClickListener(null);
+        parentView.findViewById(R.id.btn_close).setOnClickListener(view -> onCloseButtonClick());
+    }
+
+    @Override
     protected void onCloseButtonClick() {
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationButtonCloseClicked();
@@ -301,9 +308,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
             shippingDurationBottomsheetListener.onShippingDurationChoosen(
                     shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
                     presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData.getServiceName(),
-                    flagNeedToSetPinpoint, hasCourierPromo, true);
+                    flagNeedToSetPinpoint, true);
         }
-        dismiss();
+
+        try {
+            dismiss();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -331,7 +343,17 @@ public class ShippingDurationBottomsheet extends BottomSheets
             @Override
             public void onClick(View view) {
                 ShippingDurationViewModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
+                if (serviceData == null) {
+                    showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
+                    tkpdDialog.dismiss();
+                    return;
+                }
                 CourierItemData courierData = presenter.getCourierItemDataById(data.getShipperProductId(), serviceData.getShippingCourierViewModelList());
+                if (courierData == null) {
+                    showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
+                    tkpdDialog.dismiss();
+                    return;
+                }
                 courierData.setLogPromoCode(data.getPromoCode());
                 courierData.setLogPromoMsg(data.getDisableText());
                 shippingDurationBottomsheetListener.onLogisticPromoChosen(
