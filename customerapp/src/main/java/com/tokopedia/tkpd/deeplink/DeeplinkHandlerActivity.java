@@ -150,6 +150,8 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.webview.WebViewApplinkModule;
+import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
@@ -209,7 +211,8 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         ChatbotApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
-        OvoPayWithQrApplinkModule.class
+        OvoPayWithQrApplinkModule.class,
+        WebViewApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
@@ -276,7 +279,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ChatbotApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
-                    new OvoPayWithQrApplinkModuleLoader()
+                    new OvoPayWithQrApplinkModuleLoader(),
+                    new WebViewApplinkModuleLoader()
             );
         }
 

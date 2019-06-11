@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -36,10 +36,10 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation(rootProject.ext.miscDependencies.facebook) {
@@ -52,10 +52,13 @@ dependencies {
         transitive = true
     }
 
-    
+
     implementation project(rootProject.ext.libraries.track)
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+    implementation project(rootProject.ext.libraries.webview)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.permissionchecker)
 }
