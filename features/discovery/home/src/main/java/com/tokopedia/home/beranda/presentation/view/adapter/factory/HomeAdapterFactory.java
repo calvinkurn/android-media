@@ -6,6 +6,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.countdown.CountDownView;
+import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeFeedsListener;
@@ -17,6 +18,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicCh
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicIconSectionViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.EmptyBlankViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HeaderViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder;
@@ -36,6 +38,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsVi
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
@@ -124,6 +127,11 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         return InspirationViewHolder.LAYOUT;
     }
 
+    @Override
+    public int type(HomeRecommendationFeedViewModel homeRecommendationFeedViewModel) {
+        return HomeRecommendationFeedViewHolder.LAYOUT;
+    }
+
     public int type(RetryModel retryModel) {
         return RetryViewHolder.LAYOUT;
     }
@@ -201,6 +209,9 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new EmptyBlankViewHolder(view);
         else if (type == InspirationHeaderViewHolder.LAYOUT)
             viewHolder = new InspirationHeaderViewHolder(view);
+        else if (type == HomeRecommendationFeedViewHolder.LAYOUT) {
+            viewHolder = new HomeRecommendationFeedViewHolder(view, listener);
+        }
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;

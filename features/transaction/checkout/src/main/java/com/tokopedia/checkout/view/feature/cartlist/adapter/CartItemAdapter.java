@@ -96,17 +96,11 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartItemRemarkEditChange(CartItemData cartItemData, String remark, int position, int parentPosition);
 
-        void onCartItemListIsEmpty(int parentPosition);
-
-        void onCartItemQuantityFormEdited(int position, int parentPosition, boolean needRefreshItemView);
-
         void onCartItemAfterErrorChecked();
 
         void onCartItemQuantityInputFormClicked(String qty);
 
         void onCartItemLabelInputRemarkClicked();
-
-        void onQuantityChanged();
 
         boolean onCartItemCheckChanged(int position, int parentPosition, boolean checked);
 

@@ -50,17 +50,17 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
     api rootProject.ext.miscDependencies.coroutineCore
-    implementation "android.arch.work:work-runtime-ktx:1.0.0-alpha10"
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
-    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:1.0.0'
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
     implementation rootProject.ext.networkDependencies.retrofit
 
     implementation rootProject.ext.miscDependencies.gson
+    implementation project(rootProject.ext.libraries.config)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

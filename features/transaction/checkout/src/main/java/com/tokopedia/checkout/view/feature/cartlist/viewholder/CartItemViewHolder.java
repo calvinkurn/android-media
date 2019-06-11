@@ -250,7 +250,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderWarningAndError(CartItemHolderData data) {
         if (data.getCartItemData().isParentHasErrorOrWarning()) {
-            // if (data.getCartItemData().isSingleChild()) {
             if (!data.getCartItemData().isDisableAllProducts()) {
                 renderErrorItemHeader(data);
                 renderWarningItemHeader(data);
@@ -687,7 +686,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 }
                 if (zeroCount == quantity.getEditable().length()) {
                     actionListener.onCartItemQuantityReseted(getAdapterPosition(), parentPosition, needToUpdateView);
-                    handleRefreshType(cartItemHolderData, viewHolderListener, parentPosition);
+                    if (needToUpdateView) {
+                        handleRefreshType(cartItemHolderData, viewHolderListener, parentPosition);
+                        needToUpdateView = false;
+                    }
                 } else if (quantity.getEditable().charAt(0) == '0') {
                     etQty.setText(quantity.getEditable().toString()
                             .substring(zeroCount, quantity.getEditable().toString().length()));
@@ -697,7 +699,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             } else if (TextUtils.isEmpty(etQty.getText())) {
                 actionListener.onCartItemQuantityReseted(getAdapterPosition(), parentPosition,
                         !String.valueOf(quantity.getQtyBefore()).equals(quantity.getEditable().toString()));
-                handleRefreshType(cartItemHolderData, viewHolderListener, parentPosition);
+                if (needToUpdateView) {
+                    handleRefreshType(cartItemHolderData, viewHolderListener, parentPosition);
+                    needToUpdateView = false;
+                }
             }
 
             int qty = 0;
@@ -709,7 +714,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             checkQtyMustDisabled(cartItemHolderData, qty);
             cartItemHolderData.getCartItemData().getUpdatedData().setQuantity(qty);
             validateWithAvailableQuantity(cartItemHolderData, qty);
-            actionListener.onCartItemQuantityFormEdited(getAdapterPosition(), parentPosition, needToUpdateView);
+            if (needToUpdateView) {
+                handleRefreshType(cartItemHolderData, viewHolderListener, parentPosition);
+            }
         }
     }
 

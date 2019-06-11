@@ -128,7 +128,8 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.attachment!!.id,
                 pojo.attachment!!.type,
                 pojo.message.timeStampUnixNano,
-                fallbackMessage
+                fallbackMessage,
+                pojo.isOpposite
         )
     }
 

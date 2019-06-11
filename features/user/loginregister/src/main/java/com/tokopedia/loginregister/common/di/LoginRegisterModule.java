@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.network.exception.HeaderErrorListRespons
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
@@ -35,8 +36,14 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
-    LoginRegisterAnalytics provideLoginAnalytics() {
+    LoginRegisterAnalytics provideLoginRegisterAnalytics() {
         return new LoginRegisterAnalytics();
+    }
+
+    @LoginRegisterScope
+    @Provides
+    RegisterAnalytics provideRegisterAnalytics() {
+        return new RegisterAnalytics();
     }
 
     @LoginRegisterScope
@@ -47,8 +54,8 @@ public class LoginRegisterModule {
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      FingerprintInterceptor fingerprintInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(tkpdAuthInterceptor);
+        builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TkpdV4ResponseError.class));
 

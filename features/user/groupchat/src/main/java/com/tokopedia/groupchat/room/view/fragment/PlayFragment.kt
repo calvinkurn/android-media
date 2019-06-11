@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -36,6 +37,7 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
@@ -56,7 +58,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         ChatroomContract.ChatItem.ImageAnnouncementViewHolderListener,
         ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
         ChatroomContract.ChatItem.SprintSaleViewHolderListener,
-        ChatroomContract.ChatItem.GroupChatPointsViewHolderListener {
+        ChatroomContract.ChatItem.GroupChatPointsViewHolderListener,
+        ChatroomContract.DynamicButtonItem.DynamicButtonListener,
+        ChatroomContract.DynamicButtonItem.InteractiveButtonListener{
 
     private var snackBarWebSocket: Snackbar? = null
 
@@ -74,6 +78,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
             fragment.arguments = bundle
             return fragment
         }
+
+        var DEFAULT_ICON_LIST = arrayListOf(
+                R.drawable.ic_green,
+                R.drawable.ic_blue,
+                R.drawable.ic_yellow,
+                R.drawable.ic_pink
+        )
+
     }
 
     @Inject
@@ -333,7 +345,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         activity?.let {
             viewState = PlayViewStateImpl(userSession, analytics, view,
                     it, this, this, this, this,
-                    this, this, sendMessage())
+                    this, this, sendMessage(), this, this)
         }
         setToolbarView()
     }
@@ -368,7 +380,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     fun backPress() {
-        if (exitDialog != null) {
+        if (exitDialog != null && !viewState.errorViewShown()) {
             exitDialog!!.show()
         } else {
             activity?.finish()
@@ -614,16 +626,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         ToasterError.make(activity?.findViewById<View>(android.R.id.content), exception?.message)
     }
 
-    override fun onDynamicIconClicked(it: DynamicButtonsViewModel.Button) {
-        analytics.eventClickDynamicButtons(channelInfoViewModel, it)
-        when (it.contentType) {
-            DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(it.contentLinkUrl)
-            DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
-            DynamicButtonsViewModel.TYPE_OVERLAY_WEBVIEW -> viewState.onShowOverlayWebviewFromDynamicButton(it)
-        }
-    }
-
-    override fun onFloatingIconClicked(it: DynamicButtonsViewModel.Button, applink: String) {
+    override fun onFloatingIconClicked(it: DynamicButton, applink: String) {
         when (it.contentType) {
             DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(applink)
             DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
@@ -635,70 +638,51 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         super.onPause()
         timeStampAfterPause = System.currentTimeMillis()
         presenter.destroyWebSocket()
-        if (canPause()) {
-            notifReceiver?.let {
-                tempNotifReceiver ->
-                context?.let {
-                    LocalBroadcastManager.getInstance(it).unregisterReceiver(tempNotifReceiver)
-                }
+        notifReceiver?.let { tempNotifReceiver ->
+            context?.let {
+                LocalBroadcastManager.getInstance(it).unregisterReceiver(tempNotifReceiver)
             }
-            timeStampAfterPause = System.currentTimeMillis()
         }
+        timeStampAfterPause = System.currentTimeMillis()
+
     }
 
     override fun onResume() {
         super.onResume()
         viewState.setBottomView()
         kickIfIdleForTooLong()
-        if (canResume()) {
 
-            viewState.autoAddSprintSale()
+        viewState.autoAddSprintSale()
 
-            viewState.getChannelInfo()?.let {
-                presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
-            }
-
-            viewState.autoPlayVideo()
-
-            if (notifReceiver == null) {
-                notifReceiver = object : BroadcastReceiver() {
-                    override fun onReceive(context: Context, intent: Intent) {
-                        if (intent.extras != null) {
-                            onGetNotif(intent.extras!!)
-                        }
-                    }
-                }
-            }
-
-            notifReceiver?.let {
-                temp ->
-                activity?.applicationContext?.let {
-                    try {
-                        LocalBroadcastManager.getInstance(it).registerReceiver(temp, IntentFilter
-                        (TkpdState.LOYALTY_GROUP_CHAT))
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-
-
-            timeStampAfterResume = System.currentTimeMillis()
+        viewState.getChannelInfo()?.let {
+            presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
         }
-    }
 
-    private fun canResume(): Boolean {
-//        return timeStampAfterResume == 0L || timeStampAfterResume > 0
-//                && System.currentTimeMillis() - timeStampAfterResume > PAUSE_RESUME_TRESHOLD_TIME
-        return true
-    }
+        viewState.autoPlayVideo()
 
-    private fun canPause(): Boolean {
-//        return (timeStampAfterPause == 0L || (timeStampAfterPause > 0
-//                && System.currentTimeMillis() - timeStampAfterPause > PAUSE_RESUME_TRESHOLD_TIME
-//                && canResume()))
+        if (notifReceiver == null) {
+            notifReceiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    if (intent.extras != null) {
+                        onGetNotif(intent.extras!!)
+                    }
+                }
+            }
+        }
 
-        return true
+        notifReceiver?.let { temp ->
+            activity?.applicationContext?.let {
+                try {
+                    LocalBroadcastManager.getInstance(it).registerReceiver(temp, IntentFilter
+                    (TkpdState.LOYALTY_GROUP_CHAT))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+
+
+        timeStampAfterResume = System.currentTimeMillis()
     }
 
     private fun kickIfIdleForTooLong() {
@@ -734,6 +718,23 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
+    override fun onDynamicButtonClicked(it: DynamicButton) {
+        analytics.eventClickDynamicButtons(channelInfoViewModel, it)
+        when (it.contentType) {
+            DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(it.contentLinkUrl)
+            DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
+            DynamicButtonsViewModel.TYPE_OVERLAY_WEBVIEW -> viewState.onShowOverlayWebviewFromDynamicButton(it)
+        }
+    }
+
+    override fun onInteractiveButtonClicked(anchorView: LottieAnimationView) {
+        viewState.onInteractiveButtonClicked(anchorView)
+    }
+
+    override fun onInteractiveButtonViewed(anchorView: LottieAnimationView) {
+        viewState.onInteractiveButtonViewed(anchorView)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_LOGIN) {
@@ -743,7 +744,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onDestroy() {
-        viewState?.destroy()
+        if(::viewState.isInitialized){
+            viewState?.destroy()
+        }
         presenter.detachView()
         super.onDestroy()
     }

@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.sessioncommon.data.GetProfileApi;
@@ -62,7 +63,9 @@ public interface LoginRegisterComponent {
 
     TokenApi provideTokenApi();
 
-    LoginRegisterAnalytics provideAnalytics();
+    LoginRegisterAnalytics provideLoginRegisterAnalytics();
+
+    RegisterAnalytics provideRegisterAnalytics();
 
     Resources provideResources();
 

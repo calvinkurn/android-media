@@ -307,10 +307,15 @@ public class ShippingDurationBottomsheet extends BottomSheets
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationChoosen(
                     shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData.getServiceName(),
-                    flagNeedToSetPinpoint, hasCourierPromo, true);
+                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData,
+                    flagNeedToSetPinpoint, true);
         }
-        dismiss();
+
+        try {
+            dismiss();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -354,7 +359,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
                 shippingDurationBottomsheetListener.onLogisticPromoChosen(
                         serviceData.getShippingCourierViewModelList(), courierData,
                         presenter.getRecipientAddressModel(), mCartPosition, data.getServiceId(),
-                        serviceData.getServiceData().getServiceName(), false, data.getPromoCode());
+                        serviceData.getServiceData(), false, data.getPromoCode());
                 tkpdDialog.dismiss();
                 dismiss();
             }

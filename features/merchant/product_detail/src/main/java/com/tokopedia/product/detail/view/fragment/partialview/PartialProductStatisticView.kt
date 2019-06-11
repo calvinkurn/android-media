@@ -6,8 +6,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.Rating
-import com.tokopedia.product.detail.data.model.shop.BBInfo
-import com.tokopedia.product.detail.data.model.shop.ShopShipment
+import com.tokopedia.shop.common.graphql.data.shopinfo.BBInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.product.detail.view.activity.CourierActivity
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.view.*
 

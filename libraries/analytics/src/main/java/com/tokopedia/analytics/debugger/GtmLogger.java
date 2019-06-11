@@ -25,16 +25,20 @@ public class GtmLogger implements AnalyticsLogger {
 
     private static AnalyticsLogger instance;
 
+    private Context context;
     private GtmLogDBSource dbSource;
+    private LocalCacheHandler cache;
 
-    private GtmLogger() {
-        dbSource = new GtmLogDBSource();
+    private GtmLogger(Context context) {
+        this.context = context;
+        this.dbSource = new GtmLogDBSource(context);
+        this.cache = new LocalCacheHandler(context, ANALYTICS_DEBUGGER);
     }
 
-    public static AnalyticsLogger getInstance() {
+    public static AnalyticsLogger getInstance(Context context) {
         if (instance == null) {
             if(GlobalConfig.isAllowDebuggingTools()) {
-                instance = new GtmLogger();
+                instance = new GtmLogger(context);
             } else {
                 instance = emptyInstance();
             }
@@ -44,7 +48,7 @@ public class GtmLogger implements AnalyticsLogger {
     }
 
     @Override
-    public void save(Context context, String name, Map<String, Object> mapData) {
+    public void save(String name, Map<String, Object> mapData) {
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -57,7 +61,6 @@ public class GtmLogger implements AnalyticsLogger {
                 dbSource.insertAll(data).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
             }
 
-            LocalCacheHandler cache = new LocalCacheHandler(context, ANALYTICS_DEBUGGER);
             if(cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false)) {
                 NotificationHelper.show(context, data);
             }
@@ -72,21 +75,19 @@ public class GtmLogger implements AnalyticsLogger {
     }
 
     @Override
-    public void openActivity(Context context) {
+    public void openActivity() {
         context.startActivity(AnalyticsDebuggerActivity.newInstance(context));
     }
 
     @Override
-    public void enableNotification(Context context, boolean isEnabled) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, ANALYTICS_DEBUGGER);
+    public void enableNotification(boolean isEnabled) {
         cache.putBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, isEnabled);
         cache.applyEditor();
     }
 
     @Override
-    public boolean isNotificationEnabled(Context context) {
-        LocalCacheHandler analyticsCache = new LocalCacheHandler(context, ANALYTICS_DEBUGGER);
-        return analyticsCache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false);
+    public boolean isNotificationEnabled() {
+        return cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false);
     }
 
     private Subscriber<? super Boolean> defaultSubscriber() {
@@ -111,7 +112,7 @@ public class GtmLogger implements AnalyticsLogger {
     private static AnalyticsLogger emptyInstance() {
         return new AnalyticsLogger() {
             @Override
-            public void save(Context context, String name, Map<String, Object> data) {
+            public void save(String name, Map<String, Object> data) {
 
             }
 
@@ -121,17 +122,17 @@ public class GtmLogger implements AnalyticsLogger {
             }
 
             @Override
-            public void openActivity(Context context) {
+            public void openActivity() {
 
             }
 
             @Override
-            public void enableNotification(Context context, boolean status) {
+            public void enableNotification(boolean status) {
 
             }
 
             @Override
-            public boolean isNotificationEnabled(Context context) {
+            public boolean isNotificationEnabled() {
                 return false;
             }
         };

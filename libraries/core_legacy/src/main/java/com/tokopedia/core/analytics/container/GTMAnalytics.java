@@ -54,7 +54,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public GTMAnalytics(Context context) {
         super(context);
-        iris = IrisAnalytics.Companion.init(context);
+        iris = IrisAnalytics.Companion.getInstance(context);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private static void log(Context context, String eventName, Map<String, Object> values) {
         String name = eventName == null ? (String) values.get("event") : eventName;
-        GtmLogger.getInstance().save(context, name, values);
+        GtmLogger.getInstance(context).save(name, values);
     }
 
     public GTMAnalytics sendCampaign(Campaign campaign) {
@@ -567,7 +567,9 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!eventName.isEmpty()) {
                 values.put("event", eventName);
             }
-            iris.saveEvent(values);
+            if(values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
+                iris.saveEvent(values);
+            }
         }
     }
 
