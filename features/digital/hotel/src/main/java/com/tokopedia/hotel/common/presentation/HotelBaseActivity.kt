@@ -11,6 +11,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.di.component.HotelComponent
+import com.tokopedia.hotel.common.presentation.widget.HotelErrorBottomSheets
 import com.tokopedia.hotel.common.presentation.widget.HotelMenuBottomSheets
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
 import com.tokopedia.hotel.orderdetail.presentation.adapter.ContactAdapter
@@ -23,7 +24,7 @@ import javax.inject.Inject
  * @author by furqan on 25/03/19
  */
 abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.HotelMenuListener,
-        ContactAdapter.OnClickCallListener {
+        ContactAdapter.OnClickCallListener, HotelErrorBottomSheets.OnRetryListener {
 
     private lateinit var hotelComponent: HotelComponent
 
@@ -99,6 +100,17 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
         //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun onRetryClicked() {
+        //retry API call
+    }
+
+    fun showErrorBottomSheet(e: Throwable) {
+        val hotelErrorBottomSheet = HotelErrorBottomSheets()
+        hotelErrorBottomSheet.errorThrowable = e
+        hotelErrorBottomSheet.listener = this
+        hotelErrorBottomSheet.show(supportFragmentManager, TAG_HOTEL_ERROR)
+    }
+
     private fun showBottomMenus() {
         val hotelMenuBottomSheets = HotelMenuBottomSheets()
         hotelMenuBottomSheets.listener = this
@@ -120,5 +132,6 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
 
     companion object {
         val TAG_HOTEL_MENU = "hotelMenu"
+        val TAG_HOTEL_ERROR = "hotelError"
     }
 }
