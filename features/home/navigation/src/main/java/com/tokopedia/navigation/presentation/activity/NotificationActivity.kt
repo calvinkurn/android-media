@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.PagerAdapter
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
@@ -20,7 +22,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
-import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateUnread
 import com.tokopedia.navigation.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
@@ -28,7 +29,6 @@ import com.tokopedia.navigation.presentation.fragment.NotificationFragment
 import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
-import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
 import javax.inject.Inject
 
 /**
@@ -183,6 +183,23 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_notification_activity, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.notif_settting -> openNotificationSettingPage()
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun openNotificationSettingPage(): Boolean {
+        RouteManager.route(this, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING)
+        return true
     }
 
     companion object {
