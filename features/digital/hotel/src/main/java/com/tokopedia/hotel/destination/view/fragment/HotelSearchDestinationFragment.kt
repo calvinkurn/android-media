@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
@@ -114,6 +115,14 @@ SearchDestinationListener{
         emptyModel.content = getString(R.string.hotel_destination_empty_view_holder_subtitle)
 
         return emptyModel
+    }
+
+    override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
+        adapter.errorNetworkModel.iconDrawableRes = ErrorHandlerHotel.getErrorImage(throwable)
+        adapter.errorNetworkModel.errorMessage = ErrorHandlerHotel.getErrorTitle(context, throwable)
+        adapter.errorNetworkModel.subErrorMessage = ErrorHandlerHotel.getErrorMessage(context, throwable)
+        adapter.errorNetworkModel.onRetryListener = this
+        adapter.showErrorNetwork()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean = false

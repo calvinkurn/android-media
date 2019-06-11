@@ -4,11 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.*
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.SearchPropertyViewHolder
@@ -24,6 +22,7 @@ class PropertyAdapterTypeFactory(val callback: BaseEmptyViewHolder.Callback): Ba
             SearchPropertyViewHolder.LAYOUT -> SearchPropertyViewHolder(parent)
             R.layout.property_search_shimmer_loading -> LoadingViewholder(parent)
             emptyLayout -> return EmptyViewHolder(parent, callback)
+            errorLayout -> return ErrorNetworkViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -32,7 +31,11 @@ class PropertyAdapterTypeFactory(val callback: BaseEmptyViewHolder.Callback): Ba
         return emptyLayout
     }
 
+    override fun type(viewModel: ErrorNetworkModel): Int {
+        return errorLayout
+    }
     companion object {
         val emptyLayout: Int = R.layout.item_hotel_room_empty_list
+        val errorLayout: Int = R.layout.item_network_error_view
     }
 }
