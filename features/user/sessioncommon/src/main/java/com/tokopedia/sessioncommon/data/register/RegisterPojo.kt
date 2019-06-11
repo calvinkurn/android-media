@@ -30,12 +30,3 @@ data class RegisterInfo(
         @Expose
         var errors: ArrayList<Error> = arrayListOf()
         ){}
-
-data class Error(
-        @SerializedName("name")
-        @Expose
-        var name: String = "",
-        @SerializedName("message")
-        @Expose
-        var message: String = ""
-){}

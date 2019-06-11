@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 import android.text.TextUtils
+import android.util.Log
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
@@ -23,6 +25,7 @@ import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidatio
 import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.domain.usecase.LoginEmailUseCase
+import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.util.*
@@ -40,7 +43,10 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                                                    RegisterValidationUseCase,
                                                    private val loginEmailUseCase:
                                                    LoginEmailUseCase,
-                                                   private val loginWebviewUseCase: LoginWebviewUseCase
+                                                   private val loginWebviewUseCase:
+                                                   LoginWebviewUseCase,
+                                                   private val loginTokenUseCase :
+                                                           LoginTokenUseCase
 )
     : BaseDaggerPresenter<LoginContract.View>(),
         LoginEmailPhoneContract.Presenter {
@@ -194,9 +200,22 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         if (isValid(email, password)) {
             view.showLoadingLogin()
             view.disableArrow()
-            loginEmailUseCase.execute(LoginEmailUseCase.getParam(email, password),
-                    LoginSubscriber(view.context, view.loginRouter,
-                            email, view))
+            loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
+                    email, password), object : Subscriber<GraphqlResponse>(){
+                override fun onNext(response: GraphqlResponse?) {
+                    Log.d("NISNIS", response.toString())
+                }
+
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable?) {
+                    Log.d("NISNIS", e.toString())
+                }
+
+
+            })
         } else {
             viewEmailPhone.stopTrace()
         }

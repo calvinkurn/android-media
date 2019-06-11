@@ -20,7 +20,6 @@ class AddNamePresenter @Inject constructor(val registerUseCase: RegisterUseCase)
 
     override fun registerPhoneNumberAndName(name: String, phoneNumber: String) {
         view.showLoading()
-        Gson gson
         registerUseCase.execute(
                 RegisterUseCase.generateParamRegisterPhone(name, phoneNumber), object :
                 Subscriber<GraphqlResponse>() {

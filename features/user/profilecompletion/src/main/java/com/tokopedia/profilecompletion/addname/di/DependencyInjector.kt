@@ -15,7 +15,7 @@ class DependencyInjector() {
         return AddNamePresenter(
                 RegisterUseCase((context.resources),
                         GraphqlUseCase(),
-                        userSession))
+                        userSession)
         )
 
     }

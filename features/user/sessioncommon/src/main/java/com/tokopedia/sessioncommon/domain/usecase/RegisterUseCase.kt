@@ -6,14 +6,10 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.sessioncommon.R
-import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
-import com.tokopedia.sessioncommon.network.BasicTokenGenerator
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.user.session.UserSessionInterface
-import org.json.JSONObject
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -29,7 +25,7 @@ class RegisterUseCase @Inject constructor(val resources: Resources,
         val graphqlRequest = GraphqlRequest(query,
                 RegisterPojo::class.java, requestParams)
 
-        userSession.setToken(BasicTokenGenerator().createToken(), BasicTokenGenerator.TOKEN_TYPE)
+        userSession.setToken(TokenGenerator().createBasicToken(), TokenGenerator.TOKEN_TYPE)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(subscriber)
