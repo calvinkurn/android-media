@@ -6,18 +6,15 @@ import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
-import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
-import android.text.style.ImageSpan
+import android.text.style.LeadingMarginSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -25,7 +22,6 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
-import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomdetail.presentation.viewmodel.HotelRoomDetailViewModel
@@ -35,7 +31,6 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import kotlinx.android.synthetic.main.fragment_hotel_room_detail.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
@@ -183,20 +178,19 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
 
     fun setupRoomPayAtHotel() {
         if (!hotelRoom.additionalPropertyInfo.isDirectPayment) {
-            val spannableString = SpannableString("   " + hotelRoom.creditCardInfo.creditCardInfo
-                    + getString(R.string.hotel_room_detail_pay_at_hotel_desc))
+            pay_at_hotel_container.visibility = View.VISIBLE
+
             val iconId = if (hotelRoom.additionalPropertyInfo.isCvCRequired)
                 R.drawable.ic_pay_at_hotel_cc else R.drawable.ic_pay_at_hotel_no_cc
-            val icon = ContextCompat.getDrawable(context!!, iconId)
-            icon?.setBounds(0, -6, 50, 50)
-            spannableString.setSpan(StyleSpan(Typeface.BOLD), 3, 3 + hotelRoom.creditCardInfo.creditCardInfo.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannableString.setSpan(ImageSpan(icon!!, ImageSpan.ALIGN_BASELINE), 0, 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            pay_at_hotel_icon.setBackgroundResource(iconId)
 
-            room_detail_pay_at_hotel.setTitleAndDescription(getString(R.string.hotel_room_detail_pay_at_hotel), spannableString)
-            room_detail_pay_at_hotel.truncateDescription = false
-            room_detail_pay_at_hotel.buildView()
+            val spannableString = SpannableString(" " + hotelRoom.creditCardInfo.creditCardInfo
+                    + getString(R.string.hotel_room_detail_pay_at_hotel_desc))
+            spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 1 + hotelRoom.creditCardInfo.creditCardInfo.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(LeadingMarginSpan.Standard(50, 0), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            pay_at_hotel_title.text = getString(R.string.hotel_room_detail_pay_at_hotel)
+            pay_at_hotel_desc.text = spannableString
         }
     }
 

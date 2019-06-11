@@ -146,13 +146,53 @@
                     android:layout_height="@dimen/dp_1"
                     android:background="@color/divider_color" />
 
-                <com.tokopedia.hotel.common.presentation.widget.InfoTextView
-                    android:id="@+id/room_detail_pay_at_hotel"
+                <LinearLayout
+                    android:id="@+id/pay_at_hotel_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/colorGray"
+                    android:orientation="vertical"
+                    android:visibility="gone"
                     android:padding="@dimen/dp_16"
-                    android:visibility="gone" />
+                    android:background="@color/colorGray"
+                    tools:visibility="visible">
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/pay_at_hotel_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:lineSpacingExtra="@dimen/sp_6"
+                        app:fontSize="title"
+                        app:textViewTheme="lightPrimary"
+                        app:weight="medium"
+                        tools:text="@string/hotel_room_detail_pay_at_hotel" />
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/pay_at_hotel_icon"
+                            android:layout_width="@dimen/dp_16"
+                            android:layout_height="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/pay_at_hotel_desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="@dimen/sp_6"
+                            app:fontSize="micro"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:textViewTheme="lightSecondary"
+                            tools:text="Perlu jaminan kartu kredit" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                </LinearLayout>
 
                 <com.tokopedia.hotel.common.presentation.widget.InfoTextView
                     android:id="@+id/room_detail_cancellation"
