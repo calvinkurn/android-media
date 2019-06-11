@@ -90,7 +90,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         sendViewToBack(playerView)
 
         //get video source path
-        val videoSource = arguments?.getString(VIDEO_SOURCE, "")
+        val videoSource = "https://www.youtube.com/embed/live_stream?channel=UCph-WGR0oCbJDpaWmNHb5zg" as String?
         if (videoSource == null || videoSource.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)
             dismiss()
