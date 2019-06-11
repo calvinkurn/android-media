@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.utils;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
@@ -16,12 +15,6 @@ import com.moengage.pushbase.push.PushMessageListener;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.tkpd.R;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 public class CustomPushListener extends PushMessageListener {
 
@@ -79,8 +72,6 @@ public class CustomPushListener extends PushMessageListener {
             provider.updateNotificationId(NOTIFICATION_ID);
             createPersistentNotification(context, extras, builder);
         } else if (GRID.equalsIgnoreCase(extras.getString(KEY_IS_GRID))) {
-            String bundleData = bundleTostring(extras);
-            writeToSDFile(bundleData);
             provider.updateNotificationId(GRID_NOTIFICATION_ID);
             createGridNotification(context, extras, builder);
         }
@@ -144,12 +135,8 @@ public class CustomPushListener extends PushMessageListener {
         Intent deleteIntent = new Intent(context, NotificationBroadcast.class);
         deleteIntent.setAction(DELETE_NOTIFY);
         deleteIntent.putExtra(EXTRA_NOTIFICATION_ID, NOTIFICATION_ID);
-        PendingIntent pIntent5 = PendingIntent.getBroadcast(
-                context,
-                NOTIFICATION_ID,
-                deleteIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.image_icon5, pIntent5);
+        PendingIntent deletePendingIntent = getPendingIntent(context, NOTIFICATION_ID, deleteIntent);
+        remoteView.setOnClickPendingIntent(R.id.image_icon5, deletePendingIntent);
 
         Intent notificationIntent = new Intent(context, MainParentActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 104, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -217,11 +204,10 @@ public class CustomPushListener extends PushMessageListener {
     }
 
     private void setCollapseData(Context context, RemoteViews remoteView, Bundle extras) {
-
         Intent notificationIntent = new Intent(context, NotificationBroadcast.class);
         notificationIntent.setAction(ACTION_GRID_CLICK);
 
-        String deepLink = extras.getString("dl");
+        String deepLink = extras.getString("gcm_webUrl");
         if (null != deepLink) {
             notificationIntent.putExtra(EXTRA_DEEP_LINK, deepLink);
         } else {
@@ -229,56 +215,31 @@ public class CustomPushListener extends PushMessageListener {
         }
 
         notificationIntent.putExtra(EXTRA_NOTIFICATION_ID, GRID_NOTIFICATION_ID);
-        PendingIntent contentIntent = null;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            contentIntent = PendingIntent.getBroadcast(
-                    context,
-                    200,
-                    notificationIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
-        } else {
-            contentIntent = PendingIntent.getBroadcast(
-                    context,
-                    200,
-                    notificationIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
-        }
-
-
+        PendingIntent contentIntent = getPendingIntent(context, 200, notificationIntent);
         remoteView.setTextViewText(R.id.tv_collapse_title, extras.getString("gcm_title"));
         remoteView.setTextViewText(R.id.tv_collapsed_message, extras.getString("gcm_alert"));
         remoteView.setOnClickPendingIntent(R.id.collapseMainView, contentIntent);
     }
 
+    private PendingIntent getPendingIntent(Context context, int requestCode, Intent intent) {
+        return PendingIntent.getBroadcast(
+                context,
+                requestCode,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+    }
+
     private void createGrid(Context context, RemoteViews remoteView, int resId, String url, String deepLink, int requestCode) {
         if (null == url)
             return;
-        PendingIntent resultPendingIntent;
         remoteView.setViewVisibility(resId, View.VISIBLE);
         remoteView.setImageViewBitmap(resId, MoEHelperUtils.downloadImageBitmap(url));
         Intent intent = new Intent(context, NotificationBroadcast.class);
         intent.setAction(ACTION_GRID_CLICK);
         intent.putExtra(EXTRA_DEEP_LINK, deepLink);
         intent.putExtra(EXTRA_NOTIFICATION_ID, GRID_NOTIFICATION_ID);
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            resultPendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
-        } else {
-            resultPendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
-        }
-
+        PendingIntent resultPendingIntent = getPendingIntent(context, requestCode, intent);
         remoteView.setOnClickPendingIntent(resId, resultPendingIntent);
     }
 
@@ -291,37 +252,6 @@ public class CustomPushListener extends PushMessageListener {
     @Override
     public void onNotificationNotRequired(Context context, Bundle extras) {
 
-    }
-
-    public static String bundleTostring(Bundle bundle) {
-        if (bundle == null) {
-            return null;
-        }
-        String string = "Bundle{";
-        for (String key : bundle.keySet()) {
-            string += " " + key + " => " + bundle.get(key) + ";\n";
-        }
-        string += " }Bundle";
-        return string;
-    }
-
-    private void writeToSDFile(String bundleData) {
-        File root = android.os.Environment.getExternalStorageDirectory();
-        File dir = new File(root.getAbsolutePath() + "/download");
-        dir.mkdirs();
-        File file = new File(dir, "myData.txt");
-        try {
-            FileOutputStream f = new FileOutputStream(file);
-            PrintWriter pw = new PrintWriter(f);
-            pw.print(bundleData);
-            pw.flush();
-            pw.close();
-            f.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }
