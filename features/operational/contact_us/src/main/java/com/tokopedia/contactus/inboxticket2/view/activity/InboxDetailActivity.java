@@ -152,9 +152,9 @@ public class InboxDetailActivity extends InboxBaseActivity
                     getResources().getColor(R.color.orange_500), textSizeLabel));
             rvMessageList.setPadding(0, 0, 0,
                     getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
+            viewReplyButton.setVisibility(View.VISIBLE);
             if (ticketDetail.isShowRating()) {
                 toggleTextToolbar(View.GONE);
-                viewReplyButton.setVisibility(View.VISIBLE);  //----
                 rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
             }
 
@@ -614,8 +614,14 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void onClick(View view) {
+        String rating="";
         if (view.getId() == R.id.tv_rply_button) {
-            String rating = commentsItems.get(detailAdapter.getItemCount()-1).getRating();
+            for(int i =detailAdapter.getItemCount()-1; i>=0;i--){
+                rating = commentsItems.get(i).getRating();
+                if(rating.equals("101")|| rating.equals("102")){
+                    break;
+                }
+            }
             if(rating.equals("101")|| rating.equals("102")){
                 viewReplyButton.setVisibility(View.GONE);
                 textToolbar.setVisibility(View.VISIBLE);
@@ -650,8 +656,6 @@ public class InboxDetailActivity extends InboxBaseActivity
             ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick("yes",commentPosition,item.getId());
             helpFullBottomSheet.dismiss();
         }else{
-
-            //call peresenter to updagte
             ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick("no",commentPosition,item.getId());
             viewReplyButton.setVisibility(View.GONE);
             textToolbar.setVisibility(View.VISIBLE);

@@ -178,8 +178,8 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
 
     @Override
     public void setFilterList(List<BadCsatReasonListItem> filterList) {
-        LinearLayoutManager gridLayoutManager = new LinearLayoutManager(getContext());
-        mFilterReview.updateLayoutManager(gridLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mFilterReview.updateLayoutManager(linearLayoutManager);
         List<QuickFilterItem> filterItems = new ArrayList<>();
         CustomViewQuickFilterItem finishFilter = null;
         for(BadCsatReasonListItem filter:filterList) {
