@@ -405,7 +405,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                             break;
                         }
                         case REQUEST_ADD_NAME_REGISTER_PHONE :{
-                            registerAnalytics.trackSuccessClickYesButtonPhoneDialog();
+                            onSuccessRegisterPhoneNumber();
                             startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
                                     REQUEST_WELCOME_PAGE);
                             break;
@@ -477,7 +477,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                             break;
                         }
                         case REQUEST_WELCOME_PAGE :{
-                            onFailedRegisterPhoneNumber(getString(R.string.welcome_page_error_condition));
                             getActivity().setResult(Activity.RESULT_OK);
                             getActivity().finish();
                             break;
@@ -572,7 +571,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     private void goToProfileCompletionPage() {
-        onSuccessRegisterPhoneNumber();
         if (getActivity() != null) {
             ((ApplinkRouter) getActivity().getApplicationContext()).goToApplinkActivity(getActivity
                     (), ApplinkConst.PROFILE_COMPLETION);
@@ -910,7 +908,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(getActivity(),
                     RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER, phoneNumber, "");
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH);
-            registerAnalytics.trackSuccessClickYesButtonRegisteredPhoneDialog();
         }
     }
 
