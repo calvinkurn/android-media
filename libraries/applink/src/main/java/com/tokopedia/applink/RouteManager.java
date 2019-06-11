@@ -21,7 +21,7 @@ import java.util.Set;
 
 public class RouteManager {
 
-    public static final String EXTRA_APPLINK_UNSUPPORTED = "EXTRA_APPLINK_UNSUPPORTED";
+    private static final String EXTRA_APPLINK_UNSUPPORTED = "EXTRA_APPLINK_UNSUPPORTED";
 
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
@@ -110,17 +110,6 @@ public class RouteManager {
         if (TextUtils.isEmpty(mappedDeeplink)) {
             mappedDeeplink = uriString;
         }
-        routeAfterMapping(context, mappedDeeplink);
-    }
-
-    /**
-     * See route()
-     * Only use this after deeplink iss already converted by DeeplinkMapper.getRegisteredNavigation()
-     */
-    public static void routeAfterMapping(Context context, String mappedDeeplink) {
-        if (context == null) {
-            return;
-        }
         Intent intent;
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
             ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, mappedDeeplink);
@@ -147,13 +136,6 @@ public class RouteManager {
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(context, uriString);
         if (TextUtils.isEmpty(mappedDeeplink)) {
             mappedDeeplink = uriString;
-        }
-        routeWithFallbackAfterMapping(context, mappedDeeplink);
-    }
-
-    private static void routeWithFallbackAfterMapping(Context context, String mappedDeeplink) {
-        if (context == null) {
-            return;
         }
         Intent intent;
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
@@ -194,22 +176,6 @@ public class RouteManager {
     }
 
     /**
-     * see getIntent()
-     * Only use this after deeplink is already converted by DeeplinkMapper.getRegisteredNavigation()
-     */
-    public static Intent getIntentAfterMapping(Context context, String mappedDeeplink) {
-        Intent intent = getIntentNoFallbackAfterMapping(context, mappedDeeplink);
-        // set fallback for implicit intent
-        if (intent == null || intent.resolveActivity(context.getPackageManager()) == null) {
-            intent = new Intent();
-            intent.setClassName(context.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
-            intent.setData(Uri.parse(mappedDeeplink));
-            intent.putExtra(EXTRA_APPLINK_UNSUPPORTED, true);
-        }
-        return intent;
-    }
-
-    /**
      * return the intent for the deeplink
      * If no activity found will return null
      * <p>
@@ -223,14 +189,6 @@ public class RouteManager {
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(context, deeplink);
         if (TextUtils.isEmpty(mappedDeeplink)) {
             mappedDeeplink = deeplink;
-        }
-        return getIntentNoFallbackAfterMapping(context, mappedDeeplink);
-    }
-
-    private static @Nullable
-    Intent getIntentNoFallbackAfterMapping(Context context, String mappedDeeplink) {
-        if (context == null) {
-            return null;
         }
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
             return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, mappedDeeplink);

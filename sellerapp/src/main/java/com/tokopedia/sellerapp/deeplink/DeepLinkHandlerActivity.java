@@ -178,7 +178,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
         } else {
-            Intent intent = RouteManager.getIntentAfterMapping(this, applinkString);
+            Intent intent = RouteManager.getIntent(this, applinkString);
             startActivity(intent);
             this.finish();
         }

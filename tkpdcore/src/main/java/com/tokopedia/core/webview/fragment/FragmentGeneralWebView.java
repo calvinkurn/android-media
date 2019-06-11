@@ -551,7 +551,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 if (activity!= null) {
                     String applink = DeeplinkMapper.getRegisteredNavigation(activity, url);
                     if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(activity, applink)) {
-                        RouteManager.routeAfterMapping(getActivity(), applink);
+                        RouteManager.route(getActivity(), applink);
                         return true;
                     }
                 }

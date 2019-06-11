@@ -337,7 +337,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         if (deepLinkDelegate.supportsUri(applinkString)) {
             routeFromApplink(Uri.parse(applinkString));
         } else {
-            Intent intent = RouteManager.getIntentAfterMapping(this, applinkString);
+            Intent intent = RouteManager.getIntent(this, applinkString);
             startActivity(intent);
         }
     }

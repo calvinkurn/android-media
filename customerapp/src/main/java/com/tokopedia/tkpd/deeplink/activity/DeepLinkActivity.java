@@ -93,7 +93,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(this, applink)) {
             String screenName = AppScreen.SCREEN_NATIVE_RECHARGE;
             presenter.sendCampaignGTM(this, applink, screenName);
-            RouteManager.routeAfterMapping(this, applink);
+            RouteManager.route(this, applink);
             finish();
         } else {
             initDeepLink();
