@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.AppUtils;
@@ -34,37 +33,26 @@ import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPass
 import com.tokopedia.inbox.rescenter.edit.presenter.BuyerEditResCenterImpl;
 import com.tokopedia.inbox.rescenter.edit.presenter.BuyerEditResCenterPresenter;
 
-import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * Created on 8/24/16.
  */
 public class BuyerEditResCenterFormFragment extends BasePresenterFragment<BuyerEditResCenterPresenter>
-        implements BuyerEditResCenterListener {
+        implements BuyerEditResCenterListener, View.OnClickListener {
 
     private static final String ARGS_PARAM_PASS_DATA = "ARGS_PARAM_PASS_DATA";
     private static final String TAG_STEP_1 = "step_1";
     private static final String TAG_STEP_2 = "step_2";
 
     private ActionParameterPassData passData;
-
-    @BindView(R2.id.invoice)
-    TextView invoice;
-    @BindView(R2.id.shop_name)
-    TextView shopName;
-    @BindView(R2.id.include_loading)
-    ProgressBar loading;
-    @BindView(R2.id.main_view)
-    View mainView;
-    @BindView(R2.id.view_edit_package_status)
-    EditPackageStatusView editPackageStatusView;
-    @BindView(R2.id.view_edit_category_section)
-    EditCategorySectionView editCategorySectionView;
-    @BindView(R2.id.view_edit_product_trouble_section)
-    EditProductTroubleView editProductTroubleView;
-    @BindView(R2.id.view_edit_trouble_section)
-    EditTroubleSectionView editTroubleView;
+    private TextView invoice;
+    private TextView shopName;
+    private ProgressBar loading;
+    private View mainView;
+    private EditPackageStatusView editPackageStatusView;
+    private EditCategorySectionView editCategorySectionView;
+    private EditProductTroubleView editProductTroubleView;
+    private EditTroubleSectionView editTroubleView;
 
     public static Fragment newInstance(ActionParameterPassData passData) {
         BuyerEditResCenterFormFragment fragment = new BuyerEditResCenterFormFragment();
@@ -179,7 +167,20 @@ public class BuyerEditResCenterFormFragment extends BasePresenterFragment<BuyerE
 
     @Override
     protected void initView(View view) {
+        settingUpVariables(view);
+        view.findViewById(R.id.action_choose_solution).setOnClickListener(this);
+        view.findViewById(R.id.action_abort).setOnClickListener(this);
+    }
 
+    private void settingUpVariables(View view) {
+        invoice = view.findViewById(R.id.invoice);
+        shopName = view.findViewById(R.id.shop_name);
+        loading = view.findViewById(R.id.include_loading);
+        mainView = view.findViewById(R.id.main_view);
+        editPackageStatusView = view.findViewById(R.id.view_edit_package_status);
+        editCategorySectionView = view.findViewById(R.id.view_edit_category_section);
+        editProductTroubleView = view.findViewById(R.id.view_edit_product_trouble_section);
+        editTroubleView = view.findViewById(R.id.view_edit_trouble_section);
     }
 
     @Override
@@ -317,13 +318,11 @@ public class BuyerEditResCenterFormFragment extends BasePresenterFragment<BuyerE
 
     }
 
-    @OnClick(R2.id.action_choose_solution)
     public void onButtonNextClick() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.setOnButtonNextClick(getActivity());
     }
 
-    @OnClick(R2.id.action_abort)
     public void onButtonAbortClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.dialog_discard_changes)
@@ -378,5 +377,15 @@ public class BuyerEditResCenterFormFragment extends BasePresenterFragment<BuyerE
     public void onDestroy() {
         presenter.unsubscribe();
         super.onDestroy();
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if(id==R.id.action_choose_solution){
+            onButtonNextClick();
+        }else if(id==R.id.action_abort){
+            onButtonAbortClick();
+        }
     }
 }

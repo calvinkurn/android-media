@@ -5,11 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.inbox.rescenter.create.customview.BaseView;
 import com.tokopedia.inbox.rescenter.detail.customadapter.AttachmentAdapter;
@@ -20,21 +20,16 @@ import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 /**
  * Created on 8/13/16.
  */
 public class ReplyEditorView extends BaseView<DetailResCenterData.Detail, DetailResCenterView> {
 
-    @BindView(R2.id.listview_attachment)
-    RecyclerView attachmentRecyclerView;
-    @BindView(R2.id.attach_but)
-    View actionAttachment;
-    @BindView(R2.id.send_but)
-    View actionSend;
-    @BindView(R2.id.new_comment)
-    EditText boxComment;
+
+    private RecyclerView attachmentRecyclerView;
+    private View actionAttachment;
+    private View actionSend;
+    private EditText boxComment;
 
     private List<AttachmentResCenterVersion2DB> attachmentData;
     private AttachmentAdapter adapter;
@@ -129,5 +124,16 @@ public class ReplyEditorView extends BaseView<DetailResCenterData.Detail, Detail
 
     public void setReplyBoxEmpty() {
         boxComment.setText(null);
+    }
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        attachmentRecyclerView = view.findViewById(R.id.listview_attachment);
+        actionAttachment = view.findViewById(R.id.attach_but);
+        actionSend = view.findViewById(R.id.send_but);
+        boxComment = view.findViewById(R.id.new_comment);
     }
 }

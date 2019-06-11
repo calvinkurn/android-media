@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.core.PreviewProductImage;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.MethodChecker;
@@ -30,8 +29,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 /**
@@ -44,35 +41,30 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.message)
+
         TextView message;
-
-        @BindView(R2.id.hour)
         TextView hour;
-
-        @BindView(R2.id.date)
         TextView date;
-
 //        @BindView(R2.id.username)
 //        TextView userName;
-
-        @BindView(R2.id.label)
         TextView userLabel;
-
         TextView titleAttachment;
-
-        @BindView(R2.id.image_holder)
         RecyclerView imageHolder;
-
         AttachmentAdapter adapter;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
-            titleAttachment = (TextView) itemView.findViewById(R.id.title_attachment);
+            settingUpVariables(itemView);
         }
-
+        private void settingUpVariables(View view) {
+            message = view.findViewById(R.id.message);
+            hour = view.findViewById(R.id.hour);
+            date = view.findViewById(R.id.date);
+            userLabel = view.findViewById(R.id.label);
+            titleAttachment = view.findViewById(R.id.title_attachment);
+            imageHolder = view.findViewById(R.id.image_holder);
+        }
     }
 
     private ArrayList<DiscussionItemViewModel> list;

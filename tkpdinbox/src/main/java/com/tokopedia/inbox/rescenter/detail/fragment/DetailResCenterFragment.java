@@ -16,7 +16,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
@@ -45,7 +44,6 @@ import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -65,21 +63,14 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     private static final int CHOOSE_ADDRESS_MIGRATE_VERSION = 7891;
     private static final int CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION = 7892;
     private static final int EDIT_ADDRESS = 5678;
-
     private ActivityParamenterPassData passData;
     private DetailResCenterData apiModelData;
-
     private ResCenterView mListener;
     private TkpdProgressDialog normalLoading;
-
-    @BindView(R2.id.main_view)
-    View mainView;
-    @BindView(R2.id.loading)
-    View loadingView;
-    @BindView(R2.id.custom_view_reply_editor)
-    ReplyEditorView replyEditorView;
-    @BindView(R2.id.custom_view_detail_rescenter)
-    DetailView detailView;
+    private View mainView;
+    private View loadingView;
+    private ReplyEditorView replyEditorView;
+    private DetailView detailView;
 
     private String ahrefEditAddressURL;
 
@@ -159,6 +150,10 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     @Override
     protected void initView(View view) {
         prepareLoadingView();
+        mainView = view.findViewById(R.id.main_view);
+        loadingView = view.findViewById(R.id.loading);
+        replyEditorView = view.findViewById(R.id.custom_view_reply_editor);
+        detailView = view.findViewById(R.id.custom_view_detail_rescenter);
     }
 
     private void prepareLoadingView() {

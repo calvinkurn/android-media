@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core2.R2;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
@@ -17,8 +16,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by nisie on 3/31/17.
@@ -29,16 +26,14 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.image_upload)
         ImageView image;
-
-        @BindView(R2.id.delete_but)
         ImageView deleteButton;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            image = itemView.findViewById(R.id.image_upload);
+            deleteButton = itemView.findViewById(R.id.delete_but);
         }
     }
 

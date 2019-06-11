@@ -10,15 +10,12 @@ import android.widget.MediaController;
 import android.widget.Toast;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.inbox.rescenter.player.customview.CustomVideoView;
 import com.tokopedia.inbox.rescenter.player.listener.VideoPlayerView;
 import com.tokopedia.inbox.rescenter.player.presenter.VideoPlayerImpl;
 import com.tokopedia.inbox.rescenter.player.presenter.VideoPlayerPresenter;
-
-import butterknife.BindView;
 
 /**
  * Created by hangnadi on 2/9/17.
@@ -30,9 +27,7 @@ public class VideoPlayerActivity extends BasePresenterActivity<VideoPlayerPresen
     public static final String PARAMS_URL_VIDEO = "url_video";
 
     private Uri videoUri;
-
-    @BindView(R2.id.myVideo)
-    CustomVideoView videoView;
+    private CustomVideoView videoView;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -57,6 +52,7 @@ public class VideoPlayerActivity extends BasePresenterActivity<VideoPlayerPresen
 
     @Override
     protected void initView() {
+        videoView = findViewById(R.id.myVideo);
         MediaController vidControl = new MediaController(this);
         vidControl.setAnchorView(videoView);
         videoView.setMediaController(vidControl);

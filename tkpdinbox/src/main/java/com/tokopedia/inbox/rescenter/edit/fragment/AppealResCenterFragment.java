@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -43,9 +42,6 @@ import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -58,25 +54,17 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class AppealResCenterFragment extends BasePresenterFragment<AppealResCenterPresenter>
-        implements AppealResCenterListener, AttachmentAdapter.AttachmentAdapterListener {
+        implements AppealResCenterListener, AttachmentAdapter.AttachmentAdapterListener, View.OnClickListener {
 
     private static final String ARGS_PARAM_PASS_DATA = "ARGS_PARAM_PASS_DATA";
 
     private ActionParameterPassData passData;
-
-    @BindView(R2.id.invoice)
-    TextView invoice;
-    @BindView(R2.id.shop_name)
-    TextView shopName;
-    @BindView(R2.id.include_loading)
-    ProgressBar loading;
-    @BindView(R2.id.main_view)
-    View mainView;
-    @BindView(R2.id.view_edit_solution_section)
-    AppealSolutionView solutionView;
-    @BindView(R2.id.view_attachment_section)
-    AppealAttachmentView attachmenSectionView;
-
+    private TextView invoice;
+    private TextView shopName;
+    private ProgressBar loading;
+    private View mainView;
+    private AppealSolutionView solutionView;
+    private AppealAttachmentView attachmenSectionView;
     private List<AttachmentResCenterVersion2DB> attachmentData;
     private AttachmentAdapter attachmentAdapter;
     private UploadImageEditResCenterDialog uploadImageDialog;
@@ -173,7 +161,18 @@ public class AppealResCenterFragment extends BasePresenterFragment<AppealResCent
 
     @Override
     protected void initView(View view) {
+        settingUpVariables(view);
+        view.findViewById(R.id.action_choose_solution).setOnClickListener(this::onClick);
+        view.findViewById(R.id.action_abort).setOnClickListener(this::onClick);
+    }
 
+    private void settingUpVariables(View view) {
+        invoice = view.findViewById(R.id.invoice);
+        shopName = view.findViewById(R.id.shop_name);
+        loading = view.findViewById(R.id.include_loading);
+        mainView = view.findViewById(R.id.main_view);
+        solutionView = view.findViewById(R.id.view_edit_solution_section);
+        attachmenSectionView = view.findViewById(R.id.view_attachment_section);
     }
 
     @Override
@@ -271,13 +270,11 @@ public class AppealResCenterFragment extends BasePresenterFragment<AppealResCent
         invoice.setText(spannableString);
     }
 
-    @OnClick(R2.id.action_choose_solution)
     public void onButtonNextClick() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.setOnButtonNextClick(getActivity());
     }
 
-    @OnClick(R2.id.action_abort)
     public void onButtonAbortClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.dialog_discard_changes)
@@ -486,5 +483,15 @@ public class AppealResCenterFragment extends BasePresenterFragment<AppealResCent
         listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if(id==R.id.action_choose_solution){
+            onButtonNextClick();
+        }else if(id==R.id.action_abort){
+            onButtonAbortClick();
+        }
     }
 }

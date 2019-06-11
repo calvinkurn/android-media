@@ -5,9 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.inbox.rescenter.create.customadapter.ProductAdapter;
 import com.tokopedia.inbox.rescenter.create.listener.ChooseTroubleListener;
 import com.tokopedia.inbox.rescenter.create.model.passdata.PassProductTrouble;
@@ -16,15 +17,13 @@ import com.tokopedia.inbox.rescenter.create.model.responsedata.CreateResCenterFo
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 
 /**
  * Created on 8/3/16.
  */
 public class ChooseProductSectionCreateResCenterView extends BaseView<CreateResCenterFormData, ChooseTroubleListener> {
 
-    @BindView(R2.id.product_recyclerview)
-    RecyclerView productRecyclerView;
+    private RecyclerView productRecyclerView;
 
     private ProductAdapter adapter;
 
@@ -81,5 +80,13 @@ public class ChooseProductSectionCreateResCenterView extends BaseView<CreateResC
             }
         }
         return passProductTroubleList;
+    }
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        productRecyclerView = view.findViewById(R.id.product_recyclerview);
     }
 }

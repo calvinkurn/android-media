@@ -24,7 +24,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
@@ -48,9 +47,6 @@ import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -63,26 +59,18 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class SellerEditResCenterFormFragment extends BasePresenterFragment<SellerEditResCenterPresenter>
-        implements SellerEditResCenterListener, AttachmentAdapter.AttachmentAdapterListener {
+        implements SellerEditResCenterListener, AttachmentAdapter.AttachmentAdapterListener, View.OnClickListener {
 
     private static final String ARGS_PARAM_PASS_DATA = "ARGS_PARAM_PASS_DATA";
 
     private ActionParameterPassData passData;
-
-    @BindView(R2.id.invoice)
-    TextView invoice;
-    @BindView(R2.id.shop_name)
-    TextView shopName;
-    @BindView(R2.id.include_loading)
-    ProgressBar loading;
-    @BindView(R2.id.main_view)
-    View mainView;
-    @BindView(R2.id.view_edit_summary_rescenter)
-    EditSummaryResCenterView summaryView;
-    @BindView(R2.id.view_edit_solution_section)
-    EditSolutionSellerView editSolutionSellerView;
-    @BindView(R2.id.view_attachment_section)
-    EditAttachmentSellerView attachmenSectionView;
+    private TextView invoice;
+    private TextView shopName;
+    private ProgressBar loading;
+    private View mainView;
+    private EditSummaryResCenterView summaryView;
+    private EditSolutionSellerView editSolutionSellerView;
+    private EditAttachmentSellerView attachmenSectionView;
 
     private List<AttachmentResCenterVersion2DB> attachmentData;
     private AttachmentAdapter attachmentAdapter;
@@ -180,7 +168,19 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
 
     @Override
     protected void initView(View view) {
+        settingUpVariables(view);
+        view.findViewById(R.id.action_choose_solution).setOnClickListener(this);
+        view.findViewById(R.id.action_abort).setOnClickListener(this);
+    }
 
+    private void settingUpVariables(View view) {
+        invoice = view.findViewById(R.id.invoice);
+        shopName = view.findViewById(R.id.shop_name);
+        summaryView = view.findViewById(R.id.view_edit_summary_rescenter);
+        attachmenSectionView = view.findViewById(R.id.view_edit_solution_section);
+        editSolutionSellerView = view.findViewById(R.id.view_attachment_section);
+        loading = view.findViewById(R.id.include_loading);
+        mainView = view.findViewById(R.id.main_view);
     }
 
     @Override
@@ -279,13 +279,11 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
         invoice.setText(spannableString);
     }
 
-    @OnClick(R2.id.action_choose_solution)
     public void onButtonNextClick() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.setOnButtonNextClick(getActivity());
     }
 
-    @OnClick(R2.id.action_abort)
     public void onButtonAbortClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.dialog_discard_changes)
@@ -514,5 +512,15 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
         listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if(id==R.id.action_choose_solution){
+            onButtonNextClick();
+        }else if(id==R.id.action_abort){
+            onButtonAbortClick();
+        }
     }
 }

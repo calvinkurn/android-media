@@ -3,32 +3,27 @@ package com.tokopedia.inbox.rescenter.create.customview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.inbox.rescenter.create.customadapter.TroubleSpinnerAdapter;
 import com.tokopedia.inbox.rescenter.create.listener.ChooseTroubleListener;
 import com.tokopedia.inbox.rescenter.create.model.responsedata.CreateResCenterFormData;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
 
 /**
  * Created on 8/3/16.
  */
 public class ChooseTroubleSectionCreateResCenterView extends BaseView<CreateResCenterFormData, ChooseTroubleListener> {
 
-    @BindView(R2.id.spinner_trouble)
     public Spinner troubleSpinner;
-    @BindView(R2.id.view_desc)
     public View descBoxView;
-    @BindView(R2.id.box_desc)
     public EditText descEditText;
-
 
     public ChooseTroubleSectionCreateResCenterView(Context context) {
         super(context);
@@ -81,5 +76,15 @@ public class ChooseTroubleSectionCreateResCenterView extends BaseView<CreateResC
         TroubleSpinnerAdapter troubleAdapter = new TroubleSpinnerAdapter(getContext(), android.R.layout.simple_spinner_item, new ArrayList<CreateResCenterFormData.TroubleData>());
         troubleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         troubleSpinner.setAdapter(troubleAdapter);
+    }
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        troubleSpinner = view.findViewById(R.id.spinner_trouble);
+        descBoxView = view.findViewById(R.id.view_desc);
+        descEditText = view.findViewById(R.id.box_desc);
     }
 }

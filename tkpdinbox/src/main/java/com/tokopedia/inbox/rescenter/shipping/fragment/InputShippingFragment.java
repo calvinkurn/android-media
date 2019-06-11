@@ -26,7 +26,6 @@ import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core2.R2;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
@@ -47,9 +46,6 @@ import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 import okhttp3.OkHttpClient;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -75,22 +71,14 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     public static final String EXTRA_PARAM_MODEL = "params_model";
     public static final String URL_IMG = "https://ecs7.tokopedia.net/img/android/others/img_awb_example.png";
     private static final int REQUEST_CODE_IMAGE_RESI = 3124;
-
-    @BindView(R2.id.ref_number)
-    EditText shippingRefNum;
-    @BindView(R2.id.spinner_kurir)
-    Spinner shippingSpinner;
-    @BindView(R2.id.error_spinner)
-    TextView errorSpinner;
-    @BindView(R2.id.list_upload_proof)
-    RecyclerView listAttachment;
-    @BindView(R2.id.loading)
-    View loadingView;
-    @BindView(R2.id.main_view)
-    View mainView;
-    @BindView(R2.id.confirm_button)
-    TextView confirmButton;
-    ImageView imgAwb;
+    private EditText shippingRefNum;
+    private Spinner shippingSpinner;
+    private TextView errorSpinner;
+    private RecyclerView listAttachment;
+    private View loadingView;
+    private View mainView;
+    private TextView confirmButton;
+    private ImageView imgAwb;
 
     private AttachmentAdapter attachmentAdapter;
     private InputShippingParamsGetModel paramsModel;
@@ -108,7 +96,6 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
         return fragment;
     }
 
-    @OnClick(R2.id.confirm_button)
     public void setOnConfirmButtonClick() {
         if (paramsModel.isFromChat()) {
             if (paramsModel.isEdit())
@@ -228,9 +215,26 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @Override
     protected void initView(View view) {
-        imgAwb = (ImageView) view.findViewById(R.id.img_awb);
+        settingUpVariables(view);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setOnConfirmButtonClick();
+            }
+        });
         ImageHandler.LoadImage(imgAwb, URL_IMG);
         renderAttachmentAdapter();
+    }
+
+    private void settingUpVariables(View view) {
+        shippingRefNum = view.findViewById(R.id.ref_number);
+        shippingSpinner = view.findViewById(R.id.spinner_kurir);
+        errorSpinner = view.findViewById(R.id.error_spinner);
+        listAttachment = view.findViewById(R.id.list_upload_proof);
+        loadingView = view.findViewById(R.id.loading);
+        mainView = view.findViewById(R.id.main_view);
+        confirmButton = view.findViewById(R.id.confirm_button);
+        imgAwb = view.findViewById(R.id.img_awb);
     }
 
     @Override

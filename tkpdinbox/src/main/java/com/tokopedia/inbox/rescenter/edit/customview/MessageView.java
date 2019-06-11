@@ -3,23 +3,21 @@ package com.tokopedia.inbox.rescenter.edit.customview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.rescenter.edit.listener.BuyerEditSolutionListener;
 
-import butterknife.BindView;
 
 /**
  * Created on 8/29/16.
  */
 public class MessageView extends BaseView<Object, BuyerEditSolutionListener> {
 
-
-    @BindView(R2.id.message_box)
-    EditText messageBox;
+    private EditText messageBox;
 
     public MessageView(Context context) {
         super(context);
@@ -56,5 +54,13 @@ public class MessageView extends BaseView<Object, BuyerEditSolutionListener> {
 
     public EditText getMessageBox() {
         return messageBox;
+    }
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        messageBox = view.findViewById(R.id.message_box);
     }
 }

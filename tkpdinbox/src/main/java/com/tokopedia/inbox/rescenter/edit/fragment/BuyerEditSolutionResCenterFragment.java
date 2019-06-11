@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -41,9 +40,6 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -57,25 +53,18 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class BuyerEditSolutionResCenterFragment
         extends BasePresenterFragment<BuyerEditSolutionPresenter>
-        implements BuyerEditSolutionListener, AttachmentAdapter.AttachmentAdapterListener {
+        implements BuyerEditSolutionListener, AttachmentAdapter.AttachmentAdapterListener, View.OnClickListener {
 
     private static final String ARGS_PARAM_PASS_DATA = "pass_data";
 
-    @BindView(R2.id.invoice)
-    TextView invoice;
-    @BindView(R2.id.shop_name)
-    TextView shopName;
-    @BindView(R2.id.view_solution_section)
-    EditSolutionView solutionSectionView;
-    @BindView(R2.id.view_attachment_section)
-    EditAttachmentView attachmenSectionView;
-    @BindView(R2.id.view_message_section)
-    MessageView messageView;
-    @BindView(R2.id.main_view)
-    View mainView;
-    @BindView(R2.id.include_loading)
-    View loading;
 
+    private TextView invoice;
+    private TextView shopName;
+    private EditSolutionView solutionSectionView;
+    private EditAttachmentView attachmenSectionView;
+    private MessageView messageView;
+    private View mainView;
+    private View loading;
     private ActionParameterPassData passData;
     private List<AttachmentResCenterVersion2DB> attachmentData;
     private AttachmentAdapter attachmentAdapter;
@@ -158,8 +147,21 @@ public class BuyerEditSolutionResCenterFragment
 
     @Override
     protected void initView(View view) {
+        settingUpVariables(view);
+        view.findViewById(R.id.action_submit).setOnClickListener(this);
+        view.findViewById(R.id.action_abort).setOnClickListener(this);
         renderInvoiceData(passData.getFormData().getForm());
         renderShopData(passData.getFormData().getForm());
+    }
+
+    private void settingUpVariables(View view) {
+        invoice = view.findViewById(R.id.invoice);
+        shopName = view.findViewById(R.id.shop_name);
+        solutionSectionView = view.findViewById(R.id.view_solution_section);
+        attachmenSectionView = view.findViewById(R.id.view_attachment_section);
+        messageView = view.findViewById(R.id.view_message_section);
+        loading = view.findViewById(R.id.include_loading);
+        mainView = view.findViewById(R.id.main_view);
     }
 
     private void renderShopData(EditResCenterFormData.Form form) {
@@ -248,13 +250,11 @@ public class BuyerEditSolutionResCenterFragment
         attachmenSectionView.attachAdapter(attachmentAdapter);
     }
 
-    @OnClick(R2.id.action_submit)
     public void onSubmitClick() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.setOnSubmitClick(getActivity());
     }
 
-    @OnClick(R2.id.action_abort)
     public void onAbortClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.dialog_discard_changes)
@@ -472,5 +472,15 @@ public class BuyerEditSolutionResCenterFragment
         listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if(id==R.id.action_submit){
+            onSubmitClick();
+        }else if(id==R.id.action_abort){
+            onAbortClick();
+        }
     }
 }
