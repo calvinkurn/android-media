@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.domain
 
 import android.content.Context
+import android.text.TextUtils
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -46,11 +47,13 @@ constructor(private val context: Context,
                        pageName: String,
                        productIds: ArrayList<String>): RequestParams {
         val params = RequestParams.create()
+        val productIdsString = TextUtils.join(",", productIds)
+
         if (userSession.isLoggedIn) {
             params.putInt(USER_ID, userSession.userId.toInt())
         }
         params.putInt(PAGE_NUMBER, pageNumber)
-        params.putObject(PARAM_PRODUCT_IDS, productIds)
+        params.putString(PARAM_PRODUCT_IDS, productIdsString)
 
         if(xSource.isEmpty()) {
             params.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE)
