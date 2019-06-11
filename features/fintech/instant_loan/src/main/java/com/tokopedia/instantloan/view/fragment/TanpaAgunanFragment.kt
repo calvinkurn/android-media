@@ -86,14 +86,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
-//        setupLoanAmountSpinner()
     }
-
-    /*private fun setupLoanAmountSpinner() {
-        val adapter = ArrayAdapter.createFromResource(getContext()!!,
-                R.array.values_amount_array, android.R.layout.simple_spinner_item)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-    }*/
 
     private fun initView(view: View) {
 
@@ -212,19 +205,16 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         prepareLoanPeriodListMonth(gqlFilterData.gqlLoanPeriodResponse.loanMonth.min, gqlFilterData.gqlLoanPeriodResponse.loanMonth.max)
         prepareLoanPeriodListYear(gqlFilterData.gqlLoanPeriodResponse.loanYear.min, gqlFilterData.gqlLoanPeriodResponse.loanYear.max)
 
-        gqlFilterData.gqlLoanAmountResponse.sortBy { it.value }
-
         loanAmountList = gqlFilterData.gqlLoanAmountResponse
-
 
         widgetAddRemove.setMinQuantity(0)
         widgetAddRemove.setMaxQuantity(loanAmountList.size)
 
-        loan_amount_limit.text = "(${loanAmountList[0].label} - ${loanAmountList[loanAmountList.lastIndex].label})"
+        loan_amount_limit.text = "(${loanAmountList.first().label} - ${loanAmountList.last().label})"
         loan_amount_limit.visibility = View.VISIBLE
 
-        widgetAddRemove.setText(loanAmountList[0].label)
-        widgetAddRemove.setLoanValue(loanAmountList[0].value.toLong())
+        widgetAddRemove.setText(loanAmountList.first().label)
+        widgetAddRemove.setLoanValue(loanAmountList.first().value.toLong())
 
     }
 
