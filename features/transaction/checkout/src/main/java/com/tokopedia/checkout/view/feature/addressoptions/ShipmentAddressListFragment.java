@@ -215,7 +215,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     maxItemPosition = lastVisibleItemPosition;
                 }
 
-                if ((maxItemPosition + 1) == totalItemCount && !isLoading) {
+                if ((maxItemPosition + 1) == totalItemCount && !isLoading && dy > 0) {
                     mPresenter.loadMore();
                 }
             }
