@@ -14,13 +14,13 @@ import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DataSpec
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.FileDataSource
 import com.tokopedia.videoplayer.R
 import com.tokopedia.videoplayer.utils.sendViewToBack
@@ -157,9 +157,15 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
                     .setExtractorsFactory(DefaultExtractorsFactory())
                     .createMediaSource(uri)
         } else {
+            //rtmp
             ExtractorMediaSource.Factory(
-                    DefaultHttpDataSourceFactory(EXOPLAYER_AGENT))
+                    RtmpDataSourceFactory())
                     .createMediaSource(uri)
+
+            //http
+//            ExtractorMediaSource.Factory(
+//                    DefaultHttpDataSourceFactory(EXOPLAYER_AGENT))
+//                    .createMediaSource(uri)
         }
     }
 
