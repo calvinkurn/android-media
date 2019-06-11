@@ -1,7 +1,6 @@
 package com.tokopedia.videoplayer.utils
 
 import android.util.Log
-import java.net.URL
 
 sealed class VideoSourceProtocol {
 
@@ -15,8 +14,8 @@ sealed class VideoSourceProtocol {
         const val file = "file"
 
         fun protocol(source: String): VideoSourceProtocol {
-            val url = URL(source)
-            return when (url.protocol) {
+            val url = source.split(":").first()
+            return when (url) {
                 http -> {
                     Log.d("VideoDetailPlayer", http)
                     VideoSourceProtocol.Http
