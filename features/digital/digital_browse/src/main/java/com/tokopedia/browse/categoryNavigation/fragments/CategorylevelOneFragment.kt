@@ -84,12 +84,12 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
 
     private fun initiate() {
         if (activity != null) {
-            (activity as CategoryChangeListener).onCategoryChanged(categoryList[0].id!!,categoryList[0].name!!)
+            (activity as CategoryChangeListener).onCategoryChanged(categoryList[0].id!!, categoryList[0].name!!,categoryList[0].applinks)
         }
     }
 
     private var listener = object : CategorySelectListener {
-        override fun onItemClicked(id: String, position: Int, categoryName: String) {
+        override fun onItemClicked(id: String, position: Int, categoryName: String, applink: String?) {
             if (position != selectedPosition) {
                 categoryList[selectedPosition].isSelected = false
                 categoryList[position].isSelected = true
@@ -97,14 +97,14 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
                 master_list.adapter.notifyItemChanged(selectedPosition)
                 selectedPosition = position
                 if (activity != null)
-                    (activity as CategoryChangeListener).onCategoryChanged(id,categoryName)
+                    (activity as CategoryChangeListener).onCategoryChanged(id, categoryName,applink)
             }
         }
     }
 
 
     interface CategorySelectListener {
-        fun onItemClicked(id: String, position: Int, categoryName: String)
+        fun onItemClicked(id: String, position: Int, categoryName: String, applink: String?)
     }
 
 }

@@ -34,6 +34,7 @@ class HotlistAdapter(private val list: MutableList<ListItem>) : RecyclerView.Ada
 
         Glide.with(holder.itemView.context)
                 .load(list[position].imgSquare)
+                .placeholder(R.drawable.loading_page)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
@@ -41,13 +42,15 @@ class HotlistAdapter(private val list: MutableList<ListItem>) : RecyclerView.Ada
                 .into(holder.hotlist_image)
 
         holder.hotlist_image.setOnClickListener {
-            fireApplink(holder.hotlist_image.context,list[position].url)
+            fireApplink(holder.hotlist_image.context, list[position].applink)
         }
 
     }
 
-    private fun fireApplink(context: Context?, applinks: String?) {
-        RouteManager.route(context, applinks)
+    private fun fireApplink(context: Context?, applink: String?) {
+        if (applink != null) {
+            RouteManager.route(context, applink)
+        }
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

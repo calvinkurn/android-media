@@ -9,13 +9,11 @@ class CategoryListTwoModelMapper {
 
         val iterator = data.categoryAllList?.categories
         iterator!!.forEach {
-            //it?.child = null
             if (it?.id.equals(id)) {
 
-                var l: MutableList<ChildItem>? = it!!.child as MutableList<ChildItem>?
+                val l: MutableList<ChildItem>? = it!!.child as MutableList<ChildItem>?
 
                 if (id.equals("0")) {
-                    //it?.type = 1
 
                     if (l != null) {
                         for (i in l) {
@@ -27,12 +25,10 @@ class CategoryListTwoModelMapper {
 
                     if (l != null) {
                         for (i in l) {
-                            i.child?.add(0, ChildItem(null, null, null, null, it.applinks, "Lihat Semua", null, "0", null, null, null, false, 2))
+                            i.child?.add(0, ChildItem(i.applinks, "Lihat Semua", "0", 2))
                         }
                     }
 
-                    // val childItem = ChildItem(null, null, null, null, it.applinks, it.name, null, "0", null, null, null, false, 2)
-                    // l?.add(0,childItem)
                 }
 
                 return l

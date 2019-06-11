@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
 
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.adapters.CategoryLevelTwoAdapter
@@ -44,6 +45,8 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
     var current_position = "0"
 
+    var categoryApplink: String? = null
+
 
     companion object {
         @JvmStatic
@@ -54,13 +57,14 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     override fun getComponent(): CategoryNavigationComponent = DaggerCategoryNavigationComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
 
 
-    override fun refreshView(id: String, categoryName: String) {
+    override fun refreshView(id: String, categoryName: String, applink: String?) {
         current_position = id
         categoryLevelTwoViewModel.refresh(id)
         categoryLevelTwoViewModel.fetchHotlist(id)
         setShimmer(id)
         category_name.text = categoryName
         hotlist_name.text = "Hotlist $categoryName"
+        categoryApplink = applink
     }
 
     private fun setShimmer(id: String) {
@@ -93,6 +97,13 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         shimmer_layout_default.visibility = View.GONE
         slave_list.visibility = View.VISIBLE
         category_name.visibility = View.VISIBLE
+
+        if (categoryApplink != null) {
+
+            label_lihat_semua.setOnClickListener {
+                RouteManager.route(activity, categoryApplink)
+            }
+        }
 
     }
 
@@ -165,5 +176,5 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 }
 
 interface Listener {
-    fun refreshView(id: String, categoryName: String)
+    fun refreshView(id: String, categoryName: String, applink: String?)
 }

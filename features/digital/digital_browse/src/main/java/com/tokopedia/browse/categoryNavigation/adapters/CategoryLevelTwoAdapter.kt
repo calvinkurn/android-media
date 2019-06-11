@@ -14,17 +14,19 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
 import kotlinx.android.synthetic.main.item_category_level_two_type_two.view.*
-import kotlinx.android.synthetic.main.item_level_two_child.view.*
+import kotlinx.android.synthetic.main.item_exclusive_level_two.view.*
+import kotlinx.android.synthetic.main.item_level_two_child.view.product_image
+import kotlinx.android.synthetic.main.item_level_two_child.view.product_name
 
 class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val viewPool = RecyclerView.RecycledViewPool()
 
     private val TYPE_ONE = 1
     private val TYPE_TWO = 2
 
-    private var expanded_item_id = null
     private var expanded_item_pos = -1
+
+    private var childList: MutableList<ChildItem>? = ArrayList<ChildItem>()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -63,6 +65,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
         val item = list[position]
         Glide.with(holder.itemView.context)
                 .load(item.iconImageUrl)
+                .placeholder(R.drawable.loading_page)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
@@ -70,34 +73,51 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
                 .into(holder.item_image)
         holder.item_name.text = item.name
 
+        if (holder.item_child_recycler.adapter == null) {
+            val gridLayoutManager = GridLayoutManager(holder.itemView.context, 3, LinearLayoutManager.VERTICAL, false)
 
-        if (item.child == null && item.child!!.size == 0) {
+            holder.item_child_recycler.visibility = View.VISIBLE
+            holder.item_child_recycler.apply {
+                layoutManager = gridLayoutManager
+                adapter = LevelTwoChildAdapter(childList)
+            }
+        }
+
+        if (item.child == null && !(item.child!!.size > 0)) {
             holder.carrot.visibility = View.GONE
             holder.item_child_recycler.visibility = View.GONE
 
         } else if (item.isExpanded) {
+            childList?.clear()
+            childList?.addAll(item.child)
             holder.item_child_recycler.visibility = View.VISIBLE
             holder.carrot.setImageResource(R.drawable.carrot_down)
-
-            if (holder.item_child_recycler.adapter == null) {
-                val gridLayoutManager = GridLayoutManager(holder.itemView.context, 3, LinearLayoutManager.VERTICAL, false)
-
-                holder.item_child_recycler.visibility = View.VISIBLE
-                holder.item_child_recycler.apply {
-                    layoutManager = gridLayoutManager
-                    adapter = LevelTwoChildAdapter(item.child)
-                    recycledViewPool = viewPool
-                }
-            }
+            holder.item_child_recycler.adapter.notifyDataSetChanged()
 
         } else {
             holder.carrot.setImageResource(R.drawable.carrot_up)
             holder.item_child_recycler.visibility = View.GONE
         }
 
+
+
         holder.parent_layout.setOnClickListener {
-            item.isExpanded = !item.isExpanded
-            notifyItemChanged(position)
+
+            if (expanded_item_pos < 0 || expanded_item_pos == position) {
+                item.isExpanded = !item.isExpanded
+                notifyItemChanged(position)
+                expanded_item_pos = position
+            } else {
+
+                list[expanded_item_pos].isExpanded = false
+                list[position].isExpanded = true
+                notifyItemChanged(expanded_item_pos)
+                notifyItemChanged(position)
+                expanded_item_pos = position
+
+            }
+
+
         }
     }
 
@@ -106,20 +126,23 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
         val item = list[position]
         Glide.with(holder.itemView.context)
                 .load(item.iconImageUrl)
+                .placeholder(R.drawable.loading_page)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                 .centerCrop()
-                .into(holder.item_image_p)
-        holder.item_name_p.text = item.name
+                .into(holder.item_image_v1)
+        holder.item_name_v1.text = item.name
 
-        holder.item_image_p.setOnClickListener {
-            fireApplink(holder.item_image_p.context, list[position].applinks)
+        holder.item_image_v1.setOnClickListener {
+            fireApplink(holder.item_image_v1.context, list[position].applinks)
         }
 
-        holder.item_name_p.setOnClickListener {
-            fireApplink(holder.item_name_p.context, list[position].applinks)
+        holder.item_name_v1.setOnClickListener {
+            fireApplink(holder.item_name_v1.context, list[position].applinks)
         }
+
+        holder.product_parent_name.text = item.parentName
 
     }
 
@@ -138,8 +161,9 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
     }
 
     class ViewHolder1(view: View) : RecyclerView.ViewHolder(view) {
-        val item_image_p = view.product_image
-        val item_name_p = view.product_name
+        val item_image_v1 = view.product_image
+        val item_name_v1 = view.product_name
+        val product_parent_name = view.product_parent_name
 
     }
 

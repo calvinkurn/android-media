@@ -21,6 +21,9 @@ data class ListItem(
 	@field:SerializedName("title")
 	val title: String? = null,
 
+	@field:SerializedName("applink")
+	val applink: String? = null,
+
 	@field:SerializedName("url")
 	val url: String? = null,
 

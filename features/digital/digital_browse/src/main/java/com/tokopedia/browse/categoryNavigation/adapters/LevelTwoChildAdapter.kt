@@ -29,11 +29,12 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?) : RecyclerView.Ad
 
         if(list[position].iconImageUrl == null){
 
-            holder.productImage.setBackgroundResource(R.drawable.ic_see_more)
+            holder.productImage.setImageResource(R.drawable.ic_see_more)
 
         }else{
             Glide.with(holder.itemView.context)
                     .load(list[position].iconImageUrl)
+                    .placeholder(R.drawable.loading_page)
                     .dontAnimate()
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)

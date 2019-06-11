@@ -2,9 +2,11 @@ query categoryHotlist($categoryId: Int!){
     categoryHotlist(categoryId: $categoryId){
     list{
       id
+      applink
       alk
       title
       url
+      applink
       price_start_from
       img
       img_large

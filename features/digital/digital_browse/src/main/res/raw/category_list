@@ -18,6 +18,7 @@ query AllCategoryQuery($safeSearch: Boolean!) {
         url
         iconImageUrl
         isAdult
+        parentName
         template
         applinks
         isRevamp

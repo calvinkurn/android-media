@@ -29,6 +29,7 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
         holder.categoryName.text = categoryList[position].name
         Glide.with(holder.itemView.context)
                 .load(categoryList[position].iconImageUrl)
+                .placeholder(R.drawable.loading_page)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
@@ -36,11 +37,11 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
                 .into(holder.categoryImage)
 
         holder.parent_layout.setOnClickListener {
-            listener.onItemClicked(categoryList[position].id!!,position,categoryList[position].name!!)
+            listener.onItemClicked(categoryList[position].id!!, position, categoryList[position].name!!, categoryList[position].applinks)
         }
         if (categoryList[position].isSelected) {
             holder.parent_layout.setBackgroundColor(context.resources.getColor(R.color.white))
-        }else{
+        } else {
             holder.parent_layout.setBackgroundColor(context.resources.getColor(R.color.unselected_background))
         }
 

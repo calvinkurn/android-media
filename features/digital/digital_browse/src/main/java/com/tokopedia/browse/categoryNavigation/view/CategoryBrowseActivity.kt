@@ -71,8 +71,8 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
         return R.layout.activity_category_browse
     }
 
-    override fun onCategoryChanged(id: String, categoryName: String) {
-        (slaveFragment as Listener).refreshView(id, categoryName)
+    override fun onCategoryChanged(id: String, categoryName: String, applink: String?) {
+        (slaveFragment as Listener).refreshView(id, categoryName,applink)
     }
 
 
@@ -97,5 +97,5 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
 
 interface CategoryChangeListener {
-    fun onCategoryChanged(id: String, categoryName: String)
+    fun onCategoryChanged(id: String, categoryName: String, applink: String?)
 }
