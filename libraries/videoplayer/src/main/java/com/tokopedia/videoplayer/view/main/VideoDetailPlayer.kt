@@ -90,7 +90,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         sendViewToBack(playerView)
 
         //get video source path
-        val videoSource = "rtmp://video.tokopedia.com/toplive/toplive?auth_key=1560407795-0-0-5706f231ac5a1c0718f17eac9669950b" as String?
+        val videoSource = "http://video.tokopedia.com/toplive/toplive.m3u8?auth_key=1560407795-0-0-010d1f30685f644c0e3e85902656422a" as String?
         if (videoSource == null || videoSource.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)
             dismiss()
