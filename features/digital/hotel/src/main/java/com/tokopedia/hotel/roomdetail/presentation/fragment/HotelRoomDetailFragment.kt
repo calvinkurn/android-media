@@ -80,11 +80,10 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     val cartId = it.data.cartId
-                    startActivity(HotelBookingActivity.getCallingIntent(context!!, cartId))
+//                    startActivity(HotelBookingActivity.getCallingIntent(context!!, cartId))
                 }
                 is Fail -> {
                 }
-
             }
         })
     }
@@ -305,7 +304,8 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
         room_detail_button.setOnClickListener {
             if (userSessionInterface.isLoggedIn) {
-                roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
+//                roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
+                startActivity(HotelBookingActivity.getCallingIntent(context!!, ""))
             } else {
                 goToLoginPage()
             }
