@@ -1,4 +1,4 @@
-package com.tokopedia.videoplayer.pojo
+package com.tokopedia.videoplayer.data
 
 /**
  * Created by isfaaghyth on 09/04/19.

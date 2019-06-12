@@ -2,7 +2,7 @@ package com.tokopedia.videoplayer.utils
 
 import android.app.Activity
 import android.util.DisplayMetrics
-import com.tokopedia.videoplayer.pojo.VideoSize
+import com.tokopedia.videoplayer.data.VideoSize
 
 /**
  * Created by isfaaghyth on 08/04/19.
