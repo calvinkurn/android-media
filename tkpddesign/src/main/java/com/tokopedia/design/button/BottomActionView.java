@@ -3,7 +3,10 @@ package com.tokopedia.design.button;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -97,7 +100,7 @@ public class BottomActionView extends BaseCustomView {
         if (!TextUtils.isEmpty(label1)) {
             label1textView.setText(label1);
         }
-        setSecondImageDrawableicon2Res);
+        setSecondImageDrawable(icon2Res);
         if (!TextUtils.isEmpty(label2)) {
             label2textView.setText(label2);
         }
@@ -136,11 +139,11 @@ public class BottomActionView extends BaseCustomView {
     }
 
     public void setSecondImageDrawable(@DrawableRes int secondImageDrawable) {
-        icon2ImageView.setImageDrawable(getDrawable(icon2ImageView.getContext(),secondImageDrawable)));
+        icon2ImageView.setImageDrawable(getDrawable(icon2ImageView.getContext(),secondImageDrawable));
     }
 
     public void setFirstImageDrawable(@DrawableRes int secondImageDrawable) {
-        icon1ImageView.setImageDrawable(getDrawable(icon1ImageView.getContext(),secondImageDrawable)));
+        icon1ImageView.setImageDrawable(getDrawable(icon1ImageView.getContext(),secondImageDrawable));
     }
 
     public void setMarkLeft(boolean isVisible) {

@@ -129,7 +129,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         progressParLayout = view.findViewById(R.id.progress_bar_layout);
         ivRemovePromo = view.findViewById(R.id.iv_remove_promo);
         clPromoAmount = view.findViewById(R.id.cl_promo);
-        Drawable img = MethodChecker.getDrawable(getActivity(),R.drawable.ic_promo_code));
+        Drawable img = MethodChecker.getDrawable(getActivity(),R.drawable.ic_promo_code);
         tvApplyPromo.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
     }

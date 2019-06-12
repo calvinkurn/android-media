@@ -22,7 +22,7 @@ public class ImageTextViewHolder {
     TextView textViewHolder;
 
     public void setImage(int resID) {
-        imageHolderSmall.setImageDrawable(MethodChecker.getDrawable(imageHolderSmall.getContext(),resID);
+        imageHolderSmall.setImageDrawable(MethodChecker.getDrawable(imageHolderSmall.getContext(),resID));
     }
 
     public void setTextView(String label) {

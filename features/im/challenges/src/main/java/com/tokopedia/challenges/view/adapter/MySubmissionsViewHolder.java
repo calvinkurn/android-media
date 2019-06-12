@@ -87,11 +87,11 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 
             ISubmissionsViewHolderListner.onLikeClick(submissionsResult);
             if (submissionsResult.getMe().isLiked()) {
-                imgLikes.setImageDrawable(MethodChecker.getDrawable(imgLikes.getContext(), R.drawable.ic_wishlist_unchecked);
+                imgLikes.setImageDrawable(MethodChecker.getDrawable(imgLikes.getContext(), R.drawable.ic_wishlist_unchecked));
                 action = ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
                 submissionsResult.getMe().setLiked(false);
             } else {
-                imgLikes.setImageDrawable(MethodChecker.getDrawable(imgLikes.getContext(), R.drawable.ic_wishlist_checked);
+                imgLikes.setImageDrawable(MethodChecker.getDrawable(imgLikes.getContext(), R.drawable.ic_wishlist_checked));
                 action = ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE;
                 submissionsResult.getMe().setLiked(true);
             }

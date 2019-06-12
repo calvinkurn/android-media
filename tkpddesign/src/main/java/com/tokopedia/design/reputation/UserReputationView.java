@@ -2,7 +2,10 @@ package com.tokopedia.design.reputation;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -14,7 +17,6 @@ import android.widget.TextView;
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.card.ToolTipUtils;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author by stevenfredian on 8/16/17.
@@ -68,6 +70,13 @@ public class UserReputationView extends BaseCustomView {
         requestLayout();
     }
 
+    public Drawable getDrawable(Context context, int resId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+            return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
+        else
+            return AppCompatResources.getDrawable(context, resId);
+    }
+
     public void setValue(String percentageValue, boolean noReputation,
                          final int positiveValue, final int neutralValue,
                          final int negativeValue) {
@@ -79,9 +88,9 @@ public class UserReputationView extends BaseCustomView {
         }
 
         if (noReputation) {
-            imageViewIcon.setImageDrawable(MethodChecker.getDrawable(imageViewIcon.getContext(), R.drawable.ic_smiley_empty));
+            imageViewIcon.setImageDrawable(getDrawable(imageViewIcon.getContext(), R.drawable.ic_smiley_empty));
         } else {
-            imageViewIcon.setImageDrawable(MethodChecker.getDrawable(imageViewIcon.getContext(), R.drawable.ic_smiley_good));
+            imageViewIcon.setImageDrawable(getDrawable(imageViewIcon.getContext(), R.drawable.ic_smiley_good));
             if (showTooltip) {
                 setBottomDialog(positiveValue, neutralValue, negativeValue);
             }

@@ -78,7 +78,7 @@ public class StartPurchaseBottomSheet extends BottomSheets {
                             AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_BELI,
                             "");
                 } else if (item.getText().equalsIgnoreCase("Kereta")) {
-                    icon.setImageDrawable(MethodChecker.getDrawable(getActivity(),(R.drawable.ic_tp_train));
+                    icon.setImageDrawable(MethodChecker.getDrawable(getActivity(),(R.drawable.ic_tp_train)));
 
                     AnalyticsTrackerUtil.sendEvent(view.getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,

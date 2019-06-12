@@ -517,7 +517,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             if (!TextUtils.isEmpty(listProvider.get(i).getImage())) {
                 tv.setImage(listProvider.get(i).getImage());
             } else if (listProvider.get(i).getImageResource() != 0) {
-                tv.setImageDrawable(MethodChecker.getDrawable(getActivity(),listProvider.get(i).getImageResource()));
+                tv.setImageResource(listProvider.get(i).getImageResource());
             }
             tv.setRoundCorner(10);
 

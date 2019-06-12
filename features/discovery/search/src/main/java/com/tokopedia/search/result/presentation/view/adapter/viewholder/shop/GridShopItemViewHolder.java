@@ -71,7 +71,7 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
         if (shopItem.isOfficial() || shopItem.getShopGoldShop().equals(KEY_SHOP_IS_GOLD)) {
             itemShopBadge.setVisibility(View.VISIBLE);
             if (shopItem.isOfficial()) {
-                itemShopBadge.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_official_store_discovery);
+                itemShopBadge.setImageDrawable(MethodChecker.getDrawable(itemShopBadge.getContext(),R.drawable.ic_official_store_discovery));
             } else if (shopItem.getShopGoldShop().equals(KEY_SHOP_IS_GOLD)) {
                 itemShopBadge.setImageDrawable(GMConstant.getGMDrawable(context));
             }

@@ -2,8 +2,14 @@ package com.tokopedia.design.reputation;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Drawable;
+import android.support.v7.content.res.AppCompatResources;
+import android.os.Build;
+import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -143,7 +149,7 @@ public class ShopReputationView extends BaseCustomView {
         imageView.setAdjustViewBounds(true);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(medalWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         imageView.setLayoutParams(param);
-        imageView.setImageResource(getDrawable(imageView.getContext(),imageResource));
+        imageView.setImageDrawable(getDrawable(imageView.getContext(),imageResource));
         return imageView;
     }
 

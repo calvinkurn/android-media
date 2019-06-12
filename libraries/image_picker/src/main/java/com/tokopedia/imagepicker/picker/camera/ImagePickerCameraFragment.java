@@ -279,7 +279,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
     private void setUIFlashCamera(int flashEnum) {
         if (flashEnum == Flash.AUTO.ordinal()) {
-            flashImageButton..setImageDrawable(MethodChecker.getDrawable(flashImageButton.getContext(), R.drawable.ic_auto_flash));
+            flashImageButton.setImageDrawable(MethodChecker.getDrawable(flashImageButton.getContext(), R.drawable.ic_auto_flash));
         } else if (flashEnum == Flash.ON.ordinal()) {
             flashImageButton.setImageDrawable(MethodChecker.getDrawable(flashImageButton.getContext(), R.drawable.ic_on_flash));
         } else if (flashEnum == Flash.OFF.ordinal()) {

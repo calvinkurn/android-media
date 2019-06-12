@@ -120,7 +120,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         tvCityName.setOnClickListener(this);
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals));
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_16));
-        searchInputView.setSearchImageView(MethodChecker.getDrawable(this,R.drawable.ic_search_deal)));
+        searchInputView.setSearchImageView(MethodChecker.getDrawable(this,R.drawable.ic_search_deal));
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(layoutManager);
         dealsCategoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.SEARCH_PAGE, this, !IS_SHORT_LAYOUT);

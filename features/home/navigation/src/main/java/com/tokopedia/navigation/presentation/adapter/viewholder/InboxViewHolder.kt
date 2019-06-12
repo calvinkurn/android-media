@@ -28,7 +28,7 @@ class InboxViewHolder(itemView: View, private val listener: InboxAdapterListener
 
 
     override fun bind(item: Inbox) {
-        labelView..setImageDrawable(MethodChecker.getDrawable(context,item.icon!!))
+        labelView.setImageResource(item.icon!!)
         labelView.title = context.getString(item.title!!)
         labelView.setSubTitle(context.getString(item.subtitle!!))
         if (item.totalBadge != null

@@ -236,7 +236,7 @@ public class NetworkErrorHelper {
             if (titleRetry != null) retryButon.setText(titleRetry);
             if (iconRes != 0) {
                 //noinspection deprecation
-                ivIcon.setImageDrawable(MethodChecker.getDrawable(ivIcon.getContext(),iconRes)));
+                ivIcon.setImageDrawable(MethodChecker.getDrawable(ivIcon.getContext(),iconRes));
             }
             if (listener != null) {
                 retryButon.setOnClickListener(new View.OnClickListener() {

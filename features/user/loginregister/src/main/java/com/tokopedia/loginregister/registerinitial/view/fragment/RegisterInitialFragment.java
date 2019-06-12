@@ -270,7 +270,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             registerButton.setColor(Color.WHITE);
             registerButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
             registerButton.setRoundCorner(10);
-            registerButton.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_email));
+            registerButton.setImageResource(R.drawable.ic_email);
             registerButton.setOnClickListener(v -> {
                 analytics.eventClickRegisterEmail();
                 TrackApp.getInstance().getMoEngage().sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_EMAIL);

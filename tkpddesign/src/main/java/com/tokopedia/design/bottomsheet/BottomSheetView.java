@@ -3,10 +3,14 @@ package com.tokopedia.design.bottomsheet;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.drawable.Drawable;
+import android.support.v7.content.res.AppCompatResources;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
+
 import android.support.v7.widget.TintContextWrapper;
 import android.text.Html;
 import android.util.TypedValue;

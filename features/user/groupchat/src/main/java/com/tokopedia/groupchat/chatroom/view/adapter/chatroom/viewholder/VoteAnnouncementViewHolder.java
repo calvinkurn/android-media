@@ -73,7 +73,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_vote_inactive);
         } else {
-            voteIcon.setImageDrawable(MethodChecker.getDrawable( viewholder.itemView.getContext(),R.drawable.ic_vote_inactive));
+            voteIcon.setImageDrawable(MethodChecker.getDrawable(voteIcon.getContext(),R.drawable.ic_vote_inactive));
         }
 
         voteTitle.setText(R.string.title_poll_finished);
@@ -85,7 +85,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_play_dynamic_icon);
         } else {
-            voteIcon.setImageDrawable(MethodChecker.getDrawable( viewholder.itemView.getContext(),R.drawable.ic_play_dynamic_icon));
+            voteIcon.setImageDrawable(MethodChecker.getDrawable( voteIcon.getContext(),R.drawable.ic_play_dynamic_icon));
         }
         voteTitle.setText(R.string.title_poll_started);
         voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), R.color.medium_green));

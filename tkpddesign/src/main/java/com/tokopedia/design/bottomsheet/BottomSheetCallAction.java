@@ -2,9 +2,12 @@ package com.tokopedia.design.bottomsheet;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v7.content.res.AppCompatResources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -99,7 +102,7 @@ public class BottomSheetCallAction extends BottomSheetDialog {
         ivAction2.setImageDrawable(getDrawable(ivAction2.getContext(),
                 callActionData.getIconAction2() != 0 ?
                         callActionData.getIconAction2() : DEFAULT_ICON_ACTION_2
-        );
+        ));
 
         btnAction1.setOnClickListener(new View.OnClickListener() {
             @Override
