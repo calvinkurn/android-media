@@ -6,10 +6,10 @@
     android:background="@color/white"
     android:fillViewport="true">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/dp_20">
+        android:orientation="vertical">
 
         <FrameLayout
             android:id="@+id/current_location_layout"
@@ -33,15 +33,13 @@
             android:id="@+id/seperator"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@drawable/bg_line_separator"
-            app:layout_constraintTop_toBottomOf="@id/current_location_layout" />
+            android:background="@drawable/bg_line_separator"/>
 
         <LinearLayout
             android:id="@+id/recent_search_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/seperator">
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -93,10 +91,8 @@
         <LinearLayout
             android:id="@+id/popular_search_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recent_search_layout">
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:id="@+id/popular_search_title"
@@ -122,10 +118,9 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:nestedScrollingEnabled="false" />
+                android:layout_height="fill_parent"/>
         </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
