@@ -15,24 +15,32 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.notifications.common.CMNotificationUtils
+import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.data.model.TokenResponse
-import rx.Completable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import rx.Subscriber
-import rx.schedulers.Schedulers
 import java.io.IOException
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author lalit.singh
  */
-class CMUserHandler(private val mContext: Context) {
+class CMUserHandler(private val mContext: Context) : CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO
+
     private var token: String? = null
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var graphQlUseCase: GraphqlUseCase
 
     private var runnable: Runnable = Runnable {
-        Completable.fromAction { sendFcmTokenToServerGQL(token) }
-                .subscribeOn(Schedulers.io()).subscribe()
+        launchCatchError(block = {
+            sendFcmTokenToServerGQL(token)
+        }, onError = {
+            Log.e(TAG, "CMUserHandler: sendFcmTokenToServer ", it)
+        })
     }
 
     private val googleAdId: String
@@ -110,6 +118,7 @@ class CMUserHandler(private val mContext: Context) {
 
     private fun sendFcmTokenToServerGQL(token: String?) {
         try {
+            Log.d("CMUserHandler", Thread.currentThread().name)
             if (tempFcmId.equals(token!!, ignoreCase = true)) {
                 //ignore temporary fcm token
                 return
@@ -121,7 +130,6 @@ class CMUserHandler(private val mContext: Context) {
                     CMNotificationUtils.mapTokenWithUserRequired(mContext, userId) ||
                     CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, gAdId) ||
                     CMNotificationUtils.mapTokenWithAppVersionRequired(mContext, appVersionName)) {
-
                 val requestParams = HashMap<String, Any>()
 
                 requestParams["macAddress"] = ""
@@ -152,7 +160,7 @@ class CMUserHandler(private val mContext: Context) {
 
                     override fun onNext(gqlResponse: GraphqlResponse) {
                         val tokenResponse = gqlResponse.getData<TokenResponse>(TokenResponse::class.java)
-                        if (tokenResponse!!.cmAddToken != null) {
+                        if (tokenResponse?.cmAddToken != null) {
                             CMNotificationUtils.saveToken(mContext, token)
                             CMNotificationUtils.saveUserId(mContext, userId)
                             CMNotificationUtils.saveGAdsIdId(mContext, gAdId)
