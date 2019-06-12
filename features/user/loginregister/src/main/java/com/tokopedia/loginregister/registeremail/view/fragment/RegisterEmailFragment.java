@@ -6,10 +6,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -33,6 +35,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.utils.StripedUnderlineUtil;
 import com.tokopedia.loginregister.LoginRegisterRouter;
@@ -77,6 +81,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     String PHONE = "PHONE";
     String PASSWORD = "PASSWORD";
     String EMAIL = "EMAIL";
+
+    String TERM_CONDITION = "Syarat dan Ketentuan";
+    String PRIVACY_POLICY = "Kebijakan Privasi";
+
+    String TERM_CONDITION_URL = "launch.TermPrivacy://parent?param=0";
+    String PRIVACY_POLICY_URL = "launch.TermPrivacy://parent?param=1";
 
     View container;
     View redirectView;
@@ -161,9 +171,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        registerAnalytics.trackSuccessClickEmailSignUpButton();
-    }
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) { }
 
 
     private void prepareView() {
@@ -171,9 +179,54 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             email.setText(getArguments().getString(RegisterEmailActivity.EXTRA_PARAM_EMAIL, ""));
         }
 
-        registerNextTAndC.setText(MethodChecker.fromHtml(getString(R.string.bottom_info_terms_and_privacy)));
+        String sourceString = getActivity().getString(R.string.bottom_info_terms_and_privacy2);
+
+        SpannableString spannable = new SpannableString(sourceString);
+
+        ClickableSpan clickableSpanTermCondition = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View textView) {
+                registerAnalytics.trackClickTermConditionButton();
+                if(getActivity() != null){
+                    Intent intent = new Intent (Intent.ACTION_VIEW);
+                    intent.setData (Uri.parse(TERM_CONDITION_URL));
+                    getActivity().startActivity(intent);
+                }
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint textPaint) {
+                super.updateDrawState(textPaint);
+                textPaint.setColor(ContextCompat.getColor(registerNextTAndC.getContext(), R.color.green_nob));
+            }
+        };
+
+        ClickableSpan clickableSpanPrivacyPolicy = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View textView) {
+                registerAnalytics.trackClickPrivacyPolicyButton();
+                if(getActivity() != null){
+                    Intent intent = new Intent (Intent.ACTION_VIEW);
+                    intent.setData (Uri.parse(PRIVACY_POLICY_URL));
+                    getActivity().startActivity(intent);
+                }
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint textPaint) {
+                super.updateDrawState(textPaint);
+                textPaint.setColor(ContextCompat.getColor(registerNextTAndC.getContext(), R.color.green_nob));
+            }
+        };
+
+        spannable.setSpan(clickableSpanTermCondition, sourceString.indexOf(TERM_CONDITION),
+                sourceString.indexOf(TERM_CONDITION) + TERM_CONDITION.length(), 0);
+
+        spannable.setSpan(clickableSpanPrivacyPolicy, sourceString.indexOf(PRIVACY_POLICY),
+                sourceString.indexOf(PRIVACY_POLICY) + PRIVACY_POLICY.length(), 0);
+
+        registerNextTAndC.setText(spannable, TextView.BufferType.SPANNABLE);
         registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
-        StripedUnderlineUtil.stripUnderlines(registerNextTAndC);
 
         showPasswordHint();
         showEmailHint();
@@ -450,7 +503,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     private void registerEmail() {
-        analytics.eventRegisterWithEmail();
+        registerAnalytics.trackClickSignUpButtonEmail();
         presenter.onRegisterClicked(
                 email.getText().toString(),
                 name.getText().toString(),
@@ -599,6 +652,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     public void onErrorRegister(String errorMessage) {
         dismissLoadingProgress();
+        onFailedRegisterEmail(errorMessage);
         setActionsEnabled(true);
         if (errorMessage.equals(""))
             NetworkErrorHelper.showSnackbar(getActivity());
@@ -612,6 +666,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             dismissLoadingProgress();
             setActionsEnabled(true);
             lostViewFocus();
+            registerAnalytics.trackSuccessClickSignUpButtonEmail();
+            registerAnalytics.trackSuccessClickEmailSignUpButton();
             analytics.eventSuccessRegisterEmail(getActivity().getApplicationContext(),
                     pojo.getuId(), name, email, phone);
         }
@@ -712,6 +768,11 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     public int getIsAutoVerify() {
         return isEmailAddressFromDevice() ? 1 : 0;
+    }
+
+    private void onFailedRegisterEmail(String errorMessage){
+        registerAnalytics.trackFailedClickEmailSignUpButton(errorMessage);
+        registerAnalytics.trackFailedClickSignUpButtonEmail(errorMessage);
     }
 
     @Override
