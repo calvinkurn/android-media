@@ -85,7 +85,7 @@ class TkpdVideoPlayer: Fragment() {
         val sourceMedia = arguments?.getString(VIDEO_SOURCE, "")
 
         //passing callback listener with serializable
-        callback = arguments?.getSerializable(VIDEO_CALLBACK) as VideoPlayerListener
+        callback = arguments?.getSerializable(VIDEO_CALLBACK) as VideoPlayerListener?
 
         if (sourceMedia == null || sourceMedia.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)
