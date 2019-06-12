@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.google.android.exoplayer2.Player.STATE_BUFFERING
 import com.tokopedia.videoplayer.R
 import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.utils.showToast
@@ -81,6 +82,16 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
                 TkpdVideoPlayer.Builder()
                         .transaction(R.id.playerView, childFragmentManager)
                         .videoSource(videoSource)
+                        .listener(object : VideoPlayerListener {
+                            override fun onPlayerStateChanged(playbackState: Int) {
+                                when (playbackState) {
+                                    STATE_BUFFERING -> showToast("lagi buffer")
+                                }
+                            }
+                            override fun onPlayerError() {
+                                showToast("error bro")
+                            }
+                        })
                         .build()
             }
 
@@ -88,6 +99,16 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
                 TkpdVideoPlayer.Builder()
                         .transaction(R.id.playerView, childFragmentManager)
                         .videoSource("https://www.w3schools.com/html/mov_bbb.mp4")
+                        .listener(object : VideoPlayerListener {
+                            override fun onPlayerStateChanged(playbackState: Int) {
+                                when (playbackState) {
+                                    STATE_BUFFERING -> showToast("lagi buffer")
+                                }
+                            }
+                            override fun onPlayerError() {
+                                showToast("error bro")
+                            }
+                        })
                         .build()
             }
 
