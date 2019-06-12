@@ -1,0 +1,14 @@
+query profile() {
+  profile() {
+    user_id
+    full_name
+    first_name
+  	email
+    phone
+    phone_masked
+  	phone_verified
+  	profile_picture
+    created_password
+    isLoggedIn
+  }
+}

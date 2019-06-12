@@ -68,17 +68,22 @@ import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitial
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
-import com.tokopedia.sessioncommon.data.model.SecurityPojo;
+import com.tokopedia.sessioncommon.data.LoginTokenPojo;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 import static com.tokopedia.sessioncommon.data.Token.GOOGLE_API_KEY;
 
@@ -776,8 +781,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             }
 
             @Override
-            public void onGoToSecurityQuestion(SecurityPojo securityDomain, String fullName,
-                                               String email, String phone) {
+            public void onGoToSecurityQuestion(String email, String phone) {
                 Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                         getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
                 startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
@@ -843,6 +847,20 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     @Override
     public void trackErrorLoginEmail() {
         analytics.trackClickOnLoginButtonError();
+    }
+
+    @NotNull
+    @Override
+    public Function1<LoginTokenPojo, Unit> onSuccessLoginToken(String email) {
+        //CURRENTLY NOT USED
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Function1<Throwable, Unit> onErrorLoginEmail(String email) {
+        //CURRENTLY NOT USED
+        return null;
     }
 
     @Override

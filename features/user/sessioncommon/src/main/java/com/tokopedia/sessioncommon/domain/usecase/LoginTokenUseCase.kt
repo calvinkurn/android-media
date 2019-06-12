@@ -1,13 +1,12 @@
 package com.tokopedia.sessioncommon.domain.usecase
 
 import android.content.res.Resources
-import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.sessioncommon.R
-import com.tokopedia.sessioncommon.data.register.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,7 +30,7 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
         val graphqlRequest = GraphqlRequest(query,
                 LoginTokenPojo::class.java, requestParams)
 
-        userSession.setToken(TokenGenerator().createBasicTokenGQL(), TokenGenerator.TOKEN_TYPE)
+        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(subscriber)
@@ -70,8 +69,6 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
             requestParams[PARAM_USERNAME] = TokenGenerator().encode(email)
             requestParams[PARAM_PASSWORD] = TokenGenerator().encode(password)
             requestParams[PARAM_GRANT_TYPE] = TokenGenerator().encode(TYPE_PASSWORD)
-            requestParams[PARAM_PASSWORD_TYPE] = TYPE_PASSWORD
-            requestParams[PARAM_SUPPORTED] = "true"
 
             return requestParams
         }

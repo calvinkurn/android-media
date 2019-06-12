@@ -2,6 +2,7 @@ package com.tokopedia.sessioncommon.data.register
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.sessioncommon.data.Error
 
 /**
  * @author by nisie on 30/04/19.

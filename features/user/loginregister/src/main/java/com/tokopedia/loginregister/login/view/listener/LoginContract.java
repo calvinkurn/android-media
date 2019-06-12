@@ -10,9 +10,17 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
+import com.tokopedia.sessioncommon.data.LoginTokenPojo;
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 /**
  * @author by nisie on 10/2/18.
@@ -71,6 +79,16 @@ public interface LoginContract {
         void stopTrace();
 
         void trackErrorLoginEmail();
+
+        @NotNull
+        Function1<LoginTokenPojo, Unit> onSuccessLoginToken(String email);
+
+        @NotNull
+        Function1<Throwable, Unit> onErrorLoginEmail(String email);
+
+        void onSuccessGetUserInfo(ProfilePojo pojo);
+
+        void onErrorGetUserInfo(@Nullable Throwable e);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -91,5 +109,6 @@ public interface LoginContract {
 
         void loginFacebook(AccessToken accessToken, String email);
 
+        void getUserInfo();
     }
 }

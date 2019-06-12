@@ -1,7 +1,8 @@
 package com.tokopedia.sessioncommon.view;
 
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
-import com.tokopedia.sessioncommon.data.model.SecurityPojo; /**
+
+/**
  * @author by nisie on 10/16/18.
  */
 public interface LoginSuccessRouter {
@@ -15,7 +16,7 @@ public interface LoginSuccessRouter {
 
     void onGoToPhoneVerification();
 
-    void onGoToSecurityQuestion(SecurityPojo securityPojo, String fullName, String email, String phone);
+    void onGoToSecurityQuestion(String email, String phone);
 
     void logUnknownError(Throwable message);
 }

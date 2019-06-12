@@ -1,4 +1,4 @@
-package com.tokopedia.sessioncommon.data.register
+package com.tokopedia.sessioncommon.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

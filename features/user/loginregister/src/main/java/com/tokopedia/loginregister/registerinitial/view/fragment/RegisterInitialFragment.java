@@ -67,7 +67,6 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
-import com.tokopedia.sessioncommon.data.model.SecurityPojo;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
@@ -690,7 +689,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             }
 
             @Override
-            public void onGoToSecurityQuestion(SecurityPojo securityPojo, String fullName, String email, String phone) {
+            public void onGoToSecurityQuestion(String email, String phone) {
                 Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                         getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
                 startActivityForResult(intent, REQUEST_SECURITY_QUESTION);

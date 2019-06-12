@@ -47,7 +47,6 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
-import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
@@ -63,8 +62,10 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData
-import com.tokopedia.sessioncommon.data.model.SecurityPojo
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
@@ -591,7 +592,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 }
             }
 
-            override fun onGoToSecurityQuestion(securityPojo: SecurityPojo, fullName: String, email: String, phone: String) {
+            override fun onGoToSecurityQuestion(email: String, phone: String) {
                 val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                         activity, RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email)
                 startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
@@ -814,6 +815,81 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         )
 
         onSuccessLogin()
+    }
+
+    override fun onSuccessLoginToken(email: String): (LoginTokenPojo) -> Unit {
+        return {
+            if (it.loginToken.sqCheck) {
+                loginRouter.onGoToSecurityQuestion(email, "")
+            } else {
+               presenter.getUserInfo()
+            }
+        }
+
+    }
+
+    override fun onErrorLoginEmail(email: String): (Throwable) -> Unit {
+        return {
+            trackErrorLoginEmail()
+            stopTrace()
+            enableArrow()
+
+            if (isEmailNotActive(it, email)) {
+                loginRouter.onGoToActivationPage(email)
+            } else if (it is TokenErrorException && !it.errorDescription.isEmpty()) {
+                loginRouter.onErrorLogin(it.errorDescription)
+            } else {
+                ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
+                    override fun onForbidden() {
+                        loginRouter.onForbidden()
+                    }
+
+                    override fun onError(errorMessage: String) {
+                        onErrorLogin(errorMessage)
+
+                        context?.run {
+                            if (!TextUtils.isEmpty(it.message)
+                                    && errorMessage.contains(this.getString(R.string
+                                            .default_request_error_unknown))) {
+                                loginRouter.logUnknownError(it)
+                            }
+                        }
+
+                    }
+                }, it, context)
+            }
+        }
+    }
+
+    override fun onSuccessGetUserInfo(pojo: ProfilePojo) {
+        dismissLoadingLogin()
+        analytics.eventSuccessLoginEmail()
+        analytics.trackClickOnLoginButtonSuccess()
+        TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
+                userSession.userId,
+                userSession.name,
+                userSession.email,
+                userSession.phoneNumber,
+                userSession.isGoldMerchant,
+                userSession.shopName,
+                userSession.shopId,
+                userSession.hasShop(),
+                LoginRegisterAnalytics.LABEL_EMAIL
+        )
+        onSuccessLogin()
+    }
+
+    override fun onErrorGetUserInfo(e: Throwable?) {
+        onErrorLogin(ErrorHandlerSession.getErrorMessage(e, context, true))
+    }
+
+    protected fun isEmailNotActive(e: Throwable, email: String): Boolean {
+        val NOT_ACTIVATED = "belum diaktivasi"
+        return (e is TokenErrorException
+                && !e.errorDescription.isEmpty()
+                && e.errorDescription
+                .toLowerCase().contains(NOT_ACTIVATED)
+                && !TextUtils.isEmpty(email))
     }
 
     private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {

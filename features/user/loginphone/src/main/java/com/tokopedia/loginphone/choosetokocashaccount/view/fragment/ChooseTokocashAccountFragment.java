@@ -46,7 +46,6 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
-import com.tokopedia.sessioncommon.data.model.SecurityPojo;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
@@ -288,7 +287,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
             }
 
             @Override
-            public void onGoToSecurityQuestion(SecurityPojo securityPojo, String fullName, String email, String phone) {
+            public void onGoToSecurityQuestion(String email, String phone) {
                 if (getActivity() != null) {
                     Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                             getActivity(),

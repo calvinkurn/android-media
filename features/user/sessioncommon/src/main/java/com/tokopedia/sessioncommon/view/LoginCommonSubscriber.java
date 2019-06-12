@@ -116,8 +116,6 @@ public abstract class LoginCommonSubscriber<T> extends Subscriber<T> {
 
     protected void goToSecurityQuestion(LoginEmailDomain loginEmailDomain) {
         router.onGoToSecurityQuestion(
-                loginEmailDomain.getLoginResult().getSecurityPojo(),
-                loginEmailDomain.getLoginResult().getFullName(),
                 loginEmailDomain.getInfo().getEmail(),
                 loginEmailDomain.getInfo().getPhone());
     }
