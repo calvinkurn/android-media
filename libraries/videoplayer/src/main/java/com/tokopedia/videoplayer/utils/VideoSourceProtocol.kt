@@ -16,18 +16,9 @@ sealed class VideoSourceProtocol {
         fun protocol(source: String): VideoSourceProtocol {
             val url = source.split(":").first()
             return when (url) {
-                http -> {
-                    Log.d("VideoDetailPlayer", http)
-                    VideoSourceProtocol.Http
-                }
-                rtmp -> {
-                    Log.d("VideoDetailPlayer", rtmp)
-                    VideoSourceProtocol.Rtmp
-                }
-                file -> {
-                    Log.d("VideoDetailPlayer", file)
-                    VideoSourceProtocol.File
-                }
+                http -> VideoSourceProtocol.Http
+                rtmp -> VideoSourceProtocol.Rtmp
+                file -> VideoSourceProtocol.File
                 else -> VideoSourceProtocol.File
             }
         }

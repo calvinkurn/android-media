@@ -105,16 +105,16 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
 
             btnHttp.setOnClickListener {
                 //video source: URL
-                val url = Uri.parse("http://clips.vorwaerts-gmbh.de/VfE_html5.mp4")
-                val protocol = VideoSourceProtocol.protocol("http://clips.vorwaerts-gmbh.de/VfE_html5.mp4")
+                val url = Uri.parse("https://r16---sn-axq7sn7z.googlevideo.com/videoplayback?expire=1560328405&ei=dGQAXYr1Mf2G7AS-6omwCw&ip=2a00%3A1838%3A35%3A2c%3A%3A9842&id=o-AO90l8KJgXsrbXKaBiB7n_zktcrQLe4NkZoGdO26TQgR&itag=22&source=youtube&requiressl=yes&mm=31%2C26&mn=sn-axq7sn7z%2Csn-5go7yn7l&ms=au%2Conr&mv=m&nh=IgpwcjAxLmxlZDAzKgkxMjcuMC4wLjE%2C&pl=56&initcwndbps=1065000&mime=video%2Fmp4&ratebypass=yes&dur=572.627&lmt=1540821371966085&mt=1560306669&fvip=2&c=WEB&txp=5431432&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cmime%2Cratebypass%2Cdur%2Clmt&sig=ALgxI2wwRgIhALzCgrb917zjTN1PN_Ea1RB1_u4chaefp2fWkPV67vLbAiEA_LSwMXf6pjnbXln34tiNUWDpjg2wKDN7SqWe42FG-rY%3D&lsparams=mm%2Cmn%2Cms%2Cmv%2Cnh%2Cpl%2Cinitcwndbps&lsig=AHylml4wRQIgXWODYee39sdb_XM52qLJvpfiFFm-rlmw-5mOQ-tHli4CIQCJ2c2Tc24ZJSni-PQ_oBlB-4D0YeJPYqUw2pindpa93A%3D%3D&video_id=PaKIZ7gJlRU&title=Linus+Torvalds+says+GPL+v3+violates+everything+that+GPLv2+stood+for")
+                val protocol = VideoSourceProtocol.protocol("https://r16---sn-axq7sn7z.googlevideo.com/videoplayback?expire=1560328405&ei=dGQAXYr1Mf2G7AS-6omwCw&ip=2a00%3A1838%3A35%3A2c%3A%3A9842&id=o-AO90l8KJgXsrbXKaBiB7n_zktcrQLe4NkZoGdO26TQgR&itag=22&source=youtube&requiressl=yes&mm=31%2C26&mn=sn-axq7sn7z%2Csn-5go7yn7l&ms=au%2Conr&mv=m&nh=IgpwcjAxLmxlZDAzKgkxMjcuMC4wLjE%2C&pl=56&initcwndbps=1065000&mime=video%2Fmp4&ratebypass=yes&dur=572.627&lmt=1540821371966085&mt=1560306669&fvip=2&c=WEB&txp=5431432&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cmime%2Cratebypass%2Cdur%2Clmt&sig=ALgxI2wwRgIhALzCgrb917zjTN1PN_Ea1RB1_u4chaefp2fWkPV67vLbAiEA_LSwMXf6pjnbXln34tiNUWDpjg2wKDN7SqWe42FG-rY%3D&lsparams=mm%2Cmn%2Cms%2Cmv%2Cnh%2Cpl%2Cinitcwndbps&lsig=AHylml4wRQIgXWODYee39sdb_XM52qLJvpfiFFm-rlmw-5mOQ-tHli4CIQCJ2c2Tc24ZJSni-PQ_oBlB-4D0YeJPYqUw2pindpa93A%3D%3D&video_id=PaKIZ7gJlRU&title=Linus+Torvalds+says+GPL+v3+violates+everything+that+GPLv2+stood+for")
                 Log.d("VideoDetailPlayer", videoSource)
                 initPlayer(url, protocol)
             }
 
             btnRtmp.setOnClickListener {
                 //video source: URL
-                val url = Uri.parse("rtmp://video.tokopedia.com/toplive/toplive?auth_key=1560407795-0-0-5706f231ac5a1c0718f17eac9669950b")
-                val protocol = VideoSourceProtocol.protocol("rtmp://video.tokopedia.com/toplive/toplive?auth_key=1560407795-0-0-5706f231ac5a1c0718f17eac9669950b")
+                val url = Uri.parse("http://devimages.apple.com/samplecode/adDemo/ad.m3u8")
+                val protocol = VideoSourceProtocol.protocol("http://devimages.apple.com/samplecode/adDemo/ad.m3u8")
                 Log.d("VideoDetailPlayer", videoSource)
                 initPlayer(url, protocol)
             }
