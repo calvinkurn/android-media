@@ -6,8 +6,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.VideoView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
@@ -20,7 +18,8 @@ object FeedScrollListener {
 
     private val THRESHOLD_VIDEO_HEIGHT_SHOWN = 75
 
-    fun onFeedScrolled(recyclerView: RecyclerView, adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>) {
+    @JvmStatic
+    fun onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
         val firstPosition = layoutManager.findFirstVisibleItemPosition();
         val lastPosition = layoutManager.findLastVisibleItemPosition();
@@ -29,8 +28,8 @@ object FeedScrollListener {
         recyclerView.getGlobalVisibleRect(rvRect);
 
         for (i in firstPosition..lastPosition) {
-            if (isVideoCard(adapter, i)) {
-                val item = getVideoCardViewModel(adapter, i)
+            if (isVideoCard(list, i)) {
+                val item = getVideoCardViewModel(list, i)
                 val rowRect = Rect();
                 layoutManager.findViewByPosition(i).getGlobalVisibleRect(rowRect);
                 val videoViewRect = Rect()
@@ -62,14 +61,15 @@ object FeedScrollListener {
         }
     }
 
-    private fun isVideoCard(adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>, position: Int): Boolean {
-        return adapter.list[position] is DynamicPostViewModel
-                && ((adapter.list[position]) as DynamicPostViewModel).contentList.size == 1
-                && ((adapter.list[position]) as DynamicPostViewModel).contentList.get(0) is VideoViewModel
+    private fun isVideoCard(list: List<Visitable<*>>, position: Int): Boolean {
+        return list[position] is DynamicPostViewModel
+                && ((list[position]) as DynamicPostViewModel).contentList.size == 1
+                && ((list[position]) as DynamicPostViewModel).contentList.get(0) is VideoViewModel
     }
 
-    private fun getVideoCardViewModel(adapter:  BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>, position: Int): VideoViewModel {
-        return ((adapter.list[position]) as DynamicPostViewModel).contentList.get(0) as VideoViewModel
+    private fun getVideoCardViewModel(list: List<Visitable<*>>, position: Int): VideoViewModel {
+        return ((list[position]) as DynamicPostViewModel).contentList.get(0) as VideoViewModel
     }
+
 
 }

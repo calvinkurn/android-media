@@ -42,6 +42,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
+import com.tokopedia.feedcomponent.util.FeedScrollListener;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
@@ -325,6 +326,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             onRefresh();
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @SuppressWarnings("unchecked")
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -349,6 +351,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER);
                             }
                         }
+                        FeedScrollListener.onFeedScrolled(recyclerView, (List<? extends Visitable<?>>) adapter.getlist());
                     }
                 } catch (IndexOutOfBoundsException e) {
                     Log.d(FeedPlusFragment.TAG, e.toString());

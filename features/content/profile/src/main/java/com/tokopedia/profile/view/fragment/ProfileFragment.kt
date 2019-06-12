@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.widget.SwipeRefreshLayout
@@ -116,7 +117,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
         VideoViewHolder.VideoViewListener,
-        EmptyAffiliateViewHolder.OnEmptyItemClickedListener {
+        EmptyAffiliateViewHolder.OnEmptyItemClickedListener{
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
@@ -950,7 +951,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             && newState == RecyclerView.SCROLL_STATE_IDLE
                             && layoutManager != null) {
                         recyclerView?.let {
-                            FeedScrollListener.onFeedScrolled(it, adapter)
+                            FeedScrollListener.onFeedScrolled(it, adapter.list)
                         }
                     }
                 } catch (e: IndexOutOfBoundsException) {
