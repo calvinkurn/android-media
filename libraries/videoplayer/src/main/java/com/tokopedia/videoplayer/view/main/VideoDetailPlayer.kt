@@ -9,8 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.google.android.exoplayer2.Player.STATE_BUFFERING
-import com.google.android.exoplayer2.Player.STATE_ENDED
 import com.tokopedia.videoplayer.R
 import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.utils.showToast
@@ -27,6 +25,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
     companion object {
         //keys
         private const val VIDEO_SOURCE = "video_uri"
+        private const val PEEK_HEIGHT = 0
 
         fun set(videoSource: String): BottomSheetDialogFragment {
             val videoPlayer = VideoDetailPlayer()
@@ -48,12 +47,14 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sendViewToBack(playerView) //utilities: send playerView in back of any views
+
         view.viewTreeObserver.addOnGlobalLayoutListener {
             val dialog = dialog as BottomSheetDialog
             val bottomSheet = dialog.findViewById<View>(android.support.design.R.id.design_bottom_sheet) as FrameLayout?
             val behavior = BottomSheetBehavior.from(bottomSheet!!)
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
-            behavior.peekHeight = 0
+            behavior.peekHeight = PEEK_HEIGHT
             behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -70,53 +71,28 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
     fun initView() {
         btnClose.setOnClickListener { dismiss() }
 
-        //showing close button on top
-        sendViewToBack(playerView)
-
         //get video source path
         val videoSource = arguments?.getString(VIDEO_SOURCE, "")
+
         if (videoSource == null || videoSource.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)
             dismiss()
         } else {
-            btnFile.setOnClickListener {
-                TkpdVideoPlayer.Builder()
-                        .transaction(R.id.playerView, childFragmentManager)
-                        .videoSource(videoSource)
-                        .listener(object : VideoPlayerListener {
-                            override fun onPlayerStateChanged(playbackState: Int) {
-                                when (playbackState) {
-                                    STATE_BUFFERING -> showToast("lagi buffer")
-                                }
-                            }
-                            override fun onPlayerError() {
-                                showToast("error bro")
-                            }
-                        })
-                        .build()
-            }
-
-            btnHttp.setOnClickListener {
-                TkpdVideoPlayer.Builder()
-                        .transaction(R.id.playerView, childFragmentManager)
-                        .videoSource("https://www.w3schools.com/html/mov_bbb.mp4")
-                        .listener(object : VideoPlayerListener {
-                            override fun onPlayerStateChanged(playbackState: Int) {
-                                when (playbackState) {
-                                    STATE_BUFFERING -> showToast("lagi buffer")
-                                    STATE_ENDED -> showToast("selesai!")
-                                }
-                            }
-                            override fun onPlayerError() {
-                                showToast("error bro")
-                            }
-                        })
-                        .build()
-            }
-
-            btnRtmp.setOnClickListener {
-
-            }
+            TkpdVideoPlayer.Builder()
+                    /* 1. fragment transaction! */
+                    .transaction(R.id.playerView, childFragmentManager)
+                    /* 2. acceptable for multiple source media (e.g. uri, url, file) */
+                    .videoSource(videoSource)
+                    /* 3. callback listener to handle video state and player error */
+                    .listener(object : VideoPlayerListener {
+                        override fun onPlayerStateChanged(playbackState: Int) {}
+                        override fun onPlayerError() {
+                            showToast(R.string.videoplayer_file_not_found)
+                            dismiss()
+                        }
+                    })
+                    /* 4. build it. */
+                    .build()
         }
     }
 
