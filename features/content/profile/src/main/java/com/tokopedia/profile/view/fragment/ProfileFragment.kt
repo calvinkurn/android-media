@@ -165,8 +165,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val PARAM_CATEGORY_ID = "{category_id}"
         private const val YOUTUBE_URL = "{youtube_url}"
         private const val TAB_INSPIRASI = "inspirasi"
-        private const val SHARE_PROFILE = "profile"
-        private const val SHARE_POST = "post"
         private const val CATEGORY_0 = "0"
         private const val TEXT_PLAIN = "text/plain"
         private const val KOL_COMMENT_CODE = 13
@@ -176,6 +174,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val LOGIN_CODE = 1383
         private const val LOGIN_FOLLOW_CODE = 1384
         private const val OPEN_CONTENT_REPORT = 1130
+        private const val FOLLOW_HEADER = "follow_header"
+        private const val FOLLOW_FOOTER = "follow_footer"
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -425,20 +425,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         startActivity(FollowingListActivity.createIntent(context, userId.toString()))
     }
 
-    override fun followUnfollowUser(userId: Int, follow: Boolean) {
-        if (userSession.isLoggedIn) {
-            if (follow) {
-                presenter.followKol(userId)
-                profileAnalytics.eventClickFollow(isOwner, userId.toString())
-            } else {
-                presenter.unfollowKol(userId)
-                profileAnalytics.eventClickUnfollow(isOwner, userId.toString())
-            }
-        } else {
-            followAfterLogin()
-        }
-    }
-
     override fun updateCursor(cursor: String) {
         presenter.cursor = cursor
     }
@@ -607,6 +593,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
             setFollowBtn(it, false)
+            if (!isOwner) {
+                showFooterOthers()
+            }
 
             if (activity != null && arguments != null) {
                 if (resultIntent == null) {
@@ -992,7 +981,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 footerOthersText.text = getString(R.string.sticky_footer_follow)
                 footerOthersFollow.show()
                 footerOthersFollow.setOnClickListener { _ ->
-                    followUnfollowUser(it.userId, !it.isFollowed)
+                    followUnfollowUser(it.userId, !it.isFollowed, FOLLOW_FOOTER)
                 }
             } else {
                 footerOthers.hide()
@@ -1104,7 +1093,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 editButton.visibility = View.GONE
                 followBtn.visibility = View.VISIBLE
                 followBtn.setOnClickListener {
-                    followUnfollowUser(element.userId, !element.isFollowed)
+                    followUnfollowUser(element.userId, !element.isFollowed, FOLLOW_HEADER)
                 }
                 updateButtonState(element.isFollowed)
                 if (isFromLogin) {
@@ -1117,6 +1106,28 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     onChangeAvatarClicked()
                 }
             }
+        }
+    }
+
+    private fun followUnfollowUser(userId: Int, follow: Boolean, source: String) {
+        if (userSession.isLoggedIn) {
+            if (follow) {
+                presenter.followKol(userId)
+                if (source == FOLLOW_HEADER) {
+                    profileAnalytics.eventClickFollow(isOwner, userId.toString())
+                } else if (source == FOLLOW_FOOTER) {
+                    profileAnalytics.eventClickFollowFooter(isOwner, userId.toString())
+                }
+            } else {
+                presenter.unfollowKol(userId)
+                if (source == FOLLOW_HEADER) {
+                    profileAnalytics.eventClickUnfollow(isOwner, userId.toString())
+                } else if (source == FOLLOW_FOOTER) {
+                    profileAnalytics.eventClickUnfollowFooter(isOwner, userId.toString())
+                }
+            }
+        } else {
+            followAfterLogin()
         }
     }
 
