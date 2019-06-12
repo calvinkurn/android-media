@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Rect
 import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.widget.SwipeRefreshLayout
@@ -22,7 +21,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import android.widget.VideoView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -57,6 +55,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
@@ -942,63 +941,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         isOwner = userId.toString() == userSession.userId
 
-        layoutManager = LinearLayoutManager(activity)
-        recyclerView.layoutManager = layoutManager
+        layoutManager = recyclerView.layoutManager as LinearLayoutManager
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            var laginaik:Boolean = true
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) {
-                    laginaik = true
-                } else {
-                    laginaik = false
-                }
-
-            }
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
-
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE
                             && layoutManager != null) {
-                        val firstPosition = layoutManager.findFirstVisibleItemPosition();
-                        val lastPosition = layoutManager.findLastVisibleItemPosition();
-
-                        val rvRect = Rect();
-                        recyclerView?.getGlobalVisibleRect(rvRect);
-
-                        for (i in firstPosition..lastPosition) {
-                            if (isVideoCard(i)) {
-                                val item = getVideoCardViewModel(i)
-                                val rowRect = Rect();
-                                layoutManager.findViewByPosition(i).getGlobalVisibleRect(rowRect);
-                                val videoViewRect = Rect()
-                                layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.getGlobalVisibleRect(videoViewRect)
-                                layoutManager.findViewByPosition(i).findViewById<VideoView>(R.id.image)
-                                var percentVideo = 0
-                                if (rowRect.bottom >= rvRect.bottom) {
-                                    layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.let {
-                                        val visibleVideo = rvRect.bottom - videoViewRect.top
-                                        percentVideo = (visibleVideo * 100) / it.height
-                                    }
-                                } else {
-                                    layoutManager.findViewByPosition(i).findViewById<View>(R.id.image)?.let {
-                                        val visibleVideo = videoViewRect.bottom - rvRect.top
-                                        percentVideo = (visibleVideo * 100) / it.height
-                                    }
-                                }
-                                var isStateChanged = false;
-                                if (percentVideo > 75) {
-                                    if (!item.canPlayVideo) isStateChanged = true
-                                    item.canPlayVideo = true
-                                } else {
-                                    if (item.canPlayVideo) isStateChanged = true
-                                    item.canPlayVideo = false
-                                }
-                                if (isStateChanged)
-                                    adapter.notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO)
-                            }
+                        recyclerView?.let {
+                            FeedScrollListener.onFeedScrolled(it, adapter)
                         }
                     }
                 } catch (e: IndexOutOfBoundsException) {
