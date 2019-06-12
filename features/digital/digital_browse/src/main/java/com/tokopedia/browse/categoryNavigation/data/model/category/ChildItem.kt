@@ -44,7 +44,9 @@ data class ChildItem(
         var type: Int = 2,
 
         @field:SerializedName("parentName")
-        val parentName: String? = null
+        val parentName: String? = null,
+
+        var parentCategoryname: String? = null
 
 
 ){

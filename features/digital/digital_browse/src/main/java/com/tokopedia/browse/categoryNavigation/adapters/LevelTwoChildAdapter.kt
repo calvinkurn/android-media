@@ -4,15 +4,16 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.Target
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
+import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
 import kotlinx.android.synthetic.main.item_level_two_child.view.*
 
 class LevelTwoChildAdapter(private val list: List<ChildItem>?) : RecyclerView.Adapter<LevelTwoChildAdapter.ViewHolder>() {
+
+    val viewMap = HashMap<Int, Boolean>()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,22 +28,16 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?) : RecyclerView.Ad
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.productName.text = list!![position].name
 
-        if(list[position].iconImageUrl == null){
+        if (list[position].iconImageUrl == null) {
 
             holder.productImage.setImageResource(R.drawable.ic_see_more)
 
-        }else{
-            Glide.with(holder.itemView.context)
-                    .load(list[position].iconImageUrl)
-                    .placeholder(R.drawable.loading_page)
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .centerCrop()
-                    .into(holder.productImage)
+        } else {
+            ImageHandler.loadImage(holder.itemView.context, holder.productImage, list[position].iconImageUrl, R.drawable.loading_page)
         }
 
         holder.productImage.setOnClickListener {
+            CategoryAnalytics.createInstance().eventBannerInsideLevelTwoClick(list[position], position)
             RouteManager.route(holder.productImage.context, list[position].applinks)
         }
         holder.productName.setOnClickListener {
@@ -50,11 +45,17 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?) : RecyclerView.Ad
         }
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    override fun onViewAttachedToWindow(holder: ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        val position = holder.adapterPosition
+        if (!viewMap.containsKey(position)) {
+            viewMap[position] = true
+            CategoryAnalytics.createInstance().eventBannerInsideLevelTwoView(list?.get(position)!!, position)
+        }
+    }
 
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val productImage = view.product_image
         val productName = view.product_name
-
-
     }
 }

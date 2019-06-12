@@ -18,6 +18,7 @@ class CategoryListTwoModelMapper {
                     if (l != null) {
                         for (i in l) {
                             i.type = 1
+                            i.parentCategoryname = it.name
                         }
                     }
 
@@ -25,6 +26,7 @@ class CategoryListTwoModelMapper {
 
                     if (l != null) {
                         for (i in l) {
+                            i.parentCategoryname = it.name
                             i.child?.add(0, ChildItem(i.applinks, "Lihat Semua", "0", 2))
                         }
                     }

@@ -7,11 +7,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.Target
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
+import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
 import kotlinx.android.synthetic.main.item_category_level_two_type_two.view.*
 import kotlinx.android.synthetic.main.item_exclusive_level_two.view.*
@@ -27,6 +26,9 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
     private var expanded_item_pos = -1
 
     private var childList: MutableList<ChildItem>? = ArrayList<ChildItem>()
+
+    val viewMap1 = HashMap<Int, Boolean>()
+    val viewMap2 = HashMap<Int, Boolean>()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -63,14 +65,8 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
 
     private fun initLayoutTwo(holder: ViewHolder2, position: Int) {
         val item = list[position]
-        Glide.with(holder.itemView.context)
-                .load(item.iconImageUrl)
-                .placeholder(R.drawable.loading_page)
-                .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                .centerCrop()
-                .into(holder.item_image)
+
+        ImageHandler.loadImage(holder.itemView.context, holder.item_image, item.iconImageUrl, R.drawable.loading_page)
         holder.item_name.text = item.name
 
         if (holder.item_child_recycler.adapter == null) {
@@ -103,6 +99,8 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
 
         holder.parent_layout.setOnClickListener {
 
+            CategoryAnalytics.createInstance().eventDropDownPromoClick(list[position], position)
+
             if (expanded_item_pos < 0 || expanded_item_pos == position) {
                 item.isExpanded = !item.isExpanded
                 notifyItemChanged(position)
@@ -124,22 +122,18 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
 
     private fun initLayoutOne(holder: ViewHolder1, position: Int) {
         val item = list[position]
-        Glide.with(holder.itemView.context)
-                .load(item.iconImageUrl)
-                .placeholder(R.drawable.loading_page)
-                .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                .centerCrop()
-                .into(holder.item_image_v1)
+
+        ImageHandler.loadImage(holder.itemView.context, holder.item_image_v1, item.iconImageUrl, R.drawable.loading_page)
         holder.item_name_v1.text = item.name
 
         holder.item_image_v1.setOnClickListener {
             fireApplink(holder.item_image_v1.context, list[position].applinks)
+            CategoryAnalytics.createInstance().eventPromoClick(list[position], position)
         }
 
         holder.item_name_v1.setOnClickListener {
             fireApplink(holder.item_name_v1.context, list[position].applinks)
+            CategoryAnalytics.createInstance().eventPromoClick(list[position], position)
         }
 
         holder.product_parent_name.text = item.parentName
@@ -148,6 +142,24 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
 
     private fun fireApplink(context: Context?, applinks: String?) {
         RouteManager.route(context, applinks)
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is ViewHolder1) {
+            val position = holder.adapterPosition
+            if (!viewMap1.containsKey(position)) {
+                viewMap1[position] = true
+                CategoryAnalytics.createInstance().eventPromoView(list[position], position)
+            }
+
+        } else if (holder is ViewHolder2) {
+            val position = holder.adapterPosition
+            if (!viewMap2.containsKey(position)) {
+                viewMap2[position] = true
+                CategoryAnalytics.createInstance().eventPromoView(list[position], position)
+            }
+        }
     }
 
 

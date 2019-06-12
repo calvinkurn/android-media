@@ -38,9 +38,9 @@ class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: 
     }
 
 
-    fun fetchHotlist(categoryId: String) {
+    fun fetchHotlist(categoryId: String,categoryname:String) {
 
-        getCategoryHotListUseCase.execute(getCategoryHotListUseCase.createRequestParams(categoryId.toInt()), object : Subscriber<CategoryHotlist>() {
+        getCategoryHotListUseCase.execute(getCategoryHotListUseCase.createRequestParams(categoryId.toInt(),categoryname), object : Subscriber<CategoryHotlist>() {
             override fun onNext(categoryHotlist: CategoryHotlist?) {
                 categoryHotlist!!.list.let {
                     if (categoryHotlist.list!!.isNotEmpty()) {

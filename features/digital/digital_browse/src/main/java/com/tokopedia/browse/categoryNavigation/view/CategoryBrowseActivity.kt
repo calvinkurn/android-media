@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
+import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.fragments.CategoryLevelTwoFragment
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
 import com.tokopedia.browse.categoryNavigation.fragments.Listener
@@ -84,6 +85,11 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_search) {
             onSearchClicked()
+            CategoryAnalytics.createInstance().eventSearchBarClick()
+            return true
+        } else if (item.itemId == R.id.home) {
+            CategoryAnalytics.createInstance().eventBackButtonClick()
+            onBackPressed()
             return true
         }
         return super.onOptionsItemSelected(item)

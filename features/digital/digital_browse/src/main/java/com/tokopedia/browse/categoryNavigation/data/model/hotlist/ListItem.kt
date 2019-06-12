@@ -46,5 +46,9 @@ data class ListItem(
 	val id: String? = null,
 
 	@field:SerializedName("img_promo")
-	val imgPromo: String? = null
+	val imgPromo: String? = null,
+
+    var parentName: String? = null
+
+
 )

@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.adapters.CategoryLevelTwoAdapter
 import com.tokopedia.browse.categoryNavigation.adapters.HotlistAdapter
+import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
 import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem
 import com.tokopedia.browse.categoryNavigation.di.CategoryNavigationComponent
@@ -46,6 +47,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     var current_position = "0"
 
     var categoryApplink: String? = null
+    var currentCategoryName: String = ""
 
 
     companion object {
@@ -59,8 +61,9 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
     override fun refreshView(id: String, categoryName: String, applink: String?) {
         current_position = id
+        currentCategoryName = categoryName
         categoryLevelTwoViewModel.refresh(id)
-        categoryLevelTwoViewModel.fetchHotlist(id)
+        categoryLevelTwoViewModel.fetchHotlist(id,currentCategoryName)
         setShimmer(id)
         category_name.text = categoryName
         hotlist_name.text = "Hotlist $categoryName"
@@ -102,6 +105,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
             label_lihat_semua.setOnClickListener {
                 RouteManager.route(activity, categoryApplink)
+                CategoryAnalytics.createInstance().eventClickLihatSemua(label_lihat_semua.text.toString())
             }
         }
 
@@ -127,7 +131,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
             childList.clear()
             childList.addAll(it as List<ChildItem>)
             removeShimmer()
-            slave_list.adapter.notifyDataSetChanged()
+            slave_list.adapter = CategoryLevelTwoAdapter(childList)
         })
 
         categoryLevelTwoViewModel.getCategoryHotlist().observe(this, Observer<List<ListItem>> {

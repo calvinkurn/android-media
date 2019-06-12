@@ -5,15 +5,19 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.Target
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.browse.R
+import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.data.model.category.CategoriesItem
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
 import kotlinx.android.synthetic.main.item_category_level_one.view.*
 
-class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesItem>, private val context: Context, private val listener: CategorylevelOneFragment.CategorySelectListener) : RecyclerView.Adapter<CategoryLevelOneAdapter.ViewHolder>() {
+class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesItem>, private val context: Context,
+                              private val listener: CategorylevelOneFragment.CategorySelectListener)
+    : RecyclerView.Adapter<CategoryLevelOneAdapter.ViewHolder>() {
+
+    val viewMap = HashMap<Int, Boolean>()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_category_level_one, parent, false)
@@ -27,17 +31,12 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.categoryName.text = categoryList[position].name
-        Glide.with(holder.itemView.context)
-                .load(categoryList[position].iconImageUrl)
-                .placeholder(R.drawable.loading_page)
-                .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                .centerCrop()
-                .into(holder.categoryImage)
+
+        ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, categoryList[position].iconImageUrl, R.drawable.loading_page)
 
         holder.parent_layout.setOnClickListener {
             listener.onItemClicked(categoryList[position].id!!, position, categoryList[position].name!!, categoryList[position].applinks)
+            CategoryAnalytics.createInstance().eventCategoryLevelOneClick(categoryList[position], position)
         }
         if (categoryList[position].isSelected) {
             holder.parent_layout.setBackgroundColor(context.resources.getColor(R.color.white))
@@ -45,6 +44,15 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
             holder.parent_layout.setBackgroundColor(context.resources.getColor(R.color.unselected_background))
         }
 
+    }
+
+    override fun onViewAttachedToWindow(holder: ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        val position = holder.adapterPosition
+        if (!viewMap.containsKey(position)) {
+            viewMap[position] = true
+            CategoryAnalytics.createInstance().eventCategoryLevelOneView(categoryList[position], position)
+        }
     }
 
 
