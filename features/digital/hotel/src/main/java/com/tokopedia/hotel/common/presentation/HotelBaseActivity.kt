@@ -104,13 +104,6 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
         //retry API call
     }
 
-    fun showErrorBottomSheet(e: Throwable) {
-        val hotelErrorBottomSheet = HotelErrorBottomSheets()
-        hotelErrorBottomSheet.errorThrowable = e
-        hotelErrorBottomSheet.listener = this
-        hotelErrorBottomSheet.show(supportFragmentManager, TAG_HOTEL_ERROR)
-    }
-
     private fun showBottomMenus() {
         val hotelMenuBottomSheets = HotelMenuBottomSheets()
         hotelMenuBottomSheets.listener = this
@@ -132,6 +125,5 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
 
     companion object {
         val TAG_HOTEL_MENU = "hotelMenu"
-        val TAG_HOTEL_ERROR = "hotelError"
     }
 }
