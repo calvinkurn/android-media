@@ -144,9 +144,9 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST_CODE) {
             if (userSession != null && userSession.isLoggedIn) {
-                showToastMessage(resources.getString(R.string.login_to_proceed), Toast.LENGTH_SHORT)
-            } else {
                 searchLoanOnline()
+            } else {
+                showToastMessage(resources.getString(R.string.login_to_proceed), Toast.LENGTH_SHORT)
             }
         } else if (resultCode == RESULT_OK && requestCode == LOAN_PERIOD_TYPE) {
 
