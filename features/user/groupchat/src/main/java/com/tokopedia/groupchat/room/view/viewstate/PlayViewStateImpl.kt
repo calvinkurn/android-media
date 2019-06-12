@@ -288,7 +288,6 @@ open class PlayViewStateImpl(
             }
 
             if(it.interactiveButton.isEnabled) {
-                analytics.eventViewInteractionButton(viewModel?.channelId)
                 dynamicButtonAdapter.addList(it.interactiveButton)
                 interactionAnimationHelper.updateInteractionIcon(it.interactiveButton.balloonList)
                 dynamicButtonRecyclerView.show()
@@ -299,6 +298,7 @@ open class PlayViewStateImpl(
     }
 
     override fun onInteractiveButtonViewed(anchorView: LottieAnimationView) {
+        analytics.eventViewInteractionButton(viewModel?.channelId)
         interactionAnimationHelper.fakeShot(anchorView)
     }
 
