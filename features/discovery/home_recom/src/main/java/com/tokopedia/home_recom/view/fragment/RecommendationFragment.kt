@@ -99,7 +99,10 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     override fun loadData(page: Int) {
-        //Do nothing
+        if(page == 1){
+            //load initial data when press retry
+            activity?.let { recommendationWidgetViewModel.getPrimaryProduct(productId, it) }
+        }
     }
 
     override fun disableLoadMore() {
