@@ -9,11 +9,13 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
 import com.tokopedia.loginregister.registeremail.di.DaggerRegisterEmailComponent;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.registeremail.view.fragment.RegisterEmailFragment;
+import com.tokopedia.loginregister.registeremail.view.listener.RegisterEmailContract;
 
 import javax.inject.Inject;
 
@@ -23,9 +25,6 @@ import javax.inject.Inject;
 public class RegisterEmailActivity extends BaseSimpleActivity implements HasComponent {
 
     public static final String EXTRA_PARAM_EMAIL = "email";
-
-    @Inject
-    LoginRegisterAnalytics analytics;
 
     @Override
     protected Fragment getNewFragment() {
@@ -39,22 +38,12 @@ public class RegisterEmailActivity extends BaseSimpleActivity implements HasComp
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initInjector();
     }
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
         toolbar.setPadding(0, 0, 30, 0);
-    }
-
-    private void initInjector() {
-        DaggerRegisterEmailComponent daggerRegisterEmailComponent = (DaggerRegisterEmailComponent)
-                DaggerRegisterEmailComponent
-                        .builder().loginRegisterComponent(getComponent())
-                        .build();
-
-        daggerRegisterEmailComponent.inject(this);
     }
 
     public static Intent getCallingIntent(Context context) {
@@ -70,14 +59,19 @@ public class RegisterEmailActivity extends BaseSimpleActivity implements HasComp
     }
 
     @Override
-    public void onBackPressed() {
-        analytics.eventClickBackRegisterWithEmail();
-        super.onBackPressed();
-    }
-
-    @Override
     public LoginRegisterComponent getComponent() {
         return DaggerLoginRegisterComponent.builder().baseAppComponent(((BaseMainApplication)
                 getApplication()).getBaseAppComponent()).build();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
+                RegisterEmailContract.View) {
+            ((RegisterEmailContract.View) getSupportFragmentManager().findFragmentById(R.id
+                    .parent_view)).onBackPressed();
+        }
+
+        super.onBackPressed();
     }
 }

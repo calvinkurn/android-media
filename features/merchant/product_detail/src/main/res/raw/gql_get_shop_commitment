@@ -5,6 +5,7 @@ query getShopCommitment($shopID: String!, $price: Int){
               staticMessages{
                   pdpMessage
               }
+              iconURL
            }
            error{
               message

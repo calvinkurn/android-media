@@ -10,6 +10,8 @@ import com.tokopedia.search.di.module.UserSessionModule;
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.productwishlisturl.ProductWishlistUrlUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule;
+import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler;
+import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule;
 
 import dagger.Component;
 
@@ -23,6 +25,7 @@ import dagger.Component;
         ProductWishlistUrlUseCaseModule.class,
         SearchProductUseCaseModule.class,
         GetDynamicFilterGqlUseCaseModule.class,
+        SearchLocalCacheHandlerModule.class,
         RemoteConfigModule.class
 }, dependencies = BaseAppComponent.class)
 public interface ProductListPresenterComponent {

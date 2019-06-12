@@ -115,7 +115,7 @@ public class RecentViewHolder extends AbstractViewHolder<RecentSearch> {
                                         item.getApplink()
                                 )
                         );
-                        clickListener.onItemSearchClicked(item.getApplink());
+                        clickListener.onItemClicked(item.getApplink(), item.getUrl());
                     }
                 });
             }

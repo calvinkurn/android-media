@@ -35,10 +35,8 @@ import javax.inject.Inject
 class ProfileListFragment :
     BaseListFragment<ProfileViewModel, ProfileListTypeFactory>(),
     ProfileListSectionContract.View,
-    SearchProfileListener,
     ProfileListener,
-    EmptyStateListener,
-    FollowActionListener {
+    EmptyStateListener {
 
     private val PARAM_USER_ID = "{user_id}"
 
@@ -94,8 +92,6 @@ class ProfileListFragment :
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter.attachView(this)
         presenter.initInjector()
-        presenter.attachFollowActionListener(this)
-        presenter.attachSearchProfileListener(this)
 
         return inflater.inflate(R.layout.search_fragment_profile_list, container, false)
     }
