@@ -343,7 +343,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private void removeCachePassData() {
         if (cacheManager != null) {
             cacheManager.delete(InboxReputationDetailActivity.CACHE_PASS_DATA);
-            cacheManager.store();
         }
     }
 
