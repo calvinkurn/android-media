@@ -172,17 +172,22 @@ class HomeMainToolbar : MainToolbar {
         return shadowApplied
     }
 
-    fun setHint(hint: String){
+    fun setHint(data: HashMap<String, String>){
         val editTextSearch = findViewById<TextView>(R.id.et_search)
-        editTextSearch.hint = hint
+        editTextSearch.hint = data["hint"]
         editTextSearch.setOnClickListener {
             searchBarAnalytics.eventTrackingSearchBar()
-            if(hint.isNotEmpty()){
-                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE, "hint=$hint")
-            }else{
-                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
-            }
+            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + generateAppLinkSearch(data))
         }
+    }
+
+    private fun generateAppLinkSearch(data: HashMap<String, String>): String{
+        var appLinkData = "?"
+        data.forEach{ (key, value) ->
+            if(appLinkData != "?") appLinkData += "&"
+            appLinkData += "$key=$value"
+        }
+        return appLinkData
     }
 
     companion object {
