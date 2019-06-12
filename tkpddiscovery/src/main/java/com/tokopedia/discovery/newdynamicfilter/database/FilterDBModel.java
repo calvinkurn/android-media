@@ -8,6 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity
 public class FilterDBModel implements Serializable {
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "filter_id")
     private String filterId;
 
