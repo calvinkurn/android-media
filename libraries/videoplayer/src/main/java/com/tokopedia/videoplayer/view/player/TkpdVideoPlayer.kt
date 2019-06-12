@@ -36,6 +36,7 @@ class TkpdVideoPlayer: Fragment() {
     companion object {
         //keys
         private const val VIDEO_SOURCE      = "video_uri"
+        private const val VIDEO_CALLBACK    = "video_callback"
 
         //const
         private const val VIDEO_ROTATION_90 = 90f
@@ -59,7 +60,7 @@ class TkpdVideoPlayer: Fragment() {
         }
 
         fun listener(callback: VideoPlayerListener) = apply {
-            videoPlayer.callback = callback
+            bundle.putSerializable(VIDEO_CALLBACK, callback)
             return this
         }
 
@@ -78,11 +79,13 @@ class TkpdVideoPlayer: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sendViewToBack(playerView) //utilities: send playerView in back of any views
 
         //catch source media from file, uri, or URL.
         val sourceMedia = arguments?.getString(VIDEO_SOURCE, "")
 
-        sendViewToBack(playerView) //utilities: send playerView in back of any views
+        //passing callback listener with serializable
+        callback = arguments?.getSerializable(VIDEO_CALLBACK) as VideoPlayerListener
 
         if (sourceMedia == null || sourceMedia.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)
