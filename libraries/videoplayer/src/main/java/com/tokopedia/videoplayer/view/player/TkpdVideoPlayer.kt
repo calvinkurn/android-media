@@ -70,7 +70,7 @@ class TkpdVideoPlayer: Fragment() {
     }
 
     private lateinit var playerOptions: SimpleExoPlayer
-    private lateinit var callback: VideoPlayerListener
+    private var callback: VideoPlayerListener ?= null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_video_player, container, false)
@@ -86,7 +86,7 @@ class TkpdVideoPlayer: Fragment() {
 
         if (sourceMedia == null || sourceMedia.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)
-            callback.onPlayerError()
+            callback?.onPlayerError()
         } else {
             if (File(sourceMedia).exists()) {
                 val file = Uri.fromFile(File(sourceMedia))
@@ -102,7 +102,7 @@ class TkpdVideoPlayer: Fragment() {
 
     private fun playerListener() = playerOptions.addListener(object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            callback.onPlayerStateChanged(playbackState)
+            callback?.onPlayerStateChanged(playbackState)
             when (playbackState) {
                 STATE_BUFFERING -> pgLoader.show()
                 STATE_READY -> pgLoader.hide()
@@ -135,7 +135,7 @@ class TkpdVideoPlayer: Fragment() {
                     false)
         } catch (e: Exception) {
             showToast(R.string.videoplayer_invalid_player)
-            callback.onPlayerError()
+            callback?.onPlayerError()
         }
     }
 

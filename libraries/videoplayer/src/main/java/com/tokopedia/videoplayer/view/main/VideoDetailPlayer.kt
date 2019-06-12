@@ -80,8 +80,6 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
         } else {
             btnFile.setOnClickListener {
                 TkpdVideoPlayer.Builder()
-                        .transaction(R.id.playerView, childFragmentManager)
-                        .videoSource(videoSource)
                         .listener(object : VideoPlayerListener {
                             override fun onPlayerStateChanged(playbackState: Int) {
                                 when (playbackState) {
@@ -92,6 +90,8 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
                                 showToast("error bro")
                             }
                         })
+                        .transaction(R.id.playerView, childFragmentManager)
+                        .videoSource(videoSource)
                         .build()
             }
 
@@ -99,16 +99,6 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
                 TkpdVideoPlayer.Builder()
                         .transaction(R.id.playerView, childFragmentManager)
                         .videoSource("https://www.w3schools.com/html/mov_bbb.mp4")
-                        .listener(object : VideoPlayerListener {
-                            override fun onPlayerStateChanged(playbackState: Int) {
-                                when (playbackState) {
-                                    STATE_BUFFERING -> showToast("lagi buffer")
-                                }
-                            }
-                            override fun onPlayerError() {
-                                showToast("error bro")
-                            }
-                        })
                         .build()
             }
 
