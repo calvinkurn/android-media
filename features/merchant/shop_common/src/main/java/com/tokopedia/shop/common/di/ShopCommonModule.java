@@ -6,8 +6,11 @@ import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.shop.common.R;
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
@@ -24,14 +27,47 @@ import com.tokopedia.shop.common.util.CacheApiTKPDResponseValidator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 @Module
 public class ShopCommonModule {
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @Provides
+    public CoroutineDispatcher provideMainDispatcher() {
+        return Dispatchers.getMain();
+    }
+
+    @Provides
+    public ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(@ApplicationContext Context context) {
+        return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
+    }
+
+
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_INFO)
+    public String provideGqlQueryShopInfo(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_info);
+    }
+
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_REPUTATION)
+    public String provideGqlQueryShopReputation(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_badge);
+    }
+
+    /** NON-GQL, Plan to be removed **/
     @Provides
     public GetShopInfoUseCase provideGetShopInfoUseCase(ShopCommonRepository shopCommonRepository) {
         return new GetShopInfoUseCase(shopCommonRepository);
@@ -40,11 +76,6 @@ public class ShopCommonModule {
     @Provides
     public GetShopInfoByDomainUseCase provideGetShopInfoByDomainUseCase(ShopCommonRepository shopCommonRepository) {
         return new GetShopInfoByDomainUseCase(shopCommonRepository);
-    }
-
-    @Provides
-    public ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(@ApplicationContext Context context) {
-        return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
     }
 
     @Provides
@@ -113,10 +144,5 @@ public class ShopCommonModule {
     public Retrofit provideWSRetrofit(@ShopQualifier OkHttpClient okHttpClient,
                                       Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_WS_URL).client(okHttpClient).build();
-    }
-
-    @Provides
-    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
-        return new UserSession(context);
     }
 }

@@ -44,39 +44,30 @@ public class ValidateOtpLoginUseCase extends UseCase<ValidateOtpLoginDomain> {
         return validateOtpUseCase.createObservable(ValidateOtpUseCase.getParam(
                 requestParams.getString(ValidateOtpUseCase.PARAM_USER, ""),
                 requestParams.getInt(ValidateOtpUseCase.PARAM_OTP_TYPE, -1),
-                requestParams.getString(ValidateOtpUseCase.PARAM_CODE, "")
-        )).flatMap(new Func1<ValidateOtpDomain, Observable<ValidateOtpLoginDomain>>() {
-            @Override
-            public Observable<ValidateOtpLoginDomain> call(ValidateOtpDomain validateOTPDomain) {
-                if (validateOTPDomain.isSuccess())
-                    domain.setValidateOtpDomain(validateOTPDomain);
-                return Observable.just(domain);
-            }
+                requestParams.getString(ValidateOtpUseCase.PARAM_CODE, ""),
+                requestParams.getString(ValidateOtpUseCase.PARAM_PHONE, "")
+        )).flatMap((Func1<ValidateOtpDomain, Observable<ValidateOtpLoginDomain>>) validateOTPDomain -> {
+            if (validateOTPDomain.isSuccess())
+                domain.setValidateOtpDomain(validateOTPDomain);
+            return Observable.just(domain);
         });
     }
 
     private Func1<ValidateOtpLoginDomain, Observable<ValidateOtpLoginDomain>> makeLogin(final RequestParams requestParams,
                                                                                         final ValidateOtpLoginDomain domain) {
-        return new Func1<ValidateOtpLoginDomain, Observable<ValidateOtpLoginDomain>>() {
-            @Override
-            public Observable<ValidateOtpLoginDomain> call(ValidateOtpLoginDomain validateOTPLoginDomain) {
-                return makeLoginUseCase.createObservable(MakeLoginUseCase.getParam(
-                        requestParams.getString(MakeLoginUseCase.PARAM_USER_ID, ""),
-                        userSession.getDeviceId()))
-                        .flatMap(new Func1<OtpLoginDomain, Observable<ValidateOtpLoginDomain>>() {
-                            @Override
-                            public Observable<ValidateOtpLoginDomain> call(OtpLoginDomain makeLoginDomain) {
-                                domain.setMakeLoginDomain(makeLoginDomain);
-                                return Observable.just(domain);
-                            }
-                        });
-            }
-        };
+        return validateOTPLoginDomain -> makeLoginUseCase.createObservable(MakeLoginUseCase.getParam(
+                requestParams.getString(MakeLoginUseCase.PARAM_USER_ID, ""),
+                userSession.getDeviceId()))
+                .flatMap((Func1<OtpLoginDomain, Observable<ValidateOtpLoginDomain>>) makeLoginDomain -> {
+                    domain.setMakeLoginDomain(makeLoginDomain);
+                    return Observable.just(domain);
+                });
     }
 
-    public static RequestParams getParam(int otpType, String otp, String tempUserId, String deviceId) {
+    public static RequestParams getParam(int otpType, String otp, String tempUserId,
+                                         String deviceId, String phoneNumber) {
         RequestParams params = RequestParams.create();
-        params.putAll(ValidateOtpUseCase.getParam(tempUserId, otpType, otp).getParameters());
+        params.putAll(ValidateOtpUseCase.getParam(tempUserId, otpType, otp, phoneNumber).getParameters());
         params.putAll(MakeLoginUseCase.getParam(tempUserId, deviceId).getParameters());
         return params;
     }

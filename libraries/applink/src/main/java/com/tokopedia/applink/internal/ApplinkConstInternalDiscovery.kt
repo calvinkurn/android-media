@@ -15,4 +15,7 @@ object ApplinkConstInternalDiscovery {
 
     @JvmField
     val SORT = "$INTERNAL_DISCOVERY/sort"
+
+    @JvmField
+    val CATALOG = "$INTERNAL_DISCOVERY/catalog"
 }

@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.product.detail.data.model.shop.BBInfo
-import com.tokopedia.product.detail.data.model.shop.ShopShipment
+import com.tokopedia.shop.common.graphql.data.shopinfo.BBInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.product.detail.view.fragment.CourierFragment
 
 class CourierActivity: BaseSimpleActivity() {

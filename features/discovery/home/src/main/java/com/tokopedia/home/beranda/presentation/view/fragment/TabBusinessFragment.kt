@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
@@ -24,13 +23,13 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_parent_business_unit.*
 import javax.inject.Inject
 
-class TabBusinessFragment : BaseDaggerFragment() {
-
+class TabBusinessFragment : BaseDaggerFragment(), TabLayout.OnTabSelectedListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: TabBusinessViewModel
     lateinit var adapter: TabBusinessViewPagerAdapter
     private var positionWidget: Int = 0
+    private var isFirstTabImpression: Boolean = false
 
     override fun getScreenName(): String {
         return TabBusinessFragment::class.java.simpleName
@@ -71,6 +70,7 @@ class TabBusinessFragment : BaseDaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        isFirstTabImpression = true
         errorView.visibility = View.GONE
         container.visibility = View.GONE
         temporayPlaceHolders.visibility = View.VISIBLE
@@ -142,16 +142,23 @@ class TabBusinessFragment : BaseDaggerFragment() {
     private fun addTabLayoutListener(adapter: TabBusinessViewPagerAdapter) {
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
 
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                HomePageTracking.eventClickTabHomeWidget(activity, tab.text.toString().toLowerCase())
-                viewPager.setCurrentItem(tab.position, false)
-                adapter.notifyDataSetChanged()
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
-
-            override fun onTabReselected(tab: TabLayout.Tab) {}
-        })
+        tabLayout.removeOnTabSelectedListener(this)
+        tabLayout.addOnTabSelectedListener(this)
     }
+
+    override fun onTabReselected(tab: TabLayout.Tab) {
+    }
+
+    override fun onTabUnselected(tab: TabLayout.Tab) {
+    }
+
+    override fun onTabSelected(tab: TabLayout.Tab) {
+        if(!isFirstTabImpression) {
+            HomePageTracking.eventClickTabHomeWidget(activity, tab.text.toString().toLowerCase())
+        }
+        isFirstTabImpression = false
+        viewPager.setCurrentItem(tab.position, false)
+        adapter.notifyDataSetChanged()
+    }
+
 }

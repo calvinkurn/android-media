@@ -56,8 +56,8 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
@@ -96,7 +96,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_
  */
 
 public class ProductFragment extends BrowseSectionFragment
-        implements SearchSectionGeneralAdapter.OnItemChangeView, ProductContract.View,
+        implements BrowseSectionGeneralAdapter.OnItemChangeView, ProductContract.View,
         ItemClickListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener,
         DefaultCategoryAdapter.CategoryListener,
         RevampCategoryAdapter.CategoryListener {
@@ -774,12 +774,12 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     @Override
-    protected SearchSectionGeneralAdapter getAdapter() {
+    protected BrowseSectionGeneralAdapter getAdapter() {
         return adapter;
     }
 
     @Override
-    protected SearchSectionFragmentPresenter getPresenter() {
+    protected BrowseSectionFragmentPresenter getPresenter() {
         return presenter;
     }
 
