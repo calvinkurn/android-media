@@ -47,6 +47,23 @@ public class CartDataListResponse {
     @SerializedName("autoapply_v2")
     @Expose
     private AutoapplyV2 autoapplyV2 = new AutoapplyV2();
+    @SerializedName("global_coupon_attr")
+    @Expose
+    private GlobalCouponAttr globalCouponAttr = new GlobalCouponAttr();
+    @SerializedName("autoapply_stack")
+    @Expose
+    private AutoapplyStack autoapplyStack = new AutoapplyStack();
+    @SerializedName("global_checkbox_state")
+    @Expose
+    private boolean globalCheckboxState;
+
+    public GlobalCouponAttr getGlobalCouponAttr() {
+        return globalCouponAttr;
+    }
+
+    public AutoapplyStack getAutoapplyStack() {
+        return autoapplyStack;
+    }
 
     public AutoapplyV2 getAutoapplyV2() {
         return autoapplyV2;
@@ -90,5 +107,9 @@ public class CartDataListResponse {
 
     public Donation getDonation() {
         return donation;
+    }
+
+    public boolean isGlobalCheckboxState() {
+        return globalCheckboxState;
     }
 }

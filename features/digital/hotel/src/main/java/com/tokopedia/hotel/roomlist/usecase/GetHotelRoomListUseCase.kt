@@ -12,9 +12,9 @@ import com.tokopedia.hotel.roomlist.data.model.RoomListParam
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -52,13 +52,8 @@ class GetHotelRoomListUseCase @Inject constructor(val useCase: MultiRequestGraph
             val graphqlRequest = GraphqlRequest(rawQuery, HotelRoomData.Response::class.java, params)
             useCase.addRequest(graphqlRequest)
 
-            val hotelRoomData = async {
-                val response =  withContext(Dispatchers.IO) {
-                    useCase.executeOnBackground().getSuccessData<HotelRoomData.Response>().response
-                }
-                response
-            }
-            return Success(mappingObjects(hotelRoomData.await()))
+            val hotelRoomData = useCase.executeOnBackground().getSuccessData<HotelRoomData.Response>().response
+            return Success(mappingObjects(hotelRoomData))
         } catch (throwable: Throwable) {
             return Fail(throwable)
         }

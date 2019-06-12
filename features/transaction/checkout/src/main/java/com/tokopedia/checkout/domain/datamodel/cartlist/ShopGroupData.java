@@ -3,6 +3,7 @@ package com.tokopedia.checkout.domain.datamodel.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 public class ShopGroupData implements Parcelable {
 
     private List<CartItemHolderData> cartItemHolderDataList = new ArrayList<>();
+    private boolean isChecked;
     private boolean isError;
     private String errorTitle;
     private String errorDescription;
@@ -29,6 +31,9 @@ public class ShopGroupData implements Parcelable {
     private String shopBadge;
     private boolean isFulfillment;
     private String fulfillmentName;
+    private boolean hasPromoList;
+    private String cartString;
+    private VoucherOrdersItemData voucherOrdersItemData;
 
     // Total data which is calculated from cartItemDataList
     private long totalPrice;
@@ -38,18 +43,90 @@ public class ShopGroupData implements Parcelable {
     public ShopGroupData() {
     }
 
+    protected ShopGroupData(Parcel in) {
+        cartItemHolderDataList = in.createTypedArrayList(CartItemHolderData.CREATOR);
+        isChecked = in.readByte() != 0;
+        isError = in.readByte() != 0;
+        errorTitle = in.readString();
+        errorDescription = in.readString();
+        isWarning = in.readByte() != 0;
+        warningTitle = in.readString();
+        warningDescription = in.readString();
+        shopName = in.readString();
+        shopId = in.readString();
+        shopType = in.readString();
+        isGoldMerchant = in.readByte() != 0;
+        isOfficialStore = in.readByte() != 0;
+        shopBadge = in.readString();
+        isFulfillment = in.readByte() != 0;
+        fulfillmentName = in.readString();
+        hasPromoList = in.readByte() != 0;
+        cartString = in.readString();
+        voucherOrdersItemData = in.readParcelable(VoucherOrdersItemData.class.getClassLoader());
+        totalPrice = in.readLong();
+        totalCashback = in.readLong();
+        totalItem = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(cartItemHolderDataList);
+        dest.writeByte((byte) (isChecked ? 1 : 0));
+        dest.writeByte((byte) (isError ? 1 : 0));
+        dest.writeString(errorTitle);
+        dest.writeString(errorDescription);
+        dest.writeByte((byte) (isWarning ? 1 : 0));
+        dest.writeString(warningTitle);
+        dest.writeString(warningDescription);
+        dest.writeString(shopName);
+        dest.writeString(shopId);
+        dest.writeString(shopType);
+        dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
+        dest.writeByte((byte) (isOfficialStore ? 1 : 0));
+        dest.writeString(shopBadge);
+        dest.writeByte((byte) (isFulfillment ? 1 : 0));
+        dest.writeString(fulfillmentName);
+        dest.writeByte((byte) (hasPromoList ? 1 : 0));
+        dest.writeString(cartString);
+        dest.writeParcelable(voucherOrdersItemData, flags);
+        dest.writeLong(totalPrice);
+        dest.writeLong(totalCashback);
+        dest.writeInt(totalItem);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ShopGroupData> CREATOR = new Creator<ShopGroupData>() {
+        @Override
+        public ShopGroupData createFromParcel(Parcel in) {
+            return new ShopGroupData(in);
+        }
+
+        @Override
+        public ShopGroupData[] newArray(int size) {
+            return new ShopGroupData[size];
+        }
+    };
+
     public List<CartItemHolderData> getCartItemDataList() {
         return cartItemHolderDataList;
     }
 
-    public void setCartItemDataList(List<CartItemData> cartItemDataList, boolean isError) {
+    public void setCartItemDataList(List<CartItemData> cartItemDataList) {
         for (CartItemData cartItemData : cartItemDataList) {
             CartItemHolderData cartItemHolderData = new CartItemHolderData();
             cartItemHolderData.setCartItemData(cartItemData);
             cartItemHolderData.setEditableRemark(false);
             cartItemHolderData.setErrorFormItemValidationMessage("");
             cartItemHolderData.setEditableRemark(false);
-            cartItemHolderData.setSelected(!isError);
+            if (cartItemData.isError()) {
+                cartItemHolderData.setSelected(false);
+            } else {
+                cartItemHolderData.setSelected(cartItemData.getOriginData().isCheckboxState());
+            }
             cartItemHolderDataList.add(cartItemHolderData);
         }
     }
@@ -198,63 +275,35 @@ public class ShopGroupData implements Parcelable {
         this.fulfillmentName = fulfillmentName;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public boolean isHasPromoList() {
+        return hasPromoList;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(this.cartItemHolderDataList);
-        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
-        dest.writeString(this.errorTitle);
-        dest.writeString(this.errorDescription);
-        dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
-        dest.writeString(this.warningTitle);
-        dest.writeString(this.warningDescription);
-        dest.writeString(this.shopName);
-        dest.writeString(this.shopId);
-        dest.writeString(this.shopType);
-        dest.writeByte(this.isGoldMerchant ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isOfficialStore ? (byte) 1 : (byte) 0);
-        dest.writeString(this.shopBadge);
-        dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
-        dest.writeString(this.fulfillmentName);
-        dest.writeLong(this.totalPrice);
-        dest.writeLong(this.totalCashback);
-        dest.writeInt(this.totalItem);
+    public void setHasPromoList(boolean hasPromoList) {
+        this.hasPromoList = hasPromoList;
     }
 
-    protected ShopGroupData(Parcel in) {
-        this.cartItemHolderDataList = in.createTypedArrayList(CartItemHolderData.CREATOR);
-        this.isError = in.readByte() != 0;
-        this.errorTitle = in.readString();
-        this.errorDescription = in.readString();
-        this.isWarning = in.readByte() != 0;
-        this.warningTitle = in.readString();
-        this.warningDescription = in.readString();
-        this.shopName = in.readString();
-        this.shopId = in.readString();
-        this.shopType = in.readString();
-        this.isGoldMerchant = in.readByte() != 0;
-        this.isOfficialStore = in.readByte() != 0;
-        this.shopBadge = in.readString();
-        this.isFulfillment = in.readByte() != 0;
-        this.fulfillmentName = in.readString();
-        this.totalPrice = in.readLong();
-        this.totalCashback = in.readLong();
-        this.totalItem = in.readInt();
+    public String getCartString() {
+        return cartString;
     }
 
-    public static final Creator<ShopGroupData> CREATOR = new Creator<ShopGroupData>() {
-        @Override
-        public ShopGroupData createFromParcel(Parcel source) {
-            return new ShopGroupData(source);
-        }
+    public void setCartString(String cartString) {
+        this.cartString = cartString;
+    }
 
-        @Override
-        public ShopGroupData[] newArray(int size) {
-            return new ShopGroupData[size];
-        }
-    };
+    public VoucherOrdersItemData getVoucherOrdersItemData() {
+        return voucherOrdersItemData;
+    }
+
+    public void setVoucherOrdersItemData(VoucherOrdersItemData voucherOrdersItemData) {
+        this.voucherOrdersItemData = voucherOrdersItemData;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 }

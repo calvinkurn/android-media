@@ -2,11 +2,13 @@ package com.tokopedia.tokopoints.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
+import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.fragment.CatalogListItemFragment;
 import com.tokopedia.tokopoints.view.fragment.CatalogListingFragment;
 import com.tokopedia.tokopoints.view.fragment.CouponCatalogFragment;
 import com.tokopedia.tokopoints.view.fragment.CouponDetailFragment;
+import com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment;
 import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
 import com.tokopedia.tokopoints.view.fragment.MyCouponListingFragment;
 import com.tokopedia.tokopoints.view.fragment.SendGiftFragment;
@@ -28,6 +30,8 @@ public interface TokoPointComponent {
 
     void inject(MyCouponListingFragment fragment);
 
+    void inject(CouponListingStackedFragment fragment);
+
     void inject(CouponCatalogFragment fragment);
 
     void inject(SendGiftFragment fragment);
@@ -35,6 +39,8 @@ public interface TokoPointComponent {
     void inject(ValidateMerchantPinFragment fragment);
 
     void inject(MyCouponListingActivity activity);
+
+    void inject(CouponListingStackedActivity activity);
 
     void inject(CouponDetailFragment fragment);
 }

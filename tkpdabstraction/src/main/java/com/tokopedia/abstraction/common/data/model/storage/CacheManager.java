@@ -2,6 +2,7 @@ package com.tokopedia.abstraction.common.data.model.storage;
 
 /**
  * Created by nathan on 11/28/17.
+ * Use PersistentCacheManager.instance in library directly instead.
  */
 @Deprecated
 public interface CacheManager {

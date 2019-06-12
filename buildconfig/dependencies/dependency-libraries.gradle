@@ -42,8 +42,6 @@ ext {
             baseListSeller    : ":libraries:base_list_seller",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             cacheApi          : ":libraries:cache_api",
-            cacheManager      : ":libraries:cache_manager",
-//            cacheManager      : ":libraries:cache_manager_no_op",
             cameraView        : ":libraries:camera_view",
             cameraview        : ":libraries:cameraview",
             cmnotification    :":libraries:cm_push_notifications",
@@ -69,7 +67,6 @@ ext {
             remoteConfig      : ":libraries:remote_config",
             travelCalendar    : ":libraries:travel_calendar",
             trackingOptimizer : ":libraries:tracking_optimizer",
-            useCase           : ":libraries:use_case",
             userSession       : ":libraries:user_session",
             videoRecorder     : ":libraries:video_recorder",
             videoUploader     : ":libraries:videouploader",
@@ -87,8 +84,12 @@ ext {
             graphView         :":libraries:graph_view",
             iris              : ":libraries:iris",
 //            iris              : ":libraries:iris_no_op",
-            banner            : ":libraries:banner",
+            cpm              : ":libraries:cpm",
+            banner            : ":libraries:unify:unify_compositions:banner",
             collapsingTabLayout: ":libraries:collapsing_tab_layout",
-            cpm              : ":libraries:cpm"
+            unifyIcon         : ":libraries:unify:unify_icon",
+            unifyPrinciples   : ":libraries:unify:unify_principles",
+            unifyComponents   : ":libraries:unify:unify_components",
+            coachMark         : ":libraries:unify:unify_compositions:coach_mark"
     ]
 }

@@ -20,11 +20,15 @@ public class NetworkParamHelper {
                 if (val.length == 2) {
                     String name = val[0];
                     String value = val[1];
-                    map.put(name, value);
+                    map.put(name, omitNewlineAndPlusSign(value));
                 }
             }
         }
         return map;
+    }
+
+    private static String omitNewlineAndPlusSign(String text) {
+        return text.replace("\n", "").replace("+", " ");
     }
 
     public static String getQueryValue(String paramString) {

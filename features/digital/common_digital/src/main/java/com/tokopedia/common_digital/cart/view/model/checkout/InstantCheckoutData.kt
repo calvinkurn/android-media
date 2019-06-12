@@ -7,40 +7,39 @@ import android.os.Parcelable
  * @author anggaprasetiyo on 3/23/17.
  */
 
-class InstantCheckoutData : Parcelable {
+class InstantCheckoutData(
+        var successCallbackUrl: String? = null,
+        var failedCallbackUrl: String? = null,
+        var redirectUrl: String? = null,
+        var transactionId: String? = null,
+        var stringQuery: String? = null,
+        var thanksUrl: String? = null
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString()) {
+    }
 
-    var successCallbackUrl: String? = null
-    var failedCallbackUrl: String? = null
-    var redirectUrl: String? = null
-    var transactionId: String? = null
-    var stringQuery: String? = null
-
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(successCallbackUrl)
+        parcel.writeString(failedCallbackUrl)
+        parcel.writeString(redirectUrl)
+        parcel.writeString(transactionId)
+        parcel.writeString(stringQuery)
+        parcel.writeString(thanksUrl)
+    }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(this.successCallbackUrl)
-        dest.writeString(this.failedCallbackUrl)
-        dest.writeString(this.redirectUrl)
-        dest.writeString(this.transactionId)
-        dest.writeString(this.stringQuery)
-    }
-
-    constructor() {}
-
-    protected constructor(`in`: Parcel) {
-        this.successCallbackUrl = `in`.readString()
-        this.failedCallbackUrl = `in`.readString()
-        this.redirectUrl = `in`.readString()
-        this.transactionId = `in`.readString()
-        this.stringQuery = `in`.readString()
-    }
-
     companion object CREATOR : Parcelable.Creator<InstantCheckoutData> {
-        override fun createFromParcel(source: Parcel): InstantCheckoutData {
-            return InstantCheckoutData(source)
+        override fun createFromParcel(parcel: Parcel): InstantCheckoutData {
+            return InstantCheckoutData(parcel)
         }
 
         override fun newArray(size: Int): Array<InstantCheckoutData?> {

@@ -2,26 +2,18 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSubscriber;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
-import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by hangnadi on 9/28/17.
@@ -51,23 +43,29 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     }
 
     @Override
-    public void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStore) {
-        super.requestProduct(searchParameter, forceSearch, requestOfficialStore);
-        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false, false);
-        enrichWithForceSearchParam(requestParams, forceSearch);
-        enrichWithRelatedSearchParam(requestParams, true);
+    public void initiateSearch(SearchParameter searchParameter, InitiateSearchListener initiateSearchListener) {
+        super.initiateSearch(searchParameter, initiateSearchListener);
 
-        GqlSearchHelper.requestProductFirstPage(context, requestParams, graphqlUseCase,
-                new DefaultGqlSearchSubscriber(searchParameter, forceSearch, getBaseDiscoveryView(), false)
+        com.tokopedia.usecase.RequestParams requestParams = createInitiateSearchRequestParams(searchParameter);
+
+        GqlSearchHelper.initiateSearch(
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_initiate_search),
+                requestParams,
+                graphqlUseCase,
+                new InitiateSearchSubscriber(initiateSearchListener)
         );
     }
 
-    private void enrichWithForceSearchParam(RequestParams requestParams, boolean isForceSearch) {
-        requestParams.putBoolean(BrowseApi.REFINED, isForceSearch);
-    }
+    private com.tokopedia.usecase.RequestParams createInitiateSearchRequestParams(SearchParameter searchParameter) {
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
 
-    private void enrichWithRelatedSearchParam(RequestParams requestParams, boolean relatedSearchEnabled) {
-        requestParams.putBoolean(BrowseApi.RELATED, relatedSearchEnabled);
+        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
+        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        requestParams.putBoolean(SearchApiConst.RELATED, true);
+
+        requestParams.putAll(searchParameter.getSearchParameterMap());
+
+        return requestParams;
     }
 
     @Override

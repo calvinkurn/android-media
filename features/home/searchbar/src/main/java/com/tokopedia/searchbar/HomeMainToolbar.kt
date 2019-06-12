@@ -60,25 +60,15 @@ class HomeMainToolbar : MainToolbar {
         initToolbarIcon()
 
         switchToLightToolbar()
-
-        btnInbox.setOnClickListener { v ->
-            if (userSession.isLoggedIn) {
-                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName)
-                getContext().startActivity((this.context.applicationContext as SearchBarRouter)
-                        .gotoInboxMainPage(getContext()))
-            } else {
-                RouteManager.route(context, ApplinkConst.LOGIN)
-            }
-        }
     }
 
     private fun initToolbarIcon() {
         wishlistBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_white)
-        notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_notif_white)
+        notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_system_action_notification_pressed_24)
         inboxBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_white)
 
         wishlistBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_grey)
-        notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_notif_grey)
+        notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_system_action_notification_normal_24)
         inboxBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_grey)
 
         wishlistCrossfader = TransitionDrawable(arrayOf<Drawable>(wishlistBitmapGrey, wishlistBitmapWhite))

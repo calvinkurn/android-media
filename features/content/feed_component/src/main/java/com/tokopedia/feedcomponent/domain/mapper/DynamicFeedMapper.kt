@@ -1,6 +1,5 @@
 package com.tokopedia.feedcomponent.domain.mapper
 
-import android.os.Build
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.BuildConfig
@@ -8,11 +7,9 @@ import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.data.pojo.TemplateData
 import com.tokopedia.feedcomponent.data.pojo.feed.Cardpost
 import com.tokopedia.feedcomponent.data.pojo.feed.Feed
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Body
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.template.Template
-import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
@@ -34,6 +31,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecomme
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.util.ContainNullException
 import com.tokopedia.kotlin.util.isContainNull
 import rx.functions.Func1
@@ -56,6 +54,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         private const val CONTENT_GRID = "productgrid"
 
         private const val ACTIVITY_TOPADS = "topads"
+
+        private const val AUTHOR_TOPADS_SHOP = "topads shop"
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -119,6 +119,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     media.type,
                     media.tags.firstOrNull()?.linkType ?: "",
                     media.thumbnail,
+                    media.appLink,
                     feed.id,
                     feed.content.cardbanner.body.media.size,
                     index
@@ -154,9 +155,10 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                         feed.tracking.type,
                         card.media.firstOrNull()?.type ?: "",
                         card.header.avatarTitle,
-                        card.header.followCta.authorType,
+                        AUTHOR_TOPADS_SHOP,
                         card.header.followCta.authorID.toIntOrNull() ?: 0,
-                        index
+                        index,
+                        feed.tracking.topads.getOrNull(index)?.id.toIntOrZero()
                 ))
             }
 
@@ -228,7 +230,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val trackingPostModel = mapPostTracking(feed)
 
         if (shouldAddCardPost(feed, contentList)) {
-            var postTag = feed.content.cardpost.body.postTag.firstOrNull() ?: PostTag()
+            val postTag = feed.content.cardpost.body.postTag.firstOrNull() ?: PostTag()
             posts.add(
                     DynamicPostViewModel(
                             feed.id,
@@ -267,7 +269,13 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 CONTENT_YOUTUBE -> list.add(mapPostYoutube(media))
                 CONTENT_VOTE -> list.add(mapPostPoll(media))
                 CONTENT_GRID -> list.add(mapPostGrid(media, template))
-                CONTENT_VIDEO -> list.add(mapPostVideo(media))
+                CONTENT_VIDEO -> {
+                    if (media.thumbnail.isNotBlank()
+                            && media.videoList.isNotEmpty()
+                            && media.videoList[0].url.isNotBlank()) {
+                        list.add(mapPostVideo(media))
+                    }
+                }
             }
         }
 
@@ -277,15 +285,19 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     private fun mapPostTracking(feed: Feed): TrackingPostModel {
         val media = feed.content.cardpost.body.media.firstOrNull()
         val mediaType = media?.type ?: ""
+        val mediaUrl = media?.thumbnail ?: ""
         val tagsType = media?.tags?.firstOrNull()?.linkType ?: ""
+        val authorId = feed.content.cardpost.header.followCta.authorID
 
         return TrackingPostModel(
                 feed.type,
                 feed.activity,
                 feed.tracking.type,
                 mediaType,
+                mediaUrl,
                 tagsType,
                 feed.content.cardpost.footer.buttonCta.appLink,
+                authorId,
                 feed.id,
                 feed.content.cardpost.body.media.size
         )

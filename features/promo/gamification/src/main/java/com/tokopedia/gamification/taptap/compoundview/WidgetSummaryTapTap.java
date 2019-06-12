@@ -37,10 +37,9 @@ public class WidgetSummaryTapTap extends FrameLayout {
     private RecyclerView rvRewards;
     private RewardsAdapter rewardsAdapter;
     private SummaryPageActionListener interactionListener;
-    private View errorView;
-    private TextView tvErrorMessage;
-    private TextView tvBtnErrorOk;
     private ImageView ivImageStar;
+    private View parentView;
+    private Animation rotateAnimationCrackResult;
 
     public interface SummaryPageActionListener {
 
@@ -67,33 +66,24 @@ public class WidgetSummaryTapTap extends FrameLayout {
     }
 
     private void init() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_reward_summary_tap_tap, this, true);
-        imageSinar = view.findViewById(R.id.image_sinar);
-        rvRewards = view.findViewById(R.id.rv_rewards);
-        btnTop = view.findViewById(R.id.btn_top);
-        btnBottomLeft = view.findViewById(R.id.btn_bottom_left);
-        btnBottomRight = view.findViewById(R.id.btn_bottom_right);
-        errorView = view.findViewById(R.id.error_view);
-        tvErrorMessage = view.findViewById(R.id.tv_msg);
-        tvBtnErrorOk = view.findViewById(R.id.snack_ok);
-        ivImageStar = view.findViewById(R.id.image_star);
+        parentView = LayoutInflater.from(getContext()).inflate(R.layout.widget_reward_summary_tap_tap, this, true);
+        imageSinar = parentView.findViewById(R.id.image_sinar);
+        rvRewards = parentView.findViewById(R.id.rv_rewards);
+        btnTop = parentView.findViewById(R.id.btn_top);
+        btnBottomLeft = parentView.findViewById(R.id.btn_bottom_left);
+        btnBottomRight = parentView.findViewById(R.id.btn_bottom_right);
+        ivImageStar = parentView.findViewById(R.id.image_star);
         rewardsAdapter = new RewardsAdapter(null);
         ImageHandler.loadImageWithId(ivImageStar, R.drawable.ic_star_summary);
+        ImageHandler.loadImageWithId(imageSinar, R.drawable.sinar_rewards_3_x);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), R.drawable.item_divider_summary_page);
         dividerItemDecoration.setHorizontalMargin(getResources().getDimensionPixelOffset(R.dimen.dp_8));
         rvRewards.addItemDecoration(dividerItemDecoration);
         initListBound(getScreenHeight(), 0);
-        tvBtnErrorOk.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                errorView.setVisibility(GONE);
-            }
-        });
     }
 
     public void showErrorSnackBar(String errorMessage) {
-        errorView.setVisibility(VISIBLE);
-        tvErrorMessage.setText(errorMessage);
+        NetworkErrorHelper.showErrorSnackBar(errorMessage, getContext(), parentView, false);
         TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
                 TapTapAnalyticsTrackerUtil.EventKeys.VIEW_GAME,
                 TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
@@ -116,7 +106,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
     public void inflateReward(List<CrackResultEntity> rewards) {
         rewardsAdapter.updateList(rewards);
         runLayoutAnimation();
-        Animation rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
+        rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
         rotateAnimationCrackResult.setDuration(15000);
         imageSinar.startAnimation(rotateAnimationCrackResult);
 
@@ -162,10 +152,13 @@ public class WidgetSummaryTapTap extends FrameLayout {
 
     private void onRewardButtonClick(RewardButton rewardButton) {
         if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(rewardButton.getType())) {
-            interactionListener.playWithPoints();
+            if (interactionListener != null)
+                interactionListener.playWithPoints();
         } else {
-            interactionListener.dismissDialog();
-            interactionListener.navigateToActivity(rewardButton.getApplink(), rewardButton.getUrl());
+            if(interactionListener!= null) {
+                interactionListener.dismissDialog();
+                interactionListener.navigateToActivity(rewardButton.getApplink(), rewardButton.getUrl());
+            }
 
 
         }
@@ -234,6 +227,13 @@ public class WidgetSummaryTapTap extends FrameLayout {
                 }
             }
         }
+    }
+
+
+    public void onDestroView() {
+        if (rotateAnimationCrackResult != null)
+            rotateAnimationCrackResult.cancel();
+        imageSinar.clearAnimation();
     }
 
 

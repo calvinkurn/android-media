@@ -1,21 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cons_ticker_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/tp_margin_medium"
-    android:background="@color/colorGray"
-    android:visibility="visible"
+    android:background="@drawable/bg_tp_ticker_new"
+    android:paddingLeft="@dimen/tp_padding_regular"
+    android:paddingRight="@dimen/tp_padding_regular"
+    android:paddingBottom="@dimen/tp_padding_small"
+    android:visibility="gone"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/container_dynamic_links">
+    app:layout_constraintTop_toBottomOf="@+id/container_dynamic_links"
+    tools:visibility="visible">
+
+    <ImageView
+        android:id="@+id/ic_close_ticker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_4"
+        android:padding="@dimen/dp_2"
+        android:tint="@color/tp_ticker_close_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_close_24dp" />
 
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/view_pager_ticker"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/tp_padding_small"
+        app:layout_constraintEnd_toStartOf="@+id/ic_close_ticker"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,7 +43,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/tp_margin_xsmall"
+        android:layout_marginBottom="@dimen/dp_4"
         android:padding="@dimen/tp_margin_xsmall"
-        app:layout_constraintTop_toBottomOf="@+id/view_pager_ticker" />
+        app:fillColor="@color/tp_ticker_indicator_selected_color"
+        app:layout_constraintTop_toBottomOf="@+id/view_pager_ticker"
+        app:pageColor="@color/tp_ticker_indicator_default_color" />
+
+
 </android.support.constraint.ConstraintLayout>

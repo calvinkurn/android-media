@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactory
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterListViewModel
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel
@@ -24,6 +25,13 @@ class ExploreAdapter(adapterTypeFactory: ExploreTypeFactory, visitables: List<Vi
     fun clearProductElements() {
         visitables.removeAll {
             it is ExploreProductViewModel
+        }
+        notifyDataSetChanged()
+    }
+
+    fun removeEmptySearch() {
+        visitables.removeAll {
+            it is ExploreEmptySearchViewModel
         }
         notifyDataSetChanged()
     }

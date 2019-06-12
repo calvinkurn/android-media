@@ -27,6 +27,7 @@ public class ButtonCompat extends AppCompatButton {
     public final static int DISABLE = 4;
     public final static int WHITE_TRANSPARENT = 5;
     public final static int GHOST = 6;
+    public final static int WHITE = 7;
 
     public final static int BIG = 4;
     public final static int MEDIUM = 5;
@@ -156,6 +157,10 @@ public class ButtonCompat extends AppCompatButton {
                 initDraw(R.color.white, R.drawable.bg_button_white_transparent);
             case GHOST:
                 initDraw(R.color.bg_button_green_border_outline, R.drawable.bg_button_green_border);
+                break;
+            case WHITE:
+                initDraw(R.color.grey_button_compat, R.drawable.bg_button_white);
+                break;
             case DISABLE:
                 break;
         }
