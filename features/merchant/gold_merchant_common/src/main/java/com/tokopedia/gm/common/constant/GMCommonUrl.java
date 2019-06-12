@@ -11,6 +11,6 @@ public class GMCommonUrl {
     public static final String SET_CASHBACK_PRODUCTS = "/v1/cashback/set";
     public static final String FEATURED_PRODUCT_URL = "/v1/mobile/featured_product/{shop_id}";
     public static final String GET_CASHBACK_PRODUCTS = "/v1/tx/cashback";
-
+    public static final String GET_SHOP_STATUS = "/v2/shop/{shop_id}/subscription?include_os=true";
 
 }
