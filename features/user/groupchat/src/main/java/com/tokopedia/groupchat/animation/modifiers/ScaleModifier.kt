@@ -8,14 +8,17 @@ class ScaleModifier @JvmOverloads constructor(
         private val mInitialValue: Float,
         private val mFinalValue: Float,
         private val mStartTime: Long,
-        private val mEndTime: Long,
-        private val mInterpolator: Interpolator = LinearInterpolator()
-) : ParticleModifier {
-    private val mDuration: Long
-    private val mValueIncrement: Float
+        private val mPeakTime: Long,
+        private val mEndTime: Long
 
+) : ParticleModifier {
+    private val mDurationShrink: Long
+    private val mDurationEnlarge: Long
+    private val mValueIncrement: Float
+    private val mInterpolator: Interpolator = LinearInterpolator()
     init {
-        mDuration = mEndTime - mStartTime
+        mDurationShrink  = mEndTime - mPeakTime
+        mDurationEnlarge = mPeakTime - mStartTime
         mValueIncrement = mFinalValue - mInitialValue
     }
 
@@ -23,10 +26,14 @@ class ScaleModifier @JvmOverloads constructor(
         if (miliseconds < mStartTime) {
             particle.mScale = mInitialValue
         } else if (miliseconds > mEndTime) {
-            particle.mScale = mFinalValue
-        } else {
-            val interpolaterdValue = mInterpolator.getInterpolation((miliseconds - mStartTime) * 1f / mDuration)
+            particle.mScale = mInitialValue
+        } else if (miliseconds < mPeakTime){
+            val interpolaterdValue = mInterpolator.getInterpolation((miliseconds - mStartTime) * 1f / mDurationEnlarge)
             val newScale = mInitialValue + mValueIncrement * interpolaterdValue
+            particle.mScale = newScale
+        } else if (miliseconds > mPeakTime) {
+            val interpolaterdValue = mInterpolator.getInterpolation((miliseconds - mPeakTime) * 1f / mDurationEnlarge)
+            val newScale = mFinalValue - mValueIncrement * interpolaterdValue
             particle.mScale = newScale
         }
     }
