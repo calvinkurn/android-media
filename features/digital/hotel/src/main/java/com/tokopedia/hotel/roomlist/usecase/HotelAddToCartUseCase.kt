@@ -2,6 +2,8 @@ package com.tokopedia.hotel.roomlist.usecase
 
 import android.util.Log
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
@@ -29,13 +31,14 @@ class HotelAddToCartUseCase @Inject constructor(val useCase: MultiRequestGraphql
         val param = mapOf(PARAM_ADD_TO_CART to hotelAddCartParam)
 
         useCase.clearRequest()
+
         try {
-            val graphqlRequest = GraphqlRequest(rawQuery, HotelAddCartResponse::class.java, param)
+            val graphqlRequest = GraphqlRequest(rawQuery, HotelAddCartResponse.Response::class.java, param)
             useCase.addRequest(graphqlRequest)
 
             val hotelRoomData = async {
                 val response =  withContext(Dispatchers.IO) {
-                    useCase.executeOnBackground().getSuccessData<HotelAddCartResponse>()
+                    useCase.executeOnBackground().getSuccessData<HotelAddCartResponse.Response>().response
                 }
                 response
             }
