@@ -82,54 +82,39 @@ public class CustomPushListener extends PushMessageListener {
     private void createPersistentNotification(Context context, Bundle extras, NotificationCompat.Builder builder) {
         long when = System.currentTimeMillis();
         RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.persistent_notification_layout);
-        String title1 = extras.getString(KEY_ICON_NAME1);
-        String title2 = extras.getString(KEY_ICON_NAME2);
-        String title3 = extras.getString(KEY_ICON_NAME3);
-        String title4 = extras.getString(KEY_ICON_NAME4);
-        String deeplink1 = extras.getString(KEY_DEEPLINK1);
-        String deeplink2 = extras.getString(KEY_DEEPLINK2);
-        String deeplink3 = extras.getString(KEY_DEEPLINK3);
-        String deeplink4 = extras.getString(KEY_DEEPLINK4);
-        String url1 = extras.getString(KEY_ICON_URL1);
-        String url2 = extras.getString(KEY_ICON_URL2);
-        String url3 = extras.getString(KEY_ICON_URL3);
-        String url4 = extras.getString(KEY_ICON_URL4);
 
-        if (!TextUtils.isEmpty(title1) && !TextUtils.isEmpty(deeplink1) && !TextUtils.isEmpty(url1)) {
-            remoteView.setTextViewText(R.id.title1, title1);
-            Intent intent = RouteManager.getIntent(context, deeplink1);
-            remoteView.setImageViewBitmap(R.id.image_icon1, MoEHelperUtils.downloadImageBitmap(url1));
-            PendingIntent pIntent = PendingIntent.getActivity(context, 100, intent,
+        String[] titles = new String[]{
+                extras.getString(KEY_ICON_NAME1), extras.getString(KEY_ICON_NAME2),
+                extras.getString(KEY_ICON_NAME3), extras.getString(KEY_ICON_NAME4)
+        };
+
+        String[] deepLinks = new String[]{
+                extras.getString(KEY_DEEPLINK1), extras.getString(KEY_DEEPLINK2),
+                extras.getString(KEY_DEEPLINK3), extras.getString(KEY_DEEPLINK4)
+        };
+        String[] iconUrls = new String[]{
+                extras.getString(KEY_ICON_URL1), extras.getString(KEY_ICON_URL2),
+                extras.getString(KEY_ICON_URL3), extras.getString(KEY_ICON_URL4)
+        };
+
+        Integer[] titleResIds = new Integer[]{
+                R.id.title1, R.id.title2, R.id.title3, R.id.title4
+        };
+        Integer[] iconResIds = new Integer[]{
+                R.id.image_icon1, R.id.image_icon2, R.id.image_icon3, R.id.image_icon4
+        };
+
+        Integer[] containerResIds = new Integer[]{
+                R.id.lin_container_1, R.id.lin_container_2, R.id.lin_container_3, R.id.lin_container_4
+        };
+
+        for (int i = 0; i < 4; i++) {
+            remoteView.setTextViewText(titleResIds[i], titles[i]);
+            Intent intent = RouteManager.getIntent(context, deepLinks[i]);
+            remoteView.setImageViewBitmap(iconResIds[i], MoEHelperUtils.downloadImageBitmap(iconUrls[i]));
+            PendingIntent pIntent = PendingIntent.getActivity(context, 100 + i, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteView.setOnClickPendingIntent(R.id.lin_container_1, pIntent);
-        }
-
-        if (!TextUtils.isEmpty(title2) && !TextUtils.isEmpty(deeplink2) && !TextUtils.isEmpty(url2)) {
-            remoteView.setTextViewText(R.id.title2, title2);
-            remoteView.setImageViewBitmap(R.id.image_icon2, MoEHelperUtils.downloadImageBitmap(url2));
-            Intent intent2 = RouteManager.getIntent(context, deeplink2);
-            PendingIntent pIntent2 = PendingIntent.getActivity(context, 101, intent2,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteView.setOnClickPendingIntent(R.id.lin_container_2, pIntent2);
-        }
-
-        if (!TextUtils.isEmpty(title3) && !TextUtils.isEmpty(deeplink3) && !TextUtils.isEmpty(url3)) {
-            remoteView.setTextViewText(R.id.title3, title3);
-
-            remoteView.setImageViewBitmap(R.id.image_icon3, MoEHelperUtils.downloadImageBitmap(url3));
-            Intent intent3 = RouteManager.getIntent(context, deeplink3);
-            PendingIntent pIntent3 = PendingIntent.getActivity(context, 102, intent3,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteView.setOnClickPendingIntent(R.id.lin_container_3, pIntent3);
-        }
-
-        if (!TextUtils.isEmpty(title4) && !TextUtils.isEmpty(deeplink4) && !TextUtils.isEmpty(url4)) {
-            remoteView.setTextViewText(R.id.title4, title4);
-            remoteView.setImageViewBitmap(R.id.image_icon4, MoEHelperUtils.downloadImageBitmap(url4));
-            Intent intent4 = RouteManager.getIntent(context, deeplink4);
-            PendingIntent pIntent4 = PendingIntent.getActivity(context, 103, intent4,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteView.setOnClickPendingIntent(R.id.lin_container_4, pIntent4);
+            remoteView.setOnClickPendingIntent(containerResIds[i], pIntent);
         }
 
         Intent deleteIntent = new Intent(context, NotificationBroadcast.class);
