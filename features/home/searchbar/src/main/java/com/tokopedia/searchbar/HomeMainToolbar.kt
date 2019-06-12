@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.home_main_toolbar.view.*
 
 
 class HomeMainToolbar : MainToolbar {
-
     var toolbarType: Int = 0
 
     var shadowApplied: Boolean = false
@@ -172,26 +171,22 @@ class HomeMainToolbar : MainToolbar {
         return shadowApplied
     }
 
-    fun setHint(data: HashMap<String, String>){
+    fun setHint(hint: String){
         val editTextSearch = findViewById<TextView>(R.id.et_search)
-        editTextSearch.hint = data["hint"]
+        editTextSearch.hint = if(hint.isEmpty()) context.getString(R.string.search_tokopedia) else hint
         editTextSearch.setOnClickListener {
             searchBarAnalytics.eventTrackingSearchBar()
-            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + generateAppLinkSearch(data))
+            if(hint.isEmpty()){
+                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+            }else{
+                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE_AND_HINT, HOME_SOURCE, hint)
+            }
         }
-    }
-
-    private fun generateAppLinkSearch(data: HashMap<String, String>): String{
-        var appLinkData = "?"
-        data.forEach{ (key, value) ->
-            if(appLinkData != "?") appLinkData += "&"
-            appLinkData += "$key=$value"
-        }
-        return appLinkData
     }
 
     companion object {
         val TOOLBAR_LIGHT_TYPE = 0
         val TOOLBAR_DARK_TYPE = 1
+        private const val HOME_SOURCE = "home"
     }
 }
