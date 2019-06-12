@@ -179,7 +179,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black_70"
-            tools:text="Biaya Proteksi Gadget (3 barang)" />
+            tools:text="Biaya Proteksi Produk (3 barang)" />
 
         <TextView
             android:id="@+id/protection_price"
