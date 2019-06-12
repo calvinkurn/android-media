@@ -12,7 +12,6 @@ import java.util.*
 class LendingPartnerPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     private var partnerDataPageItem: List<PartnerDataPageItem> = ArrayList()
-    private var mCurrentPosition: Int = 0
 
     fun setData(partnerDataPageItem: ArrayList<PartnerDataPageItem>) {
         this.partnerDataPageItem = partnerDataPageItem
@@ -20,7 +19,6 @@ class LendingPartnerPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm)
     }
 
     override fun getItem(position: Int): Fragment? {
-        mCurrentPosition = position
         return partnerDataPageItem[position].fragment
     }
 
@@ -34,21 +32,14 @@ class LendingPartnerPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm)
 
     override fun setPrimaryItem(container: ViewGroup, position: Int, any: Any) {
         super.setPrimaryItem(container, position, any)
-
         if (container !is HeightWrappingViewPager) {
             throw UnsupportedOperationException("ViewPager is not a WrappingViewPager")
         }
-
-        if (position != mCurrentPosition) {
-            val fragment = any as Fragment
-            val pager = container as HeightWrappingViewPager?
-            if (fragment != null && fragment.view != null) {
-                mCurrentPosition = position
-                pager!!.onPageChanged(fragment.view!!)
-            }
+        val fragment = any as Fragment
+        val pager = container as HeightWrappingViewPager?
+        if (fragment != null && fragment.view != null) {
+            pager!!.onPageChanged(fragment.view!!)
         }
     }
-
-
 }
 
