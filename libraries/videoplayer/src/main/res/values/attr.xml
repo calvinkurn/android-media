@@ -3,11 +3,4 @@
     <declare-styleable name="VideoPlayerView">
         <attr name="onMeasure" format="boolean"/>
     </declare-styleable>
-    <declare-styleable name="TkpdVideoView">
-        <attr name="type" format="enum">
-            <enum name="portrait" value="1"/>
-            <enum name="landscape" value="2"/>
-            <enum name="square" value="3"/>
-        </attr>
-    </declare-styleable>
 </resources>
