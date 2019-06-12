@@ -252,7 +252,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 || filters.getCategories() == null
                 || filters.getCategories().isEmpty()) {
             //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
-            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), null);
+            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getId(), null);
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             //TODO please replace with
             mPresenter.setCurrentCategoryId(0);
@@ -261,7 +261,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             mTabSortType.setVisibility(View.GONE);
         } else if (filters.getCategories().get(0) != null
                 && (filters.getCategories().get(0).isHideSubCategory() || filters.getCategories().get(0).getSubCategory() == null || filters.getCategories().get(0).getSubCategory().isEmpty())) {
-            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), null);
+            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getId(), null);
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             mPagerSortType.setAdapter(mViewPagerAdapter);
             mTabSortType.setupWithViewPager(mPagerSortType);
@@ -278,7 +278,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 && filters.getCategories().get(0).getSubCategory() != null) {
             mTabSortType.setVisibility(View.VISIBLE);
             updateToolbarTitle(filters.getCategories().get(0).getName());
-            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getSubCategory());
+            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getId(), filters.getCategories().get(0).getSubCategory());
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             mPagerSortType.setAdapter(mViewPagerAdapter);
             mTabSortType.setupWithViewPager(mPagerSortType);

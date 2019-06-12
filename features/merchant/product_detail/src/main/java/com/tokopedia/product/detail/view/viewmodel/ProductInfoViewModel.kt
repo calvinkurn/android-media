@@ -26,20 +26,24 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHO
 import com.tokopedia.product.detail.common.data.model.product.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.data.model.*
+import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
+import com.tokopedia.product.detail.data.model.ProductInfoP1
+import com.tokopedia.product.detail.data.model.ProductInfoP2
+import com.tokopedia.product.detail.data.model.ProductInfoP3
+import com.tokopedia.product.detail.data.model.UserCodStatus
 import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeResponse
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailRequest
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.Review
-import com.tokopedia.product.detail.data.model.shop.ShopBadge
-import com.tokopedia.product.detail.data.model.shop.ShopCodStatus
-import com.tokopedia.product.detail.data.model.shop.ShopCommitment
-import com.tokopedia.product.detail.data.model.shop.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCodStatus
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureResponse
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
-import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.detail.data.util.origin
@@ -164,7 +168,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val shopBadgeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_BADGE],
                 ShopBadge.Response::class.java, shopBadgeParams)
 
-        val shopCommitmentParams = mapOf(ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString(),
+        val shopCommitmentParams = mapOf(PARAM_SHOP_ID to shopId.toString(),
                 PARAM_PRICE to productPrice.toInt())
         val shopCommitmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COMMITMENT],
                 ShopCommitment.Response::class.java, shopCommitmentParams)
@@ -247,10 +251,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val shopCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COD_STATUS],
                 ShopCodStatus.Response::class.java, shopCodParam)
 
+        val shopFeatureParam = mapOf("shopID" to shopId.toString())
+        val shopFeatureRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_FEATURE],
+                ShopFeatureResponse::class.java, shopFeatureParam)
+
         val requests = mutableListOf(shopRequest, ratingRequest, wishlistCountRequest, voucherRequest,
                 shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
                 helpfulReviewRequest, latestTalkRequest, shopCodRequest,
-                nearestWarehouseRequest, productPurchaseProtectionRequest)
+                nearestWarehouseRequest, productPurchaseProtectionRequest, shopFeatureRequest)
 
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
@@ -321,6 +329,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             if (gqlResponse.getError(ProductPurchaseProtectionInfo::class.java)?.isNotEmpty() != true) {
                 productInfoP2.productPurchaseProtectionInfo =
                         gqlResponse.getData<ProductPurchaseProtectionInfo>(ProductPurchaseProtectionInfo::class.java)
+            }
+
+            if (gqlResponse.getError(ShopFeatureResponse::class.java)?.isNotEmpty() != true) {
+                val shopFeatureResponse =
+                        gqlResponse.getData<ShopFeatureResponse>(ShopFeatureResponse::class.java)
+                productInfoP2.shopFeature = shopFeatureResponse.shopFeature.data
             }
 
             productInfoP2

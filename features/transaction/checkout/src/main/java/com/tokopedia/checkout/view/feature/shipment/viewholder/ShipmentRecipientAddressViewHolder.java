@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
+import com.tokopedia.checkout.view.feature.shipment.util.Utils;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -78,9 +79,9 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         } else {
             tvAddressStatus.setVisibility(View.GONE);
         }
-        tvAddressName.setText(recipientAddress.getAddressName());
-        tvRecipientName.setText(recipientAddress.getRecipientName());
-        tvRecipientAddress.setText(getFullAddress(recipientAddress));
+        tvAddressName.setText(Utils.getHtmlFormat(recipientAddress.getAddressName()));
+        tvRecipientName.setText(Utils.getHtmlFormat(recipientAddress.getRecipientName()));
+        tvRecipientAddress.setText(Utils.getHtmlFormat(getFullAddress(recipientAddress)));
         tvRecipientPhone.setVisibility(View.GONE);
 
         tvRecipientChangeAddress.setOnClickListener(v -> shipmentAdapterActionListener.onChangeAddress());

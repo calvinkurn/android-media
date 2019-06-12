@@ -18,14 +18,17 @@ import java.util.concurrent.TimeUnit
 class ApiService(private val context: Context) {
 
     private val session: Session = IrisSession(context)
+    private var apiInterface: ApiInterface? = null
 
     fun makeRetrofitService(): ApiInterface {
-        return Retrofit.Builder()
+        if (apiInterface == null)
+            apiInterface = Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(StringResponseConverter())
                 .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .client(createClient())
                 .build().create(ApiInterface::class.java)
+        return apiInterface!!
     }
 
     private fun createClient(): OkHttpClient {
