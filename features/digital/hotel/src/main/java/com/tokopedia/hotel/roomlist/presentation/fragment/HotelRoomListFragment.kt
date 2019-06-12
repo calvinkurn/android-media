@@ -105,6 +105,16 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                 }
             }
         })
+
+        roomListViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    startActivity(HotelBookingActivity.getCallingIntent(context!!,it.data.cartId))
+                }
+                is Fail -> {
+                }
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -270,7 +280,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {
         return HotelAddCartParam("", hotelRoomListPageModel.checkIn,
                 hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
-                listOf(HotelAddCartParam.Room(roomId = room.roomId, numOfRooms = room.roomQtyReqiured)))
+                listOf(HotelAddCartParam.Room(roomId = room.roomId, numOfRooms = room.roomQtyReqiured)),
+                hotelRoomListPageModel.adult)
     }
 
     override fun getScreenName(): String = ""
@@ -341,9 +352,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onClickBookListener(room: HotelRoom) {
         if (userSessionInterface.isLoggedIn) {
-//            roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
-//                    mapToAddCartParam(hotelRoomListPageModel, room))
-            startActivity(HotelBookingActivity.getCallingIntent(context!!,""))
+            roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
+                    mapToAddCartParam(hotelRoomListPageModel, room))
         } else {
             goToLoginPage()
         }
