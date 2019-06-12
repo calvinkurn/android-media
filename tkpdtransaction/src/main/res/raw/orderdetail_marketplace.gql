@@ -34,6 +34,7 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
       name
       phone
     }
+    helpLink
     invoice {
       invoiceRefNum
       invoiceUrl
