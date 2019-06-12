@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -30,6 +31,8 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_detail.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
@@ -68,6 +71,22 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
         val hotelRoomDetailModel = manager.get(EXTRA_ROOM_DATA, HotelRoomDetailModel::class.java, HotelRoomDetailModel())!!
         hotelRoom = hotelRoomDetailModel.hotelRoom
         addToCartParam = hotelRoomDetailModel.addToCartParam
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        roomDetailViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    val cartId = it.data.cartId
+                    startActivity(HotelBookingActivity.getCallingIntent(context!!, cartId))
+                }
+                is Fail -> {
+                }
+
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -284,16 +303,13 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
     fun setupRoomPrice() {
         tv_room_detail_price.text = hotelRoom.roomPrice.roomPrice
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
-        room_detail_button.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                if (userSessionInterface.isLoggedIn) {
-//                    roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
-                    startActivity(HotelBookingActivity.getCallingIntent(context!!,""))
-                } else {
-                    goToLoginPage()
-                }
+        room_detail_button.setOnClickListener {
+            if (userSessionInterface.isLoggedIn) {
+                roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
+            } else {
+                goToLoginPage()
             }
-        })
+        }
     }
 
     fun goToLoginPage() {
