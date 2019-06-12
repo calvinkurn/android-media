@@ -244,7 +244,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             trackImpression(dynamicPostViewModel);
         }
 
-        FeedScrollListener.onFeedScrolled(recyclerView, (List<? extends Visitable<?>>) list);
+//        FeedScrollListener.onFeedScrolled(recyclerView, (List<? extends Visitable<?>>) list);
         setFooter(postDetailViewModel);
     }
 
