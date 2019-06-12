@@ -446,35 +446,34 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
+    @Override
     public void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoGlobalData(PromoStackingData promoStackingData, List<ShipmentCartItemModel> shipmentCartItemModels) {
         if (dataCheckoutRequestList != null) {
+//            if (!TextUtils.isEmpty(promoStackingData.getPromoCode())) {
+//                promoCodes.append(dataResult.getAutoApplyStackData().getCode());
+//                int amount = 0;
+//                int type = 0;
+//                if (shipmentAddressFormDataResponse.getAutoapplyStack().getDiscountAmount() > 0) {
+//                    amount = shipmentAddressFormDataResponse.getAutoapplyStack().getDiscountAmount();
+//                    type = PromoStackingData.CREATOR.getTYPE_COUPON();
+//                } else if (shipmentAddressFormDataResponse.getAutoapplyStack().getCashbackWalletAmount() > 0) {
+//                    amount = shipmentAddressFormDataResponse.getAutoapplyStack().getCashbackWalletAmount();
+//                    type = PromoStackingData.CREATOR.getTYPE_VOUCHER();
+//                }
+//                promoDetails.append(type)
+//                        .append(":")
+//                        .append(amount)
+//                        .append(":")
+//                        .append(shipmentAddressFormDataResponse.getAutoapplyStack().getMessage().getState());
+//            }
 
         }
     }
 
+    @Override
     public void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoMerchantOrLogisticData(ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
         if (dataCheckoutRequestList != null) {
 
-        }
-    }
-
-    public void updateEnhancedEcommerceCheckoutAnalyticsDataLayerAddressData(String buyerAddressId, String tokopediaCornerFlag) {
-        if (dataCheckoutRequestList != null) {
-            for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequestList) {
-                try {
-                    dataCheckoutRequest.addressId = Integer.parseInt(buyerAddressId);
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-                if (dataCheckoutRequest.shopProducts != null) {
-                    for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
-                        for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
-                            productDataCheckoutRequest.setBuyerAddressId(buyerAddressId);
-                            productDataCheckoutRequest.setTokopediaCornerFlag(tokopediaCornerFlag);
-                        }
-                    }
-                }
-            }
         }
     }
 

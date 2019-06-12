@@ -355,8 +355,6 @@ public interface ShipmentContract {
         void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoGlobalData(PromoStackingData promoStackingData, List<ShipmentCartItemModel> shipmentCartItemModels);
 
         void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoMerchantOrLogisticData(ResponseGetPromoStackUiModel responseGetPromoStackUiModel);
-
-        void updateEnhancedEcommerceCheckoutAnalyticsDataLayerAddressData(String buyerAddressId, String tokopediaCornerFlag);
     }
 
 }

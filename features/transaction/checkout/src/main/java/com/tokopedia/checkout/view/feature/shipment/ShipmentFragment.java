@@ -1913,7 +1913,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         shipmentCartItemModel.getCartString(),
                         shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getEstimatedTimeDelivery(),
                         String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperPrice()),
-                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getName());
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getName()
+                );
                 shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics();
             }
         }
@@ -1982,6 +1983,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
             checkCourierPromo(courierItemData, cartItemPosition);
+            shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                    shipmentCartItemModel.getCartString(),
+                    courierItemData.getEstimatedTimeDelivery(),
+                    String.valueOf(courierItemData.getShipperPrice()),
+                    courierItemData.getName()
+            );
+            shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics();
         }
     }
 

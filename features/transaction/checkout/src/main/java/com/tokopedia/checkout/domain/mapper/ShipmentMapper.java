@@ -97,13 +97,15 @@ public class ShipmentMapper implements IShipmentMapper {
             EgoldTieringModel egoldTieringModel;
             ArrayList<EgoldTieringModel> egoldTieringModelArrayList = new ArrayList<>();
 
-            for (EgoldTieringData data : shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldTieringDataArrayList()) {
-                egoldTieringModel = new EgoldTieringModel();
-                egoldTieringModel.setBasisAmount(data.getBasisAmount());
-                egoldTieringModel.setMaxAmount(data.getMaxAmount());
-                egoldTieringModel.setMinAmount(data.getMinAmount());
-                egoldTieringModel.setMinTotalAmount(data.getMinToalAmount());
-                egoldTieringModelArrayList.add(egoldTieringModel);
+            if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldTieringDataArrayList() != null) {
+                for (EgoldTieringData data : shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldTieringDataArrayList()) {
+                    egoldTieringModel = new EgoldTieringModel();
+                    egoldTieringModel.setBasisAmount(data.getBasisAmount());
+                    egoldTieringModel.setMaxAmount(data.getMaxAmount());
+                    egoldTieringModel.setMinAmount(data.getMinAmount());
+                    egoldTieringModel.setMinTotalAmount(data.getMinToalAmount());
+                    egoldTieringModelArrayList.add(egoldTieringModel);
+                }
             }
 
             egoldAttributeModel.setEgoldTieringModelArrayList(egoldTieringModelArrayList);
