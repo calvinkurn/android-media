@@ -44,6 +44,7 @@ import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +120,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         tvCityName.setOnClickListener(this);
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals));
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_16));
-        searchInputView.setSearchImageView(getResources().getDrawable(R.drawable.ic_search_deal));
+        searchInputView.setSearchImageView(MethodChecker.getDrawable(this,R.drawable.ic_search_deal)));
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(layoutManager);
         dealsCategoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.SEARCH_PAGE, this, !IS_SHORT_LAYOUT);

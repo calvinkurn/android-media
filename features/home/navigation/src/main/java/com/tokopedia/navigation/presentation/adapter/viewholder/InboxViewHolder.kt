@@ -10,6 +10,7 @@ import com.tokopedia.design.label.LabelView
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.Inbox
 import com.tokopedia.navigation.presentation.view.InboxAdapterListener
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 /**
  * Author errysuprayogi on 13,March,2019
@@ -27,7 +28,7 @@ class InboxViewHolder(itemView: View, private val listener: InboxAdapterListener
 
 
     override fun bind(item: Inbox) {
-        labelView.setImageResource(item.icon!!)
+        labelView..setImageDrawable(MethodChecker.getDrawable(context,item.icon!!))
         labelView.title = context.getString(item.title!!)
         labelView.setSubTitle(context.getString(item.subtitle!!))
         if (item.totalBadge != null

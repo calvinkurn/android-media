@@ -14,6 +14,7 @@ import com.tokopedia.chat_common.data.MessageViewModel;
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
 import com.tokopedia.chat_common.R;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author by nisie on 5/16/18.
@@ -124,7 +125,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
             if (element.isDummy()) {
                 imageResource = R.drawable.ic_chat_pending;
             }
-            chatStatus.setImageResource(imageResource);
+            chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(),imageResource));
         } else {
             chatStatus.setVisibility(View.GONE);
         }

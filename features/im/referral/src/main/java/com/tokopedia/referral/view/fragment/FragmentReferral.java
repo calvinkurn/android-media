@@ -35,6 +35,7 @@ import com.tokopedia.referral.view.presenter.ReferralPresenter;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by ashwanityagi on 18/09/17.
@@ -269,7 +270,7 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
             llShareIcons.removeAllViews();
         }
         ImageView imageView = new ImageView(getActivity());
-        imageView.setImageResource(shareApps.getIcon());
+        imageView.setImageDrawable(MethodChecker.getDrawable(getActivity(),shareApps.getIcon()));
         imageView.setTag(shareApps);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
         imageView.setLayoutParams(layoutParams);

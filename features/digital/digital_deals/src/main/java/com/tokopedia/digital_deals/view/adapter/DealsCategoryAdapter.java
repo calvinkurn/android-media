@@ -479,7 +479,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 productItem.setBrand(brand);
                 cvBrand.setVisibility(View.GONE);
                 brandName.setVisibility(View.GONE);
-                Drawable img = getActivity().getResources().getDrawable(R.drawable.ic_location);
+                Drawable img = MethodChecker.getDrawable(getActivity(),R.drawable.ic_location);
                 dealavailableLocations.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
                 dealavailableLocations.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8));
 

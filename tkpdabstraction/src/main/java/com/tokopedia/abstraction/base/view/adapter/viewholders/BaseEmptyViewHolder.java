@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 
 /**
@@ -45,7 +46,7 @@ public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolde
     @Override
     public void bind(T element) {
         if (element.getIconRes() != 0) {
-            emptyIconImageView.setImageResource(element.getIconRes());
+            emptyIconImageView.setImageDrawable(MethodChecker.getDrawable(emptyIconImageView.getContext(),element.getIconRes()));
         }
         if (element.getCallback() != null) {
             callback = element.getCallback();

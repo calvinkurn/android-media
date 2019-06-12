@@ -39,6 +39,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_PARAM_SELLER_DETAILS;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         MerchantSaldoPriorityContract.View {
@@ -240,13 +241,13 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
             spStatusInfoIcon.setVisibility(View.GONE);
         } else if (boxType.equalsIgnoreCase(DEFAULT)) {
 
-            spStatusInfoIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info_icon_green));
+            spStatusInfoIcon.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_info_icon_green));
             spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.sp_bg_rounded_corners_green));
         } else if (boxType.equalsIgnoreCase(WARNING)) {
-            spStatusInfoIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info_icon_yellow));
+            spStatusInfoIcon.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_info_icon_yellow));
             spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corner_warning));
         } else if (boxType.equalsIgnoreCase(DANGER)) {
-            spStatusInfoIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info_icon_red));
+            spStatusInfoIcon.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_info_icon_red));
             spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corner_danger));
         }
     }

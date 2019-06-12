@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.util.FlightAmenityIconUtil;
 import com.tokopedia.flight.search.data.api.single.response.Amenity;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by zulfikarrahman on 10/31/17.
@@ -35,7 +36,7 @@ public class FlightDetailFacilityAmenityViewHolder extends RecyclerView.ViewHold
             imageAmenity.setVisibility(View.VISIBLE);
             textAmenity.setVisibility(View.VISIBLE);
             defaultImage.setVisibility(View.GONE);
-            imageAmenity.setImageResource(FlightAmenityIconUtil.getImageResource(amenity.getIcon()));
+            imageAmenity.setImageDrawable(MethodChecker.getDrawable(imageAmenity.getContext(), FlightAmenityIconUtil.getImageResource(amenity.getIcon())));
             textAmenity.setText(amenity.getLabel());
         }
     }
