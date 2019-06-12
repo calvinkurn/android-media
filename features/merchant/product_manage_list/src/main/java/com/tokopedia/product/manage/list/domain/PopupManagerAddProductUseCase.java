@@ -34,7 +34,6 @@ public class PopupManagerAddProductUseCase extends UseCase<Boolean> {
         RequestParams requestParams = RequestParams.create();
         requestParams.putInt(SHOP_ID,shopId);
         return requestParams;
-
     }
 
     @Override public Observable<Boolean> createObservable(RequestParams requestParams) {
@@ -47,12 +46,8 @@ public class PopupManagerAddProductUseCase extends UseCase<Boolean> {
 
             if (data == null ){
                 throw new RuntimeException();
-            } else if (!error.isEmpty() && !error.get(0).getMessage().isEmpty()) {
-                try {
-                    throw new MessageErrorException(error.get(0).getMessage());
-                } catch (MessageErrorException e) {
-                    e.printStackTrace();
-                }
+            } else if (error != null && !error.isEmpty() && !error.get(0).getMessage().isEmpty()) {
+                throw new RuntimeException();
             }
             return data.getShopManagerPopups().getPopupsData().isShowPopUp();
         }
