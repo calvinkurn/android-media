@@ -60,7 +60,7 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
             }
 
         }) {
-
+            
         }
     }
 

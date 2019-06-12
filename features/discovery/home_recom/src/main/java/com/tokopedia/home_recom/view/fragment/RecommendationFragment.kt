@@ -63,12 +63,14 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                 renderList(mapDataModel(recommendationList))
             }
         })
+        loadData()
+    }
 
+    private fun loadData(){
         recommendationWidgetViewModel.getPrimaryProduct(productId, activity!!)
 
         recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
                 onErrorGetRecommendation = this::onErrorGetRecommendation)
-
     }
 
     private fun onErrorGetRecommendation(errorMessage: String?) {
@@ -99,9 +101,9 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     override fun loadData(page: Int) {
-        if(page == 1){
+        if(page == defaultInitialPage){
             //load initial data when press retry
-            activity?.let { recommendationWidgetViewModel.getPrimaryProduct(productId, it) }
+            loadData()
         }
     }
 
