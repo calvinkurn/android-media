@@ -2,6 +2,7 @@ package com.tokopedia.abstraction.common.utils.image;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -970,8 +971,10 @@ public class ImageHandler {
 
 
     public static void cacheFromUrl(@NotNull Context context, @NotNull String url, @NotNull ArrayList<Drawable> cacheImageList) {
+        int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 21, Resources.getSystem().getDisplayMetrics());
         Glide.with(context)
                 .load(url)
+                .override(size, size)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
