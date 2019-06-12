@@ -42,9 +42,9 @@ class SampaiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val showCornerInfo: (view: View) -> Unit = {
         val tooltip = Tooltip(it.context)
-        tooltip.setTitle("Tokopedia Corner")
-        tooltip.setDesc("Pesanan akan dikirim ke Tokopedia Corner yang ada di kampus")
-        tooltip.setTextButton("Mengerti")
+        tooltip.setTitle(it.context.getString(R.string.brand_tokopedia_corner))
+        tooltip.setDesc(it.context.getString(R.string.tooltip_corner_info))
+        tooltip.setTextButton(it.context.getString(R.string.button_mengerti))
         tooltip.btnAction.setOnClickListener { tooltip.dismiss() }
         tooltip.show()
     }

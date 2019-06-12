@@ -293,5 +293,7 @@
     <string name="ticker_corner_list_info">- Wajib membawa kartu mahasiswa / staff saat pengambilan pesanan \n- Pesanan dikirim dengan siCepat Regular</string>
     <string name="hint_search_corner">Cari kampus mu</string>
     <string name="information_icon">Information Icon</string>
+    <string name="tooltip_corner_info">Pesanan akan dikirim ke Tokopedia Corner yang ada di kampus</string>
+    <string name="button_mengerti">Mengerti</string>
 
 </resources>
