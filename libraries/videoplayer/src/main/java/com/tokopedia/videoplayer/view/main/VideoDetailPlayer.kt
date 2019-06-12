@@ -12,7 +12,8 @@ import android.widget.FrameLayout
 import com.tokopedia.videoplayer.R
 import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.utils.showToast
-import com.tokopedia.videoplayer.view.widget.TkpdVideoPlayer
+import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
+import com.tokopedia.videoplayer.view.player.VideoPlayerListener
 import kotlinx.android.synthetic.main.fragment_video_preview.*
 
 /**
@@ -77,11 +78,17 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
             dismiss()
         } else {
             btnFile.setOnClickListener {
-                TkpdVideoPlayer.set(videoSource, R.id.playerView, childFragmentManager)
+                TkpdVideoPlayer.Builder()
+                        .transaction(R.id.playerView, childFragmentManager)
+                        .videoSource(videoSource)
+                        .build()
             }
 
             btnHttp.setOnClickListener {
-                TkpdVideoPlayer.set("https://www.w3schools.com/html/mov_bbb.mp4", R.id.playerView, childFragmentManager)
+                TkpdVideoPlayer.Builder()
+                        .transaction(R.id.playerView, childFragmentManager)
+                        .videoSource("https://www.w3schools.com/html/mov_bbb.mp4")
+                        .build()
             }
 
             btnRtmp.setOnClickListener {
