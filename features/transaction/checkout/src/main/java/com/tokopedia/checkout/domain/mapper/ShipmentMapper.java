@@ -412,6 +412,10 @@ public class ShipmentMapper implements IShipmentMapper {
                                                     amount = voucherOrdersItemData.getCashbackWalletAmount();
                                                     type = PromoStackingData.CREATOR.getTYPE_VOUCHER();
                                                 }
+
+                                                if (!TextUtils.isEmpty(promoDetails)) {
+                                                    promoDetails.append("|");
+                                                }
                                                 promoDetails.append(type)
                                                         .append(":")
                                                         .append(amount)

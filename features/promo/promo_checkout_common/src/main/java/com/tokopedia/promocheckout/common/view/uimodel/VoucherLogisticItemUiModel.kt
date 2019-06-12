@@ -6,11 +6,19 @@ import android.os.Parcelable
 /**
  * Created by fajarnuha on 02/04/19.
  */
-data class VoucherLogisticItemUiModel(var code: String = "", var couponDesc: String = "", var couponAmount: String = "", var message: MessageUiModel = MessageUiModel()) : Parcelable {
+data class VoucherLogisticItemUiModel(
+        var code: String = "",
+        var couponDesc: String = "",
+        var couponAmount: String = "",
+        var cashbackAmount: Int = 0,
+        var discountAmount: Int = 0,
+        var message: MessageUiModel = MessageUiModel()) : Parcelable {
     constructor(source: Parcel) : this(
             source.readString(),
             source.readString(),
             source.readString(),
+            source.readInt(),
+            source.readInt(),
             source.readParcelable(MessageUiModel::class.java.classLoader)
     )
 
@@ -20,6 +28,8 @@ data class VoucherLogisticItemUiModel(var code: String = "", var couponDesc: Str
         writeString(code)
         writeString(couponDesc)
         writeString(couponAmount)
+        writeInt(cashbackAmount)
+        writeInt(discountAmount)
         writeParcelable(message, flags)
     }
 

@@ -447,33 +447,80 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoGlobalData(PromoStackingData promoStackingData, List<ShipmentCartItemModel> shipmentCartItemModels) {
+    public void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(PromoStackingData promoStackingGlobalData, List<ShipmentCartItemModel> shipmentCartItemModels) {
         if (dataCheckoutRequestList != null) {
-//            if (!TextUtils.isEmpty(promoStackingData.getPromoCode())) {
-//                promoCodes.append(dataResult.getAutoApplyStackData().getCode());
-//                int amount = 0;
-//                int type = 0;
-//                if (shipmentAddressFormDataResponse.getAutoapplyStack().getDiscountAmount() > 0) {
-//                    amount = shipmentAddressFormDataResponse.getAutoapplyStack().getDiscountAmount();
-//                    type = PromoStackingData.CREATOR.getTYPE_COUPON();
-//                } else if (shipmentAddressFormDataResponse.getAutoapplyStack().getCashbackWalletAmount() > 0) {
-//                    amount = shipmentAddressFormDataResponse.getAutoapplyStack().getCashbackWalletAmount();
-//                    type = PromoStackingData.CREATOR.getTYPE_VOUCHER();
-//                }
-//                promoDetails.append(type)
-//                        .append(":")
-//                        .append(amount)
-//                        .append(":")
-//                        .append(shipmentAddressFormDataResponse.getAutoapplyStack().getMessage().getState());
-//            }
+            StringBuilder promoCodes = new StringBuilder();
+            StringBuilder promoDetails = new StringBuilder();
 
-        }
-    }
+            if (!TextUtils.isEmpty(promoStackingGlobalData.getPromoCode())) {
+                promoCodes.append(promoStackingGlobalData.getPromoCode());
+                promoDetails.append(promoStackingGlobalData.getTypePromo())
+                        .append(":")
+                        .append(promoStackingGlobalData.getAmount())
+                        .append(":")
+                        .append(TickerCheckoutUtilKt.revertMapToStatePromoStackingCheckout(promoStackingGlobalData.getState()));
+            }
 
-    @Override
-    public void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoMerchantOrLogisticData(ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
-        if (dataCheckoutRequestList != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
+                for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequestList) {
+                    if (dataCheckoutRequest.shopProducts != null) {
+                        for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
+                            if (shopProductCheckoutRequest.cartString.equalsIgnoreCase(shipmentCartItemModel.getCartString()) && shopProductCheckoutRequest.productData != null) {
+                                if (!TextUtils.isEmpty(promoCodes)) {
+                                    promoCodes.append("|");
+                                }
+                                promoCodes.append(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
+                                int amountPromoMerchant = 0;
+                                int typePromoMerchant = 0;
+                                if (shipmentCartItemModel.getVoucherOrdersItemUiModel().getDiscountAmount() > 0) {
+                                    amountPromoMerchant = shipmentCartItemModel.getVoucherOrdersItemUiModel().getDiscountAmount();
+                                    typePromoMerchant = PromoStackingData.CREATOR.getTYPE_COUPON();
+                                } else if (shipmentCartItemModel.getVoucherOrdersItemUiModel().getCashbackWalletAmount() > 0) {
+                                    amountPromoMerchant = shipmentCartItemModel.getVoucherOrdersItemUiModel().getCashbackWalletAmount();
+                                    typePromoMerchant = PromoStackingData.CREATOR.getTYPE_VOUCHER();
+                                }
 
+                                if (!TextUtils.isEmpty(promoDetails)) {
+                                    promoDetails.append("|");
+                                }
+                                promoDetails.append(typePromoMerchant)
+                                        .append(":")
+                                        .append(amountPromoMerchant)
+                                        .append(":")
+                                        .append(shipmentCartItemModel.getVoucherOrdersItemUiModel().getMessage().getState());
+
+                                if (!TextUtils.isEmpty(promoCodes)) {
+                                    promoCodes.append("|");
+                                }
+                                promoCodes.append(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                                int amountPromoLogistic = 0;
+                                int typePromoLogistic = 0;
+                                if (shipmentCartItemModel.getVoucherLogisticItemUiModel().getDiscountAmount() > 0) {
+                                    amountPromoLogistic = shipmentCartItemModel.getVoucherLogisticItemUiModel().getDiscountAmount();
+                                    typePromoLogistic = PromoStackingData.CREATOR.getTYPE_COUPON();
+                                } else if (shipmentCartItemModel.getVoucherLogisticItemUiModel().getCashbackAmount() > 0) {
+                                    amountPromoLogistic = shipmentCartItemModel.getVoucherLogisticItemUiModel().getCashbackAmount();
+                                    typePromoLogistic = PromoStackingData.CREATOR.getTYPE_VOUCHER();
+                                }
+
+                                if (!TextUtils.isEmpty(promoDetails)) {
+                                    promoDetails.append("|");
+                                }
+                                promoDetails.append(typePromoLogistic)
+                                        .append(":")
+                                        .append(amountPromoLogistic)
+                                        .append(":")
+                                        .append(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState());
+
+                                for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
+                                    productDataCheckoutRequest.setPromoCode1(promoCodes.toString());
+                                    productDataCheckoutRequest.setPromoDetails(promoDetails.toString());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -1488,7 +1535,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                // Do nothing
+                getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange();
             }
         });
     }

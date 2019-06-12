@@ -1169,6 +1169,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 PromoStackingData promoStackingData = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
                 if (promoStackingData != null) {
                     updateAppliedPromoStack(promoStackingData);
+                    triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange();
                 }
             }
         } else if (resultCode == TickerCheckoutUtilKt.getRESULT_CLASHING()) {
@@ -2329,6 +2330,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
         shipmentAdapter.checkHasSelectAllCourier(false);
         shipmentPresenter.setCouponStateChanged(true);
+
+        triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange();
+    }
+
+    @Override
+    public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange() {
+        shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
+        shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics();
     }
 
     @Override
@@ -2358,8 +2367,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onSuccessCheckPromoFirstStep(@NotNull ResponseGetPromoStackUiModel promoData) {
         // Update global promo state
+        PromoStackingData promoStackingGlobalData = shipmentAdapter.getPromoGlobalStackData();
         if (promoData.getData().getCodes().size() > 0) {
-            PromoStackingData promoStackingGlobalData = shipmentAdapter.getPromoGlobalStackData();
             int typePromo;
             if (promoData.getData().isCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON()) {
                 typePromo = PromoStackingData.CREATOR.getTYPE_COUPON();
@@ -2398,6 +2407,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         shipmentAdapter.notifyDataSetChanged();
         shipmentAdapter.checkHasSelectAllCourier(false);
+
+        triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange();
     }
 
     @Override
@@ -2421,6 +2432,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         shipmentAdapter.notifyDataSetChanged();
+        triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange();
     }
 
     @Override

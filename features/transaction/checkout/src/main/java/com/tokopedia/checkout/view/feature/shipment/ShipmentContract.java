@@ -148,6 +148,8 @@ public interface ShipmentContract {
         void onSuccessClearPromoStackAfterClash();
 
         void clearTotalBenefitPromoStacking();
+
+        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange();
     }
 
     interface AnalyticsActionListener {
@@ -352,9 +354,8 @@ public interface ShipmentContract {
 
         void updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(String cartString, String shippingDuration, String shippingPrice, String courierName);
 
-        void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoGlobalData(PromoStackingData promoStackingData, List<ShipmentCartItemModel> shipmentCartItemModels);
+        void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(PromoStackingData promoStackingData, List<ShipmentCartItemModel> shipmentCartItemModels);
 
-        void updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoMerchantOrLogisticData(ResponseGetPromoStackUiModel responseGetPromoStackUiModel);
     }
 
 }
