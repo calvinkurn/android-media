@@ -140,6 +140,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private boolean isOfficialStore;
     private String shopDomain;
     private UserSessionInterface userSession;
+    private Button btnSubmit;
+    private Button btnGoToPdp;
+    private TextView txtTipsTrick;
+    private Dialog dialog;
 
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
@@ -150,7 +154,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        initPopUpDialog();
                         productManagePresenter.getPopupsInfo();
                         resetPageAndRefresh();
                     }
@@ -161,15 +164,16 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     };
 
     private Dialog initPopUpDialog(){
-        Dialog dialog = new Dialog(getActivity());
-        Button btnSubmit = dialog.findViewById(R.id.btn_submit);
-        Button btnGoToPdp = dialog.findViewById(R.id.btn_product_list);
-        TextView txtTipsTrick = dialog.findViewById(R.id.txt_tips_trick);
-
+        dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setContentView(R.layout.dialog_product_add);
+
+        btnSubmit = (Button) dialog.findViewById(R.id.btn_submit);
+        btnGoToPdp = (Button) dialog.findViewById(R.id.btn_product_list);
+        txtTipsTrick = (TextView) dialog.findViewById(R.id.txt_tips_trick);
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,8 +185,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         btnGoToPdp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                RouteManager.route(getContext(), ApplinkConst.PRODUCT_);
-//                getActivity().finish();
+//                goToPDP(productManageViewModel.getProductId());
             }
         });
         int backgroundColor = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
@@ -347,6 +350,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public void onSuccessGetPopUp(boolean isShowPopup) {
         if (isShowPopup) {
             initPopUpDialog().show();
+            resetPageAndRefresh();
         }
     }
 

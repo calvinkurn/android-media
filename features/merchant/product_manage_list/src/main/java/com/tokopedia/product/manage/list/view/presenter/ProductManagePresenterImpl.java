@@ -221,7 +221,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     @Override
     public void getPopupsInfo() {
         int shopId = convertStringToInterger();
-        popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.Companion.createRequestParams(shopId),
+        popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.createRequestParams(shopId),
                 getPopupsInfoSubscriber());
     }
 
