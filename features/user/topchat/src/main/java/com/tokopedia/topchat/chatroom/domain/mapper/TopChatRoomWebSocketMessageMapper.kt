@@ -56,7 +56,7 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 item.attachment?.type.toString(),
                 item.message.timeStampUnixNano,
                 item.message.censoredReply,
-                item.isRead,
+                false,
                 false,
                 !item.isOpposite,
                 voucherModel,
