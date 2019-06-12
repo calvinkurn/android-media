@@ -747,7 +747,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setHint(SearchPlaceholder searchPlaceholder) {
-        if(searchPlaceholder.getData() != null && searchPlaceholder.getData().getPlaceholder() != null){
+        if(searchPlaceholder.getData() != null && searchPlaceholder.getData().getPlaceholder() != null && !searchPlaceholder.getData().getPlaceholder().isEmpty()){
             homeMainToolbar.setHint(searchPlaceholder.getData().getPlaceholder());
         }
     }
