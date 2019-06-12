@@ -40,5 +40,9 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val CHOOSE_ACCOUNT = "$INTERNAL_GLOBAL/choose-account"
 
+    //TermPrivacy
+    // tokopedia-android-internal://global/term-privacy
+    @JvmField
+    val TERM_PRIVACY = "$INTERNAL_GLOBAL/term-privacy"
 
 }

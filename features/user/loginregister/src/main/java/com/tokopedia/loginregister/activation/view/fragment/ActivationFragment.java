@@ -35,6 +35,7 @@ import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.activation.view.activity.ChangeEmailActivity;
 import com.tokopedia.loginregister.activation.view.listener.ActivationContract;
 import com.tokopedia.loginregister.activation.view.presenter.ActivationPresenter;
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
@@ -73,6 +74,9 @@ public class ActivationFragment extends BaseDaggerFragment
 
     @Inject
     LoginRegisterAnalytics analytics;
+
+    @Inject
+    RegisterAnalytics registerAnalytics;
 
     @Inject
     ActivationPresenter presenter;
@@ -198,11 +202,11 @@ public class ActivationFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         activateButton.setOnClickListener(v -> {
-            analytics.eventClickActivateEmail();
+            registerAnalytics.trackClickActivationButton();
             presenter.activateAccount(email, verifyCode.getText().toString());
         });
         footer.setOnClickListener(v -> {
-            analytics.eventClickResendActivationEmail();
+            registerAnalytics.trackClickResendButton();
             showChangeEmailDialog(email);
         });
 
@@ -259,10 +263,18 @@ public class ActivationFragment extends BaseDaggerFragment
             new AlertDialog.Builder(getActivity())
                     .setTitle(R.string.resend_activation_email)
                     .setMessage(MethodChecker.fromHtml(dialogMessage))
-                    .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.resendActivation(
-                            email
-                    ))
-                    .setNegativeButton(R.string.button_change_email, (dialog, which) -> goToChangeEmail(email))
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        registerAnalytics.trackClickOkResendButton();
+                        presenter.resendActivation(
+                                email
+                        );
+                    })
+                    .setNegativeButton(R.string.button_change_email, (dialog, which) -> {
+                        registerAnalytics.trackClickChangeEmail();
+                        registerAnalytics.trackFailedClickResendButton(
+                                getActivity().getString(R.string.change_email_error_condition));
+                        goToChangeEmail(email);
+                    })
                     .show();
         }
     }
@@ -285,6 +297,8 @@ public class ActivationFragment extends BaseDaggerFragment
     @Override
     public void onErrorResendActivation(String errorMessage) {
         finishLoadingProgress();
+        registerAnalytics.trackFailedClickOkResendButton(errorMessage);
+        registerAnalytics.trackFailedClickResendButton(errorMessage);
         if (errorMessage.equals("")) {
             NetworkErrorHelper.showSnackbar(getActivity());
         } else {
@@ -295,6 +309,8 @@ public class ActivationFragment extends BaseDaggerFragment
     @Override
     public void onSuccessResendActivation() {
         if (getActivity() != null) {
+            registerAnalytics.trackSuccessClickOkResendButton();
+            registerAnalytics.trackSuccessClickResendButton();
             KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
             removeErrorOtp();
             finishLoadingProgress();
@@ -305,6 +321,7 @@ public class ActivationFragment extends BaseDaggerFragment
     @Override
     public void onErrorActivateWithUnicode(String errorMessage) {
         if (getActivity() != null) {
+            registerAnalytics.trackFailedClickActivationButton(errorMessage);
             verifyCode.setError(true);
             KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
             finishLoadingProgress();
@@ -321,6 +338,7 @@ public class ActivationFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessActivateWithUnicode(TokenViewModel pojo) {
+        registerAnalytics.trackSuccessClickActivationButton();
         Intent autoLoginIntent = LoginActivity.getAutomaticLogin(
                 getActivity(),
                 email,
