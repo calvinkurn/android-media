@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.transactiondata.entity.request.AddressRequest
+import com.tokopedia.transactiondata.entity.request.CornerRequest
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -28,8 +29,7 @@ class GetCornerList
 
     private fun getObservable(query: String, page: Int, isAddress: Boolean, isCorner: Boolean):
             Observable<AddressListModel> {
-        val request = AddressRequest(searchKey = query, page = page, showAddress = isAddress,
-                showCorner = isCorner)
+        val request = CornerRequest(searchKey = query, showAddress = isAddress, showCorner = isCorner)
         val param = mapOf<String, Any>(PARAM_CORNER_USECASE to request)
         val gqlQuery = GraphqlHelper.loadRawString(context.resources, R.raw.address_corner)
         val gqlRequest = GraphqlRequest(gqlQuery, NewAddressCornerResponse::class.java, param)
