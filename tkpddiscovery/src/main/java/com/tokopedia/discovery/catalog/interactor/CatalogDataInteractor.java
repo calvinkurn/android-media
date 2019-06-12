@@ -1,17 +1,18 @@
 package com.tokopedia.discovery.catalog.interactor;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
+import com.tokopedia.core.network.apiservices.search.CatalogService;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.discovery.catalog.database.CatalogDetailDBModel;
+import com.tokopedia.discovery.catalog.database.CatalogDetailDatabaseClient;
 import com.tokopedia.discovery.catalog.model.CatalogDetailData;
 import com.tokopedia.discovery.catalog.model.CatalogDetailListData;
 import com.tokopedia.discovery.catalog.model.CatalogListWrapperData;
 import com.tokopedia.discovery.catalog.model.CatalogWrapperData;
-import com.tokopedia.core.database.DbFlowOperation;
-import com.tokopedia.discovery.catalog.database.manager.DetailCatalogCacheManager;
-import com.tokopedia.core.database.model.CatalogDetailModelDB;
-import com.tokopedia.core.network.apiservices.search.CatalogService;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.discovery.catalog.network.apiservices.CatalogAWSService;
 
 import retrofit2.Response;
@@ -29,8 +30,10 @@ import rx.subscriptions.CompositeSubscription;
 
 public class CatalogDataInteractor implements ICataloDataInteractor {
     private final CompositeSubscription compositeSubscription;
+    private Context context;
 
-    public CatalogDataInteractor() {
+    public CatalogDataInteractor(Context context) {
+        this.context = context;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -43,7 +46,7 @@ public class CatalogDataInteractor implements ICataloDataInteractor {
                 .map(new Func1<CatalogWrapperData, CatalogWrapperData>() {
                     @Override
                     public CatalogWrapperData call(CatalogWrapperData catalogWrapperData) {
-                        return getFromChace(catalogWrapperData);
+                        return getFromCache(catalogWrapperData);
                     }
                 })
                 .flatMap(new Func1<CatalogWrapperData, Observable<CatalogWrapperData>>() {
@@ -142,18 +145,31 @@ public class CatalogDataInteractor implements ICataloDataInteractor {
     }
 
     private void saveToCache(String catalogId, String stringData) {
-        DbFlowOperation<CatalogDetailModelDB> dbFlowOperation = new DetailCatalogCacheManager();
-        dbFlowOperation.store(new CatalogDetailModelDB.Builder()
-                .detailCatalogId(catalogId)
-                .detailCatalogData(stringData)
-                .build());
+        long expiredTime = System.currentTimeMillis() + 1000 * 60 * 60;
+        CatalogDetailDatabaseClient
+                .getInstance(context)
+                .getCatalogDetailDatabase()
+                .catalogDetailDao()
+                .insert(new CatalogDetailDBModel(catalogId, stringData, expiredTime));
     }
 
-    private CatalogWrapperData getFromChace(CatalogWrapperData data) {
-        DbFlowOperation<CatalogDetailModelDB> dbFlowOperation = new DetailCatalogCacheManager();
-        data.setCatalogDetailData(dbFlowOperation.getConvertObjData(data.getCatalogId(),
-                CatalogDetailData.class));
+    private CatalogWrapperData getFromCache(CatalogWrapperData data) {
+
+        CatalogDetailDBModel dbModel = CatalogDetailDatabaseClient
+                .getInstance(context)
+                .getCatalogDetailDatabase()
+                .catalogDetailDao()
+                .getCatalogDetailDataById(data.getCatalogId());
+
+        CatalogDetailData catalogDetailData = null;
+
+        if (dbModel != null) {
+             catalogDetailData = dbModel.getExpiredTime() < System.currentTimeMillis() ? null
+                    : new Gson().fromJson(dbModel.getDetailCatalogData(), CatalogDetailData.class);
+        }
+
+        data.setCatalogDetailData(catalogDetailData);
+
         return data;
     }
-
 }

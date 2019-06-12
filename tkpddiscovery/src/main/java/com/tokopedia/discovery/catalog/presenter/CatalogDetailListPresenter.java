@@ -33,7 +33,7 @@ public class CatalogDetailListPresenter implements ICatalogDetailListPresenter {
 
     public CatalogDetailListPresenter(ICatalogDetailListView view) {
         this.view = view;
-        this.interactor = new CatalogDataInteractor();
+        this.interactor = new CatalogDataInteractor(view.getActivity());
     }
 
     @Override
