@@ -618,11 +618,11 @@ public class InboxDetailActivity extends InboxBaseActivity
         if (view.getId() == R.id.tv_rply_button) {
             for(int i =detailAdapter.getItemCount()-1; i>=0;i--){
                 rating = commentsItems.get(i).getRating();
-                if(rating.equals("101")|| rating.equals("102")){
+                if(rating!=null && (rating.equals("101")|| rating.equals("102"))){
                     break;
                 }
             }
-            if(rating.equals("101")|| rating.equals("102")){
+            if(rating!=null && (rating.equals("101")|| rating.equals("102"))){
                 viewReplyButton.setVisibility(View.GONE);
                 textToolbar.setVisibility(View.VISIBLE);
             }else{

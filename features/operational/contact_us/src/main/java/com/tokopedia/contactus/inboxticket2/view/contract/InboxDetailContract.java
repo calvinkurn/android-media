@@ -82,5 +82,7 @@ public interface InboxDetailContract {
         void onClick(String agreed,int commentPosition, String commentId);
 
         void closeTicket();
+
+        String getTicketStatus();
     }
 }

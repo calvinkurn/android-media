@@ -843,6 +843,11 @@ public class InboxDetailPresenterImpl
         });
     }
 
+    @Override
+    public String getTicketStatus() {
+        return mTicketDetail.getStatus();
+    }
+
     private void addNewLocalComment() {
         CommentsItem newItem = new CommentsItem();
         newItem.setCreatedBy(userData);

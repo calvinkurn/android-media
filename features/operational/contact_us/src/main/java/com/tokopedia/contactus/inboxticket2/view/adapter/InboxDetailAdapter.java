@@ -43,6 +43,10 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
     private String searchText;
     private Utils utils;
     private SpannableString hintAttachmentString;
+    
+    private static final String KEY_LIKED = "101";
+    private static final String KEY_DIS_LIKED = "102";
+
 
     public InboxDetailAdapter(Context context, List<CommentsItem> data, boolean needAttachment, InboxDetailContract.InboxDetailPresenter presenter) {
         mContext = context;
@@ -148,11 +152,11 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 ImageHandler.loadImageCircle2(mContext, ivProfile, item.getCreatedBy().getPicture());
                 tvName.setText(item.getCreatedBy().getName());
             }
-            if(item.getRating()!=null && item.getRating().equals("102")){
+            if(item.getRating()!=null && item.getRating().equals(KEY_DIS_LIKED)){
                 ratingThumbsDown.setVisibility(View.VISIBLE);
                 ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
                 ratingThumbsUp.setVisibility(View.GONE);
-            }else if(item.getRating()!=null && item.getRating().equals("101")) {
+            }else if(item.getRating()!=null && item.getRating().equals(KEY_LIKED)) {
                 ratingThumbsUp.setVisibility(View.VISIBLE);
                 ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
                 ratingThumbsDown.setVisibility(View.GONE);
@@ -161,15 +165,34 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvDateRecent.setText(item.getCreateTime());
                 tvCollapsedTime.setText("");
                 tvCollapsedTime.setVisibility(View.GONE);
-                if(!item.getCreatedBy().getRole().equals("agent")||item.getRating()==null){
-                    ratingThumbsUp.setVisibility(View.GONE);
-                    ratingThumbsDown.setVisibility(View.GONE);
+//                if(item.getRating()!=null){
+//                    if(mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && !item.getRating().equals(KEY_LIKED) && !item.getRating().equals(KEY_DIS_LIKED)){
+//                        ratingThumbsUp.setVisibility(View.GONE);
+//                        ratingThumbsDown.setVisibility(View.GONE);
+//                    }
+//                    if(!mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getCreatedBy().getRole().equals("agent") && !item.getRating().equals(KEY_LIKED) && !item.getRating().equals(KEY_DIS_LIKED) ){
+//                        ratingThumbsUp.setVisibility(View.VISIBLE);
+//                        ratingThumbsDown.setVisibility(View.VISIBLE);
+//                        ratingThumbsUp.clearColorFilter();
+//                        ratingThumbsDown.clearColorFilter();
+//                    }
+//                }
+//
+//                if(!item.getCreatedBy().getRole().equals("agent")||item.getRating()==null){
+//                    ratingThumbsUp.setVisibility(View.GONE);
+//                    ratingThumbsDown.setVisibility(View.GONE);
+//               }
+
+                if(!mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getCreatedBy().getRole().equals("agent")&&(item.getRating()==null|| item.getRating().equals(""))){
+                      ratingThumbsUp.setVisibility(View.VISIBLE);
+                      ratingThumbsDown.setVisibility(View.VISIBLE);
+                      ratingThumbsUp.clearColorFilter();
+                      ratingThumbsDown.clearColorFilter();
                 }
-                else if(item.getCreatedBy().getRole().equals("agent") && !item.getRating().equals("101") && !item.getRating().equals("102") ){
-                    ratingThumbsUp.setVisibility(View.VISIBLE);
-                    ratingThumbsDown.setVisibility(View.VISIBLE);
-                    ratingThumbsUp.clearColorFilter();
-                    ratingThumbsDown.clearColorFilter();
+
+                if((mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getRating()!=null && !item.getRating().equals(KEY_LIKED) && !item.getRating().equals(KEY_DIS_LIKED))|| !item.getCreatedBy().getRole().equals("agent")|| item.getId()==null){
+                      ratingThumbsUp.setVisibility(View.GONE);
+                      ratingThumbsDown.setVisibility(View.GONE);
                 }
                 if (searchMode) {
                     tvComment.setText(utils.getHighlightText(searchText, item.getMessagePlaintext()));
@@ -202,7 +225,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             ratingThumbsUp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(item.getRating()!= null &&(item.getRating().equals("101")||item.getRating().equals("102"))){
+                    if(item.getRating()!= null &&(item.getRating().equals(KEY_LIKED)||item.getRating().equals(KEY_DIS_LIKED))){
 
                     }else{
                         ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
@@ -216,7 +239,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             ratingThumbsDown.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(item.getRating().equals("101")||item.getRating().equals("102")){
+                    if(item.getRating().equals(KEY_LIKED)||item.getRating().equals(KEY_DIS_LIKED)){
                     }else{
                     ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
                     ratingThumbsUp.setVisibility(View.GONE);
