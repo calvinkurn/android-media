@@ -57,7 +57,6 @@ class TkpdVideoPlayer: Fragment() {
     }
 
     private lateinit var playerOptions: SimpleExoPlayer
-    private lateinit var listener: VideoPlayerListener
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_video_player, container, false)
@@ -72,7 +71,7 @@ class TkpdVideoPlayer: Fragment() {
         val sourceMedia = arguments?.getString(VIDEO_SOURCE, "")
         if (sourceMedia == null || sourceMedia.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)
-            listener.onPlayerError()
+            //listener.onPlayerError()
         } else {
             if (File(sourceMedia).exists()) {
                 val file = Uri.fromFile(File(sourceMedia))
@@ -91,13 +90,6 @@ class TkpdVideoPlayer: Fragment() {
         } catch (ignored: Exception) {}
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is VideoPlayerListener) {
-            listener = context
-        }
-    }
-
     private fun loadPlayer(uri: Uri, protocol: VideoSourceProtocol) {
         initPlayer(uri, protocol)
     }
@@ -112,7 +104,7 @@ class TkpdVideoPlayer: Fragment() {
             playerView.player = playerOptions
 
             //auto play enabled
-            playerOptions.playWhenReady = listener.autoPlay()
+            playerOptions.playWhenReady = true
 
             //fix bug: on kitkat devices
             if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.KITKAT) {
@@ -126,16 +118,13 @@ class TkpdVideoPlayer: Fragment() {
 
             playerOptions.addListener(object : Player.EventListener {
                 override fun onPlayerError(error: ExoPlaybackException?) {
-                    listener.onPlayerError()
                 }
 
                 override fun onLoadingChanged(isLoading: Boolean) {
                     pgLoader.showWithCondition(isLoading)
-                    listener.onLoadingChanged(isLoading)
                 }
 
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                    listener.onStateChanged(playbackState)
                     when (playbackState) {
                         STATE_BUFFERING -> {
                             pgLoader.show()
@@ -148,7 +137,7 @@ class TkpdVideoPlayer: Fragment() {
             })
         } catch (e: Exception) {
             showToast(R.string.videoplayer_invalid_player)
-            listener.onPlayerError()
+            //listener.onPlayerError()
         }
     }
 
