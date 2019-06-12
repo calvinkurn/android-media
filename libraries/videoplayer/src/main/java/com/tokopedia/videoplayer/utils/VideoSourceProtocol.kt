@@ -19,7 +19,7 @@ sealed class VideoSourceProtocol {
                 http -> VideoSourceProtocol.Http
                 rtmp -> VideoSourceProtocol.Rtmp
                 file -> VideoSourceProtocol.File
-                else -> throw Exception("Only supported http, rtmp, and file format.")
+                else -> throw Exception("Only supported http, https, rtmp, and file format.")
             }
         }
     }

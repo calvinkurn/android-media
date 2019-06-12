@@ -1,7 +1,9 @@
-package com.tokopedia.videoplayer.view.widget
+package com.tokopedia.videoplayer.view.player
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -22,7 +24,6 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.FileDataSource
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.videoplayer.R
 import com.tokopedia.videoplayer.utils.VideoSourceProtocol
 import com.tokopedia.videoplayer.utils.sendViewToBack
@@ -39,24 +40,37 @@ class TkpdVideoPlayer: Fragment() {
         //const
         private const val VIDEO_ROTATION_90 = 90f
         private const val EXOPLAYER_AGENT   = "exoplayer-codelab"
+    }
 
-        fun set(sourceMedia: String, containerId: Int, fragmentManager: FragmentManager): Fragment {
-            val videoPlayer = TkpdVideoPlayer()
+    class Builder {
+        private val videoPlayer = TkpdVideoPlayer()
+        private val bundle = Bundle()
 
-            //commit
+        fun transaction(containerId: Int, fragmentManager: FragmentManager) = apply {
             val transaction = fragmentManager.beginTransaction()
             transaction.replace(containerId, videoPlayer)
             transaction.commit()
+            return this
+        }
 
-            //send data
-            val bundle = Bundle()
+        fun videoSource(sourceMedia: String) = apply {
             bundle.putString(VIDEO_SOURCE, sourceMedia)
+            return this
+        }
+
+        fun listener(callback: VideoPlayerListener) = apply {
+            videoPlayer.callback = callback
+            return this
+        }
+
+        fun build(): TkpdVideoPlayer {
             videoPlayer.arguments = bundle
             return videoPlayer
         }
     }
 
     private lateinit var playerOptions: SimpleExoPlayer
+    private lateinit var callback: VideoPlayerListener
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_video_player, container, false)
@@ -65,34 +79,36 @@ class TkpdVideoPlayer: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //utilities
-        sendViewToBack(playerView)
-
+        //catch source media from file, uri, or URL.
         val sourceMedia = arguments?.getString(VIDEO_SOURCE, "")
+
+        sendViewToBack(playerView) //utilities: send playerView in back of any views
+
         if (sourceMedia == null || sourceMedia.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)
-            //listener.onPlayerError()
+            callback.onPlayerError()
         } else {
             if (File(sourceMedia).exists()) {
                 val file = Uri.fromFile(File(sourceMedia))
-                loadPlayer(file, VideoSourceProtocol.File)
+                initPlayer(file, VideoSourceProtocol.File)
             } else {
                 val url = Uri.parse(sourceMedia)
-                loadPlayer(url, VideoSourceProtocol.protocol(sourceMedia))
+                initPlayer(url, VideoSourceProtocol.protocol(sourceMedia))
             }
         }
+
+        playerListener()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        try {
-            playerOptions.release()
-        } catch (ignored: Exception) {}
-    }
-
-    private fun loadPlayer(uri: Uri, protocol: VideoSourceProtocol) {
-        initPlayer(uri, protocol)
-    }
+    private fun playerListener() = playerOptions.addListener(object : Player.EventListener {
+        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+            callback.onPlayerStateChanged(playbackState)
+            when (playbackState) {
+                STATE_BUFFERING -> pgLoader.show()
+                STATE_READY -> pgLoader.hide()
+            }
+        }
+    })
 
     private fun initPlayer(source: Uri, protocol: VideoSourceProtocol) {
         try {
@@ -107,52 +123,37 @@ class TkpdVideoPlayer: Fragment() {
             playerOptions.playWhenReady = true
 
             //fix bug: on kitkat devices
-            if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.KITKAT) {
+            if (SDK_INT == KITKAT) {
                 playerView.rotation = VIDEO_ROTATION_90
             }
 
             playerOptions.prepare(
                     buildMediaSource(source, protocol),
+                    /* reset position */
                     true,
+                    /* reset state */
                     false)
-
-            playerOptions.addListener(object : Player.EventListener {
-                override fun onPlayerError(error: ExoPlaybackException?) {
-                }
-
-                override fun onLoadingChanged(isLoading: Boolean) {
-                    pgLoader.showWithCondition(isLoading)
-                }
-
-                override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                    when (playbackState) {
-                        STATE_BUFFERING -> {
-                            pgLoader.show()
-                        }
-                        STATE_READY -> {
-                            pgLoader.hide()
-                        }
-                    }
-                }
-            })
         } catch (e: Exception) {
             showToast(R.string.videoplayer_invalid_player)
-            //listener.onPlayerError()
+            callback.onPlayerError()
         }
     }
 
     private fun buildMediaSource(source: Uri, protocol: VideoSourceProtocol): MediaSource {
         return when (protocol) {
+            //protocol supported: http, https
             VideoSourceProtocol.Http -> {
                 ExtractorMediaSource.Factory(
                         DefaultHttpDataSourceFactory(EXOPLAYER_AGENT))
                         .createMediaSource(source)
             }
+            //live streaming approach
             VideoSourceProtocol.Rtmp -> {
                 ExtractorMediaSource.Factory(
                         RtmpDataSourceFactory())
                         .createMediaSource(source)
             }
+            //file in local storage
             VideoSourceProtocol.File -> {
                 val dataSpec = DataSpec(source)
                 val fileDataSource = FileDataSource()
@@ -163,6 +164,20 @@ class TkpdVideoPlayer: Fragment() {
                         .createMediaSource(source)
             }
         }
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (context is VideoPlayerListener) {
+            callback = context
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        try {
+            playerOptions.release()
+        } catch (ignored: Exception) {}
     }
 
 }
