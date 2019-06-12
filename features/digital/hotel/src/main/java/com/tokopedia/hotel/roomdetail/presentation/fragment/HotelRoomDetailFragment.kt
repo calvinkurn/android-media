@@ -151,7 +151,7 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
         tv_room_detail_title.text = hotelRoom.roomInfo.name
         tv_room_detail_occupancy.text = getString(R.string.hotel_room_detail_header_occupancy,
                 hotelRoom.occupancyInfo.occupancyText)
-        tv_room_detail_size.text = hotelRoom.bedInfo
+        tv_room_detail_size.text = getString(R.string.hotel_room_detail_header_room_size, hotelRoom.roomInfo.size, hotelRoom.bedInfo)
 
         val breakfastTextView = FacilityTextView(context!!)
         if (hotelRoom.breakfastInfo.isBreakfastIncluded) {
