@@ -12,7 +12,6 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.home.view.fragment.BuyerPurchaseFragment;
 import com.tokopedia.contactus.home.view.fragment.SellerPurchaseFragment;
 import com.tokopedia.core.util.SessionHandler;

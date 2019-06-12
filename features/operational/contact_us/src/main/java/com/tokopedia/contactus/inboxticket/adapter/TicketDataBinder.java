@@ -15,7 +15,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.customadapter.ImageUploadAdapter;
 import com.tokopedia.core.util.DataBindAdapter;

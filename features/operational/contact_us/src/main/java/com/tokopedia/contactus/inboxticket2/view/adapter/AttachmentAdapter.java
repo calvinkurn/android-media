@@ -11,7 +11,6 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter;
 

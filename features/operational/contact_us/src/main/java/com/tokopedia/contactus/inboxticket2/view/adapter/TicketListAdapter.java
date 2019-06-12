@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.TicketsItem;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;

@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 
 import java.io.File;

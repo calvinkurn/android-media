@@ -9,7 +9,6 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.contactus.createticket.model.ImageUpload;
 
 import java.io.File;

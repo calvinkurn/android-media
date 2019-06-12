@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'io.hansel.preprocessor.module'
 project.ext {
     artifactId = 'contactus'
@@ -17,9 +16,6 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT') {
-            exclude group: 'com.android.tools.build', module: 'gradle'
-        }
         classpath rootProject.ext.miscDependencies.hansel
     }
 }

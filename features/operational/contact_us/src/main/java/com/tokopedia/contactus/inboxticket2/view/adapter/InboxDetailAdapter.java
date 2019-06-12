@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;

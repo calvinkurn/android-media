@@ -27,7 +27,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;

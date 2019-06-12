@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.analytics.ContactUsEventTracking;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.api.ContactUsURL;
