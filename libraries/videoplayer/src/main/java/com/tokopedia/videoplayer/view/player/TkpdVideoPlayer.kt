@@ -96,7 +96,7 @@ class TkpdVideoPlayer: Fragment() {
                 initPlayer(file, VideoSourceProtocol.File)
             } else {
                 val url = Uri.parse(sourceMedia)
-                initPlayer(url, VideoSourceProtocol.protocol(sourceMedia))
+                initPlayer(url, VideoSourceProtocol.protocol(context, sourceMedia))
             }
         }
 
