@@ -6,6 +6,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.GMGetCashbackModel;
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.gm.common.data.source.cloud.model.RequestCashbackModel;
 import com.tokopedia.gm.common.data.source.cloud.model.RequestGetCashbackModel;
+import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 
 import java.util.List;
 
@@ -30,4 +31,7 @@ public interface GMCommonApi {
 
     @POST(GMCommonUrl.GET_CASHBACK_PRODUCTS)
     Observable<Response<DataResponse<List<GMGetCashbackModel>>>> getCashbackList(@Body RequestGetCashbackModel requestGetCashbackModel);
+
+    @GET(GMCommonUrl.GET_SHOP_STATUS +"?json=1")
+    Observable<Response<DataResponse<ShopStatusModel>>> getShopStatus(@Path("shop_id") String shopId);
 }
