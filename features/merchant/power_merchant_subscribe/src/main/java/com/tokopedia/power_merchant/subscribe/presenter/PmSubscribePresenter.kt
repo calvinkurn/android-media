@@ -19,4 +19,12 @@ class PmSubscribePresenter @Inject constructor(private val getShopStatusUseCase:
 
     }
 
+    override fun getScoreInfo() {
+
+    }
+
+    override fun activatePowerMerchant() {
+
+    }
+
 }
