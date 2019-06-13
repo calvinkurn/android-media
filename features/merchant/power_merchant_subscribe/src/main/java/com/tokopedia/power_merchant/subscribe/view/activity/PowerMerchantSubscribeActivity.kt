@@ -33,8 +33,10 @@ class PowerMerchantSubscribeActivity : BaseSimpleActivity() {
         @DeepLink(ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
         @JvmStatic
         fun getCallingIntentSellerHistory(context: Context, extras: Bundle): Intent {
-            return newInstance(context).putExtras(extras)
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            return newInstance(context).setData(uri.build())
+                    .putExtras(extras)
         }
-
     }
+
 }

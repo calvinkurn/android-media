@@ -10,7 +10,7 @@
     <string name="pm_label_special_promo">Pilihan Promo Spesial</string>
     <string name="pm_label_topads_credit">Tambahan Credit TopAds</string>
     <string name="pm_label_market_insight">Fitur Wawasan Pasar</string>
-    <string name="pm_label_member">Member Power Merchant</string>
+    <string name="pm_label_member">Power Merchant Terdaftar</string>
     <string name="pm_label_member_status">Status Keanggotaan</string>
 
     <string name="pm_label_kyc_verification_header_1">Lengkapi informasi kartu</string>
@@ -40,6 +40,7 @@
 
     <string name="pm_label_button_activate">Aktivasi Power Merchant</string>
     <string name="pm_label_member_cancel">Batalkan keanggotaan kapan saja</string>
+    <string name="pm_label_member_cancel_learnmore">Status keanggotaan aktif jika skor performa toko minimum 65 poin. Pelajari Selengkapnya</string>
     <string name="pm_period">Periode baru dimulai pada 1 Juli 2019 pukul 04.00</string>
     <string name="pm_label_cancellation_header">Pengajuan pembatalan berhasil</string>
     <string name="pm_label_cancellation_duration">Fitur akan nonaktif pada 1 Juli 2019, pukul 04.00 WIB.</string>
@@ -49,6 +50,6 @@
     <string name="pm_label_kyc_verivication">Lakukan verifikasi KYC</string>
     <string name="pm_label_score_point">Skor performa toko lebih dari 75 poin </string>
     <string name="pm_label_tnc_header">Syarat menjadi Power Merchant</string>
-    <string name="pm_label_price_cashback">Sisa biaya Power Merchant akan kembali ke Saldo Tokopedia dalam 1 minggu.</string>
+    <string name="pm_label_price_cashback">Sisa biaya langganan Power Merchant sebelumnya akan dikembalikan ke Saldo Tokopedia paling lambat 1 minggu.</string>
     <string name="pm_label_info">Sekilas info tentang kenapa sih PM ini berubah, apa yang lebih baik, apa yang ditawarkan, etc…</string>
 </resources>

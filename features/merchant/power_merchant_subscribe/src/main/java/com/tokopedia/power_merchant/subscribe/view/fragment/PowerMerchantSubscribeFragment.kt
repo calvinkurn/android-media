@@ -18,6 +18,7 @@ import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialBenefitPmVi
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHolder
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import kotlinx.android.synthetic.main.partial_member_power_merchant.*
 import kotlinx.android.synthetic.main.partial_power_merchant_benefit.*
 import kotlinx.android.synthetic.main.partial_tnc_power_merchant.*
@@ -63,11 +64,30 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     override fun onSuccessGetPmInfo(shopStatusModel: ShopStatusModel) {
-        if (shopStatusModel.powerMerchant.status == "active") {
 
-        } else if (shopStatusModel.powerMerchant.status == "inactive") {
-            context?.let { TransitionPeriodPmActivity.newInstance(it) }
+        if (shopStatusModel.powerMerchant.shopPopup) {
+            if (shopStatusModel.powerMerchant.status == "idle") {
+                context?.let { TransitionPeriodPmActivity.newInstance(it) }
+            } else if (shopStatusModel.powerMerchant.status == "activate") {
+                ticker_blue_container.visibility = View.VISIBLE
+                renderView(shopStatusModel)
+            }
+        } else {
+            renderView(shopStatusModel)
         }
+
+    }
+
+    private fun renderView(shopStatusModel: ShopStatusModel) {
+        ticker_blue_container.visibility = View.GONE
+        if (shopStatusModel.powerMerchant.autoExtend.status == "off") {
+            ticker_yellow_container.visibility = View.VISIBLE
+        } else {
+            ticker_yellow_container.visibility = View.GONE
+
+        }
+        partialMemberPmViewHolder.renderPartialMember(shopStatusModel)
+        partialTncViewHolder
     }
 
     private fun initializePartialPart(view: View) {
