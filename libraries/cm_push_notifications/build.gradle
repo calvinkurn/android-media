@@ -1,6 +1,9 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     defaultConfig {
@@ -29,6 +32,9 @@ project.ext {
     artifactName ="cm_push_notifications-release"
 }
 dependencies {
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+
+    api rootProject.ext.miscDependencies.coroutineCore
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)
