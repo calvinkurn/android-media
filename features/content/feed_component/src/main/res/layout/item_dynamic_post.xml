@@ -121,7 +121,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
-            android:src="@drawable/ic_kebab"
+            app:srcCompat="@drawable/ic_kebab"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -243,7 +243,7 @@
                             android:layout_height="@dimen/dp_18"
                             android:contentDescription="@string/kol_action_like"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/ic_thumb"
+                            app:srcCompat="@drawable/ic_thumb"
                             android:visibility="visible"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/likeText"
@@ -273,7 +273,7 @@
                             android:layout_height="@dimen/dp_18"
                             android:contentDescription="@string/kol_action_comment"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/ic_comment"
+                            app:srcCompat="@drawable/ic_comment"
                             android:visibility="visible"
                             tools:ignore="RtlSymmetry"
                             tools:visibility="visible" />
@@ -309,7 +309,7 @@
                             android:layout_height="@dimen/dp_18"
                             android:contentDescription="@string/kol_action_share"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/ic_share_grey_profile"
+                            app:srcCompat="@drawable/ic_share_grey_profile"
                             android:visibility="visible"
                             tools:visibility="visible" />
 

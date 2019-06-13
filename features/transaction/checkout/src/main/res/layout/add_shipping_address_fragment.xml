@@ -295,7 +295,7 @@
                         <ImageView
                             android:layout_width="@dimen/dp_10"
                             android:layout_height="@dimen/dp_10"
-                            android:src="@drawable/ic_chevron_right_grey_checkout_module"
+                            app:srcCompat="@drawable/ic_chevron_right_grey_checkout_module"
                             android:tint="#999999"
                             tools:ignore="ContentDescription" />
 
@@ -338,7 +338,7 @@
                             android:layout_height="10dp"
                             android:layout_marginLeft="@dimen/dp_8"
                             android:layout_marginStart="@dimen/dp_8"
-                            android:src="@drawable/ic_chevron_right_grey_checkout_module"
+                            app:srcCompat="@drawable/ic_chevron_right_grey_checkout_module"
                             android:tint="@color/tkpd_main_green"
                             tools:ignore="ContentDescription" />
                     </LinearLayout>

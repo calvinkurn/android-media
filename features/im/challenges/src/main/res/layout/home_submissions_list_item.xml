@@ -81,7 +81,7 @@
             android:layout_marginRight="@dimen/dp_5"
             android:layout_marginTop="@dimen/dp_6"
             android:padding="@dimen/dp_3"
-            android:src="@drawable/ic_share_via_card"
+            app:srcCompat="@drawable/ic_share_via_card"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view_line" />
 
@@ -94,7 +94,7 @@
             android:layout_marginTop="@dimen/dp_7"
             android:clickable="true"
             android:padding="@dimen/dp_3"
-            android:src="@drawable/ic_wishlist_unchecked"
+            app:srcCompat="@drawable/ic_wishlist_unchecked"
             android:visibility="gone"
             app:layout_constraintLeft_toRightOf="@+id/img_share"
             app:layout_constraintTop_toBottomOf="@+id/view_line" />

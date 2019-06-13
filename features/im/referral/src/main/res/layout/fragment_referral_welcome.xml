@@ -59,7 +59,7 @@
                     android:layout_width="@dimen/dp_35"
                     android:layout_height="@dimen/dp_35"
                     android:layout_marginRight="@dimen/margin_small"
-                    android:src="@drawable/ic_group_referral" />
+                    app:srcCompat="@drawable/ic_group_referral" />
 
                 <TextView
                     android:id="@+id/referral_daftar"
@@ -78,7 +78,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/margin_small"
                     android:layout_toLeftOf="@+id/referral_transaction"
-                    android:src="@drawable/ic_cart_circle" />
+                    app:srcCompat="@drawable/ic_cart_circle" />
 
                 <TextView
                     android:id="@+id/referral_transaction"

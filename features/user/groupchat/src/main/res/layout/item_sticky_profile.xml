@@ -44,7 +44,7 @@
             android:id="@+id/iv_byme"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
-            android:src="@drawable/ic_byme_card"
+            app:srcCompat="@drawable/ic_byme_card"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/layout_image"
             app:layout_constraintRight_toRightOf="@id/layout_image"

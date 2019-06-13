@@ -177,7 +177,7 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginRight="@dimen/margin_small"
-                    android:src="@drawable/ic_group_referral" />
+                    app:srcCompat="@drawable/ic_group_referral" />
 
                 <TextView
                     android:id="@+id/referral_count"

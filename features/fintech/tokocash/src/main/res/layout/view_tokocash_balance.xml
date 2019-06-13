@@ -79,7 +79,7 @@
                     android:layout_marginTop="@dimen/dp_5"
                     android:layout_toEndOf="@+id/title_hold_balance"
                     android:layout_toRightOf="@+id/title_hold_balance"
-                    android:src="@drawable/ic_tokocash_info"
+                    app:srcCompat="@drawable/ic_tokocash_info"
                     tools:ignore="ContentDescription" />
 
                 <TextView

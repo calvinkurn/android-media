@@ -10,7 +10,7 @@
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_200"
-        android:src="@drawable/ic_empty_shop_feed"/>
+        app:srcCompat="@drawable/ic_empty_shop_feed"/>
 
     <TextView
         android:layout_width="wrap_content"
