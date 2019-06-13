@@ -15,7 +15,7 @@ data class ProfilePojo(
 data class ProfileInfo(
         @SerializedName("user_id")
         @Expose
-        var userId: String = "",
+        var userId: String = "0",
         @SerializedName("full_name")
         @Expose
         var fullName: String = "",

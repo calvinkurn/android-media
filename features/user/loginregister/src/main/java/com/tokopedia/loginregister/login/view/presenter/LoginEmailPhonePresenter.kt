@@ -281,7 +281,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         registerValidationUseCase.unsubscribe()
         loginWebviewUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
-//        getProfileUseCase.unsubscribe()
+        getProfileUseCase.unsubscribe()
 
     }
 
