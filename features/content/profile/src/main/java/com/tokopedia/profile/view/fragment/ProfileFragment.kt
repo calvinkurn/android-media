@@ -56,7 +56,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
-import com.tokopedia.feedcomponent.util.FeedScrollListener
+import com.tokopedia.feedcomponent.util.FeedScrollListenerJava
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
@@ -951,7 +951,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             && newState == RecyclerView.SCROLL_STATE_IDLE
                             && layoutManager != null) {
                         recyclerView?.let {
-                            FeedScrollListener.onFeedScrolled(it, adapter.list)
+                            FeedScrollListenerJava.onFeedScrolled(it, adapter.list)
                         }
                     }
                 } catch (e: IndexOutOfBoundsException) {

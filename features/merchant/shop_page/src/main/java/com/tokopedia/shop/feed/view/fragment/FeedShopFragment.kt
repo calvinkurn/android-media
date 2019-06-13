@@ -27,7 +27,7 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.util.FeedScrollListener
+import com.tokopedia.feedcomponent.util.FeedScrollListenerJava
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -145,7 +145,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
                         recyclerView?.let {
-                            FeedScrollListener.onFeedScrolled(it, adapter.list)
+                            FeedScrollListenerJava.onFeedScrolled(it, adapter.list)
                         }
                     }
                 } catch (e: IndexOutOfBoundsException) {
