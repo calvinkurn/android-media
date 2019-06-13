@@ -5,7 +5,6 @@
         android:allowBackup="true"
         android:label="@string/app_name">
         <activity android:name=".viewcontroller.AgeRestrictionHomeActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent"/>
         <activity
             android:name=".viewcontroller.VerifyDOBActivity"

@@ -12,6 +12,7 @@ abstract class BaseARActivity<T : BaseViewModel> : BaseViewModelActivity<T>() {
         val VERIFICATION_REQUEST = 515
         val RESULT_IS_ADULT = 980
         val RESULT_IS_NOT_ADULT = 180
+        val PARAM_EXTRA_DOB = "VERIFY DOB"
         private val CATEGORYPAGE = "category page"
         private val PDP = "product detail page"
         private val SEARCHPAGE = "search result page"

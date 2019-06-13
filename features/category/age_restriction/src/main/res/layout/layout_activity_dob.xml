@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -58,6 +59,7 @@
         android:layout_height="@dimen/dp_18"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:background="?attr/selectableItemBackground"
         android:src="@drawable/ic_arrow_down_grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ed_edit_dob"
@@ -89,6 +91,15 @@
         app:layout_constraintEnd_toEndOf="@+id/tv_dob_warning"
         app:layout_constraintStart_toStartOf="@+id/tv_dob_warning"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <android.support.constraint.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        app:constraint_referenced_ids="tv_dob_warning,
+        ed_edit_dob,iv_arrow_down,divider,tv_update_dob" />
 
     <ProgressBar
         android:id="@id/progress_bar_layout"

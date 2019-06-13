@@ -54,7 +54,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                             "not yet verified - empty DOB - {origin url/external} - {destination url}")
                 } else {
                     navigateToActivityRequest(Intent(this, VerifyDOBActivity::class.java)
-                            .putExtra("VERIFY DOB", arHomeViewModel.notVerified.value), VERIFICATION_REQUEST)
+                            .putExtra(PARAM_EXTRA_DOB, arHomeViewModel.notVerified.value), VERIFICATION_REQUEST)
                     sendGeneralEvent(eventClick,
                             event,
                             "click - adult pop up - benar lanjutkan",

@@ -1,6 +1,7 @@
 package com.tokopedia.age_restriction.viewcontroller
 
 import android.arch.lifecycle.Observer
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.View
 import com.tokopedia.age_restriction.R
@@ -63,6 +64,24 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
                     event,
                     "click - adult pop up - simpan",
                     "tanggal lahir page - " + simpleDateFormat.format(selectedDate) + "- {origin url/external} - {destination url}")
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        group.visibility = View.INVISIBLE
+        if (intent.hasExtra(PARAM_EXTRA_DOB)) {
+            val dob = intent.getStringExtra(PARAM_EXTRA_DOB)?.split("-")
+            dob?.let {
+                if (it.size == 3) {
+                    verifyDobModel.updateUserDoB(getMeGQlString(R.raw.gql_user_profile_dob_update),
+                            it[2],
+                            it[1],
+                            it[0])
+                }
+            }
+        } else {
+            group.visibility = View.VISIBLE
         }
     }
 
