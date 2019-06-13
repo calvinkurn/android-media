@@ -11,10 +11,4 @@ data class HotelAddCartResponse(
         @SerializedName("cartID")
         @Expose
         val cartId: String = ""
-) {
-    data class Response(
-            @SerializedName("propertyAddToCart")
-            @Expose
-            val response: HotelAddCartResponse
-    )
-}
+)

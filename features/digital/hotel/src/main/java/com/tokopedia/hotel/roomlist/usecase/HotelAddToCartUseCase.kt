@@ -33,12 +33,12 @@ class HotelAddToCartUseCase @Inject constructor(val useCase: MultiRequestGraphql
         useCase.clearRequest()
 
         try {
-            val graphqlRequest = GraphqlRequest(rawQuery, HotelAddCartResponse.Response::class.java, param)
+            val graphqlRequest = GraphqlRequest(rawQuery, HotelAddCartResponse::class.java, param)
             useCase.addRequest(graphqlRequest)
 
             val hotelRoomData = async {
                 val response =  withContext(Dispatchers.IO) {
-                    useCase.executeOnBackground().getSuccessData<HotelAddCartResponse.Response>().response
+                    useCase.executeOnBackground().getSuccessData<HotelAddCartResponse>()
                 }
                 response
             }
