@@ -1,5 +1,8 @@
 package com.tokopedia.settingnotif.usersetting.domain.pojo
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
+
 
 class UserSettingPojo(
         var sections: List<SettingSectionsPojo>
@@ -8,7 +11,13 @@ class UserSettingPojo(
 class SettingSectionsPojo(
         var sectionTitle: String,
         var settings: List<SettingPojo>
-)
+) : Visitable<SettingFieldTypeFactory> {
+
+    override fun type(typeFactory: SettingFieldTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+}
 
 class SettingPojo(
         var name: String,
@@ -17,10 +26,16 @@ class SettingPojo(
         var status: Boolean,
         var description: String,
         var childSettings: List<SettingPojo>
-)
+) : Visitable<SettingFieldTypeFactory> {
+
+    override fun type(typeFactory: SettingFieldTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+}
 
 
-object NotificationSettingHelper {
+object SettingHelper {
 
     fun createDummyResponse(): UserSettingPojo {
         val transactionSettings = listOf(

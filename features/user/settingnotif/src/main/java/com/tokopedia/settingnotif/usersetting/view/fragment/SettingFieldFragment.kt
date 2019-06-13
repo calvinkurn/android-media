@@ -14,6 +14,7 @@ import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.presenter.SettingFieldPresenter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
+import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
 import javax.inject.Inject
 
 abstract class SettingFieldFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), SettingFieldContract.View {
@@ -54,9 +55,14 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>, BaseAdapter
 
     override fun loadData(page: Int) {
         if (page != defaultInitialPage) return
+        presenter.getDummyData()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
+    }
+
+    override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
+        renderList(data.data)
     }
 }
