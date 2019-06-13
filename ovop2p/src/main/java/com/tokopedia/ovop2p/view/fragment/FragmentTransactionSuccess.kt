@@ -1,4 +1,4 @@
-package com.tokopedia.ovop2p.view
+package com.tokopedia.ovop2p.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.tokopedia.ovop2p.view
+package com.tokopedia.ovop2p.view.fragment
 
 import android.media.Image
 import android.os.Bundle
