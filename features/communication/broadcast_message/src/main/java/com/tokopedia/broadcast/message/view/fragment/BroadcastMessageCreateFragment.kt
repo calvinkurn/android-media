@@ -16,6 +16,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.broadcast.message.R
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant
@@ -229,7 +230,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
 
     private fun updateBackgroundImage() {
         if (savedLocalImageUrl == null){
-            bg_image.setImageResource(R.drawable.ic_upload_image)
+            bg_image.setImageDrawable(MethodChecker.getDrawable(activity,R.drawable.ic_upload_image))
             bg_image.scaleType = ImageView.ScaleType.CENTER
         } else {
             ImageHandler.LoadImage(bg_image, savedLocalImageUrl)

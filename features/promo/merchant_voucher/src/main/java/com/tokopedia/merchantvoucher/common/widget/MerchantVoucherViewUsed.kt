@@ -5,6 +5,7 @@ import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherOwnerTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
@@ -81,7 +82,10 @@ class MerchantVoucherViewUsed : CustomVoucherView {
             }
         }
         merchantVoucherViewModel?.run {
-            ivVoucherLogo.setImageResource(R.drawable.ic_store_logo)
+            MethodChecker.getDrawable(getContext(),R.drawable.ic_store_logo)
+                    ?.apply {
+                        ivVoucherLogo.setImageDrawable(this)
+                    }
             tvVoucherTitle.text = context.getString(R.string.voucher_title_x_x,
                     merchantVoucherViewModel.getTypeString(context),
                     merchantVoucherViewModel.getAmountShortString())

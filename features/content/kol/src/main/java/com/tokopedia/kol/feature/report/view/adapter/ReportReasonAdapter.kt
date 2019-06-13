@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
 import com.tokopedia.kol.feature.report.view.model.ReportReasonViewModel
@@ -25,10 +26,12 @@ class ReportReasonAdapter(val view: ContentReportContract.View)
             view.enableSendBtn()
         }
 
-        holder.radio.setImageResource(
+        MethodChecker.getDrawable(holder.radio.getContext(),
                 if (model.isSelected) R.drawable.ic_radiobutton_selected
                 else R.drawable.ic_radiobutton_normal
-        )
+        )?.apply {
+            holder.radio.setImageDrawable(this)
+        }
         holder.reason.text = model.description
 
         val itemClicked = { itemPosition: Int ->

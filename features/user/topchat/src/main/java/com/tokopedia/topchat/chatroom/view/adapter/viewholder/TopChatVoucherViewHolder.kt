@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
@@ -69,7 +70,7 @@ class TopChatVoucherViewHolder(itemView: View, var voucherListener: TopChatVouch
             if (element.isDummy) {
                 imageResource = com.tokopedia.chat_common.R.drawable.ic_chat_pending
             }
-            chatStatus.setImageResource(imageResource)
+            chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(),imageResource))
         } else {
             chatStatus.visibility = View.GONE
         }
