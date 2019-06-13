@@ -13,6 +13,7 @@ import android.widget.Toast
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
+import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsInfoSheet
 
@@ -53,7 +54,8 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
                     }
 
                     override fun activeAutoAds() {
-                        activatedAds()
+                        startActivity(Intent(activity, DailyBudgetActivity::class.java))
+                        activity!!.finish()
                     }
                 })
                 settingConfirmationSheet.show()
