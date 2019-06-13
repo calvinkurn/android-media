@@ -65,7 +65,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onSuccessGetPmInfo(shopStatusModel: ShopStatusModel) {
 
-        if (shopStatusModel.powerMerchant.shopPopup) {
+        if (shopStatusModel.isTransitionPeriod()) {
             if (shopStatusModel.powerMerchant.status == "idle") {
                 context?.let { TransitionPeriodPmActivity.newInstance(it) }
             } else if (shopStatusModel.powerMerchant.status == "activate") {

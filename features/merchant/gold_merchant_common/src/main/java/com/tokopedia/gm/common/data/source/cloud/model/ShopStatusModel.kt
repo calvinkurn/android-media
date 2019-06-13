@@ -13,4 +13,26 @@ data class ShopStatusModel(
         @SerializedName("shop_id")
         @Expose
         val shopId: Int = 0
-)
+) {
+    companion object {
+        const val STATUS_ACTIVE = "active"
+        const val STATUS_INACTIVE = "inactive"
+        const val STATUS_IDLE = "idle"
+    }
+
+    fun isPowerMerchantActive(): Boolean {
+        return powerMerchant.status == STATUS_ACTIVE
+    }
+
+    fun isPowerMerchantInactive(): Boolean {
+        return powerMerchant.status == STATUS_IDLE
+    }
+
+    fun isRegularMerchant(): Boolean {
+        return powerMerchant.status == STATUS_INACTIVE && officialStore.status == STATUS_INACTIVE
+    }
+
+    fun isTransitionPeriod(): Boolean {
+        return powerMerchant.shopPopup
+    }
+}
