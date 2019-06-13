@@ -61,7 +61,7 @@ class GmCommonModule {
     }
 
     @Provides
-    fun provideGMCommonApi(retrofit: Retrofit) {
-        retrofit.create(GMCommonApi::class.java)
+    fun provideGMCommonApi(retrofit: Retrofit):GMCommonApi {
+        return retrofit.create(GMCommonApi::class.java)
     }
 }

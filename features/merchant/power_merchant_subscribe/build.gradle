@@ -33,6 +33,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
 
     implementation rootProject.ext.miscDependencies.dagger
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'

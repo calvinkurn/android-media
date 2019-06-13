@@ -8,33 +8,46 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.contract.PmSubscribeContract
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.view.activity.TransitionPeriodPmActivity
+import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialBenefitPmViewHolder
+import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmViewHolder
+import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHolder
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.partial_member_power_merchant.*
+import kotlinx.android.synthetic.main.partial_power_merchant_benefit.*
+import kotlinx.android.synthetic.main.partial_tnc_power_merchant.*
 import javax.inject.Inject
 
 class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract.View {
 
     @Inject
-    lateinit var presenter : PmSubscribeContract.Presenter
+    lateinit var presenter: PmSubscribeContract.Presenter
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+    lateinit var partialMemberPmViewHolder: PartialMemberPmViewHolder
+    lateinit var partialBenefitPmViewHolder: PartialBenefitPmViewHolder
+    lateinit var partialTncViewHolder: PartialTncViewHolder
+
 
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        DaggerPowerMerchantSubscribeComponent.builder().
-                build().inject(this)
-
+        DaggerPowerMerchantSubscribeComponent.builder().build().inject(this)
+        presenter.attachView(this)
     }
 
     companion object {
         fun createInstance() = PowerMerchantSubscribeFragment()
-
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initializePartialPart(view)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -45,15 +58,27 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+        presenter.getPmInfo(userSessionInterface.shopId)
 
     }
 
-    override fun onDetach() {
-        super.onDetach()
+    override fun onSuccessGetPmInfo(shopStatusModel: ShopStatusModel) {
+        if (shopStatusModel.powerMerchant.status == "active") {
+
+        } else if (shopStatusModel.powerMerchant.status == "inactive") {
+            context?.let { TransitionPeriodPmActivity.newInstance(it) }
+        }
     }
 
+    private fun initializePartialPart(view: View) {
+        if (!::partialMemberPmViewHolder.isInitialized) {
+            partialMemberPmViewHolder = PartialMemberPmViewHolder.build(base_partial_member, activity)
+        }
+        if (!::partialTncViewHolder.isInitialized) {
+            partialTncViewHolder = PartialTncViewHolder.build(base_partial_tnc, activity)
+        }
+        if (!::partialBenefitPmViewHolder.isInitialized) {
+            partialBenefitPmViewHolder = PartialBenefitPmViewHolder.build(base_partial_benefit, activity)
+        }
+    }
 }

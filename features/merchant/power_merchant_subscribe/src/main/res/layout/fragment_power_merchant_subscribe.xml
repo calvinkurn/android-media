@@ -109,7 +109,7 @@
 
             <include
                 android:id="@+id/cardview_member"
-                layout="@layout/member_power_merchant"
+                layout="@layout/partial_member_power_merchant"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 android:layout_below="@id/ticker_yellow_container"
@@ -117,7 +117,7 @@
 
             <include
                 android:id="@+id/cardview_benefit"
-                layout="@layout/power_merchant_benefit"
+                layout="@layout/partial_power_merchant_benefit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cardview_member"
@@ -160,7 +160,7 @@
 
 
             <include
-                layout="@layout/tnc_power_merchant"
+                layout="@layout/partial_tnc_power_merchant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ticker_blue_container"

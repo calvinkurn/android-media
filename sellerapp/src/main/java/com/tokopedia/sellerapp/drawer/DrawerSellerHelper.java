@@ -15,6 +15,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
@@ -388,8 +390,9 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                     eventDrawerClick(AppEventTracking.EventLabel.TOPADS);
-                    intent = new Intent(context, TopAdsDashboardActivity.class);
-                    context.startActivity(intent);
+//                    intent = new Intent(context, TopAdsDashboardActivity.class);
+//                    context.startActivity(intent);
+                    RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
                     break;
                 case TkpdState.DrawerPosition.SELLER_FLASH_SALE:
                     if (context.getApplication() instanceof FlashSaleRouter) {

@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/base_partial_benefit"
     android:background="@drawable/card_background_with_shadow"
     android:padding="@dimen/dp_10">
 

@@ -8,6 +8,7 @@
     android:orientation="vertical"
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
+    android:id="@+id/base_partial_tnc"
     android:paddingBottom="@dimen/dp_30">
 
     <android.support.v7.widget.AppCompatTextView
@@ -41,7 +42,7 @@
             android:id="@+id/unchecked_kyc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_unckecked_outline"
+            android:src="@drawable/ic_unchecked_outline"
             android:layout_marginLeft="@dimen/dp_5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
@@ -76,12 +77,10 @@
             android:id="@+id/unchecked_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_unckecked_outline"
+            android:src="@drawable/ic_unchecked_outline"
             android:layout_marginLeft="@dimen/dp_5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
-
-
 
         <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
