@@ -175,6 +175,8 @@ class HomeMainToolbar : MainToolbar {
     fun setHint(placeholder: String, keyword: String){
         val editTextSearch = findViewById<TextView>(R.id.et_search)
         editTextSearch.hint = if(placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder
+        editTextSearch.setSingleLine()
+        editTextSearch.ellipsize = TextUtils.TruncateAt.END
         editTextSearch.setOnClickListener {
             searchBarAnalytics.eventTrackingSearchBar()
             if(placeholder.isEmpty()){
