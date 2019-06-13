@@ -31,8 +31,8 @@
 
     <ImageView
         android:id="@+id/carrot"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:paddingRight="@dimen/dp_16"
         android:src="@drawable/carrot_up"
         app:layout_constraintEnd_toEndOf="parent"
