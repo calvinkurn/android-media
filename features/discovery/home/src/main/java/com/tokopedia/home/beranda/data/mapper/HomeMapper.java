@@ -132,9 +132,11 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 list.add(mappingSpotlight(homeData.getSpotlight(), homeData.isCache()));
                                 break;
                             case DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET :
-                                list.add(
-                                        new BusinessUnitViewModel(context.getString(R.string.digital_widget_title), position)
-                                );
+                                if (!homeData.isCache()) {
+                                    list.add(
+                                            new BusinessUnitViewModel(context.getString(R.string.digital_widget_title), position)
+                                    );
+                                }
                                 break;
                             case DynamicHomeChannel.Channels.LAYOUT_3_IMAGE:
                             case DynamicHomeChannel.Channels.LAYOUT_HERO:
