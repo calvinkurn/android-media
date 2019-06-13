@@ -113,4 +113,11 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
                 url,
                 TapTapTokenActivity.class);
     }
+
+    @Override
+    public void onDestroyView() {
+        if (widgetSummaryTapTap != null)
+            widgetSummaryTapTap.onDestroView();
+        super.onDestroyView();
+    }
 }

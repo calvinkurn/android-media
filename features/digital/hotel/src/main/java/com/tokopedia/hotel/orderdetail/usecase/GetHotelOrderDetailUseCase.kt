@@ -9,17 +9,18 @@ import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by jessica on 16/05/19
  */
 
 class GetHotelOrderDetailUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
-
     suspend fun execute(rawQuery: String, orderId: String, orderCategory: String,
                         fromCloud: Boolean): Result<HotelOrderDetail>{
         val params = mapOf(PARAM_ORDER_ID to orderId,
@@ -34,13 +35,8 @@ class GetHotelOrderDetailUseCase @Inject constructor(val useCase: MultiRequestGr
             val graphqlRequest = GraphqlRequest(rawQuery, HotelOrderDetail.Response::class.java, params)
             useCase.addRequest(graphqlRequest)
 
-            val hotelOrderDetail = async {
-                val response =  withContext(Dispatchers.IO) {
-                    useCase.executeOnBackground().getSuccessData<HotelOrderDetail.Response>().response
-                }
-                response
-            }
-            return Success(hotelOrderDetail.await())
+            val hotelOrderDetail = useCase.executeOnBackground().getSuccessData<HotelOrderDetail.Response>().response
+            return Success(hotelOrderDetail)
         } catch (throwable: Throwable) {
             return Fail(throwable)
         }

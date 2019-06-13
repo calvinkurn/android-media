@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -35,7 +36,6 @@ import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
-import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CategoryDetailCallbacks;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
@@ -44,6 +44,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -75,6 +76,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private DealsCategoryAdapter dealsAdapter;
     private int adapterPosition = -1;
     private boolean forceRefresh;
+    private final int MAX_BRANDS = 8;
 
 
     @Override
@@ -185,10 +187,15 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void renderBrandList(List<Brand> brandList) {
         if (brandList != null) {
             clBrands.setVisibility(View.VISIBLE);
-            recyclerViewBrands.setAdapter(new DealsBrandAdapter(brandList, true));
+            setBrandsAdapter(brandList);
         } else {
             clBrands.setVisibility(View.GONE);
         }
+    }
+
+    private void setBrandsAdapter(List<Brand> brandList) {
+        int maxBrands = brandList.size() < MAX_BRANDS ? brandList.size() : MAX_BRANDS;
+        recyclerViewBrands.setAdapter(new DealsBrandAdapter(brandList.subList(0, maxBrands), DealsBrandAdapter.ITEM_BRAND_SHORT));
     }
 
     @Override
@@ -288,13 +295,14 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     };
 
     @Override
-    public RequestParams getCategoryParams() {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(DealsHomePresenter.TAG, categoriesModel.getCategoryUrl());
+    public String getCategoryParams() {
+        Uri uri = null;
         Location location = Utils.getSingletonInstance().getLocation(getContext());
-        if (location != null)
-            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
-        return requestParams;
+        if (location != null) {
+            uri = Utils.replaceUriParameter(Uri.parse(categoriesModel.getCategoryUrl()), Utils.QUERY_PARAM_CITY_ID, String.valueOf(location.getId()));
+            return uri.toString();
+        }
+        return categoriesModel.getCategoryUrl();
     }
 
     @Override

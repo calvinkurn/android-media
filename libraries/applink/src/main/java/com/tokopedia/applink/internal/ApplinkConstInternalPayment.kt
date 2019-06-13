@@ -1,6 +1,6 @@
 package com.tokopedia.applink.internal
 
-import com.tokopedia.applink.internal.ApplinkConstInternal.INTERNAL_SCHEME
+import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
  * This class is used to store deeplink "tokopedia-android-internal://payment".
@@ -8,7 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternal.INTERNAL_SCHEME
 object ApplinkConstInternalPayment {
 
     const val HOST_PAYMENT = "payment"
-    val INTERNAL_PAYMENT = "${INTERNAL_SCHEME}://${HOST_PAYMENT}"
+    val INTERNAL_PAYMENT = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_PAYMENT}"
 
     // TopPayActivity
     @JvmField

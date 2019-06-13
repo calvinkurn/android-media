@@ -9,7 +9,7 @@ import com.tokopedia.groupchat.common.util.TimeConverter
  * @author by nisie on 2/15/18.
  */
 
-open class BaseChatViewModel : Parcelable {
+open class BaseChatViewModel() : Parcelable {
 
     var isShowHeaderTime: Boolean = false
     var message: String? = ""
@@ -39,7 +39,7 @@ open class BaseChatViewModel : Parcelable {
     var isAdministrator: Boolean = false
 
 
-    internal constructor(message: String, createdAt: Long, updatedAt: Long, messageId: String) {
+    internal constructor(message: String, createdAt: Long, updatedAt: Long, messageId: String): this() {
         this.isShowHeaderTime = false
         this.headerTime = 0
         this.formattedHeaderTime = ""
@@ -58,7 +58,7 @@ open class BaseChatViewModel : Parcelable {
 
     internal constructor(message: String, createdAt: Long, updatedAt: Long, messageId: String?,
                          senderId: String, senderName: String, senderIconUrl: String,
-                         isInfluencer: Boolean, isAdministrator: Boolean) {
+                         isInfluencer: Boolean, isAdministrator: Boolean): this() {
         this.isShowHeaderTime = false
         this.headerTime = 0
         this.formattedHeaderTime = ""
@@ -105,7 +105,7 @@ open class BaseChatViewModel : Parcelable {
         dest.writeByte((if (isAdministrator) 1 else 0).toByte())
     }
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel): this() {
         isShowHeaderTime = `in`.readByte().toInt() != 0
         message = `in`.readString()
         createdAt = `in`.readLong()

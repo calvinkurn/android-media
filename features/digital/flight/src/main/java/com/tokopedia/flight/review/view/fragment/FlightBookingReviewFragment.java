@@ -460,7 +460,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void trackingSuccessVoucher(String voucherName) {
+    public void trackingSuccessVoucher(String title, String voucherName) {
 
     }
 

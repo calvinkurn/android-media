@@ -2,12 +2,13 @@ package com.tokopedia.discovery.newdiscovery.domain.gql;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.network.entity.discovery.GuidedSearchResponse;
+import com.tokopedia.discovery.common.data.DataValue;
+import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchProductGqlResponse {
@@ -35,6 +36,10 @@ public class SearchProductGqlResponse {
     @SerializedName("headlineAds")
     @Expose
     private CpmModel cpmModel = new CpmModel();
+
+    @SerializedName("global_search_navigation")
+    @Expose
+    private GlobalNavModel globalNavModel = new GlobalNavModel();
 
     public CpmModel getCpmModel() {
         return cpmModel;
@@ -68,6 +73,10 @@ public class SearchProductGqlResponse {
         this.topAdsModel = topAdsModel;
     }
 
+    public GlobalNavModel getGlobalNavModel() {
+        return globalNavModel;
+    }
+
     public static class SearchProduct {
 
         @SerializedName("query")
@@ -91,9 +100,6 @@ public class SearchProductGqlResponse {
         @SerializedName("additional_params")
         @Expose
         private String additionalParams;
-        @SerializedName("redirection")
-        @Expose
-        private Redirection redirection = new Redirection();
         @SerializedName("suggestion")
         @Expose
         private Suggestion suggestion = new Suggestion();
@@ -103,9 +109,6 @@ public class SearchProductGqlResponse {
         @SerializedName("products")
         @Expose
         private List<Product> products = null;
-        @SerializedName("catalogs")
-        @Expose
-        private List<Catalog> catalogs = null;
 
         public String getQuery() {
             return query;
@@ -135,20 +138,12 @@ public class SearchProductGqlResponse {
             return additionalParams;
         }
 
-        public Redirection getRedirection() {
-            return redirection;
-        }
-
         public Suggestion getSuggestion() {
             return suggestion;
         }
 
         public List<Product> getProducts() {
             return products;
-        }
-
-        public List<Catalog> getCatalogs() {
-            return catalogs;
         }
 
         public Related getRelated() {
@@ -734,6 +729,96 @@ public class SearchProductGqlResponse {
 
         public boolean isOfficial() {
             return official;
+        }
+    }
+
+    public static class GlobalNavModel {
+        @SerializedName("data")
+        private GlobalNavData data = new GlobalNavData();
+
+        public GlobalNavData getData() {
+            return data;
+        }
+    }
+
+    public static class GlobalNavData {
+        @SerializedName("title")
+        private String title = "";
+
+        @SerializedName("keyword")
+        private String keyword = "";
+
+        @SerializedName("nav_template")
+        private String navTemplate = "";
+
+        @SerializedName("see_all_applink")
+        private String seeAllApplink = "";
+
+        @SerializedName("see_all_url")
+        private String seeAllUrl = "";
+
+        @SerializedName("list")
+        private List<GlobalNavItem> globalNavItems = new ArrayList<>();
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getKeyword() {
+            return keyword;
+        }
+
+        public String getNavTemplate() {
+            return navTemplate;
+        }
+
+        public String getSeeAllApplink() {
+            return seeAllApplink;
+        }
+
+        public String getSeeAllUrl() {
+            return seeAllUrl;
+        }
+
+        public List<GlobalNavItem> getGlobalNavItems() {
+            return globalNavItems;
+        }
+    }
+
+    public static class GlobalNavItem {
+        @SerializedName("name")
+        private String name = "";
+
+        @SerializedName("info")
+        private String info = "";
+
+        @SerializedName("image_url")
+        private String imageUrl = "";
+
+        @SerializedName("applink")
+        private String applink = "";
+
+        @SerializedName("url")
+        private String url = "";
+
+        public String getName() {
+            return name;
+        }
+
+        public String getInfo() {
+            return info;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public String getApplink() {
+            return applink;
+        }
+
+        public String getUrl() {
+            return url;
         }
     }
 }

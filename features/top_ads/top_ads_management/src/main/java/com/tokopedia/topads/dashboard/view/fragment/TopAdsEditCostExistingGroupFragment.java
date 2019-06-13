@@ -9,13 +9,21 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditGroupPresenter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by zulfikarrahman on 8/8/17.
@@ -99,16 +107,23 @@ public class TopAdsEditCostExistingGroupFragment extends TopAdsEditCostFragment<
 
     @Override
     protected void loadSuggestionBid() {
-        /* this is empty just to deal with abstraction */
+        List<DataSuggestions> suggestions = new ArrayList<>();
+        suggestions.add(new DataSuggestions(TopAdsNetworkConstant.BID_INFO_TYPE_GROUP,
+                Arrays.asList(Integer.parseInt(adFromIntent.getId()))));
+        daggerPresenter.getBidInfo(TopAdsNetworkConstant.BID_INFO_TYPE_GROUP,
+                suggestions, TopAdsNetworkConstant.SOURCE_EDIT_COST_GROUP);
     }
 
     @Override
-    public void onSuggestionSuccess(GetSuggestionResponse s) {
-        // Do nothing
+    public void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo) {
+        setSuggestionBidText(bidInfo.getData().get(0));
+        detailAd.setSuggestionBidValue(suggestionBidValue);
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED);
+        defaultSuggestionBidButtonStatus = TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED;
     }
 
     @Override
-    public void onSuggestionError(@Nullable Throwable t) {
-        /* this is empty just to deal with abstraction */
+    public void onBidInfoError(@Nullable Throwable t) {
+
     }
 }

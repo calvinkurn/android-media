@@ -9,7 +9,7 @@ import com.tokopedia.hotel.common.di.scope.HotelScope
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
-import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * @author by furqan on 25/03/19

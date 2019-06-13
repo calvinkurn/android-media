@@ -28,6 +28,8 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String PURCHASE = "purchase";
     public static final String EVENT = "event";
     public static final String EVENT_CATEGORY = "order complete";
+    public static final String EVENT_ACTION_DEFAULT = "default";
+    public static final String EVENT_ACTION_COD = "view thank you cod";
     public static final String PAYMENT_ID = "payment_id";
     public static final String PAYMENT_STATUS = "payment_status";
     public static final String PAYMENT_TYPE = "payment_type";
@@ -42,7 +44,7 @@ public class PurchaseTracking extends TrackingUtils {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
                 AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory(),
-                AppEventTracking.EVENT_ACTION, purchase.getShopType(),
+                AppEventTracking.EVENT_ACTION, purchase.getEventAction(),
                 AppEventTracking.EVENT_LABEL, purchase.getEventLabel(),
                 Purchase.SHOP_ID, purchase.getShopId(),
                 Purchase.PAYMENT_ID, purchase.getPaymentId(),
