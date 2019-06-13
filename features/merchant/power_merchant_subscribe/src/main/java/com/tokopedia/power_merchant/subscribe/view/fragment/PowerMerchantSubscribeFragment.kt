@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
@@ -18,11 +19,10 @@ import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmVie
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHolder
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
-import kotlinx.android.synthetic.main.partial_member_power_merchant.view.*
+import kotlinx.android.synthetic.main.partial_member_power_merchant.*
 import kotlinx.android.synthetic.main.partial_power_merchant_benefit.*
-import kotlinx.android.synthetic.main.partial_power_merchant_benefit.view.*
 import kotlinx.android.synthetic.main.partial_tnc_power_merchant.*
-import kotlinx.android.synthetic.main.partial_tnc_power_merchant.view.*
+
 import javax.inject.Inject
 
 class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract.View {
@@ -60,6 +60,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initializePartialPart(view)
     }
 
@@ -98,14 +99,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     private fun initializePartialPart(view: View) {
+        val basePartial = view.findViewById<FrameLayout>(R.id.base_partial_member)
         if (!::partialMemberPmViewHolder.isInitialized) {
-            partialMemberPmViewHolder = PartialMemberPmViewHolder.build(view.base_partial_member, activity)
+            partialMemberPmViewHolder = PartialMemberPmViewHolder.build(basePartial, activity)
         }
         if (!::partialTncViewHolder.isInitialized) {
-            partialTncViewHolder = PartialTncViewHolder.build(view.base_partial_tnc, activity)
+            partialTncViewHolder = PartialTncViewHolder.build(base_partial_tnc, activity)
         }
         if (!::partialBenefitPmViewHolder.isInitialized) {
-            partialBenefitPmViewHolder = PartialBenefitPmViewHolder.build(view.base_partial_benefit, activity)
+            partialBenefitPmViewHolder = PartialBenefitPmViewHolder.build(base_partial_benefit, activity)
         }
     }
 }
