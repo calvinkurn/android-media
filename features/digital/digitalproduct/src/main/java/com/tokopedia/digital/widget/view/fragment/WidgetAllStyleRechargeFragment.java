@@ -1,6 +1,5 @@
 package com.tokopedia.digital.widget.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -42,20 +41,20 @@ import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.presenter.DigitalWidgetCategoryCategoryPresenter;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.user.session.UserSession;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
 
 /**
  * @author Rizky on 15/01/18.
  */
-@RuntimePermissions
 public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
         implements IDigitalWidgetView, BaseDigitalProductView.ActionListener {
 
@@ -82,6 +81,7 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
     private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     @Inject
     UserSession userSession;
@@ -129,7 +129,7 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
         //fix crash drawHardwareAccelerated on home
         //because hierarchy of view is too deep, then require a lot memories
         //https://fabric.io/pt-tokopedia/android/apps/com.tokopedia.tkpd/issues/5c77446af8b88c29635d8e38?time=last-ninety-days
-        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
             view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
@@ -291,10 +291,32 @@ public class WidgetAllStyleRechargeFragment extends BaseDaggerFragment
 
     @Override
     public void onButtonContactPickerClicked() {
-        WidgetAllStyleRechargeFragmentPermissionsDispatcher.openContactPickerWithCheck(this);
+        permissionCheckerHelper = new PermissionCheckerHelper();
+        permissionCheckerHelper.checkPermission(getActivity(), PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACTS,
+                new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        openContactPicker();
+                    }
+                }, "");
     }
 
-    @NeedsPermission(Manifest.permission.READ_CONTACTS)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
+    }
+
     public void openContactPicker() {
         Intent contactPickerIntent = new Intent(
                 Intent.ACTION_PICK,

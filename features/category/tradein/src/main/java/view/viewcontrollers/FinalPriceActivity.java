@@ -210,8 +210,8 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                showTnC(R.string.tradein_tnc);
-                setVisibilityGroup(View.INVISIBLE);
+                showtnc();
+
             }
         };
         int greenColor = getResources().getColor(R.color.green_nob);
@@ -223,7 +223,9 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         mTvTnc.setMovementMethod(LinkMovementMethod.getInstance());
         mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_orange);
         mTvButtonPayOrKtp.setText(R.string.buy_now);
-        mTvButtonPayOrKtp.setOnClickListener(v -> goToCheckout());
+        mTvButtonPayOrKtp.setOnClickListener(v -> {
+            goToCheckout();
+        });
     }
 
     private void setButtonKyc() {
@@ -232,8 +234,8 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                showTnC(R.string.tradein_tnc);
-                setVisibilityGroup(View.INVISIBLE);
+                showtnc();
+
             }
         };
         int greenColor = getResources().getColor(R.color.green_nob);
@@ -245,7 +247,14 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         mTvTnc.setMovementMethod(LinkMovementMethod.getInstance());
         mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_green);
         mTvButtonPayOrKtp.setText(R.string.do_ktp);
-        mTvButtonPayOrKtp.setOnClickListener(v -> goToKycActivity());
+        mTvButtonPayOrKtp.setOnClickListener(v -> {
+            goToKycActivity();
+            sendGeneralEvent("clickTradeIn",
+                    "harga final trade in",
+                    "click lanjut foto ktp",
+                    "");
+
+        });
     }
 
     @Override
@@ -264,5 +273,14 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showtnc() {
+        showTnC(R.string.tradein_tnc);
+        setVisibilityGroup(View.INVISIBLE);
+        sendGeneralEvent("clickTradeIn",
+                "harga final trade in",
+                "click syarat dan ketentuan",
+                "");
     }
 }

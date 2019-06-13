@@ -3,16 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16">
+    android:layout_marginTop="@dimen/dp_14"
+    android:layout_marginBottom="@dimen/dp_14"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginStart="@dimen/dp_16"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/tv_trade_in_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
         android:background="@drawable/bg_trade_in"
         android:fontFamily="sans-serif"
@@ -24,6 +24,7 @@
         android:textColor="@color/text_trade_in_label"
         android:textSize="@dimen/sp_10"
         android:textStyle="normal"
+        tools:visibility="visible"
         tools:ignore="SmallSp" />
 
     <TextView
@@ -36,34 +37,32 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/sp_5"
-        android:text="@string/label_seller" />
+        android:text="@string/label_seller"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_fulfill_district"
         style="@style/TextSmallMediumBlack38"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_text_sent_by"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_below="@+id/tv_shop_name"
         android:layout_marginTop="@dimen/dp_4"
         tools:text="Tangerang Selatan" />
 
     <TextView
         android:id="@+id/tv_shop_name"
-        style="@style/TextSmallMediumBlack70"
+        style="@style/TextMidMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_trade_in_label"
         android:layout_alignBottom="@+id/tv_text_sent_by"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
         android:layout_toEndOf="@+id/tv_text_sent_by"
         android:layout_toRightOf="@+id/tv_text_sent_by"
         android:lineSpacingExtra="5sp"
-        tools:text="Adidas" />
+        android:textStyle="bold"
+        tools:text="Toko Adidas" />
 
     <ImageView
         android:id="@+id/img_shop_badge"

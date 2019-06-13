@@ -166,10 +166,6 @@ public class DigitalAnalytics {
         );
     }
 
-    public void eventClickVoucher(String categoryName, String voucherAutoCode, String operatorName) {
-
-    }
-
     public void eventSelectDeal(CharSequence dealCategory) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 DigitalEventTracking.Event.CLICK_CHECKOUT,
@@ -404,5 +400,20 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Category.RECHARGE + categoryName,
                 isChecked? DigitalEventTracking.Action.CHECK_INSTANT_SALDO :  DigitalEventTracking.Action.UNCHECK_INSTANT_SALDO,
                 DigitalEventTracking.Label.PRODUCT + categoryName));
+    }
+
+    public void eventclickUseVoucher(String categoryName) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalEventTracking.Event.CLICK_COUPON,
+                DigitalEventTracking.Category.DIGITAL_CHECKOUT,
+                DigitalEventTracking.Action.CLICK_USE_COUPON, categoryName.toLowerCase()));
+    }
+
+    public void eventclickCancelApplyCoupon(String categoryName, String promoCode) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalEventTracking.Event.CLICK_COUPON,
+                DigitalEventTracking.Category.DIGITAL_CHECKOUT,
+                DigitalEventTracking.Action.CLICK_CANCEL_APPLY_COUPON,
+                categoryName.toLowerCase() + " - " + promoCode.toLowerCase()));
     }
 }

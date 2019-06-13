@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="@dimen/dp_3">
+
+        <LinearLayout
+            android:id="@+id/header_product_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_total_benefit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20" />
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cardTicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_20"
+                app:cardCornerRadius="@dimen/dp_8"
+                tools:visibility="visible">
+
+                <FrameLayout
+                    android:id="@+id/layoutTickerFrameGlobal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_warning_yellow_card">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/background_warning"
+                        android:paddingTop="@dimen/dp_20">
+
+                        <ImageView
+                            android:id="@+id/ic_bulb"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_20"
+                            android:layout_marginStart="@dimen/dp_20"
+                            android:src="@drawable/ic_green_bulb"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/ic_bulb"
+                            android:layout_marginRight="@dimen/dp_20"
+                            android:layout_marginEnd="@dimen/dp_20"
+                            android:layout_marginLeft="@dimen/dp_15"
+                            android:layout_marginStart="@dimen/dp_15"
+                            android:layout_marginBottom="@dimen/dp_20"
+                            android:lineSpacingMultiplier="1.2"
+                            android:text="@string/totalbenefit_bottomsheet_info"/>
+                    </RelativeLayout>
+                </FrameLayout>
+            </android.support.v7.widget.CardView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_20"
+                android:paddingBottom="@dimen/dp_20">
+
+                <TextView
+                    android:id="@+id/label_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:textStyle="bold"
+                    android:text="@string/totalbenefit_bottomsheet_all_title"/>
+
+                <TextView
+                    android:id="@+id/label_total_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/total_benefit"
+                    android:text="@string/totalbenefit_bottomsheet_all_amount"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+</android.support.design.widget.CoordinatorLayout>

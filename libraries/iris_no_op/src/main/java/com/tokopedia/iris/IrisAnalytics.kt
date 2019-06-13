@@ -9,6 +9,9 @@ import android.content.Context
  */
 
 class IrisAnalytics(context: Context) : Iris {
+    override fun setService(config: String, isEnabled: Boolean) {
+    }
+
     override fun setService(config: Configuration) {
     }
 

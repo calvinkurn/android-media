@@ -44,7 +44,7 @@ public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
     public void bind(final InCategorySearch element) {
         int startIndex = indexOfSearchQuery(element.getKeyword(), element.getSearchTerm());
         if (startIndex == -1) {
-            titleTextView.setText(element.getKeyword().toLowerCase());
+            titleTextView.setText(element.getKeyword());
         } else {
             SpannableString highlightedTitle = new SpannableString(element.getKeyword());
             highlightedTitle.setSpan(new TextAppearanceSpan(itemView.getContext(), R.style.searchTextHiglight),
@@ -75,11 +75,7 @@ public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
                         ),
                         tabName
                 );
-                listener.onItemSearchClicked(
-                        element.getKeyword(),
-                        element.getCategoryId(),
-                        getAutoCompleteItemIsOfficial(element)
-                );
+                listener.onItemClicked(element.getApplink(), element.getUrl());
             }
         });
 

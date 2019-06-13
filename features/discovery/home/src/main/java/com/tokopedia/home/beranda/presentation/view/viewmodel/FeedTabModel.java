@@ -45,7 +45,7 @@ public class FeedTabModel {
         return DataLayer.mapOf(
                 DATA_ID, getId(),
                 DATA_NAME, String.format(DATA_VALUE_NAME, getName()),
-                DATA_POSITION, getPosition(),
+                DATA_POSITION, String.valueOf(getPosition()),
                 DATA_CREATIVE, getName(),
                 DATA_CREATIVE_URL, getImageUrl());
     }

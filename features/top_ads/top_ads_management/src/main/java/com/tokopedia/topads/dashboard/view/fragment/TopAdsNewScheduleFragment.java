@@ -320,11 +320,6 @@ public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extend
     }
 
     @Override
-    public void onSuggestionError(@Nullable Throwable t) {
-        /* just deal with abstraction */
-    }
-
-    @Override
     public void onSuccessLoadTopAdsProduct(TopAdsProductViewModel topAdsProductViewModel) {
         //do nothing
     }
