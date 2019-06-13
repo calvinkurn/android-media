@@ -28,7 +28,8 @@
             android:name=".features.addnewaddress.addedit.AddEditAddressActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize"
+            android:hardwareAccelerated="true"/>
 
         <service
             android:name=".service.ManagePeopleAddressService"

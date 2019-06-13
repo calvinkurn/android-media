@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.tokopedia.logisticaddaddress.R
 import kotlinx.android.synthetic.main.popular_city_chips_item.view.*
 import android.support.v4.content.ContextCompat
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
 
 
 /**
@@ -20,7 +19,7 @@ class ZipCodeChipsAdapter(context: Context?, private var actionListener: ActionL
     private var drawableDefault = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips) }
 
     interface ActionListener {
-        fun onCityChipClicked(city: String)
+        fun onZipCodeClicked(zipCode: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,7 +37,7 @@ class ZipCodeChipsAdapter(context: Context?, private var actionListener: ActionL
         holder.itemView.tv_city_chips_item.setOnClickListener {
             holder.itemView.tv_city_chips_item.background = drawablePressed
             holder.itemView.tv_city_chips_item.setTextColor(res.getColor(R.color.tkpd_green))
-            actionListener.onCityChipClicked(zipCodes[position])
+            actionListener.onZipCodeClicked(zipCodes[position])
         }
     }
 

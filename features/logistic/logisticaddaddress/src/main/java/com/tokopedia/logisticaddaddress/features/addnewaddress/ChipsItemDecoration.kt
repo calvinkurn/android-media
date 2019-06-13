@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation
+package com.tokopedia.logisticaddaddress.features.addnewaddress
 
 import android.graphics.Rect
 import android.support.v7.widget.RecyclerView

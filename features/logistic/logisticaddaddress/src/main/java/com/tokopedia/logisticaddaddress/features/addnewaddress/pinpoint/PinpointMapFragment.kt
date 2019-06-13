@@ -28,7 +28,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
-import com.google.android.gms.maps.model.PolylineOptions
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.base.BaseToaster
@@ -47,7 +46,6 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.et_detail_address
-import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
 import javax.inject.Inject
 
@@ -74,8 +72,8 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     private var token: Token? = null
     private var isPolygon: Boolean? = null
     private var districtId: Int? = null
-    private val COLOR_GREEN_ARGB = 0x40388E3C
-    private var isOriginMismatch: Boolean? = null
+    private val GREEN_ARGB = 0x40388E3C
+    private var isMismatchSolved: Boolean? = null
 
     @Inject
     lateinit var presenter: PinpointMapPresenter
@@ -136,7 +134,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
             isRequestingLocation = arguments?.getBoolean(AddressConstants.EXTRA_REQUEST_LOCATION)
             isPolygon = arguments?.getBoolean(AddressConstants.EXTRA_IS_POLYGON)
             districtId = arguments?.getInt(AddressConstants.EXTRA_DISTRICT_ID)
-            isOriginMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
+            isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
         }
 
         // current_location
@@ -319,10 +317,10 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
                 saveAddressDataModel.editDetailAddress = et_detail_address.text.toString()
                 this.isPolygon?.let {
                     if (this.isPolygon as Boolean) {
-                        isOriginMismatch = true
+                        isMismatchSolved = true
                     }
                 }
-                presenter.loadAddEdit(isOriginMismatch)
+                presenter.loadAddEdit(isMismatchSolved)
             }
         }
     }
@@ -350,7 +348,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         tkpdDialog.setDesc(getString(R.string.mismatch_desc))
         tkpdDialog.setBtnOk(getString(R.string.mismatch_btn_title))
         tkpdDialog.setOnOkClickListener {
-            goToAddEditActivity(true, true)
+            goToAddEditActivity(true, false)
             tkpdDialog.dismiss()
         }
         tkpdDialog.show()
@@ -387,7 +385,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     override fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel) {
         this.googleMap?.addPolygon(PolygonOptions()
                 .addAll(districtBoundaryGeometryUiModel.listCoordinates)
-                .fillColor(COLOR_GREEN_ARGB)
+                .fillColor(GREEN_ARGB)
                 .strokeWidth(3F))
     }
 }

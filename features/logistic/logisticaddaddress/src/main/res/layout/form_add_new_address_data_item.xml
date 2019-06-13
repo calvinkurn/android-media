@@ -66,8 +66,6 @@
             android:text="@string/tv_detail_address_info"
             android:layout_marginBottom="@dimen/dp_24"/>
 
-        <!--<include layout="@layout/form_add_new_address_default_item" />-->
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

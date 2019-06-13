@@ -2,13 +2,13 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/mismatch_scroll_view_layout"
+    android:id="@+id/scroll_view_layout_mismatch"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
 
     <LinearLayout
-        android:id="@+id/mismatch_edit_add_address_container"
+        android:id="@+id/edit_add_address_container_mismatch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -18,7 +18,7 @@
         android:layout_marginEnd="@dimen/dp_16">
 
             <TextView
-                android:id="@+id/tv_kota_kecamatan_label"
+                android:id="@+id/tv_kota_kecamatan_label_mismatch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_12"
@@ -27,24 +27,25 @@
                 android:text="@string/et_kota_kecamatan_label"/>
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
-                android:id="@+id/et_kota_kecamatan_input_layout"
+                android:id="@+id/et_kota_kecamatan_input_layout_mismatch"
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false">
 
                 <EditText
-                    android:id="@+id/et_kota_kecamatan"
+                    android:id="@+id/et_kota_kecamatan_mismatch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/et_kota_kecamatan_hint"
                     android:inputType="text"
-                    android:textColor="#ae31353b" />
+                    android:textColor="#ae31353b"
+                    android:singleLine="false"/>
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
             <TextView
-                android:id="@+id/tv_kode_pos_label"
+                android:id="@+id/tv_kode_pos_label_mismatch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_12"
@@ -53,14 +54,14 @@
                 android:text="@string/et_kode_pos_label"/>
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
-                android:id="@+id/et_kode_pos_input_layout"
+                android:id="@+id/et_kode_pos_input_layout_mismatch"
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false">
 
                 <EditText
-                    android:id="@+id/et_kode_pos"
+                    android:id="@+id/et_kode_pos_mismatch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/et_kode_pos_hint"
@@ -69,11 +70,12 @@
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-            <!--<android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_kodepos_chips"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_kodepos_chips_mismatch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"/>-->
+                android:layout_marginTop="@dimen/dp_12"
+                android:visibility="gone"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -84,14 +86,14 @@
                 android:text="@string/alamat_label"/>
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
-                android:id="@+id/et_alamat_layout"
+                android:id="@+id/et_alamat_layout_mismatch"
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false">
 
                 <EditText
-                    android:id="@+id/et_alamat"
+                    android:id="@+id/et_alamat_mismatch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/et_alamat_hint"
@@ -101,7 +103,7 @@
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
             <TextView
-                android:id="@+id/tv_alamat_info"
+                android:id="@+id/tv_alamat_info_mismatch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_4"
@@ -109,8 +111,6 @@
                 android:textColor="@color/label_grey"
                 android:text="@string/min_20_char"
                 android:layout_marginBottom="@dimen/dp_24"/>
-
-        <!--<include layout="@layout/form_add_new_address_default_item" />-->
 
         <TextView
             android:layout_width="wrap_content"

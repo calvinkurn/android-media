@@ -79,11 +79,11 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
         autofillUseCase.clearCache()
     }
 
-    fun loadAddEdit(isOriginMismatched: Boolean?) {
+    fun loadAddEdit(isMismatchSolved: Boolean?) {
         if (saveAddressDataModel.districtId == 0 && saveAddressDataModel.postalCode.isEmpty()) {
             view.showFailedDialog()
         } else {
-            isOriginMismatched?.let { view.goToAddEditActivity(false, it) }
+            isMismatchSolved?.let { view.goToAddEditActivity(false, it) }
         }
     }
 
@@ -97,6 +97,7 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
         saveAddressDataModel.postalCode = getDistrictDataUiModel.postalCode
         saveAddressDataModel.latitude = getDistrictDataUiModel.latitude
         saveAddressDataModel.longitude = getDistrictDataUiModel.longitude
+        saveAddressDataModel.selectedDistrict = getDistrictDataUiModel.formattedAddress
         this.saveAddressDataModel = saveAddressDataModel
         return saveAddressDataModel
     }
@@ -111,6 +112,7 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
         saveAddressDataModel.postalCode = autofillDataUiModel.postalCode
         saveAddressDataModel.latitude = autofillDataUiModel.latitude
         saveAddressDataModel.longitude = autofillDataUiModel.longitude
+        saveAddressDataModel.selectedDistrict = autofillDataUiModel.formattedAddress
         this.saveAddressDataModel = saveAddressDataModel
         return saveAddressDataModel
     }

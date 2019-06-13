@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/header_add_new_address_data_item" />
+            <include layout="@layout/header_add_new_address_mismatch_solved_data_item" />
             <include layout="@layout/form_add_new_address_mismatch_solved_data_item" />
 
         </LinearLayout>
