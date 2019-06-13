@@ -69,6 +69,7 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.LoginTokenPojo;
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
@@ -861,6 +862,16 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     public Function1<Throwable, Unit> onErrorLoginEmail(String email) {
         //CURRENTLY NOT USED
         return null;
+    }
+
+    @Override
+    public void onSuccessGetUserInfo(ProfilePojo pojo) {
+
+    }
+
+    @Override
+    public void onErrorGetUserInfo(@org.jetbrains.annotations.Nullable Throwable e) {
+
     }
 
     @Override

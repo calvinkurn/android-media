@@ -49,11 +49,10 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                                                    LoginEmailUseCase,
                                                    private val loginWebviewUseCase:
                                                    LoginWebviewUseCase,
-                                                   private val loginTokenUseCase :
-                                                           LoginTokenUseCase,
+                                                   private val loginTokenUseCase:
+                                                   LoginTokenUseCase,
                                                    @Named(SESSION_MODULE)
-                                                   private val userSession : UserSessionInterface,
-                                                   private val getProfileUseCase : GetProfileUseCase)
+                                                   private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<LoginContract.View>(),
         LoginEmailPhoneContract.Presenter {
 
@@ -153,7 +152,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         view.showLoadingLogin()
         loginWithSosmedUseCase.execute(LoginWithSosmedUseCase.getParamFacebook(accessToken),
                 LoginThirdPartySubscriber(context, view.loginRouter,
-                        email, view,  LoginRegisterAnalytics.FACEBOOK))
+                        email, view, LoginRegisterAnalytics.FACEBOOK))
     }
 
     override fun loginGoogle(accessToken: String?, email: String?) {
@@ -238,21 +237,40 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     }
 
     override fun getUserInfo() {
-        getProfileUseCase.execute(object : Subscriber<GraphqlResponse>(){
-            override fun onNext(response: GraphqlResponse) {
-                val pojo : ProfilePojo = response.getData<ProfilePojo>(ProfilePojo::class.java)
-                view.onSuccessGetUserInfo(pojo)
-            }
+//        getProfileUseCase.execute(object : Subscriber<GraphqlResponse>() {
+//            override fun onNext(response: GraphqlResponse) {
+//                val pojo: ProfilePojo = response.getData<ProfilePojo>(ProfilePojo::class.java)
+//                setUserData(pojo)
+//                view.onSuccessGetUserInfo(pojo)
+//            }
+//
+//            override fun onCompleted() {
+//
+//            }
+//
+//            override fun onError(e: Throwable?) {
+//                view.onErrorGetUserInfo(e)
+//            }
+//
+//        })
+    }
 
-            override fun onCompleted() {
+    private fun setUserData(pojo: ProfilePojo) {
+        userSession.setHasPassword(pojo.profileInfo.isCreatedPassword)
+        userSession.profilePicture = pojo.profileInfo.profilePicture
+        userSession.setIsMSISDNVerified(pojo.profileInfo.isPhoneVerified)
 
-            }
-
-            override fun onError(e: Throwable?) {
-                view.onErrorGetUserInfo(e)
-            }
-
-        })
+        //TODO
+        userSession.setLoginSession(true,
+                pojo.profileInfo.userId,
+                pojo.profileInfo.fullName,
+                "",
+                pojo.profileInfo.isPhoneVerified,
+                "",
+                pojo.profileInfo.email,
+               false,
+                pojo.profileInfo.phone)
+        userSession.shopAvatar = ""
     }
 
     override fun detachView() {
@@ -262,7 +280,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         registerValidationUseCase.unsubscribe()
         loginWebviewUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
-        getProfileUseCase.unsubscribe()
+//        getProfileUseCase.unsubscribe()
 
     }
 

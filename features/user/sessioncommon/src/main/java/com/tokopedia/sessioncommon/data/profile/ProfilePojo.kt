@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 data class ProfilePojo(
         @SerializedName("profile")
         @Expose
-        var register: ProfileInfo = ProfileInfo()
+        var profileInfo: ProfileInfo = ProfileInfo()
 ){}
 
 data class ProfileInfo(
