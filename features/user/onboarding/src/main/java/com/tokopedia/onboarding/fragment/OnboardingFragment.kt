@@ -3,6 +3,7 @@ package com.tokopedia.onboarding.fragment
 import android.animation.AnimatorSet
 import android.app.Activity
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,18 +14,24 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.onboarding.OnboardingActivity
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.animation.OnboardingAnimationHelper
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 import com.tokopedia.onboarding.listener.CustomAnimationPageTransformerDelegate
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+
+
 
 /**
  * @author by stevenfredian on 14/05/19.
  */
-class OnboardingFragment : BaseDaggerFragment(),
-        CustomAnimationPageTransformerDelegate {
+class
+OnboardingFragment : BaseDaggerFragment(),
+        CustomAnimationPageTransformerDelegate,  OnboardingActivity.onBoardingFirsbaseCallBack{
 
     companion object {
         val VIEW_DEFAULT = 100
@@ -36,12 +43,16 @@ class OnboardingFragment : BaseDaggerFragment(),
         val ARG_BG_COLOR = "bg_color"
         val ARG_VIEW_TYPE = "view_type"
         val ARG_POSITION = "position"
+        val ARG_DESCKEY = "desc_key"
+        val ARG_TTLKEY = "ttl_key"
 
         fun createInstance(title: String = "",
                            description: String = "",
                            lottieAsset: String = "",
                            bgColor: Int = 0,
-                           position: Int = 0): OnboardingFragment {
+                           position: Int = 0,
+                           ttlKey: String = "",
+                           descKey: String = ""): OnboardingFragment {
             val fragment = OnboardingFragment()
             val args = Bundle()
             args.putCharSequence(ARG_TITLE, title)
@@ -49,6 +60,8 @@ class OnboardingFragment : BaseDaggerFragment(),
             args.putString(ARG_LOTTIE, lottieAsset)
             args.putInt(ARG_BG_COLOR, bgColor)
             args.putInt(ARG_POSITION, position)
+            args.putString(ARG_TTLKEY, ttlKey)
+            args.putString(ARG_DESCKEY, descKey)
             fragment.arguments = args
             return fragment
         }
@@ -60,6 +73,9 @@ class OnboardingFragment : BaseDaggerFragment(),
     var bgColor: Int = 0
     var position: Int = 0
     var isAnimationPlayed = false
+    private var descKey: String = ""
+    private var ttlKey: String = ""
+    private var remoteConfig: RemoteConfig? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -109,8 +125,8 @@ class OnboardingFragment : BaseDaggerFragment(),
         titleView = defaultView.findViewById(R.id.title)
         descView = defaultView.findViewById(R.id.description)
 
-        titleView.text = MethodChecker.fromHtml(title)
-        descView.text = MethodChecker.fromHtml(description)
+        titleView.text = MethodChecker.fromHtml(getTitleMsg())
+        descView.text = MethodChecker.fromHtml(getDescMsg())
 
         return defaultView
     }
@@ -175,5 +191,50 @@ class OnboardingFragment : BaseDaggerFragment(),
         isAnimationPlayed = false
     }
 
+    private fun getTitleMsg(): String {
+        val ttlMsg = getRemoteConfig().getString(ttlKey)
+        return if (TextUtils.isEmpty(ttlMsg)) {
+            title
+        } else {
+            ttlMsg
+        }
+    }
 
+    private fun getDescMsg(): String {
+        val descMsg = getRemoteConfig().getString(descKey)
+        return if (TextUtils.isEmpty(descMsg)) {
+            description
+        } else {
+            descMsg
+        }
+    }
+
+    private fun getRemoteConfig(): RemoteConfig {
+        if (remoteConfig == null) {
+            remoteConfig = FirebaseRemoteConfigImpl(activity)
+        }
+        return remoteConfig as RemoteConfig
+    }
+
+    override fun onResponse(remoteConfig: RemoteConfig) {
+        if (remoteConfig != null) {
+            var msg = remoteConfig.getString(descKey)
+            if (!TextUtils.isEmpty(msg)) {
+                val descTxt = msg
+                activity?.runOnUiThread(object: Runnable {
+                    override fun run() {
+                        descView.text = MethodChecker.fromHtml(descTxt)
+                    }
+                })
+            }
+            msg = remoteConfig.getString(ttlKey)
+            if (!TextUtils.isEmpty(msg)) {
+                val ttlTxt = msg
+                activity?.runOnUiThread(object: Runnable {
+                    override fun run() {
+                        titleView.text = MethodChecker.fromHtml(ttlTxt)                    }
+                })
+            }
+        }
+    }
 }
