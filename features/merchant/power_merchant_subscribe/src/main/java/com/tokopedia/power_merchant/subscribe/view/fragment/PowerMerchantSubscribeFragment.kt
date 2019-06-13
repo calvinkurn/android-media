@@ -1,12 +1,11 @@
 package com.tokopedia.power_merchant.subscribe.view.fragment
 
-import android.content.Context
-import android.net.Uri
+
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 
@@ -38,7 +37,13 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        DaggerPowerMerchantSubscribeComponent.builder().build().inject(this)
+        val appComponent = (activity!!.application as BaseMainApplication).baseAppComponent
+
+        activity?.let {
+            DaggerPowerMerchantSubscribeComponent.builder()
+                    .baseAppComponent(appComponent)
+                    .build().inject(this)
+        }
         presenter.attachView(this)
     }
 
