@@ -1327,7 +1327,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                          List<ShopShipment> shopShipmentList,
                                          int cartPosition) {
         String isBlackbox = "0";
-        if (shipmentCartItemModel.getIsBlackbox()) isBlackbox = "1";
+        if (shipmentCartItemModel.isHidingCourier()) isBlackbox = "1";
         sendAnalyticsOnClickChooseShipmentDurationOnShipmentRecomendation(isBlackbox);
         showShippingDurationBottomsheet(shipmentCartItemModel, recipientAddressModel, shopShipmentList, cartPosition);
         if (isTradeIn()) {
