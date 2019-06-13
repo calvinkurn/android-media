@@ -171,15 +171,15 @@ class HomeMainToolbar : MainToolbar {
         return shadowApplied
     }
 
-    fun setHint(hint: String){
+    fun setHint(placeholder: String, keyword: String){
         val editTextSearch = findViewById<TextView>(R.id.et_search)
-        editTextSearch.hint = if(hint.isEmpty()) context.getString(R.string.search_tokopedia) else hint
+        editTextSearch.hint = if(placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder
         editTextSearch.setOnClickListener {
             searchBarAnalytics.eventTrackingSearchBar()
-            if(hint.isEmpty()){
+            if(placeholder.isEmpty()){
                 RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
             }else{
-                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE_AND_HINT, HOME_SOURCE, hint)
+                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE_AND_HINT, HOME_SOURCE, keyword)
             }
         }
     }
