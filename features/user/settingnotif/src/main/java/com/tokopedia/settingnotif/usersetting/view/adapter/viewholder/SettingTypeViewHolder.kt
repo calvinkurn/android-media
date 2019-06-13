@@ -6,14 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
 
 class SettingTypeViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
 
     private val settingTypeName: TextView? = itemView?.findViewById(R.id.tv_setting_type)
 
-    fun bind(settingType: SettingType) {
+    fun bind(settingType: SettingType, settingTypeContract: SettingTypeFragment.SettingTypeContract) {
         settingTypeName?.text = settingType.name
+
+        itemView.setOnClickListener {
+            settingTypeContract.openSettingField(settingType)
+        }
     }
 
     companion object {

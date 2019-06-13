@@ -19,7 +19,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
     private lateinit var settingTypeContract: SettingTypeContract
 
     interface SettingTypeContract {
-        fun openSettingField(field: String)
+        fun openSettingField(settingType: SettingType)
     }
 
     override fun getScreenName(): String {
@@ -57,7 +57,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
     private fun setupSettingTypes() {
         with (rvSettingType) {
             setHasFixedSize(true)
-            adapter = SettingTypeAdapter(SettingType.createSettingTypes())
+            adapter = SettingTypeAdapter(SettingType.createSettingTypes(), settingTypeContract)
         }
     }
 }

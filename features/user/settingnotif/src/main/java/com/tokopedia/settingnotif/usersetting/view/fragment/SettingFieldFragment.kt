@@ -8,9 +8,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.settingnotif.R
 
-class SettingFieldFragment : BaseDaggerFragment() {
-
-    override fun getScreenName(): String { return "" }
+abstract class SettingFieldFragment : BaseDaggerFragment() {
 
     override fun initInjector() {}
 
@@ -22,7 +20,7 @@ class SettingFieldFragment : BaseDaggerFragment() {
 
     private fun setupToolbar() {
         if (activity is AppCompatActivity) {
-            (activity as AppCompatActivity).supportActionBar?.title = "Push notifikasi"
+            (activity as AppCompatActivity).supportActionBar?.title = screenName
         }
     }
 
