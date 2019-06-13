@@ -11,8 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.Player.STATE_BUFFERING
-import com.google.android.exoplayer2.Player.STATE_READY
+import com.google.android.exoplayer2.Player.*
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -25,6 +24,7 @@ import com.google.android.exoplayer2.upstream.FileDataSource
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.videoplayer.R
+import com.tokopedia.videoplayer.utils.RepeatMode
 import com.tokopedia.videoplayer.utils.VideoSourceProtocol
 import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.utils.showToast
@@ -121,6 +121,13 @@ class TkpdVideoPlayer: Fragment() {
                     DefaultLoadControl())
 
             playerView.player = playerOptions
+
+            //repeat mode
+            playerOptions.repeatMode = if (callback?.repeatMode() != null) {
+                callback?.repeatMode()!!
+            } else {
+                RepeatMode.REPEAT_MODE_OFF
+            }
 
             //auto play enabled
             playerOptions.playWhenReady = true

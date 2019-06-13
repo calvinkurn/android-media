@@ -1,5 +1,6 @@
 package com.tokopedia.videoplayer.view.player
 
+import com.tokopedia.videoplayer.utils.RepeatMode
 import java.io.Serializable
 
 interface VideoPlayerListener: Serializable {
@@ -13,4 +14,10 @@ interface VideoPlayerListener: Serializable {
      * Catch a error on player level
      */
     fun onPlayerError()
+
+    /**
+     * Repeat mode
+     * @param(REPEAT_MODE_OFF, REPEAT_MODE_ONE, and REPEAT_MODE_ALL)
+     */
+    fun repeatMode(): Int = RepeatMode.REPEAT_MODE_OFF
 }
