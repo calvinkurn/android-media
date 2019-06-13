@@ -343,10 +343,18 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     CustomDimensionShopPage.create(it.shopCore.shopID,
                             it.goldOS.isOfficial == 1,
                             it.goldOS.isGold == 1))
-
+            var shopShareMsg : String =  remoteConfig.getString(RemoteConfigKey.SHOP_SHARE_MSG)
+            if(!TextUtils.isEmpty(shopShareMsg)){
+                shopShareMsg = FindAndReplaceHelper.findAndReplacePlaceHolders(shopShareMsg,
+                        SHOP_NAME_PLACEHOLDER, MethodChecker.fromHtml(it.shopCore.name).toString(),
+                        SHOP_LOCATION_PLACEHOLDER, it.location)
+            }
+            else{
+                shopShareMsg = getString(R.string.shop_label_share_formatted,
+                        MethodChecker.fromHtml(it.shopCore.name).toString(), it.location)
+            }
             (application as ShopModuleRouter).goToShareShop(this@ShopPageActivity,
-                    shopId, it.shopCore.url, getString(R.string.shop_label_share_formatted,
-                    MethodChecker.fromHtml(it.shopCore.name).toString(), it.location))
+                    shopId, it.shopCore.url, shopShareMsg)
         }
 
     }
