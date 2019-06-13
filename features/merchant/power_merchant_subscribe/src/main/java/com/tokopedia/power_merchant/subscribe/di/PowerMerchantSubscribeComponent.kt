@@ -1,6 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment
 import dagger.Component
