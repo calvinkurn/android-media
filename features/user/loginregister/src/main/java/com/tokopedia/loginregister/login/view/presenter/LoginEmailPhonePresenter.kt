@@ -51,6 +51,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                                                    LoginWebviewUseCase,
                                                    private val loginTokenUseCase:
                                                    LoginTokenUseCase,
+                                                   private val getProfileUseCase: GetProfileUseCase,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<LoginContract.View>(),
@@ -237,22 +238,22 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     }
 
     override fun getUserInfo() {
-//        getProfileUseCase.execute(object : Subscriber<GraphqlResponse>() {
-//            override fun onNext(response: GraphqlResponse) {
-//                val pojo: ProfilePojo = response.getData<ProfilePojo>(ProfilePojo::class.java)
-//                setUserData(pojo)
-//                view.onSuccessGetUserInfo(pojo)
-//            }
-//
-//            override fun onCompleted() {
-//
-//            }
-//
-//            override fun onError(e: Throwable?) {
-//                view.onErrorGetUserInfo(e)
-//            }
-//
-//        })
+        getProfileUseCase.execute(object : Subscriber<GraphqlResponse>() {
+            override fun onNext(response: GraphqlResponse) {
+                val pojo: ProfilePojo = response.getData<ProfilePojo>(ProfilePojo::class.java)
+                setUserData(pojo)
+                view.onSuccessGetUserInfo(pojo)
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                view.onErrorGetUserInfo(e)
+            }
+
+        })
     }
 
     private fun setUserData(pojo: ProfilePojo) {

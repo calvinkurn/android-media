@@ -224,4 +224,9 @@ public class LoginPresenter extends BaseDaggerPresenter<LoginContract.View>
                 new LoginThirdPartySubscriber(getView().getContext(), getView().getLoginRouter(),
                         email, getView(), LoginRegisterAnalytics.FACEBOOK));
     }
+
+    @Override
+    public void getUserInfo() {
+
+    }
 }
