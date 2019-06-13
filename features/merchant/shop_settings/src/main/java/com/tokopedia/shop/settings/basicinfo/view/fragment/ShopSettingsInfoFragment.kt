@@ -256,7 +256,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
         val logoUrl = shopBasicDataModel.logo
         if (TextUtils.isEmpty(logoUrl)) {
-            ivShopLogo.setImageResource(R.drawable.ic_shop_default_empty)
+            ivShopLogo.setImageDrawable(
+                    MethodChecker.getDrawable(ivShopLogo.getContext(),
+                            R.drawable.ic_shop_default_empty))
         } else {
             ImageHandler.LoadImage(ivShopLogo, logoUrl)
         }

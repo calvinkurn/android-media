@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.text.watcher.AfterTextWatcher
@@ -189,7 +190,8 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         if (TextUtils.isEmpty(savedLocalImageUrl)) {
             val logoUrl = shopBasicDataModel.logo
             if (TextUtils.isEmpty(logoUrl)) {
-                ivLogo.setImageResource(R.drawable.ic_camera_add)
+                ivLogo.setImageDrawable(
+                        MethodChecker.getDrawable(ivLogo.getContext(),R.drawable.ic_camera_add))
             } else {
                 ImageHandler.LoadImage(ivLogo, logoUrl)
             }

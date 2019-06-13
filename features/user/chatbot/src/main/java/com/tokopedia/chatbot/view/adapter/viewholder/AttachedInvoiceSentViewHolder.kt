@@ -52,13 +52,17 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
     private fun prerequisiteUISetup(element: AttachInvoiceSentViewModel) {
         action.visibility = View.GONE
 
-        chatStatus.setImageResource(if (element.isDummy)
+        if (element.isDummy)
             R.drawable.ic_chat_pending
         else
             if (element.isRead)
                 R.drawable.ic_chat_read
             else
                 R.drawable.ic_chat_unread)
+
+
+
+        chatStatus.setImageResource(
     }
 
     override fun onViewRecycled() {
