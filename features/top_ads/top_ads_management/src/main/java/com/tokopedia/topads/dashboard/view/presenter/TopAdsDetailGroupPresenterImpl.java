@@ -3,6 +3,10 @@ package com.tokopedia.topads.dashboard.view.presenter;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.topads.auto.data.AutoAdsUseCase;
+import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData;
+import com.tokopedia.topads.auto.internal.TopAdsWidgetStatus;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
@@ -17,6 +21,7 @@ import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailListener;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +38,7 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
     protected final TopAdsGroupAdInteractor groupAdInteractor;
     private TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
     private TopAdsGetSuggestionUseCase getSuggestionUseCase;
+    protected AutoAdsUseCase autoAdsUseCase;
 
     public TopAdsDetailGroupPresenterImpl(Context context, TopAdsDetailListener<GroupAd> topAdsDetailListener, TopAdsGroupAdInteractor groupAdInteractor,
                                           @Nullable TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase, @Nullable TopAdsGetSuggestionUseCase getSuggestionUseCase) {
@@ -40,6 +46,7 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
         this.groupAdInteractor = groupAdInteractor;
         this.topAdsGetDetailGroupUseCase = topAdsGetDetailGroupUseCase;
         this.getSuggestionUseCase = getSuggestionUseCase;
+        this.autoAdsUseCase = new AutoAdsUseCase(context, new GraphqlUseCase(), new UserSession(context));
     }
 
     @Override
@@ -70,6 +77,30 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
             public void onError(Throwable throwable) {
                 if(topAdsDetailListener != null)
                     topAdsDetailListener.onLoadAdError();
+            }
+        });
+    }
+
+    @Override
+    public void checkAutoAds() {
+        autoAdsUseCase.execute(new Subscriber<TopAdsAutoAdsData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(TopAdsAutoAdsData topAdsAutoAdsData) {
+                if(topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE){
+                    topAdsDetailListener.onAutoAdsActive();
+                } else {
+                    topAdsDetailListener.onAutoAdsInactive();
+                }
             }
         });
     }

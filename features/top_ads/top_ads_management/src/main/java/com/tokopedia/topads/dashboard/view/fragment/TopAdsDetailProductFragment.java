@@ -141,6 +141,12 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        presenter.checkAutoAds();
+    }
+
+    @Override
     protected void editAd() {
         if (isHasGroupAd()) {
             Intent intent = TopAdsGroupEditPromoActivity.createIntent(getActivity(),

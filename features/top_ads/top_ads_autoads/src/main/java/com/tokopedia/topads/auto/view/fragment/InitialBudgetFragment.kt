@@ -12,7 +12,6 @@ import android.widget.Button
 import android.widget.Toast
 
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.data.entity.TopAdsShopInfoData
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.view.activity.AutoAdsActivatedActivity
 import com.tokopedia.topads.auto.view.widget.InfoAutoAdsSheet
@@ -33,7 +32,6 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         setHasOptionsMenu(true)
         adsConfirmationSheet = ManualAdsConfirmationSheet.newInstance(activity!!)
         budgetViewModel.autoAdsData.observe(this, Observer {
-            Toast.makeText(context, "AutoAds Status" + it!!.statusDesc, Toast.LENGTH_SHORT).show()
             if(it!!.status==200){
                 startActivity(Intent(activity, AutoAdsActivatedActivity::class.java))
             } else{
@@ -60,7 +58,7 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         val id = v.id
         if (id == R.id.start_manual_ads_btn) {
             adsConfirmationSheet.show()
-        } else if (id == R.id.start_autoads_btn) {
+        } else if (id == R.id.post_btn) {
             activatedAds()
         }
     }
@@ -81,7 +79,7 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
 
     override fun setUpView(view: View) {
         btnStartManual = view.findViewById(R.id.start_manual_ads_btn)
-        btnStartAuto = view.findViewById(R.id.start_autoads_btn)
+        btnStartAuto = view.findViewById(R.id.post_btn)
     }
 
     override fun setListener() {

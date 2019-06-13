@@ -176,30 +176,6 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
                         }
                     }
                 });
-
-
-//        topAdsGetProductAdUseCase.execute(TopAdsGetProductAdUseCase.createRequestParams(searchAdRequest),
-//                new Subscriber<PageDataResponse<List<ProductAd>>>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        if (isViewAttached()) {
-//                            getView().showListError(e);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onNext(PageDataResponse<List<ProductAd>> listPageDataResponse) {
-//                        if (isViewAttached()) {
-//                            boolean hasNextData = listPageDataResponse.getPage().getPerPage() * page < listPageDataResponse.getPage().getTotal();
-//                            getView().onSearchLoaded(listPageDataResponse.getData(), hasNextData);
-//                        }
-//                    }
-//                });
     }
 
     public void setAdActive(List<String> ids) {

@@ -7,11 +7,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
+import android.support.v7.widget.CardView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.ProgressBar
 import android.widget.SeekBar
 import android.widget.TextView
 
@@ -19,12 +21,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.seller.common.widget.PrefixEditText
-import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
 import com.tokopedia.topads.auto.data.entity.BidInfoData
-import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData
-import com.tokopedia.topads.auto.data.entity.TopAdsShopInfoData
 import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
@@ -32,8 +31,9 @@ import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.layout_setting_daily_budget_ads.*
+import kotlinx.android.synthetic.main.layout_start_daily_budget.*
 import javax.inject.Inject
 
 /**
@@ -45,6 +45,8 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     lateinit var priceEditText: PrefixEditText
     lateinit var budgetViewModel: DailyBudgetViewModel
     lateinit var budgetInputLayout: TextInputLayout
+    lateinit var progressBar: ProgressBar
+    lateinit var cardView: CardView
 
     val requestType = "auto_ads"
     val source = "update_auto_ads"
@@ -73,6 +75,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        showLoading()
         budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source)
         budgetViewModel.budgetInfoData.observe(this@DailyBudgetFragment, Observer {
             val data = it!!.get(0)
@@ -103,6 +106,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
                     }
                 }
             })
+            hideLoading()
         })
     }
 
@@ -118,6 +122,8 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
         budgetInputLayout = view.findViewById(R.id.input_layout_budget_price)
         priceEditText = view.findViewById(R.id.edit_text_max_price)
         seekBar = view.findViewById(R.id.seekbar)
+        cardView = view.findViewById(R.id.card_layout)
+        progressBar = view.findViewById(R.id.loading)
         setUpView(view)
         setListener()
         return view
@@ -145,6 +151,18 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
                 activity!!.finish()
             }
         }
+    }
+
+    fun showLoading(){
+        cardView.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+        post_btn.isEnabled = false
+    }
+
+    fun hideLoading(){
+        progressBar.visibility = View.GONE
+        cardView.visibility = View.VISIBLE
+        post_btn.isEnabled = true
     }
 
     fun activatedAds(){

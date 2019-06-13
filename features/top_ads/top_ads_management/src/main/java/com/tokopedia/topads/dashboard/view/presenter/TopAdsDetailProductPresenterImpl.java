@@ -67,6 +67,10 @@ public class TopAdsDetailProductPresenterImpl<T extends Ad> extends TopAdsDetail
                 topAdsDetailListener.onLoadAdError();
             }
         });
+    }
+
+    @Override
+    public void checkAutoAds() {
         autoAdsUseCase.execute(new Subscriber<TopAdsAutoAdsData>() {
             @Override
             public void onCompleted() {

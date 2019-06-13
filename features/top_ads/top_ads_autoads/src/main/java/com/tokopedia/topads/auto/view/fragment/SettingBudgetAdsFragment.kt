@@ -3,16 +3,12 @@ package com.tokopedia.topads.auto.view.fragment
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Switch
-import android.widget.Toast
 
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
-import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
 import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsInfoSheet
@@ -35,7 +31,7 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
         infoBtn = view.findViewById(R.id.btn_info)
         budgetContainer = view.findViewById(R.id.budget_container)
         switchBudget = view.findViewById(R.id.switch_ads)
-        saveBtn = view.findViewById(R.id.save)
+        saveBtn = view.findViewById(R.id.post_btn)
     }
 
     override fun setListener() {
