@@ -20,9 +20,6 @@ import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmVie
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHolder
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
-import kotlinx.android.synthetic.main.partial_member_power_merchant.*
-import kotlinx.android.synthetic.main.partial_power_merchant_benefit.*
-import kotlinx.android.synthetic.main.partial_tnc_power_merchant.*
 
 import javax.inject.Inject
 
@@ -59,22 +56,22 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view =  inflater.inflate(R.layout.fragment_power_merchant_subscribe, container, false)
-        basePartial = view.findViewById(R.id.base_partial_member)
-        baseBenefit = view.findViewById(R.id.base_partial_benefit)
-        baseTnc = view.findViewById(R.id.base_partial_tnc)
-        return view
+        //        basePartial = view.findViewById(R.id.base_partial_member)
+//        baseBenefit = view.findViewById(R.id.base_partial_benefit)
+//        baseTnc = view.findViewById(R.id.base_partial_tnc)
+        return inflater.inflate(R.layout.fragment_power_merchant_subscribe, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initializePartialPart(view)
+//        initializePartialPart(view)
+//        renderView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        presenter.getPmInfo(userSessionInterface.shopId)
+//        presenter.getPmInfo(userSessionInterface.shopId)
 
     }
 
