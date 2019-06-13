@@ -10,6 +10,7 @@ import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
@@ -174,6 +175,8 @@ class HomeMainToolbar : MainToolbar {
     fun setHint(placeholder: String, keyword: String){
         val editTextSearch = findViewById<TextView>(R.id.et_search)
         editTextSearch.hint = if(placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder
+        editTextSearch.setSingleLine()
+        editTextSearch.ellipsize = TextUtils.TruncateAt.END
         editTextSearch.setOnClickListener {
             searchBarAnalytics.eventTrackingSearchBar()
             if(placeholder.isEmpty()){
