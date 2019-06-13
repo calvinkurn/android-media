@@ -39,6 +39,12 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.sessioncommon)
 
+    implementation 'com.tokopedia.unify:icon:0.0.1@aar'
+    implementation 'com.tokopedia.unify:principles:0.0.1@aar'
+    implementation 'com.tokopedia.unify:components:0.0.1@aar'
+    implementation 'com.tokopedia.unify.compositions:coach_mark:1.0.0@aar'
+    implementation 'com.tokopedia.unify.compositions:calendar:0.0.1@aar'
+
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 

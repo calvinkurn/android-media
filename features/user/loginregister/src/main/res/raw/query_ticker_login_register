@@ -1,6 +1,6 @@
-query tickerLoginRegister(){
+query tickerLoginRegister($page: String!){
   ticker {
-    tickers {
+    tickers(page:$page){
       id
       title
       message

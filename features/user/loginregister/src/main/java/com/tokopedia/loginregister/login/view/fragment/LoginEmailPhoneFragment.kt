@@ -73,6 +73,9 @@ import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData;
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 
 /**
  * @author by nisie on 18/01/19.
@@ -143,7 +146,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private lateinit var emailPhoneEditText: EditText
     private lateinit var partialActionButton: TextView
     private lateinit var passwordEditText: TextInputEditText
-    private lateinit var textViewTicker: TextView
+    private lateinit var tickerAnnouncement: Ticker
 
     companion object {
         fun createInstance(bundle: Bundle): Fragment {
@@ -250,7 +253,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
         partialActionButton = partialRegisterInputView.findViewById(R.id.register_btn)
         passwordEditText = partialRegisterInputView.findViewById(R.id.password)
-        textViewTicker = view.findViewById(R.id.textview_ticker)
+        tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         return view
     }
 
@@ -295,7 +298,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             showSmartLock()
         }
 
-        presenter.getTickerInfo()
+        val mockData = arrayListOf<TickerData>()
+        mockData.add(TickerData("This is the First Page", "Slider with [Here]{https://www.google.com/ncr} a short description.", Ticker.TYPE_WARNING))
+        mockData.add(TickerData("This is the Second Page", "Slider with a long description, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on", Ticker.TYPE_ANNOUNCEMENT))
+        mockData.add(TickerData("This is supposed to be description with embedded link inside. The text inside here is long and the link is supposed to be appear at the end of the text view. [Here]{https://www.google.com/ncr} is the link", Ticker.TYPE_WARNING))
+        mockData.add(TickerData("Slider with a long description, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on", Ticker.TYPE_ANNOUNCEMENT))
+        tickerAnnouncement.addPagerView( TickerPagerAdapter(activity!!, mockData), mockData)
+        //presenter.getTickerInfo()
     }
 
     private fun showSmartLock() {
@@ -985,7 +994,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
         if(listTickerInfo.isNotEmpty()){
             listTickerInfo.first().apply {
-                textViewTicker.setText(this.title)
+                textViewTicker.setText(this.message)
                 textViewTicker.setBackgroundColor(Color.parseColor(this.color))
             }
         }else{
