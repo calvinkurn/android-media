@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
 import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
@@ -144,6 +143,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
         setupContactDetail(hotelCart.cart)
         setupPayNowPromoTicker(hotelCart.property)
         setupInvoiceSummary(hotelCart.cart, hotelCart.property)
+        setupImportantNotes(hotelCart.property)
 
         booking_button.setOnClickListener { onBookingButtonClicked() }
     }
@@ -209,14 +209,6 @@ class HotelBookingFragment : BaseDaggerFragment() {
             tv_cancellation_policy_ticker.setTitleAndDescription(cancellationPolicy.policyType, cancellationDesc)
             tv_cancellation_policy_ticker.info_desc.movementMethod = LinkMovementMethod.getInstance()
         }
-    }
-
-    private fun onTaxPolicyClicked() {
-        val hotelTaxPolicyBottomSheets = HotelBookingBottomSheets()
-        val textView = TextViewCompat(context!!)
-        textView.text = "Efektif tanggal 1 September 2017, setiap tamu hotel diluar warga negara Malaysia akan dikenakan pajak turis sebesar MYR 10 net./malam/orang pada hotel-hotel yang terdaftar di Pemerintah malaysia. Penambahan ini akan ditagihkan pada saat check-in. Mohon diperhatikan ketika tiba di hotel dan melakukan check-in. Deposit mungkin diwajibkan pihak hotel dengan menggunakan uang tunai."
-        hotelTaxPolicyBottomSheets.addContentView(textView)
-        hotelTaxPolicyBottomSheets.show(activity!!.supportFragmentManager, TAG_HOTEL_TAX_POLICY)
     }
 
     private fun onCancellationPolicyClicked(property: HotelPropertyData) {
@@ -335,11 +327,6 @@ class HotelBookingFragment : BaseDaggerFragment() {
     }
 
     private fun setupInvoiceSummary(cart: HotelCartData, property: HotelPropertyData) {
-        if (property.rooms.isNotEmpty() && property.rooms[0].importantNote.isNotEmpty()) {
-            invoice_tax_deposit_info_container.visibility = View.VISIBLE
-            tv_invoice_tax_deposit_info.text = property.rooms[0].importantNote
-        }
-
         cart.fares.find { it.type == "base_price" }?.let {
             tv_room_price_label.text = it.description
             tv_room_price.text = it.localPrice
@@ -360,6 +347,37 @@ class HotelBookingFragment : BaseDaggerFragment() {
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             tv_invoice_foreign_currency.text = spannableString
         }
+    }
+
+    private fun setupImportantNotes(property: HotelPropertyData) {
+        if (property.rooms.isNotEmpty() && property.rooms[0].importantNote.isNotEmpty()) {
+            hotel_booking_important_notes.visibility = View.VISIBLE
+
+            val notesDescription = getString(R.string.hotel_booking_important_notes)
+            val expandNotesLabel = getString(R.string.hotel_read_more_title)
+            val spannableString = SpannableString("$notesDescription $expandNotesLabel")
+            val moreInfoSpan = object : ClickableSpan() {
+                override fun onClick(textView: View) {
+                    onImportantNotesClicked(property.rooms[0].importantNote)
+                }
+            }
+            spannableString.setSpan(moreInfoSpan,spannableString.length - expandNotesLabel.length, spannableString.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.green_200)),
+                    spannableString.length - expandNotesLabel.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            tv_booking_important_notes.text = spannableString
+            tv_booking_important_notes.movementMethod = LinkMovementMethod.getInstance()
+        }
+    }
+
+    private fun onImportantNotesClicked(notes: String) {
+        val importantNotesBottomSheets = HotelBookingBottomSheets()
+        val textView = TextViewCompat(context!!)
+        textView.text = notes
+        importantNotesBottomSheets.title = getString(R.string.hotel_important_info_title)
+        importantNotesBottomSheets.addContentView(textView)
+        importantNotesBottomSheets.show(activity!!.supportFragmentManager, TAG_HOTEL_IMPORTANT_NOTES)
     }
 
     private fun onBookingButtonClicked() {
@@ -410,6 +428,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_CHECKOUT = 105
         const val TAG_HOTEL_CANCELLATION_POLICY = "hotel_cancellation_policy"
         const val TAG_HOTEL_TAX_POLICY = "hotel_tax_policy"
+        const val TAG_HOTEL_IMPORTANT_NOTES = "hotel_important_notes"
         const val ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT = 250
 
         fun getInstance(cartId: String): HotelBookingFragment =
