@@ -78,7 +78,7 @@ class AutoAdsWidgetView : CardView {
         btnArrow = findViewById(R.id.btn_arrow)
     }
 
-    fun fetchData(){
+    fun fetchData() {
         widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
     }
 
@@ -112,16 +112,13 @@ class AutoAdsWidgetView : CardView {
     }
 
     private fun setNotDelivered() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activeStatus.setTextAppearance(R.style.AutoAdsText_Inactive)
-        } else {
-            activeStatus.setBackgroundResource(R.drawable.bg_autoads_deactive)
-            activeStatus.setTextColor(ContextCompat.getColor(context, R.color.grey))
-        }
+        activeStatus.setBackgroundResource(R.drawable.bg_autoads_deactive)
+        activeStatus.setTextColor(ContextCompat.getColor(context, R.color.grey))
         activeStatus.setText(R.string.ads_not_delivered)
         subTitle.setText(R.string.saatnya_beriklan_mudah_dan_efektif)
         startAdsBtn.visibility = View.GONE
         progressAdsContainer.visibility = View.GONE
+        btnArrow.visibility = View.VISIBLE
         activeListener?.onInActive()
         statusAdsContainer.setOnClickListener {
             context.startActivity(Intent(context, SettingBudgetAdsActivity::class.java))
@@ -129,12 +126,8 @@ class AutoAdsWidgetView : CardView {
     }
 
     private fun setInProgress() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activeStatus.setTextAppearance(R.style.AutoAdsText_Inprogress)
-        } else {
-            activeStatus.setBackgroundResource(R.drawable.bg_autoads_inprogress)
-            activeStatus.setTextColor(ContextCompat.getColor(context, R.color.orange_300))
-        }
+        activeStatus.setBackgroundResource(R.drawable.bg_autoads_inprogress)
+        activeStatus.setTextColor(ContextCompat.getColor(context, R.color.orange_300))
         activeStatus.setText(R.string.ads_inprogress)
         subTitle.setText(R.string.akan_aktif_dalam_beberapa_menit)
         startAdsBtn.visibility = View.GONE
@@ -144,12 +137,8 @@ class AutoAdsWidgetView : CardView {
     }
 
     private fun setInActive() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activeStatus.setTextAppearance(R.style.AutoAdsText_Inactive)
-        } else {
-            activeStatus.setBackgroundResource(R.drawable.bg_autoads_deactive)
-            activeStatus.setTextColor(ContextCompat.getColor(context, R.color.grey))
-        }
+        activeStatus.setBackgroundResource(R.drawable.bg_autoads_deactive)
+        activeStatus.setTextColor(ContextCompat.getColor(context, R.color.grey))
         activeStatus.setText(R.string.ads_deactive)
         subTitle.setText(R.string.saatnya_beriklan_mudah_dan_efektif)
         startAdsBtn.visibility = View.VISIBLE
@@ -162,12 +151,8 @@ class AutoAdsWidgetView : CardView {
     }
 
     private fun setActive() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activeStatus.setTextAppearance(R.style.AutoAdsText_Active)
-        } else {
-            activeStatus.setBackgroundResource(R.drawable.bg_autoads_active)
-            activeStatus.setTextColor(ContextCompat.getColor(context, R.color.true_green))
-        }
+        activeStatus.setBackgroundResource(R.drawable.bg_autoads_active)
+        activeStatus.setTextColor(ContextCompat.getColor(context, R.color.true_green))
         activeStatus.setText(R.string.ads_active)
         subTitle.visibility = View.GONE
         startAdsBtn.visibility = View.GONE
@@ -179,7 +164,7 @@ class AutoAdsWidgetView : CardView {
         }
     }
 
-    fun setActiveListener(activeListener: ActiveListener){
+    fun setActiveListener(activeListener: ActiveListener) {
         this.activeListener = activeListener
     }
 

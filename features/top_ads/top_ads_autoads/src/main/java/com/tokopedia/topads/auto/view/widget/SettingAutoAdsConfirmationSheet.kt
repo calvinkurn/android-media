@@ -35,15 +35,11 @@ class SettingAutoAdsConfirmationSheet {
         }
 
         nonActiveAutoAdsButton!!.setOnClickListener { view ->
-            if (context is DailyBudgetActivity && actionListener != null) {
-                actionListener!!.nonActiveAutoAds()
-            }
+            actionListener?.nonActiveAutoAds()
         }
 
         activeAdsButton!!.setOnClickListener { view ->
-            if (context is DailyBudgetActivity && actionListener != null) {
-                actionListener!!.activeAutoAds()
-            }
+            actionListener?.activeAutoAds()
         }
 
         closeButton!!.setOnClickListener { view -> dismissDialog() }

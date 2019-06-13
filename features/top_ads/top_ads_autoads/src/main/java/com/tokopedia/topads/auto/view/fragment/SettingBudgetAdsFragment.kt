@@ -59,7 +59,6 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
                 settingConfirmationSheet.show()
             }
             budgetViewModel.autoAdsData.observe(this, Observer {
-                Toast.makeText(context, "AutoAds Status" + it!!.statusDesc, Toast.LENGTH_SHORT).show()
                 activity!!.finish()
             })
         }

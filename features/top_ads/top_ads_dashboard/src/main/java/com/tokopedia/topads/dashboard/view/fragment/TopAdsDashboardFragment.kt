@@ -344,6 +344,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
             endDate = topAdsDashboardPresenter.endDate
             loadData()
         }
+        loadAutoAds()
     }
 
     private fun loadData() {
@@ -353,8 +354,11 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(resources, R.raw.gql_get_deposit))
         topAdsDashboardPresenter.getShopInfo()
         topAdsDashboardPresenter.getTickerTopAds(resources)
+    }
+
+    private fun loadAutoAds() {
         autoAdsWidgetView?.fetchData()
-        autoAdsWidgetView?.setActiveListener(object : AutoAdsWidgetView.ActiveListener{
+        autoAdsWidgetView?.setActiveListener(object : AutoAdsWidgetView.ActiveListener {
             override fun onActive() {
                 onActiveAutoAds()
             }
