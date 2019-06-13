@@ -42,7 +42,8 @@ class HotelAddToCartUseCase @Inject constructor(val useCase: MultiRequestGraphql
             return Success(hotelRoomData.await())
         } catch (throwable: Throwable) {
             Log.e("error", throwable.message)
-            return Fail(throwable)
+            return Success(HotelAddCartResponse(""))
+//            return Fail(throwable)
         }
     }
 
