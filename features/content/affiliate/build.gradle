@@ -49,7 +49,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.videoUploader)
-    implementation project(rootProject.ext.libraries.videoplayer)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
