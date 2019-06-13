@@ -351,7 +351,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER);
                             }
                         }
-                        FeedScrollListener.onFeedScrolled(recyclerView, (List<? extends Visitable<?>>) adapter.getlist());
+//                        FeedScrollListener.onFeedScrolled(recyclerView, (List<? extends Visitable<?>>) adapter.getlist());
+                        FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist());
                     }
                 } catch (IndexOutOfBoundsException e) {
                     Log.d(FeedPlusFragment.TAG, e.toString());

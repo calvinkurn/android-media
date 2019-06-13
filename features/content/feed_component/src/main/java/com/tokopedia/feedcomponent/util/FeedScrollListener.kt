@@ -71,5 +71,4 @@ object FeedScrollListener {
         return ((list[position]) as DynamicPostViewModel).contentList.get(0) as VideoViewModel
     }
 
-
 }
