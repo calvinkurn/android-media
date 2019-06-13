@@ -106,37 +106,3 @@ class PersistentNotification internal constructor(context: Context, baseNotifica
         )
     }
 }
-
-
-/*
-
-                if (listSize > 0) {
-                    persistentButton = it[0]
-                    remoteView.setTextViewText(R.id.title1, persistentButton.text)
-                    remoteView.setImageViewBitmap(R.id.image_icon1, getBitmap(persistentButton.icon))
-                    remoteView.setOnClickPendingIntent(R.id.lin_container_1, getPersistentClickPendingIntent(persistentButton, requestCode))
-                }
-                if (listSize > 1) {
-                    remoteView.setViewVisibility(R.id.lin_container_2, View.VISIBLE)
-                    persistentButton = it[1]
-                    remoteView.setTextViewText(R.id.title2, persistentButton.text)
-                    remoteView.setImageViewBitmap(R.id.image_icon2, getBitmap(persistentButton.icon))
-                    remoteView.setOnClickPendingIntent(R.id.lin_container_2, getPersistentClickPendingIntent(persistentButton, requestCode))
-                }
-                if (listSize > 2) {
-                    remoteView.setViewVisibility(R.id.lin_container_3, View.VISIBLE)
-                    persistentButton = it[2]
-                    remoteView.setTextViewText(R.id.title3, persistentButton.text)
-                    remoteView.setImageViewBitmap(R.id.image_icon3, getBitmap(persistentButton.icon))
-
-                    remoteView.setOnClickPendingIntent(R.id.lin_container_3, getPersistentClickPendingIntent(persistentButton, requestCode))
-                }
-                if (listSize > 3) {
-                    remoteView.setViewVisibility(R.id.lin_container_4, View.VISIBLE)
-                    persistentButton = it[3]
-                    remoteView.setTextViewText(R.id.title4, persistentButton.text)
-                    remoteView.setImageViewBitmap(R.id.image_icon4, getBitmap(persistentButton.icon))
-                    remoteView.setOnClickPendingIntent(R.id.lin_container_4, getPersistentClickPendingIntent(persistentButton, requestCode))
-                }
-*/
-
