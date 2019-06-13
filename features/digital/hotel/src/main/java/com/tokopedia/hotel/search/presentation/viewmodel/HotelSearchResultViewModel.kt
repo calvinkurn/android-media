@@ -53,6 +53,10 @@ class HotelSearchResultViewModel @Inject constructor(
         searchParam.checkOut = checkOut
         searchParam.room = totalRoom
         searchParam.guest.adult = totalAdult
+
+        //Default param
+        searchParam.sort.popularity = true
+        addSort(Sort("popularity"))
     }
 
     fun searchProperty(page: Int){
