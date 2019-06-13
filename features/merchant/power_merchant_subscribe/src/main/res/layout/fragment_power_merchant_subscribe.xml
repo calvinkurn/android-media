@@ -110,7 +110,7 @@
             </FrameLayout>
 
             <include
-                android:id="@+id/cardview_member"
+                android:id="@+id/base_partial_member"
                 layout="@layout/partial_member_power_merchant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -118,11 +118,11 @@
                 android:layout_marginBottom="@dimen/dp_24"/>
 
             <include
-                android:id="@+id/cardview_benefit"
+                android:id="@+id/base_partial_benefit"
                 layout="@layout/partial_power_merchant_benefit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/cardview_member"
+                android:layout_below="@id/base_partial_member"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_20" />
@@ -131,7 +131,7 @@
                 android:id="@+id/ticker_blue_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/cardview_benefit"
+                android:layout_below="@+id/base_partial_benefit"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_10"
