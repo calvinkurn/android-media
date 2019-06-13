@@ -96,7 +96,8 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         PhoneVerificationApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         UserIdentificationApplinkModule.class,
-        ChatbotApplinkModule.class
+        ChatbotApplinkModule.class,
+        PowerMerchantSubscribeDeeplinkModule.class
 })
 
 public class DeepLinkHandlerActivity extends AppCompatActivity {
@@ -128,7 +129,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new PhoneVerificationApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
                 new UserIdentificationApplinkModuleLoader(),
-                new ChatbotApplinkModuleLoader()
+                new ChatbotApplinkModuleLoader(),
+                new PowerMerchantSubscribeDeeplinkModule()
         );
     }
 

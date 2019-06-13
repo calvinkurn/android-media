@@ -82,12 +82,13 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         ticker_blue_container.visibility = View.GONE
         if (shopStatusModel.powerMerchant.autoExtend.status == "off") {
             ticker_yellow_container.visibility = View.VISIBLE
+            ll_footer_submit.visibility = View.VISIBLE
         } else {
             ticker_yellow_container.visibility = View.GONE
-
+            ll_footer_submit.visibility = View.GONE
         }
         partialMemberPmViewHolder.renderPartialMember(shopStatusModel)
-        partialTncViewHolder
+        partialTncViewHolder.renderPartialTnc()
     }
 
     private fun initializePartialPart(view: View) {

@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment
  * Created by hadi.putra on 16/05/18.
  */
 
-class SellerCenterActivity : BaseSimpleActivity() {
+class appSellerCenterActivity : BaseSimpleActivity() {
 
     override fun getNewFragment() = BaseSessionWebViewFragment.newInstance(SELLER_CENTER_URL)
 

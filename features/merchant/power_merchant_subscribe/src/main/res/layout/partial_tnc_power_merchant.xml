@@ -34,17 +34,9 @@
             android:id="@+id/checked_green_kyc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_checked_green"
+            android:src="@drawable/ic_green_oval"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
-
-        <ImageView
-            android:id="@+id/unchecked_kyc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_unchecked_outline"
-            android:layout_marginLeft="@dimen/dp_5"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_gravity="center"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
 
         <TextView
@@ -52,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="@string/pm_label_kyc_verivication"
             style="@style/TextView.Medium.FontMedium"
-            android:layout_marginLeft="@dimen/dp_8"/>
+            android:layout_marginLeft="@dimen/dp_10"/>
 
     </LinearLayout>
 
@@ -69,16 +61,8 @@
             android:id="@+id/checked_green_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_checked_green"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
-
-        <ImageView
-            android:id="@+id/unchecked_score"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_unchecked_outline"
-            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_green_oval"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
 
@@ -87,7 +71,7 @@
             android:layout_height="wrap_content"
             android:text="@string/pm_label_score_point"
             style="@style/TextView.Medium.FontMedium"
-            android:layout_marginLeft="@dimen/dp_8"/>
+            android:layout_marginLeft="@dimen/dp_10"/>
 
     </LinearLayout>
 
@@ -109,6 +93,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/pm_label_cost_3"
+        android:textColor="@color/tkpd_green_header"
+        android:textStyle="bold"
         style="@style/TextView.Small"/>
 
 </LinearLayout>
