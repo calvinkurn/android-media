@@ -164,6 +164,7 @@
 
 
             <include
+                android:id="@+id/base_partial_tnc"
                 layout="@layout/partial_tnc_power_merchant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -23,7 +23,6 @@ import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHold
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.view.*
-import kotlinx.android.synthetic.main.partial_tnc_power_merchant.*
 
 
 import javax.inject.Inject
@@ -37,9 +36,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     lateinit var partialMemberPmViewHolder: PartialMemberPmViewHolder
     lateinit var partialBenefitPmViewHolder: PartialBenefitPmViewHolder
     lateinit var partialTncViewHolder: PartialTncViewHolder
-    lateinit var basePartial:FrameLayout
-    lateinit var baseTnc:LinearLayout
-    lateinit var baseBenefit:LinearLayout
+
 
 
     override fun getScreenName(): String = ""
@@ -61,9 +58,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        //        basePartial = view.findViewById(R.id.base_partial_member)
-//        baseBenefit = view.findViewById(R.id.base_partial_benefit)
-//        baseTnc = view.findViewById(R.id.base_partial_tnc)
+
         return inflater.inflate(R.layout.fragment_power_merchant_subscribe, container, false)
     }
 
