@@ -92,15 +92,10 @@ class MediaPreviewFragment : BaseDaggerFragment() {
 
     private fun initView() {
         if (viewModel.completeImageList.firstOrNull()?.type == MediaType.VIDEO) {
-            imageAdapter.setList(imageList, PostImageAdapter.VIDEO)
             viewFirstPage.hide()
             tabLayout.hide()
             btnPlay.show()
-
-            btnPlay.setOnClickListener {
-                val filePath = viewModel.completeImageList.first().path
-                VideoDetailPlayer.show(filePath, childFragmentManager)
-            }
+            imageAdapter.setList(imageList, PostImageAdapter.VIDEO)
         } else {
             imageAdapter.setList(imageList)
         }
