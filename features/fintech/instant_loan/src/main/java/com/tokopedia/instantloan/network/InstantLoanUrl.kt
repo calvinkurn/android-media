@@ -19,7 +19,7 @@ object InstantLoanUrl {
         val WEB_LINK_OTP = WEB_DOMAIN + "pinjaman-online/dana-instant/verify-phone"
         val WEB_LINK_LEARN_MORE = WEB_DOMAIN + "pinjaman-online/profil-kredit/"
         val WEB_LINK_TNC = WEB_DOMAIN + "bantuan/syarat-dan-ketentuan-pinjaman-dana-online/"
-        val LOAN_AMOUNT_QUERY_PARAM = "?loan_amount=%s&loan_period=%s&loan_duration=%s&redirect_to=prefilter"
+        val LOAN_AMOUNT_QUERY_PARAM = "?loan_amount=%s&loan_period=%s&loan_duration=%s&redirect_to=search"
 
         val SUBMISSION_HISTORY_URL = WEB_DOMAIN + "pinjaman-online/dana-instant/dashboard"
         val PAYMENT_METHODS_URL = WEB_DOMAIN + "pinjaman-online/dana-instant/payment-method/%s"
