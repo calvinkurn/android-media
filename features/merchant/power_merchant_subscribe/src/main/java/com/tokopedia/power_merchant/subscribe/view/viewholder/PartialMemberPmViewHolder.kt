@@ -13,7 +13,6 @@ class PartialMemberPmViewHolder private constructor(private val view: View,
         fun build(_view: View, _activity: Activity?) = PartialMemberPmViewHolder(_view, _activity)
     }
 
-
     fun renderPartialMember(shopStatusModel: ShopStatusModel) {
         if (shopStatusModel.powerMerchant.status == "activate" || shopStatusModel.powerMerchant.status == "inactive") {
             view.hide()

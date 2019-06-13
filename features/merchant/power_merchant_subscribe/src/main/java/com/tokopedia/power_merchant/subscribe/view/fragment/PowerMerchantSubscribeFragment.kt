@@ -22,6 +22,9 @@ import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmVie
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHolder
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
+import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.view.*
+import kotlinx.android.synthetic.main.partial_member_power_merchant.*
+import kotlinx.android.synthetic.main.partial_member_power_merchant.view.*
 
 import javax.inject.Inject
 
@@ -69,6 +72,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
 //        initializePartialPart(view)
 //        renderView()
+        view.ticker_yellow_container.visibility = View.VISIBLE
+        view.base_partial_member.visibility = View.VISIBLE
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -116,9 +122,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         partialTncViewHolder.renderPartialTnc()
     }
 
-    private fun initializePartialPart(view: View) {
+    private fun initializePartialPart(view: View?) {
         if (!::partialMemberPmViewHolder.isInitialized) {
-            partialMemberPmViewHolder = PartialMemberPmViewHolder.build(basePartial, activity)
+            partialMemberPmViewHolder = PartialMemberPmViewHolder.build(view.base_partial_member, activity)
         }
         if (!::partialTncViewHolder.isInitialized) {
             partialTncViewHolder = PartialTncViewHolder.build(baseTnc, activity)
