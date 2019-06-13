@@ -73,7 +73,7 @@ import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWareh
 import com.tokopedia.product.detail.data.model.ProductInfoP1
 import com.tokopedia.product.detail.data.model.ProductInfoP2
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.product.detail.data.model.shop.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted

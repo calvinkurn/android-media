@@ -21,7 +21,7 @@ import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.common.data.model.constant.ProductConditionTypeDef
-import com.tokopedia.product.detail.data.model.shop.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.view.activity.ProductFullDescriptionActivity
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity

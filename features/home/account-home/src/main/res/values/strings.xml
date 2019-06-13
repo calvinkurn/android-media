@@ -112,7 +112,7 @@
     <string name="label_menu_last_seen">Cek Produk terakhir yang dilihat</string>
     <string name="title_menu_favorite_shops">Toko Favorit</string>
     <string name="label_menu_favorite_shops">Lihat Toko yang sudah Anda favoritkan</string>
-    <string name="title_menu_mybills"><![CDATA[MyBills]]></string>
+    <string name="title_menu_mybills"><![CDATA[Langganan]]></string>
     <string name="label_menu_mybills"><![CDATA[Atur & bayar tagihan dalam satu tempat]]></string>
     <string name="title_menu_top_up_bill_subscription"><![CDATA[Langganan Top-up & Tagihan]]></string>
     <string name="label_menu_top_up_bill_subscription"><![CDATA[Lihat langganan Top-up & Tagihan]]></string>
@@ -192,7 +192,7 @@
     <string name="label_menu_challenge">Ikuti tantangan dan dapatkan hadiah!</string>
     <string name="title_menu_affiliate">Raih Komisi di By Me</string>
     <string name="label_menu_affiliate">Ajak teman beli produk pilihanmu!</string>
-    <string name="curate_product_by_me">Post Produk di By Me</string>
+    <string name="curate_product_by_me">Post Rekomendasi By Me</string>
     <string name="selesai">Selesai</string>
     <string name="title_seller_saldo">Saldo</string>
 

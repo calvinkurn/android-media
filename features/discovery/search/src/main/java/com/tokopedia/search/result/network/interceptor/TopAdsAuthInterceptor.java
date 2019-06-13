@@ -16,7 +16,7 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
 
     public static String VERSION_NAME = "1.0";
 
-    public TopAdsAuthInterceptor(Context context, NetworkRouter networkRouter, UserSessionInterface userSessionInterface) {
+    TopAdsAuthInterceptor(Context context, NetworkRouter networkRouter, UserSessionInterface userSessionInterface) {
         super(context, networkRouter, userSessionInterface);
     }
 

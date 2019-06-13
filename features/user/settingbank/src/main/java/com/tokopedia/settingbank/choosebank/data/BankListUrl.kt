@@ -8,7 +8,7 @@ class BankListUrl {
 
     companion object {
 
-        var BASE_URL: String = "https://ws.tokopedia.com/"
+        var BASE_URL: String = "https://accounts.tokopedia.com/"
         const val PATH_SEARCH_BANK_ACCOUNT: String = "api/v2/bank-account/get-bank-list"
 
     }
