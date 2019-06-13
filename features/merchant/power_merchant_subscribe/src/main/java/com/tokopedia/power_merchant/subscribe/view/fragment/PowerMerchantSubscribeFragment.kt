@@ -66,9 +66,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun onSuccessGetPmInfo(shopStatusModel: ShopStatusModel) {
 
         if (shopStatusModel.isTransitionPeriod()) {
-            if (shopStatusModel.powerMerchant.status == "idle") {
+            if (shopStatusModel.isPowerMerchantInactive()) {
                 context?.let { TransitionPeriodPmActivity.newInstance(it) }
-            } else if (shopStatusModel.powerMerchant.status == "activate") {
+            } else if (shopStatusModel.isPowerMerchantActive()) {
                 ticker_blue_container.visibility = View.VISIBLE
                 renderView(shopStatusModel)
             }
@@ -80,7 +80,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     private fun renderView(shopStatusModel: ShopStatusModel) {
         ticker_blue_container.visibility = View.GONE
-        if (shopStatusModel.powerMerchant.autoExtend.status == "off") {
+        if (shopStatusModel.isAutoExtend()) {
             ticker_yellow_container.visibility = View.VISIBLE
             ll_footer_submit.visibility = View.VISIBLE
         } else {

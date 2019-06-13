@@ -18,6 +18,7 @@ data class ShopStatusModel(
         const val STATUS_ACTIVE = "active"
         const val STATUS_INACTIVE = "inactive"
         const val STATUS_IDLE = "idle"
+        const val STATUS_OFF = "off"
     }
 
     fun isPowerMerchantActive(): Boolean {
@@ -34,5 +35,9 @@ data class ShopStatusModel(
 
     fun isTransitionPeriod(): Boolean {
         return powerMerchant.shopPopup
+    }
+
+    fun isAutoExtend(): Boolean {
+        return powerMerchant.autoExtend.status == STATUS_OFF
     }
 }

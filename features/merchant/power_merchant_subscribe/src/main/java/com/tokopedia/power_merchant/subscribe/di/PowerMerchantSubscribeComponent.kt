@@ -5,7 +5,7 @@ import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscri
 import dagger.Component
 
 @PowerMerchantSubscribeScope
-@Component(modules = [PowerMerchantSubscribeModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [PowerMerchantSubscribeModule::class])
 interface PowerMerchantSubscribeComponent {
 
     fun inject(fragment: PowerMerchantSubscribeFragment)
