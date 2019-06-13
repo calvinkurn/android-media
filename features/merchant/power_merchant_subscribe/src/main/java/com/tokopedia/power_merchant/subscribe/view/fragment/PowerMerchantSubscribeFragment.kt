@@ -69,11 +69,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        initializePartialPart(view)
-//        renderView()
         view.ticker_yellow_container.visibility = View.VISIBLE
-        view.base_partial_member.visibility = View.VISIBLE
+        initializePartialPart(view)
+//        renderView()
+//        view.base_partial_member.visibility = View.VISIBLE
 
     }
 
@@ -124,7 +123,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     private fun initializePartialPart(view: View?) {
         if (!::partialMemberPmViewHolder.isInitialized) {
-            partialMemberPmViewHolder = PartialMemberPmViewHolder.build(view.base_partial_member, activity)
+            partialMemberPmViewHolder = PartialMemberPmViewHolder.build(view!!.base_partial_member, activity)
         }
         if (!::partialTncViewHolder.isInitialized) {
             partialTncViewHolder = PartialTncViewHolder.build(baseTnc, activity)
