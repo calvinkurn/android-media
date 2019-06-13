@@ -36,7 +36,7 @@ class HotelAddToCartUseCase @Inject constructor(val useCase: MultiRequestGraphql
             val graphqlRequest = GraphqlRequest(rawQuery, HotelAddCartResponse::class.java, param)
             useCase.addRequest(graphqlRequest)
 
-            val hotelRoomData = async {
+            val hotelRoomData = GlobalScope.async {
                 val response =  withContext(Dispatchers.IO) {
                     useCase.executeOnBackground().getSuccessData<HotelAddCartResponse>()
                 }
@@ -44,9 +44,7 @@ class HotelAddToCartUseCase @Inject constructor(val useCase: MultiRequestGraphql
             }
             return Success(hotelRoomData.await())
         } catch (throwable: Throwable) {
-            Log.e("error", throwable.message)
-            return Success(HotelAddCartResponse(""))
-//            return Fail(throwable)
+            return Fail(throwable)
         }
     }
 
