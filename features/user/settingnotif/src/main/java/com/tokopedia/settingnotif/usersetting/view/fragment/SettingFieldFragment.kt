@@ -7,13 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.settingnotif.R
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.presenter.SettingFieldPresenter
+import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
 import javax.inject.Inject
 
-abstract class SettingFieldFragment : BaseDaggerFragment(), SettingFieldContract.View {
+abstract class SettingFieldFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), SettingFieldContract.View {
 
     @Inject
     lateinit var presenter: SettingFieldPresenter
@@ -30,7 +33,7 @@ abstract class SettingFieldFragment : BaseDaggerFragment(), SettingFieldContract
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return LayoutInflater.from(context).inflate(R.layout.fragment_setting_field, container, false).also {
+        return super.onCreateView(inflater, container, savedInstanceState).also {
             setupToolbar()
         }
     }
@@ -41,4 +44,19 @@ abstract class SettingFieldFragment : BaseDaggerFragment(), SettingFieldContract
         }
     }
 
+    override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
+        return SettingFieldTypeFactory()
+    }
+
+    override fun onItemClicked(item: Visitable<*>?) {
+
+    }
+
+    override fun loadData(page: Int) {
+        if (page != defaultInitialPage) return
+    }
+
+    override fun isLoadMoreEnabledByDefault(): Boolean {
+        return false
+    }
 }
