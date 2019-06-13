@@ -7,7 +7,7 @@ import dagger.Component
 import retrofit2.Retrofit
 
 @PowerMerchantSubscribeScope
-@Component(modules = [PowerMerchantSubscribeModule::class], dependencies = BaseAppComponent.class)
+@Component(modules = [PowerMerchantSubscribeModule::class], dependencies = [BaseAppComponent::class])
 interface PowerMerchantSubscribeComponent {
 
     fun inject(fragment: PowerMerchantSubscribeFragment)
