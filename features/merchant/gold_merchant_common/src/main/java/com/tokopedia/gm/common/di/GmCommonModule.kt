@@ -60,9 +60,8 @@ class GmCommonModule {
         return retrofitBuilder.baseUrl(GMCommonUrl.BASE_URL).client(okHttpClient).build()
     }
 
-    @GmCommonQualifier
     @Provides
-    fun provideGMCommonApi(retrofit: Retrofit):GMCommonApi {
+    fun provideGMCommonApi(@GmCommonQualifier retrofit: Retrofit): GMCommonApi {
         return retrofit.create(GMCommonApi::class.java)
     }
 }

@@ -1,11 +1,13 @@
 package com.tokopedia.power_merchant.subscribe.di
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment
 import dagger.Component
+import retrofit2.Retrofit
 
 @PowerMerchantSubscribeScope
-@Component(modules = [PowerMerchantSubscribeModule::class])
+@Component(modules = [PowerMerchantSubscribeModule::class], dependencies = BaseAppComponent.class)
 interface PowerMerchantSubscribeComponent {
 
     fun inject(fragment: PowerMerchantSubscribeFragment)
