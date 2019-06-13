@@ -19,8 +19,10 @@ import com.tokopedia.topupbills.telco.data.TelcoRecommendation
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
+import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.model.DigitalOrderClientNumber
 import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
@@ -83,6 +85,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_prepaid, container, false)
+        mainContainer = view.findViewById(R.id.main_container)
         recentNumbersView = view.findViewById(R.id.recent_numbers)
         telcoClientNumberWidget = view.findViewById(R.id.telco_input_number)
         promoListView = view.findViewById(R.id.promo_widget)
@@ -97,6 +100,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        handleFocusClientNumber()
         getInputFilterDataCollections()
         renderInputNumber()
         getCatalogMenuDetail()
@@ -150,11 +154,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     fun renderInputNumber() {
         telcoClientNumberWidget.setListener(object : DigitalClientNumberWidget.ActionListener {
-            override fun navigateToContact() {
+            override fun onNavigateToContact() {
                 navigateContact()
             }
 
-            override fun renderOperator() {
+            override fun onRenderOperator() {
                 operatorData.rechargeCustomData.customDataCollections.isEmpty()?.let {
                     if (it) {
                         getInputFilterDataCollections()
@@ -164,12 +168,17 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 }
             }
 
-            override fun clearAutoComplete() {
+            override fun onClearAutoComplete() {
                 recentNumbersView.visibility = View.VISIBLE
                 promoListView.visibility = View.VISIBLE
                 tabLayout.visibility = View.GONE
                 viewPager.visibility = View.GONE
                 sharedModel.setShowTotalPrice(false)
+            }
+
+            override fun onClientNumberHasFocus(clientNumber: String) {
+                startActivityForResult(DigitalSearchNumberActivity.newInstance(activity, null, ""),
+                        REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
         })
     }
@@ -200,6 +209,15 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         return mapParam
     }
 
+    override fun handleCallbackSearchNumber(orderClientNumber: DigitalOrderClientNumber) {
+        telcoClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
+        telcoClientNumberWidget.clearFocus()
+    }
+
+    override fun handleCallbackSearchNumberCancel() {
+        telcoClientNumberWidget.clearFocus()
+    }
+
     override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation) {
         Toast.makeText(activity, telcoRecommendation.clientNumber, Toast.LENGTH_SHORT).show()
     }
@@ -210,8 +228,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     companion object {
-
-        val REQUEST_CODE_CONTACT_PICKER = 78;
 
         fun newInstance(): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()

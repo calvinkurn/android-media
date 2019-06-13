@@ -15,6 +15,13 @@
             android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/Theme.White" />
 
+        <activity
+            android:name="com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity"
+            android:label="@string/digital_title_fav_number"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/Theme.White" />
+
     </application>
 
 </manifest>

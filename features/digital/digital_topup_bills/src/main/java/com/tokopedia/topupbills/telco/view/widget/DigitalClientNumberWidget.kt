@@ -1,7 +1,6 @@
 package com.tokopedia.topupbills.telco.view.widget
 
 import android.content.Context
-import android.support.annotation.AttrRes
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -13,6 +12,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -43,14 +43,14 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         autoCompleteInputNumber.clearFocus()
         btnContactPicker.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                listener.navigateToContact()
+                listener.onNavigateToContact()
             }
         })
 
         btnClear.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 autoCompleteInputNumber.setText("")
-                listener.clearAutoComplete()
+                listener.onClearAutoComplete()
             }
         })
 
@@ -65,15 +65,25 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (count == 0) {
-                    listener.clearAutoComplete()
+                    listener.onClearAutoComplete()
                     imgOperator.visibility = View.GONE
                 }
                 if (count >= 4) {
-                    listener.renderOperator()
+                    listener.onRenderOperator()
                     imgOperator.visibility = View.VISIBLE
                 }
             }
         })
+
+        autoCompleteInputNumber.onFocusChangeListener = object : OnFocusChangeListener {
+            override fun onFocusChange(view: View?, hasFocus: Boolean) {
+                if (hasFocus) {
+                    view?.run {
+                        listener.onClientNumberHasFocus((this as TextView).text.toString())
+                    }
+                }
+            }
+        }
     }
 
     open fun getLayout(): Int {
@@ -124,8 +134,9 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     interface ActionListener {
-        fun navigateToContact()
-        fun renderOperator()
-        fun clearAutoComplete()
+        fun onNavigateToContact()
+        fun onRenderOperator()
+        fun onClearAutoComplete()
+        fun onClientNumberHasFocus(clientNumber: String)
     }
 }

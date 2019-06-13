@@ -6,8 +6,11 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.provider.ContactsContract
+import android.support.v4.widget.NestedScrollView
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -17,9 +20,12 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.*
+import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.model.DigitalOrderClientNumber
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.TelcoCatalogMenuDetailViewModel
+import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
 import javax.inject.Inject
@@ -29,6 +35,7 @@ import javax.inject.Inject
  */
 open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
+    protected lateinit var mainContainer: NestedScrollView
     protected lateinit var tickerView: TickerView
     protected lateinit var recentNumbersView: DigitalRecentTransactionWidget
     protected lateinit var promoListView: DigitalPromoListWidget
@@ -71,6 +78,21 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     protected abstract fun onLoadingMenuDetail(showLoading: Boolean)
 
     protected abstract fun getMapCatalogMenuDetail(): Map<String, kotlin.Any>
+
+    fun handleFocusClientNumber() {
+        mainContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS)
+        mainContainer.setFillViewport(true)
+        mainContainer.setFocusable(true)
+        mainContainer.setFocusableInTouchMode(true)
+        mainContainer.setOnTouchListener { view1, motionEvent ->
+            if (view1 is DigitalClientNumberWidget) {
+                view1.requestFocusFromTouch()
+            } else {
+                view1.clearFocus()
+            }
+            false
+        }
+    }
 
     fun getCatalogMenuDetail() {
         catalogMenuDetailViewModel.getCatalogMenuDetail(GraphqlHelper.loadRawString(resources,
@@ -130,7 +152,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         val contactPickerIntent = Intent(
                 Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
         try {
-            startActivityForResult(contactPickerIntent, DigitalTelcoPrepaidFragment.REQUEST_CODE_CONTACT_PICKER)
+            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
         } catch (e: ActivityNotFoundException) {
             NetworkErrorHelper.showSnackbar(activity,
                     getString(R.string.error_message_contact_not_found))
@@ -148,16 +170,27 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         data?.let {
             if (resultCode == Activity.RESULT_OK) {
-                if (requestCode == DigitalTelcoPrepaidFragment.REQUEST_CODE_CONTACT_PICKER) {
+                if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
                     activity?.let {
                         val contactURI = data.data
                         val contact = contactURI.covertContactUriToContactData(it.contentResolver)
                         setInputNumberFromContact(contact.contactNumber)
                     }
+                } else if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
+                    if (data != null) {
+                        val orderClientNumber = data.getParcelableExtra<Parcelable>(DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
+                        handleCallbackSearchNumber(orderClientNumber as DigitalOrderClientNumber)
+                    } else {
+                        handleCallbackSearchNumberCancel()
+                    }
                 }
             }
         }
     }
+
+    protected abstract fun handleCallbackSearchNumber(orderClientNumber: DigitalOrderClientNumber)
+
+    protected abstract fun handleCallbackSearchNumberCancel()
 
     fun renderRecentTransactions(recentNumbers: List<TelcoRecommendation>) {
         if (recentNumbers.isNotEmpty()) {
@@ -198,5 +231,10 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     override fun onDestroy() {
         customViewModel.clear()
         super.onDestroy()
+    }
+
+    companion object {
+        val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
+        val REQUEST_CODE_CONTACT_PICKER = 78;
     }
 }
