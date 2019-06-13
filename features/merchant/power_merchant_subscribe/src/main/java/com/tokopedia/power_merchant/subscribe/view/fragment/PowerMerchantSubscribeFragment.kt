@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
@@ -34,6 +35,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     lateinit var partialMemberPmViewHolder: PartialMemberPmViewHolder
     lateinit var partialBenefitPmViewHolder: PartialBenefitPmViewHolder
     lateinit var partialTncViewHolder: PartialTncViewHolder
+    lateinit var basePartial:FrameLayout
+    lateinit var baseTnc:LinearLayout
+    lateinit var baseBenefit:LinearLayout
 
 
     override fun getScreenName(): String = ""
@@ -55,7 +59,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_power_merchant_subscribe, container, false)
+        val view =  inflater.inflate(R.layout.fragment_power_merchant_subscribe, container, false)
+        basePartial = view.findViewById(R.id.base_partial_member)
+        baseBenefit = view.findViewById(R.id.base_partial_benefit)
+        baseTnc = view.findViewById(R.id.base_partial_tnc)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,7 +90,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         } else {
             renderView(shopStatusModel)
         }
-
     }
 
     private fun renderView(shopStatusModel: ShopStatusModel) {
@@ -99,15 +106,14 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     private fun initializePartialPart(view: View) {
-        val basePartial = view.findViewById<FrameLayout>(R.id.base_partial_member)
         if (!::partialMemberPmViewHolder.isInitialized) {
             partialMemberPmViewHolder = PartialMemberPmViewHolder.build(basePartial, activity)
         }
         if (!::partialTncViewHolder.isInitialized) {
-            partialTncViewHolder = PartialTncViewHolder.build(base_partial_tnc, activity)
+            partialTncViewHolder = PartialTncViewHolder.build(baseTnc, activity)
         }
         if (!::partialBenefitPmViewHolder.isInitialized) {
-            partialBenefitPmViewHolder = PartialBenefitPmViewHolder.build(base_partial_benefit, activity)
+            partialBenefitPmViewHolder = PartialBenefitPmViewHolder.build(baseBenefit, activity)
         }
     }
 }
