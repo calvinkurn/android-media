@@ -25,6 +25,8 @@ import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.view.*
 import kotlinx.android.synthetic.main.partial_member_power_merchant.*
 import kotlinx.android.synthetic.main.partial_member_power_merchant.view.*
+import kotlinx.android.synthetic.main.partial_power_merchant_benefit.*
+import kotlinx.android.synthetic.main.partial_tnc_power_merchant.*
 
 import javax.inject.Inject
 
@@ -122,14 +124,14 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     private fun initializePartialPart(view: View?) {
-        if (!::partialMemberPmViewHolder.isInitialized) {
-            partialMemberPmViewHolder = PartialMemberPmViewHolder.build(view!!.base_partial_member, activity)
-        }
+//        if (!::partialMemberPmViewHolder.isInitialized) {
+//            partialMemberPmViewHolder = PartialMemberPmViewHolder.build(view!!.base_partial_member, activity)
+//        }
         if (!::partialTncViewHolder.isInitialized) {
-            partialTncViewHolder = PartialTncViewHolder.build(baseTnc, activity)
+            partialTncViewHolder = PartialTncViewHolder.build(base_partial_tnc, activity)
         }
         if (!::partialBenefitPmViewHolder.isInitialized) {
-            partialBenefitPmViewHolder = PartialBenefitPmViewHolder.build(baseBenefit, activity)
+            partialBenefitPmViewHolder = PartialBenefitPmViewHolder.build(base_partial_benefit, activity)
         }
     }
 }
