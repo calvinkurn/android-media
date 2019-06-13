@@ -1,9 +1,12 @@
 package com.tokopedia.checkout.view.feature.addressoptions
 
+import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.cachemanager.db.model.PersistentCacheDbModel
 import com.tokopedia.checkout.domain.datamodel.newaddresscorner.AddressListModel
 import com.tokopedia.checkout.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
 import rx.Subscriber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 const val EMPTY_STRING: String = ""
@@ -62,6 +65,15 @@ class AddressListPresenter
                             mView?.updateList(result.listAddress)
                         }, { e -> mView?.showError(e) }, {}
                 )
+    }
+
+    override fun saveLastCorner(model: RecipientAddressModel) {
+        PersistentCacheManager.instance.put("last_chosen_corner", model, TimeUnit.DAYS.toMillis(7))
+    }
+
+    override fun getLastCorner(): RecipientAddressModel? {
+        return PersistentCacheManager.instance.get(
+                "last_chosen_corner", RecipientAddressModel::class.java, null)
     }
 
     private fun getAddressHandler(query: String): Subscriber<AddressListModel> =

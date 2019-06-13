@@ -236,6 +236,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     protected void initialVar() {
         mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvRecipientAddressList.setAdapter(mShipmentAddressListAdapter);
+        if (!mShipmentAddressListAdapter.isHavingCornerAddress()) {
+            RecipientAddressModel cached = mPresenter.getLastCorner();
+            if (cached != null) {
+                mShipmentAddressListAdapter.setCorner(cached);
+            }
+        }
         if (isDisableCorner) mShipmentAddressListAdapter.hideCornerOption();
     }
 
@@ -370,6 +376,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void onCornerAddressClicked(RecipientAddressModel addressModel, int position) {
+        mPresenter.saveLastCorner(addressModel);
         mShipmentAddressListAdapter.updateSelected(position);
         if (mCartAddressChoiceActivityListener != null && getActivity() != null) {
             mCornerAnalytics.sendChooseCornerAddress();

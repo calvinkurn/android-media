@@ -111,6 +111,10 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
         notifyDataSetChanged();
     }
 
+    public Boolean isHavingCornerAddress() {
+        return (mCornerData != null && mCornerData.getCornerModel() != null);
+    }
+
     private int getExtraCount() {
         return mCornerData != null ? 1 : 0;
     }

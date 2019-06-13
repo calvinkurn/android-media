@@ -13,6 +13,8 @@ interface AddressListContract {
         fun getAddress()
         fun searchAddress(query: String)
         fun loadMore()
+        fun saveLastCorner(model: RecipientAddressModel)
+        fun getLastCorner(): RecipientAddressModel?
     }
 
 }
