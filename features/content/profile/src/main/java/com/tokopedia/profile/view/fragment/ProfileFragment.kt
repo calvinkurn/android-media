@@ -932,6 +932,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         layoutManager = recyclerView.layoutManager as LinearLayoutManager
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy <= -10) {
+                    if (!isOwner && !footerOthers.isVisible) {
+                        showFooterOthers()
+                    }
+                } else if (dy > 10) {
+                    hideFootersOthers()
+                }
+            }
+
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
@@ -950,12 +962,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                                 adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
                             }
                         }
-
-                        if (!isOwner) {
-                            showFooterOthers()
-                        }
-                    } else {
-                        hideFootersOthers()
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
