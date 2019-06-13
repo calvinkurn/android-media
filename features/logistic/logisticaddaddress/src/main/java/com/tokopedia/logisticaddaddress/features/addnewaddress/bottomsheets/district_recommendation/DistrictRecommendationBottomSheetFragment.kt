@@ -189,7 +189,8 @@ class DistrictRecommendationBottomSheetFragment: BottomSheets(),
             } else {
                 listDistrictAdapter.loadDistrictRecommendationNextPage(getDistrictRecommendationResponseUiModel.listDistrict.toMutableList())
             }
-            // updateHeight()
+            listDistrictAdapter.notifyDataSetChanged()
+            updateHeight()
         }
     }
 

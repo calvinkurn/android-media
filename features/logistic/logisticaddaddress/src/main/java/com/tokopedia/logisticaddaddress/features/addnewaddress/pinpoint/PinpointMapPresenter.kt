@@ -87,7 +87,7 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
         }
     }
 
-    fun convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel: GetDistrictDataUiModel) : SaveAddressDataModel {
+    fun convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel: GetDistrictDataUiModel, zipCodes: MutableList<String>?) : SaveAddressDataModel {
         val saveAddressDataModel = SaveAddressDataModel()
         saveAddressDataModel.title = getDistrictDataUiModel.title
         saveAddressDataModel.formattedAddress = getDistrictDataUiModel.formattedAddress
@@ -98,11 +98,14 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
         saveAddressDataModel.latitude = getDistrictDataUiModel.latitude
         saveAddressDataModel.longitude = getDistrictDataUiModel.longitude
         saveAddressDataModel.selectedDistrict = getDistrictDataUiModel.formattedAddress
+        if (zipCodes != null) {
+            saveAddressDataModel.zipCodes = zipCodes
+        }
         this.saveAddressDataModel = saveAddressDataModel
         return saveAddressDataModel
     }
 
-    fun convertAutofillToSaveAddressDataUiModel(autofillDataUiModel: AutofillDataUiModel) : SaveAddressDataModel {
+    fun convertAutofillToSaveAddressDataUiModel(autofillDataUiModel: AutofillDataUiModel, zipCodes: MutableList<String>?) : SaveAddressDataModel {
         val saveAddressDataModel = SaveAddressDataModel()
         saveAddressDataModel.title = autofillDataUiModel.title
         saveAddressDataModel.formattedAddress = autofillDataUiModel.formattedAddress
@@ -113,6 +116,9 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
         saveAddressDataModel.latitude = autofillDataUiModel.latitude
         saveAddressDataModel.longitude = autofillDataUiModel.longitude
         saveAddressDataModel.selectedDistrict = autofillDataUiModel.formattedAddress
+        if (zipCodes != null) {
+            saveAddressDataModel.zipCodes = zipCodes
+        }
         this.saveAddressDataModel = saveAddressDataModel
         return saveAddressDataModel
     }

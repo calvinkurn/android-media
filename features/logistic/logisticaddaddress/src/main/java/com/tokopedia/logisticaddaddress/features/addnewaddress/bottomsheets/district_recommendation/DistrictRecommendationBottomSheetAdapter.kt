@@ -46,11 +46,9 @@ class DistrictRecommendationBottomSheetAdapter(private var actionListener: Actio
     fun loadDistrictRecommendation(listDistrict: MutableList<DistrictRecommendationItemUiModel>) {
         listDistrictRecommendation.clear()
         listDistrictRecommendation.addAll(listDistrict)
-        notifyDataSetChanged()
     }
 
     fun loadDistrictRecommendationNextPage(listDistrict: MutableList<DistrictRecommendationItemUiModel>) {
         listDistrictRecommendation.addAll(listDistrict)
-        notifyDataSetChanged()
     }
 }

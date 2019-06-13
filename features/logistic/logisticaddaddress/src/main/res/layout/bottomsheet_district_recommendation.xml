@@ -80,31 +80,6 @@
             android:background="@color/separator_color" />
 
         <LinearLayout
-            android:id="@+id/ll_popular_city"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_title_popular_city"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/kota_populer"
-                android:textSize="@dimen/sp_16"
-                android:textStyle="bold"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_chips"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"/>
-
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/ll_list_district"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -128,6 +103,31 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_12"
                 android:clipToPadding="false"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_popular_city"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_title_popular_city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/kota_populer"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_chips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"/>
 
         </LinearLayout>
 

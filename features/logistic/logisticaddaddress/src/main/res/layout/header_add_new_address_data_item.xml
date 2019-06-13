@@ -29,6 +29,13 @@
         android:contentDescription="@string/pointer"
         app:srcCompat="@drawable/ic_green_pointer" />
 
+    <View
+        android:id="@+id/disable_map_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#88FFFFFF"
+        android:visibility="gone"/>
+
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_map"
         android:layout_width="@dimen/dp_150"

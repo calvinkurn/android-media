@@ -52,6 +52,7 @@ public class AddressConstants {
     public static final String EXTRA_IS_MISMATCH_SOLVED = "EXTRA_IS_ORIGIN_MISMATCH_SOLVED";
     public static final String EXTRA_IS_POLYGON = "EXTRA_IS_POLYGON";
     public static final String EXTRA_DISTRICT_ID = "EXTRA_DISTRICT_ID";
+    public static final String EXTRA_ZIPCODES = "EXTRA_ZIPCODES";
     public static final String EXTRA_SAVE_DATA_UI_MODEL = "EXTRA_SAVE_DATA_UI_MODEL";
     public static final Double MONAS_LAT = -6.175794;
     public static final Double MONAS_LONG = 106.826457;

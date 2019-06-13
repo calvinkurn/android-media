@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,12 +50,10 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_addr
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
+import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
-import kotlinx.android.synthetic.main.form_add_new_address_mismatch_solved_data_item.*
 import kotlinx.android.synthetic.main.fragment_add_edit_new_address.*
 import kotlinx.android.synthetic.main.header_add_new_address_data_item.*
-import kotlinx.android.synthetic.main.header_add_new_address_mismatch_data_item.*
-import kotlinx.android.synthetic.main.header_add_new_address_mismatch_solved_data_item.*
 import javax.inject.Inject
 
 /**
@@ -78,7 +78,8 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     private var districtId: Int? = 0
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private lateinit var zipCodeChipsAdapter: ZipCodeChipsAdapter
-    private lateinit var zipCodes: List<String>
+    private lateinit var chipsLayoutManager: ChipsLayoutManager
+    private var staticDimen8dp: Int? = 0
 
     @Inject
     lateinit var presenter: AddEditAddressPresenter
@@ -126,18 +127,29 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.connectGoogleApi(this)
+        map_view_detail.onCreate(savedInstanceState)
+        map_view_detail.getMapAsync(this)
+
+        zipCodeChipsAdapter = ZipCodeChipsAdapter(context, this)
+        chipsLayoutManager = ChipsLayoutManager.newBuilder(view.context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
+        staticDimen8dp = view.context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
+
         arrangeLayout(isMismatch, isMismatchSolved, savedInstanceState)
 
+        et_label_address.setText(labelRumah)
+        et_receiver_name.setText(userSession.name)
+        et_phone.setText(userSession.phoneNumber)
+
+        btn_save_address.setOnClickListener {
+            setSaveAddressModel()
+            presenter.saveAddress(saveAddressDataModel)
+        }
+
         back_button_detail.setOnClickListener {
-            if (!isMismatch && !isMismatchSolved) {
-                map_view_detail?.onPause()
-            } else {
-                if (isMismatch && !isMismatchSolved) {
-                    map_view_detail_mismatch?.onPause()
-                } else if (!isMismatch && isMismatchSolved) {
-                    map_view_detail_mismatch_solved?.onPause()
-                }
-            }
+            map_view_detail?.onPause()
 
             presenter.disconnectGoogleApi()
             activity?.finish()
@@ -146,123 +158,147 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
 
     @SuppressLint("SetTextI18n")
     private fun arrangeLayout(isMismatch: Boolean, isMismatchSolved: Boolean, savedInstanceState: Bundle?) {
-        // !isMismatch && isMismatchSolved : header normal, form mismatch + show ll_detail_alamat_layout
-        // isMismatch && !isMismatchSolved : header mismatch, form mismatch : hide ll_detail_alamat_layout
-
         if (!isMismatch && !isMismatchSolved) {
             ll_mismatch.visibility = View.GONE
-            ll_mismatch_solved.visibility = View.GONE
             ll_normal.visibility = View.VISIBLE
 
-            showNormalMapHeader(savedInstanceState)
-            showNormalForm()
-
-            btn_save_address.setOnClickListener {
-                setSaveAddressModel()
-                presenter.saveAddress(saveAddressDataModel)
-            }
+            setNormalMapHeader()
+            setNormalForm()
 
         } else {
-            if (isMismatch && !isMismatchSolved) {
-                ll_normal.visibility = View.GONE
-                ll_mismatch_solved.visibility = View.GONE
-                ll_mismatch.visibility = View.VISIBLE
+            ll_normal.visibility = View.GONE
+            ll_mismatch.visibility = View.VISIBLE
 
-                showMismatchMapHeader(savedInstanceState)
-                showMismatchForm()
+            if (isMismatch) {
+                setMismatchMapHeader()
 
-                btn_save_address_mismatch.setOnClickListener {
-                    setSaveAddressModel()
-                    presenter.saveAddress(saveAddressDataModel)
+                if (et_kode_pos_mismatch.text.isEmpty()) {
+                    setOnClickZipCodes()
                 }
 
-            } else if (!isMismatch && isMismatchSolved) {
-                ll_normal.visibility = View.GONE
-                ll_mismatch.visibility = View.GONE
-                ll_mismatch_solved.visibility = View.VISIBLE
+            } else {
+                setMismatchSolvedMapHeader()
+                setMismatchSolvedForm()
 
-                showMismatchSolvedMapHeader(savedInstanceState)
-                showMismatchSolvedForm()
+                setOnClickZipCodes()
+            }
+            setupRvKodePosChips()
 
-                btn_save_address_mismatch_solved.setOnClickListener {
-                    setSaveAddressModel()
-                    presenter.saveAddress(saveAddressDataModel)
+            et_kota_kecamatan_mismatch.setOnClickListener {
+                showDistrictRecommendationBottomSheet()
+            }
+            if (et_kode_pos_mismatch.text.isEmpty()) {
+                et_kode_pos_mismatch.setOnClickListener {
+                    showZipCodes()
                 }
             }
         }
     }
 
-    private fun showNormalMapHeader(savedInstanceState: Bundle?) {
-        map_view_detail.onCreate(savedInstanceState)
-        map_view_detail.getMapAsync(this)
+    private fun setOnClickZipCodes() {
+        et_kode_pos_mismatch.setOnClickListener {
+            showZipCodes()
+        }
+    }
+
+    private fun setupRvKodePosChips() {
+        rv_kodepos_chips_mismatch.apply {
+            addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(it) })
+            layoutManager = chipsLayoutManager
+            adapter = zipCodeChipsAdapter
+        }
+
+        et_kode_pos_mismatch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
+                                           after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int,
+                                       count: Int) {
+                if (s.isNotEmpty()) {
+                    val input = "$s"
+                    val zipCodesDisplay = mutableListOf<String>()
+
+                    saveAddressDataModel?.zipCodes?.forEach {
+                        if (it.contains(input, ignoreCase = true)) {
+                            zipCodesDisplay.add(it)
+                        }
+                    }
+                    zipCodeChipsAdapter.zipCodes = zipCodesDisplay
+                    zipCodeChipsAdapter.notifyDataSetChanged()
+                }
+            }
+
+            override fun afterTextChanged(s: Editable) {
+            }
+        })
+    }
+
+    private fun setNormalMapHeader() {
+        disable_map_layout.visibility = View.GONE
+        icon_pointer.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_green_pointer))
+        icon_pointer.colorFilter = null
         btn_map.apply {
             text = getString(R.string.change_pinpoint)
+            val params = btn_map.layoutParams
+            params.width = 450
+            btn_map.layoutParams = params
             setOnClickListener {
-                presenter.changePinpoint(currentLat, currentLong, token, false, districtId, isMismatchSolved)
+                presenter.changePinpoint(currentLat, currentLong, token, false, districtId,
+                        isMismatchSolved, saveAddressDataModel?.zipCodes?.toMutableList()!!)
             }
         }
     }
 
-    private fun showMismatchMapHeader(savedInstanceState: Bundle?) {
-        map_view_detail_mismatch.onCreate(savedInstanceState)
-        map_view_detail_mismatch.getMapAsync(this)
-        btn_map_mismatch.apply {
+    private fun setMismatchMapHeader() {
+        disable_map_layout.visibility = View.VISIBLE
+        icon_pointer.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_green_pointer))
+        context?.resources?.getColor(R.color.separator_color)?.let { icon_pointer.setColorFilter(it) }
+        btn_map.apply {
             text = getString(R.string.define_pinpoint)
+            val params = btn_map.layoutParams
+            params.width = 550
+            btn_map.layoutParams = params
             setOnClickListener {
                 if (et_kota_kecamatan_mismatch.text.isEmpty()) {
                     hideKeyboard()
                     showToastError(getString(R.string.choose_district_first))
                 } else {
-                    presenter.changePinpoint(currentLat, currentLong, token, true, districtId, isMismatchSolved)
+                    presenter.changePinpoint(currentLat, currentLong, token, true, districtId,
+                            isMismatchSolved, saveAddressDataModel?.zipCodes?.toMutableList()!!)
                 }
             }
         }
     }
 
-    private fun showMismatchSolvedMapHeader(savedInstanceState: Bundle?) {
-        map_view_detail_mismatch_solved.onCreate(savedInstanceState)
-        map_view_detail_mismatch_solved.getMapAsync(this)
-        btn_map_mismatch_solved.apply {
+    private fun setMismatchSolvedMapHeader() {
+        disable_map_layout.visibility = View.GONE
+        icon_pointer.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_green_pointer))
+        icon_pointer.colorFilter = null
+        btn_map.apply {
             text = getString(R.string.change_pinpoint)
+            val params = btn_map.layoutParams
+            params.width = 450
+            btn_map.layoutParams = params
             setOnClickListener {
-                presenter.changePinpoint(currentLat, currentLong, token, false, districtId, isMismatchSolved)
+                presenter.changePinpoint(currentLat, currentLong, token, false, districtId,
+                        isMismatchSolved, saveAddressDataModel?.zipCodes?.toMutableList()!!)
             }
         }
     }
 
-    private fun showNormalForm() {
+    private fun setNormalForm() {
         tv_address_based_on_pinpoint.text = "${this.saveAddressDataModel?.title}, ${this.saveAddressDataModel?.formattedAddress}"
         et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
-        et_label_address.setText(labelRumah)
-        et_receiver_name.setText(userSession.name)
-        et_phone.setText(userSession.phoneNumber)
     }
 
-    private fun showMismatchForm() {
-        et_kota_kecamatan_mismatch.setOnClickListener {
-            showDistrictRecommendationBottomSheet()
-        }
-        et_kode_pos_mismatch.setOnClickListener {
-            showZipCodes()
-        }
-        et_label_address_mismatch.setText(labelRumah)
-        et_receiver_name_mismatch.setText(userSession.name)
-        et_phone_mismatch.setText(userSession.phoneNumber)
-    }
+    private fun setMismatchSolvedForm() {
+        et_kota_kecamatan_mismatch.setText(this.saveAddressDataModel?.formattedAddress)
+        et_alamat_mismatch.setText(this.saveAddressDataModel?.title)
+        et_detail_alamat_mismatch.setText(this.saveAddressDataModel?.editDetailAddress)
+        et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
 
-    private fun showMismatchSolvedForm() {
-        et_kota_kecamatan_mismatch_solved.setOnClickListener {
-            showDistrictRecommendationBottomSheet()
-        }
-        et_kode_pos_mismatch_solved.setOnClickListener {
-            showZipCodes()
-        }
-        et_kota_kecamatan_mismatch_solved.setText(this.saveAddressDataModel?.formattedAddress)
-        et_alamat_mismatch_solved.setText(this.saveAddressDataModel?.title)
-        et_detail_alamat_mismatch_solved.setText(this.saveAddressDataModel?.editDetailAddress)
-        et_label_address_mismatch_solved.setText(labelRumah)
-        et_receiver_name_mismatch_solved.setText(userSession.name)
-        et_phone_mismatch_solved.setText(userSession.phoneNumber)
+
     }
 
     private fun showDistrictRecommendationBottomSheet() {
@@ -273,34 +309,10 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     }
 
     private fun showZipCodes() {
-        val zipCodeList = zipCodes
-        val chipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
-        val staticDimen8dp = view?.context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
         ViewCompat.setLayoutDirection(rv_kodepos_chips_mismatch, ViewCompat.LAYOUT_DIRECTION_LTR)
-        val zipCodesChipsAdapter = ZipCodeChipsAdapter(context, this)
-        zipCodesChipsAdapter.zipCodes = zipCodeList.toMutableList()
+        zipCodeChipsAdapter.zipCodes = saveAddressDataModel?.zipCodes!!.toMutableList()
 
-        if (isMismatch && !isMismatchSolved) {
-            et_kode_pos_input_layout_mismatch.visibility = View.GONE
-            rv_kodepos_chips_mismatch.visibility = View.VISIBLE
-            rv_kodepos_chips_mismatch.apply {
-                addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) })
-                layoutManager = chipsLayoutManager
-                adapter = zipCodesChipsAdapter
-            }
-
-        } else if (!isMismatch && isMismatchSolved) {
-            et_kode_pos_input_layout_mismatch_solved.visibility = View.GONE
-            rv_kodepos_chips_mismatch_solved.visibility = View.VISIBLE
-            rv_kodepos_chips_mismatch_solved.apply {
-                addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) })
-                layoutManager = chipsLayoutManager
-                adapter = zipCodesChipsAdapter
-            }
-        }
+        rv_kodepos_chips_mismatch.visibility = View.VISIBLE
     }
 
     private fun setSaveAddressModel() {
@@ -308,36 +320,24 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         if (!isMismatch && !isMismatchSolved) {
             detailAddress = et_detail_address.text.toString()
 
-            saveAddressDataModel?.addressName = et_label_address.text.toString()
-            saveAddressDataModel?.receiverName = et_receiver_name.text.toString()
-            saveAddressDataModel?.phone = et_phone.text.toString()
-
             saveAddressDataModel?.address1 = "${saveAddressDataModel?.title} ${detailAddress}, ${saveAddressDataModel?.formattedAddress}"
             saveAddressDataModel?.address2 = "$currentLat,$currentLong"
 
         } else {
-            if (isMismatch && !isMismatchSolved) {
-                detailAddress = et_alamat_mismatch.text.toString()
-
-
-                saveAddressDataModel?.addressName = et_label_address_mismatch.text.toString()
-                saveAddressDataModel?.receiverName = et_receiver_name_mismatch.text.toString()
-                saveAddressDataModel?.phone = et_phone_mismatch.text.toString()
-
+            detailAddress = et_alamat_mismatch.text.toString()
+            if (isMismatch) {
                 saveAddressDataModel?.address1 = "${detailAddress} ${saveAddressDataModel?.selectedDistrict}"
                 saveAddressDataModel?.address2 = ""
 
-            } else if (!isMismatch && isMismatchSolved) {
-                detailAddress = et_detail_alamat_mismatch_solved.text.toString()
-
-                saveAddressDataModel?.addressName = et_label_address_mismatch_solved.text.toString()
-                saveAddressDataModel?.receiverName = et_receiver_name_mismatch_solved.text.toString()
-                saveAddressDataModel?.phone = et_phone_mismatch_solved.text.toString()
-
+            } else {
                 saveAddressDataModel?.address1 = "${saveAddressDataModel?.title} ${detailAddress}, ${saveAddressDataModel?.formattedAddress}"
                 saveAddressDataModel?.address2 = "$currentLat,$currentLong"
             }
         }
+
+        saveAddressDataModel?.addressName = et_label_address.text.toString()
+        saveAddressDataModel?.receiverName = et_receiver_name.text.toString()
+        saveAddressDataModel?.phone = et_phone.text.toString()
     }
 
     override fun onSuccessAddAddress(addAddressDataUiModel: AddAddressDataUiModel, saveAddressDataModel: SaveAddressDataModel) {
@@ -383,30 +383,12 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     }
 
     override fun onResume() {
-        if (!this.isMismatch && !this.isMismatchSolved) {
-            map_view_detail?.onResume()
-        } else {
-            if (this.isMismatch && !this.isMismatchSolved) {
-                map_view_detail_mismatch?.onResume()
-            } else if (!this.isMismatch && this.isMismatchSolved) {
-                map_view_detail_mismatch_solved?.onResume()
-            }
-        }
-
+        map_view_detail?.onResume()
         super.onResume()
     }
 
     override fun onPause() {
-        if (!this.isMismatch && !this.isMismatchSolved) {
-            map_view_detail?.onPause()
-        } else {
-            if (this.isMismatch && !this.isMismatchSolved) {
-                map_view_detail_mismatch?.onPause()
-            } else if (!this.isMismatch && this.isMismatchSolved) {
-                map_view_detail_mismatch_solved?.onPause()
-            }
-        }
-
+        map_view_detail?.onPause()
         super.onPause()
     }
 
@@ -416,30 +398,13 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     }
 
     override fun onDestroy() {
-        if (!this.isMismatch && !this.isMismatchSolved) {
-            map_view_detail?.onDestroy()
-        } else {
-            if (this.isMismatch && !this.isMismatchSolved) {
-                map_view_detail_mismatch?.onDestroy()
-            } else if (!this.isMismatch && this.isMismatchSolved) {
-                map_view_detail_mismatch_solved?.onDestroy()
-            }
-        }
-
+        map_view_detail?.onDestroy()
         super.onDestroy()
     }
 
     override fun onLowMemory() {
+        map_view_detail?.onLowMemory()
         super.onLowMemory()
-        if (!this.isMismatch && !this.isMismatchSolved) {
-            map_view_detail?.onLowMemory()
-        } else {
-            if (this.isMismatch && !this.isMismatchSolved) {
-                map_view_detail_mismatch?.onLowMemory()
-            } else if (!this.isMismatch && this.isMismatchSolved) {
-                map_view_detail_mismatch_solved?.onLowMemory()
-            }
-        }
     }
 
     override fun onConnected(p0: Bundle?) {
@@ -463,7 +428,6 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         val cityName = districtRecommendationItemUiModel.cityName
         val districtName = districtRecommendationItemUiModel.districtName
         val districtSelected = "$provinceName, $cityName, $districtName"
-        zipCodes = districtRecommendationItemUiModel.zipCodes
 
         et_kota_kecamatan_mismatch.setText(districtSelected)
         saveAddressDataModel?.selectedDistrict = districtSelected
@@ -472,6 +436,7 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         saveAddressDataModel?.districtId = districtRecommendationItemUiModel.districtId
         saveAddressDataModel?.latitude = ""
         saveAddressDataModel?.longitude = ""
+        saveAddressDataModel?.zipCodes = districtRecommendationItemUiModel.zipCodes
         autoCompletePresenter.getAutocomplete(districtName)
         this.districtId = districtRecommendationItemUiModel.districtId
     }
@@ -528,16 +493,8 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     }
 
     override fun onZipCodeClicked(zipCode: String) {
-        if (this.isMismatch && !this.isMismatchSolved) {
-            rv_kodepos_chips_mismatch.visibility = View.GONE
-            et_kode_pos_input_layout_mismatch.visibility = View.VISIBLE
-            et_kode_pos_mismatch.setText(zipCode)
-
-        } else if (!this.isMismatch && this.isMismatchSolved) {
-            rv_kodepos_chips_mismatch_solved.visibility = View.GONE
-            et_kode_pos_input_layout_mismatch_solved.visibility = View.VISIBLE
-            et_kode_pos_mismatch_solved.setText(zipCode)
-        }
+        rv_kodepos_chips_mismatch.visibility = View.GONE
+        et_kode_pos_mismatch.setText(zipCode)
         saveAddressDataModel?.postalCode = zipCode
     }
 }

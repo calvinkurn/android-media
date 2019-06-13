@@ -74,6 +74,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     private var districtId: Int? = null
     private val GREEN_ARGB = 0x40388E3C
     private var isMismatchSolved: Boolean? = null
+    private var zipCodes : MutableList<String>? = null
 
     @Inject
     lateinit var presenter: PinpointMapPresenter
@@ -106,6 +107,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
                     putBoolean(AddressConstants.EXTRA_IS_POLYGON, extra.getBoolean(AddressConstants.EXTRA_IS_POLYGON))
                     putInt(AddressConstants.EXTRA_DISTRICT_ID, extra.getInt(AddressConstants.EXTRA_DISTRICT_ID))
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
+                    putStringArrayList(AddressConstants.EXTRA_ZIPCODES, extra.getStringArrayList(AddressConstants.EXTRA_ZIPCODES))
                 }
             }
         }
@@ -135,6 +137,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
             isPolygon = arguments?.getBoolean(AddressConstants.EXTRA_IS_POLYGON)
             districtId = arguments?.getInt(AddressConstants.EXTRA_DISTRICT_ID)
             isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
+            zipCodes = arguments?.getStringArrayList(AddressConstants.EXTRA_ZIPCODES)
         }
 
         // current_location
@@ -276,7 +279,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         currentLong = getDistrictDataUiModel.longitude.toDouble()
         isGetDistrict = true
         moveMap(PinpointMapUtils.generateLatLng(currentLat, currentLong))
-        updateGetDistrictBottomSheet(presenter.convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel))
+        updateGetDistrictBottomSheet(presenter.convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel, zipCodes))
     }
 
     override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
@@ -289,10 +292,10 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
                 if (autofillDataUiModel.districtId != districtId) {
                     showToastError(getString(R.string.invalid_district))
                 } else {
-                    updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel))
+                    updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
                 }
             } else {
-                updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel))
+                updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
             }
         }
     }

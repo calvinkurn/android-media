@@ -20,6 +20,7 @@ import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.ArrayList
 import javax.inject.Inject
 
 /**
@@ -50,7 +51,8 @@ class AddEditAddressPresenter @Inject constructor(private val context: Context,
         }
     }
 
-    fun changePinpoint(lat: Double?, long: Double?, token: Token?, isPolygon: Boolean, districtId: Int?, isOriginMismatch: Boolean) {
+    fun changePinpoint(lat: Double?, long: Double?, token: Token?, isPolygon: Boolean, districtId: Int?,
+                       isMismatchSolved: Boolean, zipCodes: MutableList<String>) {
         val intent = Intent(context, PinpointMapActivity::class.java)
         intent.putExtra(AddressConstants.KERO_TOKEN, token)
         intent.putExtra(AddressConstants.EXTRA_LAT, lat)
@@ -58,7 +60,8 @@ class AddEditAddressPresenter @Inject constructor(private val context: Context,
         intent.putExtra(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, false)
         intent.putExtra(AddressConstants.EXTRA_IS_POLYGON, isPolygon)
         intent.putExtra(AddressConstants.EXTRA_DISTRICT_ID, districtId)
-        intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isOriginMismatch)
+        intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
+        intent.putStringArrayListExtra(AddressConstants.EXTRA_ZIPCODES, zipCodes as ArrayList<String>?)
         context.startActivity(intent)
     }
 
