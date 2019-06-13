@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.videoplayer.view.main.VideoDetailPlayer
 import kotlinx.android.synthetic.main.fragment_af_media_preview.*
 
 
