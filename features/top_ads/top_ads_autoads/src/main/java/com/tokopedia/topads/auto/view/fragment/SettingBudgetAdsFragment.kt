@@ -69,6 +69,18 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
         }
     }
 
+    override fun showLoading(){
+        cardView.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+        saveBtn.isEnabled = false
+    }
+
+    override fun hideLoading() {
+        progressBar.visibility = View.GONE
+        cardView.visibility = View.VISIBLE
+        saveBtn.isEnabled = true
+    }
+
     private fun showBudgetContainer() {
         budgetContainer.visibility = View.VISIBLE
         seekBar.visibility = View.VISIBLE

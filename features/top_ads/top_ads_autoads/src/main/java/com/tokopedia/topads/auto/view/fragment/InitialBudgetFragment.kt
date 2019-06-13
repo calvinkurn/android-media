@@ -89,6 +89,18 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         adsConfirmationSheet.setActionListener(this)
     }
 
+    override fun showLoading() {
+        cardView.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+        btnStartAuto.isEnabled = false
+    }
+
+    override fun hideLoading() {
+        progressBar.visibility = View.GONE
+        cardView.visibility = View.VISIBLE
+        btnStartAuto.isEnabled = true
+    }
+
     override fun getScreenName(): String? {
         return null
     }

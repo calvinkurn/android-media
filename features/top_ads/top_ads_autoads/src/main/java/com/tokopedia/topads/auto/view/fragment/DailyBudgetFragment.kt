@@ -18,7 +18,6 @@ import android.widget.SeekBar
 import android.widget.TextView
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.seller.common.widget.PrefixEditText
 import com.tokopedia.topads.auto.R
@@ -32,8 +31,6 @@ import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.layout_setting_daily_budget_ads.*
-import kotlinx.android.synthetic.main.layout_start_daily_budget.*
 import javax.inject.Inject
 
 /**
@@ -60,6 +57,10 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     abstract fun getLayoutId(): Int
 
     abstract fun setUpView(view: View)
+
+    abstract fun showLoading()
+
+    abstract fun hideLoading()
 
     override fun initInjector() {
         getComponent(AutoAdsComponent::class.java).inject(this)
@@ -151,18 +152,6 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
                 activity!!.finish()
             }
         }
-    }
-
-    fun showLoading(){
-        cardView.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
-        post_btn.isEnabled = false
-    }
-
-    fun hideLoading(){
-        progressBar.visibility = View.GONE
-        cardView.visibility = View.VISIBLE
-        post_btn.isEnabled = true
     }
 
     fun activatedAds(){
