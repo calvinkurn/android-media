@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.list.view.adapter
 
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -7,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
+import com.tokopedia.promocheckout.widget.TimerPromoCheckout
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
 import kotlinx.android.synthetic.main.item_list_promo_checkout.view.*
 
@@ -14,15 +16,18 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
 
     override fun bind(element: PromoCheckoutListModel?) {
         listenerTrackingCoupon.onImpressionCoupon(element)
+        var timerUsage = TimerPromoCheckout()
         ImageHandler.loadImageRounded2(view?.context, view?.imageBanner, element?.imageUrlMobile)
+        view?.imagePeriod?.setImageResource(R.drawable.ic_tp_rp_new)
+        view?.imageMinTrans?.setImageResource(R.drawable.ic_tp_time_new)
         view?.titlePeriod?.text = element?.usage?.text
         view?.titleMinTrans?.text = element?.minimumUsageLabel
-        if(TextUtils.isEmpty(element?.minimumUsage)) {
+        if (TextUtils.isEmpty(element?.minimumUsage)) {
             view?.textMinTrans?.visibility = View.GONE
-            if(TextUtils.isEmpty(element?.minimumUsageLabel)){
+            if (TextUtils.isEmpty(element?.minimumUsageLabel)) {
                 view?.titleMinTrans?.visibility = View.GONE
                 view?.imageMinTrans?.visibility = View.GONE
-            }else{
+            } else {
                 view?.titleMinTrans?.visibility = View.VISIBLE
                 view?.imageMinTrans?.visibility = View.VISIBLE
             }
@@ -32,45 +37,74 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
             view?.textMinTrans?.visibility = View.VISIBLE
             view?.textMinTrans?.text = element?.minimumUsage
         }
+        setDateUsage(element)
         if ((element?.usage?.activeCountdown ?: 0 > 0 &&
-                        element?.usage?.activeCountdown ?: 0 < TimerCheckoutWidget.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
-            view?.timerUsage?.listener = object : TimerCheckoutWidget.Listener{
+                        element?.usage?.activeCountdown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+            timerUsage?.listener = object : TimerPromoCheckout.Listener {
                 override fun onTick(l: Long) {
                     element?.usage?.activeCountdown = l.toInt()
                 }
 
                 override fun onFinishTick() {
-
+                    setTimerEnabled()
                 }
 
             }
-            setTimerUsage(element?.usage?.activeCountdown?.toLong() ?: 0)
+            setActiveTimerUsage(timerUsage, element?.usage?.activeCountdown?.toLong() ?: 0)
         } else if ((element?.usage?.expiredCountdown ?: 0 > 0 &&
-                        element?.usage?.expiredCountdown ?: 0 < TimerCheckoutWidget.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
-            view?.timerUsage?.listener = object : TimerCheckoutWidget.Listener{
+                        element?.usage?.expiredCountdown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+            view?.timerUsage?.listener = object : TimerCheckoutWidget.Listener {
                 override fun onTick(l: Long) {
                     element?.usage?.expiredCountdown = l.toInt()
                 }
 
                 override fun onFinishTick() {
-
+                    onExpiryTimerEnded()
                 }
 
             }
-            setTimerUsage(element?.usage?.expiredCountdown?.toLong() ?: 0)
-        }else{
-            setDateUsage(element)
+            setExpiryTimerUsage(element?.usage?.expiredCountdown?.toLong() ?: 0)
+        }
+        enableOrDisableImages(element)
+    }
+
+    private fun enableOrDisableImages(item: PromoCheckoutListModel?) {
+        item?.let { item ->
+            if (item.usage != null) {
+                if (item.usage?.activeCountdown!! > 0 || item.usage?.expiredCountdown!! <= 0) {
+                    setTimerDisabled()
+                } else {
+                    setTimerEnabled()
+                }
+            } else {
+                setTimerDisabled()
+            }
         }
     }
 
+    private fun setTimerDisabled() {
+        view?.imagePeriod?.setColorFilter(ContextCompat.getColor(view?.context, R.color.pc_timer_disable_color))
+        view?.imageMinTrans?.setColorFilter(ContextCompat.getColor(view?.context, R.color.pc_timer_disable_color))
+    }
+
+    private fun setTimerEnabled() {
+        view?.imagePeriod?.setColorFilter(ContextCompat.getColor(view?.context, R.color.tkpd_main_green))
+        view?.imageMinTrans?.setColorFilter(ContextCompat.getColor(view?.context, R.color.tkpd_main_green))
+    }
+
     fun setDateUsage(element: PromoCheckoutListModel?) {
-        view?.timerUsage?.visibility = View.GONE
         view?.titlePeriod?.visibility = View.VISIBLE
         view?.textPeriod?.visibility = View.VISIBLE
         view?.textPeriod?.text = element?.usage?.usageStr
     }
 
-    fun setTimerUsage(countDown: Long) {
+    private fun setActiveTimerUsage(timerUsage: TimerPromoCheckout, countDown: Long) {
+        timerUsage?.cancel()
+        timerUsage?.expiredTimer = countDown
+        timerUsage?.start()
+    }
+
+    fun setExpiryTimerUsage(countDown: Long) {
         view?.timerUsage?.cancel()
         view?.timerUsage?.visibility = View.VISIBLE
         view?.titlePeriod?.visibility = View.GONE
@@ -79,7 +113,15 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
         view?.timerUsage?.start()
     }
 
-    interface ListenerTrackingCoupon{
+    fun onExpiryTimerEnded() {
+        view?.timerUsage?.cancel()
+        view?.timerUsage?.visibility = View.GONE
+        view?.titlePeriod?.visibility = View.VISIBLE
+        view?.textPeriod?.visibility = View.VISIBLE
+        setTimerDisabled()
+    }
+
+    interface ListenerTrackingCoupon {
         fun onImpressionCoupon(promoCheckoutListModel: PromoCheckoutListModel?)
     }
 
