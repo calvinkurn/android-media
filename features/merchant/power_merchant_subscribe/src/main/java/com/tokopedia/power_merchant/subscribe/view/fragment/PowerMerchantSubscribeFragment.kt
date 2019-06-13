@@ -10,12 +10,20 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.contract.PmSubscribeContract
+import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import javax.inject.Inject
 
-class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
+class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract.View {
+
+    @Inject
+    lateinit var presenter : PmSubscribeContract.Presenter
 
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
+        DaggerPowerMerchantSubscribeComponent.builder().
+                build().inject(this)
 
     }
 
@@ -35,6 +43,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         return inflater.inflate(R.layout.fragment_power_merchant_subscribe, container, false)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

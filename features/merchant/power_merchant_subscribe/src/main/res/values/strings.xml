@@ -12,13 +12,32 @@
     <string name="pm_label_market_insight">Fitur Wawasan Pasar</string>
     <string name="pm_label_member">Member Power Merchant</string>
     <string name="pm_label_member_status">Status Keanggotaan</string>
+
+    <string name="pm_label_kyc_verification_header_1">Lengkapi informasi kartu</string>
+    <string name="pm_label_kyc_verification_header_2">identitasmu</string>
+    <string name="pm_label_kyc_verification_desc_1">Untuk menjadi Power Merchant kamu harus upload foto KTP dan </string>
+    <string name="pm_label_kyc_verification_desc_2">Selfie dengan KTP melalui aplikasi Tokopedia. </string>
+    <string name="pm_label_kyc_button_submit">Lebih Lanjut</string>
+    <string name="pm_label_button_close">Tutup</string>
+    
+    <string name="pm_label_score_verification_header_1">Skor performa toko</string>
+    <string name="pm_label_score_verification_header_2">dibawah 75</string>
+    <string name="pm_label_score_verification_desc_1">Saat ini skor performa toko anda dibawah 60.</string>
+    <string name="pm_label_score_verification_desc_2">Ayo tingkatkan 15 skor lagi untuk bisa.</string>
+    <string name="pm_label_score_verification_desc_3">menjadi Power Merchant!</string>
+    <string name="pm_label_score_button_verification">Verifikasi Sekarang </string>
+
+
+
     <string name="pm_label_button_activate">Aktivasi Power Merchant</string>
     <string name="pm_label_member_cancel">Batalkan keanggotaan kapan saja</string>
     <string name="pm_period">Periode baru dimulai pada 1 Juli 2019 pukul 04.00</string>
+    <string name="pm_label_cancellation_header">Pengajuan pembatalan berhasil</string>
+    <string name="pm_label_cancellation_duration">Fitur akan nonaktif pada 1 Juli 2019, pukul 04.00 WIB.</string>
     <string name="pm_label_cost_1">Pengaktifan Power Merchant selanjutnya</string>
     <string name="pm_label_cost_2">dikenakan biaya 1% dari setiap penjualan bersih</string>
     <string name="pm_label_cost_3">Anda. Selengkapnya</string>
-    <string name="pm_label_kyc_verivication">Lakukan verivikasi KYC</string>
+    <string name="pm_label_kyc_verivication">Lakukan verifikasi KYC</string>
     <string name="pm_label_score_point">Skor performa toko lebih dari 75 poin </string>
     <string name="pm_label_tnc_header">Syarat menjadi Power Merchant</string>
     <string name="pm_label_price_cashback">Sisa biaya Power Merchant akan kembali ke Saldo Tokopedia dalam 1 minggu.</string>

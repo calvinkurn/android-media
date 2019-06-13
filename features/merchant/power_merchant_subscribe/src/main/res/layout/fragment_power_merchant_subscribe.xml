@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/pm_start_gradient"
     tools:context=".view.fragment.PowerMerchantSubscribeFragment">
-
 
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/ll_footer_submit">
+        app:layout_constraintBottom_toTopOf="@+id/ll_footer_submit"
+        app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -28,89 +28,145 @@
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/txt_join_1"
-                style="@style/TextView.Medium"
+                style="@style/TextView.Title.Bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/img_top_1"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="@string/pm_label_join_1"
-                android:textStyle="bold" />
+                android:text="@string/pm_label_join_1" />
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/txt_join_2"
-                style="@style/TextView.Medium"
+                style="@style/TextView.Title.Bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txt_join_1"
                 android:layout_centerHorizontal="true"
-                android:text="@string/pm_label_join_2"
-                android:textStyle="bold" />
+                android:text="@string/pm_label_join_2" />
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/txt_info"
-                style="@style/TextView.Title"
-                android:paddingLeft="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_10"
+                style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="match_parent"
-                android:layout_marginRight="@dimen/dp_18"
-                android:layout_marginLeft="@dimen/dp_18"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txt_join_2"
                 android:layout_centerHorizontal="true"
-                android:text="@string/pm_label_info"
+                android:layout_marginLeft="@dimen/dp_18"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_18"
+                android:layout_marginBottom="@dimen/dp_22"
                 android:gravity="center"
-                android:layout_marginBottom="@dimen/dp_10"/>
+                android:lineSpacingExtra="@dimen/sp_6"
+                android:text="@string/pm_label_info" />
 
-            <include layout="@layout/member_power_merchant"
+
+            <FrameLayout
+                android:id="@+id/ticker_yellow_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_info"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/ticker_yellow_cancellation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_rectangle_yellow"
+                    app:cardBackgroundColor="@color/ticker_yellow"
+                    app:cardCornerRadius="@dimen/dp_8">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_5"
+                        android:orientation="vertical"
+                        android:padding="@dimen/dp_8">
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            style="@style/TextView.Medium.FontMedium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="@dimen/sp_6"
+                            android:text="@string/pm_label_cancellation_header" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            style="@style/TextView.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_10"
+                            android:text="@string/pm_label_cancellation_duration" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_ticker_warning_cropped" />
+
+                </android.support.v7.widget.CardView>
+            </FrameLayout>
+
+            <include
                 android:id="@+id/cardview_member"
-                android:layout_height="wrap_content"
+                layout="@layout/member_power_merchant"
                 android:layout_width="match_parent"
-                android:layout_below="@id/txt_info"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_10"/>
+                android:layout_height="160dp"
+                android:layout_below="@id/ticker_yellow_container"
+                android:layout_marginBottom="@dimen/dp_24"/>
 
-            <include layout="@layout/power_merchant_benefit"
+            <include
                 android:id="@+id/cardview_benefit"
-                android:layout_height="wrap_content"
+                layout="@layout/power_merchant_benefit"
                 android:layout_width="match_parent"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/cardview_member"
-                android:layout_marginBottom="@dimen/dp_20"/>
-
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/pm_ticker"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:cardCornerRadius="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                app:cardBackgroundColor="@color/ticker_blue"
-                android:layout_below="@+id/cardview_benefit"
-                android:background="@drawable/border_rectangle_yellow">
+                android:layout_marginBottom="@dimen/dp_24" />
 
-                <com.tokopedia.design.component.TextViewCompat
+            <FrameLayout
+                android:id="@+id/ticker_blue_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cardview_benefit"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/pm_ticker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/dp_14"
-                    android:text="@string/pm_label_price_cashback"
-                    style="@style/TextView.Small"/>
+                    android:background="@drawable/border_rectangle_yellow"
+                    app:cardBackgroundColor="@color/ticker_blue"
+                    app:cardCornerRadius="@dimen/dp_8">
 
-            </android.support.v7.widget.CardView>
+                    <com.tokopedia.design.component.TextViewCompat
+                        style="@style/TextView.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_5"
+                        android:lineSpacingExtra="@dimen/sp_6"
+                        android:padding="@dimen/dp_8"
+                        android:text="@string/pm_label_price_cashback" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_ticker_announcement_cropped" />
+
+                </android.support.v7.widget.CardView>
+            </FrameLayout>
 
 
-            <include layout="@layout/tnc_power_merchant"
-                android:layout_height="wrap_content"
+            <include
+                layout="@layout/tnc_power_merchant"
                 android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ticker_blue_container"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_below="@+id/pm_ticker" />
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_16" />
 
         </RelativeLayout>
 
@@ -135,7 +191,6 @@
             android:text="@string/pm_label_button_activate" />
 
     </LinearLayout>
-
 
 
 </android.support.constraint.ConstraintLayout>

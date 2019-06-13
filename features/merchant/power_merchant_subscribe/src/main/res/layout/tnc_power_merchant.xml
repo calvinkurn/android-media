@@ -41,7 +41,7 @@
             android:id="@+id/unchecked_kyc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_checked_outline"
+            android:src="@drawable/ic_unckecked_outline"
             android:layout_marginLeft="@dimen/dp_5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
@@ -76,7 +76,7 @@
             android:id="@+id/unchecked_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_checked_outline"
+            android:src="@drawable/ic_unckecked_outline"
             android:layout_marginLeft="@dimen/dp_5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
