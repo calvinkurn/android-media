@@ -1,9 +1,6 @@
 package com.tokopedia.hotel.roomlist.usecase
 
-import android.util.Log
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
