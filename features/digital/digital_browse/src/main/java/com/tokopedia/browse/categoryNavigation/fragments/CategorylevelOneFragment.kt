@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,11 +17,12 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.adapters.CategoryLevelOneAdapter
 import com.tokopedia.browse.categoryNavigation.data.model.category.CategoriesItem
-import com.tokopedia.browse.categoryNavigation.data.model.category.CategoryAllList
 import com.tokopedia.browse.categoryNavigation.di.CategoryNavigationComponent
 import com.tokopedia.browse.categoryNavigation.di.DaggerCategoryNavigationComponent
 import com.tokopedia.browse.categoryNavigation.view.CategoryChangeListener
 import com.tokopedia.browse.categoryNavigation.viewmodel.CategoryLevelOneViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_categorylevel_one.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -70,21 +72,31 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     }
 
     private fun setUpObserver() {
-        categoryBrowseViewModel.getCategoryList().observe(this, Observer<CategoryAllList> {
-            categoryList.clear()
-            categoryList.addAll(it?.categories as ArrayList<CategoriesItem>)
-            categoryList[0].isSelected = true
+        categoryBrowseViewModel.getCategoryList().observe(this, Observer {
 
-            master_list.adapter.notifyDataSetChanged()
-
-            initiate()
+            when (it) {
+                is Success -> {
+                    categoryList.clear()
+                    categoryList.addAll(it.data.categories as ArrayList<CategoriesItem>)
+                    categoryList[0].isSelected = true
+                    master_list.adapter.notifyDataSetChanged()
+                    initiate()
+                }
+                is Fail -> {
+                    (activity as CategoryChangeListener).onError()
+                }
+            }
 
         })
     }
 
+    fun reloadData() {
+        categoryBrowseViewModel.bound()
+    }
+
     private fun initiate() {
         if (activity != null) {
-            (activity as CategoryChangeListener).onCategoryChanged(categoryList[0].id!!, categoryList[0].name!!,categoryList[0].applinks)
+            (activity as CategoryChangeListener).onCategoryChanged(categoryList[0].id!!, categoryList[0].name!!, categoryList[0].applinks)
         }
     }
 
@@ -97,7 +109,7 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
                 master_list.adapter.notifyItemChanged(selectedPosition)
                 selectedPosition = position
                 if (activity != null)
-                    (activity as CategoryChangeListener).onCategoryChanged(id, categoryName,applink)
+                    (activity as CategoryChangeListener).onCategoryChanged(id, categoryName, applink)
             }
         }
     }
@@ -106,6 +118,6 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     interface CategorySelectListener {
         fun onItemClicked(id: String, position: Int, categoryName: String, applink: String?)
     }
-
 }
+
 

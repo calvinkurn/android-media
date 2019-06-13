@@ -7,6 +7,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -16,9 +17,12 @@ import com.tokopedia.browse.categoryNavigation.fragments.CategoryLevelTwoFragmen
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
 import com.tokopedia.browse.categoryNavigation.fragments.Listener
 import kotlinx.android.synthetic.main.activity_category_browse.*
+import kotlinx.android.synthetic.main.activity_category_browse.empty_view
+import kotlinx.android.synthetic.main.empty_category_view.*
 
 
 open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener {
+
 
     private var masterFragment = Fragment()
     private var slaveFragment = Fragment()
@@ -53,19 +57,31 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     }
 
     override fun setupFragment(savedInstance: Bundle?) {
+        initView()
         inflateFragment()
     }
 
+    private fun initView() {
+        tv_button_retry.setOnClickListener {
+            empty_view.visibility = View.GONE
+            (slaveFragment as CategoryLevelTwoFragment).startShimmer(true)
+            (masterFragment as CategorylevelOneFragment).reloadData()
+        }
+    }
+
     override fun inflateFragment() {
+        slaveFragment = CategoryLevelTwoFragment.newInstance()
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.slave_view, slaveFragment, tagFragment)
+                .commit()
+
+
         masterFragment = CategorylevelOneFragment.newInstance()
         supportFragmentManager.beginTransaction()
                 .replace(R.id.master_view, masterFragment, tagFragment)
                 .commit()
 
-        slaveFragment = CategoryLevelTwoFragment.newInstance()
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.slave_view, slaveFragment, tagFragment)
-                .commit()
+
     }
 
     override fun getLayoutRes(): Int {
@@ -73,7 +89,15 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     }
 
     override fun onCategoryChanged(id: String, categoryName: String, applink: String?) {
-        (slaveFragment as Listener).refreshView(id, categoryName,applink)
+        empty_view.visibility = View.GONE
+
+
+        (slaveFragment as Listener).refreshView(id, categoryName, applink)
+    }
+
+    override fun onError() {
+        (slaveFragment as CategoryLevelTwoFragment).startShimmer(false)
+        empty_view.visibility = View.VISIBLE
     }
 
 
@@ -104,4 +128,5 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
 interface CategoryChangeListener {
     fun onCategoryChanged(id: String, categoryName: String, applink: String?)
+    fun onError()
 }

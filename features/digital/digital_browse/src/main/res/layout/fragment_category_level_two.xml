@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -19,8 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_16"
-        android:text="Lihat Semua"
         android:paddingBottom="@dimen/dp_14"
+        android:text="Lihat Semua"
         android:textColor="@color/green_text"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
@@ -122,6 +123,7 @@
                 android:id="@+id/shimmer_layout_default"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <include
@@ -150,5 +152,17 @@
 
 
     </android.support.v4.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/empty_view_second_level"
+        layout="@layout/empty_category_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </LinearLayout>

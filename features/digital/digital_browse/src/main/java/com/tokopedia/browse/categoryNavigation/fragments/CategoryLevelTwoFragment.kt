@@ -23,6 +23,8 @@ import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem
 import com.tokopedia.browse.categoryNavigation.di.CategoryNavigationComponent
 import com.tokopedia.browse.categoryNavigation.di.DaggerCategoryNavigationComponent
 import com.tokopedia.browse.categoryNavigation.viewmodel.CategoryLevelTwoViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_category_level_two.*
 import javax.inject.Inject
 
@@ -63,7 +65,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         current_position = id
         currentCategoryName = categoryName
         categoryLevelTwoViewModel.refresh(id)
-        categoryLevelTwoViewModel.fetchHotlist(id,currentCategoryName)
+        categoryLevelTwoViewModel.fetchHotlist(id, currentCategoryName)
         setShimmer(id)
         category_name.text = categoryName
         hotlist_name.text = "Hotlist $categoryName"
@@ -127,11 +129,25 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     }
 
     private fun setUpObserver() {
-        categoryLevelTwoViewModel.getCategoryChildren().observe(this, Observer<List<ChildItem>> {
-            childList.clear()
-            childList.addAll(it as List<ChildItem>)
-            removeShimmer()
-            slave_list.adapter = CategoryLevelTwoAdapter(childList)
+        categoryLevelTwoViewModel.getCategoryChildren().observe(this, Observer {
+
+            when (it) {
+                is Success -> {
+                    empty_view_second_level.visibility = View.GONE
+                    childList.clear()
+                    childList.addAll(it.data as List<ChildItem>)
+                    removeShimmer()
+                    slave_list.adapter = CategoryLevelTwoAdapter(childList)
+                }
+
+                is Fail -> {
+                    shimmer_layout_default.visibility = View.GONE
+                    shimmer_layout.visibility = View.GONE
+                    empty_view_second_level.visibility = View.VISIBLE
+
+                }
+            }
+
         })
 
         categoryLevelTwoViewModel.getCategoryHotlist().observe(this, Observer<List<ListItem>> {
@@ -143,6 +159,13 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     }
 
     private fun initView() {
+
+        empty_view_second_level.setOnClickListener {
+            categoryLevelTwoViewModel.refresh(current_position)
+
+        }
+
+
         categoryLevelTwoAdapter = CategoryLevelTwoAdapter(childList)
         gridLayoutManager = GridLayoutManager(context, 2)
 
@@ -176,6 +199,22 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             categoryLevelTwoViewModel = viewModelProvider.get(CategoryLevelTwoViewModel::class.java)
         }
+    }
+
+    fun startShimmer(isStarted: Boolean) {
+        if (isStarted) {
+            if (current_position == "0") {
+                shimmer_layout_default.visibility = View.VISIBLE
+                shimmer_layout.visibility = View.GONE
+            } else {
+                shimmer_layout_default.visibility = View.GONE
+                shimmer_layout.visibility = View.VISIBLE
+            }
+        } else {
+            shimmer_layout_default.visibility = View.GONE
+            shimmer_layout.visibility = View.GONE
+        }
+
     }
 }
 

@@ -129,7 +129,7 @@ public class ProductCardView extends BaseCustomView {
             if(fixedHeight) {
                 ratingReviewContainer.setVisibility(View.INVISIBLE);
             } else {
-                ratingReviewContainer.setVisibility(View.GONE);
+            //    ratingReviewContainer.setVisibility(View.GONE);
             }
         }
     }

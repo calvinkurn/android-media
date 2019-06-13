@@ -2,19 +2,21 @@ package com.tokopedia.browse.categoryNavigation.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
 import com.tokopedia.browse.categoryNavigation.data.model.hotlist.CategoryHotlist
 import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem
 import com.tokopedia.browse.categoryNavigation.domain.usecase.GetCategoryHotListUseCase
 import com.tokopedia.browse.categoryNavigation.domain.usecase.GetCategoryLevelTwoUsecase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import rx.Subscriber
 import javax.inject.Inject
 
 class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: GetCategoryLevelTwoUsecase,
                                                     var getCategoryHotListUseCase: GetCategoryHotListUseCase) : ViewModel() {
 
-    var childItem = MutableLiveData<List<ChildItem>>()
+    var childItem = MutableLiveData<Result<List<ChildItem>>>()
 
     var hotlistItem = MutableLiveData<List<ListItem>>()
 
@@ -23,24 +25,22 @@ class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: 
 
         getCategoryListUseCase.execute(getCategoryListUseCase.createRequestParams(true, id), object : Subscriber<List<ChildItem>>() {
             override fun onNext(childItemList: List<ChildItem>) {
-                childItem.value = childItemList
-
+                childItem.value = Success(childItemList)
             }
 
             override fun onCompleted() {
-
             }
 
-            override fun onError(e: Throwable?) {
-
+            override fun onError(e: Throwable) {
+                childItem.value = Fail(e)
             }
         })
     }
 
 
-    fun fetchHotlist(categoryId: String,categoryname:String) {
+    fun fetchHotlist(categoryId: String, categoryname: String) {
 
-        getCategoryHotListUseCase.execute(getCategoryHotListUseCase.createRequestParams(categoryId.toInt(),categoryname), object : Subscriber<CategoryHotlist>() {
+        getCategoryHotListUseCase.execute(getCategoryHotListUseCase.createRequestParams(categoryId.toInt(), categoryname), object : Subscriber<CategoryHotlist>() {
             override fun onNext(categoryHotlist: CategoryHotlist?) {
                 categoryHotlist!!.list.let {
                     if (categoryHotlist.list!!.isNotEmpty()) {
@@ -52,13 +52,10 @@ class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: 
             }
 
             override fun onCompleted() {
-                Log.d("CategoryLevelTwoViewModel", "onCompleted")
-
 
             }
 
             override fun onError(e: Throwable?) {
-                Log.d("CategoryLevelTwoViewModel", e.toString())
 
 
             }
@@ -67,7 +64,7 @@ class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: 
 
     }
 
-    fun getCategoryChildren(): MutableLiveData<List<ChildItem>> {
+    fun getCategoryChildren(): MutableLiveData<Result<List<ChildItem>>> {
         return childItem
     }
 
