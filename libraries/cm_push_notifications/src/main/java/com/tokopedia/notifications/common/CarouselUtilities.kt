@@ -5,26 +5,26 @@ import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.text.TextUtils
-import com.tokopedia.notifications.model.Carousal
+import com.tokopedia.notifications.model.Carousel
 import java.io.*
 
 /**
  * Created by Ashwani Tyagi on 13/12/18.
  */
-object CarousalUtilities {
+object CarouselUtilities {
 
-    private const val IMAGE_DIR = "imageDir"
+    private const val IMAGE_DIR = "Tokopedia"
     private const val PNG_QUALITY = 100
 
-    fun downloadImages(context: Context, carousalList: List<Carousal>) {
-        for (carousal in carousalList) {
-            if (!TextUtils.isEmpty(carousal.filePath)) {
+    fun downloadImages(context: Context, carouselList: List<Carousel>) {
+        for (carousel in carouselList) {
+            if (!TextUtils.isEmpty(carousel.filePath)) {
                 continue
             }
-            val bitmap = CMNotificationUtils.loadBitmapFromUrl(carousal.icon)
+            val bitmap = CMNotificationUtils.loadBitmapFromUrl(carousel.icon)
             if (null != bitmap) {
-                val path = carousalSaveBitmapToInternalStorage(context, bitmap, System.currentTimeMillis().toString())
-                carousal.filePath = path
+                val path = carouselSaveBitmapToInternalStorage(context, bitmap, System.currentTimeMillis().toString())
+                carousel.filePath = path
             }
         }
 
@@ -36,7 +36,7 @@ object CarousalUtilities {
      * @param fileName
      * @return
      */
-    private fun carousalSaveBitmapToInternalStorage(context: Context, bitmapImage: Bitmap, fileName: String): String? {
+    private fun carouselSaveBitmapToInternalStorage(context: Context, bitmapImage: Bitmap, fileName: String): String? {
         var fileSaved = false
         val cw = ContextWrapper(context.applicationContext)
         val directory = cw.getDir(IMAGE_DIR, Context.MODE_PRIVATE)
@@ -66,7 +66,7 @@ object CarousalUtilities {
      * @param path
      * @return
      */
-    fun carousalLoadImageFromStorage(path: String?): Bitmap? {
+    fun carouselLoadImageFromStorage(path: String?): Bitmap? {
         var b: Bitmap? = null
         try {
             val f = File(path)
@@ -77,7 +77,7 @@ object CarousalUtilities {
         return b
     }
 
-    fun deleteCarousalImageDirectory(context: Context) {
+    fun deleteCarouselImageDirectory(context: Context) {
         try {
             val cw = ContextWrapper(context.applicationContext)
             val dir = cw.getDir(IMAGE_DIR, Context.MODE_PRIVATE)

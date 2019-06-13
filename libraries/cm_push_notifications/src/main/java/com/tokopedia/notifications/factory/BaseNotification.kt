@@ -40,7 +40,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
                 builder = NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
             } else {
-                builder = NotificationCompat.Builder(context, CMConstant.NotificationGroup.CHANNEL_ID)
+                builder = NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
             }
 
             if (!TextUtils.isEmpty(baseNotificationModel.subText)) {
@@ -52,7 +52,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             if (baseNotificationModel.isUpdateExisting) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     silentChannel()
-                    builder.setChannelId("Channel_Silent")
+                    builder.setChannelId(CMConstant.NotificationChannel.Channel_DefaultSilent_Id)
                 } else {
                     builder.setSound(null)
                     builder.setVibrate(null)
@@ -83,7 +83,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
                 builder = NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
             } else {
-                builder = NotificationCompat.Builder(context, CMConstant.NotificationGroup.CHANNEL_ID)
+                builder = NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
             }
             if (!TextUtils.isEmpty(baseNotificationModel.subText)) {
                 builder.setSubText(baseNotificationModel.subText)
@@ -158,10 +158,10 @@ abstract class BaseNotification internal constructor(protected var context: Cont
     private fun silentChannel() {
         val importance = NotificationManager.IMPORTANCE_MAX
         val notificationManager = context.getSystemService(NotificationManager::class.java)
-        val notificationChannel = NotificationChannel("Channel_Silent",
-                "Carousal",
+        val notificationChannel = NotificationChannel(CMConstant.NotificationChannel.Channel_DefaultSilent_Id,
+                CMConstant.NotificationChannel.Channel_DefaultSilent_Name,
                 importance)
-        notificationChannel.description = "no sound"
+        notificationChannel.description = CMConstant.NotificationChannel.Channel_DefaultSilent_DESCRIPTION
         notificationChannel.setSound(null, null)
         notificationChannel.enableLights(false)
         notificationChannel.lightColor = Color.BLUE
@@ -175,7 +175,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             val importance = NotificationManager.IMPORTANCE_MAX
             val channel = NotificationChannel(baseNotificationModel.channelName,
                     baseNotificationModel.channelName, importance)
-            channel.description = CMConstant.NotificationGroup.CHANNEL_DESCRIPTION
+            channel.description = CMConstant.NotificationChannel.CHANNEL_DESCRIPTION
 
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             if (baseNotificationModel.soundFileName != null && !baseNotificationModel.soundFileName!!.isEmpty()) {
@@ -199,15 +199,15 @@ abstract class BaseNotification internal constructor(protected var context: Cont
     private fun createDefaultChannel() {
         val importance = NotificationManager.IMPORTANCE_MAX
         val notificationManager = context.getSystemService(NotificationManager::class.java)
-        val channel = NotificationChannel(CMConstant.NotificationGroup.CHANNEL_ID,
-                CMConstant.NotificationGroup.CHANNEL,
+        val channel = NotificationChannel(CMConstant.NotificationChannel.CHANNEL_ID,
+                CMConstant.NotificationChannel.CHANNEL,
                 importance)
         val att = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                 .build()
         channel.setSound(ringtoneUri, att)
         channel.setShowBadge(true)
-        channel.description = CMConstant.NotificationGroup.CHANNEL_DESCRIPTION
+        channel.description = CMConstant.NotificationChannel.CHANNEL_DESCRIPTION
         channel.vibrationPattern = vibratePattern
         notificationManager.createNotificationChannel(channel)
 
@@ -262,7 +262,6 @@ abstract class BaseNotification internal constructor(protected var context: Cont
     }
 
     internal fun createMainPendingIntent(baseNotificationModel: BaseNotificationModel, requestCode: Int): PendingIntent {
-        val resultPendingIntent: PendingIntent
         var intent = Intent(context, CMBroadcastReceiver::class.java)
         intent.action = CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
@@ -270,39 +269,19 @@ abstract class BaseNotification internal constructor(protected var context: Cont
         intent.putExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK, baseNotificationModel.appLink)
         intent.putExtras(getBundle(baseNotificationModel))
         intent = getCouponCode(intent)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            resultPendingIntent = PendingIntent.getBroadcast(
+        return PendingIntent.getBroadcast(
                     context,
                     requestCode,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             )
-        } else {
-            resultPendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
-
-        return resultPendingIntent
     }
 
     internal fun createDismissPendingIntent(notificationId: Int, requestCode: Int): PendingIntent {
         val intent = Intent(context, CMBroadcastReceiver::class.java)
         intent.action = CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, notificationId)
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        } else {
-            PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
+        return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     protected fun getBundle(baseNotificationModel: BaseNotificationModel): Bundle {

@@ -87,12 +87,14 @@ public interface CMConstant {
         String GRID_APP_LINK = "GRID_APP_LINK";
     }
 
-    interface NotificationGroup {
+    interface NotificationChannel {
         String CHANNEL = "General";
         String CHANNEL_ID = "General";
-        String CHANNEL_DESCRIPTION = "General";/*
-        String CHANNEL_GROUP_ID = "Marketing";
-        String CHANNEL_GROUP_NAME = "Marketing";*/
+        String CHANNEL_DESCRIPTION = "General";
+
+        String Channel_DefaultSilent_Id = "Default_Channel";
+        String Channel_DefaultSilent_Name = "Default";
+        String Channel_DefaultSilent_DESCRIPTION = "Dafault Silent";
     }
 
     interface ReceiverAction {

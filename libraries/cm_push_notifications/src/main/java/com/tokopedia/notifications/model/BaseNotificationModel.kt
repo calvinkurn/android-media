@@ -1,7 +1,6 @@
 package com.tokopedia.notifications.model
 
 import org.json.JSONObject
-import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -33,7 +32,7 @@ class BaseNotificationModel {
 
     var videoPushModel: JSONObject? = null
 
-    var carousalList: List<Carousal> = ArrayList()
+    var carouselList: List<Carousel> = ArrayList()
 
     var gridList: List<Grid> = ArrayList()
     var subText: String? = null
@@ -41,7 +40,7 @@ class BaseNotificationModel {
     var visualCollapsedImageUrl: String? = null
     var visualExpandedImageUrl: String? = null
 
-    var carousalIndex: Int = 0
+    var carouselIndex: Int = 0
     var isVibration: Boolean = true
     var isSound: Boolean = true
     var isUpdateExisting: Boolean = false

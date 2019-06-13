@@ -162,53 +162,31 @@ internal class ActionNotification internal constructor(context: Context, baseNot
 
 
     private fun getButtonPendingIntent(actionButton: ActionButton, requestCode: Int): PendingIntent {
-        val resultPendingIntent: PendingIntent
         val intent = Intent(context, CMBroadcastReceiver::class.java)
         intent.action = CMConstant.ReceiverAction.ACTION_BUTTON
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
         intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
         intent.putExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK, actionButton.appLink)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            resultPendingIntent = PendingIntent.getBroadcast(
+        return PendingIntent.getBroadcast(
                     context,
                     requestCode,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             )
-        } else {
-            resultPendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
-        return resultPendingIntent
     }
 
     private fun getShareButtonPendingIntent(actionButton: ActionButton, requestCode: Int): PendingIntent {
-        val resultPendingIntent: PendingIntent
         val intent = Intent(context, CMBroadcastReceiver::class.java)
         intent.action = CMConstant.ReceiverAction.ACTION_BUTTON
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
         intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
         intent.putExtra(CMConstant.EXTRA_PRE_DEF_ACTION, actionButton.pdActions)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            resultPendingIntent = PendingIntent.getBroadcast(
+        return PendingIntent.getBroadcast(
                     context,
                     requestCode,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             )
-        } else {
-            resultPendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
-        return resultPendingIntent
     }
 
 

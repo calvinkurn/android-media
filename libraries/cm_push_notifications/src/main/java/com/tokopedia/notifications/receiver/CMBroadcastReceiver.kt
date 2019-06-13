@@ -12,7 +12,7 @@ import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.factory.BaseNotification
 import com.tokopedia.notifications.factory.CMNotificationFactory
-import com.tokopedia.notifications.model.Carousal
+import com.tokopedia.notifications.model.Carousel
 import com.tokopedia.notifications.model.PersistentButton
 import com.tokopedia.notifications.model.PreDefineActions
 import com.tokopedia.usecase.RequestParams
@@ -52,10 +52,10 @@ class CMBroadcastReceiver : BroadcastReceiver() {
                         handleNotificationClick(context, intent, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
                     }
-                    CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK -> handleCarousalButtonClick(context, intent, notificationId, true)
-                    CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK -> handleCarousalButtonClick(context, intent, notificationId, false)
+                    CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK -> handleCarouselButtonClick(context, intent, notificationId, true)
+                    CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK -> handleCarouselButtonClick(context, intent, notificationId, false)
                     CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK -> {
-                        handleCarousalImageClick(context, intent, notificationId)
+                        handleCarouselImageClick(context, intent, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
                     }
                     CMConstant.ReceiverAction.ACTION_GRID_CLICK -> {
@@ -142,11 +142,11 @@ class CMBroadcastReceiver : BroadcastReceiver() {
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
     }
 
-    private fun handleCarousalButtonClick(context: Context, intent: Intent, notificationId: Int, isNext: Boolean) {
+    private fun handleCarouselButtonClick(context: Context, intent: Intent, notificationId: Int, isNext: Boolean) {
         try {
-            val carousalList = intent.getParcelableArrayListExtra<Carousal>(CMConstant.ReceiverExtraData.CAROUSEL_DATA)
+            val carouselList = intent.getParcelableArrayListExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA)
             var index = intent.getIntExtra(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0)
-            if (null == carousalList || carousalList.size == 0)
+            if (null == carouselList || carouselList.size == 0)
                 return
             index = if (isNext) index + 1 else index - 1
             val bundle = intent.extras
@@ -160,14 +160,14 @@ class CMBroadcastReceiver : BroadcastReceiver() {
 
     }
 
-    private fun handleCarousalImageClick(context: Context, intent: Intent, notificationId: Int) {
-        val (appLink) = intent.getParcelableExtra<Carousal>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM)
+    private fun handleCarouselImageClick(context: Context, intent: Intent, notificationId: Int) {
+        val (appLink) = intent.getParcelableExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM)
         val appLinkIntent = RouteManager.getIntent(context.applicationContext, appLink)
         appLinkIntent.putExtras(intent.extras!!)
         startActivity(context, appLinkIntent)
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
-        CarousalUtilities.deleteCarousalImageDirectory(context)
+        CarouselUtilities.deleteCarouselImageDirectory(context)
     }
 
     private fun postNotification(context: Context, baseNotification: BaseNotification) {

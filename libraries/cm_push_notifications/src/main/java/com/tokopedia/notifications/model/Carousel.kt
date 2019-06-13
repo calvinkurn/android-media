@@ -9,7 +9,7 @@ import com.tokopedia.notifications.common.CMConstant
 /**
  * @author lalit.singh
  */
-data class Carousal(
+data class Carousel(
 
         @SerializedName(CMConstant.PayloadKeys.APP_LINK)
         var appLink: String? = null,
@@ -42,12 +42,12 @@ data class Carousal(
 
     companion object {
         @JvmField
-        val CREATOR: Parcelable.Creator<Carousal> = object : Parcelable.Creator<Carousal> {
-            override fun createFromParcel(source: Parcel): Carousal {
-                return Carousal(source)
+        val CREATOR: Parcelable.Creator<Carousel> = object : Parcelable.Creator<Carousel> {
+            override fun createFromParcel(source: Parcel): Carousel {
+                return Carousel(source)
             }
 
-            override fun newArray(size: Int): Array<Carousal?> {
+            override fun newArray(size: Int): Array<Carousel?> {
                 return arrayOfNulls(size)
             }
         }

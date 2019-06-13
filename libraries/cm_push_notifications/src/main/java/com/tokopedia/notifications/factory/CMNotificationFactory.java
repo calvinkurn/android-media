@@ -19,7 +19,7 @@ import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.common.PersistentEvent;
 import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
-import com.tokopedia.notifications.model.Carousal;
+import com.tokopedia.notifications.model.Carousel;
 import com.tokopedia.notifications.model.Grid;
 import com.tokopedia.notifications.model.Media;
 import com.tokopedia.notifications.model.PersistentButton;
@@ -124,10 +124,10 @@ public class CMNotificationFactory {
         model.setPersistentButtonList(getPersistentNotificationData(data));
         model.setVideoPushModel(getVideoNotificationData(data));
         model.setCustomValues(getCustomValues(data));
-        List<Carousal> carousalList = getCarousalList(data);
-        if (carousalList != null) {
-            model.setCarousalList(carousalList);
-            model.setCarousalIndex(data.getInt(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0));
+        List<Carousel> carouselList = getCarouselList(data);
+        if (carouselList != null) {
+            model.setCarouselList(carouselList);
+            model.setCarouselIndex(data.getInt(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0));
         }
         model.setVibration(data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true));
         model.setUpdateExisting(data.getBoolean(CMConstant.PayloadKeys.UPDATE, false));
@@ -228,21 +228,21 @@ public class CMNotificationFactory {
         return null;
     }
 
-    private static List<Carousal> getCarousalList(Bundle extras) {
-        String carousalData = extras.getString(CMConstant.PayloadKeys.CAROUSEL_DATA);
-        if (TextUtils.isEmpty(carousalData)) {
-            List<Carousal> carousalList = extras.getParcelableArrayList(CMConstant.ReceiverExtraData.CAROUSEL_DATA);
-            if (carousalList != null)
-                return carousalList;
+    private static List<Carousel> getCarouselList(Bundle extras) {
+        String carouselData = extras.getString(CMConstant.PayloadKeys.CAROUSEL_DATA);
+        if (TextUtils.isEmpty(carouselData)) {
+            List<Carousel> carouselList = extras.getParcelableArrayList(CMConstant.ReceiverExtraData.CAROUSEL_DATA);
+            if (carouselList != null)
+                return carouselList;
             return null;
         }
         try {
-            Type listType = new TypeToken<ArrayList<Carousal>>() {
+            Type listType = new TypeToken<ArrayList<Carousel>>() {
             }.getType();
-            return new Gson().fromJson(carousalData, listType);
+            return new Gson().fromJson(carouselData, listType);
         } catch (Exception e) {
 
-            Log.e(TAG, "CM-getCarousalList", e);
+            Log.e(TAG, "CM-getCarouselList", e);
         }
         return null;
     }

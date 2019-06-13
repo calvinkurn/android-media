@@ -21,18 +21,22 @@ class VisualNotification(context: Context, baseNotificationModel: BaseNotificati
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.notificationId, requestCode))
         var remoteViews = RemoteViews(context.applicationContext.packageName,
                 R.layout.layout_visual_collapsed)
+
         val collapsedBitmap: Bitmap? = getBitmap(baseNotificationModel.visualCollapsedImageUrl)
-        collapsedBitmap?.let {
-            remoteViews.setImageViewBitmap(R.id.iv_collpasedImage, collapsedBitmap)
-            builder.setCustomContentView(remoteViews)
-            remoteViews = RemoteViews(context.applicationContext.packageName,
-                    R.layout.layout_visual_expand)
-            val expandedBitmap: Bitmap? = getBitmap(baseNotificationModel.visualExpandedImageUrl)
-            expandedBitmap?.let {
-                remoteViews.setImageViewBitmap(R.id.iv_expanded, expandedBitmap)
-                builder.setCustomBigContentView(remoteViews)
-            } ?: return null
-        } ?: return null
+        val expandedBitmap: Bitmap? = getBitmap(baseNotificationModel.visualExpandedImageUrl)
+
+        if(collapsedBitmap == null || expandedBitmap == null)
+            return null
+
+        remoteViews.setImageViewBitmap(R.id.iv_collpasedImage, collapsedBitmap)
+        builder.setCustomContentView(remoteViews)
+
+        remoteViews = RemoteViews(context.applicationContext.packageName,
+                R.layout.layout_visual_expand)
+        remoteViews.setImageViewBitmap(R.id.iv_expanded, expandedBitmap)
+
+        builder.setCustomBigContentView(remoteViews)
+
         return builder.build()
     }
 }

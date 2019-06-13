@@ -133,21 +133,12 @@ class GridNotification internal constructor(context: Context, baseNotificationMo
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
         intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
         intent.putExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK, appLink)
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        } else {
-            PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
+        return PendingIntent.getBroadcast(
+                context,
+                requestCode,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 
 }

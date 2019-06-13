@@ -42,9 +42,10 @@ class ImageNotification internal constructor(context: Context, baseNotificationM
                     .setSummaryText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.detailMessage))
                     .bigLargeIcon(blankBitmap)
                     .bigPicture(bitmap)
-            if (!TextUtils.isEmpty(baseNotificationModel.message))
+            if (!TextUtils.isEmpty(baseNotificationModel.message)) {
                 bigPictureStyle.setSummaryText(CMNotificationUtils
                         .getSpannedTextFromStr(baseNotificationModel.message))
+            }
             builder.setStyle(bigPictureStyle)
         }
     }
