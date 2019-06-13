@@ -8,6 +8,7 @@
     <string name="pm_label_benefit_header">Keuntungan</string>
     <string name="pm_label_power_merchant_badge">Badge Power Merchant</string>
     <string name="pm_label_special_promo">Pilihan Promo Spesial</string>
+    <string name="pm_label_special_promo_big">Ikut Promo Besar Tokopedia</string>
     <string name="pm_label_topads_credit">Tambahan Credit TopAds</string>
     <string name="pm_label_market_insight">Fitur Wawasan Pasar</string>
     <string name="pm_label_member">Power Merchant Terdaftar</string>
@@ -27,7 +28,9 @@
     <string name="pm_label_score_verification_desc_3">menjadi Power Merchant!</string>
     <string name="pm_label_score_button_verification">Verifikasi Sekarang </string>
 
-
+    <string name="pm_label_success_header">Selamat! Tokomu sudah menjadi Power Merchant</string>
+    <string name="pm_label_success_desc">Saatnya mengakses Wawasan Pasar, pasang Voucher Toko dan fitur-fitur spesial Power Merchant!</string>
+    <string name="pm_label_success_button">Cek Sekarang</string>
 
     <string name="pm_label_transition_period_header_1">Nantikan Power Merchant </string>
     <string name="pm_label_transition_period_header_2">dengan sistem baru </string>
@@ -35,6 +38,10 @@
     <string name="pm_label_transition_period_desc_2">fitur spesial Power Merchant!</string>
 
     <string name="activity_label">Power Merchant</string>
+
+    <string name="pm_label_bottom_sheet_cancel_header">Yakin batalkan keanggotaan Power Merchant?</string>
+    <string name="pm_label_bottom_sheet_cancel_button">Batalkan Keanggotaan</string>
+    <string name="pm_label_bottom_sheet_cancel_desc">Dengan membatalkan, kamu tidak dapat mengakses fitur-fitur Power Merchant berikut:</string>
 
 
 

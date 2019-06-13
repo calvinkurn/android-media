@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/base_partial_benefit"
-    android:background="@drawable/card_background_with_shadow"
-    android:padding="@dimen/dp_10">
+    android:padding="@dimen/dp_20">
+
+    <com.tokopedia.design.component.TextViewCompat
+        style="@style/TextView.TitleMedium.Bold"
+        android:layout_width="@dimen/dp_240"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/pm_label_bottom_sheet_cancel_header"
+        android:layout_marginBottom="@dimen/dp_20"/>
+
+    <com.tokopedia.design.component.TextViewCompat
+        style="@style/TextView.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/sp_6"
+
+        android:text="@string/pm_label_bottom_sheet_cancel_desc"/>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/dp_10">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_20">
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/textView2"
-            style="@style/TextView.Medium.FontMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/pm_label_benefit_header"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="28dp"
@@ -37,7 +41,6 @@
             android:layout_marginRight="8dp"
             android:src="@drawable/ic_power_merchant"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
         <com.tokopedia.design.component.TextViewCompat
@@ -53,22 +56,7 @@
             app:layout_constraintTop_toTopOf="@+id/imageView2"
             app:layout_constraintVertical_bias="0.529" />
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/textView4"
-            android:layout_width="250dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="Buat tokomu lebih menonjol dengan badge Power Merchant."
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/imageView3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/textView3"
-            app:layout_constraintTop_toBottomOf="@+id/textView3"
-            app:layout_constraintVertical_bias="1.0" />
+
 
         <ImageView
             android:id="@+id/imageView3"
@@ -77,12 +65,13 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="12dp"
-            android:src="@drawable/ic_big_promo"
+            android:src="@drawable/ic_promo_special"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
 
         <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/textViewCompat"
             style="@style/TextView.Small.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -97,6 +86,31 @@
             app:layout_constraintVertical_bias="0.076" />
 
         <ImageView
+            android:id="@+id/image_bigpromo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_big_promo"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView3"
+            />
+
+        <com.tokopedia.design.component.TextViewCompat
+            style="@style/TextView.Small.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/pm_label_special_promo_big"
+            app:layout_constraintBottom_toBottomOf="@+id/image_bigpromo"
+            app:layout_constraintStart_toEndOf="@+id/image_bigpromo"
+            app:layout_constraintTop_toTopOf="@+id/image_bigpromo"
+            app:layout_constraintVertical_bias="0.846" />
+
+        <ImageView
             android:id="@+id/imageView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -105,7 +119,7 @@
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_topads_credit"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+            app:layout_constraintTop_toBottomOf="@+id/image_bigpromo" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textView5"
@@ -119,7 +133,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/imageView4"
             app:layout_constraintStart_toEndOf="@+id/imageView4"
             app:layout_constraintTop_toTopOf="@+id/imageView4"
-            app:layout_constraintVertical_bias="0.538" />
+            app:layout_constraintVertical_bias="0.692" />
 
         <ImageView
             android:id="@+id/imageView5"
@@ -147,5 +161,12 @@
             app:layout_constraintTop_toTopOf="@+id/imageView5"
             app:layout_constraintVertical_bias="1.0" />
     </android.support.constraint.ConstraintLayout>
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Button.Submit.Green.Full"
+        android:text="@string/pm_label_bottom_sheet_cancel_button"/>
 
 </LinearLayout>

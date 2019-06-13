@@ -112,7 +112,7 @@
                 android:id="@+id/cardview_member"
                 layout="@layout/partial_member_power_merchant"
                 android:layout_width="match_parent"
-                android:layout_height="190dp"
+                android:layout_height="170dp"
                 android:layout_below="@id/ticker_yellow_container"
                 android:layout_marginBottom="@dimen/dp_24"/>
 

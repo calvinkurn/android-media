@@ -15,6 +15,8 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.contract.PmSubscribeContract
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.TransitionPeriodPmActivity
+import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantSuccessBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialBenefitPmViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHolder
@@ -72,6 +74,18 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 //        presenter.getPmInfo(userSessionInterface.shopId)
+
+    }
+
+    fun showBottomSheetSuccess(){
+        val bottomSheet = PowerMerchantSuccessBottomSheet();
+        bottomSheet.show(childFragmentManager,"power_merchant_success")
+
+    }
+
+    fun showBottomSheetCancel(){
+        val bottomSheet = PowerMerchantCancelBottomSheet()
+        bottomSheet.show(childFragmentManager,"power_merchant_cancel")
 
     }
 
