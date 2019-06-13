@@ -8,98 +8,119 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@drawable/bg_line_separator"/>
+        android:background="@drawable/bg_line_separator" />
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_12"
         android:paddingStart="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16">
+        android:paddingTop="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_32"
+        android:paddingRight="@dimen/dp_32"
+        android:paddingBottom="@dimen/dp_12"
+        android:weightSum="5">
+
         <LinearLayout
             android:id="@+id/hotel_date_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_hotel_calendar"
+                android:paddingEnd="@dimen/dp_4"
                 android:paddingRight="@dimen/dp_4"
-                android:paddingEnd="@dimen/dp_4"/>
+                android:src="@drawable/ic_hotel_calendar" />
+
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/date_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lines="1"
-                android:ellipsize="end"
-                android:text="18 Des 2019 - 20 Jan 2020"
                 android:layout_gravity="center_vertical"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="18 Des 2019 - 20 Jan 2020"
+                android:minWidth="@dimen/dp_150"
                 />
         </LinearLayout>
 
-        <View android:id="@+id/seperator"
+        <View
+            android:id="@+id/seperator"
             android:layout_width="@dimen/dp_1"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_line_separator"
-            android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12"/>
+            android:background="@drawable/bg_line_separator" />
 
         <LinearLayout
             android:id="@+id/hotel_room_and_guest_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-            <ImageView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_hotel_room"
-                android:paddingRight="@dimen/dp_4"
-                android:paddingEnd="@dimen/dp_4"/>
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                >
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/total_room_text_view"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/dp_4"
+                    android:paddingRight="@dimen/dp_4"
+                    android:src="@drawable/ic_hotel_room" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/total_room_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:paddingEnd="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    android:text="1" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lines="1"
-                android:ellipsize="end"
-                android:text="1"
-                android:paddingRight="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_8"
-                android:layout_gravity="center_vertical"/>
+                android:layout_weight="1">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_hotel_adult"
-                android:layout_marginStart="@dimen/dp_4"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:paddingRight="@dimen/dp_4"
-                android:paddingEnd="@dimen/dp_4"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_4"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:paddingEnd="@dimen/dp_4"
+                    android:paddingRight="@dimen/dp_4"
+                    android:src="@drawable/ic_hotel_adult" />
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/total_guest_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lines="1"
-                android:ellipsize="end"
-                android:text="2"
-                android:paddingRight="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_8"
-                android:layout_gravity="center_vertical"/>
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/total_guest_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:paddingEnd="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    android:text="2" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@drawable/bg_line_separator"/>
+        android:background="@drawable/bg_line_separator" />
 
 </LinearLayout>
