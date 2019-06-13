@@ -123,7 +123,7 @@ ext {
             goldMerchantCommon      : "com.tokopedia.gm:gold_merchant-common:${tkpdGoldMerchantVersion}",
             goldMerchant            : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             goldMerchantSubscribe   : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
-            powerMerchantSubscribe  : "com.tokopedia.power_merchant.subscribe:goldMerchantSubscribe:${tkpdPowerMerchantVersion}",
+            powerMerchantSubscribe  : "com.tokopedia.power_merchant.subscribe:powerMerchantSubscribe:${tkpdPowerMerchantVersion}",
             groupchat               : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
             home                    : "com.tokopedia.home:home:${tkpdHomeVersion}",
             inbox                   : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
