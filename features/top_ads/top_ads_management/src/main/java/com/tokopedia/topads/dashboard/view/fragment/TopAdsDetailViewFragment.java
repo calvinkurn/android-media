@@ -106,14 +106,14 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
     @Override
     public void onAutoAdsActive() {
         super.onAutoAdsActive();
-        setStatusSwitch(false);
+        setStatusSwitchEnabled(false);
         getActivity().invalidateOptionsMenu();
     }
 
     @Override
     public void onAutoAdsInactive() {
         super.onAutoAdsInactive();
-        setStatusSwitch(true);
+        setStatusSwitchEnabled(true);
         getActivity().invalidateOptionsMenu();
     }
 
@@ -214,6 +214,10 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
         status.setListenerValue(null);
         status.setChecked(checked);
         status.setListenerValue(this);
+    }
+
+    protected void setStatusSwitchEnabled(boolean enable){
+        status.setSwitchEnabled(enable);
     }
 
     private void setResultAdDeleted() {

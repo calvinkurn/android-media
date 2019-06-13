@@ -70,7 +70,7 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
     }
 
     override fun onAutoAdsClicked() {
-        activity!!.finish()
+        adsConfirmationSheet.dismissDialog()
     }
 
     override fun getLayoutId(): Int {

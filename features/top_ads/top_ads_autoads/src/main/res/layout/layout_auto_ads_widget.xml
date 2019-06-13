@@ -73,7 +73,10 @@
                 tools:text="@string/akan_aktif_dalam_beberapa_menit" />
         </LinearLayout>
     </LinearLayout>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/colorGray"/>
     <LinearLayout
         android:id="@+id/container_progress_status"
         android:layout_width="match_parent"
