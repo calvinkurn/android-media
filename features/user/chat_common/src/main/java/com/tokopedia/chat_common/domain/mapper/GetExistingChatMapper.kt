@@ -142,7 +142,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 chatItemPojoByDateByTime.attachment?.id.toString(),
                 chatItemPojoByDateByTime.attachment?.type.toString(),
                 chatItemPojoByDateByTime.replyTime,
-                fallbackMessage
+                fallbackMessage,
+                chatItemPojoByDateByTime.isOpposite
         )
     }
 
