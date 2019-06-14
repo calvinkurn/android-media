@@ -964,7 +964,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         });
 
     }
-r
+
     public void onSuccessResponse(TokoPointEntity data, List<SectionContent> sections) {
         mContainerMain.setDisplayedChild(CONTAINER_DATA);
 
