@@ -29,6 +29,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class InboxListActivity extends InboxBaseActivity
         implements InboxListContract.InboxListView {
@@ -38,6 +39,8 @@ public class InboxListActivity extends InboxBaseActivity
     TextView tvNoTicket;
     @BindView(R2.id.tv_raise_ticket)
     TextView tvRaiseTicket;
+    @BindView(R2.id.btn_filter_tv)
+    TextView btnFilterTv;
     @BindView(R2.id.rv_email_list)
     VerticalRecyclerView rvEmailList;
     @BindView(R2.id.btn_filter)
@@ -139,6 +142,8 @@ public class InboxListActivity extends InboxBaseActivity
 
     @Override
     void initView() {
+        btnFilterTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.ic_filter_list), null, null , null);
         rvEmailList.addOnScrollListener(rvOnScrollListener);
         editText.setListener(((InboxListContract.InboxListPresenter) mPresenter).getSearchListener());
     }

@@ -58,6 +58,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class CouponCatalogFragment extends BaseDaggerFragment implements CouponCatalogContract.View, View.OnClickListener {
     private static final String FPM_DETAIL_TOKOPOINT = "ft_tokopoint_detail";
@@ -560,6 +561,8 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         TextView timeValue = getView().findViewById(R.id.text_time_value);
         TextView disabledError = getView().findViewById(R.id.text_disabled_error);
         TextView btnAction1 = getView().findViewById(R.id.button_action_1);
+        btnAction1.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.ic_tp_gift), null, null , null);
         TextView btnAction2 = getView().findViewById(R.id.button_action_2);
         ImageView imgBanner = getView().findViewById(R.id.img_banner);
         ImageView imgTime = getView().findViewById(R.id.img_time);

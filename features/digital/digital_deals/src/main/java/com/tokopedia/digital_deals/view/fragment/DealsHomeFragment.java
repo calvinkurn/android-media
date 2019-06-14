@@ -80,6 +80,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, DealsLocationAdapter.ActionListener, CloseableBottomSheetDialog.OnCancelListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet, PopupMenu.OnMenuItemClickListener {
 
@@ -188,6 +189,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         mainContent = view.findViewById(R.id.main_content);
         baseMainContent = view.findViewById(R.id.base_main_content);
         searchInputView = view.findViewById(R.id.search_input_view);
+        searchInputView.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.ic_search_deal), null, , null);
         tvLocationName = view.findViewById(R.id.tv_location_name);
         clBrands = view.findViewById(R.id.cl_brands);
         clPromos = view.findViewById(R.id.cl_promos);

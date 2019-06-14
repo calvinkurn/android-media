@@ -27,7 +27,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:drawableLeft="@drawable/ic_coupon_green_promo_checkout"
                 android:drawablePadding="@dimen/dp_8"
                 android:drawableStart="@drawable/ic_coupon_green_promo_checkout"
                 android:gravity="center"

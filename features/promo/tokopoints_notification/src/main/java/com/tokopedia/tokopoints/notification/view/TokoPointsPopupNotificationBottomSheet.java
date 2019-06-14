@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.tokopoints.notification.model.PopupNotification;
 import com.tokopedia.tokopoints.notification.utils.AnalyticsTrackerUtil;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
 
@@ -35,6 +36,8 @@ public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
         TextView sender = view.findViewById(R.id.text_sender);
         ImageView banner = view.findViewById(R.id.img_banner);
         Button action = view.findViewById(R.id.button_action);
+        count.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.ic_tp_flash), null, null , null);
 
         action.setText(mData.getButtonText());
         if (mData.getCatalog() == null || TextUtils.isEmpty(mData.getCatalog().getTitle())) {

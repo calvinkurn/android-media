@@ -70,6 +70,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEAR
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class SearchActivity extends BaseActivity
         implements SearchContract.View,
@@ -295,12 +296,15 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initSearchNavigationListener() {
+        buttonFilter.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.ic_filter), null, null , null);
         buttonFilter.setOnClickListener(view -> {
             if (searchNavigationClickListener != null) {
                 searchNavigationClickListener.onFilterClick();
             }
         });
-
+        buttonSort.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.ic_sort), null, null , null);
         buttonSort.setOnClickListener(view -> {
             if (searchNavigationClickListener != null) {
                 searchNavigationClickListener.onSortClick();

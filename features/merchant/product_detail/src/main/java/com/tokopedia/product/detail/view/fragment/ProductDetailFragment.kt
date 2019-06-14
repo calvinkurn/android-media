@@ -134,6 +134,7 @@ import model.TradeInParams
 import view.customview.TradeInTextView
 import viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 class ProductDetailFragment : BaseDaggerFragment() {
     private var productId: String? = null
@@ -355,6 +356,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         initializePartialView(view)
         initView()
+        tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.tradein_white), null, null, null)
         refreshLayout = view.findViewById(R.id.swipeRefresh)
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
@@ -701,6 +703,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun initView() {
+
         collapsing_toolbar.title = ""
         toolbar.title = ""
         activity?.let {

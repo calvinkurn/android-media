@@ -63,6 +63,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by stevenfredian on 9/14/17.
@@ -182,6 +183,8 @@ public class InboxChatFragment extends BaseDaggerFragment
         callbackContext = initCallbackActionMode();
         notifier = parentView.findViewById(R.id.notifier);
         sendBroadcast = parentView.findViewById(R.id.tv_bm_action);
+        sendBroadcast.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.ic_bm_speaker), null, null , null);
         View broadcastLayout = parentView.findViewById(R.id.base_action);
         sendBroadcast.setVisibility(View.GONE);
         broadcastLayout.setVisibility(View.GONE);

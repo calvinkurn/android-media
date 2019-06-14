@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by nabillasabbaha on 11/20/17.
@@ -49,6 +50,8 @@ public class VoucherCartHachikoView extends BaseCustomView {
     private void init(Context context) {
         View rootView = inflate(context, getLayoutId(), this);
         labelUseVoucher = rootView.findViewById(R.id.textview_voucher);
+        labelUseVoucher.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.ic_kupon), null, null , null);
         labelPromoCode = rootView.findViewById(R.id.label_promo_code);
         textviewPromoCode = rootView.findViewById(R.id.textview_promo_code);
         textviewVoucherDetail = rootView.findViewById(R.id.textview_voucher_detail);

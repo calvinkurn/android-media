@@ -16,6 +16,7 @@ import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 
@@ -46,6 +47,8 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         this.submissionsResult = challengesResult;
         tvTitle.setText(challengesResult.getTitle());
         tvPoints.setText(String.valueOf(challengesResult.getPoints()));
+        tvPoints.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.ic_buzz_points), null, null , null);
         ImageHandler.loadImageWithoutPlaceholder(imgChallenge, Utils.getImageUrlForSubmission(challengesResult.getThumbnailUrl()), R.color.grey_1100);
         Utils.setTextViewBackground(context, tvStatus, submissionsResult.getStatus());
         imgLikes.setVisibility(View.GONE);

@@ -54,6 +54,7 @@ import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.TabUtil;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.List;
 import java.util.Locale;
@@ -140,6 +141,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mPresenter.attachView(this);
         mTvFlashTimer = view.findViewById(R.id.tv_flash_time);
         mTvFlashTimerLabel = view.findViewById(R.id.tv_timer_label);
+        mTvFlashTimerLabel.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.ic_tp_flash_green), null, null , null);
         mProgressFlash = view.findViewById(R.id.progress_timer);
         mContainerFlashTimer = view.findViewById(R.id.cl_flash_container);
         initListener();
