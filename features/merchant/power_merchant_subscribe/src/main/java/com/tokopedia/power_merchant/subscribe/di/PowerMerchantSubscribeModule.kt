@@ -1,6 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.di
 
 import android.content.Context
+import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gm.common.di.GmCommonModule
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -27,4 +28,11 @@ class PowerMerchantSubscribeModule {
     internal fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
+
+    @PowerMerchantSubscribeScope
+    @Provides
+    internal fun provideResources(@ApplicationContext context: Context): Resources {
+        return context.resources
+    }
+
 }

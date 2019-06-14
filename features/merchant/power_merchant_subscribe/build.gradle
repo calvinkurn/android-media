@@ -29,6 +29,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.features.seller)
+    implementation project(rootProject.ext.features.userIdentificationCommon)
+
 
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.resourcesCommon)

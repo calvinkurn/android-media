@@ -3,11 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/base_partial_member"
     android:layout_width="match_parent"
-    android:layout_height="190dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/gradient_background"
     android:orientation="vertical">
 
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -16,7 +17,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:background="@drawable/card_background_with_shadow"
         android:orientation="vertical"
-        android:padding="@dimen/dp_18">
+        android:padding="@dimen/dp_16">
 
         <com.tokopedia.design.component.TextViewCompat
             style="@style/TextView.Micro.BlackDisabled"
@@ -26,7 +27,7 @@
             android:text="@string/pm_label_member_status" />
 
         <com.tokopedia.design.component.TextViewCompat
-            style="@style/TextView.Title.Bold"
+            style="@style/TextView.SubHeadline.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_10"
@@ -37,25 +38,32 @@
             android:layout_height="0.5dp"
             android:background="@android:color/black" />
 
-        <android.support.v7.widget.AppCompatTextView
-            style="@style/TextView.Small.BlackSecondary"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-            android:text="@string/pm_label_cancellation_header" />
+            android:layout_marginTop="@dimen/dp_5">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/txt_cancel_member"
+                style="@style/TextView.Small.BlackSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="@string/pm_label_cancellation_header" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/txt_cancel_member"
+                android:layout_alignBottom="@+id/txt_cancel_member"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="11dp"
+                android:src="@drawable/ic_drop_down" />
+
+        </RelativeLayout>
+
+
 
     </LinearLayout>
-
-    <com.tokopedia.design.component.TextViewCompat
-        style="@style/TextView.Micro"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:gravity="center"
-        android:text="@string/pm_label_member_cancel_learnmore" />
-
 
 </FrameLayout>
