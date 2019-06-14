@@ -180,6 +180,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var userInputNotes = ""
     private var userInputQuantity = 0
     private var userInputVariant: String? = null
+    private var delegateTradeInTracking = false
 
     private val productDetailTracking: ProductDetailTracking by lazy {
         ProductDetailTracking()
@@ -354,18 +355,14 @@ class ProductDetailFragment : BaseDaggerFragment() {
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
             if (it) {
-                if (productInfo != null && shopInfo != null)
-                    productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                        it, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
+                trackTradeIn(it)
 
                 if (tv_trade_in_promo != null) {
                     tv_trade_in_promo.visible()
                     tv_available_at?.visible()
                 }
             } else
-                if (productInfo != null && shopInfo != null)
-                    productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                        it, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
+                trackTradeIn(it)
 
         }
         context?.let {
@@ -1096,6 +1093,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
 
             productShopView.renderShopFeature(productInfoP2.shopFeature)
+            trackTradeIn(tradeInParams.isEligible == 1)
+            delegateTradeInTracking = false
         }
         shopCod = productInfoP2.shopCod
         productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
@@ -1753,6 +1752,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }, {
             hideProgressLoading()
         })
+
+    }
+
+    private fun trackTradeIn(isElligible: Boolean) {
+        if (productInfo != null && shopInfo != null) {
+            productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
+                    isElligible, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
+        } else if (shopInfo == null) {
+            delegateTradeInTracking = true
+        }
 
     }
 
