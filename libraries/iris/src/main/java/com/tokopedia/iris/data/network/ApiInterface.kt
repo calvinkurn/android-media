@@ -4,6 +4,7 @@ import com.tokopedia.iris.MULTI_EVENT
 import com.tokopedia.iris.SINGLE_EVENT
 import kotlinx.coroutines.Deferred
 import okhttp3.RequestBody
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -17,6 +18,6 @@ interface ApiInterface {
     fun sendSingleEvent(@Body data: RequestBody) : Deferred<Response<String>>
 
     @POST(MULTI_EVENT)
-    fun sendMultiEvent(@Body data: RequestBody) : Deferred<Response<String>>
+    fun sendMultiEvent(@Body data: RequestBody) : Call<String>
 
 }

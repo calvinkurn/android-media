@@ -63,6 +63,7 @@ public class RemoteConfigKey {
     public static final String REFERRAL_HELP_LINK_CONTENT_SUBTITLE= "app_apa_itu_tokocash_referral_content_subtitle";
     public static final String MAIN_APP_ENABLE_BUY_AGAIN = "main_app_enable_buy_again";
     public static final String PINJAMAN_MODAL_AKUN_PAGE_POSITION_TOP = "app_widget_pinjamin_show_on_top";
+    public static final String SELLER_ACCOUNT_TICKER_MSG = "android_seller_account_ticker_msg";
 
     public static final String APP_ENABLE_ACCOUNT_AFFILIATE = "app_enable_account_affiliate";
     public static final String AFFILIATE_PROFILE_SHARE_ALL = "android_customer_enable_profile_share_allow_all";
@@ -74,6 +75,7 @@ public class RemoteConfigKey {
     public static final String APP_GLOBAL_NAV_NEW_DESIGN = "app_global_nav_new_design";
 
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
+    public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
 

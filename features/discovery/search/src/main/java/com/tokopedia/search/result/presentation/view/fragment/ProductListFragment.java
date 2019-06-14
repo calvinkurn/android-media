@@ -183,7 +183,6 @@ public class ProductListFragment
         presenter.attachView(this);
         presenter.initInjector(this);
         presenter.setWishlistActionListener(this);
-        presenter.setRequestDynamicFilterListener(this);
 
         return inflater.inflate(R.layout.search_fragment_base_discovery, null);
     }
@@ -1016,7 +1015,30 @@ public class ProductListFragment
     }
 
     @Override
-    public boolean shouldSaveToLocalDynamicFilterDb() {
-        return false;
+    public void launchLoginActivity(String productId) {
+        Bundle extras = new Bundle();
+        extras.putString("product_id", productId);
+
+        if (getActivity() == null) return;
+
+        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
+
+        if (router != null) {
+            Intent intent = router.getLoginIntent(getActivity());
+            intent.putExtras(extras);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN);
+        }
+    }
+
+    @Override
+    public void sendImpressionGuidedSearch() {
+        String currentKey = searchParameter.getSearchQuery();
+        String currentPage = String.valueOf(adapter.getStartFrom() / Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS));
+
+        SearchTracking.eventImpressionGuidedSearch(
+                getActivity(),
+                currentKey,
+                currentPage
+        );
     }
 }

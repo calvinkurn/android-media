@@ -207,6 +207,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.model.Configuration;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
@@ -318,7 +319,6 @@ import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
@@ -437,6 +437,9 @@ import tradein_common.TradeInUtils;
 import tradein_common.router.TradeInRouter;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
+import static com.tokopedia.iris.ConstantKt.DEFAULT_CONFIG;
+import static com.tokopedia.iris.ConstantKt.DEFAULT_MAX_ROW;
+import static com.tokopedia.iris.ConstantKt.DEFAULT_SERVICE_TIME;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
@@ -529,10 +532,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OvoPayWithQrRouter,
         KYCRouter{
 
-
-    private final static int IRIS_ROW_LIMIT = 50;
-    private final static long IRIS_TIME_MINUTES = 15;
-
     private static final String EXTRA = "extra";
 
     @Inject
@@ -575,15 +574,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initIris() {
-        mIris = Iris.Companion.init(this);
+        mIris = IrisAnalytics.Companion.getInstance(this);
 
         boolean irisEnable = getBooleanRemoteConfig(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true);
+        String irisConfig = getStringRemoteConfig(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG);
 
-        mIris.setService(new Configuration(
-                IRIS_ROW_LIMIT,
-                IRIS_TIME_MINUTES,
-                irisEnable
-        ));
+        if (!irisConfig.isEmpty()) {
+            mIris.setService(irisConfig, irisEnable);
+        } else {
+            Configuration configuration = new Configuration(
+                    DEFAULT_MAX_ROW,
+                    DEFAULT_SERVICE_TIME,
+                    irisEnable
+            );
+            mIris.setService(configuration);
+        }
     }
 
     @Override
@@ -1042,7 +1047,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onLogout(AppComponent appComponent) {
         PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
-        new CacheApiClearAllUseCase().executeSync();
+        new CacheApiClearAllUseCase(this).executeSync();
         TkpdSellerLogout.onLogOut(appComponent);
     }
 
@@ -2746,19 +2751,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Fragment getFlightOrderListFragment() {
         return FlightOrderListFragment.createInstance();
     }
-
-    public void onShowRationale(Context context, PermissionRequest request, String permission) {
-        RequestPermissionUtil.onShowRationale(context, request, permission);
-    }
-
-    public void onPermissionDenied(Context context, String permission) {
-        RequestPermissionUtil.onPermissionDenied(context, permission);
-    }
-
-    public void onNeverAskAgain(Context context, String permission) {
-        RequestPermissionUtil.onNeverAskAgain(context, permission);
-    }
-
 
     @Override
     public void logoutToHome(Activity activity) {
