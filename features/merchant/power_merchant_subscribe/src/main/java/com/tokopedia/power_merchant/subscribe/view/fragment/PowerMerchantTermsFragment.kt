@@ -103,9 +103,10 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
 
     private fun initView() {
         checkboxLayout.setOnClickListener {
-            isTermsAgreed = !isTermsAgreed
-            checkbox.isChecked = isTermsAgreed
-            activateBtn.isEnabled = isTermsAgreed
+            onCheckBoxClicked()
+        }
+        checkbox.setOnClickListener {
+            onCheckBoxClicked()
         }
         activateBtn.setOnClickListener {
             if (action == ACTION_ACTIVATE) {
@@ -114,5 +115,11 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
                 presenter.autoExtendPowerMerchant()
             }
         }
+    }
+
+    private fun onCheckBoxClicked() {
+        isTermsAgreed = !isTermsAgreed
+        checkbox.isChecked = isTermsAgreed
+        activateBtn.isEnabled = isTermsAgreed
     }
 }
