@@ -88,13 +88,6 @@
                         android:padding="@dimen/dp_8">
 
                         <com.tokopedia.design.component.TextViewCompat
-                            style="@style/TextView.Medium.FontMedium"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:lineSpacingExtra="@dimen/sp_6"
-                            android:text="@string/pm_label_cancellation_header" />
-
-                        <com.tokopedia.design.component.TextViewCompat
                             style="@style/TextView.Small"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

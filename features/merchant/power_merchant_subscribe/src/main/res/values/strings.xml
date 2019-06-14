@@ -50,7 +50,7 @@
     <string name="pm_label_member_cancel_learnmore">Status keanggotaan aktif jika skor performa toko minimum 65 poin. Pelajari Selengkapnya</string>
     <string name="pm_period">Periode baru dimulai pada 1 Juli 2019 pukul 04.00</string>
     <string name="pm_label_cancellation_header">Pengajuan pembatalan berhasil</string>
-    <string name="pm_label_cancellation_duration">Fitur akan nonaktif pada 1 Juli 2019, pukul 04.00 WIB.</string>
+    <string name="pm_label_cancellation_duration">Sistem Power Merchanr terbaru akan aktif pada 1 Juli 2019.</string>
     <string name="pm_label_cost_1">Keanggotaan Power Merchant akan dikenakan biaya layanan 1% dari setiap transaksi. </string>
     <string name="pm_label_cost_3">Pelajari Selengkapnya</string>
     <string name="pm_label_kyc_verivication">Lakukan verifikasi informasi indentitas</string>

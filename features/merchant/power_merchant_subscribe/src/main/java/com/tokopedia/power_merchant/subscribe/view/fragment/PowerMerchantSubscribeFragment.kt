@@ -16,13 +16,12 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
 
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.contract.PmSubscribeContract
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
-import com.tokopedia.power_merchant.subscribe.view.activity.TransitionPeriodPmActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantSuccessBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialBenefitPmViewHolder
@@ -75,14 +74,19 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         root_view_pm.showLoading()
-        ImageHandler.LoadImage(img_top_1,"https://ecs7.tokopedia.net/img/android/power_merchant_subscribe/pm_intro.png")
+        ImageHandler.LoadImage(img_top_1, "https://ecs7.tokopedia.net/img/android/power_merchant_subscribe/pm_intro.png")
         initializePartialPart(view)
-        setupYellowTicker()
+        partialTncViewHolder.renderPartialTnc()
         button_activate_root.setOnClickListener {
-            if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 3) {
-                setupDialog()?.show()
+            if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 1) {
+                    // go to activate power merchant
+//                if (score < 65) {
+//                    showDialogScore()
+//                } else {
+//                    // goto activate
+//                }
             } else {
-
+                setupDialogKyc()?.show()
             }
         }
         presenter.getPmStatusInfo(userSessionInterface.shopId)
@@ -92,13 +96,35 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     }
 
-    private fun setupDialog(): Dialog? {
+    private fun setupDialogKyc(): Dialog? {
         context?.let {
             val dialog = Dialog(it)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(false)
             dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.setContentView(R.layout.dialog_kyc_verification)
+
+            dialog.btn_submit_kyc.setOnClickListener {
+                //                RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
+//                activity.finish()
+            }
+            dialog.btn_close_kyc.setOnClickListener {
+                dialog.hide()
+            }
+            return dialog
+        }
+        return null
+
+    }
+
+    private fun setupDialogScore(): Dialog? {
+        context?.let {
+            val dialog = Dialog(it)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(false)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.setContentView(R.layout.dialog_score_verification)
+
             dialog.btn_submit_kyc.setOnClickListener {
                 //                RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
 //                activity.finish()
@@ -125,28 +151,81 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
         shopStatusModel = powerMerchantStatus.shopStatusModel
         getApprovalStatusPojo = powerMerchantStatus.getApprovalStatusPojo
-
         if (shopStatusModel.isTransitionPeriod()) {
-            if (shopStatusModel.isPowerMerchantIdle()) {
-                ll_footer_submit.visibility = View.VISIBLE
-                ticker_blue_container.visibility = View.VISIBLE
-                renderView(shopStatusModel)
-            } else if (shopStatusModel.isPowerMerchantActive()) {
-                ticker_yellow_container.visibility = View.VISIBLE
-                ticker_blue_container.visibility = View.VISIBLE
-                ll_footer_submit.visibility = View.GONE
-                renderView(shopStatusModel)
-            } else if (shopStatusModel.isPowerMerchantInactive()) {
-                ticker_blue_container.visibility = View.GONE
-            }
+            renderViewTransitionPeriod()
         } else {
-            ticker_blue_container.visibility = View.GONE
-            renderView(shopStatusModel)
+            renderViewNonTransitionPeriod()
         }
     }
 
     private fun showError(message: String) {
         showError(message, null)
+    }
+
+    private fun renderViewNonTransitionPeriod() {
+        if (shopStatusModel.isPowerMerchantIdle()) {
+            base_partial_member.visibility = View.GONE
+        } else if (shopStatusModel.isPowerMerchantActive()) {
+            base_partial_member.visibility = View.VISIBLE
+            partialMemberPmViewHolder.showCancellationButton(isAutoExtend())
+            ticker_yellow_container.visibility = View.VISIBLE
+            hideButtonActivatedPm()
+        } else if (shopStatusModel.isPowerMerchantInactive()) {
+            hideButtonActivatedPm()
+        }
+    }
+
+    private fun hideButtonActivatedPm() {
+        ll_footer_submit.visibility = View.GONE
+    }
+
+    private fun renderViewTransitionPeriod() {
+        if (shopStatusModel.isPowerMerchantInactive()) {
+            base_partial_member.visibility = View.GONE
+            if (isPmPending()) {
+                ll_footer_submit.visibility = View.GONE
+                ticker_yellow_container.visibility = View.VISIBLE
+            } else {
+                ticker_yellow_container.visibility = View.GONE
+            }
+        } else if (shopStatusModel.isPowerMerchantActive()) {
+            if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status != 1) {
+                setupDialogKyc()?.show()
+            } else {
+                ll_footer_submit.visibility = View.GONE
+                ticker_blue_container.visibility = View.VISIBLE
+                base_partial_member.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun isAutoExtend(): Boolean {
+        return shopStatusModel.isAutoExtend()
+    }
+
+    private fun isPmPending(): Boolean {
+//        if(status == pending){
+//            return true
+//        }else {
+//            return false
+//        }
+        return false
+    }
+
+
+    private fun renderViewPowerMerchantIdle() {
+
+    }
+
+
+    private fun renderViewMerchantInactive() {
+
+    }
+
+    private fun renderViewMerchantActive(shopStatusModel: ShopStatusModel) {
+
+        renderView(shopStatusModel)
+
     }
 
     override fun onErrorGetPmInfo(throwable: Throwable) {
@@ -161,15 +240,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     private fun renderView(shopStatusModel: ShopStatusModel) {
         if (shopStatusModel.isAutoExtend()) {
-            ticker_yellow_container.visibility = View.VISIBLE
+            ticker_yellow_container.visibility = View.GONE
             ll_footer_submit.visibility = View.VISIBLE
         } else {
-            ticker_yellow_container.visibility = View.GONE
+
+            ticker_yellow_container.visibility = View.VISIBLE
             ll_footer_submit.visibility = View.GONE
         }
         partialMemberPmViewHolder.renderPartialMember(shopStatusModel)
-        partialTncViewHolder.renderPartialTnc()
-        root_view_pm.show()
+        root_view_pm.hideLoading()
     }
 
     private fun initializePartialPart(view: View?) {
