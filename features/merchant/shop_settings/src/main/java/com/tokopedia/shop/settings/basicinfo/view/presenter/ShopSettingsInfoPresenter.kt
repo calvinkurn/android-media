@@ -2,30 +2,36 @@ package com.tokopedia.shop.settings.basicinfo.view.presenter
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.cacheapi.util.CacheApiLoggingUtils
+import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
+import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
 import com.tokopedia.usecase.RequestParams
+import rx.Observable
 
 import javax.inject.Inject
 
 import rx.Subscriber
+import rx.functions.Func2
 
 class ShopSettingsInfoPresenter @Inject
-constructor(private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
+constructor(private val getShopBasicDataAndStatusUseCase: GetShopBasicDataAndStatusUseCase,
             private val updateShopScheduleUseCase: UpdateShopScheduleUseCase) : BaseDaggerPresenter<ShopSettingsInfoPresenter.View>() {
 
     interface View : CustomerView {
-        fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel?)
+        fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, ShopStatusModel?>)
         fun onErrorGetShopBasicData(throwable: Throwable)
         fun onSuccessUpdateShopSchedule(successMessage: String)
         fun onErrorUpdateShopSchedule(throwable: Throwable)
     }
 
-    fun getShopBasicData() {
-        getShopBasicDataUseCase.unsubscribe()
-        getShopBasicDataUseCase.execute(RequestParams.EMPTY, object : Subscriber<ShopBasicDataModel>() {
+    fun getShopData() {
+        getShopBasicDataAndStatusUseCase.unsubscribe()
+        getShopBasicDataAndStatusUseCase.execute(null,
+            object : Subscriber<Pair<ShopBasicDataModel?, ShopStatusModel?>>() {
             override fun onCompleted() {
 
             }
@@ -34,8 +40,8 @@ constructor(private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
                 view?.onErrorGetShopBasicData(e)
             }
 
-            override fun onNext(shopBasicDataModel: ShopBasicDataModel) {
-                view?.onSuccessGetShopBasicData(shopBasicDataModel)
+            override fun onNext(result: Pair<ShopBasicDataModel?, ShopStatusModel?>) {
+                view?.onSuccessGetShopBasicData(result)
             }
         })
     }
@@ -69,7 +75,7 @@ constructor(private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
 
     override fun detachView() {
         super.detachView()
-        getShopBasicDataUseCase.unsubscribe()
+        getShopBasicDataAndStatusUseCase.unsubscribe()
         updateShopScheduleUseCase.unsubscribe()
     }
 }
