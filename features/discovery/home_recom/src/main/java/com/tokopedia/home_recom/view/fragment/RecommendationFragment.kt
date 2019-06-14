@@ -128,7 +128,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                         list.add(RecommendationItemDataModel(it, this))
                     }
                 }
-                TYPE_CAROUSEL -> list.add(RecommendationCarouselDataModel(recommendationWidget.title, recommendationWidget.recommendationItemList, this))
+//                TYPE_CAROUSEL -> list.add(RecommendationCarouselDataModel(recommendationWidget.title, recommendationWidget.recommendationItemList, this))
             }
         }
         return list
