@@ -10,6 +10,8 @@ public class EnhancedECommerceActionField {
 
     public static final String STEP_1 = "1";
     public static final String STEP_2 = "2";
+    public static final String STEP_3 = "3";
+    public static final String STEP_4 = "4";
     public static final String OPTION_CART_PAGE_LOADED = "cart page loaded";
     public static final String OPTION_CLICK_PAYMENT_OPTION_BUTTON = "click payment option button";
     public static final String OPTION_CLICK_CHECKOUT = "click checkout";

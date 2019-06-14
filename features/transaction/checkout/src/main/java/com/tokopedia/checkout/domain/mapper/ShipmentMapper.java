@@ -255,6 +255,7 @@ public class ShipmentMapper implements IShipmentMapper {
                         groupShopResult.setUseInsurance(groupShop.isInsurance());
                         groupShopResult.setCartString(groupShop.getCartString() != null ? groupShop.getCartString() : "");
                         groupShopResult.setHasPromoList(groupShop.isHasPromoList());
+                        groupShopResult.setSaveStateFlag(groupShop.isSaveStateFlag());
 
                         groupShopResult.setFulfillment(groupShop.isFulfillment());
                         if (groupShop.getWarehouse() != null) {

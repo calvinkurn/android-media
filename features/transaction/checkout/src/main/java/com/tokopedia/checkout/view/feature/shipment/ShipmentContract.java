@@ -350,7 +350,7 @@ public interface ShipmentContract {
 
         boolean isShowOnboarding();
 
-        void triggerSendEnhancedEcommerceCheckoutAnalytics();
+        void triggerSendEnhancedEcommerceCheckoutAnalytics(String step);
 
         void updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(String cartString, String shippingDuration, String shippingPrice, String courierName);
 

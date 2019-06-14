@@ -407,13 +407,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void triggerSendEnhancedEcommerceCheckoutAnalytics() {
+    public void triggerSendEnhancedEcommerceCheckoutAnalytics(String step) {
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(getView().generateCheckPromoFirstStepParam());
         CheckoutRequest checkoutRequest = generateCheckoutRequest(checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
-        Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest);
+        Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step);
         String transactionId = "";
         if (checkoutData != null) {
             transactionId = checkoutData.getTransactionId();
@@ -968,7 +968,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodSuccess();
-                    triggerSendEnhancedEcommerceCheckoutAnalytics();
+                    triggerSendEnhancedEcommerceCheckoutAnalytics(EnhancedECommerceActionField.STEP_4);
                     if (isPurchaseProtectionPage) {
                         mTrackerPurchaseProtection.eventClickOnBuy(
                                 checkoutRequest.isHavingPurchaseProtectionEnabled() ?
@@ -988,11 +988,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         };
     }
 
-    private Map<String, Object> generateCheckoutAnalyticsDataLayer(CheckoutRequest checkoutRequest) {
+    private Map<String, Object> generateCheckoutAnalyticsDataLayer(CheckoutRequest checkoutRequest, String step) {
         if (checkoutRequest != null) {
             Map<String, Object> checkoutMapData = new HashMap<>();
             EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
-            enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_2);
+            enhancedECommerceActionField.setStep(step);
             enhancedECommerceActionField.setOption(EnhancedECommerceActionField.OPTION_CLICK_PAYMENT_OPTION_BUTTON);
 
             EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
