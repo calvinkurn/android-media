@@ -13,6 +13,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
@@ -75,6 +76,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ImageHandler.LoadImage(img_top_1,"https://ecs7.tokopedia.net/img/android/power_merchant/pm_intro.png")
         initializePartialPart(view)
         setupYellowTicker()
         button_activate_root.setOnClickListener {
