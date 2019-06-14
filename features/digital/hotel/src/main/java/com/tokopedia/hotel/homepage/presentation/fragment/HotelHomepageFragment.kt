@@ -16,6 +16,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
@@ -42,6 +43,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var homepageViewModel: HotelHomepageViewModel
+    lateinit var trackingHotelUtils: TrackingHotelUtil
 
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
 
@@ -101,6 +103,8 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     override fun getScreenName(): String = ""
 
     override fun onSaveGuest(room: Int, adult: Int) {
+        trackingHotelUtils.hotelSelectRoomGuest(room, adult, 0)
+
         hotelHomepageModel.roomCount = room
         hotelHomepageModel.adultCount = adult
 
@@ -136,7 +140,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                 TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
         hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
-        hotelHomepageModel.nightCounter = countNightDifference()
+        hotelHomepageModel.nightCounter = countRoomDuration()
 
         tv_hotel_homepage_destination.setOnClickListener { onDestinationChangeClicked() }
         tv_hotel_homepage_checkin_date.setOnClickListener { configAndRenderCheckInDate() }
@@ -240,8 +244,9 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
             hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                     TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
         }
-        hotelHomepageModel.nightCounter = countNightDifference()
+        hotelHomepageModel.nightCounter = countRoomDuration()
 
+        trackRoomDates()
         renderView()
     }
 
@@ -250,9 +255,17 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                 TravelDateUtil.YYYY_MM_DD, newCheckOutDate)
         hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
-        hotelHomepageModel.nightCounter = countNightDifference()
+        hotelHomepageModel.nightCounter = countRoomDuration()
 
+        trackRoomDates()
         renderView()
+    }
+
+    private fun trackRoomDates() {
+        val dayDiff = HotelUtils.countDayDifference(HotelUtils.getFormattedCurrentDate(TravelDateUtil.YYYY_MM_DD),
+                hotelHomepageModel.checkInDate)
+        val dateRange = "${hotelHomepageModel.checkInDate} - ${hotelHomepageModel.checkOutDate}"
+        trackingHotelUtils.hotelSelectStayDate(dayDiff.toInt(), dateRange)
     }
 
     private fun onDestinationNearBy(longitude: Double, latitude: Double) {
@@ -263,6 +276,8 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     }
 
     private fun onDestinationChanged(name: String, destinationId: Int, type: String) {
+        trackingHotelUtils.hotelSelectDestination(name)
+
         hotelHomepageModel.locName = name
         hotelHomepageModel.locId = destinationId
         hotelHomepageModel.locType = type
@@ -270,6 +285,15 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     }
 
     private fun onSearchButtonClicked() {
+        trackingHotelUtils.searchHotel(
+                "",
+                hotelHomepageModel.locName,
+                hotelHomepageModel.roomCount,
+                hotelHomepageModel.adultCount,
+                countCurrentDayDifference().toInt(),
+                hotelHomepageModel.nightCounter.toInt()
+        )
+
         if (hotelHomepageModel.locType.equals(TYPE_PROPERTY, false)) {
             startActivityForResult(HotelDetailActivity.getCallingIntent(activity!!, hotelHomepageModel.checkInDate,
                     hotelHomepageModel.checkOutDate, hotelHomepageModel.locId, hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
@@ -283,7 +307,10 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
         }
     }
 
-    private fun countNightDifference(): Long = HotelUtils.countNightDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
+    private fun countRoomDuration(): Long = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
+
+    private fun countCurrentDayDifference(): Long =
+            HotelUtils.countDayDifference(HotelUtils.getFormattedCurrentDate(TravelDateUtil.YYYY_MM_DD), hotelHomepageModel.checkInDate)
 
     private fun loadPromoData() {
         homepageViewModel.getHotelPromo(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_home_promo))

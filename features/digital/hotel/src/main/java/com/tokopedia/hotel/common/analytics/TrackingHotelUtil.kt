@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
 
+/**
+ * @author by resakemal on 13/06/19
+ */
 class TrackingHotelUtil {
 
     fun hotelSelectDestination(destination: String){

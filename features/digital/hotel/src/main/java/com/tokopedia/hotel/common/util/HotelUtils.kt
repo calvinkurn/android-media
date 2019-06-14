@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.common.util
 
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class HotelUtils {
@@ -8,9 +9,13 @@ class HotelUtils {
     companion object {
         val ONE_DAY: Long = TimeUnit.DAYS.toMillis(1)
 
-        fun countNightDifference(checkInDate: String, checkOutDate: String): Long =
-                ((TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkOutDate).time -
-                        TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkInDate).time)) / ONE_DAY
+        fun getFormattedCurrentDate(format: String): String {
+            return TravelDateUtil.dateToString(format, TravelDateUtil.getCurrentCalendar().time)
+        }
+
+        fun countDayDifference(date1: String, date2: String): Long =
+                ((TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, date2).time -
+                        TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, date1).time)) / ONE_DAY
     }
 
 }
