@@ -356,9 +356,7 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
     private void enableOrDisableImages(ViewHolder holder, CouponValueEntity item) {
         if(item.getUsage()!=null) {
             if (item.getUsage().getActiveCountDown() > 0
-                    || item.getUsage().getExpiredCountDown() <= 0
-                    || (!TextUtils.isEmpty(item.getUsage().getUsageStr()) &&
-                    "Mulai berlaku".equalsIgnoreCase(item.getUsage().getUsageStr().trim()))) {
+                    || item.getUsage().getExpiredCountDown() <= 0) {
                 disableImages(holder);
             } else {
                 enableImages(holder);
