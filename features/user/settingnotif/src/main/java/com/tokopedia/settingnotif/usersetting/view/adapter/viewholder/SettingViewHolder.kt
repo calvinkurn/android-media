@@ -1,23 +1,18 @@
 package com.tokopedia.settingnotif.usersetting.view.adapter.viewholder
 
-import android.support.annotation.LayoutRes
 import android.view.View
 import android.widget.Switch
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.domain.pojo.SettingPojo
+import com.tokopedia.settingnotif.usersetting.domain.pojo.Setting
 
-class SettingViewHolder(itemView: View?) : AbstractViewHolder<SettingPojo>(itemView) {
+abstract class SettingViewHolder<T : Setting>(itemView: View?) : AbstractViewHolder<T>(itemView) {
 
-    private val settingSwitch = itemView?.findViewById<Switch>(R.id.sw_setting)
+    private val settingSwitch: Switch? = getSwitchView(itemView)
 
-    override fun bind(element: SettingPojo?) {
+    abstract fun getSwitchView(itemView: View?): Switch?
+
+    override fun bind(element: T?) {
         settingSwitch?.text = element?.name
-    }
-
-    companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_setting
     }
 
 }

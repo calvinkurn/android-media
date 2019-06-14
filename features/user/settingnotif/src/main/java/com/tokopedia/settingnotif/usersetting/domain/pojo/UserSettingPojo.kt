@@ -10,7 +10,7 @@ class UserSettingPojo(
 
 class SettingSectionsPojo(
         var sectionTitle: String,
-        var settings: List<SettingPojo>
+        var settings: List<ParentSettingPojo>
 ) : Visitable<SettingFieldTypeFactory> {
 
     override fun type(typeFactory: SettingFieldTypeFactory): Int {
@@ -19,14 +19,36 @@ class SettingSectionsPojo(
 
 }
 
-class SettingPojo(
+abstract class Setting(
         var name: String,
         var icon: String,
         var key: String,
         var status: Boolean,
-        var description: String,
-        var childSettings: List<SettingPojo>
-) : Visitable<SettingFieldTypeFactory> {
+        var description: String
+) : Visitable<SettingFieldTypeFactory>
+
+class ParentSettingPojo(
+        name: String,
+        icon: String,
+        key: String,
+        status: Boolean,
+        description: String,
+        val childSettings: List<ChildSettingPojo>
+) : Setting(name, icon, key, status, description) {
+
+    override fun type(typeFactory: SettingFieldTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+}
+
+class ChildSettingPojo(
+        name: String,
+        icon: String,
+        key: String,
+        status: Boolean,
+        description: String
+) : Setting(name, icon, key, status, description) {
 
     override fun type(typeFactory: SettingFieldTypeFactory): Int {
         return typeFactory.type(this)
@@ -39,24 +61,24 @@ object SettingHelper {
 
     fun createDummyResponse(): UserSettingPojo {
         val transactionSettings = listOf(
-                SettingPojo("Transaksi Pembelian", "", "1", true, "", emptyList())
+                ParentSettingPojo("Transaksi Pembelian", "", "1", true, "", emptyList())
         )
 
         val chatSetting = listOf(
-                SettingPojo("Dari Tokopedia", "", "1", true, "", emptyList()),
-                SettingPojo("Chat Promosi dari Penjual", "", "1", true, "", emptyList()),
-                SettingPojo("Chat Penjual", "", "1", true, "", emptyList())
+                ChildSettingPojo("Dari Tokopedia", "", "1", true, ""),
+                ChildSettingPojo("Chat Promosi dari Penjual", "", "1", true, ""),
+                ChildSettingPojo("Chat Penjual", "", "1", true, "")
         )
         val inboxSettings = listOf(
-                SettingPojo("Chat", "", "1", true, "", chatSetting),
-                SettingPojo("Diskusi", "", "1", true, "", emptyList()),
-                SettingPojo("Ulasan", "", "1", true, "", emptyList())
+                ParentSettingPojo("Chat", "", "1", true, "", chatSetting),
+                ParentSettingPojo("Diskusi", "", "1", true, "", emptyList()),
+                ParentSettingPojo("Ulasan", "", "1", true, "", emptyList())
         )
 
         val updateSettings = listOf(
-                SettingPojo("Aktivitas", "", "1", true, "Reminder, Feeds, dan Aktivitas akun kamu", emptyList()),
-                SettingPojo("Promo", "", "1", true, "", emptyList()),
-                SettingPojo("Info", "", "1", true, "Informasi terbaru seputar Tokopedia", emptyList())
+                ParentSettingPojo("Aktivitas", "", "1", true, "Reminder, Feeds, dan Aktivitas akun kamu", emptyList()),
+                ParentSettingPojo("Promo", "", "1", true, "", emptyList()),
+                ParentSettingPojo("Info", "", "1", true, "Informasi terbaru seputar Tokopedia", emptyList())
         )
 
         val emailSectionSettings = listOf(
