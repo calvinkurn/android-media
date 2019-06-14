@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.list.decoration.SpaceItemDecoration
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
+import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
@@ -41,6 +43,9 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     lateinit var searchResultviewModel: HotelSearchResultViewModel
     lateinit var sortMenu: HotelClosedSortBottomSheets
     private var onFilterClick: View.OnClickListener? = null
+    lateinit var trackingHotelUtils: TrackingHotelUtil
+
+    var searchDestinationName = ""
 
     companion object {
         private const val REQUEST_FILTER = 0x10
@@ -93,6 +98,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                     it.getString(ARG_CHECK_OUT, ""),
                     it.getInt(ARG_TOTAL_ROOM, 1),
                     it.getInt(ARG_TOTAL_ADULT, 0))
+            searchDestinationName = it.getString(ARG_DESTINATION_NAME, "")
         }
     }
 
@@ -140,10 +146,27 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     private fun onSuccessGetResult(data: PropertySearch) {
+        var searchParam = searchResultviewModel.searchParam
+        trackingHotelUtils.hotelViewHotelListImpression(
+                searchDestinationName,
+                searchParam.room,
+                searchParam.guest.adult,
+                HotelUtils.countCurrentDayDifference(searchParam.checkIn).toInt(),
+                HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut).toInt(),
+                mapPropertySearch(data)
+        )
+
         bottom_action_view.visible()
         super.renderList(data.properties, data.properties.size > 0)
         generateSortMenu(data.displayInfo.sort)
         initializeFilterClick(data.displayInfo.filter)
+    }
+
+    private fun mapPropertySearch(data: PropertySearch): List<TrackingHotelUtil.HotelImpressionProduct> {
+        return data.properties.map {
+            TrackingHotelUtil.HotelImpressionProduct(it.name, "", it.id,
+                it.roomPrice.minBy { it.totalPriceAmount }?.totalPriceAmount?.toInt() ?: 0)
+        }
     }
 
     private fun initializeFilterClick(filter: Filter) {

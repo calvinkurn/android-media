@@ -262,8 +262,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     }
 
     private fun trackRoomDates() {
-        val dayDiff = HotelUtils.countDayDifference(HotelUtils.getFormattedCurrentDate(TravelDateUtil.YYYY_MM_DD),
-                hotelHomepageModel.checkInDate)
+        val dayDiff = HotelUtils.countCurrentDayDifference(hotelHomepageModel.checkInDate)
         val dateRange = "${hotelHomepageModel.checkInDate} - ${hotelHomepageModel.checkOutDate}"
         trackingHotelUtils.hotelSelectStayDate(dayDiff.toInt(), dateRange)
     }
@@ -290,7 +289,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                 hotelHomepageModel.locName,
                 hotelHomepageModel.roomCount,
                 hotelHomepageModel.adultCount,
-                countCurrentDayDifference().toInt(),
+                HotelUtils.countCurrentDayDifference(hotelHomepageModel.checkInDate).toInt(),
                 hotelHomepageModel.nightCounter.toInt()
         )
 
@@ -308,9 +307,6 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     }
 
     private fun countRoomDuration(): Long = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
-
-    private fun countCurrentDayDifference(): Long =
-            HotelUtils.countDayDifference(HotelUtils.getFormattedCurrentDate(TravelDateUtil.YYYY_MM_DD), hotelHomepageModel.checkInDate)
 
     private fun loadPromoData() {
         homepageViewModel.getHotelPromo(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_home_promo))

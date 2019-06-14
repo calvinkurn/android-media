@@ -9,13 +9,13 @@ class HotelUtils {
     companion object {
         val ONE_DAY: Long = TimeUnit.DAYS.toMillis(1)
 
-        fun getFormattedCurrentDate(format: String): String {
-            return TravelDateUtil.dateToString(format, TravelDateUtil.getCurrentCalendar().time)
-        }
+        fun countCurrentDayDifference(date: String): Long =
+                (TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, date).time -
+                        TravelDateUtil.getCurrentCalendar().timeInMillis) / ONE_DAY
 
         fun countDayDifference(date1: String, date2: String): Long =
-                ((TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, date2).time -
-                        TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, date1).time)) / ONE_DAY
+                (TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, date2).time -
+                        TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, date1).time) / ONE_DAY
     }
 
 }

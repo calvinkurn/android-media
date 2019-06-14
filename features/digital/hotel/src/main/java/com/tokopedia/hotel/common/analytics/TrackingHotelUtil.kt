@@ -177,7 +177,7 @@ class TrackingHotelUtil {
 
         @SerializedName("id")
         @Expose
-        val hotelId: String = "",
+        val hotelId: Int = 0,
 
         @SerializedName("price")
         @Expose
