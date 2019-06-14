@@ -236,7 +236,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         checkin_checkout_date.setRoomDatesFormatted(
                 propertyDetail.checkInOut[0].checkInOut.date,
                 propertyDetail.checkInOut[1].checkInOut.date,
-                propertyDetail.checkInOut[2].content)
+                propertyDetail.stayLength.content)
     }
 
     fun showCallButtonSheet(contactList: List<HotelTransportDetail.ContactInfo>) {
