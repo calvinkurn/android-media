@@ -10,6 +10,7 @@ interface CornerContract {
     interface View {
         fun showEmptyView()
         fun showData(data: List<RecipientAddressModel>?)
+        fun appendData(data: List<RecipientAddressModel>?)
         fun setLoadingState(active: Boolean)
         fun showError(e: Throwable)
     }
@@ -18,6 +19,7 @@ interface CornerContract {
         fun attachView(view: View)
         fun detachView()
         fun getData()
+        fun loadMore(page: Int)
         fun searchQuery(query: String)
     }
 }

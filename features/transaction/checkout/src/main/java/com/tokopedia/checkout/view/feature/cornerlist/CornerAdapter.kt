@@ -35,6 +35,11 @@ class CornerAdapter(
         notifyDataSetChanged()
     }
 
+    fun addAddress(list: List<RecipientAddressModel>) {
+        mData.addAll(list)
+        notifyDataSetChanged()
+    }
+
     class CornerViewHolder(var mView: View) : RecyclerView.ViewHolder(mView) {
 
         var mCornerName: TextView = mView.findViewById(R.id.text_view_branch_name)

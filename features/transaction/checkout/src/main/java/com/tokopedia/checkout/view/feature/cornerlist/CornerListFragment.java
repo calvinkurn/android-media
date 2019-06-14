@@ -22,6 +22,7 @@ import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent;
+import com.tokopedia.topads.sdk.utils.EndlessRecyclerViewScrollListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -100,8 +101,15 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
         mProgressBar = view.findViewById(R.id.progress_bar);
 
         mRvCorner.setHasFixedSize(true);
-        mRvCorner.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        mRvCorner.setLayoutManager(layoutManager);
         mRvCorner.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        mRvCorner.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                mPresenter.loadMore(page);
+            }
+        });
         mRvCorner.setAdapter(mAdapter);
 
         mSearchView.setSearchHint(getActivity().getString(R.string.hint_search_corner));
@@ -132,6 +140,11 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
     public void showData(List<? extends RecipientAddressModel> data) {
         mAdapter.setAddress(data);
         mEmptyView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void appendData(List<? extends RecipientAddressModel> data) {
+        mAdapter.addAddress(data);
     }
 
     @Override
