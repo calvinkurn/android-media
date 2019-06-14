@@ -123,6 +123,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String KEY_DEF_PACKAGE = "android";
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
+    private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
@@ -159,6 +160,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private int searchBarTransitionRange = 0;
     private Visitable feedTabVisitable;
     private boolean scrollToRecommendList;
+    private long lastSendScreenTimeMillis;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -973,7 +975,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void sendScreen() {
-        if (getActivity() != null) {
+        if (getActivity() != null && System.currentTimeMillis() > lastSendScreenTimeMillis + SEND_SCREEN_MIN_INTERVAL_MILLIS) {
+            lastSendScreenTimeMillis = System.currentTimeMillis();
             IndexScreenTracking.sendScreen(getActivity(), this::getScreenName);
         }
     }
