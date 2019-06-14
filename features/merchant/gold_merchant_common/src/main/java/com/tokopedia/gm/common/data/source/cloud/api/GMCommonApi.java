@@ -15,6 +15,7 @@ import java.util.List;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import rx.Observable;
@@ -30,14 +31,17 @@ public interface GMCommonApi {
     @POST(GMCommonUrl.GET_CASHBACK_PRODUCTS)
     Observable<Response<DataResponse<List<GMGetCashbackModel>>>> getCashbackList(@Body RequestGetCashbackModel requestGetCashbackModel);
 
-    @GET(GMCommonUrl.GET_SHOP_STATUS +"?json=1")
+    @Headers("Origin: tokopedia.com")
+    @GET(GMCommonUrl.GET_SHOP_STATUS)
     Observable<Response<DataResponse<ShopStatusModel>>> getShopStatus(@Path("shop_id") String shopId);
 
     // to activate power merchant
+    @Headers("Origin: tokopedia.com")
     @POST(GMCommonUrl.SHOPS_SUBSCRIPTION)
     Observable<Response<DataResponse<PowerMerchantActivationResult>>> activatePowerMerchant();
 
     // to turn on/off powerMerchant
+    @Headers("Origin: tokopedia.com")
     @POST(GMCommonUrl.SHOPS_SUBSCRIPTIONS_AUTO_EXTEND)
     Observable<Response<DataResponse<PowerMerchantActivationResult>>> turnOnOffPowerMerchantSubscription(
             @Body RequestAutoExtendPowerMerchantModel requestAutoExtendPowerMerchantModel);

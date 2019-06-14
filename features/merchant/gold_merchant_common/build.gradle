@@ -30,7 +30,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
 
 
-
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
