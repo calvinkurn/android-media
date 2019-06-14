@@ -963,19 +963,8 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             }
         });
 
-        if (couponSection == null
-                || couponSection.getLayoutCouponAttr() == null
-                || couponSection.getLayoutCouponAttr().getCouponList() == null
-                || couponSection.getLayoutCouponAttr().getCouponList().isEmpty()) {
-            mPresenter.setPagerSelectedItem(TAB_CATALOG);
-        } else {
-            mPresenter.setPagerSelectedItem(TAB_COUPON);
-        }
-
-        mPagerPromos.setCurrentItem(mPresenter.getPagerSelectedItem());
-
     }
-
+r
     public void onSuccessResponse(TokoPointEntity data, List<SectionContent> sections) {
         mContainerMain.setDisplayedChild(CONTAINER_DATA);
 
