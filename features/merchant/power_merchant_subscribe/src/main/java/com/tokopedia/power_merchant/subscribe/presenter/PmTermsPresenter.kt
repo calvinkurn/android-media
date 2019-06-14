@@ -15,4 +15,7 @@ class PmTermsPresenter @Inject constructor(
     override fun activatePowerMerchant() {
 
     }
+
+    override fun autoExtendPowerMerchant() {
+    }
 }

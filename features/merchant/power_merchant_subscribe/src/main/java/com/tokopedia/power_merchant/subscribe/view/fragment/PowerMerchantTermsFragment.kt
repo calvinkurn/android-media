@@ -7,7 +7,8 @@ import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
-import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.power_merchant.subscribe.*
 import com.tokopedia.power_merchant.subscribe.contract.PmTermsContract
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,10 +27,13 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
     lateinit var presenter: PmTermsContract.Presenter
 
     private var isTermsAgreed: Boolean = false
+    private var action: String = ""
 
     companion object {
-        fun createInstance(): Fragment {
-            return PowerMerchantTermsFragment()
+        fun createInstance(bundle: Bundle): Fragment {
+            return PowerMerchantTermsFragment().apply {
+                arguments = bundle
+            }
         }
     }
 
@@ -46,14 +50,14 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkboxLayout.setOnClickListener {
-            isTermsAgreed = !isTermsAgreed
-            checkbox.isChecked = isTermsAgreed
-            activateBtn.isEnabled = isTermsAgreed
-        }
-        activateBtn.setOnClickListener {
-            presenter.activatePowerMerchant()
-        }
+        presenter.attachView(this)
+        initVar()
+        initView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 
     override fun getLayout(): Int {
@@ -61,7 +65,7 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
     }
 
     override fun getUrl(): String {
-        return "https://www.tokopedia.com/blog/panduan-keamanan-tokopedia/"
+        return TERMS_AND_CONDITION_URL
     }
 
     override fun getUserIdForHeader(): String? {
@@ -70,6 +74,11 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
 
     override fun getAccessToken(): String? {
         return userSession.accessToken
+    }
+
+    override fun onLoadFinished() {
+        super.onLoadFinished()
+        footer.visible()
     }
 
     override fun showLoading() {
@@ -86,5 +95,24 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
 
     override fun onErrorActivate(throwable: Throwable) {
         Toast.makeText(context, "error", Toast.LENGTH_LONG).show()
+    }
+
+    private fun initVar() {
+        action = arguments?.getString(ACTION_KEY) ?: ""
+    }
+
+    private fun initView() {
+        checkboxLayout.setOnClickListener {
+            isTermsAgreed = !isTermsAgreed
+            checkbox.isChecked = isTermsAgreed
+            activateBtn.isEnabled = isTermsAgreed
+        }
+        activateBtn.setOnClickListener {
+            if (action == ACTION_ACTIVATE) {
+                presenter.activatePowerMerchant()
+            } else if (action == ACTION_AUTO_EXTEND) {
+                presenter.autoExtendPowerMerchant()
+            }
+        }
     }
 }

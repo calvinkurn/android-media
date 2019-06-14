@@ -34,6 +34,7 @@
         android:paddingTop="@dimen/dp_8"
         android:paddingRight="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_8"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
