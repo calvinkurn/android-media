@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/dp_2"
-        android:layout_marginBottom="@dimen/dp_4"
         >
 
         <LinearLayout
@@ -129,7 +128,7 @@
         android:id="@+id/evoucher_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_4"
         app:cardElevation="@dimen/dp_2">
 
