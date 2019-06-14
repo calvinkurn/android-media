@@ -24,8 +24,12 @@ import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
+import com.tokopedia.transaction.orders.orderdetails.view.customview.BookingCodeView;
+import com.tokopedia.transaction.orders.orderdetails.view.customview.CustomTicketView;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -129,7 +133,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             @Override
             public void onClick(View view) {
                 ((UnifiedOrderListRouter) context.getApplicationContext())
-                        .actionOpenGeneralWebView((Activity)context, uri);
+                        .actionOpenGeneralWebView((Activity) context, uri);
             }
         };
     }
@@ -145,6 +149,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private ProgressBar progressBar;
         private LinearLayout tapActionLayout;
         private LinearLayout actionLayout;
+        private LinearLayout voucherCodeLayout;
+        private CustomTicketView customTicketView;
         private View clCard;
         private View llValid;
         private View llTanggalEvent;
@@ -169,6 +175,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 tanggalEvents = itemView.findViewById(R.id.tanggal_events);
                 eventCity = itemView.findViewById(R.id.city_event);
                 eventAddress = itemView.findViewById(R.id.address_event);
+                voucherCodeLayout = itemView.findViewById(R.id.voucerCodeLayout);
+                customTicketView = itemView.findViewById(R.id.customView2);
             }
             if (itemType == ITEM_DEALS) {
                 actionLayout = itemView.findViewById(R.id.actionButton);
@@ -235,10 +243,20 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         eventAddress.setText(metaDataInfo.getEntityPackages().get(0).getAddress());
                     }
 
-                    if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
-                        tanggalEventsTitle.setVisibility(View.VISIBLE);
-                        tanggalEvents.setText(metaDataInfo.getEndDate());
+                    if (metaDataInfo.getIsHiburan() == 1) {
+                        if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
+                            tanggalEventsTitle.setVisibility(View.VISIBLE);
+                            tanggalEventsTitle.setText(context.getResources().getString(R.string.text_valid_till));
+                            tanggalEvents.setText(metaDataInfo.getEndDate());
+                        }
+                    } else if (metaDataInfo.getIsHiburan() == 0) {
+                        if (!TextUtils.isEmpty(metaDataInfo.getEndDate()) && !TextUtils.isEmpty(metaDataInfo.getStartDate())) {
+                            tanggalEventsTitle.setVisibility(View.VISIBLE);
+                            tanggalEventsTitle.setText(context.getResources().getString(R.string.tanggal_events));
+                            tanggalEvents.setText(metaDataInfo.getStartDate() + " - " + metaDataInfo.getEndDate());
+                        }
                     }
+
                     if (!TextUtils.isEmpty(item.getCategory())) {
                         validDate.setText(" ".concat(metaDataInfo.getEntityPackages().get(0).getDisplayName()));
                         llValid.setVisibility(View.VISIBLE);
@@ -298,14 +316,29 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
                     progressBar.setVisibility(View.VISIBLE);
                     tapActionLayout.setVisibility(View.GONE);
+                    customTicketView.setVisibility(View.GONE);
                     presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                 }
 
                 if (item.isTapActionsLoaded()) {
                     progressBar.setVisibility(View.GONE);
                     if (item.getTapActions() == null || item.getTapActions().size() == 0) {
-                        tapActionLayout.setVisibility(View.GONE);
+                        if (!TextUtils.isEmpty(item.getTrackingNumber())) {
+                            String[] voucherCodes = item.getTrackingNumber().split(",");
+                            if (voucherCodes.length > 0) {
+                                voucherCodeLayout.setVisibility(View.VISIBLE);
+                                for (int i = 0; i < voucherCodes.length; i++) {
+                                    BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[i], i, context.getResources().getString(R.string.voucher_code_title), voucherCodes.length);
+                                    bookingCodeView.setBackground(null);
+                                    voucherCodeLayout.addView(bookingCodeView);
+                                }
+                            }
+                        }else {
+                            customTicketView.setVisibility(View.GONE);
+                            tapActionLayout.setVisibility(View.GONE);
+                        }
                     } else {
+                        customTicketView.setVisibility(View.VISIBLE);
                         tapActionLayout.setVisibility(View.VISIBLE);
                         tapActionLayout.removeAllViews();
                         int size = item.getTapActions().size();
@@ -315,7 +348,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
                                 presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                             } else {
-                                setActionButtonClick(tapActionTextView, actionButton);
+                                setActionButtonClick(tapActionTextView, actionButton, item);
                             }
                             tapActionLayout.addView(tapActionTextView);
                         }
@@ -339,7 +372,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             TextView actionTextView = renderActionButtons(i, actionButton, item);
                             if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
                                 if (item.isActionButtonLoaded()) {
-                                    setActionButtonClick(null, actionButton);
+                                    setActionButtonClick(null, actionButton, item);
                                 } else {
                                     actionTextView.setOnClickListener(new View.OnClickListener() {
                                         @Override
@@ -347,7 +380,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                             if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
                                                 presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex(), false);
                                             } else {
-                                                setActionButtonClick(actionTextView, actionButton);
+                                                setActionButtonClick(actionTextView, actionButton, item);
                                             }
 
                                         }
@@ -362,7 +395,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
 
-        private void setActionButtonClick(TextView view, ActionButton actionButton) {
+        private void setActionButtonClick(TextView view, ActionButton actionButton, Items item) {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                 if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
                     if (view == null)
@@ -372,7 +405,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
                 view.setOnClickListener(v -> {
-                    setEventDetails.openShowQRFragment(actionButton);
+                    setEventDetails.openShowQRFragment(actionButton, item);
                 });
             }
         }
@@ -438,7 +471,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public interface SetEventDetails {
         void setEventDetails(Items item);
-        void openShowQRFragment(ActionButton actionButton);
+
+        void openShowQRFragment(ActionButton actionButton, Items item);
     }
 
 }

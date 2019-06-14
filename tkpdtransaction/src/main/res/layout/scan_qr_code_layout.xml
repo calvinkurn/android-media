@@ -22,59 +22,18 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/booking_code_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_24"
             android:layout_marginTop="@dimen/dp_32"
             android:layout_marginRight="@dimen/dp_24"
-            android:background="@drawable/bg_search_input_text_area"
+            android:orientation="vertical"
+            android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/qrCode">
-
-            <TextView
-                android:id="@+id/booking_code_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"
-                android:text="@string/booking_code_title"
-                android:textColor="@color/clr_ae31353b"
-                android:textSize="@dimen/sp_12" />
-
-
-            <TextView
-                android:id="@+id/booking_code"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/booking_code_title"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:text="TPR9QTMYE"
-                android:textColor="@color/clr_f531353b"
-                android:textSize="@dimen/sp_20"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/copyCode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/booking_code_title"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_16"
-                android:gravity="center_horizontal|center_vertical"
-                android:text="Salin"
-                android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/sp_12" />
-
-
-        </RelativeLayout>
+            app:layout_constraintTop_toBottomOf="@+id/qrCode" />
 
 
         <TextView

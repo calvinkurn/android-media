@@ -48,6 +48,10 @@ public class MetaDataInfo {
     @Expose
     private List<EntityPessenger> entityPessengers;
 
+    @SerializedName("is_hiburan")
+    @Expose
+    private int isHiburan;
+
     public String getEndDate() {
         return endDate;
     }
@@ -158,5 +162,13 @@ public class MetaDataInfo {
 
     public void setEntityPessengers(List<EntityPessenger> entityPessengers) {
         this.entityPessengers = entityPessengers;
+    }
+
+    public int getIsHiburan() {
+        return isHiburan;
+    }
+
+    public void setIsHiburan(int isHiburan) {
+        this.isHiburan = isHiburan;
     }
 }

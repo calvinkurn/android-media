@@ -132,9 +132,11 @@
             </LinearLayout>
 
             <View
+                android:id="@+id/divider_above_userInfo"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
+                android:visibility="gone"
                 android:background="@color/grey_300" />
 
             <TextView
@@ -154,19 +156,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
+                android:visibility="gone"
                 android:orientation="vertical" />
 
             <View
+                android:id="@+id/divider_above_actionButton"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
+                android:visibility="visible"
                 android:background="@color/grey_300" />
 
             <RelativeLayout
                 android:id="@+id/actionButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
                 android:layout_gravity="center_horizontal"
                 android:visibility="gone"
                 android:background="@color/white">
