@@ -33,8 +33,10 @@ class TkpdVideoPlayer: Fragment() {
 
     companion object {
         //keys
+        private const val VIEW_MODEL        = "video_model"
         private const val VIDEO_SOURCE      = "video_uri"
         private const val VIDEO_CALLBACK    = "video_callback"
+        private const val REPEAT_MODE       = "repeat_mode"
 
         //const
         private const val VIDEO_ROTATION_90 = 90f
@@ -50,6 +52,10 @@ class TkpdVideoPlayer: Fragment() {
             transaction.replace(containerId, videoPlayer)
             transaction.commit()
             return this
+        }
+
+        fun repeatMode(mode: Int) = apply {
+            bundle.putInt(REPEAT_MODE, mode)
         }
 
         fun videoSource(sourceMedia: String) = apply {
@@ -71,6 +77,8 @@ class TkpdVideoPlayer: Fragment() {
     private lateinit var playerOptions: SimpleExoPlayer
     private var callback: VideoPlayerListener ?= null
 
+    private var viewModel = TkpdPlayerViewModel()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_video_player, container, false)
     }
@@ -79,26 +87,40 @@ class TkpdVideoPlayer: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         sendViewToBack(playerView) //utilities: send playerView in back of any views
 
-        //catch source media from file, uri, or URL.
-        val sourceMedia = arguments?.getString(VIDEO_SOURCE, "")
+        //catch video detail properties
+        when {
+            savedInstanceState != null -> {
+                viewModel = savedInstanceState.getParcelable(VIEW_MODEL) ?: TkpdPlayerViewModel()
+            }
+            arguments != null -> {
+                viewModel.videoSource = arguments!!.getString(VIDEO_SOURCE, "")
+                viewModel.repeatMode = arguments!!.getInt(REPEAT_MODE, RepeatMode.REPEAT_MODE_OFF)
+            }
+            else -> activity?.finish()
+        }
 
         //passing callback listener with serializable
         callback = arguments?.getSerializable(VIDEO_CALLBACK) as VideoPlayerListener?
 
-        if (sourceMedia == null || sourceMedia.isEmpty()) {
+        if (viewModel.videoSource.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)
             callback?.onPlayerError(PlayerException.SourceNotFound)
         } else {
-            if (File(sourceMedia).exists()) {
-                val file = Uri.fromFile(File(sourceMedia))
+            if (File(viewModel.videoSource).exists()) {
+                val file = Uri.fromFile(File(viewModel.videoSource))
                 initPlayer(file, VideoSourceProtocol.File)
             } else {
-                val url = Uri.parse(sourceMedia)
-                initPlayer(url, VideoSourceProtocol.protocol(context, sourceMedia))
+                val url = Uri.parse(viewModel.videoSource)
+                initPlayer(url, VideoSourceProtocol.protocol(context, viewModel.videoSource))
             }
         }
 
         playerListener()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(VIEW_MODEL, viewModel)
     }
 
     private fun playerListener() = playerOptions.addListener(object : Player.EventListener {
@@ -125,11 +147,7 @@ class TkpdVideoPlayer: Fragment() {
             playerView.player = playerOptions
 
             //repeat mode
-            playerOptions.repeatMode = if (callback?.repeatMode() != null) {
-                callback?.repeatMode()!!
-            } else {
-                RepeatMode.REPEAT_MODE_OFF
-            }
+            playerOptions.repeatMode = viewModel.repeatMode
 
             //auto play enabled
             playerOptions.playWhenReady = true
