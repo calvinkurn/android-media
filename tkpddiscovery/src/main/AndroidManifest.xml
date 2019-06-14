@@ -124,28 +124,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".newdiscovery.search.SearchActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/image_search_title"
-            android:windowSoftInputMode="adjustNothing"
-            android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/jpeg" />
-                <data android:mimeType="image/png" />
-                <data android:mimeType="image/jpg" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/jpeg" />
-                <data android:mimeType="image/png" />
-                <data android:mimeType="image/jpg" />
-            </intent-filter>
-
-        </activity>
-        <activity
             android:name=".autocomplete.presentation.activity.AutoCompleteActivity"
             android:screenOrientation="portrait"
             android:label="@string/image_search_title"
@@ -171,6 +149,11 @@
             android:name=".imagesearch.search.ImageSearchActivity"
             android:label=""
             android:screenOrientation="portrait" />
+        <activity android:name=".imagesearch.search.ImageSearchImagePickerActivity"
+            android:theme="@style/Theme.White"
+            android:label="@string/choose_image"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".similarsearch.view.SimilarSearchActivity"
             android:label=""

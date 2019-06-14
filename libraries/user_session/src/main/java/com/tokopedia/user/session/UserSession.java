@@ -52,6 +52,8 @@ public class UserSession implements UserSessionInterface {
     private static final String HAS_SHOWN_SALDO_WARNING = "HAS_SHOWN_SALDO_WARNING";
     private static final String HAS_SHOWN_SALDO_INTRO_PAGE = "HAS_SHOWN_SALDO_INTRO_PAGE";
 
+    private static final String AUTOFILL_USER_DATA = "AUTOFILL_USER_DATA";
+
     private Context context;
 
     public UserSession(Context context) {
@@ -217,6 +219,12 @@ public class UserSession implements UserSessionInterface {
     public String getShopAvatar() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(SHOP_AVATAR, "");
+    }
+
+    @Override
+    public String getAutofillUserData(){
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(AUTOFILL_USER_DATA, "");
     }
 
     /**
@@ -454,6 +462,14 @@ public class UserSession implements UserSessionInterface {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(SHOP_AVATAR, shopAvatar);
+        editor.apply();
+    }
+
+    @Override
+    public void setAutofillUserData(String autofillUserData){
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(AUTOFILL_USER_DATA, autofillUserData);
         editor.apply();
     }
 

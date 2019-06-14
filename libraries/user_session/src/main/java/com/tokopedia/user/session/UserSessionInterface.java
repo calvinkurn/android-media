@@ -53,6 +53,7 @@ public interface UserSessionInterface {
 
     String getShopAvatar();
 
+    String getAutofillUserData();
 
         /**
          * SETTER METHOD
@@ -115,4 +116,6 @@ public interface UserSessionInterface {
     void setGCToken(String gcToken);
 
     void setShopAvatar(String shopAvatar);
+
+    void setAutofillUserData(String autofillUserData);
 }

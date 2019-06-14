@@ -1234,8 +1234,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
             shareProfile.setOnClickListener {
-                shareLink(headerViewModel.link)
                 profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+
+                val linkerData = constructShareData(
+                        headerViewModel.name,
+                        headerViewModel.avatar,
+                        headerViewModel.link,
+                        String.format(getString(R.string.profile_share_text),
+                                headerViewModel.link),
+                        String.format(getString(R.string.profile_share_title)))
+                fragmentManager?.let {
+                    ShareBottomSheets().show(it, linkerData, isOwner, userId.toString(), true)
+                }
             }
             shareProfile.setOnLongClickListener {
                 showToast(getString(R.string.profile_share_this_profile))

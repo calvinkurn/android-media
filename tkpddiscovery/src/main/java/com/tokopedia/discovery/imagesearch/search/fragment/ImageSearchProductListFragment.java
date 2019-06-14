@@ -416,7 +416,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private void sendImageTrackingDataInChunks(List<Visitable> list) {
         if (list != null && list.size() > 0) {
-            String userId = generateUserId();
             List<Object> dataLayerList = new ArrayList<>();
             for (int j = 0; j < list.size(); ) {
                 int count = 0;
@@ -424,7 +423,8 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                 while (count < MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT && j < list.size()) {
                     count++;
                     if (list.get(j) instanceof ProductItem) {
-                        dataLayerList.add(((ProductItem) list.get(j)).getProductAsObjectDataLayer(userId));
+                        ProductItem productItem = (ProductItem)list.get(j);
+                        dataLayerList.add(productItem.getProductAsObjectDataLayerForImageSearchImpression());
                     }
                     j++;
                 }
@@ -681,10 +681,9 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void sendItemClickTrackingEvent(ProductItem item) {
-        String userId = generateUserId();
-
         SearchTracking.trackEventClickImageSearchResultProduct(
-                getActivity(), item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);
+                item.getProductAsObjectDataLayerForImageSearchClick()
+        );
     }
 
     @Override

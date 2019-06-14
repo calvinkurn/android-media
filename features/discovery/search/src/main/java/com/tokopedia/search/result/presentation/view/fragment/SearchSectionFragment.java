@@ -37,9 +37,7 @@ import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -57,8 +55,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_C
 public abstract class SearchSectionFragment
         extends BaseDaggerFragment
         implements
-        SearchSectionContract.View,
-        RequestDynamicFilterListener {
+        SearchSectionContract.View {
 
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
     public static final int REQUEST_CODE_LOGIN = 561;
@@ -91,7 +88,6 @@ public abstract class SearchSectionFragment
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
-    private boolean isGettingDynamicFilter;
     protected boolean isUsingBottomSheetFilter;
     protected boolean isListEmpty = false;
 
@@ -356,11 +352,6 @@ public abstract class SearchSectionFragment
     }
 
     @Override
-    public HashMap<String, String> getExtraFilter() {
-        return null;
-    }
-
-    @Override
     public void setSelectedFilter(HashMap<String, String> selectedFilter) {
         if(filterController == null || getFilters() == null) return;
 
@@ -440,21 +431,7 @@ public abstract class SearchSectionFragment
     }
 
     @Override
-    public void getDynamicFilter() {
-        if (canRequestDynamicFilter()) {
-            isGettingDynamicFilter = true;
-            getPresenter().requestDynamicFilter(searchParameter.getSearchParameterMap());
-        }
-    }
-
-    private boolean canRequestDynamicFilter() {
-        return !isFilterDataAvailable()
-                && !isGettingDynamicFilter;
-    }
-
-    @Override
     public void renderDynamicFilter(DynamicFilterModel pojo) {
-        isGettingDynamicFilter = false;
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
 
@@ -484,8 +461,6 @@ public abstract class SearchSectionFragment
 
     @Override
     public void renderFailRequestDynamicFilter() {
-        isGettingDynamicFilter = false;
-
         if(getActivity() == null) return;
 
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_get_dynamic_filter));
@@ -513,7 +488,6 @@ public abstract class SearchSectionFragment
         outState.putSerializable(EXTRA_SELECTED_FILTER, getSelectedFilter());
         outState.putSerializable(EXTRA_SELECTED_SORT, getSelectedSort());
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
-        outState.putBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER, isGettingDynamicFilter);
     }
 
     public abstract void reloadData();
@@ -551,7 +525,6 @@ public abstract class SearchSectionFragment
         setSelectedFilter((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_FILTER));
         setSelectedSort((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
-        isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
     }
 
     @Override
@@ -646,21 +619,5 @@ public abstract class SearchSectionFragment
     @Override
     public void logDebug(String tag, String message) {
         Log.d(tag, message);
-    }
-
-    @Override
-    public void launchLoginActivity(String productId) {
-        Bundle extras = new Bundle();
-        extras.putString("product_id", productId);
-
-        if (getActivity() == null) return;
-
-        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
-
-        if (router != null) {
-            Intent intent = router.getLoginIntent(getActivity());
-            intent.putExtras(extras);
-            startActivityForResult(intent, REQUEST_CODE_LOGIN);
-        }
     }
 }

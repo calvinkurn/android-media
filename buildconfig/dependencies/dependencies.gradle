@@ -188,7 +188,7 @@ ext {
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3",
-            hansel                : "io.hansel.preprocessor:preprocessor:7.0.8",
+            hansel                : "io.hansel.preprocessor:preprocessor:7.1.1",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
@@ -255,5 +255,13 @@ ext {
 
     instabugDependencies = [
             instabug: "com.instabug.library:instabug:8.0.3"
+    ]
+    
+    unify = [
+        icon: 'com.tokopedia.unify:icon:0.0.1@aar',
+        principles: 'com.tokopedia.unify:principles:0.0.1@aar',
+        components: 'com.tokopedia.unify:components:0.0.1@aar',
+        coach_mark: 'com.tokopedia.unify.compositions:coach_mark:1.0.0@aar',
+        calendar: 'com.tokopedia.unify.compositions:calendar:0.0.1@aar'
     ]
 }

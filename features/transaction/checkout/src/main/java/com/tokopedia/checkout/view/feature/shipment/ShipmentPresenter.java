@@ -39,6 +39,7 @@ import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddres
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -108,6 +109,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +130,7 @@ import rx.subscriptions.CompositeSubscription;
 public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View>
         implements ShipmentContract.Presenter {
 
-    private static final int LAST_THREE_DIGIT_MODULUS = 1000;
+    private static final long LAST_THREE_DIGIT_MODULUS = 1000;
     private final CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase;
     private final CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase;
     private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
@@ -337,18 +340,43 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     private void updateEgoldBuyValue() {
-        double totalPrice = shipmentCostModel.getTotalPrice();
-        int valueTOCheck = (int) (totalPrice % LAST_THREE_DIGIT_MODULUS);
+
+        long totalPrice = (long) shipmentCostModel.getTotalPrice();
+
+        int valueTOCheck = 0;
         int buyEgoldValue = 0;
-        for (int i = egoldAttributeModel.getMinEgoldRange(); i <= egoldAttributeModel.getMaxEgoldRange(); i++) {
-            valueTOCheck = valueTOCheck + i;
-            if (valueTOCheck % LAST_THREE_DIGIT_MODULUS == 0) {
+
+        if (egoldAttributeModel.isTiering()) {
+            Collections.sort(egoldAttributeModel.getEgoldTieringModelArrayList(), (o1, o2) -> (int) (o1.getMinTotalAmount() - o2.getMinTotalAmount()));
+            EgoldTieringModel egoldTieringModel = new EgoldTieringModel();
+            for (EgoldTieringModel data : egoldAttributeModel.getEgoldTieringModelArrayList()) {
+                if (totalPrice >= data.getMinTotalAmount()) {
+                    valueTOCheck = (int) (totalPrice % data.getBasisAmount());
+                    egoldTieringModel = data;
+                }
+            }
+            buyEgoldValue = calculateBuyEgoldValue(valueTOCheck, (int) egoldTieringModel.getMinAmount(), (int) egoldTieringModel.getMaxAmount(), egoldTieringModel.getBasisAmount());
+        } else {
+            valueTOCheck = (int) (totalPrice % LAST_THREE_DIGIT_MODULUS);
+            buyEgoldValue = calculateBuyEgoldValue(valueTOCheck, egoldAttributeModel.getMinEgoldRange(), egoldAttributeModel.getMaxEgoldRange(), LAST_THREE_DIGIT_MODULUS);
+
+        }
+        egoldAttributeModel.setBuyEgoldValue(buyEgoldValue);
+        getView().renderDataChanged();
+    }
+
+    private int calculateBuyEgoldValue(int valueTOCheck, int minRange, int maxRange, long basisAmount) {
+
+        int buyEgoldValue = 0;
+
+        for (int i = minRange; i <= maxRange; i++) {
+            if ((valueTOCheck + i ) % basisAmount == 0) {
                 buyEgoldValue = i;
                 break;
             }
         }
-        egoldAttributeModel.setBuyEgoldValue(buyEgoldValue);
-        getView().renderDataChanged();
+
+        return buyEgoldValue;
     }
 
     @Override
@@ -833,7 +861,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.getErrorMessage());
-                    getView().renderCheckoutCartError(checkoutData.getErrorMessage());
+                    if (!checkoutData.getErrorMessage().isEmpty()) {
+                        getView().renderCheckoutCartError(checkoutData.getErrorMessage());
+                    } else {
+                        getView().renderCheckoutCartError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
+                    }
                 }
             }
         };
@@ -1204,7 +1236,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance()) ? 1 : 0)
                 .isDropship((shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper() != null &&
                         shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) ? 1 : 0)
+                .isOrderPriority((shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority() != null &&
+                        shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority()) ? 1 : 0)
                 .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
+                .warehouseId(shipmentCartItemModel.getFulfillmentId())
                 .dropshipData(dropshipDataBuilder)
                 .shippingInfoData(shippingInfoDataBuilder)
                 .productDataList(shipmentStateProductDataList);

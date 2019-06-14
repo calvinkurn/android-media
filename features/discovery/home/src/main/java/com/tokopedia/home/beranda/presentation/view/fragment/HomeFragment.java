@@ -43,6 +43,7 @@ import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragme
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
@@ -62,6 +63,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeRecommendationFeedViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
@@ -227,7 +229,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void showRecomendationButton() {
         if (showRecomendation) {
             floatingTextButton.setVisibility(View.VISIBLE);
-            HomePageTracking.eventImpressionJumpRecomendation(getActivity());
         } else {
             floatingTextButton.setVisibility(View.GONE);
         }
@@ -766,6 +767,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (feedTabVisitable != null) {
             visitables.add(feedTabVisitable);
         }
+        presenter.getFeedTabData();
         adapter.updateItems(visitables);
     }
 
@@ -1119,6 +1121,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Visitable mappingHomeFeedModel(List<FeedTabModel> feedTabModelList) {
         HomeRecommendationFeedViewModel feedViewModel = new HomeRecommendationFeedViewModel();
         feedViewModel.setFeedTabModel(feedTabModelList);
+        feedViewModel.setNewData(true);
         return feedViewModel;
     }
 
