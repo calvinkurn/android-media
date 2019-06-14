@@ -12,6 +12,11 @@ import rx.Observable;
 public class GetShopScoreUseCase extends UseCase<ShopScoreMainDomainModel> {
     private  GMCommonRepository shopScoreRepository;
 
+    @Inject
+    public GetShopScoreUseCase(GMCommonRepository shopScoreRepository) {
+        this.shopScoreRepository = shopScoreRepository;
+    }
+
     @Override
     public Observable<ShopScoreMainDomainModel> createObservable(RequestParams requestParams) {
         return shopScoreRepository.getShopScoreSummary();
