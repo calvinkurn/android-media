@@ -39,8 +39,10 @@ public class ChangeEmailPresenter extends BaseDaggerPresenter<ChangeEmailContrac
 
                 @Override
                 public void onError(Throwable e) {
-                    getView().onErrorChangeEmail(ErrorHandlerSession.getErrorMessage(getView()
-                            .getContext(), e));
+                    if(getView().getContext() != null){
+                        getView().onErrorChangeEmail(ErrorHandlerSession.getErrorMessage(getView()
+                                .getContext(), e));
+                    }
                 }
 
                 @Override
