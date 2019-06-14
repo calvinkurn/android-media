@@ -201,8 +201,7 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
     override fun onDeleteRecentSearchItem(uuid: String) {
         if (recentSearchAdapter.itemCount == 0) recentSearchLayout.visibility = View.GONE
-        destinationViewModel.deleteRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_delete_recent_search_mutation),
-                uuid)
+        destinationViewModel.deleteRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_delete_recent_search_mutation), uuid)
     }
 
     override fun onDeleteAllRecentSearch() {
