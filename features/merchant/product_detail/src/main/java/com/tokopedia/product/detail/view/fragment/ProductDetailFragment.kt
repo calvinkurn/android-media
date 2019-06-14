@@ -1085,6 +1085,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
             productDetailTracking.sendMoEngageOpenProduct(data,
                     shopInfo.goldOS.isOfficial == 1, shopInfo.shopCore.name)
             productDetailTracking.eventAppsFylerOpenProduct(data)
+
+            trackTradeIn(tradeInParams.isEligible == 1)
+            delegateTradeInTracking = false
         }
         shopCod = p2ShopData.shopCod
         partialVariantAndRateEstView.renderFulfillment(p2ShopData.nearestWarehouse.warehouseInfo.isFulfillment)
@@ -1130,11 +1133,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             base_view_wholesale.visible()
         }
 
-            productShopView.renderShopFeature(productInfoP2.shopFeature)
-            trackTradeIn(tradeInParams.isEligible == 1)
-            delegateTradeInTracking = false
-        }
-        shopCod = productInfoP2.shopCod
+        productShopView.renderShopFeature(productInfoP2.shopFeature)
+
         productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
         productStatsView.renderRating(productInfoP2.rating)
         attributeInfoView.renderWishlistCount(productInfoP2.wishlistCount.count)
