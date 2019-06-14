@@ -11,7 +11,7 @@ class SettingFieldPresenter @Inject constructor(
         val getUserSettingUseCase: GetUserSettingUseCase
 ) : BaseDaggerPresenter<SettingFieldContract.View>(), SettingFieldContract.Presenter {
 
-    fun getDummyData() {
+    override fun getDummyData() {
         return getUserSettingUseCase.execute(object : Subscriber<UserSettingViewModel>() {
             override fun onNext(data: UserSettingViewModel?) {
                 if (data == null) return

@@ -12,7 +12,7 @@ interface SettingFieldContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-
+        fun getDummyData()
     }
 
 }

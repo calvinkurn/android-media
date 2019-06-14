@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
-import com.tokopedia.settingnotif.usersetting.presenter.SettingFieldPresenter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
@@ -20,7 +19,7 @@ import javax.inject.Inject
 abstract class SettingFieldFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), SettingFieldContract.View {
 
     @Inject
-    lateinit var presenter: SettingFieldPresenter
+    lateinit var presenter: SettingFieldContract.Presenter
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
