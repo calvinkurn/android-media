@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
@@ -651,13 +652,13 @@ public class InboxDetailActivity extends InboxBaseActivity
             closeComplainBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
             closeComplainBottomSheet.setCustomContentView( new CloseComplainBottomSheet(InboxDetailActivity.this,this),"", true);
             closeComplainBottomSheet.show();
-            viewHelpRate.setVisibility(View.VISIBLE);
+            //viewHelpRate.setVisibility(View.VISIBLE);
             viewReplyButton.setVisibility(View.GONE);
             ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick("yes",commentPosition,item.getId());
             helpFullBottomSheet.dismiss();
         }else{
             ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick("no",commentPosition,item.getId());
-            viewReplyButton.setVisibility(View.GONE);
+            //viewReplyButton.setVisibility(View.GONE);
             textToolbar.setVisibility(View.VISIBLE);
             helpFullBottomSheet.dismiss();
         }
@@ -698,5 +699,11 @@ public class InboxDetailActivity extends InboxBaseActivity
             closeComplainBottomSheet.dismiss();
         }
 
+    }
+
+    @Override
+    public void OnSucessfullTicketClose() {
+        Toast.makeText(this, "jregek", Toast.LENGTH_SHORT).show();
+        mPresenter.refreshLayout();
     }
 }

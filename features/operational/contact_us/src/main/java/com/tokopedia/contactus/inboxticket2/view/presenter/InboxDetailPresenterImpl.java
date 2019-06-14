@@ -192,6 +192,11 @@ public class InboxDetailPresenterImpl
     }
 
     @Override
+    public void refreshLayout() {
+        getTicketDetails();
+    }
+
+    @Override
     public void onSearchSubmitted(String text) {
         text = text.trim();
         if (text.length() > 0) {
@@ -838,6 +843,7 @@ public class InboxDetailPresenterImpl
                 }
                 else {
                     Log.i("closeTicket","sucesss");
+                    mView.OnSucessfullTicketClose();
                 }
             }
         });
