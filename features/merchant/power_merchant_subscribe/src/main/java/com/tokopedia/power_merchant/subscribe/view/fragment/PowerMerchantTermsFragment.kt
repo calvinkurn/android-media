@@ -5,17 +5,20 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseWebViewFragment
+import javax.inject.Inject
 
 /**
  * @author by milhamj on 14/06/19.
  */
 class PowerMerchantTermsFragment: BaseWebViewFragment() {
 
-    private var userSession: UserSessionInterface? = null
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     companion object {
         fun createInstance(): Fragment {
@@ -26,6 +29,12 @@ class PowerMerchantTermsFragment: BaseWebViewFragment() {
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
+        activity?.let {
+            val appComponent = (it.application as BaseMainApplication).baseAppComponent
+            DaggerPowerMerchantSubscribeComponent.builder()
+                    .baseAppComponent(appComponent)
+                    .build().inject(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -37,10 +46,10 @@ class PowerMerchantTermsFragment: BaseWebViewFragment() {
     }
 
     override fun getUserIdForHeader(): String? {
-        return UserSession(context).userId
+        return userSession.userId
     }
 
     override fun getAccessToken(): String? {
-        return UserSession(context).accessToken
+        return userSession.accessToken
     }
 }

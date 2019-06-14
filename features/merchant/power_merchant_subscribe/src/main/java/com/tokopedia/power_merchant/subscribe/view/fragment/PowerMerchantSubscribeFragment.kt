@@ -9,17 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.FrameLayout
-import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
-
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.contract.PmSubscribeContract
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
@@ -33,9 +29,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo
 import kotlinx.android.synthetic.main.dialog_kyc_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
-import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.view.*
-
-
 import javax.inject.Inject
 
 class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract.View {
@@ -54,9 +47,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        val appComponent = (activity!!.application as BaseMainApplication).baseAppComponent
-
         activity?.let {
+            val appComponent = (it.application as BaseMainApplication).baseAppComponent
             DaggerPowerMerchantSubscribeComponent.builder()
                     .baseAppComponent(appComponent)
                     .build().inject(this)
