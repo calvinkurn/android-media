@@ -126,9 +126,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
         if (shopStatusModel.isTransitionPeriod()) {
             if (shopStatusModel.isPowerMerchantInactive()) {
+                ll_footer_submit.visibility = View.VISIBLE
                 context?.let { TransitionPeriodPmActivity.newInstance(it) }
             } else if (shopStatusModel.isPowerMerchantActive()) {
                 ticker_blue_container.visibility = View.VISIBLE
+                ll_footer_submit.visibility = View.GONE
                 renderView(shopStatusModel)
             }
         } else {
