@@ -426,6 +426,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     private List<MenuGridItemViewModel> getDigitalOrderMenu() {
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
         MenuGridItemViewModel gridItem = null;
+
         if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
             gridItem = new MenuGridItemViewModel(
                     R.drawable.ic_belanja,
@@ -436,7 +437,6 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                     context.getString(R.string.title_menu_transaction)
             );
         } else {
-
             gridItem = new MenuGridItemViewModel(
                     R.drawable.ic_belanja,
                     context.getString(R.string.title_menu_market_place),
@@ -446,9 +446,8 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                     context.getString(R.string.title_menu_transaction)
             );
         }
-
-
         menuGridItems.add(gridItem);
+
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_top_up_bill,
                 context.getString(R.string.title_menu_top_up_bill),
@@ -458,6 +457,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 context.getString(R.string.title_menu_transaction)
         );
         menuGridItems.add(gridItem);
+
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_flight,
                 context.getString(R.string.title_menu_flight),
