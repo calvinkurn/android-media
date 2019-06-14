@@ -86,23 +86,9 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
     public void bind(ChatListViewModel element) {
 
         if (element.isTyping()) {
-            userName.setText(element.getName());
-            message.setText("sedang mengetik...");
-            message.setTypeface(null, Typeface.ITALIC);
-            message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.medium_green));
+            showTypingView(element);
         } else {
-            if (element.getSpanMode() == ChatListViewModel.SPANNED_MESSAGE) {
-                message.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
-                userName.setText(element.getName());
-            } else if (element.getSpanMode() == ChatListViewModel.SPANNED_CONTACT) {
-                userName.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
-                message.setText(MethodChecker.fromHtml(element.getMessage().trim()));
-            } else {
-                message.setText(MethodChecker.fromHtml(element.getMessage().trim()));
-                userName.setText(element.getName());
-            }
-            message.setTypeface(null, Typeface.NORMAL);
-            message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.black_54));
+            showNotTypingView(element);
         }
 
         if (element.isHaveTitle()) {
@@ -157,7 +143,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
 
     private void showTypingView(ChatListViewModel element) {
         userName.setText(element.getName());
-        message.setText("sedang mengetik...");
+        message.setText(R.string.is_typing);
         message.setTypeface(null, Typeface.ITALIC);
         message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.medium_green));
     }
