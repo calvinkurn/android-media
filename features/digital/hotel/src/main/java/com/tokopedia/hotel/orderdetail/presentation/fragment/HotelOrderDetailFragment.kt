@@ -29,6 +29,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.evoucher.presentation.activity.HotelEVoucherActivity
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
@@ -57,7 +58,7 @@ import javax.inject.Inject
  * @author by jessica on 10/05/19
  */
 
-class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCallListener {
+class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCallListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -94,19 +95,24 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
             when (it) {
                 is Success -> {
                     renderTransactionDetail(it.data)
-                    if (it.data.hotelTransportDetails.isNotEmpty()) {
-                        renderConditionalInfo(it.data.hotelTransportDetails.first())
-                        renderHotelDetail(it.data.hotelTransportDetails.first().propertyDetail.first())
-                        renderGuestDetail(it.data.hotelTransportDetails.first().guestDetail)
-                        renderPaymentDetail(it.data.hotelTransportDetails.first().payment)
-                    }
+                    renderConditionalInfo(it.data)
+                    if (it.data.hotelTransportDetails.propertyDetail.isNotEmpty())
+                        renderHotelDetail(it.data.hotelTransportDetails.propertyDetail.first())
+                    renderGuestDetail(it.data.hotelTransportDetails.guestDetail)
+                    renderPaymentDetail(it.data.payMethod, it.data.pricing, it.data.paymentsData)
                     renderFooter(it.data)
                     loadingState.visibility = View.GONE
                 }
                 is Fail -> {
+                    showErrorState(it.throwable)
                 }
             }
         })
+    }
+
+
+    override fun onErrorRetryClicked() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -126,13 +132,16 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         } else RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
-    fun renderConditionalInfo(hotelTransportDetail: HotelTransportDetail) {
+    fun renderConditionalInfo(hotelOrderDetail: HotelOrderDetail) {
 
-        top_conditional_text.visibility = if (hotelTransportDetail.conditionalInfoTop.title.isNotBlank()) View.VISIBLE else View.GONE
-        top_conditional_text.text = hotelTransportDetail.conditionalInfoTop.title
+        top_conditional_text.visibility = if (hotelOrderDetail.conditionalInfo.title.isNotBlank()) View.VISIBLE else View.GONE
+        top_conditional_text.text = hotelOrderDetail.conditionalInfo.title
 
-        bottom_conditional_text.visibility = if (hotelTransportDetail.conditionalInfoBottom.title.isNotBlank()) View.VISIBLE else View.GONE
-        bottom_conditional_text.text = hotelTransportDetail.conditionalInfoBottom.title
+        bottom_conditional_text.visibility = if (hotelOrderDetail.conditionalInfoBottom.title.isNotBlank()) View.VISIBLE else View.GONE
+        bottom_conditional_text.text = hotelOrderDetail.conditionalInfoBottom.title
+    }
+
+    fun renderCancellationInfo(hotelTransportDetail: HotelTransportDetail) {
 
         if (hotelTransportDetail.cancellation.title.isEmpty()) {
             refund_ticker_layout.visibility = View.GONE
@@ -248,23 +257,30 @@ class HotelOrderDetailFragment : BaseDaggerFragment(), ContactAdapter.OnClickCal
         guest_detail_name.text = guestDetail.content
     }
 
-    fun renderPaymentDetail(payment: HotelTransportDetail.Payment) {
-        payment_info_hint.text = payment.title
+    fun renderPaymentDetail(payMethod: List<HotelOrderDetail.LabelValue>,
+                            pricing: List<HotelOrderDetail.PaymentData>,
+                            paymentData: List<HotelOrderDetail.PaymentData>) {
 
         var paymentAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
         payment_info_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         payment_info_recycler_view.adapter = paymentAdapter
-        paymentAdapter.addData(payment.detail.toMutableList())
+        for (item in payMethod) {
+            paymentAdapter.addData(TitleContent(item.label, item.value))
+        }
 
         var faresAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
         payment_fares_recycler_View.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         payment_fares_recycler_View.adapter = faresAdapter
-        faresAdapter.addData(payment.fares.toMutableList())
+        for (item in pricing) {
+            faresAdapter.addData(TitleContent(item.label, item.value))
+        }
 
         var summaryAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT_ORANGE)
         payment_summary_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         payment_summary_recycler_view.adapter = summaryAdapter
-        summaryAdapter.addData(payment.summary.toMutableList())
+        for (item in paymentData) {
+            summaryAdapter.addData(TitleContent(item.label, item.value))
+        }
     }
 
     fun renderFooter(orderDetail: HotelOrderDetail) {
