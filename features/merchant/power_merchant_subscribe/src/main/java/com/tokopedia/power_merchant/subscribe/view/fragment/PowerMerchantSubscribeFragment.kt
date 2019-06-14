@@ -66,6 +66,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         super.onViewCreated(view, savedInstanceState)
         view.ticker_yellow_container.visibility = View.VISIBLE
         initializePartialPart(view)
+        button_activate_root.setOnClickListener {
+            showBottomSheetCancel()
+        }
 //        renderView()
 //        view.base_partial_member.visibility = View.VISIBLE
 
@@ -82,6 +85,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         bottomSheet.show(childFragmentManager,"power_merchant_success")
 
     }
+
 
     fun showBottomSheetCancel(){
         val bottomSheet = PowerMerchantCancelBottomSheet()
