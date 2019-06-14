@@ -5,18 +5,16 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.ProductOther
 import com.tokopedia.product.detail.common.data.model.product.Rating
 import com.tokopedia.product.detail.common.data.model.product.WishlistCount
-import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.installment.InstallmentBank
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.product.detail.data.model.talk.Talk
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 
-data class ProductInfoP2(
-        var shopInfo: ShopInfo? = null,
+data class ProductInfoP2General (
         var rating: Rating = Rating(),
         var wishlistCount: WishlistCount = WishlistCount(),
         var vouchers: List<MerchantVoucherViewModel> = listOf(),
@@ -26,9 +24,7 @@ data class ProductInfoP2(
         var imageReviews: List<ImageReviewItem> = listOf(),
         var helpfulReviews: List<Review> = listOf(),
         var latestTalk: Talk = Talk(),
-        var productOthers: List<ProductOther> = listOf(),
-        var shopCod: Boolean = false,
-        var nearestWarehouse: MultiOriginWarehouse = MultiOriginWarehouse(),
         var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
+        var variantResp: ProductVariant? = null,
         var shopFeature: ShopFeatureData = ShopFeatureData()
-        )
+)
