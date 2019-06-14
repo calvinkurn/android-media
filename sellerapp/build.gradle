@@ -275,6 +275,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsManagement)
+    implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.inbox)
