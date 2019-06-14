@@ -96,6 +96,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                 is Success -> {
                     renderTransactionDetail(it.data)
                     renderConditionalInfo(it.data)
+                    renderCancellationInfo(it.data.hotelTransportDetails)
                     if (it.data.hotelTransportDetails.propertyDetail.isNotEmpty())
                         renderHotelDetail(it.data.hotelTransportDetails.propertyDetail.first())
                     renderGuestDetail(it.data.hotelTransportDetails.guestDetail)

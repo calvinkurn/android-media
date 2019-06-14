@@ -9,7 +9,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="@dimen/dp_3"
+        app:cardElevation="@dimen/dp_2"
         android:layout_marginBottom="@dimen/dp_4"
         >
 
@@ -77,19 +77,19 @@
                     app:layout_constraintTop_toBottomOf="@id/top_conditional_text" />
             </android.support.constraint.ConstraintLayout>
 
+            <View
+                android:id="@+id/transaction_seperator_2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/grey_300"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/invoice_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_16">
-
-                <View
-                    android:id="@+id/transaction_seperator_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="@color/grey_300"
-                    app:layout_constraintTop_toTopOf="parent"
-                    />
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/invoice_number"
@@ -99,7 +99,6 @@
                     app:fontSize="micro"
                     app:layout_constraintEnd_toStartOf="@id/invoice_see_button"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/transaction_seperator_2"
                     app:textViewTheme="lightPrimary"
                     tools:text="IVR/20170713/XVII/VII/16205811"
                     tools:textColor="@color/light_primary"
@@ -118,7 +117,8 @@
                     app:layout_constraintTop_toTopOf="@id/invoice_number"
                     app:weight="medium"
                     tools:textSize="@dimen/sp_12"
-                    tools:textStyle="bold" />
+                    tools:textStyle="bold"
+                    />
 
             </android.support.constraint.ConstraintLayout>
 
@@ -131,7 +131,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
         android:layout_marginBottom="@dimen/dp_4"
-        app:cardElevation="@dimen/dp_3">
+        app:cardElevation="@dimen/dp_2">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -141,14 +141,14 @@
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/see_evoucher_text"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_height="25dp"
                 android:text="@string/hotel_order_detail_see_evoucher_text"
                 android:textColor="@color/tkpd_main_green"
                 app:fontSize="small"
                 app:layout_constraintEnd_toStartOf="@id/see_evoucher_next_icon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:weight="medium"
+                tools:layout_editor_absoluteY="16dp"
                 tools:textSize="@dimen/sp_14"
                 tools:textStyle="bold" />
 
