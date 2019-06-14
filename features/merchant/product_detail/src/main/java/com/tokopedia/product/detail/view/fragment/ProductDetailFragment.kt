@@ -73,7 +73,6 @@ import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWareh
 import com.tokopedia.product.detail.data.model.ProductInfoP1
 import com.tokopedia.product.detail.data.model.ProductInfoP2
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
@@ -100,6 +99,7 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
@@ -1226,54 +1226,39 @@ class ProductDetailFragment : BaseDaggerFragment() {
             open_shop.gone()
         }
 
-        var isHandPhone = false
-        var categoryId = 0
-        productInfoP1.productInfo.category.detail.forEach { detail: Category.Detail ->
-            if (detail.name.equals("Handphone")) {
-                isHandPhone = true
-                val handfone = 24
-                categoryId = if (detail.id.isNotEmpty())
-                    detail.id.toInt()
-                else
-                    handfone
-
-            }
-        }
         tradeInParams = TradeInParams()
-        if (isHandPhone) {
-            tradeInParams.categoryId = categoryId
-            tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
-            val userSession = UserSession(activity)
-            tradeInParams.userId = if (userSession.userId.isNotEmpty())
-                userSession.userId.toInt()
-            else
-                0
-            tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())
-            tradeInParams.productId = productInfoP1.productInfo.basic.id
-            tradeInParams.shopId = productInfoP1.productInfo.basic.shopID
-            tradeInParams.productName = productInfoP1.productInfo.basic.name
-            val preorderstatus = productInfoP1.productInfo.isPreorderActive
-            if (preorderstatus)
-                tradeInParams.isPreorder = preorderstatus
-            else
-                tradeInParams.isPreorder = false
-            tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
-            tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
-            tv_trade_in.setOnClickListener {
-                goToNormalCheckout(TRADEIN_BUY)
-                tradeInParams?.let {
-                    if (tradeInParams.usedPrice > 0)
-                        productDetailTracking.sendGeneralEvent(" clickPDP",
+        tradeInParams.categoryId = productInfoP1.productInfo.category.detail[0].id.toInt()
+        tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
+        val userSession = UserSession(activity)
+        tradeInParams.userId = if (userSession.userId.isNotEmpty())
+            userSession.userId.toInt()
+        else
+            0
+        tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())
+        tradeInParams.productId = productInfoP1.productInfo.basic.id
+        tradeInParams.shopId = productInfoP1.productInfo.basic.shopID
+        tradeInParams.productName = productInfoP1.productInfo.basic.name
+        val preorderstatus = productInfoP1.productInfo.isPreorderActive
+        if (preorderstatus)
+            tradeInParams.isPreorder = preorderstatus
+        else
+            tradeInParams.isPreorder = false
+        tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
+        tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
+        tv_trade_in.setOnClickListener {
+            goToNormalCheckout(TRADEIN_BUY)
+            tradeInParams?.let {
+                if (tradeInParams.usedPrice > 0)
+                    productDetailTracking.sendGeneralEvent(" clickPDP",
                             "product detail page",
                             "click trade in widget",
                             "after diagnostic")
-                    else
-                        productDetailTracking.sendGeneralEvent(" clickPDP",
+                else
+                    productDetailTracking.sendGeneralEvent(" clickPDP",
                             "product detail page",
                             "click trade in widget",
                             "before diagnostic")
 
-                }
             }
         }
         // if when first time and the product is actually a variant product, then select the default variant
