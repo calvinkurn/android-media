@@ -1,6 +1,4 @@
 package com.tokopedia.gm.common.data.source.cloud.model
-
-import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel
 import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo
 
 data class PowerMerchantStatus(
