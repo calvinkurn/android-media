@@ -18,7 +18,7 @@ import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 
 public class ErrorKycConfirmation extends BaseDaggerFragment
-        implements View.OnClickListener{
+        implements View.OnClickListener {
     private ActivityListener activityListener;
     public static String TAG = "error_kyc_confirm";
     private Button tryAgain;
@@ -35,6 +35,7 @@ public class ErrorKycConfirmation extends BaseDaggerFragment
 
         return Constants.Values.ERROR_KYC_CONFIRM;
     }
+
     public static ErrorKycConfirmation newInstance() {
         ErrorKycConfirmation errorKycConfirmation = new ErrorKycConfirmation();
         return errorKycConfirmation;
@@ -43,7 +44,7 @@ public class ErrorKycConfirmation extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(activityListener != null) {
+        if (activityListener != null) {
             activityListener.showHideActionbar(false);
         }
         setErrorDesc();
@@ -52,7 +53,7 @@ public class ErrorKycConfirmation extends BaseDaggerFragment
     @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
-        if(context instanceof ActivityListener) {
+        if (context instanceof ActivityListener) {
             activityListener = (ActivityListener) context;
         }
     }
@@ -60,12 +61,11 @@ public class ErrorKycConfirmation extends BaseDaggerFragment
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if(i == R.id.try_again){
-            if(activityListener != null) {
+        if (i == R.id.try_again) {
+            if (activityListener != null) {
                 activityListener.addReplaceFragment(FragmentUpgradeToOvo.newInstance(), true, FragmentUpgradeToOvo.TAG);
             }
-        }
-        else if(i == R.id.cancel_btn){
+        } else if (i == R.id.cancel_btn) {
             getActivity().finish();
         }
     }
@@ -83,8 +83,8 @@ public class ErrorKycConfirmation extends BaseDaggerFragment
         return view;
     }
 
-    private void setErrorDesc(){
-        if(getArguments() != null) {
+    private void setErrorDesc() {
+        if (getArguments() != null) {
             String msg = getArguments().getString(Constants.Keys.MESSAGE, "");
             if (!TextUtils.isEmpty(msg)) {
                 errorDesc.setText(msg);

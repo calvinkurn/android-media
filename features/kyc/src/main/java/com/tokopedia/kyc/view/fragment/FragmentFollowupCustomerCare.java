@@ -65,8 +65,7 @@ public class FragmentFollowupCustomerCare extends BaseDaggerFragment implements
 
     private void executeBackToApp(){
         getActivity().finish();
-        PersistentCacheManager cacheManager = new PersistentCacheManager(getContext(), "");
-        cacheManager.put("reload_webview", 1);
+        PersistentCacheManager.instance.put("reload_webview", 1);
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,

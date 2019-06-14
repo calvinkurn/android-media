@@ -236,9 +236,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     @Override
     protected void onResume() {
         super.onResume();
-        PersistentCacheManager cacheManager = new PersistentCacheManager(this, "");
-        if(cacheManager.get("reload_webview", int.class, 0) == 1) {
-            cacheManager.put("reload_webview", 0);
+        if(PersistentCacheManager.instance.get("reload_webview", int.class, 0) == 1) {
+            PersistentCacheManager.instance.put("reload_webview", 0);
             if (fragmentGeneralWebView != null) {
                 fragmentGeneralWebView.reloadPage();
             }
