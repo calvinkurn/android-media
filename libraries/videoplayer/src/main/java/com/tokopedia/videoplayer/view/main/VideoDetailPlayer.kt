@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.tokopedia.videoplayer.R
+import com.tokopedia.videoplayer.utils.PlayerException
 import com.tokopedia.videoplayer.utils.RepeatMode
 import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.utils.showToast
@@ -87,8 +88,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
                     /* 3. callback listener to handle video state and player error */
                     .listener(object : VideoPlayerListener {
                         override fun onPlayerStateChanged(playbackState: Int) {}
-                        override fun onPlayerError() {
-                            showToast(R.string.videoplayer_file_not_found)
+                        override fun onPlayerError(error: PlayerException) {
                             dismiss()
                         }
                         override fun repeatMode(): Int {

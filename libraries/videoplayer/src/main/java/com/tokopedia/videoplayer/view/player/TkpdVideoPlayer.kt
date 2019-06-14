@@ -24,10 +24,8 @@ import com.google.android.exoplayer2.upstream.FileDataSource
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.videoplayer.R
+import com.tokopedia.videoplayer.utils.*
 import com.tokopedia.videoplayer.utils.RepeatMode
-import com.tokopedia.videoplayer.utils.VideoSourceProtocol
-import com.tokopedia.videoplayer.utils.sendViewToBack
-import com.tokopedia.videoplayer.utils.showToast
 import kotlinx.android.synthetic.main.fragment_video_player.*
 import java.io.File
 
@@ -89,7 +87,7 @@ class TkpdVideoPlayer: Fragment() {
 
         if (sourceMedia == null || sourceMedia.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)
-            callback?.onPlayerError()
+            callback?.onPlayerError(PlayerException.SourceNotFound)
         } else {
             if (File(sourceMedia).exists()) {
                 val file = Uri.fromFile(File(sourceMedia))
@@ -110,6 +108,10 @@ class TkpdVideoPlayer: Fragment() {
                 STATE_BUFFERING -> pgLoader.show()
                 STATE_READY -> pgLoader.hide()
             }
+        }
+
+        override fun onPlayerError(error: ExoPlaybackException?) {
+            callback?.onPlayerError(PlayerException.ExoPlayer)
         }
     })
 
@@ -145,7 +147,7 @@ class TkpdVideoPlayer: Fragment() {
                     false)
         } catch (e: Exception) {
             showToast(R.string.videoplayer_invalid_player)
-            callback?.onPlayerError()
+            callback?.onPlayerError(PlayerException.PlayerInitialize)
         }
     }
 
