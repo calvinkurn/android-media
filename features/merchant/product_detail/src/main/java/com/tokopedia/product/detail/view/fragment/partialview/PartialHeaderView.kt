@@ -11,6 +11,7 @@ import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Campaign
@@ -125,6 +126,7 @@ class PartialHeaderView private constructor(private val view: View,
                 sale_text_stock_available.gone()
                 text_stock_available.visible()
             }
+            label_prescription.showWithCondition(data.basic.needPrescription)
             divider.visible()
         }
     }
