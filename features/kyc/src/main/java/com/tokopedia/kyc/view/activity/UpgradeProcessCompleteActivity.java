@@ -40,8 +40,10 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
     @Override
     protected Fragment getNewFragment() {
         showHideActionbar(false);
-        status = getIntent().getExtras().getString(Constants.Keys.STATUS);
-        message = getIntent().getExtras().getString(Constants.Keys.MESSAGE);
+        if(getIntent().getExtras() != null) {
+            status = getIntent().getExtras().getString(Constants.Keys.STATUS);
+            message = getIntent().getExtras().getString(Constants.Keys.MESSAGE);
+        }
         BaseDaggerFragment baseDaggerFragment = null;
         if(TextUtils.isEmpty(status)){
             finish();
