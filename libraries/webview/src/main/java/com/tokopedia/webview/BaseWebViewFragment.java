@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -64,6 +65,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
             super.onProgressChanged(view, newProgress);
         }
+
         //For Android 3.0+
         public void openFileChooser(ValueCallback<Uri> uploadMsg) {
             openFileChooserBeforeLolipop(uploadMsg);
@@ -103,7 +105,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    private void openFileChooserBeforeLolipop(ValueCallback<Uri> uploadMessage){
+    private void openFileChooserBeforeLolipop(ValueCallback<Uri> uploadMessage) {
         uploadMessageBeforeLolipop = uploadMessage;
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -120,7 +122,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return view;
     }
 
-    protected int getLayout(){
+    protected int getLayout() {
         return R.layout.fragment_general_web_view_lib;
     }
 
@@ -129,7 +131,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         super.onViewCreated(view, savedInstanceState);
         progressBar.setIndeterminate(true);
 
-        if(!TextUtils.isEmpty(getUrl())) {
+        if (!TextUtils.isEmpty(getUrl())) {
             loadWeb();
         }
     }
@@ -188,14 +190,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
-        if (RouteManager.isSupportApplink(getActivity(), url)) {
+        // currently only to handle "tokopedia://", "sellerapp://" linking
+        if (!URLUtil.isNetworkUrl(url) && RouteManager.isSupportApplink(getActivity(), url)) {
             RouteManager.route(getActivity(), url);
             return true;
         }
         return false;
     }
 
-    protected void onLoadFinished(){
+    protected void onLoadFinished() {
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }

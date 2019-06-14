@@ -38,6 +38,8 @@ public interface RegisterEmailContract {
         void onForbidden();
 
         Context getContext();
+
+        void onBackPressed();
     }
 
     interface Presenter extends CustomerPresenter<View> {

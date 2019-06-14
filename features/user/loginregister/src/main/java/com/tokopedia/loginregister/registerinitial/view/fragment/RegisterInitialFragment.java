@@ -44,12 +44,13 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.text.TextDrawable;
-import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
-import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.common.view.LoginTextView;
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
@@ -111,7 +112,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private TextView optionTitle;
     private PartialRegisterInputView partialRegisterInputView;
     private LinearLayout registerContainer;
-    private LoginTextView registerButton, registerPhoneNumberButton;
+    private LoginTextView registerButton;
     private TextView loginButton;
     private ScrollView container;
     private RelativeLayout progressBar;
@@ -127,6 +128,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Inject
     LoginRegisterAnalytics analytics;
+
+    @Inject
+    RegisterAnalytics registerAnalytics;
 
     CallbackManager callbackManager;
     GoogleSignInClient mGoogleSignInClient;
@@ -154,7 +158,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return LoginRegisterAnalytics.SCREEN_REGISTER_INITIAL;
+        return RegisterAnalytics.SCREEN_REGISTER_INITIAL;
     }
 
     @Override
@@ -200,7 +204,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 .register_input_view);
         registerContainer = view.findViewById(R.id.register_container);
         registerButton = view.findViewById(R.id.register);
-        registerPhoneNumberButton = view.findViewById(R.id.register_phone_number);
         loginButton = view.findViewById(R.id.login_button);
         container = view.findViewById(R.id.container);
         progressBar = view.findViewById(R.id.progress_bar);
@@ -244,8 +247,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == ID_ACTION_LOGIN) {
-            analytics.eventClickOnLoginFromRegister();
-            goToLoginPage();
+            if(getActivity() != null){
+                registerAnalytics.trackClickTopSignInButton();
+                getActivity().finish();
+                goToLoginPage();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -259,7 +265,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     protected void prepareView() {
         if (getActivity() != null) {
             registerButton.setVisibility(View.GONE);
-            registerPhoneNumberButton.setVisibility(View.GONE);
             partialRegisterInputView.setVisibility(View.GONE);
 
             if (!GlobalConfig.isSellerApp()) {
@@ -273,7 +278,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             registerButton.setRoundCorner(10);
             registerButton.setImageResource(R.drawable.ic_email);
             registerButton.setOnClickListener(v -> {
-                analytics.eventClickRegisterEmail();
                 TrackApp.getInstance().getMoEngage().sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_EMAIL);
                 goToRegisterEmailPage();
 
@@ -284,20 +288,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             } else {
                 partialRegisterInputView.setVisibility(View.VISIBLE);
             }
-            registerPhoneNumberButton.setColor(Color.WHITE);
-            registerPhoneNumberButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color
-                    .black_38));
-            registerPhoneNumberButton.setRoundCorner(10);
-            registerPhoneNumberButton.setImageResource(R.drawable.ic_phone);
-            registerPhoneNumberButton.setOnClickListener(v -> {
-                showProgressBar();
 
-                if (getActivity() != null && getActivity().getApplicationContext() != null) {
-                    Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
-                            .getCheckRegisterPhoneNumberIntent(getActivity());
-                    startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
-                }
-            });
             String sourceString = getActivity().getResources().getString(R.string
                     .span_already_have_tokopedia_account);
 
@@ -306,7 +297,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             spannable.setSpan(new ClickableSpan() {
                                   @Override
                                   public void onClick(View view) {
-
                                   }
 
                                   @Override
@@ -329,6 +319,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     protected void setViewListener() {
         loginButton.setOnClickListener(v -> {
+            registerAnalytics.trackClickBottomSignInButton();
             if (getActivity() != null) {
                 getActivity().finish();
                 analytics.eventClickOnLoginFromRegister();
@@ -351,18 +342,18 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void goToRegisterEmailPageWithEmail(String email) {
+        registerAnalytics.trackClickEmailSignUpButton();
         showProgressBar();
         Intent intent = RegisterEmailActivity.getCallingIntentWithEmail(getActivity(), email);
         startActivityForResult(intent, REQUEST_REGISTER_EMAIL);
     }
 
     private void goToVerificationPhoneRegister(String phone) {
-        Intent intent = VerificationActivity.getCallingIntent(
+        Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                 getActivity(),
-                phone,
                 RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
-                true,
-                RequestOtpUseCase.MODE_SMS
+                phone,
+                ""
         );
         startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE);
     }
@@ -385,7 +376,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 getActivity().finish();
             } else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity
                     .RESULT_OK) {
-                goToAddName();
+                String uuid =
+                        data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
+                goToAddName(uuid);
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity
                     .RESULT_CANCELED) {
                 dismissProgressBar();
@@ -409,9 +402,15 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                     .RESULT_CANCELED) {
                 dismissProgressBar();
                 getActivity().setResult(Activity.RESULT_CANCELED);
-            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                goToAddName();
+            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE
+                    && resultCode == Activity.RESULT_OK
+                    && data != null
+                    && data.getExtras() != null) {
+                String uuid =
+                        data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
+                goToAddName(uuid);
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+                registerAnalytics.trackSuccessClickYesButtonPhoneDialog();
                 startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
                         REQUEST_WELCOME_PAGE);
             } else if (requestCode == REQUEST_WELCOME_PAGE) {
@@ -421,16 +420,16 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                 }
-            } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH && resultCode == Activity
-                    .RESULT_OK) {
-                ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData
-                        (data);
-                if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
-                        .getListAccount().isEmpty()) {
-                    goToChooseAccountPage(chooseTokoCashAccountViewModel);
-                } else {
-                    goToNoTokocashAccountPage(phoneNumber);
-                }
+            } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
+                    && resultCode == Activity.RESULT_OK
+                    && data != null
+                    && data.getExtras() != null) {
+                String accessToken =
+                        data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
+                String phoneNumber =
+                        data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "");
+                goToChooseAccountPage(accessToken, phoneNumber);
+
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
                     && resultCode == Activity.RESULT_OK) {
                 getActivity().setResult(Activity.RESULT_OK);
@@ -456,6 +455,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
      */
     private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
         if (getContext() != null) {
+            boolean onRegisterGoogleSuccess = true;
             try {
                 GoogleSignInAccount account = completedTask.getResult(ApiException.class);
                 String accessToken = account.getIdToken();
@@ -466,21 +466,29 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                         ErrorHandlerSession.getDefaultErrorCodeMessage(
                                 ErrorHandlerSession.ErrorCode.GOOGLE_FAILED_ACCESS_TOKEN,
                                 getContext()));
+                onRegisterGoogleSuccess = false;
             } catch (ApiException e) {
                 onErrorRegisterSosmed(LoginRegisterAnalytics.GOOGLE,
                         String.format(getString(R.string.loginregister_failed_login_google),
                                 String.valueOf(e.getStatusCode())));
+                onRegisterGoogleSuccess = false;
+            }finally {
+                if(onRegisterGoogleSuccess)
+                    registerAnalytics.trackSuccessClickRegisterGoogleButton();
             }
+
         }
     }
 
 
-    private void goToAddName() {
+    private void goToAddName(String uuid) {
         if (getActivity() != null) {
             String applink = ApplinkConst.ADD_NAME_REGISTER;
             applink = applink.replace("{phone}", phoneNumber);
             Intent intent = ((ApplinkRouter) getActivity().getApplicationContext()).getApplinkIntent(getActivity
                     (), applink);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid);
             startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE);
         }
     }
@@ -502,6 +510,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onActionPartialClick(String id) {
+        registerAnalytics.trackClickSignUpButton();
         presenter.validateRegister(id);
     }
 
@@ -572,7 +581,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     private void onRegisterFacebookClick() {
         if (getActivity() != null) {
-            analytics.eventClickRegisterFacebook(getActivity().getApplicationContext());
+            registerAnalytics.trackClickFacebookButton(getActivity().getApplicationContext());
             TrackApp.getInstance().getMoEngage().sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_FACEBOOK);
             presenter.getFacebookCredential(this, callbackManager);
         }
@@ -581,7 +590,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     private void onRegisterGooglelick() {
         if (getActivity() != null) {
-            analytics.eventClickRegisterGoogle(getActivity().getApplicationContext());
+            registerAnalytics.trackClickGoogleButton(getActivity().getApplicationContext());
             TrackApp.getInstance().getMoEngage().sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_GMAIL);
             Intent intent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(intent, REQUEST_LOGIN_GOOGLE);
@@ -643,10 +652,21 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public void onErrorRegisterSosmed(String methodName, String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        switch (methodName){
+            case LoginRegisterAnalytics.GOOGLE : {
+                registerAnalytics.trackFailedClickRegisterGoogleButton(errorMessage);
+                break;
+            }
+            case LoginRegisterAnalytics.FACEBOOK : {
+                registerAnalytics.trackFailedClickRegisterFacebookButton(errorMessage);
+                break;
+            }
+        }
     }
 
     @Override
     public void onSuccessRegisterSosmed(String methodName) {
+
         analytics.eventSuccessRegisterSosmed(methodName);
         startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
                 REQUEST_WELCOME_PAGE);
@@ -727,12 +747,22 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 if (isAdded() && getActivity() != null) {
                     NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage
                             (getContext(), e));
+                    onErrorRegisterSosmed(LoginRegisterAnalytics.FACEBOOK, e.getMessage());
                 }
             }
 
             @Override
             public void onSuccessGetFacebookCredential(AccessToken accessToken, String email) {
-                presenter.registerFacebook(accessToken, email);
+                boolean onRegisterFacebookSuccess = true;
+                try {
+                    presenter.registerFacebook(accessToken, email);
+                }catch (Exception e){
+                    onRegisterFacebookSuccess = false;
+                    onErrorRegisterSosmed(LoginRegisterAnalytics.FACEBOOK, e.getMessage());
+                }finally {
+                    if(onRegisterFacebookSuccess)
+                        registerAnalytics.trackSuccessClickRegisterFacebookButton();
+                }
             }
         };
     }
@@ -740,6 +770,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void showRegisteredEmailDialog(String email) {
+        registerAnalytics.trackClickEmailSignUpButton();
+        registerAnalytics.trackFailedClickEmailSignUpButton(RegisterAnalytics.LABEL_EMAIL_EXIST);
         if (getActivity() != null) {
             final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
             dialog.setTitle(getString(R.string.email_already_registered));
@@ -748,14 +780,14 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                             R.string.email_already_registered_info), email));
             dialog.setBtnOk(getString(R.string.already_registered_yes));
             dialog.setOnOkClickListener(v -> {
-                analytics.eventProceedEmailAlreadyRegistered();
+                registerAnalytics.trackClickYesButtonRegisteredEmailDialog();
                 dialog.dismiss();
                 startActivity(LoginActivity.getIntentLoginFromRegister(getActivity(), email));
                 getActivity().finish();
             });
             dialog.setBtnCancel(getString(R.string.already_registered_no));
             dialog.setOnCancelClickListener(v -> {
-                analytics.eventCancelEmailAlreadyRegistered();
+                registerAnalytics.trackClickChangeButtonRegisteredEmailDialog();
                 dialog.dismiss();
             });
             dialog.show();
@@ -764,6 +796,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void showRegisteredPhoneDialog(String phone) {
+        registerAnalytics.trackClickPhoneSignUpButton();
+        registerAnalytics.trackFailedClickPhoneSignUpButton(RegisterAnalytics.LABEL_PHONE_EXIST);
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.phone_number_already_registered));
         dialog.setDesc(
@@ -771,44 +805,35 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                         R.string.reigster_page_phone_number_already_registered_info), phone));
         dialog.setBtnOk(getString(R.string.already_registered_yes));
         dialog.setOnOkClickListener(v -> {
+            registerAnalytics.trackClickYesButtonRegisteredPhoneDialog();
             dialog.dismiss();
             phoneNumber = phone;
             goToVerifyAccountPage(phoneNumber);
         });
         dialog.setBtnCancel(getString(R.string.already_registered_no));
-        dialog.setOnCancelClickListener(v -> dialog.dismiss());
+        dialog.setOnCancelClickListener(v -> {
+            registerAnalytics.trackClickChangeButtonRegisteredPhoneDialog();
+            dialog.dismiss();
+        });
         dialog.show();
     }
 
     private void goToVerifyAccountPage(String phoneNumber) {
         if (getActivity() != null && getActivity().getApplicationContext() != null) {
-
-            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
-                    .getTokoCashOtpIntent(getActivity(),
-                            phoneNumber,
-                            true,
-                            RequestOtpUseCase.MODE_SMS);
-
+            Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(getActivity(),
+                    RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER, phoneNumber, "");
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH);
+            registerAnalytics.trackSuccessClickYesButtonRegisteredPhoneDialog();
         }
     }
 
-
-    private void goToNoTokocashAccountPage(String phoneNumber) {
-        if (getActivity() != null && getActivity().getApplicationContext() != null) {
-            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
-                    .getNoTokocashAccountIntent(
-                            getActivity(),
-                            phoneNumber);
-            startActivityForResult(intent, REQUEST_NO_TOKOCASH_ACCOUNT);
-        }
-    }
-
-    private void goToChooseAccountPage(ChooseTokoCashAccountViewModel data) {
+    private void goToChooseAccountPage(String accessToken, String phoneNumber) {
         if (getActivity() != null && getActivity().getApplicationContext() != null) {
 
-            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
-                    .getChooseTokocashAccountIntent(getActivity(), data);
+            Intent intent = RouteManager.getIntent(getActivity(),
+                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
 
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT);
         }
@@ -821,18 +846,19 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void showProceedWithPhoneDialog(String phone) {
+        registerAnalytics.trackClickPhoneSignUpButton();
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(phone);
         dialog.setDesc(getResources().getString(R.string.phone_number_not_registered_info));
         dialog.setBtnOk(getString(R.string.proceed_with_phone_number));
         dialog.setOnOkClickListener(v -> {
-            analytics.eventProceedRegisterWithPhoneNumber();
+            registerAnalytics.trackClickYesButtonPhoneDialog();
             dialog.dismiss();
             goToVerificationPhoneRegister(phone);
         });
         dialog.setBtnCancel(getString(R.string.already_registered_no));
         dialog.setOnCancelClickListener(v -> {
-            analytics.eventCancelRegisterWithPhoneNumber();
+            registerAnalytics.trackClickChangeButtonPhoneDialog();
             dialog.dismiss();
         });
         dialog.show();
@@ -840,6 +866,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorValidateRegister(String message) {
+        registerAnalytics.trackFailedClickSignUpButton(message);
         partialRegisterInputView.onErrorValidate(message);
         phoneNumber = "";
     }
@@ -861,5 +888,10 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(PHONE_NUMBER, phoneNumber);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onBackPressed() {
+        registerAnalytics.trackClickOnBackButtonRegister();
     }
 }

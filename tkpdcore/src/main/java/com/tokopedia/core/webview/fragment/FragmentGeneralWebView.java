@@ -30,6 +30,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.DeeplinkMapper;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -77,6 +79,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public final static int ATTACH_FILE_REQUEST = 1;
     private boolean doubleTapExit = false;
     private static final int EXIT_DELAY_MILLIS = 2000;
+    private boolean allowOverride = false;
 
     private boolean pageLoaded = false;
 
@@ -113,6 +116,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             url = getArguments().getString(EXTRA_URL);
             needLogin = getArguments().getBoolean(EXTRA_NEED_LOGIN, false);
             showToolbar = getArguments().getBoolean(EXTRA_SHOW_TOOLBAR, true);
+            allowOverride = getArguments().getBoolean(EXTRA_OVERRIDE_URL, true);
         } else if (savedInstanceState != null) {
             url = savedInstanceState.getString(EXTRA_URL);
             needLogin = savedInstanceState.getBoolean(EXTRA_NEED_LOGIN, false);
@@ -273,10 +277,12 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     private boolean overrideUrl(String url) {
+        if (!allowOverride) {
+            return false;
+        }
         if (url == null) {
             return false;
         }
-
         Uri uri = null;
         try {
             uri = Uri.parse(url);
@@ -326,17 +332,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             }
         } else {
             return false;
-        }
-    }
-
-    private void openDigitalPage(String applink) {
-        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            if (((IDigitalModuleRouter) getActivity().getApplication())
-                    .isSupportedDelegateDeepLink(applink)) {
-                Bundle bundle = new Bundle();
-                ((IDigitalModuleRouter) getActivity().getApplication()).actionNavigateByApplinksUrl(getActivity(),
-                        applink, bundle);
-            }
         }
     }
 
@@ -551,12 +546,10 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                             .getApplinkUnsupported(getActivity())
                             .showAndCheckApplinkUnsupported();
                 }
-            } else if (getActivity() != null &&
-                    getActivity().getApplication() instanceof TkpdCoreRouter) {
-                String applink = ((TkpdCoreRouter) getActivity().getApplication())
-                        .applink(getActivity(), url);
-                if (!TextUtils.isEmpty(applink)) {
-                    openDigitalPage(applink);
+            } else {
+                String applink = DeeplinkMapper.getRegisteredNavigation(getContext(), url);
+                if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(getActivity(), applink)) {
+                    RouteManager.route(getActivity(), applink);
                     return true;
                 }
             }

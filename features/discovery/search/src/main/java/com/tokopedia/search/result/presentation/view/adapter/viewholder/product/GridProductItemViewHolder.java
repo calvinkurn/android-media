@@ -32,7 +32,7 @@ import java.util.List;
 public class GridProductItemViewHolder extends AbstractViewHolder<ProductItemViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.search_result_product_item_grid;
+    public static final int LAYOUT = R.layout.search_srp_item_grid;
 
     protected ImpressedImageView productImage;
     private TextView title;
@@ -150,16 +150,29 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItemVie
         });
 
         if (productItem.getRating() != 0) {
-            ratingReviewContainer.setVisibility(View.VISIBLE);
+            rating.setVisibility(View.VISIBLE);
             rating.setImageResource(
                     getRatingDrawable((productItem.isTopAds())
                             ? getStarCount(productItem.getRating())
                             : Math.round(productItem.getRating())
                     ));
+        } else {
+            rating.setVisibility(View.GONE);
+        }
+
+        if (productItem.getCountReview() != 0) {
+            reviewCount.setVisibility(View.VISIBLE);
             reviewCount.setText("(" + productItem.getCountReview() + ")");
+        } else {
+            reviewCount.setVisibility(View.GONE);
+        }
+
+        if (productItem.getCountReview() != 0 || productItem.getRating() != 0) {
+            ratingReviewContainer.setVisibility(View.VISIBLE);
         } else {
             ratingReviewContainer.setVisibility(View.GONE);
         }
+
         if (productItem.isNew()) {
             newLabel.setVisibility(View.VISIBLE);
         } else {

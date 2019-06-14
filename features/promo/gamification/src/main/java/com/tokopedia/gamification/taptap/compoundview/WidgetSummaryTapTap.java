@@ -75,6 +75,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
         ivImageStar = parentView.findViewById(R.id.image_star);
         rewardsAdapter = new RewardsAdapter(null);
         ImageHandler.loadImageWithId(ivImageStar, R.drawable.ic_star_summary);
+        ImageHandler.loadImageWithId(imageSinar, R.drawable.sinar_rewards_3_x);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), R.drawable.item_divider_summary_page);
         dividerItemDecoration.setHorizontalMargin(getResources().getDimensionPixelOffset(R.dimen.dp_8));
         rvRewards.addItemDecoration(dividerItemDecoration);

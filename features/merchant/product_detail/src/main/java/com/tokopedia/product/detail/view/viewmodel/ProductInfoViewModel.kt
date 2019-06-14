@@ -37,10 +37,10 @@ import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailRequest
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.Review
-import com.tokopedia.product.detail.data.model.shop.ShopBadge
-import com.tokopedia.product.detail.data.model.shop.ShopCodStatus
-import com.tokopedia.product.detail.data.model.shop.ShopCommitment
-import com.tokopedia.product.detail.data.model.shop.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCodStatus
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureResponse
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
@@ -168,7 +168,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val shopBadgeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_BADGE],
                 ShopBadge.Response::class.java, shopBadgeParams)
 
-        val shopCommitmentParams = mapOf(ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString(),
+        val shopCommitmentParams = mapOf(PARAM_SHOP_ID to shopId.toString(),
                 PARAM_PRICE to productPrice.toInt())
         val shopCommitmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COMMITMENT],
                 ShopCommitment.Response::class.java, shopCommitmentParams)

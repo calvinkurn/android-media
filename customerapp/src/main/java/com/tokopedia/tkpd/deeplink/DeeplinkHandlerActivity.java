@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
@@ -16,6 +17,8 @@ import com.tokopedia.affiliate.applink.AffiliateApplinkModule;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModuleLoader;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.DeeplinkMapper;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.applink.TkpdApplinkDelegate;
@@ -291,18 +294,30 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
-            Intent intent = getIntent();
-            Uri applink = Uri.parse(intent.getData().toString().replaceAll("%", "%25"));
+            String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
+            Uri applink = Uri.parse(applinkString);
             presenter.processUTM(this, applink);
-            if (deepLinkDelegate.supportsUri(applink.toString())) {
-                routeFromApplink(applink);
+
+            //map applink to internal if any
+            String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
+            if (!TextUtils.isEmpty(mappedDeeplink)) {
+                RouteManager.route(this, mappedDeeplink);
             } else {
-                Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
-                homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
-                if (getIntent() != null && getIntent().getExtras() != null)
-                    homeIntent.putExtras(getIntent().getExtras());
-                homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(homeIntent);
+                if (deepLinkDelegate.supportsUri(mappedDeeplink)) {
+                    routeFromApplink(applink);
+                } else {
+                    Intent intent = RouteManager.getIntentNoFallback(this, applinkString);
+                    if (intent == null) {
+                        Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
+                        homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
+                        if (getIntent() != null && getIntent().getExtras() != null)
+                            homeIntent.putExtras(getIntent().getExtras());
+                        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(homeIntent);
+                    } else {
+                        startActivity(intent);
+                    }
+                }
             }
 
             if (getIntent().getExtras() != null) {

@@ -22,6 +22,7 @@ import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import com.airbnb.lottie.LottieAnimationView
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -35,9 +36,10 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.BackEditText
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
-import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.DynamicButtonAdapter
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.DynamicButtonsAdapter
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.QuickReplyAdapter
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.DynamicButtonTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.QuickReplyTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment
@@ -54,7 +56,9 @@ import com.tokopedia.groupchat.room.view.customview.StickyComponentHelper
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.InteractiveButton
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -65,6 +69,7 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 /**
  * @author : Steven 13/02/19
@@ -80,7 +85,9 @@ open class PlayViewStateImpl(
         voteAnnouncementListener: ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
         sprintSaleViewHolderListener: ChatroomContract.ChatItem.SprintSaleViewHolderListener,
         groupChatPointsViewHolderListener: ChatroomContract.ChatItem.GroupChatPointsViewHolderListener,
-        sendMessage: (viewModel: PendingChatViewModel) -> Unit
+        sendMessage: (viewModel: PendingChatViewModel) -> Unit,
+        dynamicButtonClickListener: ChatroomContract.DynamicButtonItem.DynamicButtonListener,
+        interactiveButtonClickListener: ChatroomContract.DynamicButtonItem.InteractiveButtonListener
 
 ) : PlayViewState {
 
@@ -90,7 +97,7 @@ open class PlayViewStateImpl(
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
 
     private var quickReplyAdapter: QuickReplyAdapter
-    private var dynamicButtonAdapter: DynamicButtonAdapter
+    private var dynamicButtonAdapter: DynamicButtonsAdapter
     private var adapter: GroupChatAdapter
 
     private var toolbar: Toolbar = view.findViewById(R.id.toolbar)
@@ -116,6 +123,7 @@ open class PlayViewStateImpl(
     private var hideVideoToggle: View = view.findViewById(R.id.hide_video_toggle)
     private var showVideoToggle: View = view.findViewById(R.id.show_video_toggle)
     private var spaceChatVideo: View = view.findViewById(R.id.top_space_guideline)
+    private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -140,6 +148,8 @@ open class PlayViewStateImpl(
 
     private var defaultType = arrayListOf(
             "default", "default1", "default2", "default3")
+
+    private var interactionAnimationHelper: InteractionAnimationHelper
 
     init {
         val groupChatTypeFactory = GroupChatTypeFactoryImpl(
@@ -189,10 +199,13 @@ open class PlayViewStateImpl(
                 .resources.getDimension(R.dimen.dp_16).toInt())
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
 
+        var dynamicButtonTypeFactory = DynamicButtonTypeFactoryImpl(
+                dynamicButtonClickListener, interactiveButtonClickListener, interactionGuideline)
+
         dynamicButtonRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         var buttonSpace = SpaceItemDecoration(activity.getResources()
                 .getDimension(R.dimen.dp_8).toInt(), 2)
-        dynamicButtonAdapter = DynamicButtonAdapter(activity, listener)
+        dynamicButtonAdapter = DynamicButtonsAdapter(dynamicButtonTypeFactory)
         dynamicButtonRecyclerView.adapter = dynamicButtonAdapter
         dynamicButtonRecyclerView.addItemDecoration(buttonSpace)
 
@@ -247,9 +260,13 @@ open class PlayViewStateImpl(
             setChatListHasSpaceOnTop(false)
             analytics.eventClickShowVideoToggle(viewModel?.channelId)
         }
+        errorView.setOnClickListener {  }
+
+        interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
 
         errorView.setOnClickListener {  }
     }
+
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
         viewModel?.let { viewModel ->
@@ -262,18 +279,31 @@ open class PlayViewStateImpl(
                 }
             }
 
+            dynamicButtonAdapter.clearList()
             dynamicButtonRecyclerView.hide()
             if (!it.listDynamicButton.isEmpty()) {
                 analytics.eventViewDynamicButtons(viewModel, it.listDynamicButton)
-                dynamicButtonAdapter.setList(it.listDynamicButton)
+                dynamicButtonAdapter.addList(it.listDynamicButton)
                 dynamicButtonRecyclerView.show()
             }
-        }
 
+            if(it.interactiveButton.isEnabled) {
+                dynamicButtonAdapter.addList(it.interactiveButton)
+                interactionAnimationHelper.updateInteractionIcon(it.interactiveButton.balloonList)
+                dynamicButtonRecyclerView.show()
+            } else {
+                interactionAnimationHelper.destroy()
+            }
+        }
+    }
+
+    override fun onInteractiveButtonViewed(anchorView: LottieAnimationView) {
+        analytics.eventViewInteractionButton(viewModel?.channelId)
+        interactionAnimationHelper.fakeShot(anchorView)
     }
 
     override fun onErrorGetDynamicButtons() {
-        dynamicButtonAdapter.setList(ArrayList())
+        dynamicButtonAdapter.addList(ArrayList())
     }
 
     override fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentViewModel) {
@@ -345,7 +375,7 @@ open class PlayViewStateImpl(
 
     }
 
-    override fun setBottomView() {
+    final override fun setBottomView() {
         showLoginButton(!userSession.isLoggedIn)
         if (userSession.isLoggedIn) {
             onKeyboardHidden()
@@ -488,7 +518,6 @@ open class PlayViewStateImpl(
             }
             initVideoFragment(childFragmentManager, it.videoId, it.videoLive)
         }
-
     }
 
     override fun onChannelFrozen(channelId: String) {
@@ -528,6 +557,7 @@ open class PlayViewStateImpl(
             }
         }
     }
+
 
     private fun getStringResource(id: Int): String {
         return view.context.resources.getString(id)
@@ -853,7 +883,7 @@ open class PlayViewStateImpl(
                                                 }
 
                                                 override fun onPaused() {
-                                                    if(!showVideoToggle.isShown) {
+                                                    if (!showVideoToggle.isShown) {
                                                         hideVideoToggle.show()
                                                     }
                                                     analytics.eventClickPauseVideo(viewModel?.channelId)
@@ -948,7 +978,7 @@ open class PlayViewStateImpl(
     }
 
 
-    private fun setFloatingIcon(floatingButton: DynamicButtonsViewModel.Button) {
+    private fun setFloatingIcon(floatingButton: DynamicButton) {
         webviewIcon.hide()
         if (floatingButton.imageUrl.isBlank()
                 || floatingButton.contentLinkUrl.isBlank()) {
@@ -1030,7 +1060,7 @@ open class PlayViewStateImpl(
     override fun onErrorGetInfo(it: String) {
         setEmptyState(R.drawable.ic_play_overload,
                 getStringResource(R.string.error_overload_play),
-                it.replace("channelName", viewModel?.title?: "", false),
+                it.replace("channelName", viewModel?.title ?: "", false),
                 getStringResource(R.string.title_try_again),
                 listener::onRetryGetInfo)
         loadingView.hide()
@@ -1048,7 +1078,6 @@ open class PlayViewStateImpl(
         errorView.show()
         setToolbarWhite()
     }
-
 
     override fun onChannelDeleted() {
         setEmptyState(R.drawable.ic_group_chat,
@@ -1254,7 +1283,7 @@ open class PlayViewStateImpl(
         chatRecyclerView.invalidate()
     }
 
-    override fun onShowOverlayCTAFromDynamicButton(button: DynamicButtonsViewModel.Button) {
+    override fun onShowOverlayCTAFromDynamicButton(button: DynamicButton) {
         viewModel?.let {
 
             analytics.eventClickOverlayCTAButton(it.channelId, button.contentButtonText)
@@ -1296,13 +1325,14 @@ open class PlayViewStateImpl(
         showWebviewBottomSheet(voteUrl)
     }
 
-    override fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button) {
+    override fun onShowOverlayWebviewFromDynamicButton(it: DynamicButton) {
         showWebviewBottomSheet(it.contentLinkUrl)
     }
 
     override fun destroy() {
         youTubePlayer?.release()
         youtubeRunnable.removeCallbacksAndMessages(null)
+        interactionAnimationHelper.destroy()
     }
 
     override fun autoAddSprintSale() {
@@ -1357,6 +1387,11 @@ open class PlayViewStateImpl(
                 && sprintSaleViewModel.getStartDate() != 0L
                 && sprintSaleViewModel.getEndDate() != 0L
                 && sprintSaleViewModel.getEndDate() > getCurrentTime())
+    }
+
+    override fun onInteractiveButtonClicked(anchorView: LottieAnimationView) {
+        analytics.eventClickInteractionButton(viewModel?.channelId)
+        interactionAnimationHelper.shootInteractionButton(anchorView, 1)
     }
 
 
