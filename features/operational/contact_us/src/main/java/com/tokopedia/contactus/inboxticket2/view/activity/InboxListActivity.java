@@ -143,7 +143,7 @@ public class InboxListActivity extends InboxBaseActivity
     @Override
     void initView() {
         btnFilterTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_filter_list), null, null , null);
+                (this, R.drawable.ic_filter_list), null, null , null);
         rvEmailList.addOnScrollListener(rvOnScrollListener);
         editText.setListener(((InboxListContract.InboxListPresenter) mPresenter).getSearchListener());
     }

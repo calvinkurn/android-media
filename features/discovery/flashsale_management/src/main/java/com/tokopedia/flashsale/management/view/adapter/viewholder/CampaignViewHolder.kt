@@ -20,7 +20,7 @@ class CampaignViewHolder(itemView: View) : AbstractViewHolder<CampaignViewModel>
         itemView.tvCampaignType.text = campaignViewModel.campaignType
         itemView.tvCampaignName.text = campaignViewModel.name
         itemView.tvCampaignDate.text = campaignViewModel.campaignPeriod
-        itemView.tvCampaignDate.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_time), null, null, null)
+        itemView.tvCampaignDate.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(itemView.context, R.drawable.ic_time), null, null, null)
         with(itemView.tvStatus){
             text = campaignViewModel.status
             val (colorText, colorBg) = FlashSaleConstant.statusColorList[campaignViewModel.status.toLowerCase()] ?:

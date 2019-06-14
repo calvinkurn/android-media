@@ -37,7 +37,7 @@ public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
         ImageView banner = view.findViewById(R.id.img_banner);
         Button action = view.findViewById(R.id.button_action);
         count.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_tp_flash), null, null , null);
+                (count.getContext(), R.drawable.ic_tp_flash), null, null , null);
 
         action.setText(mData.getButtonText());
         if (mData.getCatalog() == null || TextUtils.isEmpty(mData.getCatalog().getTitle())) {

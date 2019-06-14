@@ -181,9 +181,9 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.kyc_ids_tnc_page, container, false);
         ((TextView)view.findViewById(R.id.ulng2)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_refresh_turqoise), null, null , null);
+                (getActivity(), R.drawable.ic_refresh_turqoise), null, null , null);
         ((TextView)view.findViewById(R.id.ulng)).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_refresh_turqoise), null, null , null);
+                (getActivity(), R.drawable.ic_refresh_turqoise), null, null , null);
         cardIdContainer = view.findViewById(R.id.cardid_container);
         cardIdContainer.setOnClickListener(this::onClick);
         selfieIdContainer = view.findViewById(R.id.selfieid_container);

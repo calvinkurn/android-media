@@ -142,7 +142,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mTvFlashTimer = view.findViewById(R.id.tv_flash_time);
         mTvFlashTimerLabel = view.findViewById(R.id.tv_timer_label);
         mTvFlashTimerLabel.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_tp_flash_green), null, null , null);
+                (getActivity(), R.drawable.ic_tp_flash_green), null, null , null);
         mProgressFlash = view.findViewById(R.id.progress_timer);
         mContainerFlashTimer = view.findViewById(R.id.cl_flash_container);
         initListener();

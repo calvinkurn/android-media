@@ -562,7 +562,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         TextView disabledError = getView().findViewById(R.id.text_disabled_error);
         TextView btnAction1 = getView().findViewById(R.id.button_action_1);
         btnAction1.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_tp_gift), null, null , null);
+                (getActivity(), R.drawable.ic_tp_gift), null, null , null);
         TextView btnAction2 = getView().findViewById(R.id.button_action_2);
         ImageView imgBanner = getView().findViewById(R.id.img_banner);
         ImageView imgTime = getView().findViewById(R.id.img_time);

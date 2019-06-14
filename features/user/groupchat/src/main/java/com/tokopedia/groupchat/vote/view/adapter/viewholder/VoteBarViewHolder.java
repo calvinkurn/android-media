@@ -59,21 +59,6 @@ public class VoteBarViewHolder extends AbstractViewHolder<VoteViewModel> {
             }
         }
 
-        // import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-
-        // kiri
-        .setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.), null, null , null);
-
-        // kanan
-        .setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
-                (context, R.drawable.), null);
-
-        // kanan dan kiri
-        .setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.), null, MethodChecker.getDrawable
-                (context, R.drawable.), null);
-
         option.setText(element.getOption());
         percent.setText(String.format(Locale.getDefault(), "%d%%", element.getPercentageInteger()));
 

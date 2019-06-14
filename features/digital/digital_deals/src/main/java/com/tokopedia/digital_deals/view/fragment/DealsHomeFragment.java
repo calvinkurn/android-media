@@ -190,7 +190,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         baseMainContent = view.findViewById(R.id.base_main_content);
         searchInputView = view.findViewById(R.id.search_input_view);
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_search_deal), null, , null);
+                (getActivity(), R.drawable.ic_search_deal), null, null , null);
         tvLocationName = view.findViewById(R.id.tv_location_name);
         clBrands = view.findViewById(R.id.cl_brands);
         clPromos = view.findViewById(R.id.cl_promos);

@@ -137,11 +137,11 @@ public class SeatSelectionActivity extends EventBaseActivity implements
         seatSelectionPresenter.getSeatSelectionDetails();
 
         tvSeatsAvailable.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.seat_bg), null, null, null);
+                (this, R.drawable.seat_bg), null, null, null);
         tvSeatsNotAvailable.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.cannot_select_seat_bg), null, null, null);
+                (this, R.drawable.cannot_select_seat_bg), null, null, null);
         seatsLooking.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.currently_selected_seat_bg), null, null, null);
+                (this, R.drawable.currently_selected_seat_bg), null, null, null);
     }
 
     @Override

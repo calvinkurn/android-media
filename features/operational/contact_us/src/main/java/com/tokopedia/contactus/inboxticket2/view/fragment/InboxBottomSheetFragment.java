@@ -67,7 +67,7 @@ public abstract class InboxBottomSheetFragment extends BottomSheetDialogFragment
         View contentView = inflater.inflate(layoutID, container, false);
         ButterKnife.bind(this, contentView);
         title.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_close_x_black), null, null , null);
+                (getActivity(), R.drawable.ic_close_x_black), null, null , null);
         getDialog().setOnShowListener(dialog -> {
             BottomSheetDialog d = (BottomSheetDialog) dialog;
             View bottomSheetInternal = d.findViewById(R.id.design_bottom_sheet);

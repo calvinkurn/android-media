@@ -300,14 +300,14 @@ public class SearchActivity extends BaseActivity
 
     private void initSearchNavigationListener() {
         buttonFilter.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_filter), null, null , null);
+                (this, R.drawable.ic_filter), null, null , null);
         buttonFilter.setOnClickListener(view -> {
             if (searchNavigationClickListener != null) {
                 searchNavigationClickListener.onFilterClick();
             }
         });
         buttonSort.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_sort), null, null , null);
+                (this, R.drawable.ic_sort), null, null , null);
         buttonSort.setOnClickListener(view -> {
             if (searchNavigationClickListener != null) {
                 searchNavigationClickListener.onSortClick();

@@ -60,7 +60,7 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
         context = itemView.getContext();
         tv_unavailable_label = itemView.findViewById(R.id.tv_unavailable_label);
         tv_unavailable_label.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.), null, null , null);
+                (context, R.drawable.ic_minus), null, null , null);
         this.itemClickListener = itemClickListener;
     }
 
