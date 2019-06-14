@@ -22,4 +22,6 @@ class PowerMerchantTermsActivity : BaseSimpleActivity() {
             }
         }
     }
+
+    override fun isShowCloseButton(): Boolean = true
 }
