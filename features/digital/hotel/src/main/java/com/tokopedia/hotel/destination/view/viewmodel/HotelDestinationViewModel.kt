@@ -86,7 +86,7 @@ class HotelDestinationViewModel @Inject constructor(
     }
 
     fun deleteRecentSearch(query: String, uuid: String) {
-        val params = mapOf(PARAM_USER_ID to userSessionInterface.userId, PARAM_DELETE_RECENT_UUID to uuid)
+        val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt(), PARAM_DELETE_RECENT_UUID to uuid)
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(query, RecentSearch.DeleteResponse::class.java, params)
