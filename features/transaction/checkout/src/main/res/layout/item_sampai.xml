@@ -55,9 +55,9 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:background="@drawable/bg_warning"
         android:padding="@dimen/dp_16"
-        android:text="@string/ticker_corner_sicepat_only_info"
+        android:text="@string/corner_info_ticker"
         android:textSize="@dimen/sp_12"
-        tools:text="Saat ini, pengiriman dengan tujuan Tokopedia Corner hanya dapat menggunakan SiCepat Regular." />
+        tools:text="@string/corner_info_ticker" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/view_tkpd_corner"
