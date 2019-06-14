@@ -47,7 +47,6 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
