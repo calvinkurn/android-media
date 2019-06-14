@@ -2,12 +2,8 @@ package com.tokopedia.power_merchant.subscribe.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
-import com.tokopedia.gm.common.domain.interactor.GetShopScoreUseCase
-import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase
 import com.tokopedia.power_merchant.subscribe.contract.PmSubscribeContract
-import com.tokopedia.power_merchant.subscribe.subscriber.GetPmInfoSubscriber
 import com.tokopedia.power_merchant.subscribe.subscriber.GetPmStatusInfoSubscriber
-import com.tokopedia.seller.shopscore.domain.interactor.GetShopScoreMainDataUseCase
 import javax.inject.Inject
 
 class PmSubscribePresenter @Inject constructor(

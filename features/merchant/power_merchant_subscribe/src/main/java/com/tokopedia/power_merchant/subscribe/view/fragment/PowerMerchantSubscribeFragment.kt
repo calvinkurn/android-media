@@ -9,16 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.FrameLayout
-import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showLoading
 
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.contract.PmSubscribeContract
@@ -33,7 +32,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo
 import kotlinx.android.synthetic.main.dialog_kyc_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
-import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.view.*
 
 
 import javax.inject.Inject
@@ -76,11 +74,12 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ImageHandler.LoadImage(img_top_1,"https://ecs7.tokopedia.net/img/android/power_merchant/pm_intro.png")
+        root_view_pm.showLoading()
+        ImageHandler.LoadImage(img_top_1,"https://ecs7.tokopedia.net/img/android/power_merchant_subscribe/pm_intro.png")
         initializePartialPart(view)
         setupYellowTicker()
         button_activate_root.setOnClickListener {
-            if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 0) {
+            if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 3) {
                 setupDialog()?.show()
             } else {
 
@@ -118,7 +117,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         bottomSheet.show(childFragmentManager, "power_merchant_success")
     }
 
-
     fun showBottomSheetCancel() {
         val bottomSheet = PowerMerchantCancelBottomSheet()
         bottomSheet.show(childFragmentManager, "power_merchant_cancel")
@@ -129,15 +127,20 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         getApprovalStatusPojo = powerMerchantStatus.getApprovalStatusPojo
 
         if (shopStatusModel.isTransitionPeriod()) {
-            if (shopStatusModel.isPowerMerchantInactive()) {
+            if (shopStatusModel.isPowerMerchantIdle()) {
                 ll_footer_submit.visibility = View.VISIBLE
-                context?.let { TransitionPeriodPmActivity.newInstance(it) }
+                ticker_blue_container.visibility = View.VISIBLE
+                renderView(shopStatusModel)
             } else if (shopStatusModel.isPowerMerchantActive()) {
+                ticker_yellow_container.visibility = View.VISIBLE
                 ticker_blue_container.visibility = View.VISIBLE
                 ll_footer_submit.visibility = View.GONE
                 renderView(shopStatusModel)
+            } else if (shopStatusModel.isPowerMerchantInactive()) {
+                ticker_blue_container.visibility = View.GONE
             }
         } else {
+            ticker_blue_container.visibility = View.GONE
             renderView(shopStatusModel)
         }
     }
@@ -157,7 +160,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     private fun renderView(shopStatusModel: ShopStatusModel) {
-        ticker_blue_container.visibility = View.GONE
         if (shopStatusModel.isAutoExtend()) {
             ticker_yellow_container.visibility = View.VISIBLE
             ll_footer_submit.visibility = View.VISIBLE
@@ -167,6 +169,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
         partialMemberPmViewHolder.renderPartialMember(shopStatusModel)
         partialTncViewHolder.renderPartialTnc()
+        root_view_pm.show()
     }
 
     private fun initializePartialPart(view: View?) {

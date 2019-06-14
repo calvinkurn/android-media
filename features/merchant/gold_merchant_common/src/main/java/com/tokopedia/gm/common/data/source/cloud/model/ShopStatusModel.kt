@@ -25,8 +25,12 @@ data class ShopStatusModel(
         return powerMerchant.status == STATUS_ACTIVE
     }
 
-    fun isPowerMerchantInactive(): Boolean {
+    fun isPowerMerchantIdle(): Boolean {
         return powerMerchant.status == STATUS_IDLE
+    }
+
+    fun isPowerMerchantInactive(): Boolean {
+        return powerMerchant.status == STATUS_INACTIVE
     }
 
     fun isRegularMerchant(): Boolean {
