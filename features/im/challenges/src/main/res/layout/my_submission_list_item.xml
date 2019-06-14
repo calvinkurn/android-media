@@ -108,7 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
-            android:drawableLeft="@drawable/ic_buzz_points"
+            android:drawableLeft="@drawable/ic_buzz_epoints"
             android:drawablePadding="@dimen/dp_5"
             android:gravity="center"
             app:layout_constraintRight_toRightOf="parent"

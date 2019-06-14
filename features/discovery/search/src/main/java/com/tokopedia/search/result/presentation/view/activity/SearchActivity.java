@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -161,7 +162,9 @@ public class SearchActivity extends BaseActivity
         viewPager = findViewById(R.id.pager);
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter);
         buttonFilter = findViewById(R.id.button_filter);
+        buttonFilter.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(this, R.drawable.ic_filter), null, null, null);
         buttonSort = findViewById(R.id.button_sort);
+        buttonSort.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(this, R.drawable.ic_sort), null, null, null);
         searchNavDivider = findViewById(R.id.search_nav_divider);
         searchNavContainer = findViewById(R.id.search_nav_container);
     }

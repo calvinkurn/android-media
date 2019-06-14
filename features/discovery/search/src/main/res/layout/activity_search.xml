@@ -106,7 +106,6 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             style="@style/TextView.Small.BlackPrimary"
-            android:drawableLeft="@drawable/ic_filter"
             android:drawablePadding="@dimen/dp_4"
             android:text="@string/filter"/>
 
