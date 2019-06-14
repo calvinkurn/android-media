@@ -3168,4 +3168,5 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
         return baseDaggerFragment;
     }
+
 }

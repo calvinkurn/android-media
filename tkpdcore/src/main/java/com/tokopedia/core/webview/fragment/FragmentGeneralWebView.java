@@ -629,4 +629,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             showToolbar = savedInstanceState.getBoolean(EXTRA_SHOW_TOOLBAR, true);
         }
     }
+
+    public void reloadPage(){
+        WebViewGeneral.reload();
+    }
 }
