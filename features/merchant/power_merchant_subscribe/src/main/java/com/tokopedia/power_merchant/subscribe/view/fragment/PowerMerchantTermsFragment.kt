@@ -1,10 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.fragment
 
-import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
@@ -37,8 +33,8 @@ class PowerMerchantTermsFragment: BaseWebViewFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_power_merchant_terms, container, false)
+    override fun getLayout(): Int {
+        return R.layout.fragment_power_merchant_terms
     }
 
     override fun getUrl(): String {
