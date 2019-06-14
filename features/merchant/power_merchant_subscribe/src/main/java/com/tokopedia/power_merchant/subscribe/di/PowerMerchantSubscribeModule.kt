@@ -4,9 +4,10 @@ import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gm.common.di.GmCommonModule
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.power_merchant.subscribe.contract.PmSubscribeContract
+import com.tokopedia.power_merchant.subscribe.contract.PmTermsContract
 import com.tokopedia.power_merchant.subscribe.presenter.PmSubscribePresenter
+import com.tokopedia.power_merchant.subscribe.presenter.PmTermsPresenter
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -18,9 +19,16 @@ class PowerMerchantSubscribeModule {
 
     @PowerMerchantSubscribeScope
     @Provides
-    fun provideChatSettingsPresenter(pmSubscribePresenter: PmSubscribePresenter):
+    fun providePmSubscribePresenter(pmSubscribePresenter: PmSubscribePresenter):
             PmSubscribeContract.Presenter {
         return pmSubscribePresenter
+    }
+
+    @PowerMerchantSubscribeScope
+    @Provides
+    fun providePmTermsPresenter(pmTermsPresenter: PmTermsPresenter):
+            PmTermsContract.Presenter {
+        return pmTermsPresenter
     }
 
     @PowerMerchantSubscribeScope

@@ -58,4 +58,6 @@
     <string name="pm_label_tnc_header">Syarat menjadi Power Merchant</string>
     <string name="pm_label_price_cashback">Sisa biaya langganan Power Merchant sebelumnya akan dikembalikan ke Saldo Tokopedia paling lambat 1 minggu.</string>
     <string name="pm_label_info">Sekilas info tentang kenapa sih PM ini berubah, apa yang lebih baik, apa yang ditawarkan, etc…</string>
+    <string name="pm_upgrade_shop">Upgrade Tokomu</string>
+    <string name="pm_terms_agree">Dengan ini, saya menyetujui syarat dan ketentuan Power Merchant Tokopedia.</string>
 </resources>
