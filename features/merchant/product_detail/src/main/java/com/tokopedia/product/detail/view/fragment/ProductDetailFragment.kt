@@ -134,7 +134,6 @@ import model.TradeInParams
 import view.customview.TradeInTextView
 import viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 class ProductDetailFragment : BaseDaggerFragment() {
     private var productId: String? = null
