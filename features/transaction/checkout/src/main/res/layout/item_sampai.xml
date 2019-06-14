@@ -32,6 +32,16 @@
             android:contentDescription="@string/information_icon"
             android:src="@drawable/ic_info_black" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:textSize="12sp"
+            android:text="@string/gratis_ongkir"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_label_red"/>
+
     </LinearLayout>
 
     <TextView

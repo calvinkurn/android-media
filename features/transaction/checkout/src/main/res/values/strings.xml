@@ -295,5 +295,6 @@
     <string name="information_icon">Information Icon</string>
     <string name="tooltip_corner_info">Pesanan akan dikirim ke Tokopedia Corner yang ada di kampus</string>
     <string name="button_mengerti">Mengerti</string>
+    <string name="gratis_ongkir">Gratis Ongkir</string>
 
 </resources>
