@@ -86,4 +86,10 @@ public class ChangeEmailPresenter extends BaseDaggerPresenter<ChangeEmailContrac
 
         return isValid;
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        changeEmailUseCase.unsubscribe();
+    }
 }
