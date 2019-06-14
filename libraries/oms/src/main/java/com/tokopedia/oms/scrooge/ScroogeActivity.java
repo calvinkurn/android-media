@@ -19,7 +19,6 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -186,12 +185,12 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                 } else if (url.contains(HCI_CAMERA_KTP)) {
                     view.stopLoading();
                     mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-                    startActivityForResult(RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_KTP), HCI_CAMERA_REQUEST_CODE);
+                    startActivityForResult(RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
                     return true;
                 } else if (url.contains(HCI_CAMERA_SELFIE)) {
                     view.stopLoading();
                     mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-                    startActivityForResult(RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_SELFIE), HCI_CAMERA_REQUEST_CODE);
+                    startActivityForResult(RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
                     return true;
                 } else {
                     super.shouldOverrideUrlLoading(view, url);

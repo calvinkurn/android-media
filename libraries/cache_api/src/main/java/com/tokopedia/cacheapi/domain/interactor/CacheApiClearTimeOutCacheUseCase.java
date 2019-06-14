@@ -1,5 +1,7 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
+import android.content.Context;
+
 import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.util.Injection;
 import com.tokopedia.usecase.RequestParams;
@@ -15,8 +17,8 @@ public class CacheApiClearTimeOutCacheUseCase extends UseCase<Boolean> {
 
     private CacheApiRepository cacheApiRepository;
 
-    public CacheApiClearTimeOutCacheUseCase() {
-        cacheApiRepository = Injection.provideCacheApiRepository();
+    public CacheApiClearTimeOutCacheUseCase(Context context) {
+        cacheApiRepository = Injection.provideCacheApiRepository(context.getApplicationContext());
     }
 
     @Override
