@@ -98,6 +98,7 @@
     <string name="label_action_snackbar_close">Tutup</string>
     <string name="choose_district_first">Silahkan Pilih Kota/Kecamatan terlebih dahulu</string>
     <string name="invalid_district">Alamat tidak sesuai dengan peta. Mohon pilih kembali alamat pada peta.</string>
+    <string name="rationale_need_location">Akses lokasi diperlukan untuk menggunakan fitur ini. Perbolehkan?</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

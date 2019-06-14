@@ -3,8 +3,10 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
+import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.logisticaddaddress.AddressConstants
+import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.AddressConstants.*
 import com.tokopedia.logisticaddaddress.R
 
@@ -13,6 +15,7 @@ import com.tokopedia.logisticaddaddress.R
  */
 class PinpointMapActivity: BaseSimpleActivity() {
     private val FINISH_FLAG = 1212
+    var SCREEN_NAME = "PinpointMapActivity"
 
     companion object {
         val defaultLat: Double by lazy { -6.175794 }
@@ -27,6 +30,9 @@ class PinpointMapActivity: BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
     }
 
+    override fun getScreenName(): String {
+        return SCREEN_NAME
+    }
     override fun getLayoutRes(): Int = R.layout.activity_pinpoint_map
 
     override fun getNewFragment(): PinpointMapFragment? {

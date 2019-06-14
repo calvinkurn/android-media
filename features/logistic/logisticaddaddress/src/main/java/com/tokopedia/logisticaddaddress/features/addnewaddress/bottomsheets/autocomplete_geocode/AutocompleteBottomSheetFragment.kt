@@ -1,6 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
 import android.app.Activity
+import android.os.Bundle
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -46,7 +47,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
         private const val CURRENT_LAT = "CURRENT_LAT"
         private const val CURRENT_LONG = "CURRENT_LONG"
 
-        /*@JvmStatic
+        @JvmStatic
         fun newInstance(currentLat: Double, currentLong: Double): AutocompleteBottomSheetFragment {
             return AutocompleteBottomSheetFragment().apply {
                 arguments = Bundle().apply {
@@ -54,7 +55,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
                     putDouble(CURRENT_LONG, currentLong)
                 }
             }
-        }*/
+        }
 
         @JvmStatic
         fun newInstance(): AutocompleteBottomSheetFragment {
@@ -62,13 +63,13 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
         }
     }
 
-    /*override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             currentLat = arguments?.getDouble("CURRENT_LAT")
             currentLong = arguments?.getDouble("CURRENT_LONG")
         }
-    }*/
+    }
 
     override fun getLayoutResourceId(): Int {
         return R.layout.bottomsheet_autocomplete
@@ -123,7 +124,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
 
     private fun loadAutocompleteGeocode() {
         presenter.clearCacheAutocompleteGeocode()
-        presenter.getAutocompleteGeocode(defaultLat, defaultLong)
+        presenter.getAutocompleteGeocode(currentLat, currentLong)
     }
 
     private fun loadAutocomplete(input: String) {

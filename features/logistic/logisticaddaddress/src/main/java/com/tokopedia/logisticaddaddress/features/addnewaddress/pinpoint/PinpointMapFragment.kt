@@ -20,6 +20,7 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResultCallback
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsResult
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -30,10 +31,14 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressActivity
@@ -54,8 +59,7 @@ import javax.inject.Inject
  */
 class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, ResultCallback<LocationSettingsResult>,
-        AutocompleteBottomSheetFragment.ActionListener {
-
+        AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent> {
     private var googleMap: GoogleMap? = null
     private var currentLat: Double? = 0.0
     private var currentLong: Double? = 0.0
@@ -68,13 +72,15 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     private val FINISH_FLAG = 1212
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var permissionCheckerHelper: PermissionCheckerHelper? = null
+    private var permissionCheckerHelper = PermissionCheckerHelper()
     private var token: Token? = null
     private var isPolygon: Boolean? = null
     private var districtId: Int? = null
     private val GREEN_ARGB = 0x40388E3C
     private var isMismatchSolved: Boolean? = null
     private var zipCodes : MutableList<String>? = null
+    private var saveAddressDataModel: SaveAddressDataModel? = null
+    protected var addNewAddressComponent: AddNewAddressComponent? = null
 
     @Inject
     lateinit var presenter: PinpointMapPresenter
@@ -107,23 +113,10 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
                     putBoolean(AddressConstants.EXTRA_IS_POLYGON, extra.getBoolean(AddressConstants.EXTRA_IS_POLYGON))
                     putInt(AddressConstants.EXTRA_DISTRICT_ID, extra.getInt(AddressConstants.EXTRA_DISTRICT_ID))
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
-                    putStringArrayList(AddressConstants.EXTRA_ZIPCODES, extra.getStringArrayList(AddressConstants.EXTRA_ZIPCODES))
+                    putParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL))
                 }
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        // current_location
-        /*if (this.isRequestingLocation!!) {
-            if (!checkPermissions()) {
-                requestPermissions()
-            } else {
-                getLastLocation()
-            }
-        }*/
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,13 +130,9 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
             isPolygon = arguments?.getBoolean(AddressConstants.EXTRA_IS_POLYGON)
             districtId = arguments?.getInt(AddressConstants.EXTRA_DISTRICT_ID)
             isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
-            zipCodes = arguments?.getStringArrayList(AddressConstants.EXTRA_ZIPCODES)
+            saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
+            zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
         }
-
-        // current_location
-        /*if (this.isRequestingLocation!!) {
-            fusedLocationClient = activity?.let { LocationServices.getFusedLocationProviderClient(it) }!!
-        }*/
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -160,6 +149,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         getdistrict_container.visibility = View.GONE
         invalid_container.visibility = View.GONE
         whole_loading_container.visibility = View.VISIBLE
+        et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
 
         back_button.setOnClickListener {
             map_view?.onPause()
@@ -188,9 +178,11 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         // nanti cek permission location di sini!
         if (isShowingAutocomplete == true) {
             handler.postDelayed({
-                showAutocompleteGeocodeBottomSheet()
+                showAutocompleteGeocodeBottomSheet(latitude, longitude)
             }, 1500)
         }
+        //
+        // requestLocation()
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
@@ -210,6 +202,29 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
             isGetDistrict = false
         }
     }
+
+    /*private fun requestLocation() {
+        val locationDetectorHelper = activity?.applicationContext?.let {
+            LocationDetectorHelper(
+                    permissionCheckerHelper,
+                    LocationServices.getFusedLocationProviderClient(it),
+                    it) }
+
+        activity?.let {
+            locationDetectorHelper?.getLocation(onGetLocation(), it,
+                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                    it.getString(R.string.rationale_need_location))
+        }
+    }
+
+    private fun onGetLocation(): Function1<DeviceLocation, Unit> {
+        return (deviceLocation) -> {
+            println("## lat = ${it.latitude}, long = ${it.longitude}")
+        }
+        *//*return { (latitude, longitude) ->
+            // getCampaign(latitude, longitude)
+        }*//*
+    }*/
 
     override fun moveMap(latLng: LatLng) {
         println("## masuk moveMap - lat = ${latLng.latitude}, long = ${latLng.longitude}")
@@ -259,9 +274,9 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     override fun onResult(locationSettingsResult: LocationSettingsResult) {
     }
 
-    private fun showAutocompleteGeocodeBottomSheet() {
+    private fun showAutocompleteGeocodeBottomSheet(lat: Double, long: Double) {
         val autocompleteGeocodeBottomSheetFragment =
-                AutocompleteBottomSheetFragment.newInstance()
+                AutocompleteBottomSheetFragment.newInstance(lat, long)
         autocompleteGeocodeBottomSheetFragment.setActionListener(this)
         autocompleteGeocodeBottomSheetFragment.show(fragmentManager, "")
     }
@@ -364,6 +379,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         intent.putExtra(AddressConstants.KERO_TOKEN, token)
         intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
         startActivityForResult(intent, FINISH_FLAG)
+        activity?.finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -390,5 +406,10 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
                 .addAll(districtBoundaryGeometryUiModel.listCoordinates)
                 .fillColor(GREEN_ARGB)
                 .strokeWidth(3F))
+    }
+
+    override fun getComponent(): AddNewAddressComponent? {
+        if (addNewAddressComponent == null) initInjector()
+        return addNewAddressComponent
     }
 }

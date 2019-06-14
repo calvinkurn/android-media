@@ -169,29 +169,25 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             ll_normal.visibility = View.GONE
             ll_mismatch.visibility = View.VISIBLE
 
+            et_kota_kecamatan_mismatch.setOnClickListener {
+                showDistrictRecommendationBottomSheet()
+            }
             if (isMismatch) {
                 setMismatchMapHeader()
-
-                if (et_kode_pos_mismatch.text.isEmpty()) {
-                    setOnClickZipCodes()
-                }
+                setMismatchForm()
 
             } else {
                 setMismatchSolvedMapHeader()
                 setMismatchSolvedForm()
-
                 setOnClickZipCodes()
             }
             setupRvKodePosChips()
 
-            et_kota_kecamatan_mismatch.setOnClickListener {
-                showDistrictRecommendationBottomSheet()
-            }
-            if (et_kode_pos_mismatch.text.isEmpty()) {
+            /*if (et_kode_pos_mismatch.text.isEmpty()) {
                 et_kode_pos_mismatch.setOnClickListener {
                     showZipCodes()
                 }
-            }
+            }*/
         }
     }
 
@@ -245,7 +241,8 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             btn_map.layoutParams = params
             setOnClickListener {
                 presenter.changePinpoint(currentLat, currentLong, token, false, districtId,
-                        isMismatchSolved, saveAddressDataModel?.zipCodes?.toMutableList()!!)
+                        isMismatchSolved, saveAddressDataModel)
+                activity?.finish()
             }
         }
     }
@@ -265,7 +262,8 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
                     showToastError(getString(R.string.choose_district_first))
                 } else {
                     presenter.changePinpoint(currentLat, currentLong, token, true, districtId,
-                            isMismatchSolved, saveAddressDataModel?.zipCodes?.toMutableList()!!)
+                            isMismatchSolved, saveAddressDataModel)
+                    activity?.finish()
                 }
             }
         }
@@ -281,8 +279,9 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             params.width = 450
             btn_map.layoutParams = params
             setOnClickListener {
+                saveAddressDataModel?.editDetailAddress = et_detail_alamat_mismatch.text.toString()
                 presenter.changePinpoint(currentLat, currentLong, token, false, districtId,
-                        isMismatchSolved, saveAddressDataModel?.zipCodes?.toMutableList()!!)
+                        isMismatchSolved, saveAddressDataModel)
             }
         }
     }
@@ -292,13 +291,19 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
     }
 
+    private fun setMismatchForm() {
+        ll_detail_alamat.visibility = View.GONE
+        if (et_kode_pos_mismatch.text.isEmpty()) {
+            setOnClickZipCodes()
+        }
+    }
+
     private fun setMismatchSolvedForm() {
+        ll_detail_alamat.visibility = View.VISIBLE
         et_kota_kecamatan_mismatch.setText(this.saveAddressDataModel?.formattedAddress)
         et_alamat_mismatch.setText(this.saveAddressDataModel?.title)
         et_detail_alamat_mismatch.setText(this.saveAddressDataModel?.editDetailAddress)
         et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
-
-
     }
 
     private fun showDistrictRecommendationBottomSheet() {
@@ -324,7 +329,7 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             saveAddressDataModel?.address2 = "$currentLat,$currentLong"
 
         } else {
-            detailAddress = et_alamat_mismatch.text.toString()
+            detailAddress = et_detail_alamat_mismatch.text.toString()
             if (isMismatch) {
                 saveAddressDataModel?.address1 = "${detailAddress} ${saveAddressDataModel?.selectedDistrict}"
                 saveAddressDataModel?.address2 = ""

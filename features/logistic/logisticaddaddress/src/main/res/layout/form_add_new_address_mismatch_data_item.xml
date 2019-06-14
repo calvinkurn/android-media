@@ -109,29 +109,37 @@
             android:textColor="@color/label_grey"
             android:text="@string/min_20_char"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_12"
-        android:textColor="@color/label_grey"
-        android:layout_marginTop="@dimen/dp_24"
-        android:text="@string/detail_alamat"/>
-
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/et_detail_alamat_layout_mismatch"
-        style="@style/HintTextInputLayout"
+    <LinearLayout
+        android:id="@+id/ll_detail_alamat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:hintEnabled="false">
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/et_detail_alamat_mismatch"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/label_grey"
+            android:layout_marginTop="@dimen/dp_24"
+            android:text="@string/detail_alamat"/>
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/et_detail_alamat_layout_mismatch"
+            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/et_alamat_hint"
-            android:inputType="text"
-            android:textColor="#ae31353b" />
+            app:hintEnabled="false">
 
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+            <EditText
+                android:id="@+id/et_detail_alamat_mismatch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/et_alamat_hint"
+                android:inputType="text"
+                android:textColor="#ae31353b" />
+
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
