@@ -18,19 +18,17 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
-import android.media.Image;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.support.transition.Transition;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.util.Base64;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.webkit.URLUtil;
@@ -913,7 +911,7 @@ public class ImageHandler {
     public static String encodeToBase64(String imagePath) {
         Bitmap bm = BitmapFactory.decodeFile(imagePath);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bm.compress(Bitmap.CompressFormat.JPEG, 60, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
@@ -921,7 +919,7 @@ public class ImageHandler {
     public static String encodeToBase64(String imagePath, Bitmap.CompressFormat compressFormat) {
         Bitmap bm = BitmapFactory.decodeFile(imagePath);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(compressFormat, 100, baos);
+        bm.compress(compressFormat, 60, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
