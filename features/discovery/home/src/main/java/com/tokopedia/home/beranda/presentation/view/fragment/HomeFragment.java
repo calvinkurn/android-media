@@ -700,7 +700,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             presenter.getHeaderData(false);
         }
 
-        if (getActivity() instanceof RefreshNotificationListener) { // show on boarding and notify mainparent
+        if (getActivity() instanceof RefreshNotificationListener) {
             ((RefreshNotificationListener) getActivity()).onRefreshNotification();
         }
         loadEggData();
