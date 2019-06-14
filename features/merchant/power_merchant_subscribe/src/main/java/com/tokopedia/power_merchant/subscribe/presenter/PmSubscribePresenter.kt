@@ -16,7 +16,7 @@ class PmSubscribePresenter @Inject constructor(private val getShopStatusUseCase:
 
 
     override fun detachView() {
-
+        getShopStatusUseCase.unsubscribe()
     }
 
     override fun getScoreInfo() {
