@@ -155,7 +155,7 @@ class HotelEVoucherFragment : BaseDaggerFragment() {
                 rdv_checkin_checkout_date.setRoomDatesFormatted(
                         propertyDetail.checkInOut[0].checkInOut.date,
                         propertyDetail.checkInOut[1].checkInOut.date,
-                        propertyDetail.checkInOut[2].content)
+                        propertyDetail.stayLength.content)
 
                 for (i in 1..propertyDetail.propertyInfo.starRating) {
                     container_rating_view.addView(RatingStarView(context!!))
