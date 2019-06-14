@@ -47,6 +47,7 @@ public interface GMCommonApi {
     Observable<Response<DataResponse<PowerMerchantActivationResult>>> turnOnOffPowerMerchantSubscription(
             @Body RequestAutoExtendPowerMerchantModel requestAutoExtendPowerMerchantModel);
 
+    @Headers("Origin: tokopedia.com")
     @GET(GMCommonUrl.SHOPS_SCORE_STATUS + "{shopId}")
     Observable<Response<DataResponse<ShopScoreResult>>> getShopScoreDetail(@Path("shopId") String shopId);
 
