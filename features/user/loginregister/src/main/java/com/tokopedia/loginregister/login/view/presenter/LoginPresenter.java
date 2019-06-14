@@ -82,7 +82,7 @@ public class LoginPresenter extends BaseDaggerPresenter<LoginContract.View>
     }
 
     @Override
-    public void login(String email, String password) {
+    public void loginEmail(String email, String password) {
         getView().resetError();
         if (isValid(email, password)) {
             getView().showLoadingLogin();

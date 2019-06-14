@@ -263,7 +263,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
                 (textView, id, keyEvent) -> {
                     if (id == R.id.ime_login || id == EditorInfo.IME_NULL) {
                         actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL;
-                        presenter.login(emailEditText.getText().toString().trim(),
+                        presenter.loginEmail(emailEditText.getText().toString().trim(),
                                 passwordEditText.getText().toString());
                         return true;
                     }
@@ -279,7 +279,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
                 actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL;
                 KeyboardHandler.hideSoftKeyboard(getActivity());
                 presenter.saveLoginEmail(emailEditText.getText().toString());
-                presenter.login(emailEditText.getText().toString().trim(),
+                presenter.loginEmail(emailEditText.getText().toString().trim(),
                         passwordEditText.getText().toString());
                 analytics.eventClickLoginButton(getActivity().getApplicationContext());
             }
@@ -351,7 +351,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
                         String pw = getArguments().getString(AUTO_LOGIN_PASS, "");
                         emailEditText.setText(email);
                         passwordEditText.setText(pw);
-                        presenter.login(email, pw);
+                        presenter.loginEmail(email, pw);
                         break;
                     default:
                         showSmartLock();
@@ -696,7 +696,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
                     && data.getExtras().getString(SmartLockActivity.PASSWORD) != null) {
                 emailEditText.setText(data.getExtras().getString(SmartLockActivity.USERNAME));
                 passwordEditText.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
-                presenter.login(data.getExtras().getString(SmartLockActivity.USERNAME),
+                presenter.loginEmail(data.getExtras().getString(SmartLockActivity.USERNAME),
                         data.getExtras().getString(SmartLockActivity.PASSWORD));
             } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) {
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -872,6 +872,42 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     @Override
     public void onErrorGetUserInfo(@org.jetbrains.annotations.Nullable Throwable e) {
 
+    }
+
+    @NotNull
+    @Override
+    public Function1<LoginTokenPojo, Unit> onSuccessReloginAfterSQ() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Function1<Throwable, Unit> onErrorReloginAfterSQ(String validateToken) {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Function1<LoginTokenPojo, Unit> onSuccessLoginFacebook(@NotNull String email) {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Function1<Throwable, Unit> onErrorLoginFacebook(@NotNull String email) {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Function1<LoginTokenPojo, Unit> onSuccessLoginGoogle(@org.jetbrains.annotations.Nullable String email) {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Function1<Throwable, Unit> onErrorLoginGoogle(@org.jetbrains.annotations.Nullable String email) {
+        return null;
     }
 
     @Override

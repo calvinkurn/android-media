@@ -16,7 +16,6 @@ import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
 import com.tokopedia.loginregister.login.view.subscriber.LoginTokenSubscriber
 import com.tokopedia.loginregister.loginthirdparty.domain.LoginWebviewUseCase
-import com.tokopedia.loginregister.loginthirdparty.domain.LoginWithSosmedUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.subscriber.LoginThirdPartySubscriber
@@ -26,7 +25,6 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
-import com.tokopedia.sessioncommon.domain.usecase.LoginEmailUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,18 +33,15 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
+Ø
 /**
  * @author by nisie on 18/01/19.
  */
 class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: DiscoverUseCase,
                                                    private val getFacebookCredentialUseCase:
                                                    GetFacebookCredentialUseCase,
-                                                   private val loginWithSosmedUseCase:
-                                                   LoginWithSosmedUseCase,
                                                    private val registerValidationUseCase:
                                                    RegisterValidationUseCase,
-                                                   private val loginEmailUseCase:
-                                                   LoginEmailUseCase,
                                                    private val loginWebviewUseCase:
                                                    LoginWebviewUseCase,
                                                    private val loginTokenUseCase:
@@ -151,16 +146,20 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
 
     override fun loginFacebook(context: Context, accessToken: AccessToken, email: String) {
         view.showLoadingLogin()
-        loginWithSosmedUseCase.execute(LoginWithSosmedUseCase.getParamFacebook(accessToken),
-                LoginThirdPartySubscriber(context, view.loginRouter,
-                        email, view, LoginRegisterAnalytics.FACEBOOK))
+        loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
+                accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
+                LoginTokenSubscriber(userSession,
+                        view.onSuccessLoginFacebook(email),
+                        view.onErrorLoginFacebook(email)))
     }
 
-    override fun loginGoogle(accessToken: String?, email: String?) {
+    override fun loginGoogle(accessToken: String, email: String?) {
         view.showLoadingLogin()
-        loginWithSosmedUseCase.execute(LoginWithSosmedUseCase.getParamGoogle(accessToken),
-                LoginThirdPartySubscriber(view.context, view.loginRouter,
-                        email, view, LoginRegisterAnalytics.GOOGLE))
+        loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
+                accessToken, LoginTokenUseCase.SOCIAL_TYPE_GOOGLE),
+                LoginTokenSubscriber(userSession,
+                        view.onSuccessLoginGoogle(email),
+                        view.onErrorLoginGoogle(email)))
     }
 
 
@@ -200,8 +199,15 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         }
     }
 
-
-    override fun login(email: String, password: String) {
+    /**
+     * Login Email :
+     * Step 1 : Login Token
+     * Step 2 : If Success, proceed to step 3. If need SQ, go to SQ
+     * Step 2.1 : After SQ, take validation_token and login_token again
+     * Step 3 : Get profile data
+     * Step 4 : Proceed to home
+     */
+    override fun loginEmail(email: String, password: String) {
         view.resetError()
         if (isValid(email, password)) {
             view.showLoadingLogin()
@@ -213,6 +219,13 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         } else {
             viewEmailPhone.stopTrace()
         }
+    }
+
+    override fun reloginAfterSQ(validateToken: String) {
+        loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
+                userSession, validateToken), LoginTokenSubscriber(userSession,
+                view.onSuccessReloginAfterSQ(),
+                view.onErrorReloginAfterSQ(validateToken)))
     }
 
     private fun isValid(email: String, password: String): Boolean {
@@ -241,6 +254,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         getProfileUseCase.execute(object : Subscriber<GraphqlResponse>() {
             override fun onNext(response: GraphqlResponse) {
                 val pojo: ProfilePojo = response.getData<ProfilePojo>(ProfilePojo::class.java)
+                //TODO Validate Data
                 setUserData(pojo)
                 view.onSuccessGetUserInfo(pojo)
             }
@@ -269,7 +283,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                 pojo.profileInfo.isPhoneVerified,
                 "",
                 pojo.profileInfo.email,
-               false,
+                false,
                 pojo.profileInfo.phone)
         userSession.shopAvatar = ""
     }
@@ -277,7 +291,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     override fun detachView() {
         super.detachView()
         discoverUseCase.unsubscribe()
-        loginWithSosmedUseCase.unsubscribe()
         registerValidationUseCase.unsubscribe()
         loginWebviewUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()

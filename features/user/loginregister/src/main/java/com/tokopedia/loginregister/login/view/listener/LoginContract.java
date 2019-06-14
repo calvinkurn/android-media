@@ -89,11 +89,29 @@ public interface LoginContract {
         void onSuccessGetUserInfo(ProfilePojo pojo);
 
         void onErrorGetUserInfo(@Nullable Throwable e);
+
+        @NotNull
+        Function1<LoginTokenPojo, Unit> onSuccessReloginAfterSQ();
+
+        @NotNull
+        Function1<Throwable, Unit> onErrorReloginAfterSQ(String validateToken);
+
+        @NotNull
+        Function1<LoginTokenPojo, Unit> onSuccessLoginFacebook(@NotNull String email);
+
+        @NotNull
+        Function1<Throwable, Unit> onErrorLoginFacebook(@NotNull String email);
+
+        @NotNull
+        Function1<LoginTokenPojo, Unit> onSuccessLoginGoogle(@Nullable String email);
+
+        @NotNull
+        Function1<Throwable, Unit> onErrorLoginGoogle(@Nullable String email);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void login(String email, String password);
+        void loginEmail(String email, String password);
 
         void saveLoginEmail(String email);
 

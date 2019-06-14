@@ -22,7 +22,7 @@ import rx.functions.Func1;
 /**
  * @author by nisie on 10/11/17.
  */
-
+@Deprecated
 public class LoginWithSosmedUseCase extends UseCase<LoginEmailDomain> {
 
     protected final GetTokenUseCase getTokenUseCase;

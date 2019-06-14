@@ -25,5 +25,7 @@ interface LoginEmailPhoneContract : LoginContract {
         fun checkLoginEmailPhone(emailPhone: String)
 
         fun loginFacebook(context: Context, accessToken: AccessToken, email: String)
+
+        fun reloginAfterSQ(validateToken: String)
     }
 }

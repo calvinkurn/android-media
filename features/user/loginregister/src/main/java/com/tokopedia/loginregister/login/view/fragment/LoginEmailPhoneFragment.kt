@@ -281,7 +281,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     partialRegisterInputView.showLoginEmailView(email)
                     emailPhoneEditText.setText(email)
                     passwordEditText.setText(pw)
-                    presenter.login(email, pw)
+                    presenter.loginEmail(email, pw)
                     activity?.let {
                         analytics.eventClickLoginButton(it.applicationContext)
                     }
@@ -339,7 +339,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         passwordEditText.setOnEditorActionListener { textView, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_DONE) {
                 actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL
-                presenter.login(emailPhoneEditText.text.toString().trim(),
+                presenter.loginEmail(emailPhoneEditText.text.toString().trim(),
                         passwordEditText.text.toString())
                 activity?.let {
                     analytics.eventClickLoginButton(it.applicationContext)
@@ -723,7 +723,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
-            presenter.login(email, passwordEditText.text.toString())
+            presenter.loginEmail(email, passwordEditText.text.toString())
             activity?.let {
                 analytics.eventClickLoginButton(it.applicationContext)
                 KeyboardHandler.hideSoftKeyboard(it)
@@ -823,7 +823,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             if (it.loginToken.sqCheck) {
                 loginRouter.onGoToSecurityQuestion(email, "")
             } else {
-               presenter.getUserInfo()
+                presenter.getUserInfo()
             }
         }
 
@@ -863,25 +863,84 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun onSuccessGetUserInfo(pojo: ProfilePojo) {
-        dismissLoadingLogin()
-        analytics.eventSuccessLoginEmail()
-        analytics.trackClickOnLoginButtonSuccess()
-        TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-                userSession.userId,
-                userSession.name,
-                userSession.email,
-                userSession.phoneNumber,
-                userSession.isGoldMerchant,
-                userSession.shopName,
-                userSession.shopId,
-                userSession.hasShop(),
-                LoginRegisterAnalytics.LABEL_EMAIL
-        )
-        onSuccessLogin()
+        //TODO check analytics
+
+        val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
+
+        if (pojo.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
+            goToAddName()
+        } else {
+            dismissLoadingLogin()
+            analytics.eventSuccessLoginEmail()
+            analytics.trackClickOnLoginButtonSuccess()
+            TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
+                    userSession.userId,
+                    userSession.name,
+                    userSession.email,
+                    userSession.phoneNumber,
+                    userSession.isGoldMerchant,
+                    userSession.shopName,
+                    userSession.shopId,
+                    userSession.hasShop(),
+                    LoginRegisterAnalytics.LABEL_EMAIL
+            )
+            onSuccessLogin()
+        }
+
     }
 
     override fun onErrorGetUserInfo(e: Throwable?) {
         onErrorLogin(ErrorHandlerSession.getErrorMessage(e, context, true))
+    }
+
+    override fun onSuccessReloginAfterSQ(): (LoginTokenPojo) -> Unit {
+        return {
+            presenter.getUserInfo()
+        }
+    }
+
+    override fun onErrorReloginAfterSQ(validateToken: String): (Throwable) -> Unit {
+        return {
+            dismissLoadingLogin()
+            NetworkErrorHelper.createSnackbarWithAction(activity,
+                    ErrorHandlerSession.getErrorMessage(it, context, true)) {
+                presenter.reloginAfterSQ(validateToken)
+            }
+        }
+    }
+
+    override fun onSuccessLoginFacebook(email: String): (LoginTokenPojo) -> Unit {
+        return {
+            if (it.loginToken.sqCheck) {
+                loginRouter.onGoToSecurityQuestion(email, "")
+            } else {
+                presenter.getUserInfo()
+            }
+        }
+    }
+
+    override fun onErrorLoginFacebook(email: String): (Throwable) -> Unit {
+        return {
+            analytics.trackEventFailedLoginSosmed(LoginRegisterAnalytics.FACEBOOK)
+            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+        }
+    }
+
+    override fun onSuccessLoginGoogle(email: String?): (LoginTokenPojo) -> Unit {
+        return {
+            if (it.loginToken.sqCheck) {
+                loginRouter.onGoToSecurityQuestion(email, "")
+            } else {
+                presenter.getUserInfo()
+            }
+        }
+    }
+
+    override fun onErrorLoginGoogle(email: String?): (Throwable) -> Unit {
+        return {
+            analytics.trackEventFailedLoginSosmed(LoginRegisterAnalytics.GOOGLE)
+            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+        }
     }
 
     protected fun isEmailNotActive(e: Throwable, email: String): Boolean {
@@ -914,7 +973,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     && data.extras!!.getString(SmartLockActivity.PASSWORD) != null) run {
                 emailPhoneEditText.setText(data.extras!!.getString(SmartLockActivity.USERNAME))
                 emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
-                presenter.login(data.extras!!.getString(SmartLockActivity.USERNAME),
+                presenter.loginEmail(data.extras!!.getString(SmartLockActivity.USERNAME),
                         data.extras!!.getString(SmartLockActivity.PASSWORD))
                 activity?.let {
                     analytics.eventClickLoginButton(it.applicationContext)
@@ -922,8 +981,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 handleGoogleSignInResult(task)
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-                onSuccessLogin()
+            } else if (requestCode == REQUEST_SECURITY_QUESTION
+                    && resultCode == Activity.RESULT_OK
+                    && data != null
+                    && data.extras != null
+                    && data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID) != null) {
+                val validateToken = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                presenter.reloginAfterSQ(validateToken)
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
@@ -980,9 +1044,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun handleGoogleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            val accessToken = account!!.idToken
-            val email = account.email
-            presenter.loginGoogle(accessToken, email)
+            if(account!= null && account.idToken != null) {
+                val accessToken: String = account.idToken!!
+                val email = account.email
+                presenter.loginGoogle(accessToken, email)
+            }else{
+                onErrorLoginSosmed(LoginRegisterAnalytics.GOOGLE,
+                       ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, context))
+            }
         } catch (e: ApiException) {
             onErrorLoginSosmed(LoginRegisterAnalytics.GOOGLE,
                     String.format(getString(R.string.loginregister_failed_login_google),
