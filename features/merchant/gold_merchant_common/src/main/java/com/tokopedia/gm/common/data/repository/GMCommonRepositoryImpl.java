@@ -3,6 +3,7 @@ package com.tokopedia.gm.common.data.repository;
 import com.tokopedia.gm.common.data.source.GMCommonDataSource;
 import com.tokopedia.gm.common.data.source.cloud.model.GMGetCashbackModel;
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
+import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreMainDomainModel;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 
 import java.util.List;
@@ -33,6 +34,11 @@ public class GMCommonRepositoryImpl implements GMCommonRepository {
     @Override
     public Observable<List<GMGetCashbackModel>> getCashbackList(List<String> productIdList, String shopId) {
         return gmCommonDataSource.getCashbackList(productIdList, shopId);
+    }
+
+    @Override
+    public Observable<ShopScoreMainDomainModel> getShopScoreSummary() {
+        return null;
     }
 
 }

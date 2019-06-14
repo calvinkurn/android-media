@@ -12,7 +12,7 @@ import javax.inject.Inject
  * @author by milhamj on 12/06/19.
  */
 class GetShopStatusUseCase @Inject constructor(
-        private val getShopStatusCloudSource: GetShopStatusCloudSource): UseCase<ShopStatusModel>() {
+        private val getShopStatusCloudSource: GetShopStatusCloudSource) : UseCase<ShopStatusModel>() {
     override fun createObservable(requestParams: RequestParams?): Observable<ShopStatusModel> {
         return getShopStatusCloudSource.getShopStatus(
                 requestParams?.getString(GMParamApiContant.SHOP_ID, "0")

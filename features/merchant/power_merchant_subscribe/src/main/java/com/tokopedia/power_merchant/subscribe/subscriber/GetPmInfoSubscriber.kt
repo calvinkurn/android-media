@@ -7,12 +7,14 @@ import rx.Subscriber
 class GetPmInfoSubscriber(private val view: PmSubscribeContract.View) : Subscriber<ShopStatusModel>() {
 
 
-    override fun onNext(data: ShopStatusModel?) {
+    override fun onNext(data: ShopStatusModel) {
+//        view.onSuccessGetPmInfo(data)
     }
 
     override fun onCompleted() {
     }
 
-    override fun onError(e: Throwable?) {
+    override fun onError(e: Throwable) {
+        view.onErrorGetPmInfo(e)
     }
 }

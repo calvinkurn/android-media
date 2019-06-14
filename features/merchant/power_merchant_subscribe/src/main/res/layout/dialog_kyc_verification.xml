@@ -57,7 +57,7 @@
 
 
         <Button
-            android:id="@+id/btn_submit"
+            android:id="@+id/btn_submit_kyc"
             style="@style/Button.Submit.Green.Full"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
             android:text="@string/pm_label_kyc_button_submit" />
 
         <Button
-            android:id="@+id/btn_close"
+            android:id="@+id/btn_close_kyc"
             style="@style/Button.Submit.White.Border.Full"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
