@@ -105,4 +105,7 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"
 
+    //Report Product
+    @JvmField
+    val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product/{id}/report"
 }

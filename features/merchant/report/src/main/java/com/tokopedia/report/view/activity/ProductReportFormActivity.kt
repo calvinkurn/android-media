@@ -19,17 +19,20 @@ class ProductReportFormActivity : BaseSimpleActivity(), HasComponent<MerchantRep
     companion object{
         const val REASON_OBJECT = "reason"
         const val REASON_CACHE_ID = "reason_cache_id"
-        fun createIntent(context: Context, reason: ProductReportReason)=
+        const val PRODUCT_ID = "product_id"
+        fun createIntent(context: Context, reason: ProductReportReason, productId: String)=
                 Intent(context, ProductReportFormActivity::class.java).apply {
                     val cacheManager = SaveInstanceCacheManager(context, true).also {
                         it.put(REASON_OBJECT, reason)
                     }
                     putExtra(REASON_CACHE_ID, cacheManager.id)
+                    putExtra(PRODUCT_ID, productId)
                 }
     }
 
     override fun getNewFragment(): Fragment {
         val cacheId = intent.getStringExtra(REASON_CACHE_ID)
-        return ProductReportSubmitFragment.createInstance(cacheId)
+        val productId = intent.getStringExtra(PRODUCT_ID)
+        return ProductReportSubmitFragment.createInstance(cacheId, productId)
     }
 }

@@ -200,6 +200,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_NORMAL_CHECKOUT = 566
         const val REQUEST_CODE_ATC_EXPRESS = 567
         const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
+        const val REQUEST_CODE_REPORT = 570
         const val REQUEST_CODE_SHOP_INFO = 998
 
         const val SAVED_NOTE = "saved_note"
@@ -1655,9 +1656,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun reportProduct() {
         productInfo?.run {
             if (productInfoViewModel.isUserSessionActive()) {
-                fragmentManager?.let {
-                    val fragment = ReportDialogFragment.newInstance(basic.id.toString())
-                    fragment.show(it, ReportDialogFragment.TAG)
+                context?.let {
+                    val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.REPORT_PRODUCT,
+                            productInfo!!.basic.id.toString())
+                    startActivityForResult(intent, REQUEST_CODE_REPORT)
                 }
 
                 productDetailTracking.eventReportLogin()

@@ -30,6 +30,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     private var photoTypeSelected: String? = null
     override fun getScreenName(): String? = null
     private var dialogSubmit: Dialog? = null
+    private var productId: String = "0"
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -44,6 +45,9 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         activity?.let {
             val vmProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = vmProvider.get(ProductReportSubmitViewModel::class.java)
+        }
+        arguments?.let {
+            productId = it.getString(ProductReportFormActivity.PRODUCT_ID, "0")
         }
     }
 
@@ -71,7 +75,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                     setOnCancelClickListener { dismiss() }
                     setOnOkClickListener {
                         dismiss()
-                        viewModel.submitReport(-1, reasonItem.categoryId, adapter.inputs)
+                        viewModel.submitReport(productId.toIntOrNull() ?: 0, reasonItem.categoryId, adapter.inputs)
                         adapter.inputs
                     }
                 }
@@ -151,9 +155,10 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         private const val REQUEST_CODE_IMAGE = 0x01
         private const val REQUEST_CODE_DETAIL_INPUT = 0x02
 
-        fun createInstance(cacheId: String) = ProductReportSubmitFragment().apply {
+        fun createInstance(cacheId: String, productId: String) = ProductReportSubmitFragment().apply {
             arguments = Bundle().also {
                 it.putString(ProductReportFormActivity.REASON_CACHE_ID, cacheId)
+                it.putString(ProductReportFormActivity.PRODUCT_ID, productId)
             }
         }
     }

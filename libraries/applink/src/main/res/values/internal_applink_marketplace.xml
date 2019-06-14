@@ -27,6 +27,7 @@
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
     <string name="path_product_review_gallery" translatable="false">/product/.*\\/review/gallery</string>
+    <string name="path_product_report" translatable="false">/product/.*\\/report</string>
     <string name="path_store_setting" translatable="false">/store-setting</string>
     <string name="path_qr_scanner" translatable="false">/qr-scanner</string>
     <string name="path_shop_open" translatable="false">/shop-open</string>
@@ -39,5 +40,4 @@
     <string name="path_shop_setting_shipping" translatable="false">/shop/setting/shipping</string>
 
     <string name="path_district_recommendation_shop_settings" translatable="false">/district-recommendation-shop-settings</string>
-
 </resources>

@@ -27,6 +27,7 @@ import com.tokopedia.report.view.activity.ProductReportFormActivity
 class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReasonClick {
 
     private lateinit var smoothScroller: RecyclerView.SmoothScroller
+    private var productId = "-1"
 
     override fun scrollToTop() {
         //smoothScroller.targetPosition = 0
@@ -34,7 +35,7 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
 
     override fun gotoForm(reason: ProductReportReason) {
         activity?.let {
-            startActivityForResult(ProductReportFormActivity.createIntent(it, reason), 100)
+            startActivityForResult(ProductReportFormActivity.createIntent(it, reason, productId), 100)
         }
     }
 
@@ -57,6 +58,9 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
         activity?.let {
             val vmProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = vmProvider.get(ProductReportViewModel::class.java)
+        }
+        arguments?.let {
+            productId = it.getString(ARG_PRODUCT_ID, "-1")
         }
     }
 
@@ -96,5 +100,15 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
 
     fun onBackPressed() {
         adapter.back()
+    }
+
+    companion object{
+        private const val ARG_PRODUCT_ID = "arg_product_id"
+
+        fun createInstance(productId: String) = ProductReportFragment().apply {
+            arguments = Bundle().also {
+                it.putString(ARG_PRODUCT_ID, productId)
+            }
+        }
     }
 }
