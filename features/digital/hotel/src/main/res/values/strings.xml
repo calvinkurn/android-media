@@ -85,7 +85,9 @@
     <string name="hotel_room_list_include_tax">Termasuk pajak</string>
     <string name="hotel_room_list_choose_room_button">Pilih Kamar</string>
     <string name="hotel_room_list_pay_in_hotel">Bayar di Hotel</string>
+    <string name="hotel_room_list_room_description">%1$s m² • %2$s</string>
     <string name="hotel_room_list_without_credit_card">Tanpa Jaminan Kartu Kredit</string>
+
 
     <string name="hotel_detail_more_image_counter">+%1$d</string>
     <string name="hotel_detail_check_from_to">%1$s - %2$s</string>

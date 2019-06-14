@@ -32,7 +32,9 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
                 setImageViewPager(roomListModel.images)
                 room_name_text_view.text = roomListModel.roomName
                 max_occupancy_text_view.text = roomListModel.occupancyText
-                bed_info_text_view.text = "${Html.fromHtml(roomListModel.roomSize)} • ${roomListModel.bedInfo}"
+                bed_info_text_view.text = context.getString(R.string.hotel_room_list_room_description,
+                        roomListModel.roomSize,
+                        roomListModel.bedInfo)
                 room_price_text_view.text = roomListModel.price
                 pay_hotel_layout.visibility = if (roomListModel.payInHotel) View.VISIBLE else View.GONE
                 room_left_text_view.visibility = if (roomListModel.roomLeft <= 2) View.VISIBLE else View.GONE
