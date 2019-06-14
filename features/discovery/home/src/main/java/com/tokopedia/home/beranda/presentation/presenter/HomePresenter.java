@@ -512,7 +512,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     private Observable<GraphqlResponse> getKeywordSearchObservable(){
-        if (getHomeTokopointsDataUseCaseLazy != null) {
+        if (getKeywordSearchUseCaseLazy != null) {
             GetKeywordSearchUseCase getKeywordSearchUseCase = getKeywordSearchUseCaseLazy.get();
             getKeywordSearchUseCase.clearRequest();
             getKeywordSearchUseCase.addRequest(getKeywordSearchUseCase.getRequest());

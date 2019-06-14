@@ -394,6 +394,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
 
                 if (presenter != null) {
+                    presenter.getSearhHint();
                     presenter.getHomeData();
                     presenter.getHeaderData(true);
                 }
@@ -687,6 +688,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         resetFeedState();
         removeNetworkError();
         if (presenter != null) {
+            presenter.getSearhHint();
             presenter.getHomeData();
             presenter.getHeaderData(false);
         }
