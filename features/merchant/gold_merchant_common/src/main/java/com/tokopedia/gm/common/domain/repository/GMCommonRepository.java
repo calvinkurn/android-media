@@ -20,6 +20,6 @@ public interface GMCommonRepository {
 
     Observable<List<GMGetCashbackModel>> getCashbackList(List<String> productIdList, String shopId);
 
-    Observable<ShopScoreMainDomainModel> getShopScoreSummary();
+//    Observable<ShopScoreMainDomainModel> getShopScoreSummary();
 
 }

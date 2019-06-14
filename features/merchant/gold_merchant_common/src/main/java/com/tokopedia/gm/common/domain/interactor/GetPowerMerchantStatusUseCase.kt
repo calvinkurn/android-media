@@ -15,16 +15,14 @@ import rx.Observable
 import javax.inject.Inject
 
 class GetPowerMerchantStatusUseCase @Inject constructor(private val getShopStatusUseCase: GetShopStatusUseCase,
-                                                        private val getApprovalStatusUseCase: GetApprovalStatusUseCase,
-                                                        private val getShopScoreUseCase: GetShopScoreUseCase)
+                                                        private val getApprovalStatusUseCase: GetApprovalStatusUseCase)
     : UseCase<PowerMerchantStatus>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<PowerMerchantStatus> {
         return Observable.zip(
                 getShopStatus(requestParams),
-                getKycStatus(),
-                getShopScore()) { t1, t2, t3 ->
-            PowerMerchantStatus(t1, t2, t3)
+                getKycStatus()) { t1, t2 ->
+            PowerMerchantStatus(t1, t2)
         }
     }
 
@@ -36,9 +34,9 @@ class GetPowerMerchantStatusUseCase @Inject constructor(private val getShopStatu
         return getApprovalStatusUseCase.execute(GetApprovalStatusUseCase.getRequestParam())
     }
 
-    private fun getShopScore(): Observable<ShopScoreMainDomainModel> {
-        return getShopScoreUseCase.createObservable(RequestParams.create())
-    }
+//    private fun getShopScore(): Observable<ShopScoreMainDomainModel> {
+//        return getShopScoreUseCase.createObservable(RequestParams.create())
+//    }
 
     companion object {
         fun createRequestParams(shopId: String): RequestParams {

@@ -19,6 +19,7 @@ public class GetShopScoreUseCase extends UseCase<ShopScoreMainDomainModel> {
 
     @Override
     public Observable<ShopScoreMainDomainModel> createObservable(RequestParams requestParams) {
-        return shopScoreRepository.getShopScoreSummary();
+        return null;
+//        return Observable<String>
     }
 }
