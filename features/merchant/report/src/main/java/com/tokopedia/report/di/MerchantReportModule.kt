@@ -25,7 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @MerchantReportScope
-@Module(includes = [ViewModelModule::class, ImageUploaderModule::class])
+@Module(includes = [ImageUploaderModule::class, ViewModelModule::class])
 class MerchantReportModule {
 
     @MerchantReportScope
@@ -61,7 +61,7 @@ class MerchantReportModule {
     fun getDummyStringJson(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.dummy)
 
-    /*@Provides
+    @Provides
     fun provideUploadImageUseCase(
             @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
             @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
@@ -77,5 +77,5 @@ class MerchantReportModule {
                                    graphqlUseCase: GraphqlUseCase,
                                    @Named("product_report_submit") mutationQuery: String,
                                    uploadImageUseCase: UploadImageUseCase<ImageAttachment.Data>) =
-            SubmitReportUseCase(userSession, mutationQuery, graphqlUseCase, uploadImageUseCase)*/
+            SubmitReportUseCase(userSession, mutationQuery, graphqlUseCase, uploadImageUseCase)
 }

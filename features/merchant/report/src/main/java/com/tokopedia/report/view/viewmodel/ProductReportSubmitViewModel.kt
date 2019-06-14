@@ -7,11 +7,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import javax.inject.Inject
 
-class ProductReportSubmitViewModel @Inject constructor(/*private val useCase: SubmitReportUseCase,*/
+class ProductReportSubmitViewModel @Inject constructor(private val useCase: SubmitReportUseCase,
                                                        dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
 
     fun submitReport(productId: Int, categoryId: Int, input: Map<String, Any>){
-        /*useCase.execute(SubmitReportUseCase.createRequestParamn(categoryId, productId, input), object : Subscriber<Boolean>() {
+        useCase.execute(SubmitReportUseCase.createRequestParamn(categoryId, productId, input), object : Subscriber<Boolean>() {
             override fun onNext(t: Boolean) {
                 Log.e("SUCCESS RESULT", t.toString())
             }
@@ -22,11 +22,11 @@ class ProductReportSubmitViewModel @Inject constructor(/*private val useCase: Su
                 e?.printStackTrace()
             }
 
-        })*/
+        })
     }
 
     override fun onCleared() {
         super.onCleared()
-        //useCase.unsubscribe()
+        useCase.unsubscribe()
     }
 }
