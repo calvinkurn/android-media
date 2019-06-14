@@ -36,9 +36,5 @@ public class GMCommonRepositoryImpl implements GMCommonRepository {
         return gmCommonDataSource.getCashbackList(productIdList, shopId);
     }
 
-    @Override
-    public Observable<ShopScoreMainDomainModel> getShopScoreSummary() {
-        return null;
-    }
 
 }

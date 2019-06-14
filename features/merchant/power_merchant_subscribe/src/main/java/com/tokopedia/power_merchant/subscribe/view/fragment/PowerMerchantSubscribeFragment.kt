@@ -76,36 +76,38 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializePartialPart(view)
+        setupYellowTicker()
         button_activate_root.setOnClickListener {
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 0) {
-                setupDialog().show()
+                setupDialog()?.show()
             } else {
 
             }
         }
-    }
-
-    private fun setupDialog(): Dialog {
-        val dialog = Dialog(context!!)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setContentView(R.layout.dialog_kyc_verification)
-
-        dialog.btn_submit_kyc.setOnClickListener {
-            //                RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
-//                activity.finish()
-        }
-        dialog.btn_close_kyc.setOnClickListener {
-            dialog.hide()
-        }
-        return dialog
-
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         presenter.getPmStatusInfo(userSessionInterface.shopId)
+    }
+
+    private fun setupYellowTicker() {
+
+    }
+
+    private fun setupDialog(): Dialog? {
+        context?.let {
+            val dialog = Dialog(it)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(false)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.setContentView(R.layout.dialog_kyc_verification)
+            dialog.btn_submit_kyc.setOnClickListener {
+                //                RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
+//                activity.finish()
+            }
+            dialog.btn_close_kyc.setOnClickListener {
+                dialog.hide()
+            }
+            return dialog
+        }
+        return null
 
     }
 

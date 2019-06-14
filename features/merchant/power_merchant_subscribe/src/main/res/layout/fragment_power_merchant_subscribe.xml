@@ -70,7 +70,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:visibility="visible"
-                android:layout_marginBottom="@dimen/dp_24">
+                android:layout_marginBottom="@dimen/dp_12">
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/ticker_yellow_cancellation"
@@ -115,8 +115,7 @@
                 layout="@layout/partial_member_power_merchant"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:layout_below="@id/ticker_yellow_container"
-                android:layout_marginBottom="@dimen/dp_24"/>
+                android:layout_below="@id/ticker_yellow_container"/>
 
             <include
                 android:id="@+id/base_partial_benefit"
@@ -162,7 +161,6 @@
 
                 </android.support.v7.widget.CardView>
             </FrameLayout>
-
 
             <include
                 android:id="@+id/base_partial_tnc"
