@@ -24,10 +24,6 @@ class PowerMerchantSubscribeActivity : BaseSimpleActivity() {
         return PowerMerchantSubscribeFragment.createInstance()
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
-
     object DeepLinkIntents {
         @DeepLink(ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
         @JvmStatic
