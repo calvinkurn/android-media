@@ -19,6 +19,7 @@ data class ShopStatusModel(
         const val STATUS_INACTIVE = "inactive"
         const val STATUS_IDLE = "idle"
         const val STATUS_OFF = "off"
+        const val STATUS_ON = "on"
     }
 
     fun isPowerMerchantActive(): Boolean {

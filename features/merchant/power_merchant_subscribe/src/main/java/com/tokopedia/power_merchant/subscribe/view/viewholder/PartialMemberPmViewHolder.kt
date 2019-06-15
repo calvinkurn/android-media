@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.View
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.partial_member_power_merchant.view.*
 
@@ -14,11 +15,12 @@ class PartialMemberPmViewHolder private constructor(private val view: View,
         fun build(_view: View, _activity: Activity?) = PartialMemberPmViewHolder(_view, _activity)
     }
 
-    fun renderPartialMember(shopStatusModel: ShopStatusModel) {
+    fun renderPartialMember(shopStatusModel: ShopStatusModel, isAutoExtend: Boolean) {
         if (shopStatusModel.powerMerchant.status == "activate" || shopStatusModel.powerMerchant.status == "inactive") {
+            showCancellationButton(isAutoExtend)
+            view.show()
+        } else if (shopStatusModel.isPowerMerchantInactive()){
             view.hide()
-        } else {
-            view.visible()
         }
     }
 

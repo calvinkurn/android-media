@@ -10,26 +10,11 @@ class PmSubscribePresenter @Inject constructor(
         private val getPowerMerchantStatusUseCase: GetPowerMerchantStatusUseCase)
     : BaseDaggerPresenter<PmSubscribeContract.View>(), PmSubscribeContract.Presenter {
 
-    override fun getPmInfo(shopId: String) {
-//        getShopStatusUseCase.execute(GetShopStatusUseCase.createRequestParams(shopId)
-//                ,GetPmInfoSubscriber(view))
-    }
-
     override fun getPmStatusInfo(shopId: String){
         getPowerMerchantStatusUseCase.execute(GetPowerMerchantStatusUseCase.createRequestParams(shopId),GetPmStatusInfoSubscriber(view))
     }
 
-
     override fun detachView() {
-
+        getPowerMerchantStatusUseCase.unsubscribe()
     }
-
-    override fun getScoreInfo() {
-
-    }
-
-    override fun activatePowerMerchant() {
-
-    }
-
 }

@@ -44,7 +44,6 @@ class GmCommonModule {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java))
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(accountsAuthorizationInterceptor)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor)

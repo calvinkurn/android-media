@@ -32,12 +32,13 @@
     <string name="pm_label_success_desc">Saatnya mengakses Wawasan Pasar, pasang Voucher Toko dan fitur-fitur spesial Power Merchant!</string>
     <string name="pm_label_success_button">Cek Sekarang</string>
 
-    <string name="pm_label_transition_period_header_1">Nantikan Power Merchant </string>
-    <string name="pm_label_transition_period_header_2">dengan sistem baru </string>
-    <string name="pm_label_transition_period_desc_1">Saatnya meningkatkan penjualan dengan fitur</string>
-    <string name="pm_label_transition_period_desc_2">fitur spesial Power Merchant!</string>
+    <string name="pm_label_transition_period_header_1">Verifikasi tokomu untuk </string>
+    <string name="pm_label_transition_period_header_2">jadi Power Merchant dengan sistem baru</string>
+    <string name="pm_label_transition_period_desc_1">Sisa biaya langganan Power Merchant sebelumnya akan dikembalikan ke Saldo Tokopedia paling lambat 1 minggu. Lakukan verifikasi sebelum tanggal 10 Juli 2019. </string>
+    <string name="pm_label_transition_period_button">Lanjut Konfirmasi</string>
 
-    <string name="activity_label">Power Merchant</string>
+    <string name="expired_label">Layanan Power Merchant telah dihentikan. Fitur akan nonaktif pada %1$s, pukul 04.00 WIB.</string>
+    <string name="pm_title_activity">Power Merchant</string>
 
     <string name="pm_label_bottom_sheet_cancel_header">Yakin batalkan keanggotaan Power Merchant?</string>
     <string name="pm_label_bottom_sheet_cancel_button">Batalkan Keanggotaan</string>
