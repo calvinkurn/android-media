@@ -346,6 +346,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                         dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PROMO_VIEW,
                                 String.format("%s - %s", DealsAnalytics.EVENT_IMPRESSION_CURATED_DEALS, String.valueOf(this.homePosition)), categoryItems.get(holder1.getIndex()), holder1.getIndex());
                     }
+                } else if (dealType.equalsIgnoreCase(DealsAnalytics.CATEGORY_DEALS)) {
+                    dealsAnalytics.sendCategoryDealsImpressionEvent(DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_ACTION_CATEGORY_DEALS_IMPRESSION, categoryItems.get(holder1.getIndex()), holder1.getIndex());
                 } else {
                     dealsAnalytics.sendProductBrandDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_IMPRESSION_PRODUCT_BRAND, categoryItems.get(holder1.getIndex()), holder1.getIndex());
                 }
@@ -369,7 +371,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 holder1.setShown(true);
                 categoryItems.get(holder1.getAdapterPosition()).setTrack(true);
                 dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
-                        categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex(), searchText);
+                        categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex(), searchText, isFromSearchResult);
             }
         }
     }
@@ -647,12 +649,14 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
                 toActivityRequest.onNavigateToActivityRequest(detailsIntent, DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY, getIndex());
-                if (isDealsHomeLayout) {
-                    dealsAnalytics.sendDealClickEvent(categoryItems.get(getIndex()), position, DealsAnalytics.EVENT_CLICK_PRODUCT_BRAND);
-                } else if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)){
+                if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)){
                     dealsAnalytics.sendTrendingDealClickEvent(categoryItems.get(getIndex()), DealsAnalytics.EVENT_CLICK_TRENDING_DEALS, position);
-                } else {
+                } else if (dealType.equalsIgnoreCase(DealsAnalytics.CURATED_DEALS)){
                     dealsAnalytics.sendTrendingDealClickEvent(categoryItems.get(getIndex()), DealsAnalytics.EVENT_CLICK_CURATED_DEALS, position);
+                } else if (dealType.equalsIgnoreCase(DealsAnalytics.CATEGORY_DEALS)) {
+                    dealsAnalytics.sendCategoryDealClickEvent(categoryItems.get(getIndex()), position, DealsAnalytics.EVENT_CLICK_CATEGORY_DEALS);
+                } else {
+                    dealsAnalytics.sendDealClickEvent(categoryItems.get(getIndex()), position, DealsAnalytics.EVENT_CLICK_PRODUCT_BRAND);
                 }
 
             }

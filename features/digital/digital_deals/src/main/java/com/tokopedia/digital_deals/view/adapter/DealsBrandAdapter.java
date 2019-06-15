@@ -60,7 +60,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 } else if (isBrandNative) {
                     dealsAnalytics.sendEcommerceBrand(brandItems.get(holder1.getIndex()).getId(),
-                            holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_CLICK, DealsAnalytics.ACTION_CLICK_BRAND, DealsAnalytics.DEALS_HOME_PAGE);
+                            holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_CLICK, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_ALL, DealsAnalytics.DEALS_HOME_PAGE);
                 } else {
                     dealsAnalytics.sendEcommerceBrand(brandItems.get(holder1.getIndex()).getId(),
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_CATEGORY, DealsAnalytics.DEALS_HOME_PAGE);
