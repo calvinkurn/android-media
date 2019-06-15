@@ -99,7 +99,7 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
         resultOkAndFinish()
     }
 
-    override fun onError(throwable: Throwable) {
+    override fun onError(throwable: Throwable?) {
         view?.showErrorToaster(ErrorHandler.getErrorMessage(context, throwable))
     }
 

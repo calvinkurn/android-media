@@ -12,7 +12,7 @@ interface PmTermsContract {
         fun hideLoading()
         fun onSuccessActivate()
         fun onSuccessAutoExtend()
-        fun onError(throwable: Throwable)
+        fun onError(throwable: Throwable?)
     }
 
     interface Presenter : CustomerPresenter<View> {
