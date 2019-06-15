@@ -21,8 +21,16 @@ public class RoundGradientProgressBar extends RoundCornerProgressBar {
 
     protected GradientDrawable createGradientDrawable(int color) {
         GradientDrawable gradientDrawable;
-        setDefaultProgressColor(progressColors);
-        gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, progressColors);
+        if (progressColors == null) {
+            progressColors = new int[]{ContextCompat.getColor(getContext(), R.color.lightish_green),
+                    ContextCompat.getColor(getContext(), R.color.tkpd_main_green)};
+        }
+        if (color == progressColors[0]) {
+            gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, progressColors);
+        } else {
+            gradientDrawable = new GradientDrawable();
+            gradientDrawable.setColor(color);
+        }
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
         return gradientDrawable;
     }
@@ -38,5 +46,6 @@ public class RoundGradientProgressBar extends RoundCornerProgressBar {
         } else {
             progressColors = colorProgress;
         }
+        setProgressColor(progressColors);
     }
 }
