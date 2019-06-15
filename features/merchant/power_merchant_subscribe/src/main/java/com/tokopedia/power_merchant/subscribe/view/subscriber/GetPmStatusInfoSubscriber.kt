@@ -14,6 +14,6 @@ class GetPmStatusInfoSubscriber(private val view: PmSubscribeContract.View) : Su
     }
 
     override fun onError(e: Throwable) {
-        view.onErrorGetPmInfo(e)
+        view.showEmptyState(e)
     }
 }

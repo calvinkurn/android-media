@@ -36,8 +36,10 @@ import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmVie
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHolder
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo
+import kotlinx.android.synthetic.main.bottom_sheet_pm_cancel.*
 import kotlinx.android.synthetic.main.dialog_kyc_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
+import kotlinx.android.synthetic.main.partial_member_power_merchant.*
 
 
 import javax.inject.Inject
@@ -104,10 +106,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 setupDialogKyc()?.show()
             }
         }
+
+        member_cancellation_button.setOnClickListener {
+            presenter.setAutoExtendOff(false)
+        }
+
         presenter.getPmStatusInfo(userSessionInterface.shopId)
     }
 
-    private fun refreshData() {
+    override fun refreshData() {
         root_view_pm.showLoading()
         presenter.getPmStatusInfo(userSessionInterface.shopId)
     }
@@ -244,9 +251,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     override fun onErrorGetPmInfo(throwable: Throwable) {
-        showError(ErrorHandler.getErrorMessage(context, throwable))
-        root_view_pm.showEmptyState(ErrorHandler.getErrorMessage(context, throwable), ::refreshData)
+    }
 
+    override fun showEmptyState(throwable: Throwable){
+        root_view_pm.showEmptyState(ErrorHandler.getErrorMessage(context, throwable), ::refreshData)
+        root_view_pm.hideLoading()
     }
 
     private fun showError(message: String, listener: View.OnClickListener?) {
