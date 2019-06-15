@@ -27,7 +27,7 @@ class GmCommonModule {
     @GmCommonQualifier
     @Provides
     fun provideScoreInterceptor(@ApplicationContext context: Context,
-                                userSession: UserSessionInterface): PowerMerchantSubscribeInterceptor {
+                                @GmCommonQualifier userSession: UserSessionInterface): PowerMerchantSubscribeInterceptor {
         return PowerMerchantSubscribeInterceptor(context,userSession)
     }
 
