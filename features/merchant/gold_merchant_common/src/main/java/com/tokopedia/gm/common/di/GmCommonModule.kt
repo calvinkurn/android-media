@@ -4,12 +4,14 @@ import android.content.Context
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
-import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.gm.common.constant.GMCommonUrl
+import com.tokopedia.gm.common.data.interceptor.PowerMerchantSubscribeInterceptor
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -24,8 +26,8 @@ class GmCommonModule {
 
     @GmCommonQualifier
     @Provides
-    fun provideAccountsAuthorizationInterceptor(@ApplicationContext context: Context): AccountsAuthorizationInterceptor {
-        return AccountsAuthorizationInterceptor(context)
+    fun provideScoreInterceptor(@ApplicationContext context: Context,userSession: UserSessionInterface = UserSession(context)): PowerMerchantSubscribeInterceptor {
+        return PowerMerchantSubscribeInterceptor(context,userSession)
     }
 
     @GmCommonQualifier
@@ -39,11 +41,12 @@ class GmCommonModule {
     fun provideOkHttpClient(@GmCommonQualifier chuckInterceptor: ChuckInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             tkpdAuthInterceptor: TkpdAuthInterceptor,
-                            @GmCommonQualifier accountsAuthorizationInterceptor: AccountsAuthorizationInterceptor): OkHttpClient {
+                            @GmCommonQualifier powerMerchantSubscribeInterceptor: PowerMerchantSubscribeInterceptor): OkHttpClient {
 
         val builder = OkHttpClient.Builder()
                 .addInterceptor(HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java))
                 .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(powerMerchantSubscribeInterceptor)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor)
@@ -63,4 +66,5 @@ class GmCommonModule {
     fun provideGMCommonApi(@GmCommonQualifier retrofit: Retrofit): GMCommonApi {
         return retrofit.create(GMCommonApi::class.java)
     }
+
 }
