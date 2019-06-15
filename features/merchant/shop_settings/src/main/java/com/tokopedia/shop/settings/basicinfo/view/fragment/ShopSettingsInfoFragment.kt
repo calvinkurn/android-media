@@ -311,7 +311,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun setUIMembership(shopStatusModel: ShopStatusModel) {
         if (shopStatusModel.isRegularMerchant()) {
-            showRegularMerchantMembership()
+            showRegularMerchantMembership(shopStatusModel)
         } else if (shopStatusModel.isOfficialStore()) {
             showOfficialStore()
         } else {
@@ -319,7 +319,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         }
     }
 
-    private fun showRegularMerchantMembership() {
+    private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel) {
         tvManageGmSubscribe.visibility = View.GONE
         button_activate.visibility = View.VISIBLE
         button_activate.setOnClickListener {
@@ -331,10 +331,14 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tv_shop_membership_title.text = getString(R.string.label_regular_merchant)
         tv_shop_status.visibility = View.GONE
         ticker_container.visibility = View.GONE
-        tv_ticker_info.visibility = View.VISIBLE
-        setTextViewLearnMore(tv_ticker_info,getString(R.string.regular_merchant_learn_more),getString(R.string.learn_more)) {
-            //TODO go to score calculation for Power Merchant
-            Toast.makeText(context,"TODO go to regular merchant learn more", Toast.LENGTH_LONG).show()
+        if (shopStatusModel.isTransitionPeriod()) {
+            tv_ticker_info.visibility = View.GONE
+        } else {
+            tv_ticker_info.visibility = View.VISIBLE
+            setTextViewLearnMore(tv_ticker_info,getString(R.string.regular_merchant_learn_more),getString(R.string.learn_more)) {
+                //TODO go to score calculation for Power Merchant
+                Toast.makeText(context,"TODO go to regular merchant learn more", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

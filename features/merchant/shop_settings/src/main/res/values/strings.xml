@@ -124,6 +124,6 @@
     <string name="active_label">Aktif</string>
     <string name="inactive_label">Tidak Aktif</string>
     <string name="regular_merchant_learn_more">Akses Wawasan Pasar dan gunakan fitur-fitur spesial Power Merchant. Pelajari Selengkapnya</string>
-    <string name="power_merchant_learn_more">Keanggotan Power Merchant aktif jika skor performa toko minimum 65 poin. Pelajari selengkapnya</string>
+    <string name="power_merchant_learn_more">Keanggotan Power Merchant aktif jika skor performa toko minimum 65 poin. Pelajari Selengkapnya</string>
     <string name="learn_more">Pelajari Selengkapnya</string>
 </resources>
