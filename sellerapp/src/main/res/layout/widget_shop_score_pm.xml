@@ -16,14 +16,12 @@
         android:textColor="@color/font_black_secondary_54"
         android:textSize="14sp"
         android:textStyle="bold" />
-    <com.tokopedia.sellerapp.dashboard.view.widget.RoundGradientProgressBar
+    <View
         android:layout_width="match_parent"
         android:layout_height="7dp"
-        app:rcBackgroundColor="@color/grey_300"
-        app:rcMax="100"
-        app:rcRadius="20dp"
         android:layout_marginTop="19dp"
-        android:layout_below="@+id/tv_score_title"/>
+        android:layout_below="@+id/tv_score_title"
+        android:background="@drawable/rect_gray_rounded"/>
 
     <com.tokopedia.sellerapp.dashboard.view.widget.RoundGradientProgressBar
         android:id="@+id/progress_value"

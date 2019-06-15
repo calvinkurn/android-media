@@ -57,6 +57,7 @@ import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.sellerapp.dashboard.view.widget.ShopScorePMWidget;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycWidgetUtil;
@@ -92,6 +93,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private TextView gmStatusTextView;
 
     private ShopScoreWidget shopScoreWidget;
+    private ShopScorePMWidget shopScorePMWidget;
 
     private TextView reputationPointTextView;
     private ShopReputationView shopReputationView;
@@ -151,7 +153,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         messageLabelView = (LabelView) view.findViewById(R.id.label_view_message);
         discussionLabelView = (LabelView) view.findViewById(R.id.label_view_discussion);
         reviewLabelView = (LabelView) view.findViewById(R.id.label_view_review);
-        shopScoreWidget = (ShopScoreWidget) view.findViewById(R.id.shop_score_widget);
+        shopScoreWidget = view.findViewById(R.id.shop_score_widget);
+        shopScorePMWidget = view.findViewById(R.id.shop_score_widget_pm);
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -312,7 +315,11 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         updateReputation(shopModel);
         updateTransaction(shopModel);
         updateViewShopOpen(shopModel);
+        // TODO #GM below to be removed
         shopScoreWidget.renderView(shopScoreViewModel);
+        // TODO #GM
+        shopScorePMWidget.setProgress(shopScoreViewModel.getData().getValue());
+
         swipeRefreshLayout.setRefreshing(false);
         hideSnackBarRetry();
 

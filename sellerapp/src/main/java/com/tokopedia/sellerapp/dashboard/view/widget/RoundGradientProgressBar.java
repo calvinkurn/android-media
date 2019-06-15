@@ -10,6 +10,7 @@ import com.tokopedia.seller.R;
 
 public class RoundGradientProgressBar extends RoundCornerProgressBar {
     private GradientDrawable gradientDrawable;
+    private int[] progressColors;
 
     public RoundGradientProgressBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -21,11 +22,23 @@ public class RoundGradientProgressBar extends RoundCornerProgressBar {
 
     protected GradientDrawable createGradientDrawable(int color) {
         if (gradientDrawable == null) {
-            int[] colors = {ContextCompat.getColor(getContext(), R.color.lightish_green),
-                    ContextCompat.getColor(getContext(), R.color.tkpd_main_green)};
-            gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,colors);
+            setDefaultProgressColor(progressColors);
+            gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, progressColors);
             gradientDrawable.setShape(GradientDrawable.RECTANGLE);
         }
         return gradientDrawable;
+    }
+
+    public void setProgressColor(int[] colorProgress) {
+        super.setProgressColor(colorProgress[0]);
+    }
+
+    private void setDefaultProgressColor(int[] colorProgress){
+        if (progressColors == null) {
+            progressColors = new int[]{ContextCompat.getColor(getContext(), R.color.lightish_green),
+                    ContextCompat.getColor(getContext(), R.color.tkpd_main_green)};
+        } else {
+            progressColors = colorProgress;
+        }
     }
 }

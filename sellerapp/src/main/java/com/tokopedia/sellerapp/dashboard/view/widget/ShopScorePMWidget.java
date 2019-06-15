@@ -5,8 +5,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
-import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.sellerapp.R;
 
 /**
@@ -16,6 +17,11 @@ import com.tokopedia.sellerapp.R;
  *
  */
 public class ShopScorePMWidget extends FrameLayout {
+
+    public static final int MAX_PROGRESS = 100;
+    private RoundGradientProgressBar roundCornerProgressBar;
+    private TextView tvProgressValue;
+
     public ShopScorePMWidget(Context context) {
         super(context);
         initView(context, null);
@@ -39,8 +45,20 @@ public class ShopScorePMWidget extends FrameLayout {
 
     private void initView(Context context, AttributeSet attrs) {
         View view = inflate(context, R.layout.widget_shop_score_pm, this);
-        RoundCornerProgressBar roundCornerProgressBar = view.findViewById(R.id.progress_value);
-        roundCornerProgressBar.setProgress(75);
-        roundCornerProgressBar.setProgressColor(R.color.green_500);
+        roundCornerProgressBar = view.findViewById(R.id.progress_value);
+        tvProgressValue = view.findViewById(R.id.tv_progress_value);
     }
+
+    public void setProgress(float progress) {
+        roundCornerProgressBar.setProgress(progress);
+        tvProgressValue.setText(MethodChecker.fromHtml(
+                String.format(getContext().getString(R.string.score_of_total_score)
+                , progress, MAX_PROGRESS)));
+    }
+
+    public void setProgressColor(int[] progressColors) {
+        roundCornerProgressBar.setProgressColor(progressColors);
+    }
+
+
 }
