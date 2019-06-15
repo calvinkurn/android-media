@@ -9,7 +9,7 @@ import com.tokopedia.usecase.UseCase
 import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo
 import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase
 import rx.Observable
-
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class GetPowerMerchantStatusUseCase @Inject constructor(private val getShopStatusUseCase: GetShopStatusUseCase,
@@ -27,11 +27,11 @@ class GetPowerMerchantStatusUseCase @Inject constructor(private val getShopStatu
     }
 
     private fun getShopStatus(requestParams: RequestParams): Observable<ShopStatusModel> {
-        return getShopStatusUseCase.createObservable(requestParams)
+        return getShopStatusUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
     }
 
     private fun getShopScore(requestParams: RequestParams): Observable<ShopScoreResult> {
-        return getShopScoreUseCase.createObservable(requestParams)
+        return getShopScoreUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
     }
 
     private fun getKycStatus(): Observable<GetApprovalStatusPojo> {

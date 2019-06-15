@@ -15,22 +15,23 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
-import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showEmptyState
+import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
 import com.tokopedia.power_merchant.subscribe.ACTION_AUTO_EXTEND
-
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.activity.TransitionPeriodPmActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantSuccessBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialBenefitPmViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHolder
@@ -42,7 +43,7 @@ import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 
 import javax.inject.Inject
 
-class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract.View {
+class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract.View, PowerMerchantCancelBottomSheet.PmSuccessBottomSheetListener {
 
     @Inject
     lateinit var presenter: PmSubscribeContract.Presenter
@@ -71,7 +72,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     companion object {
         fun createInstance() = PowerMerchantSubscribeFragment()
         const val ACTIVATE_INTENT_CODE = 123
-
+        const val AUTOEXTEND_INTENT_CODE = 321
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -91,23 +92,35 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 if (shopScore < 65) {
                     setupDialogScore()?.show()
                 } else {
-                    if (shopStatusModel.isPowerMerchantActive()) {
-                        //intent with flag activated
-                        val intent = context?.let { it1 -> PowerMerchantTermsActivity.createIntent(it1,ACTION_ACTIVATE) }
-                        startActivityForResult(intent,ACTIVATE_INTENT_CODE)
-                    } else if (shopStatusModel.isPowerMerchantInactive()) {
+                    if (shopStatusModel.isPowerMerchantInactive()) {
+                        val intent = context?.let { it1 -> PowerMerchantTermsActivity.createIntent(it1, ACTION_ACTIVATE) }
+                        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
+                    } else if (shopStatusModel.isPowerMerchantActive()) {
                         val intent = context?.let { it1 -> PowerMerchantTermsActivity.createIntent(it1, ACTION_AUTO_EXTEND) }
-                        startActivityForResult(intent,ACTIVATE_INTENT_CODE)
+                        startActivityForResult(intent, AUTOEXTEND_INTENT_CODE)
                     }
                 }
             } else {
                 setupDialogKyc()?.show()
             }
         }
+
         presenter.getPmStatusInfo(userSessionInterface.shopId)
     }
 
-    private fun refreshData() {
+    private val onViewClickListener = View.OnClickListener {
+        when (it.id) {
+            R.id.member_cancellation_button -> showBottomSheetCancel()
+            else -> {
+            }
+        }
+    }
+
+    override fun setPresenterAutoExtend() {
+        presenter.setAutoExtendOff(false)
+    }
+
+    override fun refreshData() {
         root_view_pm.showLoading()
         presenter.getPmStatusInfo(userSessionInterface.shopId)
     }
@@ -121,8 +134,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             dialog.setContentView(R.layout.dialog_kyc_verification)
 
             dialog.btn_submit_kyc.setOnClickListener {
-                //                RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
-//                activity.finish()
+                RouteManager.route(context, ApplinkConst.KYC_SELLER_DASHBOARD)
+                activity?.finish()
             }
             dialog.btn_close_kyc.setOnClickListener {
                 dialog.hide()
@@ -161,19 +174,23 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     fun showBottomSheetCancel() {
         val bottomSheet = PowerMerchantCancelBottomSheet()
+        bottomSheet.setCancelButtonPm {
+            setPresenterAutoExtend()
+        }
         bottomSheet.show(childFragmentManager, "power_merchant_cancel")
     }
 
     override fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
         shopStatusModel = powerMerchantStatus.shopStatusModel
         getApprovalStatusPojo = powerMerchantStatus.getApprovalStatusPojo
-        shopScore = powerMerchantStatus.shopScore.data?.data?.first()?.value ?: 0
+        shopScore = powerMerchantStatus.shopScore.data?.data?.value ?: 0
         minScore = powerMerchantStatus.shopScore.data?.badgeScore ?: 0
         if (shopStatusModel.isTransitionPeriod()) {
             renderViewTransitionPeriod()
         } else {
             renderViewNonTransitionPeriod()
         }
+        partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
         root_view_pm.hideLoading()
     }
 
@@ -190,13 +207,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             } else {
                 showExpiredDate()
             }
-            partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
         } else if (shopStatusModel.isPowerMerchantInactive()) {
             if (isAutoExtend()) {
                 hideButtonActivatedPm()
             }
         }
-        partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
 
     }
 
@@ -218,8 +233,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         } else {
             //if inactive do nothing
         }
-        partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
-
     }
 
 
@@ -240,13 +253,17 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ACTIVATE_INTENT_CODE) {
             refreshData()
+        } else if (requestCode == AUTOEXTEND_INTENT_CODE){
+            refreshData()
         }
     }
 
     override fun onErrorGetPmInfo(throwable: Throwable) {
-        showError(ErrorHandler.getErrorMessage(context, throwable))
-        root_view_pm.showEmptyState(ErrorHandler.getErrorMessage(context, throwable), ::refreshData)
+    }
 
+    override fun showEmptyState(throwable: Throwable) {
+        root_view_pm.showEmptyState(ErrorHandler.getErrorMessage(context, throwable), ::refreshData)
+        root_view_pm.hideLoading()
     }
 
     private fun showError(message: String, listener: View.OnClickListener?) {
@@ -274,7 +291,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     private fun initializePartialPart(view: View?) {
         if (!::partialMemberPmViewHolder.isInitialized) {
-            partialMemberPmViewHolder = PartialMemberPmViewHolder.build(base_partial_member, activity)
+            partialMemberPmViewHolder = PartialMemberPmViewHolder.build(base_partial_member, onViewClickListener)
         }
         if (!::partialTncViewHolder.isInitialized) {
             partialTncViewHolder = PartialTncViewHolder.build(base_partial_tnc, activity)

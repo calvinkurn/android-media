@@ -20,8 +20,6 @@ class PowerMerchantSuccessBottomSheet: BottomSheets() {
         buttonSubmit = view.findViewById(R.id.button_checknow)
         buttonSubmit.setOnClickListener {
         }
-
-
     }
 
 }
