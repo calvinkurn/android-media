@@ -10,6 +10,9 @@ class PmSubscribePresenter @Inject constructor(
         private val getPowerMerchantStatusUseCase: GetPowerMerchantStatusUseCase)
     : BaseDaggerPresenter<PmSubscribeContract.View>(), PmSubscribeContract.Presenter {
 
+    override fun setAutoExtendOff() {
+    }
+
     override fun getPmStatusInfo(shopId: String){
         getPowerMerchantStatusUseCase.execute(GetPowerMerchantStatusUseCase.createRequestParams(shopId),GetPmStatusInfoSubscriber(view))
     }

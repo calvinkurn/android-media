@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.fragment
 
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -20,10 +21,13 @@ import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showEmptyState
+import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
+import com.tokopedia.power_merchant.subscribe.ACTION_AUTO_EXTEND
 
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.activity.TransitionPeriodPmActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantSuccessBottomSheet
@@ -52,7 +56,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     var shopScore: Int = 0
     var minScore: Int = 0
 
-
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -67,6 +70,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     companion object {
         fun createInstance() = PowerMerchantSubscribeFragment()
+        const val ACTIVATE_INTENT_CODE = 123
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -87,9 +92,12 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                     setupDialogScore()?.show()
                 } else {
                     if (shopStatusModel.isPowerMerchantActive()) {
-                        //intent with flag
+                        //intent with flag activated
+                        val intent = context?.let { it1 -> PowerMerchantTermsActivity.createIntent(it1,ACTION_ACTIVATE) }
+                        startActivityForResult(intent,ACTIVATE_INTENT_CODE)
                     } else if (shopStatusModel.isPowerMerchantInactive()) {
-
+                        val intent = context?.let { it1 -> PowerMerchantTermsActivity.createIntent(it1, ACTION_AUTO_EXTEND) }
+                        startActivityForResult(intent,ACTIVATE_INTENT_CODE)
                     }
                 }
             } else {
@@ -100,8 +108,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     private fun refreshData() {
+        root_view_pm.showLoading()
         presenter.getPmStatusInfo(userSessionInterface.shopId)
-
     }
 
     private fun setupDialogKyc(): Dialog? {
@@ -160,7 +168,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         shopStatusModel = powerMerchantStatus.shopStatusModel
         getApprovalStatusPojo = powerMerchantStatus.getApprovalStatusPojo
         shopScore = powerMerchantStatus.shopScore.data?.data?.first()?.value ?: 0
-        minScore = powerMerchantStatus.shopScore.data.badgeScore ?: 0
+        minScore = powerMerchantStatus.shopScore.data?.badgeScore ?: 0
         if (shopStatusModel.isTransitionPeriod()) {
             renderViewTransitionPeriod()
         } else {
@@ -228,15 +236,12 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         return shopStatusModel.isAutoExtend()
     }
 
-    private fun isPmPending(): Boolean {
-//        if(status == pending){
-//            return true
-//        }else {
-//            return false
-//        }
-        return false
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ACTIVATE_INTENT_CODE) {
+            refreshData()
+        }
     }
-
 
     override fun onErrorGetPmInfo(throwable: Throwable) {
         showError(ErrorHandler.getErrorMessage(context, throwable))
