@@ -333,13 +333,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         } else {
             tv_ticker_info.visibility = View.VISIBLE
             setTextViewLearnMore(tv_ticker_info,getString(R.string.regular_merchant_learn_more),getString(R.string.learn_more)) {
-                //TODO go to score calculation for Power Merchant
+                //TODO #PM go to score calculation for Power Merchant
                 Toast.makeText(context,"TODO go to regular merchant learn more", Toast.LENGTH_LONG).show()
             }
 
             button_activate.visibility = View.VISIBLE
             button_activate.setOnClickListener {
-                //TODO go to activate power merchant activity
+                //TODO #PM go to activate power merchant activity
                 Toast.makeText(context,"TODO go to PM", Toast.LENGTH_LONG).show()
             }
         }
@@ -349,7 +349,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tvManageGmSubscribe.visibility = View.VISIBLE
         button_activate.visibility = View.GONE
         vgMembershipContainer.setOnClickListener {
-            //TODO go to activate power merchant activity
+            //TODO #PM go to activate power merchant activity
             Toast.makeText(context,"TODO go to PM", Toast.LENGTH_LONG).show()
         }
         iv_power_merchant_logo.visibility = View.VISIBLE
@@ -367,7 +367,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             ticker_container.visibility = View.VISIBLE
             tv_ticker.setText(R.string.power_merchant_learn_more)
             setTextViewLearnMore(tv_ticker,getString(R.string.power_merchant_learn_more),getString(R.string.learn_more)) {
-                //TODO go to score calculation for Power Merchant
+                //TODO #PM go to score calculation for Power Merchant
                 Toast.makeText(context,"TODO go to Score", Toast.LENGTH_LONG).show()
             }
         }

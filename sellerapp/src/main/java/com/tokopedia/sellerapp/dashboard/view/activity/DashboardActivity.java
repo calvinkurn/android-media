@@ -42,7 +42,6 @@ public class DashboardActivity extends DrawerPresenterActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GraphqlClient.init(this);
         GetShopInfoUseCase getShopInfoUseCase = null;
         if (getApplicationContext() instanceof SellerModuleRouter) {
             SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) getApplicationContext();

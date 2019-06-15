@@ -329,7 +329,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     eventClickGoldMerchantViaDrawer();
                     Toast.makeText(context, "TODO GO TO PM Page", Toast.LENGTH_LONG).show();
-                    //TODO go to power merchant page
+                    //TODO #PM go to power merchant page
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
                     intent = SellerRouter.getActivitySellingTransactionNewOrder(context);
@@ -515,7 +515,7 @@ public class DrawerSellerHelper extends DrawerHelper
                         context.startActivity(gmIntent);
                     }*/
                     Toast.makeText(context, "TODO GO TO PM Page", Toast.LENGTH_LONG).show();
-                    //TODO go to power merchant page
+                    //TODO #PM go to power merchant page
                 }
             }
         });

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/tv_score_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#f531353b"
+        android:lineSpacingExtra="4sp"
+        android:text="@string/this_week_statistics"/>
+    <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        app:rcBackgroundColor="@color/grey_300"
+        app:rcMax="100"
+        app:rcRadius="20dp"
+        android:layout_marginTop="19dp"
+        android:layout_below="@+id/tv_score_title"/>
+
+    <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+        android:id="@+id/progress_value"
+        android:layout_width="match_parent"
+        android:layout_height="13dp"
+        app:rcBackgroundColor="@color/transparent"
+        app:rcMax="100"
+        app:rcRadius="20dp"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_below="@+id/tv_score_title"/>
+
+    <TextView
+        android:id="@+id/tv_shop_performance_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#f531353b"
+        android:lineSpacingExtra="6sp"
+        android:text="@string/shop_performance"
+        android:layout_below="@id/progress_value"
+        android:layout_marginTop="@dimen/dp_4"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#f531353b"
+        android:lineSpacingExtra="6sp"
+        android:gravity="end"
+        tools:text="85/100"
+        android:layout_below="@id/progress_value"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>

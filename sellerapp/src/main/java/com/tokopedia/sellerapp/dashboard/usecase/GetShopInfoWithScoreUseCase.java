@@ -16,9 +16,9 @@ import rx.Observable;
 import rx.functions.Func2;
 
 /**
- * Created by User on 9/12/2017.
+ * use GetPowerMerchantStatusUseCase instead
  */
-
+@Deprecated
 public class GetShopInfoWithScoreUseCase extends UseCase<ShopModelWithScore> {
 
     private final GetShopInfoUseCase getShopInfoUseCase;
