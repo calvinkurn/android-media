@@ -2,22 +2,16 @@ package com.tokopedia.shop.settings.basicinfo.view.presenter
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.cacheapi.util.CacheApiLoggingUtils
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
-import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.shop.settings.basicinfo.domain.GetShopBasicDataAndStatusUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import rx.Observable
 
 import javax.inject.Inject
 
 import rx.Subscriber
-import rx.functions.Func2
 
 class ShopSettingsInfoPresenter @Inject
 constructor(private val getShopBasicDataAndStatusUseCase: GetShopBasicDataAndStatusUseCase,

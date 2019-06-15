@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.basicinfo.view.presenter
+package com.tokopedia.shop.settings.basicinfo.domain
 
 import com.tokopedia.gm.common.constant.GMParamApiContant
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
