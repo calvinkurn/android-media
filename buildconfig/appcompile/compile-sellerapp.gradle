@@ -1,4 +1,7 @@
 // Sort alphabetically by name
+include "features:category:tradein_common"
+include "features:category:tradein"
+
 include "features:common:nps"
 include "features:common:resources_common"
 
@@ -19,8 +22,10 @@ include "features:discovery:category_common"
 include "features:discovery:flashsale_management"
 //include "features:discovery:flashsale_management_no_op"
 include 'features:discovery:flashsale_management_common'
-include "features:discovery:wishlist_common"
+include 'features:discovery:productcard'
+include 'features:discovery:recommendation_widget_common'
 include "features:discovery:topadssdk"
+include "features:discovery:wishlist_common"
 
 include "features:fintech:mitra_toppers"
 include "features:fintech:saldo_details"
@@ -30,6 +35,7 @@ include "features:im:common_promo"
 include "features:im:referral"
 
 include "features:logistic:district_recommendation"
+include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticanalytics"
 include "features:logistic:logisticgeolocation"
@@ -122,6 +128,7 @@ include "features:user:updateinactivephone"
 include "features:user:user_identification"
 //include "features:user:user_identification_no_op"
 include "features:user:user_identification_common"
+include "features:user:vote"
 
 include "dynamic-features:merchant:shop_settings_sellerapp"
 

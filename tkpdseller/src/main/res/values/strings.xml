@@ -230,4 +230,9 @@
     <string name="product_label_message_error_upload_image">Gagal mengunggah gambar, silahkan coba lagi.</string>
     <string name="tooltip_fulfillment_title">Tak Perlu Repot Lagi</string>
     <string name="tooltip_fulfillment_desc">Semua pesanan berlabel Dilayani TokoCabang, akan diurus oleh admin TokoCabang</string>
+
+
+    <string name="dynamic_feature_title_install">Instalasi tambahan</string>
+    <string name="dynamic_feature_description_install">Bagian ini membutuhkan instalasi tambahan. Apakah anda ingin melakukan instalasi sekarang ?</string>
+    <string name="dynamic_feature_button_install">Install</string>
 </resources>

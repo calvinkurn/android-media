@@ -42,5 +42,5 @@ android {
 }
 
 dependencies {
-    implementation (name: 'core-1.3.7', ext:'aar')
+    implementation rootProject.ext.playServicesDependencies.core
 }

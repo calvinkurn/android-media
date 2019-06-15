@@ -37,6 +37,7 @@ ext {
     playServiceBaseVersion = '16.0.1'
     playServiceFirebaseIidVersion = '17.0.4'
 
+    playCoreVersion = '1.6.1'
     playServiceGms = '16.0.0'
     playServiceBase = '16.1.0'
     playServiceAppIndexing = '17.1.0'
@@ -112,6 +113,7 @@ ext {
     ]
 
     playServicesDependencies = [
+            core             : "com.google.android.play:core:${playCoreVersion}",
             plus             : "com.google.android.gms:play-services-plus:${playServiceGms}",
             base             : "com.google.android.gms:play-services-base:${playServiceBase}",
             analytics        : "com.google.android.gms:play-services-analytics:${playServiceAnalytics}",
