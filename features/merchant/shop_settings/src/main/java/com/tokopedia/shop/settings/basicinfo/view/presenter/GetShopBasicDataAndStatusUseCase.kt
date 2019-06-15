@@ -19,7 +19,7 @@ constructor(private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
         return Observable.zip(
             getShopBasicDataUseCase.createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io()),
-            getShopStatusUseCase.createObservable(RequestParams.EMPTY)
+            getShopStatusUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())){ t1: ShopBasicDataModel?, t2: ShopStatusModel? ->
             t1 to t2
         }
