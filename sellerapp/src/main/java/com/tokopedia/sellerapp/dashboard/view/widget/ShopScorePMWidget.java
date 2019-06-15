@@ -52,8 +52,7 @@ public class ShopScorePMWidget extends FrameLayout {
     public void setProgress(float progress) {
         roundCornerProgressBar.setProgress(progress);
         tvProgressValue.setText(MethodChecker.fromHtml(
-                String.format(getContext().getString(R.string.score_of_total_score)
-                , progress, MAX_PROGRESS)));
+                String.format(getContext().getString(R.string.score_of_total_score), (int)progress, MAX_PROGRESS)));
     }
 
     public void setProgressColor(int[] progressColors) {
