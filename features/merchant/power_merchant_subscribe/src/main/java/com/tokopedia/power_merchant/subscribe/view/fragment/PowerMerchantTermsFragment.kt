@@ -1,9 +1,9 @@
 package com.tokopedia.power_merchant.subscribe.view.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.View
-import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.kotlin.extensions.view.hideLoading
@@ -92,11 +92,11 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
     }
 
     override fun onSuccessActivate() {
-        Toast.makeText(context, "succces activate", Toast.LENGTH_LONG).show()
+        resultOkAndFinish()
     }
 
     override fun onSuccessAutoExtend() {
-        Toast.makeText(context, "succces activate", Toast.LENGTH_LONG).show()
+        resultOkAndFinish()
     }
 
     override fun onError(throwable: Throwable) {
@@ -131,5 +131,10 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
 
     private fun setAction(action: String) {
         this.action = action
+    }
+
+    private fun resultOkAndFinish() {
+        activity?.setResult(Activity.RESULT_OK)
+        activity?.finish()
     }
 }
