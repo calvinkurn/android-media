@@ -35,6 +35,7 @@ import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl;
 import com.tokopedia.gm.common.data.source.GMCommonDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
+import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeModule;
 import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
@@ -74,7 +75,7 @@ import retrofit2.Retrofit;
  */
 
 @SellerDashboardScope
-@Module(includes = {SellerDashboardGMCommonModule.class})
+@Module(includes = {SellerDashboardGMCommonModule.class, PowerMerchantSubscribeModule.class})
 public class SellerDashboardModule {
     @SellerDashboardScope
     @Provides
