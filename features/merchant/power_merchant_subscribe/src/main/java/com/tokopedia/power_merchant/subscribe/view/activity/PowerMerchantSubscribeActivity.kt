@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment
 
 class PowerMerchantSubscribeActivity : BaseSimpleActivity() {

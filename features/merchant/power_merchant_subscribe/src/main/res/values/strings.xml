@@ -44,8 +44,6 @@
     <string name="pm_label_bottom_sheet_cancel_button">Batalkan Keanggotaan</string>
     <string name="pm_label_bottom_sheet_cancel_desc">Dengan membatalkan, kamu tidak dapat mengakses fitur-fitur Power Merchant berikut:</string>
 
-
-
     <string name="pm_label_button_activate">Aktivasi Power Merchant</string>
     <string name="pm_label_member_cancel">Batalkan keanggotaan kapan saja</string>
     <string name="pm_label_member_cancel_learnmore">Status keanggotaan aktif jika skor performa toko minimum 65 poin. Pelajari Selengkapnya</string>
@@ -61,4 +59,6 @@
     <string name="pm_label_info">Sekilas info tentang kenapa sih PM ini berubah, apa yang lebih baik, apa yang ditawarkan, etc…</string>
     <string name="pm_upgrade_shop">Upgrade Tokomu</string>
     <string name="pm_terms_agree">Dengan ini, saya menyetujui syarat dan ketentuan Power Merchant Tokopedia.</string>
+
+    <string name="pm_title_tnc">Syarat dan Ketentuan</string>
 </resources>
