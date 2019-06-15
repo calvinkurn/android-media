@@ -30,6 +30,12 @@ class GmCommonModule {
         return ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools())
     }
 
+    @Provides
+    fun providePowerMerchantSubscribeInterceptor(@ApplicationContext context: Context,
+                                                 @GmCommonQualifier userSessionInterface: UserSessionInterface): PowerMerchantSubscribeInterceptor {
+        return PowerMerchantSubscribeInterceptor(context, userSessionInterface)
+    }
+
     @GmCommonQualifier
     @Provides
     fun provideOkHttpClient(@GmCommonQualifier chuckInterceptor: ChuckInterceptor,
