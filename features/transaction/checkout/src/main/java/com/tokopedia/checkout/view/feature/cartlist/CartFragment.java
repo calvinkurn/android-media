@@ -803,7 +803,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, Object shipmentData, int position, int requestCode) {
+    public void onCheckoutValidationResult(boolean result, Object shipmentData, int position, int requestCode) {
 
     }
 
@@ -1048,7 +1048,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                         rlContent.setVisibility(View.VISIBLE);
                         refreshHandler.setRefreshing(true);
                         cartAdapter.resetData();
-                        dPresenter.processInitialGetCartData(dPresenter.getCartListData() == null);
+                        dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null);
                     });
         }
     }
@@ -1088,7 +1088,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private void showSnackbarRetry(String message) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, ()
-                -> dPresenter.processInitialGetCartData(dPresenter.getCartListData() == null))
+                -> dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null))
                 .showRetrySnackbar();
     }
 
@@ -1254,14 +1254,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             refreshHandler.setRefreshing(true);
             if (dPresenter.getCartListData() == null) {
                 if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {
-                    dPresenter.processInitialGetCartData(true);
+                    dPresenter.processInitialGetCartData(getCartId(), true);
                 }
             } else {
                 if (dPresenter.dataHasChanged()) {
                     dPresenter.processToUpdateAndReloadCartData();
                 } else {
                     if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {
-                        dPresenter.processInitialGetCartData(false);
+                        dPresenter.processInitialGetCartData(getCartId(), false);
                     } else {
                         CartListData cartListData = getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA);
                         dPresenter.setCartListData(cartListData);
@@ -1499,7 +1499,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             if (dPresenter.getCartListData() != null && dPresenter.getCartListData().getShopGroupDataList().size() > 0) {
                 showMainContainer();
             }
-            dPresenter.processInitialGetCartData(dPresenter.getCartListData() == null);
+            dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null);
             String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
             if (!TextUtils.isEmpty(promo)) {
                 dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
@@ -1529,7 +1529,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             showToastMessageGreen(getString(R.string.message_payment_success));
             checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
             refreshHandler.setRefreshing(true);
-            dPresenter.processInitialGetCartData(false);
+            dPresenter.processInitialGetCartData(getCartId(), false);
         } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
             showToastMessage(getString(R.string.default_request_error_unknown));
             sendAnalyticsScreenName(getScreenName());
@@ -1537,7 +1537,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             sendAnalyticsScreenName(getScreenName());
         } else if (resultCode == ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED) {
             refreshHandler.setRefreshing(true);
-            dPresenter.processInitialGetCartData(false);
+            dPresenter.processInitialGetCartData(getCartId(), false);
         }
     }
 
@@ -1938,5 +1938,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onSubmitNewPromoAfterClash(@NotNull ArrayList<String> oldPromoList, @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList, @NotNull String type) {
         dPresenter.processCancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList, type);
+    }
+
+    // get newly added cart id if open cart after ATC on PDP
+    @Override
+    public String getCartId() {
+        if (getArguments() != null && !TextUtils.isEmpty(getArguments().getString(CartActivity.EXTRA_CART_ID))) {
+            return getArguments().getString(CartActivity.EXTRA_CART_ID);
+        }
+        return "0";
     }
 }

@@ -91,16 +91,14 @@
             android:visibility="gone"
             tools:visibility="visible"/>
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.product.detail.view.widget.SelectionTextView
             android:id="@+id/txt_product_descr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/label_product_desc"
             android:layout_marginTop="@dimen/dp_16"
             android:autoLink="all"
-            android:longClickable="false"
             android:transitionName="@string/transition_description"
-            android:textIsSelectable="false"
+            android:textIsSelectable="true"
             android:lineSpacingExtra="@dimen/sp_6"
             tools:text="Pilihan tepat untuk dekorasi rumah minimalis modern Anda, atau untuk mengimbangi interior unik pilihan Anda. Tersedia dalam 4 pilihan warna, hitam, putih, biru, dan jingga. .."
             app:fontSize="small"

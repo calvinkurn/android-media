@@ -126,37 +126,26 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventPromoImpression(Context context,
-                                            List<Promotion> promotions) {
-        if (promotions == null || promotions.size() == 0) {
-            return;
-        }
+    public static Map<String,Object> convertToPromoImpression(List<Promotion> promotions) {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < promotions.size(); i++) {
             Promotion promotion = promotions.get(i);
             list.add(promotion.getImpressionDataLayerItem());
         }
-        if (list.size() == 0) {
-            return;
-        }
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
-            Map<String, Object> map = DataLayer.mapOf(
-                    "event", "promoView",
-                    "eventCategory", "homepage",
-                    "eventAction", "slider banner impression",
-                    "eventLabel", "",
-                    "ecommerce", DataLayer.mapOf(
-                            "promoView", DataLayer.mapOf(
-                                    "promotions", DataLayer.listOf(
-                                            list.toArray()
-                                    )
-                            )
-                    ),
-                    "attribution", "1 - sliderBanner"
-            );
-            tracker.sendEnhanceEcommerceEvent(map);
-        }
+        return DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "homepage",
+                "eventAction", "slider banner impression",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        list.toArray()
+                                )
+                        )
+                ),
+                "attribution", "1 - sliderBanner"
+        );
     }
 
     public static void eventPromoClick(Context context, Promotion promotion) {
@@ -194,18 +183,6 @@ public class HomePageTracking {
                     ACTION_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     ACTION_CLICK_JUMP_RECOMENDATION,
-                    LABEL_EMPTY
-            );
-        }
-    }
-
-    public static void eventImpressionJumpRecomendation(Context context) {
-        ContextAnalytics tracker = getTracker(context);
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_IMPRESSION_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_IMPRESSION_JUMP_RECOMENDATION,
                     LABEL_EMPTY
             );
         }

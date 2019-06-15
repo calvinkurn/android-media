@@ -58,6 +58,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     private ProgressDialog progressDialog;
     public String finalCameraResultFilePath;
+    protected ImageView cameraOverlayImage;
 
     @Override
     protected void initInjector() {

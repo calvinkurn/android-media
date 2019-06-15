@@ -39,6 +39,7 @@ import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registeremail.di.DaggerRegisterEmailComponent;
@@ -96,6 +97,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Inject
     LoginRegisterAnalytics analytics;
+
+    @Inject
+    RegisterAnalytics registerAnalytics;
 
     @Named(SessionModule.SESSION_MODULE)
     @Inject
@@ -158,6 +162,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        registerAnalytics.trackSuccessClickEmailSignUpButton();
     }
 
 
@@ -707,5 +712,10 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     public int getIsAutoVerify() {
         return isEmailAddressFromDevice() ? 1 : 0;
+    }
+
+    @Override
+    public void onBackPressed() {
+        registerAnalytics.trackClickOnBackButtonRegisterEmail();
     }
 }

@@ -134,7 +134,8 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                         otpType,
                         otpCode,
                         userSession.getTemporaryUserId(),
-                        userSession.getDeviceId()
+                        userSession.getDeviceId(),
+                        phoneNumber
                 ), new ValidateOtpLoginSubscriber(getView()));
                 break;
             case RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER:
@@ -148,7 +149,8 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                 validateOtpUseCase.execute(ValidateOtpUseCase.getParam(
                         userSession.getUserId(),
                         otpType,
-                        otpCode
+                        otpCode,
+                        phoneNumber
                 ), new VerifyOtpSubscriber(getView()));
                 break;
 

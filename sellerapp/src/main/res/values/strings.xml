@@ -29,4 +29,6 @@
     <string name="transaction_success">Transaksi Sukses</string>
     <string name="featured_product_desc_should_gold_merchant">Pilih 5 produk terbaik Anda untuk ditampilkan di halaman toko. Dapatkan akses Produk Unggulan dengan berlangganan %1$s.</string>
     <string name="drawer_title_flash_sale">Flash Sale</string>
+    <string name="title_dialog_tokopedia_app_not_valid">Aplikasi Tokopedia tidak valid</string>
+    <string name="title_message_install_from_playstore">Install Tokopedia dari Google Play Store untuk melanjutkan</string>
 </resources>

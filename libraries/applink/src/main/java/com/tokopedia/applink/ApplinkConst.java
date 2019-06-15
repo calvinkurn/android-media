@@ -119,6 +119,9 @@ public interface ApplinkConst {
     String EVENTS_ORDER = "tokopedia://events/order";
     String DEALS_ORDER = "tokopedia://deals/order";
     String FLIGHT_ORDER = "tokopedia://pesawat/order";
+    String GIFT_CARDS_ORDER = "tokopedia://giftcards/order";
+    String INSURANCE_ORDER = "tokopedia://insurance/order";
+    String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
 
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
@@ -150,6 +153,7 @@ public interface ApplinkConst {
     String SELLER_TRANSACTION = "tokopedia://seller";
     String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
+    String SELLER_SHIPPING_EDITOR = "tokopedia://seller/setting/shipping-editor";
     String CONTACT_US = "tokopedia://contact-us";
     String CONTACT_US_NATIVE = "tokopedia://contactus";
 
@@ -215,12 +219,16 @@ public interface ApplinkConst {
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
-    String HOME_CREDIT_KTP = "tokopedia://fintech/home-credit/ktp/";
-    String HOME_CREDIT_SELFIE = "tokopedia://fintech/home-credit/selfie/";
+    String HOME_CREDIT_KTP_WITHOUT_TYPE = "tokopedia://fintech/home-credit/ktp";
+    String HOME_CREDIT_KTP_WITH_TYPE = "tokopedia://fintech/home-credit/ktp/{type}";
+    String HOME_CREDIT_SELFIE_WITHOUT_TYPE = "tokopedia://fintech/home-credit/selfie";
+    String HOME_CREDIT_SELFIE_WITH_TYPE = "tokopedia://fintech/home-credit/selfie/{type}";
     String INBOX = "tokopedia://inbox";
 
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
     String SMC_REFERRAL = "tokopedia://smc-referral";
+
+    String QRSCAN = "tokopedia://scanqr";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
@@ -270,6 +278,14 @@ public interface ApplinkConst {
         String AVATAR = "avatar";
         String CUSTOM_SUBJECT = "customSubject";
         String PARAM_HEADER = "header";
+        String PRODUCT_PREVIEW_ID = "product_preview_id";
+        String PRODUCT_PREVIEW_IMAGE_URL = "product_preview_image_url";
+        String PRODUCT_PREVIEW_NAME = "product_preview_name";
+        String PRODUCT_PREVIEW_PRICE = "product_preview_price";
+        String PRODUCT_PREVIEW_URL = "product_preview_url";
+        String PRODUCT_PREVIEW_COLOR_VARIANT = "product_preview_color";
+        String PRODUCT_PREVIEW_HEX_COLOR_VARIANT = "product_preview_hex_color";
+        String PRODUCT_PREVIEW_SIZE_VARIANT = "product_preview_size";
     }
 
     interface Play {

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -16,14 +17,17 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.JsonObject;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.events.view.activity.ScanQRCodeActivity;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -81,6 +85,13 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         Intent intent = new Intent(context, QrScannerActivity.class);
         intent.putExtra(QR_NEED_RESULT, needResult);
         return intent;
+    }
+
+    @DeepLink({ApplinkConst.QRSCAN})
+    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        Intent intent = newInstance(context, false);
+        return intent.setData(uri.build());
     }
 
     @Override

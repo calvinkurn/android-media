@@ -142,7 +142,18 @@
         <activity
             android:name=".shopsettings.ManageShopActivity"
             android:label="@string/title_activity_manage_shop"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_home"
+                    android:path="@string/path_store_setting_sellerapp_temp"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".shopsettings.payment.PaymentEditor"
             android:label="@string/title_activity_payment_editor"
@@ -161,6 +172,10 @@
                     android:host="com.tokopedia.tkpd"
                     android:pathPrefix="/myshop-editor.pl"
                     android:scheme="https" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_shop_setting_shipping"/>
             </intent-filter>
         </activity>
         <activity
