@@ -16,7 +16,7 @@ class PartialMemberPmViewHolder private constructor(private val view: View,
     }
 
     fun renderPartialMember(shopStatusModel: ShopStatusModel, isAutoExtend: Boolean) {
-        if (shopStatusModel.powerMerchant.status == "activate" || shopStatusModel.powerMerchant.status == "inactive") {
+        if (shopStatusModel.isPowerMerchantActive() or shopStatusModel.isPowerMerchantPending()) {
             showCancellationButton(isAutoExtend)
             view.show()
         } else if (shopStatusModel.isPowerMerchantInactive()){

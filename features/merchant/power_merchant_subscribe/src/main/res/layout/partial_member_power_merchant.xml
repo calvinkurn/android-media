@@ -33,16 +33,17 @@
             android:layout_marginBottom="@dimen/dp_10"
             android:text="@string/pm_label_member" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@android:color/black" />
-
         <RelativeLayout
             android:id="@+id/member_cancellation_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10">
+
+            <View
+                android:id="@+id/view_line_pm"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@android:color/black" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/txt_cancel_member"
@@ -53,18 +54,20 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginEnd="148dp"
-                android:layout_marginRight="148dp"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_below="@+id/view_line_pm"
                 android:text="@string/pm_label_cancellation_header" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_10"
                 android:layout_alignBottom="@+id/txt_cancel_member"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_nav_arrow_right" />
+                android:src="@drawable/ic_nav_arrow_right"
+                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 

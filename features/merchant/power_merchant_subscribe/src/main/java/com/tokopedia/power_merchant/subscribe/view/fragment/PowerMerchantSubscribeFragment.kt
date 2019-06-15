@@ -49,6 +49,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     lateinit var partialTncViewHolder: PartialTncViewHolder
     lateinit var shopStatusModel: ShopStatusModel
     lateinit var getApprovalStatusPojo: GetApprovalStatusPojo
+    var shopScore: Int = 0
+    var minScore: Int = 0
 
 
     override fun getScreenName(): String = ""
@@ -81,12 +83,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         partialTncViewHolder.renderPartialTnc()
         button_activate_root.setOnClickListener {
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 1) {
-                    // go to activate power merchant
-//                if (score < 65) {
-//                    showDialogScore()
-//                } else {
-//                    // goto activate
-//                }
+                if (shopScore < 65) {
+                    setupDialogScore()?.show()
+                } else {
+                    if (shopStatusModel.isPowerMerchantActive()) {
+                        //intent with flag
+                    } else if (shopStatusModel.isPowerMerchantInactive()) {
+
+                    }
+                }
             } else {
                 setupDialogKyc()?.show()
             }
@@ -94,7 +99,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         presenter.getPmStatusInfo(userSessionInterface.shopId)
     }
 
-    private fun refreshData(){
+    private fun refreshData() {
         presenter.getPmStatusInfo(userSessionInterface.shopId)
 
     }
@@ -154,6 +159,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
         shopStatusModel = powerMerchantStatus.shopStatusModel
         getApprovalStatusPojo = powerMerchantStatus.getApprovalStatusPojo
+        shopScore = powerMerchantStatus.shopScore.data?.data?.first()?.value ?: 0
+        minScore = powerMerchantStatus.shopScore.data.badgeScore ?: 0
         if (shopStatusModel.isTransitionPeriod()) {
             renderViewTransitionPeriod()
         } else {
@@ -175,37 +182,35 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             } else {
                 showExpiredDate()
             }
-            partialMemberPmViewHolder.renderPartialMember(shopStatusModel,isAutoExtend())
+            partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
         } else if (shopStatusModel.isPowerMerchantInactive()) {
             if (isAutoExtend()) {
                 hideButtonActivatedPm()
             }
         }
-        partialMemberPmViewHolder.renderPartialMember(shopStatusModel,isAutoExtend())
+        partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
 
     }
 
     private fun renderViewTransitionPeriod() {
-        if (shopStatusModel.isPowerMerchantInactive()) {
-            if (isPmPending()) {
-                ll_footer_submit.visibility = View.GONE
-                ticker_yellow_container.visibility = View.VISIBLE
-            } else {
-                ticker_yellow_container.visibility = View.GONE
-            }
-        } else if (shopStatusModel.isPowerMerchantActive() or shopStatusModel.isPowerMerchantIdle()) {
+        if (shopStatusModel.isPowerMerchantActive() or shopStatusModel.isPowerMerchantIdle()) {
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status != 1) {
                 val intent = context?.let { TransitionPeriodPmActivity.newInstance(it) }
                 startActivity(intent)
                 activity?.finish()
             } else {
-                if(isAutoExtend()){
+                if (isAutoExtend()) {
                     hideButtonActivatedPm()
                 }
                 ticker_blue_container.visibility = View.VISIBLE
             }
+        } else if (shopStatusModel.isPowerMerchantPending()) {
+            ticker_yellow_container.visibility = View.VISIBLE
+            ll_footer_submit.visibility = View.GONE
+        } else {
+            //if inactive do nothing
         }
-        partialMemberPmViewHolder.renderPartialMember(shopStatusModel,isAutoExtend())
+        partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
 
     }
 
@@ -235,7 +240,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onErrorGetPmInfo(throwable: Throwable) {
         showError(ErrorHandler.getErrorMessage(context, throwable))
-        root_view_pm.showEmptyState(ErrorHandler.getErrorMessage(context, throwable),::refreshData)
+        root_view_pm.showEmptyState(ErrorHandler.getErrorMessage(context, throwable), ::refreshData)
 
     }
 
@@ -245,21 +250,21 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 .show()
     }
 
-    private fun renderViewIsPmExtend(){
+    private fun renderViewIsPmExtend() {
         hideButtonActivatedPm()
     }
 
-    private fun renderViewIsPmNotExtend(){
+    private fun renderViewIsPmNotExtend() {
         showExpiredDate()
     }
 
 
-    private fun showExpiredDate(){
+    private fun showExpiredDate() {
         ticker_yellow_container.visibility = View.VISIBLE
         val shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,
                 DateFormatUtils.FORMAT_D_MMMM_YYYY,
                 shopStatusModel.powerMerchant.expiredTime)
-        txt_ticker_yellow.text = getString(R.string.expired_label,shopCloseUntilString)
+        txt_ticker_yellow.text = getString(R.string.expired_label, shopCloseUntilString)
     }
 
     private fun initializePartialPart(view: View?) {
