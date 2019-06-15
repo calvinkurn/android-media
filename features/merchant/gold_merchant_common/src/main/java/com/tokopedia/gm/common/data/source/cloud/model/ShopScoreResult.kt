@@ -22,13 +22,10 @@ data class Links(
 data class ShopScoreDetailDataServiceModel(
         @SerializedName("Data")
         @Expose
-        val data: List<ShopScoreDetailItemServiceModel>? = listOf(),
+        val data: ShopScoreDetailItemServiceModel = ShopScoreDetailItemServiceModel(),
         @SerializedName("BadgeScore")
         @Expose
-        val badgeScore: Int? = 0,
-        @SerializedName("SumData")
-        @Expose
-        val sumData: SumData? = SumData()
+        val badgeScore: Int? = 0
 
 )
 
@@ -45,16 +42,4 @@ data class ShopScoreDetailItemServiceModel(
         @SerializedName("Color")
         @Expose
         val color: String? = ""
-)
-
-data class SumData(
-        @SerializedName("Color")
-        @Expose
-        private var color: String? = "",
-        @SerializedName("Text")
-        @Expose
-        private var text: String? = "",
-        @SerializedName("Value")
-        @Expose
-        private var value: Int? = 0
 )
