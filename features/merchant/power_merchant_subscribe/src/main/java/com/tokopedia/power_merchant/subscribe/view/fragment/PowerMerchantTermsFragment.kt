@@ -5,7 +5,9 @@ import android.support.v4.app.Fragment
 import android.view.View
 import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.kotlin.extensions.view.hideLoading
+import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.*
@@ -89,12 +91,16 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
         mainView.hideLoading()
     }
 
-    override fun onSuccessActivate(success: Boolean) {
-        Toast.makeText(context, "succces", Toast.LENGTH_LONG).show()
+    override fun onSuccessActivate() {
+        Toast.makeText(context, "succces activate", Toast.LENGTH_LONG).show()
     }
 
-    override fun onErrorActivate(throwable: Throwable) {
-        Toast.makeText(context, "error", Toast.LENGTH_LONG).show()
+    override fun onSuccessAutoExtend() {
+        Toast.makeText(context, "succces activate", Toast.LENGTH_LONG).show()
+    }
+
+    override fun onError(throwable: Throwable) {
+        view?.showErrorToaster(ErrorHandler.getErrorMessage(context, throwable))
     }
 
     private fun initVar() {

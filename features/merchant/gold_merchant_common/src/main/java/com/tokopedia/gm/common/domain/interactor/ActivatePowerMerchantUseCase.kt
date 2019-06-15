@@ -8,7 +8,9 @@ import rx.Observable
 import javax.inject.Inject
 
 class ActivatePowerMerchantUseCase @Inject constructor(
-        private val activatePowerMerchantCloudSource: ActivatePowerMerchantCloudSource): UseCase<PowerMerchantActivationResult>() {
+        private val activatePowerMerchantCloudSource: ActivatePowerMerchantCloudSource
+) : UseCase<PowerMerchantActivationResult>() {
+
     override fun createObservable(requestParams: RequestParams?): Observable<PowerMerchantActivationResult> {
         return activatePowerMerchantCloudSource.activatePowerMerchant()
     }
