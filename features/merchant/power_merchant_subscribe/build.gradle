@@ -47,8 +47,6 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    implementation rootProject.ext.playServicesDependencies.analytics
-
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'

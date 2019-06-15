@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_16">
+
+    <LinearLayout
+        android:id="@+id/vgMembershipContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/listPreferredItemHeight"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextView.Title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/dp_16"
+                android:text="@string/shop_settings_membership_label" />
+
+            <TextView
+                android:id="@+id/tvManageGmSubscribe"
+                style="@style/TextView.Title.Green"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/dp_20"
+                android:text="@string/label_manage"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16">
+            
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/iv_power_merchant_logo"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:src="@drawable/ic_power_merchant"
+                android:layout_marginRight="@dimen/dp_4"/>
+
+            <TextView
+                android:id="@+id/tv_shop_membership_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+                android:textColor="#b3000000"
+                android:lineSpacingExtra="6sp"
+                tools:text="Regular Merchant"
+                android:layout_marginRight="@dimen/dp_4"/>
+
+            <TextView
+                android:id="@+id/tv_shop_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="#ae31353b"
+                android:lineSpacingExtra="8sp"
+                android:layout_marginLeft="@dimen/dp_8"
+                tools:text="Aktif" />
+        </LinearLayout>
+
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/button_activate"
+            style="@style/Button.Submit.Green.Full"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_weight="1"
+            android:text="@string/upgrade_your_shop"
+            android:textSize="14sp"
+            android:layout_marginTop="@dimen/dp_16"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_ticker_info"
+            style="@style/TextView.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:gravity="center"
+            android:padding="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            tools:text="Akses wawasan pasar dan gunakan fitur-fitur spesial Power Merchant. Pelajari selengkapnya." />
+
+        <FrameLayout
+            android:id="@+id/ticker_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_marginTop="@dimen/dp_8">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/pm_ticker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_rectangle_yellow"
+                app:cardBackgroundColor="@color/ticker_blue"
+                app:cardCornerRadius="@dimen/dp_8">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_ticker"
+                    style="@style/TextView.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_5"
+                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:padding="@dimen/dp_8"
+                    tools:text="@string/pm_label_price_cashback" />
+
+                <ImageView
+                    android:id="@+id/iv_ticker_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_ticker_announcement_cropped" />
+
+            </android.support.v7.widget.CardView>
+        </FrameLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
