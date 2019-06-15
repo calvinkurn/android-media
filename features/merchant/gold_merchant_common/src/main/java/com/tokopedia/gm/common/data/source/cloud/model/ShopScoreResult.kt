@@ -9,7 +9,8 @@ data class ShopScoreResult(
         val links: Links? = Links(),
         @SerializedName("data")
         @Expose
-        val data: ShopScoreDetailDataServiceModel? = ShopScoreDetailDataServiceModel())
+        val data: ShopScoreDetailDataServiceModel? = ShopScoreDetailDataServiceModel()
+)
 
 data class Links(
         @SerializedName("self")

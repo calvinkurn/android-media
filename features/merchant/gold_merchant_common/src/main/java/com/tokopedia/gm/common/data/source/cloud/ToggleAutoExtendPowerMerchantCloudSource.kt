@@ -7,7 +7,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.RequestAutoExtendPowerMer
 import rx.Observable
 import javax.inject.Inject
 
-class TurnOnOffAutoExtendPowerMerchantCloudSource @Inject constructor(private val gmCommonApi: GMCommonApi) {
+class ToggleAutoExtendPowerMerchantCloudSource @Inject constructor(private val gmCommonApi: GMCommonApi) {
     fun turnOnOffAutoExtendPowerMerchant(isAutoExtend: Boolean): Observable<PowerMerchantActivationResult> {
         return gmCommonApi.turnOnOffPowerMerchantSubscription(RequestAutoExtendPowerMerchantModel(isAutoExtend)).map {
             if (!it.isSuccessful) {
