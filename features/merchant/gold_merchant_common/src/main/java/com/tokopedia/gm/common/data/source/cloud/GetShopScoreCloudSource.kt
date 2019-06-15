@@ -17,6 +17,8 @@ class GetShopScoreCloudSource @Inject constructor(private val gmCommonApi: GMCom
                         && it.body().header.messages.isNotEmpty()
                         && it.body().header.messages.first().isNotBlank()) {
                     throw MessageErrorException(it.body().header.messages.first())
+                } else if (it.body().data == null){
+                    throw RuntimeException()
                 } else {
                     it.body().data
                 }
