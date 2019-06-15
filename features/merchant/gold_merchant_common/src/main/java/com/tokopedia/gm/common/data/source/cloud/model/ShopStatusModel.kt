@@ -43,6 +43,10 @@ data class ShopStatusModel(
         return powerMerchant.status == STATUS_INACTIVE && officialStore.status == STATUS_INACTIVE
     }
 
+    fun isOfficialStore(): Boolean {
+        return officialStore.status == STATUS_ACTIVE
+    }
+
     fun isTransitionPeriod(): Boolean {
         return powerMerchant.shopPopup
     }

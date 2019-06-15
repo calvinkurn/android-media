@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
@@ -120,7 +121,10 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getInboxMenu());
         data.add(getProductMenu());
 
-        data.add(((SellerDrawerAdapter) adapter).getGoldMerchantMenu());
+        data.add(new DrawerItem(context.getString(R.string.pm_title),
+                R.drawable.ic_pm_badge_shop_regular,
+                TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
+                true));
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                 R.drawable.ic_top_ads,
@@ -232,6 +236,9 @@ public class DrawerSellerHelper extends DrawerHelper
         sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_draft_list),
                 TkpdState.DrawerPosition.DRAFT_PRODUCT,
                 true));
+        sellerMenu.add(new DrawerItem(context.getString(com.tokopedia.seller.R.string.featured_product_title),
+                TkpdState.DrawerPosition.FEATURED_PRODUCT,
+                true));
         sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_etalase_list),
                 TkpdState.DrawerPosition.MANAGE_ETALASE,
                 true));
@@ -321,7 +328,8 @@ public class DrawerSellerHelper extends DrawerHelper
                         new GMTracking().sendClickHamburgerMenuEvent(item.label);
                     }
                     eventClickGoldMerchantViaDrawer();
-                    context.startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context));
+                    Toast.makeText(context, "TODO GO TO PM Page", Toast.LENGTH_LONG).show();
+                    //TODO go to power merchant page
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
                     intent = SellerRouter.getActivitySellingTransactionNewOrder(context);
@@ -501,11 +509,13 @@ public class DrawerSellerHelper extends DrawerHelper
                 if (selectedPosition != TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND) {
                     sendGMAnalyticDialogEvent(true);
 
-                    if (context.getApplication() instanceof SellerModuleRouter) {
+                    /*if (context.getApplication() instanceof SellerModuleRouter) {
                         Intent gmIntent = ((SellerModuleRouter) context.getApplication()).getGMHomeIntent(context);
                         gmIntent.putExtra(GMParamConstant.PARAM_KEY_FROM_FEATURE, true);
                         context.startActivity(gmIntent);
-                    }
+                    }*/
+                    Toast.makeText(context, "TODO GO TO PM Page", Toast.LENGTH_LONG).show();
+                    //TODO go to power merchant page
                 }
             }
         });

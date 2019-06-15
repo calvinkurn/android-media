@@ -15,7 +15,6 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
@@ -139,15 +138,7 @@ public class DashboardActivity extends DrawerPresenterActivity
     @Override
     public void onSuccessGetShopInfo(ShopModel shopModel) {
         SellerDrawerAdapter sellerDrawerAdapter = ((SellerDrawerAdapter) drawerHelper.getAdapter());
-        if (sellerDrawerAdapter.isGoldMerchant()!= shopModel.info.isGoldMerchant()) {
-            sellerDrawerAdapter.setGoldMerchant(shopModel.info.isGoldMerchant());
-            drawerHelper.getRecyclerView().post(new Runnable() {
-                @Override
-                public void run() {
-                    sellerDrawerAdapter.renderGMDrawer();
-                }
-            });
-        }
+        sellerDrawerAdapter.setGoldMerchant(shopModel.info.isGoldMerchant());
     }
 
     @Override

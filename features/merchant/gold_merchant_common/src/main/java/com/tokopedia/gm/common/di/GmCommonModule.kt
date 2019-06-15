@@ -26,12 +26,6 @@ class GmCommonModule {
 
     @GmCommonQualifier
     @Provides
-    fun provideScoreInterceptor(@ApplicationContext context: Context,userSession: UserSessionInterface = UserSession(context)): PowerMerchantSubscribeInterceptor {
-        return PowerMerchantSubscribeInterceptor(context,userSession)
-    }
-
-    @GmCommonQualifier
-    @Provides
     fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
         return ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools())
     }
@@ -41,7 +35,7 @@ class GmCommonModule {
     fun provideOkHttpClient(@GmCommonQualifier chuckInterceptor: ChuckInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             tkpdAuthInterceptor: TkpdAuthInterceptor,
-                            @GmCommonQualifier powerMerchantSubscribeInterceptor: PowerMerchantSubscribeInterceptor): OkHttpClient {
+                            powerMerchantSubscribeInterceptor: PowerMerchantSubscribeInterceptor): OkHttpClient {
 
         val builder = OkHttpClient.Builder()
                 .addInterceptor(HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java))
@@ -65,6 +59,12 @@ class GmCommonModule {
     @Provides
     fun provideGMCommonApi(@GmCommonQualifier retrofit: Retrofit): GMCommonApi {
         return retrofit.create(GMCommonApi::class.java)
+    }
+
+    @GmCommonQualifier
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 
 }

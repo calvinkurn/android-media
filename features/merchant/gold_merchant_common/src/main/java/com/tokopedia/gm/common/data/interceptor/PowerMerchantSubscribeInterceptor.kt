@@ -2,14 +2,16 @@ package com.tokopedia.gm.common.data.interceptor
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.gm.common.di.GmCommonQualifier
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import javax.inject.Inject
 
-class PowerMerchantSubscribeInterceptor(@ApplicationContext val context: Context,
-                                        val userSession: UserSessionInterface) : Interceptor {
+class PowerMerchantSubscribeInterceptor @Inject constructor(
+    @ApplicationContext val context: Context,
+    @GmCommonQualifier val userSession: UserSessionInterface) : Interceptor {
 
     companion object {
         private const val KEY_ACCOUNTS_AUTHORIZATION = "Accounts-Authorization"
