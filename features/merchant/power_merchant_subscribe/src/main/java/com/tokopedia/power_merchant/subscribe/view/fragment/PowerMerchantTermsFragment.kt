@@ -128,4 +128,8 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
         checkbox.isChecked = isTermsAgreed
         activateBtn.isEnabled = isTermsAgreed
     }
+
+    private fun setAction(action: String) {
+        this.action = action
+    }
 }
