@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.power_merchant.subscribe.ACTION_KEY
@@ -12,7 +13,7 @@ import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantTermsFr
  */
 class PowerMerchantTermsActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {
-        return PowerMerchantTermsFragment()
+        return PowerMerchantTermsFragment.createInstance(intent?.extras ?: Bundle())
     }
 
     companion object {
@@ -22,6 +23,4 @@ class PowerMerchantTermsActivity : BaseSimpleActivity() {
             }
         }
     }
-
-    override fun isShowCloseButton(): Boolean = true
 }

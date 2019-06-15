@@ -28,11 +28,13 @@ class PmTermsPresenter @Inject constructor(
             }
 
             override fun onError(e: Throwable?) {
-                if (isViewNotAttached || e == null) {
+                if (isViewNotAttached) {
                     return
                 }
                 view.hideLoading()
-                view.onError(e)
+                if (e != null) {
+                    view.onError(e)
+                }
             }
         })
     }
@@ -51,11 +53,13 @@ class PmTermsPresenter @Inject constructor(
                     }
 
                     override fun onError(e: Throwable?) {
-                        if (isViewNotAttached || e == null) {
+                        if (isViewNotAttached) {
                             return
                         }
                         view.hideLoading()
-                        view.onError(e)
+                        if (e != null) {
+                            view.onError(e)
+                        }
                     }
                 })
     }
