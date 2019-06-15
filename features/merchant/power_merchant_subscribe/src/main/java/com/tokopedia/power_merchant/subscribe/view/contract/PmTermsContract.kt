@@ -1,4 +1,4 @@
-package com.tokopedia.power_merchant.subscribe.contract
+package com.tokopedia.power_merchant.subscribe.view.contract
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter

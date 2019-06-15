@@ -9,8 +9,8 @@ import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.*
-import com.tokopedia.power_merchant.subscribe.contract.PmTermsContract
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.view.contract.PmTermsContract
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseWebViewFragment
 import kotlinx.android.synthetic.main.fragment_power_merchant_terms.*

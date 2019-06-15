@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gm.common.di.GmCommonModule
-import com.tokopedia.power_merchant.subscribe.contract.PmSubscribeContract
-import com.tokopedia.power_merchant.subscribe.contract.PmTermsContract
-import com.tokopedia.power_merchant.subscribe.presenter.PmSubscribePresenter
-import com.tokopedia.power_merchant.subscribe.presenter.PmTermsPresenter
+import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
+import com.tokopedia.power_merchant.subscribe.view.contract.PmTermsContract
+import com.tokopedia.power_merchant.subscribe.view.presenter.PmSubscribePresenter
+import com.tokopedia.power_merchant.subscribe.view.presenter.PmTermsPresenter
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module

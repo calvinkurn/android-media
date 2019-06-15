@@ -1,8 +1,8 @@
-package com.tokopedia.power_merchant.subscribe.presenter
+package com.tokopedia.power_merchant.subscribe.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
-import com.tokopedia.power_merchant.subscribe.contract.PmTermsContract
+import com.tokopedia.power_merchant.subscribe.view.contract.PmTermsContract
 import javax.inject.Inject
 
 /**
