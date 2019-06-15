@@ -9,7 +9,6 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.seller.R;
 
 public class RoundGradientProgressBar extends RoundCornerProgressBar {
-    private GradientDrawable gradientDrawable;
     private int[] progressColors;
 
     public RoundGradientProgressBar(Context context, AttributeSet attrs) {
@@ -21,11 +20,10 @@ public class RoundGradientProgressBar extends RoundCornerProgressBar {
     }
 
     protected GradientDrawable createGradientDrawable(int color) {
-        if (gradientDrawable == null) {
-            setDefaultProgressColor(progressColors);
-            gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, progressColors);
-            gradientDrawable.setShape(GradientDrawable.RECTANGLE);
-        }
+        GradientDrawable gradientDrawable;
+        setDefaultProgressColor(progressColors);
+        gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, progressColors);
+        gradientDrawable.setShape(GradientDrawable.RECTANGLE);
         return gradientDrawable;
     }
 
