@@ -22,7 +22,8 @@
             android:gravity="center"
             android:text="@string/pm_label_kyc_verification_header_1"
             android:textColor="@color/black"
-            style="@style/TextView.SubHeadline.Bold"
+            app:fontSize="titleBig"
+            android:textStyle="bold"
             />
 
         <com.tokopedia.design.component.TextViewCompat
@@ -34,7 +35,8 @@
             android:layout_marginBottom="@dimen/dp_20"
             android:text="@string/pm_label_kyc_verification_header_2"
             android:textColor="@color/black"
-            style="@style/TextView.SubHeadline.Bold" />
+            app:fontSize="titleBig"
+            android:textStyle="bold" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/txt_kyc_static_desc_1"
@@ -45,7 +47,9 @@
             android:gravity="center"
             android:layout_marginBottom="@dimen/dp_16"
             android:text="@string/pm_label_kyc_verification_desc_1"
-            app:fontSize="title" />
+            app:fontSize="small"
+            app:textViewTheme="lightSecondary"
+            />
 
         <Button
             android:id="@+id/btn_submit_kyc"

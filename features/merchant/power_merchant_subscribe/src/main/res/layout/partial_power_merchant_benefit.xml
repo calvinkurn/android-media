@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/base_partial_benefit"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/base_partial_benefit"
     android:background="@drawable/card_background_with_shadow"
     android:padding="@dimen/dp_10">
 
@@ -16,13 +15,15 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textView2"
-            style="@style/TextView.TitleMedium.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/pm_label_benefit_header"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:fontSize="title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,18 +42,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
-            style="@style/TextView.Title.Bold"
             android:text="@string/pm_label_special_promo"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:fontSize="micro"
             app:layout_constraintStart_toEndOf="@+id/imageView6"
-            app:layout_constraintTop_toTopOf="@+id/imageView6" />
+            app:layout_constraintTop_toTopOf="@+id/imageView6"
+             />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat3"
-            android:layout_width="300dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:minLines="2"
             android:layout_marginTop="@dimen/dp_5"
-            android:text="Lebih banyak pilihan promo khusus Power Merchant."
+
+            android:text="@string/pm_special_promo"
+            app:fontSize="micro"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat2"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat2" />
 
@@ -69,22 +75,25 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat4"
-            style="@style/TextView.Title.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:text="@string/pm_label_topads_credit"
+            android:textStyle="bold"
+            app:fontSize="micro"
+            android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/imageView7"
             app:layout_constraintTop_toTopOf="@+id/imageView7" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat5"
-            android:layout_width="300dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:minLines="2"
-            android:text="Dapatkan bonus kredit 5% setiap top-up Kredit TopAds"
+            app:fontSize="micro"
+            android:text="@string/pm_benefit_credit"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat4"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat4" />
 
@@ -101,22 +110,25 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat6"
-            style="@style/TextView.Title.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
-
             android:text="@string/pm_label_special_promo_big"
+            android:textStyle="bold"
+            app:fontSize="micro"
+            android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/imageView8"
             app:layout_constraintTop_toTopOf="@+id/imageView8" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat7"
-            android:layout_width="300dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:minLines="2"
-            android:text="Tingkatkan penjualan dengan berpartisipasi di kegiatan promosi tahunan."
+            app:fontSize="micro"
+            android:text="@string/pm_big_promo"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat6"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat6" />
 

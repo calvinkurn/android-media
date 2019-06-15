@@ -22,7 +22,8 @@
             android:gravity="center"
             android:text="@string/pm_label_score_verification_header_1"
             android:textColor="@color/black"
-            style="@style/TextView.SubHeadline.Bold" />
+            app:fontSize="titleBig"
+            android:textStyle="bold" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/txt_static_1"
@@ -33,7 +34,8 @@
             android:layout_marginBottom="@dimen/dp_20"
             android:text="@string/pm_label_score_verification_header_2"
             android:textColor="@color/black"
-            style="@style/TextView.SubHeadline.Bold" />
+            app:fontSize="titleBig"
+            android:textStyle="bold" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/kyc_static_desc_1"
@@ -44,7 +46,7 @@
             android:gravity="center"
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/pm_label_score_verification_desc"
-            app:fontSize="title"
+            app:fontSize="small"
             android:layout_marginBottom="@dimen/dp_16" />
 
         <Button

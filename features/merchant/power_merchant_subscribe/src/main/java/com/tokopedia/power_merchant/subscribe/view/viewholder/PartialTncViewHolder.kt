@@ -6,7 +6,10 @@ import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.URL_LEARN_MORE
 
 class PartialTncViewHolder private constructor(private val view:View , private val activity:Activity?) {
 
@@ -20,7 +23,9 @@ class PartialTncViewHolder private constructor(private val view:View , private v
 
         spanText.setSpan(object : ClickableSpan(){
             override fun onClick(widget: View) {
-
+                RouteManager.route(view.context, String.format("%s?url=%s",
+                        ApplinkConst.WEBVIEW,
+                        URL_LEARN_MORE))
             }
 
             override fun updateDrawState(ds: TextPaint) {
