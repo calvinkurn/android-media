@@ -321,23 +321,26 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel) {
         tvManageGmSubscribe.visibility = View.GONE
-        button_activate.visibility = View.VISIBLE
-        button_activate.setOnClickListener {
-            //TODO go to activate power merchant activity
-            Toast.makeText(context,"TODO go to PM", Toast.LENGTH_LONG).show()
-        }
         vgMembershipContainer.setOnClickListener { }
+        vgMembershipContainer.isClickable = false
         iv_power_merchant_logo.visibility = View.GONE
         tv_shop_membership_title.text = getString(R.string.label_regular_merchant)
         tv_shop_status.visibility = View.GONE
         ticker_container.visibility = View.GONE
         if (shopStatusModel.isTransitionPeriod()) {
             tv_ticker_info.visibility = View.GONE
+            button_activate.visibility = View.GONE
         } else {
             tv_ticker_info.visibility = View.VISIBLE
             setTextViewLearnMore(tv_ticker_info,getString(R.string.regular_merchant_learn_more),getString(R.string.learn_more)) {
                 //TODO go to score calculation for Power Merchant
                 Toast.makeText(context,"TODO go to regular merchant learn more", Toast.LENGTH_LONG).show()
+            }
+
+            button_activate.visibility = View.VISIBLE
+            button_activate.setOnClickListener {
+                //TODO go to activate power merchant activity
+                Toast.makeText(context,"TODO go to PM", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -375,6 +378,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tvManageGmSubscribe.visibility = View.GONE
         button_activate.visibility = View.GONE
         vgMembershipContainer.setOnClickListener { }
+        vgMembershipContainer.isClickable = false
         iv_power_merchant_logo.visibility = View.VISIBLE
         iv_power_merchant_logo.setImageResource(R.drawable.ic_badge_shop_official)
         tv_shop_membership_title.text = getString(R.string.label_official_store)
