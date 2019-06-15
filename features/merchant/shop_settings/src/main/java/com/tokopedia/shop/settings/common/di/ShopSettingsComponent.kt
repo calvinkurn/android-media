@@ -1,7 +1,6 @@
 package com.tokopedia.shop.settings.common.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.gm.common.di.GmCommonModule
 import com.tokopedia.shop.settings.address.view.ShopSettingAddressAddEditFragment
 import com.tokopedia.shop.settings.address.view.ShopSettingAddressFragment
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
@@ -10,10 +9,9 @@ import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragm
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseListFragment
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseReorderFragment
+import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesAddEditFragment
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesListFragment
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesReorderFragment
-import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesAddEditFragment
-
 import dagger.Component
 
 /**
