@@ -15,6 +15,11 @@
             android:label="@string/pm_title_activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
+        <activity
+            android:name=".view.activity.PowerMerchantTermsActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 
 

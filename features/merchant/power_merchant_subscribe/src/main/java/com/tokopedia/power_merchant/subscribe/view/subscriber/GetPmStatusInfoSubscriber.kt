@@ -1,7 +1,7 @@
-package com.tokopedia.power_merchant.subscribe.subscriber
+package com.tokopedia.power_merchant.subscribe.view.subscriber
 
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
-import com.tokopedia.power_merchant.subscribe.contract.PmSubscribeContract
+import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
 import rx.Subscriber
 
 class GetPmStatusInfoSubscriber(private val view: PmSubscribeContract.View) : Subscriber<PowerMerchantStatus>() {
