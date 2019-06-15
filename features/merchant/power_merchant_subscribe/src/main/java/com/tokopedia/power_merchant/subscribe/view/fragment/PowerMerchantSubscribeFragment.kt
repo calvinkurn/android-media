@@ -195,7 +195,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             } else {
                 ticker_yellow_container.visibility = View.GONE
             }
-        } else if (shopStatusModel.isPowerMerchantActive()) {
+        } else if (shopStatusModel.isPowerMerchantActive() or shopStatusModel.isPowerMerchantIdle()) {
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status != 1) {
                 val intent = context?.let { TransitionPeriodPmActivity.newInstance(it) }
                 startActivity(intent)

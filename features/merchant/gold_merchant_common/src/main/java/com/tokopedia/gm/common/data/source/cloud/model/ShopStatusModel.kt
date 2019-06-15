@@ -43,6 +43,6 @@ data class ShopStatusModel(
     }
 
     fun isAutoExtend(): Boolean {
-        return powerMerchant.autoExtend.status == STATUS_OFF
+        return powerMerchant.autoExtend.status == STATUS_ON
     }
 }
