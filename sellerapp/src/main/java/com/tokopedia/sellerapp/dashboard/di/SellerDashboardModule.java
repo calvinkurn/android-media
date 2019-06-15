@@ -28,6 +28,7 @@ import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.gm.common.di.GmCommonModule;
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeModule;
 import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
@@ -62,7 +63,7 @@ import retrofit2.Retrofit;
  */
 
 @SellerDashboardScope
-@Module(includes = {SellerDashboardGMCommonModule.class})
+@Module(includes = {SellerDashboardGMCommonModule.class, GmCommonModule.class})
 public class SellerDashboardModule {
     @SellerDashboardScope
     @Provides
@@ -246,7 +247,9 @@ public class SellerDashboardModule {
 
     @SellerDashboardScope
     @Provides
-    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+    public UserSessionInterface provideUserSession(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context) {
         return new com.tokopedia.user.session.UserSession(context);
     }
+
+
 }
