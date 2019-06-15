@@ -4,7 +4,7 @@
     android:id="@+id/base_partial_member"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/gradient_background"
+    android:background="@drawable/gradient_background_pm"
     android:orientation="vertical">
 
     <LinearLayout
@@ -39,26 +39,32 @@
             android:background="@android:color/black" />
 
         <RelativeLayout
+            android:id="@+id/member_cancellation_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_5">
+            android:layout_marginTop="@dimen/dp_10">
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/txt_cancel_member"
                 style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="148dp"
+                android:layout_marginRight="148dp"
                 android:text="@string/pm_label_cancellation_header" />
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/txt_cancel_member"
+                android:layout_height="match_parent"
                 android:layout_alignBottom="@+id/txt_cancel_member"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="11dp"
-                android:src="@drawable/ic_drop_down" />
+                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_nav_arrow_right" />
 
         </RelativeLayout>
 

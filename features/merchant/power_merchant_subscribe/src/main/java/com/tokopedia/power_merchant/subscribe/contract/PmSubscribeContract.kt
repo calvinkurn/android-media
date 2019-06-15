@@ -14,8 +14,6 @@ class PmSubscribeContract {
 
     interface Presenter : CustomerPresenter<View> {
         fun getPmStatusInfo(shopId: String)
-        fun getPmInfo(shopId:String)
-        fun getScoreInfo()
-        fun activatePowerMerchant()
+
     }
 }

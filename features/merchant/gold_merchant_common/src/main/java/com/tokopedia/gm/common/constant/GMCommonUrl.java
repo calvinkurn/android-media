@@ -14,5 +14,6 @@ public class GMCommonUrl {
     public static final String GET_SHOP_STATUS = "/v2/shop/{shop_id}/subscription?include_os=true";
     public static final String SHOPS_SUBSCRIPTION = "/v2/shops/subscription";
     public static final String SHOPS_SUBSCRIPTIONS_AUTO_EXTEND = "/v2/shops/subscriptions/auto_extend";
+    public static final String SHOPS_SCORE_STATUS = "/v1/shopstats/shopscore/sum/";
 
 }
