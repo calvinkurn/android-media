@@ -62,7 +62,7 @@ import retrofit2.Retrofit;
  */
 
 @SellerDashboardScope
-@Module(includes = {SellerDashboardGMCommonModule.class, PowerMerchantSubscribeModule.class})
+@Module(includes = {SellerDashboardGMCommonModule.class})
 public class SellerDashboardModule {
     @SellerDashboardScope
     @Provides
@@ -246,7 +246,7 @@ public class SellerDashboardModule {
 
     @SellerDashboardScope
     @Provides
-    public UserSessionInterface provideUserSession(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context) {
+    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
         return new com.tokopedia.user.session.UserSession(context);
     }
 }
