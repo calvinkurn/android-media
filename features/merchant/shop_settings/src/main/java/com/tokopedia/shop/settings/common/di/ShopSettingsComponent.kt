@@ -1,6 +1,7 @@
 package com.tokopedia.shop.settings.common.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.gm.common.di.GmCommonModule
 import com.tokopedia.shop.settings.address.view.ShopSettingAddressAddEditFragment
 import com.tokopedia.shop.settings.address.view.ShopSettingAddressFragment
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
@@ -20,7 +21,7 @@ import dagger.Component
  */
 
 @ShopSettingsScope
-@Component(modules = arrayOf(ShopSettingsModule::class), dependencies = arrayOf(BaseAppComponent::class))
+@Component(modules = arrayOf(ShopSettingsModule::class, GmCommonModule::class), dependencies = arrayOf(BaseAppComponent::class))
 interface ShopSettingsComponent {
     fun inject(shopSettingsInfoFragment: ShopSettingsInfoFragment)
     fun inject(shopEditBasicInfoActivity: ShopEditBasicInfoActivity)

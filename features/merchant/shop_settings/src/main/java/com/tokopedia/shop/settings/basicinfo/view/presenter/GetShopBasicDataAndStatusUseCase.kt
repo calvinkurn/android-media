@@ -20,7 +20,14 @@ constructor(private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
             getShopStatusUseCase.createObservable(RequestParams.EMPTY)){ t1: ShopBasicDataModel?, t2: ShopStatusModel? ->
             t1 to t2
         }
+    }
 
+    companion object {
+        fun createRequestParams(shopId: String): RequestParams {
+            return RequestParams.create().apply {
+                putString(GMParamApiContant.SHOP_ID, shopId)
+            }
+        }
     }
 
     override fun unsubscribe() {

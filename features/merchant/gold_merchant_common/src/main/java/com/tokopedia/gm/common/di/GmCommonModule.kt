@@ -68,6 +68,7 @@ class GmCommonModule {
         return retrofit.create(GMCommonApi::class.java)
     }
 
+    @GmCommonQualifier
     @Provides
     internal fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)

@@ -10,6 +10,8 @@ import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Observable
 
 import javax.inject.Inject
@@ -19,7 +21,8 @@ import rx.functions.Func2
 
 class ShopSettingsInfoPresenter @Inject
 constructor(private val getShopBasicDataAndStatusUseCase: GetShopBasicDataAndStatusUseCase,
-            private val updateShopScheduleUseCase: UpdateShopScheduleUseCase) : BaseDaggerPresenter<ShopSettingsInfoPresenter.View>() {
+            private val updateShopScheduleUseCase: UpdateShopScheduleUseCase,
+            private val userSession: UserSessionInterface) : BaseDaggerPresenter<ShopSettingsInfoPresenter.View>() {
 
     interface View : CustomerView {
         fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, ShopStatusModel?>)
@@ -30,7 +33,8 @@ constructor(private val getShopBasicDataAndStatusUseCase: GetShopBasicDataAndSta
 
     fun getShopData() {
         getShopBasicDataAndStatusUseCase.unsubscribe()
-        getShopBasicDataAndStatusUseCase.execute(null,
+        getShopBasicDataAndStatusUseCase.execute(
+            GetShopBasicDataAndStatusUseCase.createRequestParams(userSession.shopId),
             object : Subscriber<Pair<ShopBasicDataModel?, ShopStatusModel?>>() {
             override fun onCompleted() {
 
