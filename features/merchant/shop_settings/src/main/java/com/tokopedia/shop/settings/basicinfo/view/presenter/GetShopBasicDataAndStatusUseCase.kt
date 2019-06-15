@@ -8,6 +8,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBas
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class GetShopBasicDataAndStatusUseCase @Inject
@@ -16,8 +17,10 @@ constructor(private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
 
     override fun createObservable(requestParams: RequestParams): Observable<Pair<ShopBasicDataModel?, ShopStatusModel?>> {
         return Observable.zip(
-            getShopBasicDataUseCase.createObservable(RequestParams.EMPTY),
-            getShopStatusUseCase.createObservable(RequestParams.EMPTY)){ t1: ShopBasicDataModel?, t2: ShopStatusModel? ->
+            getShopBasicDataUseCase.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io()),
+            getShopStatusUseCase.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io())){ t1: ShopBasicDataModel?, t2: ShopStatusModel? ->
             t1 to t2
         }
     }
