@@ -104,7 +104,7 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
     }
 
     private fun initVar() {
-        action = arguments?.getString(ACTION_KEY) ?: ""
+        setAction(arguments?.getString(ACTION_KEY) ?: "")
     }
 
     private fun initView() {
