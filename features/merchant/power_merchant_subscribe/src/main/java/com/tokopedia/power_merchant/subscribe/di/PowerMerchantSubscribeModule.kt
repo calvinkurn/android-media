@@ -37,4 +37,10 @@ class PowerMerchantSubscribeModule {
         return context.resources
     }
 
+    @PowerMerchantSubscribeScope
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
+
 }

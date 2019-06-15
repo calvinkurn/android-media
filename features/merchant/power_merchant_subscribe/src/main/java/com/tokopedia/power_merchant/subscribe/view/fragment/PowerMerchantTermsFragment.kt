@@ -24,7 +24,6 @@ import javax.inject.Inject
  */
 class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
 
-    @GmCommonQualifier
     @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
