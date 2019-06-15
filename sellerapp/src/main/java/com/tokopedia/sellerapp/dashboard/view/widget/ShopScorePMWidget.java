@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shopscore.view.widget;
+package com.tokopedia.sellerapp.dashboard.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-import com.tokopedia.seller.R;
+import com.tokopedia.sellerapp.R;
 
 /**
  * Created by hendry on 2019-06-15.

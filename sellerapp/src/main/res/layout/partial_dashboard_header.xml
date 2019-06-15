@@ -108,10 +108,9 @@
 
     </LinearLayout>
 
-    <com.tokopedia.seller.shopscore.view.widget.ShopScorePMWidget
+    <com.tokopedia.sellerapp.dashboard.view.widget.ShopScorePMWidget
         android:id="@+id/shop_score_widget_pm"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
+        android:layout_margin="@dimen/dp_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
