@@ -53,6 +53,12 @@ class ShopSettingsModule {
 
     @GmCommonQualifier
     @Provides
+    fun provideGMUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
+
+    @GmCommonQualifier
+    @Provides
     fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
         return ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools())
     }
