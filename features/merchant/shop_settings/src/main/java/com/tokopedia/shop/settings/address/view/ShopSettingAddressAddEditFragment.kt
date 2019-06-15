@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.shop.common.router.ShopSettingRouter
+//import com.tokopedia.shop.common.router.ShopSettingRouter
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
@@ -145,10 +145,10 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     }
 
     private fun gotoDistrictActivity() {
-        if (activity != null && activity!!.application is ShopSettingRouter){
-            startActivityForResult((activity!!.application as ShopSettingRouter).getDistrictRecommendationIntent(activity!!),
-                    DISTRICT_RECOMMENDATION_REQUEST_CODE)
-        }
+//        if (activity != null && activity!!.application is ShopSettingRouter){
+//            startActivityForResult((activity!!.application as ShopSettingRouter).getDistrictRecommendationIntent(activity!!),
+//                    DISTRICT_RECOMMENDATION_REQUEST_CODE)
+//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

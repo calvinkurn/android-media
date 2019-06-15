@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/dp_120"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_6">
+
+    <ImageView
+        android:id="@+id/img_product"
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="wrap_content"
+        android:src="@color/grey_300" />
+
+    <TextView
+        android:id="@+id/tv_product_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:lineSpacingExtra="5sp"
+        android:maxLines="2"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_13"
+        android:textStyle="normal"
+        tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold" />
+
+    <TextView
+        android:id="@+id/tv_product_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="2dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_vertical"
+        android:textColor="@color/orange_red"
+        android:textSize="@dimen/text_size_s_medium"
+        android:textStyle="normal"
+        tools:text="Rp 3.121.500" />
+
+</LinearLayout>

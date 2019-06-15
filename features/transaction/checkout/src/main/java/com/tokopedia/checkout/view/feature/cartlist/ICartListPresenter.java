@@ -61,4 +61,6 @@ public interface ICartListPresenter {
 
     boolean dataHasChanged();
 
+    void processGetRecentViewData();
+
 }

@@ -35,7 +35,7 @@ import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
-import com.tokopedia.shop.common.router.ShopSettingRouter
+//import com.tokopedia.shop.common.router.ShopSettingRouter
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
@@ -355,18 +355,18 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     private fun navigateToGMHome() {
-        activity?.run {
-            val router = application as? ShopSettingRouter
-            router?.goToGMSubscribe(this)
-        }
+//        activity?.run {
+//            val router = application as? ShopSettingRouter
+//            router?.goToGMSubscribe(this)
+//        }
     }
 
     private fun navigateToAboutGM() {
-        if (GlobalConfig.isSellerApp()) {
-            (activity!!.application as ShopSettingRouter).goToGmSubscribeMembershipRedirect(activity!!)
-        } else {
-            (activity!!.application as ShopSettingRouter).goToMerchantRedirect(activity!!)
-        }
+//        if (GlobalConfig.isSellerApp()) {
+//            (activity!!.application as ShopSettingRouter).goToGmSubscribeMembershipRedirect(activity!!)
+//        } else {
+//            (activity!!.application as ShopSettingRouter).goToMerchantRedirect(activity!!)
+//        }
     }
 
     override fun onErrorGetShopBasicData(throwable: Throwable) {

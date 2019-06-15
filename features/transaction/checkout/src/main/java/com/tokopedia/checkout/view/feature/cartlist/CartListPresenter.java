@@ -10,7 +10,6 @@ import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
@@ -20,6 +19,7 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
@@ -29,6 +29,7 @@ import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApp
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
+import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetRecentViewSubscriber;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
@@ -108,6 +109,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final TopAdsGqlUseCase topAdsUseCase;
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final UserSessionInterface userSessionInterface;
+    private final GetRecentViewUseCase getRecentViewUseCase;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
 
@@ -127,7 +129,8 @@ public class CartListPresenter implements ICartListPresenter {
                              UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
                              UserSessionInterface userSessionInterface,
                              TopAdsGqlUseCase topAdsUseCase,
-                             ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
+                             ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
+                             GetRecentViewUseCase getRecentViewUseCase) {
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartUseCase = deleteCartUseCase;
@@ -144,6 +147,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.userSessionInterface = userSessionInterface;
         this.topAdsUseCase = topAdsUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
+        this.getRecentViewUseCase = getRecentViewUseCase;
     }
 
     @Override
@@ -165,6 +169,9 @@ public class CartListPresenter implements ICartListPresenter {
         }
         if (checkPromoStackingCodeUseCase != null) {
             checkPromoStackingCodeUseCase.unsubscribe();
+        }
+        if (getRecentViewUseCase != null) {
+            getRecentViewUseCase.unsubscribe();
         }
         view = null;
     }
@@ -1204,5 +1211,16 @@ public class CartListPresenter implements ICartListPresenter {
         }
         return hasChanges;
     }
+
+    @Override
+    public void processGetRecentViewData() {
+        try {
+            int userId = Integer.parseInt(userSessionInterface.getUserId());
+            getRecentViewUseCase.createObservable(userId, new GetRecentViewSubscriber(view, this));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

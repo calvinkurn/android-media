@@ -8,6 +8,7 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
@@ -82,14 +83,20 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    TopAdsGqlUseCase topAdsUseCase(Context context){
+    TopAdsGqlUseCase topAdsUseCase(Context context) {
         return new TopAdsGqlUseCase(context);
     }
 
     @Provides
     @CartListScope
-    CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context){
+    CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context) {
         return new CheckPromoStackingCodeUseCase(context.getResources());
+    }
+
+    @Provides
+    @CartListScope
+    GetRecentViewUseCase provideGetRecentViewUseCase() {
+        return new GetRecentViewUseCase(cartListView.getActivity());
     }
 
     @Provides
@@ -109,13 +116,14 @@ public class CartListModule {
                                                  UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
                                                  UserSessionInterface userSessionInterface,
                                                  TopAdsGqlUseCase topAdsGqlUseCase,
-                                                 ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
+                                                 ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
+                                                 GetRecentViewUseCase getRecentViewUseCase) {
         return new CartListPresenter(getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,
                 updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
-                clearCacheAutoApplyStackUseCase);
+                clearCacheAutoApplyStackUseCase, getRecentViewUseCase);
     }
 
     @Provides
@@ -133,7 +141,7 @@ public class CartListModule {
     @Provides
     @CartListScope
     @ApplicationContext
-    Context provideContextAbstraction(Context context){
+    Context provideContextAbstraction(Context context) {
         return context;
     }
 

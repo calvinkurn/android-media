@@ -46,6 +46,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddr
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
+import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.ResponseFirstStep;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
@@ -64,7 +65,11 @@ import com.tokopedia.checkout.view.feature.bottomsheetpromostacking.ClashBottomS
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.checkout.view.feature.emptycart.viewholder.RecentViewViewHolder;
+import com.tokopedia.checkout.view.feature.emptycart2.viewholder.RecentViewItemViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -168,6 +173,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private boolean isToolbarWithBackButton = true;
 
     private CartListData cartListData;
+    private List<RecentView> recentViewList;
 
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
@@ -1000,7 +1006,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
                 cartAdapter.checkForShipmentForm();
                 onCartNotEmpty();
+                cartPageAnalytics.eventViewCartListFinishRender();
             }
+
+            dPresenter.processGetRecentViewData();
 
             if (toolbar != null) {
                 setVisibilityRemoveButton(!cartListData.getShopGroupDataList().isEmpty());
@@ -1011,7 +1020,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 }
             }
 
-            cartPageAnalytics.eventViewCartListFinishRender();
         }
     }
 
@@ -1804,5 +1812,24 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onSubmitNewPromoAfterClash(@NotNull ArrayList<String> oldPromoList, @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList, @NotNull String type) {
         dPresenter.processCancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList, type);
+    }
+
+    @Override
+    public void renderRecentView(List<RecentView> recentViewList) {
+        List<CartRecentViewItemHolderData> cartRecentViewItemHolderDataList = new ArrayList<>();
+        for (RecentView recentView : recentViewList) {
+            CartRecentViewItemHolderData cartRecentViewItemHolderData = new CartRecentViewItemHolderData();
+            cartRecentViewItemHolderData.setId(recentView.getProductId());
+            cartRecentViewItemHolderData.setName(recentView.getProductName());
+            cartRecentViewItemHolderData.setPrice(recentView.getProductPrice());
+            cartRecentViewItemHolderData.setImageUrl(recentView.getProductImage());
+
+            cartRecentViewItemHolderDataList.add(cartRecentViewItemHolderData);
+        }
+
+        CartRecentViewHolderData cartRecentViewHolderData = new CartRecentViewHolderData();
+        cartRecentViewHolderData.setRecentViewList(cartRecentViewItemHolderDataList);
+
+        cartAdapter.addCartRecentViewData(cartRecentViewHolderData);
     }
 }

@@ -18,18 +18,18 @@ import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.ActionListener;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartEmptyViewHolder;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartRecentViewViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartShopViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTopAdsViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartEmptyHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
-import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
-import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.ArrayList;
@@ -78,6 +78,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS;
         } else if (cartDataList.get(position) instanceof CartEmptyHolderData) {
             return CartEmptyViewHolder.Companion.getLAYOUT();
+        } else if (cartDataList.get(position) instanceof CartRecentViewHolderData) {
+            return CartRecentViewViewHolder.Companion.getLAYOUT();
         } else {
             return super.getItemViewType(position);
         }
@@ -114,6 +116,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartEmptyViewHolder.Companion.getLAYOUT(), parent, false);
             return new CartEmptyViewHolder(view, actionListener);
+        } else if (viewType == CartRecentViewViewHolder.Companion.getLAYOUT()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(CartRecentViewViewHolder.Companion.getLAYOUT(), parent, false);
+            return new CartRecentViewViewHolder(view, actionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -147,6 +153,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (getItemViewType(position) == CartEmptyViewHolder.Companion.getLAYOUT()) {
             final CartEmptyViewHolder holderView = (CartEmptyViewHolder) holder;
             final CartEmptyHolderData data = (CartEmptyHolderData) cartDataList.get(position);
+            holderView.bind(data);
+        } else if (getItemViewType(position) == CartRecentViewViewHolder.Companion.getLAYOUT()) {
+            final CartRecentViewViewHolder holderView = (CartRecentViewViewHolder) holder;
+            final CartRecentViewHolderData data = (CartRecentViewHolderData) cartDataList.get(position);
             holderView.bind(data);
         }
     }
@@ -387,19 +397,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         checkForShipmentForm();
     }
 
-    public void updateItemPromoVoucher(PromoData promoData) {
-        for (int i = 0; i < cartDataList.size(); i++) {
-            Object object = cartDataList.get(i);
-            if (object instanceof PromoData) {
-                cartDataList.set(i, promoData);
-                notifyItemChanged(i);
-            } else if (object instanceof CartPromoSuggestion) {
-                ((CartPromoSuggestion) object).setVisible(false);
-                notifyItemChanged(i);
-            }
-        }
-    }
-
     public void updateItemPromoStackVoucher(PromoStackingData promoStackingData) {
         for (int i = 0; i < cartDataList.size(); i++) {
             Object object = cartDataList.get(i);
@@ -411,47 +408,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 notifyItemChanged(i);
             }
         }
-    }
-
-    public void cancelAutoApplyCoupon() {
-        for (int i = 0; i < cartDataList.size(); i++) {
-            Object object = cartDataList.get(i);
-            if (object instanceof PromoData) {
-                ((PromoData) object).setState(TickerCheckoutView.State.EMPTY);
-                notifyItemChanged(i);
-            } else if (object instanceof CartPromoSuggestion) {
-                ((CartPromoSuggestion) object).setVisible(true);
-                notifyItemChanged(i);
-            }
-        }
-    }
-
-    public void cancelAutoApplyStackCoupon() {
-        for (int i = 0; i < cartDataList.size(); i++) {
-            Object object = cartDataList.get(i);
-            if (object instanceof PromoStackingData) {
-                ((PromoStackingData) object).setState(TickerPromoStackingCheckoutView.State.EMPTY);
-                notifyItemChanged(i);
-            }
-        }
-    }
-
-
-    public void updateSuggestionPromo() {
-        for (int i = 0; i < cartDataList.size(); i++) {
-            Object object = cartDataList.get(i);
-            if (object instanceof CartPromoSuggestion) {
-                ((CartPromoSuggestion) object).setVisible(true);
-                notifyItemChanged(i);
-                break;
-            }
-        }
-    }
-
-    public void addPromoVoucherData(PromoData promoData) {
-        cartDataList.add(promoData);
-        notifyDataSetChanged();
-        checkForShipmentForm();
     }
 
     public void addPromoStackingVoucherData(PromoStackingData promoStackingData) {
@@ -478,6 +434,11 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             cartEmptyHolderData = new CartEmptyHolderData();
         }
         cartDataList.add(cartEmptyHolderData);
+        notifyDataSetChanged();
+    }
+
+    public void addCartRecentViewData(CartRecentViewHolderData cartRecentViewHolderData) {
+        cartDataList.add(cartRecentViewHolderData);
         notifyDataSetChanged();
     }
 
