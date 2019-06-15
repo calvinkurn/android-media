@@ -70,13 +70,8 @@ public class GetApprovalStatusUseCase {
             List<GraphqlError> graphqlErrorList = graphqlResponse.getError(GetApprovalStatusPojo.class);
             if (data == null) {
                 throw new RuntimeException();
-            }
-            if (graphqlErrorList != null && !graphqlErrorList.isEmpty()) {
-                try {
-                    throw new MessageErrorException(graphqlErrorList.get(0).getMessage());
-                } catch (MessageErrorException e) {
-                    e.printStackTrace();
-                }
+            } else if (graphqlErrorList != null && !graphqlErrorList.isEmpty()) {
+                Observable.error(new MessageErrorException(graphqlErrorList.get(0).getMessage()));
             }
             return data;
         });

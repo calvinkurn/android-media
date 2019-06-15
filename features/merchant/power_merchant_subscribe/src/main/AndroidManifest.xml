@@ -5,14 +5,19 @@
     <application>
         <activity
             android:name=".view.activity.PowerMerchantSubscribeActivity"
-            android:label="@string/activity_label"
+            android:label="@string/pm_title_activity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.White"/>
         <activity
             android:name=".view.activity.TransitionPeriodPmActivity"
-            android:label="@string/activity_label"
+            android:label="@string/pm_title_activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+        <activity
+            android:name=".view.activity.PowerMerchantTermsActivity"
+            android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
     </application>

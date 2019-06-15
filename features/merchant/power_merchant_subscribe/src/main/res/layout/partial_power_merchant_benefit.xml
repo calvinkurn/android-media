@@ -16,7 +16,7 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textView2"
-            style="@style/TextView.Medium.FontMedium"
+            style="@style/TextView.TitleMedium.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -26,18 +26,100 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_64"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_20"
+            android:src="@drawable/ic_promo_special"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-        <ExpandableListView
-            android:id="@+id/benefit_listview"
-            android:layout_width="match_parent"
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/textViewCompat2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:divider="@null"
-            android:cacheColorHint="@android:color/transparent"
-            android:listSelector="@android:color/transparent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2">
+            android:layout_marginLeft="@dimen/dp_10"
+            style="@style/TextView.Title.Bold"
+            android:text="@string/pm_label_special_promo"
+            app:layout_constraintStart_toEndOf="@+id/imageView6"
+            app:layout_constraintTop_toTopOf="@+id/imageView6" />
 
-        </ExpandableListView>
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/textViewCompat3"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:minLines="2"
+            android:layout_marginTop="@dimen/dp_5"
+            android:text="Lebih banyak pilihan promo khusus Power Merchant."
+            app:layout_constraintStart_toStartOf="@+id/textViewCompat2"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCompat2" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_64"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_topads_credit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView6" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/textViewCompat4"
+            style="@style/TextView.Title.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="@string/pm_label_topads_credit"
+            app:layout_constraintStart_toEndOf="@+id/imageView7"
+            app:layout_constraintTop_toTopOf="@+id/imageView7" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/textViewCompat5"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            android:minLines="2"
+            android:text="Dapatkan bonus kredit 5% setiap top-up Kredit TopAds"
+            app:layout_constraintStart_toStartOf="@+id/textViewCompat4"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCompat4" />
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_64"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_big_promo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/textViewCompat6"
+            style="@style/TextView.Title.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+
+            android:text="@string/pm_label_special_promo_big"
+            app:layout_constraintStart_toEndOf="@+id/imageView8"
+            app:layout_constraintTop_toTopOf="@+id/imageView8" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/textViewCompat7"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            android:minLines="2"
+            android:text="Tingkatkan penjualan dengan berpartisipasi di kegiatan promosi tahunan."
+            app:layout_constraintStart_toStartOf="@+id/textViewCompat6"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCompat6" />
+
     </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

@@ -15,10 +15,11 @@
         android:gravity="center">
 
         <ImageView
-            android:id="@+id/img_success"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/img_kyc_verification"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_200"
             android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true" />
@@ -27,15 +28,15 @@
             android:id="@+id/tv_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/img_success"
+            android:layout_below="@id/img_kyc_verification"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_8"
             android:gravity="center"
             android:text="@string/pm_label_transition_period_header_1"
             android:lineSpacingExtra="@dimen/dp_2"
             android:textAlignment="center"
-            android:textStyle="bold"
-            app:fontSize="subHeadline"/>
+            style="@style/TextView.SubHeadline.Bold"
+            />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_user_name_static"
@@ -47,8 +48,8 @@
             android:text="@string/pm_label_transition_period_header_2"
             android:lineSpacingExtra="@dimen/dp_2"
             android:textAlignment="center"
-            android:textStyle="bold"
-            app:fontSize="subHeadline"/>
+            style="@style/TextView.SubHeadline.Bold"
+            />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_label_static"
@@ -58,24 +59,20 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_4"
             android:gravity="center"
+            android:lineSpacingExtra="@dimen/dp_2"
             android:padding="@dimen/dp_4"
             android:text="@string/pm_label_transition_period_desc_1"
             android:textAlignment="center"
-            app:fontSize="title"/>
-
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/tv_tnc_courier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_label_static"
-            android:layout_marginTop="@dimen/dp_4"
-            android:text="@string/pm_label_transition_period_desc_2"
-            android:gravity="center"
-            android:layout_centerHorizontal="true"
             app:fontSize="title"
-            android:lineSpacingExtra="@dimen/dp_4"
-            />
+            android:layout_marginBottom="@dimen/dp_20"/>
+
+        <Button
+            android:id="@+id/btn_kyc_verification"
+            style="@style/Button.Submit.Green.Full"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pm_label_transition_period_button"
+            android:layout_below="@id/tv_label_static"/>
 
     </RelativeLayout>
 

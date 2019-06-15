@@ -1,10 +1,8 @@
 package com.tokopedia.gm.common.domain.interactor
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.gm.common.constant.GMParamApiContant
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
-import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreMainDomainModel
+import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -15,14 +13,16 @@ import rx.Observable
 import javax.inject.Inject
 
 class GetPowerMerchantStatusUseCase @Inject constructor(private val getShopStatusUseCase: GetShopStatusUseCase,
-                                                        private val getApprovalStatusUseCase: GetApprovalStatusUseCase)
+                                                        private val getApprovalStatusUseCase: GetApprovalStatusUseCase,
+                                                        private val getShopScoreUseCase: GetShopScoreUseCase)
     : UseCase<PowerMerchantStatus>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<PowerMerchantStatus> {
         return Observable.zip(
                 getShopStatus(requestParams),
-                getKycStatus()) { t1, t2 ->
-            PowerMerchantStatus(t1, t2)
+                getKycStatus(),
+                getShopScore(requestParams)) { t1, t2, t3 ->
+            PowerMerchantStatus(t1, t2, t3)
         }
     }
 
@@ -30,13 +30,13 @@ class GetPowerMerchantStatusUseCase @Inject constructor(private val getShopStatu
         return getShopStatusUseCase.createObservable(requestParams)
     }
 
+    private fun getShopScore(requestParams: RequestParams): Observable<ShopScoreResult> {
+        return getShopScoreUseCase.createObservable(requestParams)
+    }
+
     private fun getKycStatus(): Observable<GetApprovalStatusPojo> {
         return getApprovalStatusUseCase.execute(GetApprovalStatusUseCase.getRequestParam())
     }
-
-//    private fun getShopScore(): Observable<ShopScoreMainDomainModel> {
-//        return getShopScoreUseCase.createObservable(RequestParams.create())
-//    }
 
     companion object {
         fun createRequestParams(shopId: String): RequestParams {

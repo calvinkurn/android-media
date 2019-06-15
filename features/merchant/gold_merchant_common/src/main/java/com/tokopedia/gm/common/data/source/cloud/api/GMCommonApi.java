@@ -8,6 +8,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantActivationRe
 import com.tokopedia.gm.common.data.source.cloud.model.RequestAutoExtendPowerMerchantModel;
 import com.tokopedia.gm.common.data.source.cloud.model.RequestCashbackModel;
 import com.tokopedia.gm.common.data.source.cloud.model.RequestGetCashbackModel;
+import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 
 import java.util.List;
@@ -45,4 +46,8 @@ public interface GMCommonApi {
     @POST(GMCommonUrl.SHOPS_SUBSCRIPTIONS_AUTO_EXTEND)
     Observable<Response<DataResponse<PowerMerchantActivationResult>>> turnOnOffPowerMerchantSubscription(
             @Body RequestAutoExtendPowerMerchantModel requestAutoExtendPowerMerchantModel);
+
+    @GET(GMCommonUrl.SHOPS_SCORE_STATUS + "{shopId}")
+    Observable<Response<DataResponse<ShopScoreResult>>> getShopScoreDetail(@Path("shopId") String shopId);
+
 }

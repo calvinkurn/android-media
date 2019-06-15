@@ -27,7 +27,7 @@ class PartialTncViewHolder private constructor(private val view:View , private v
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
             }
-        },0 , spanText.length+1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        },0 , spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
 }
