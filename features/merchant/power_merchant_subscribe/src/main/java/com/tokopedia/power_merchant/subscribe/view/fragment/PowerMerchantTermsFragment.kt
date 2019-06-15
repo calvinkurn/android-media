@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.gm.common.di.GmCommonQualifier
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.showLoading
@@ -23,6 +24,7 @@ import javax.inject.Inject
  */
 class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
 
+    @GmCommonQualifier
     @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
