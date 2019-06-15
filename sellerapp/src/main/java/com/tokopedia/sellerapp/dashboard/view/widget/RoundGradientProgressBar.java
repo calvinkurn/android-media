@@ -17,13 +17,15 @@ public class RoundGradientProgressBar extends RoundCornerProgressBar {
 
     public RoundGradientProgressBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        int[] colors = {ContextCompat.getColor(context, R.color.lightish_green),
-                ContextCompat.getColor(context, R.color.tkpd_main_green)};
-        gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,colors);
-        gradientDrawable.setShape(GradientDrawable.RECTANGLE);
     }
 
     protected GradientDrawable createGradientDrawable(int color) {
+        if (gradientDrawable == null) {
+            int[] colors = {ContextCompat.getColor(getContext(), R.color.lightish_green),
+                    ContextCompat.getColor(getContext(), R.color.tkpd_main_green)};
+            gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,colors);
+            gradientDrawable.setShape(GradientDrawable.RECTANGLE);
+        }
         return gradientDrawable;
     }
 }

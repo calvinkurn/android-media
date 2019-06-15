@@ -12,7 +12,8 @@ import com.tokopedia.sellerapp.R;
 /**
  * Created by hendry on 2019-06-15.
  *  _________________
- * (_________________)==========)
+ * (_________________)==========#
+ *
  */
 public class ShopScorePMWidget extends FrameLayout {
     public ShopScorePMWidget(Context context) {
@@ -39,7 +40,7 @@ public class ShopScorePMWidget extends FrameLayout {
     private void initView(Context context, AttributeSet attrs) {
         View view = inflate(context, R.layout.widget_shop_score_pm, this);
         RoundCornerProgressBar roundCornerProgressBar = view.findViewById(R.id.progress_value);
-        roundCornerProgressBar.setProgress(50);
+        roundCornerProgressBar.setProgress(75);
         roundCornerProgressBar.setProgressColor(R.color.green_500);
     }
 }
