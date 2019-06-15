@@ -247,7 +247,7 @@ public class SellerDashboardModule {
 
     @SellerDashboardScope
     @Provides
-    public UserSessionInterface provideUserSession(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context) {
+    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
         return new com.tokopedia.user.session.UserSession(context);
     }
 
