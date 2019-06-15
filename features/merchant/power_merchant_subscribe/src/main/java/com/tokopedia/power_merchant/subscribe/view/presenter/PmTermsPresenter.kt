@@ -17,8 +17,10 @@ class PmTermsPresenter @Inject constructor(
     : BaseDaggerPresenter<PmTermsContract.View>(), PmTermsContract.Presenter {
 
     override fun activatePowerMerchant() {
+        view.showLoading()
         activatePowerMerchantUseCase.execute(object : Subscriber<PowerMerchantActivationResult>() {
             override fun onNext(t: PowerMerchantActivationResult?) {
+                view.hideLoading()
                 view.onSuccessActivate()
             }
 
@@ -29,16 +31,19 @@ class PmTermsPresenter @Inject constructor(
                 if (isViewNotAttached || e == null) {
                     return
                 }
+                view.hideLoading()
                 view.onError(e)
             }
         })
     }
 
     override fun autoExtendPowerMerchant() {
+        view.showLoading()
         toggleAutoExtendUseCase.execute(
                 ToggleAutoExtendPowerMerchantUseCase.createRequestParams(true),
                 object : Subscriber<PowerMerchantActivationResult>() {
                     override fun onNext(t: PowerMerchantActivationResult?) {
+                        view.hideLoading()
                         view.onSuccessAutoExtend()
                     }
 
@@ -49,6 +54,7 @@ class PmTermsPresenter @Inject constructor(
                         if (isViewNotAttached || e == null) {
                             return
                         }
+                        view.hideLoading()
                         view.onError(e)
                     }
                 })
