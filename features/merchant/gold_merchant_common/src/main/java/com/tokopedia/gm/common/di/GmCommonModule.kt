@@ -2,6 +2,7 @@ package com.tokopedia.gm.common.di
 
 import android.content.Context
 import com.readystatesoftware.chuck.ChuckInterceptor
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
@@ -53,6 +54,11 @@ class GmCommonModule {
                     .addInterceptor(httpLoggingInterceptor)
         }
         return builder.build()
+    }
+
+    @Provides
+    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context): TkpdAuthInterceptor {
+        return TkpdAuthInterceptor(context, context.applicationContext as AbstractionRouter)
     }
 
     @GmCommonQualifier
