@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_passenger_layout"
     android:layout_width="match_parent"
@@ -13,7 +14,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_centerInParent="true"
-        android:src="@drawable/ic_arrow_right_grey" />
+        app:srcCompat="@drawable/ic_arrow_right_grey" />
 
     <com.tokopedia.design.label.LabelView
         android:id="@+id/label_header"
