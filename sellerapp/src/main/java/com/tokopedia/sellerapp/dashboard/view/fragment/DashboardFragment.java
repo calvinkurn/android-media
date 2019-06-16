@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -44,6 +45,7 @@ import com.tokopedia.design.widget.WarningTickerView;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
+import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantSuccessBottomSheet;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
@@ -71,6 +73,9 @@ import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubs
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_BS_SUCCESS;
+import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_PM_IDLE;
 
 /**
  * Created by nathan on 9/6/17.
@@ -695,23 +700,64 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             );
         }
 
+        PowerMerchantSuccessBottomSheet.BottomSheetModel model = null;
+        String redirectUrl = "";
+
         //show pop up only after transition period
         if (!shopStatusModel.isTransitionPeriod() && popUpManager.isEverPowerMerchant(shopId)) {
             if (shopStatusModel.isPowerMerchantActive()
                     && !popUpManager.isActivePowerMerchantShown(shopId)) {
                 popUpManager.setActivePowerMerchantShown(shopId, true);
-                //TODO milhamj power merchant popup
+                popUpManager.setIdlePowerMerchantShown(shopId, true);
+                model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                        getString(R.string.pm_popup_active_title),
+                        getString(R.string.pm_popup_active_desc),
+                        IMG_URL_BS_SUCCESS,
+                        getString(R.string.pm_popup_active_btn)
+                );
+                redirectUrl = "";
 
             } else if (shopStatusModel.isPowerMerchantIdle()
                     && !popUpManager.isIdlePowerMerchantShown(shopId)) {
                 popUpManager.setIdlePowerMerchantShown(shopId, true);
-                //TODO milhamj power merchant popup
+                model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                        getString(R.string.pm_popup_idle_title),
+                        getString(R.string.pm_popup_idle_desc),
+                        IMG_URL_PM_IDLE,
+                        getString(R.string.pm_popup_idle_btn)
+                );
+                redirectUrl = "https://www.tokopedia.com/blog/panduan-keamanan-tokopedia/";
+                //TODO milhamj change image url above
 
             } else if (shopStatusModel.isPowerMerchantInactive()
                     && !popUpManager.isRegularMerchantShown(shopId)) {
                 popUpManager.setRegularMerchantShown(shopId, true);
-                //TODO milhamj power merchant popup
+                model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                        getString(R.string.pm_popup_regular_title),
+                        getString(R.string.pm_popup_regular_desc),
+                        IMG_URL_PM_IDLE,
+                        getString(R.string.pm_popup_regular_btn)
+                );
+                redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
+            }
+        }
 
+        if (model != null) {
+            PowerMerchantSuccessBottomSheet bottomSheet = PowerMerchantSuccessBottomSheet.newInstance(model);
+            final String finalUrl = redirectUrl;
+            bottomSheet.setListener(() -> onGoToLink(finalUrl));
+        }
+    }
+
+    private void onGoToLink(String link) {
+        if (getActivity() != null && !TextUtils.isEmpty(link)) {
+            if (RouteManager.isSupportApplink(getActivity(), link)) {
+                RouteManager.route(getActivity(), link);
+            } else {
+                RouteManager.route(
+                        getActivity(),
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                );
             }
         }
     }
