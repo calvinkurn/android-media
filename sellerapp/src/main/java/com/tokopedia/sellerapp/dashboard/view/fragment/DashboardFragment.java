@@ -159,7 +159,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         messageLabelView = (LabelView) view.findViewById(R.id.label_view_message);
         discussionLabelView = (LabelView) view.findViewById(R.id.label_view_discussion);
         reviewLabelView = (LabelView) view.findViewById(R.id.label_view_review);
-        shopScorePMWidget = view.findViewById(R.id.shop_score_widget_pm);
+        shopScorePMWidget = view.findViewById(R.id.shop_score_widget);
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
