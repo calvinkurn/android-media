@@ -20,28 +20,18 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="@string/pm_label_score_verification_header_1"
+            android:text="@string/pm_label_score_verification_header"
             android:textColor="@color/black"
             app:fontSize="titleBig"
+            android:layout_marginBottom="@dimen/dp_16"
             android:textStyle="bold" />
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/txt_static_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txt_success_addproduct"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:text="@string/pm_label_score_verification_header_2"
-            android:textColor="@color/black"
-            app:fontSize="titleBig"
-            android:textStyle="bold" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/kyc_static_desc_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txt_static_1"
+            android:layout_below="@id/txt_success_addproduct"
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:lineSpacingExtra="@dimen/sp_6"

@@ -3,6 +3,7 @@ package com.tokopedia.sellerapp.dashboard.view.fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.ShopStatisticDetail;
@@ -358,35 +360,46 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
         final String showCaseTag = DashboardFragment.class.getName() + ".score";
-        if (ShowCasePreference.hasShown(getActivity().getApplicationContext(), showCaseTag) || showCaseDialog != null
-                || showCaseObjects == null) {
-            return;
+        if (getContext() != null) {
+            if (ShowCasePreference.hasShown(getContext(), showCaseTag) || showCaseDialog != null
+                    || showCaseObjects == null) {
+                return;
+            }
+
+            showCaseDialog = createShowCase();
+
+            int shopScoreWidgetTop = shopScoreWidget.getTop();
+            int shopScoreWidgetBottom = shopScoreWidget.getBottom();
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                shopScoreWidgetBottom =
+                        shopScoreWidgetBottom - DisplayMetricUtils.getStatusBarHeight(getContext());
+                shopScoreWidgetTop =
+                        shopScoreWidgetTop - DisplayMetricUtils.getStatusBarHeight(getContext());
+            }
+            ArrayList<ShowCaseObject> showcases = new ArrayList<>();
+            showcases.add(new ShowCaseObject(
+                    shopScoreWidget,
+                    getString(R.string.showcase_title_power_merchant),
+                    getString(R.string.showcase_desc_1_power_merchant))
+                    .withCustomTarget(new int[]{
+                            shopScoreWidget.getLeft(),
+                            shopScoreWidgetTop,
+                            shopScoreWidget.getRight(),
+                            shopScoreWidgetBottom}));
+            showcases.add(new ShowCaseObject(
+                    shopScoreWidget,
+                    getString(R.string.showcase_title_power_merchant),
+                    getString(R.string.showcase_desc_2_power_merchant))
+                    .withCustomTarget(new int[]{
+                            shopScoreWidget.getLeft(),
+                            shopScoreWidgetTop,
+                            shopScoreWidget.getRight(),
+                            shopScoreWidgetBottom}));
+            showcases.addAll(showCaseObjects);
+
+            showCaseDialog.show(getActivity(), showCaseTag, showcases);
         }
-//
-//        showCaseDialog = createShowCase();
-//
-//        int bottomNavTopPos = bottomNavigation.getTop();
-//        int bottomNavBottomPos = bottomNavigation.getBottom();
-//
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-//            bottomNavBottomPos =
-//                    bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
-//            bottomNavTopPos =
-//                    bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
-//        }
-//        ArrayList<ShowCaseObject> showcases = new ArrayList<>();
-//        showcases.add(new ShowCaseObject(
-//                bottomNavigation,
-//                getString(R.string.title_showcase),
-//                getString(R.string.desc_showcase))
-//                .withCustomTarget(new int[]{
-//                        bottomNavigation.getLeft(),
-//                        bottomNavTopPos,
-//                        bottomNavigation.getRight(),
-//                        bottomNavBottomPos} ));
-//        showcases.addAll(showCaseObjects);
-//
-//        showCaseDialog.show(this, showCaseTag, showcases);
     }
 
 
