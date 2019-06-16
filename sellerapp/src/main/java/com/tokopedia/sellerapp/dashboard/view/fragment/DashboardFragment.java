@@ -41,6 +41,7 @@ import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.widget.WarningTickerView;
+import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
@@ -57,6 +58,7 @@ import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.sellerapp.dashboard.view.preference.PowerMerchantPopUpManager;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycWidgetUtil;
@@ -107,6 +109,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private ShopWarningTickerView shopWarningTickerView;
     private WarningTickerView verificationWarningTickerView;
 
+    private PowerMerchantPopUpManager popUpManager;
     private ProgressDialog progressDialog;
 
     private SnackbarRetry snackBarRetry;
@@ -155,6 +158,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+
+        popUpManager = new PowerMerchantPopUpManager(getContext());
 
         ivSettingIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -616,6 +621,16 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             tickerView.setVisibility(View.GONE);
         } else {
             tickerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void shopPowerMerchantPopup(ShopStatusModel shopStatusModel) {
+        if (shopStatusModel.isOfficialStore()) {
+            return;
+        }
+
+        if (shopStatusModel.isPowerMerchantActive()) {
+
         }
     }
 
