@@ -11,7 +11,7 @@
         android:id="@+id/txt_success_header_bs"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:text="@string/pm_label_success_header"
+        android:text="@string/pm_label_bs_success_header"
         android:textColor="@color/black"
         app:fontSize="titleBig"
         android:textStyle="bold"
@@ -31,7 +31,7 @@
         android:id="@+id/txt_success_desc_bs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/pm_label_success_desc"
+        android:text="@string/pm_label_bs_success_desc"
         android:gravity="center"
         app:fontSize="small"
         android:layout_marginBottom="@dimen/dp_20"/>
@@ -41,6 +41,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Button.Submit.Green.Full"
-        android:text="@string/pm_label_success_button"/>
+        android:text="@string/pm_label_bs_success_button"/>
 
 </LinearLayout>

@@ -60,6 +60,10 @@ import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.sellerapp.dashboard.view.preference.PowerMerchantPopUpManager;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycWidgetUtil;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
@@ -113,6 +117,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private ProgressDialog progressDialog;
 
     private SnackbarRetry snackBarRetry;
+
+    private ShowCaseDialog showCaseDialog;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -323,6 +330,56 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         setShopInfoToLabelFragment(shopModel.info);
     }
+
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .backgroundContentColorRes(R.color.black)
+                .shadowColorRes(R.color.shadow)
+                .titleTextColorRes(R.color.white)
+                .textColorRes(R.color.grey_400)
+                .textSizeRes(R.dimen.sp_12)
+                .titleTextSizeRes(R.dimen.sp_16)
+                .nextStringRes(R.string.next)
+                .prevStringRes(R.string.previous)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .build();
+    }
+
+    public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
+        final String showCaseTag = DashboardFragment.class.getName() + ".score";
+        if (ShowCasePreference.hasShown(getActivity().getApplicationContext(), showCaseTag) || showCaseDialog != null
+                || showCaseObjects == null) {
+            return;
+        }
+//
+//        showCaseDialog = createShowCase();
+//
+//        int bottomNavTopPos = bottomNavigation.getTop();
+//        int bottomNavBottomPos = bottomNavigation.getBottom();
+//
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+//            bottomNavBottomPos =
+//                    bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
+//            bottomNavTopPos =
+//                    bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
+//        }
+//        ArrayList<ShowCaseObject> showcases = new ArrayList<>();
+//        showcases.add(new ShowCaseObject(
+//                bottomNavigation,
+//                getString(R.string.title_showcase),
+//                getString(R.string.desc_showcase))
+//                .withCustomTarget(new int[]{
+//                        bottomNavigation.getLeft(),
+//                        bottomNavTopPos,
+//                        bottomNavigation.getRight(),
+//                        bottomNavBottomPos} ));
+//        showcases.addAll(showCaseObjects);
+//
+//        showCaseDialog.show(this, showCaseTag, showcases);
+    }
+
 
     public void setShopInfoToLabelFragment(Info shopInfo) {
         MitraToppersPreApproveLabelFragment mitraToppersPreApproveLabelFragment =
