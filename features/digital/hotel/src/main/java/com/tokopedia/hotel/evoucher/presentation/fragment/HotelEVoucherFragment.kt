@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.evoucher.di.HotelEVoucherComponent
 import com.tokopedia.hotel.evoucher.presentation.viewmodel.HotelEVoucherViewModel
@@ -32,7 +33,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 14/05/19
  */
-class HotelEVoucherFragment : BaseDaggerFragment() {
+class HotelEVoucherFragment : HotelBaseFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -191,6 +192,11 @@ class HotelEVoucherFragment : BaseDaggerFragment() {
             }
             tv_property_phone.text = getString(R.string.hotel_e_voucher_phone, phoneString)
 
+    }
+
+    override fun onErrorRetryClicked() {
+        eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_hotel_order_list_detail), orderId)
     }
 
     companion object {

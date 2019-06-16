@@ -19,8 +19,8 @@ abstract class HotelBaseFragment: BaseDaggerFragment() {
 
     fun showErrorState(e: Throwable) {
         try {
-            view!!.findViewById<View>(R.id.main_retry)!!.visibility = View.VISIBLE
-        } catch (e: Exception) {
+            ((view!!.parent) as ViewGroup).main_retry!!.visibility = View.VISIBLE
+        } catch (exception: Exception) {
             val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
             params.gravity = Gravity.CENTER
@@ -36,7 +36,6 @@ abstract class HotelBaseFragment: BaseDaggerFragment() {
                 onErrorRetryClicked()
             }
         }
-
     }
 
     abstract fun onErrorRetryClicked()

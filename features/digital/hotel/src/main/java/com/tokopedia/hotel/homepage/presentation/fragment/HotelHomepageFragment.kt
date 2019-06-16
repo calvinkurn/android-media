@@ -93,7 +93,7 @@ class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets
     }
 
     override fun onErrorRetryClicked() {
-
+        loadPromoData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
