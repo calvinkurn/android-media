@@ -823,6 +823,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             PowerMerchantSuccessBottomSheet bottomSheet = PowerMerchantSuccessBottomSheet.newInstance(model);
             final String finalUrl = redirectUrl;
             bottomSheet.setListener(() -> onGoToLink(finalUrl));
+            bottomSheet.show(getChildFragmentManager(), "power_merchant_success");
         }
     }
 
