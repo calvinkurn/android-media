@@ -7,10 +7,11 @@ import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 interface PmSubscribeContract {
     interface View : CustomerView {
         fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus)
-        fun onErrorGetPmInfo(throwable: Throwable)
         fun showEmptyState(throwable: Throwable)
         fun refreshData()
         fun cancelMembership()
+        fun onSuccessCancelMembership()
+        fun onErrorCancelMembership(throwable: Throwable)
 
     }
 

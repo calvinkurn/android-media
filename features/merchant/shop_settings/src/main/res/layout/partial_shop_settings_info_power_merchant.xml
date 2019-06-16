@@ -10,7 +10,6 @@
         android:id="@+id/vgMembershipContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
         android:orientation="vertical"
         android:paddingBottom="@dimen/dp_32">
 
@@ -88,7 +87,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_weight="1"
-            android:text="@string/upgrade_your_shop"
+            android:text="@string/activate_power_merchant"
             android:textSize="14sp"
             android:layout_marginTop="@dimen/dp_16"/>
 

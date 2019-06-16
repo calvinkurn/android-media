@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_20">
+    android:padding="@dimen/dp_16">
 
     <com.tokopedia.design.component.TextViewCompat
         android:layout_width="@dimen/dp_240"
@@ -139,8 +139,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginBottom="@dimen/dp_10"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:visibility="visible">
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
@@ -176,6 +175,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
         style="@style/Button.Submit.Green.Full"
+        android:layout_marginBottom="@dimen/dp_10"
         android:text="@string/pm_label_bottom_sheet_cancel_button"/>
 
 </LinearLayout>

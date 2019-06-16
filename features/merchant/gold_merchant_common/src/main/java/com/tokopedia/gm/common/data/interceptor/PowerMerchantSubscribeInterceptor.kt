@@ -9,9 +9,9 @@ import okhttp3.Request
 import okhttp3.Response
 import javax.inject.Inject
 
-class PowerMerchantSubscribeInterceptor @Inject constructor(
-    @ApplicationContext val context: Context,
-    @GmCommonQualifier val userSession: UserSessionInterface) : Interceptor {
+class PowerMerchantSubscribeInterceptor(
+    val context: Context,
+    val userSession: UserSessionInterface) : Interceptor {
 
     companion object {
         private const val KEY_ACCOUNTS_AUTHORIZATION = "Accounts-Authorization"

@@ -91,7 +91,7 @@
         />
 
     <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/txt_cost"
+        android:id="@+id/txt_learn_more"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/pm_label_cost_3"

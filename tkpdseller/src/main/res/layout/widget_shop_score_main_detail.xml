@@ -21,7 +21,7 @@
         <TextView
             android:id="@+id/text_view_shop_score"
             style="@style/TextView.Small.Green"
-            tools:text="@string/label_empty_value" />
+            tools:text="80 poin" />
 
     </LinearLayout>
 

@@ -9,6 +9,9 @@
     <!-- TODO: Remove or change this placeholder text -->
 
     <string name="drawer_title_top_ads">TopAds</string>
+    <string name="showcase_title_power_merchant">Perhitungan Statistik Yang Baru</string>
+    <string name="showcase_desc_1_power_merchant">Aktifkan fitur-fitur eksklusif Power  Merchant dengan skor toko minimum 75 poin.</string>
+    <string name="showcase_desc_2_power_merchant">Jaga skor mingguan toko minimum 65 poin untuk pertahankan keanggotaan Power Merchant.</string>
 
     <string name="title_push_notif_general">Notifikasi baru dari Tokopedia</string>
     <string name="header_review_reputation">penalti reputasi</string>
@@ -31,6 +34,13 @@
     <string name="drawer_title_flash_sale">Flash Sale</string>
     <string name="title_dialog_tokopedia_app_not_valid">Aplikasi Tokopedia tidak valid</string>
     <string name="title_message_install_from_playstore">Install Tokopedia dari Google Play Store untuk melanjutkan</string>
+
+    <!--Power Merchant-->
+    <string name="score_of_total_score" translatable="false"><![CDATA[<b>%1$d</b>/%2$d]]></string>
+    <string name="bracket_format">(%1$s)</string>
+    <string name="regular_merchant_ticker">Capai 75 poin untuk aktifkan Power Merchant.</string>
+    <string name="power_merchant_inactive_ticker">Capai 75 poin untuk aktifkan Power Merchant.</string>
+    <string name="power_merchant_active_ticker">Poin minimum 65 poin untuk tetap jadi Power Merchant.</string>
 
     <string name="pm_popup_active_title">Selamat! Tokomu sudah menjadi Power Merchant</string>
     <string name="pm_popup_active_desc"><![CDATA[Tingkatkan penjualanmu tokomu dengan mengakses fitur-fitur <b>Power Merchant.</b>]]></string>

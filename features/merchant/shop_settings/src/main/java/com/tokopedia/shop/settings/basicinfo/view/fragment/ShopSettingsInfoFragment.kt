@@ -27,6 +27,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
@@ -321,8 +324,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel) {
         tvManageGmSubscribe.visibility = View.GONE
-        vgMembershipContainer.setOnClickListener { }
-        vgMembershipContainer.isClickable = false
         iv_power_merchant_logo.visibility = View.GONE
         tv_shop_membership_title.text = getString(R.string.label_regular_merchant)
         tv_shop_status.visibility = View.GONE
@@ -333,14 +334,12 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         } else {
             tv_ticker_info.visibility = View.VISIBLE
             setTextViewLearnMore(tv_ticker_info,getString(R.string.regular_merchant_learn_more),getString(R.string.learn_more)) {
-                //TODO go to score calculation for Power Merchant
-                Toast.makeText(context,"TODO go to regular merchant learn more", Toast.LENGTH_LONG).show()
+                navigateToAboutGM()
             }
 
             button_activate.visibility = View.VISIBLE
             button_activate.setOnClickListener {
-                //TODO go to activate power merchant activity
-                Toast.makeText(context,"TODO go to PM", Toast.LENGTH_LONG).show()
+                navigateToPMSubscribe()
             }
         }
     }
@@ -348,9 +347,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     private fun showPowerMerchant(shopStatusModel: ShopStatusModel) {
         tvManageGmSubscribe.visibility = View.VISIBLE
         button_activate.visibility = View.GONE
-        vgMembershipContainer.setOnClickListener {
-            //TODO go to activate power merchant activity
-            Toast.makeText(context,"TODO go to PM", Toast.LENGTH_LONG).show()
+        tvManageGmSubscribe.setOnClickListener {
+            navigateToPMSubscribe()
         }
         iv_power_merchant_logo.visibility = View.VISIBLE
         iv_power_merchant_logo.setImageResource(R.drawable.ic_power_merchant)
@@ -367,8 +365,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             ticker_container.visibility = View.VISIBLE
             tv_ticker.setText(R.string.power_merchant_learn_more)
             setTextViewLearnMore(tv_ticker,getString(R.string.power_merchant_learn_more),getString(R.string.learn_more)) {
-                //TODO go to score calculation for Power Merchant
-                Toast.makeText(context,"TODO go to Score", Toast.LENGTH_LONG).show()
+                RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
             }
         }
         tv_ticker_info.visibility = View.GONE
@@ -377,8 +374,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     private fun showOfficialStore() {
         tvManageGmSubscribe.visibility = View.GONE
         button_activate.visibility = View.GONE
-        vgMembershipContainer.setOnClickListener { }
-        vgMembershipContainer.isClickable = false
         iv_power_merchant_logo.visibility = View.VISIBLE
         iv_power_merchant_logo.setImageResource(R.drawable.ic_badge_shop_official)
         tv_shop_membership_title.text = getString(R.string.label_official_store)
@@ -411,17 +406,26 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     private fun navigateToGMHome() {
-        activity?.run {
-            val router = application as? ShopSettingRouter
-            router?.goToGMSubscribe(this)
+        if (GlobalConfig.isSellerApp()) {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_SUBSCRIBE_DASHBOARD)
+        } else {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_REDIRECT)
         }
     }
 
     private fun navigateToAboutGM() {
         if (GlobalConfig.isSellerApp()) {
-            (activity!!.application as ShopSettingRouter).goToGmSubscribeMembershipRedirect(activity!!)
+            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_MEMBERSHIP)
         } else {
-            (activity!!.application as ShopSettingRouter).goToMerchantRedirect(activity!!)
+            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_REDIRECT)
+        }
+    }
+
+    private fun navigateToPMSubscribe() {
+        if (GlobalConfig.isSellerApp()) {
+            RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
+        } else {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_REDIRECT)
         }
     }
 
