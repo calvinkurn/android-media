@@ -132,8 +132,23 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun refreshData() {
         root_view_pm.showLoading()
-        bottomSheetSuccess.dismiss()
         presenter.getPmStatusInfo(userSessionInterface.shopId)
+    }
+
+    override fun onErrorCancelMembership(throwable: Throwable) {
+        root_view_pm.hideLoading()
+        showToasterError(throwable)
+    }
+
+    private fun showToasterError(throwable: Throwable) {
+        activity?.run {
+            ToasterError.make(findViewById(android.R.id.content),
+                    ErrorHandler.getErrorMessage(this, throwable),
+                    ToasterError.LENGTH_LONG).setAction(R.string.try_again) {
+                cancelMembership()
+            }
+                    .show()
+        }
     }
 
     private fun setupDialogKyc(): Dialog? {
@@ -195,6 +210,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         bottomSheetSuccess = PowerMerchantSuccessBottomSheet.newInstance(bottomSheetModel)
         bottomSheetSuccess.setListener(object : PowerMerchantSuccessBottomSheet.BottomSheetListener {
             override fun onButtonClicked() {
+                bottomSheetSuccess.dismiss()
                 refreshData()
             }
         })
@@ -203,6 +219,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     fun showBottomSheetCancel() {
         bottomSheetCancel = PowerMerchantCancelBottomSheet()
+        bottomSheetCancel.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
+            override fun onclickButton() {
+                cancelMembership()
+            }
+        })
         bottomSheetCancel.show(childFragmentManager, "power_merchant_cancel")
     }
 
