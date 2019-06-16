@@ -50,7 +50,6 @@
 /features/digital/digital_browse/         @tokopedia/minion-mark
 /features/digital/digitalproduct        @tokopedia/minion-mark
 /featires/digital/common_travel         @tokopedia/minion-mark
-/features/fintech/tokocash              @tokopedia/minion-mark
 /libraries/travel_calendar              @tokopedia/minion-mark
 
 /features/payment/payment/                      @tokopedia/minion-bob
@@ -138,6 +137,7 @@
 /features/promo/gamification            @tokopedia/minion-solo
 /features/payment/withdraw/             @tokopedia/minion-solo
 /features/kyc                           @tokopedia/minion-solo
+/features/fintech/tokocash              @tokopedia/minion-solo
 
 /features/im/challenges                 @tokopedia/minion-yoda
 /features/im/referral                   @tokopedia/minion-yoda

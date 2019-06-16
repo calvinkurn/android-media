@@ -14,16 +14,17 @@
         android:padding="@dimen/dp_16">
 
         <ImageView
-            android:layout_width="@dimen/dp_128"
+            android:id="@+id/img_shop_open"
+            android:layout_width="@dimen/dp_220"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:adjustViewBounds="true"
-            app:srcCompat="@drawable/ic_openshop" />
+            android:adjustViewBounds="true"/>
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_hello"
             style="@style/TextView.TitleBig"
             android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_20"
             tools:text="@string/hello_x" />
 
         <android.support.v7.widget.AppCompatTextView
@@ -51,27 +52,12 @@
                 android:singleLine="true" />
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-        <TextView
-            style="@style/TextView.Micro.BlackDisabled"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_20"
-            android:text="@string/shop_open_label_shop_domain" />
-
-        <TextView
-            style="@style/TextView.Micro.BlackDisabled"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:text="@string/shop_open_info_shop_domain_definition" />
-
         <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/text_input_domain_name"
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_15"
             android:hint="@string/domain_name"
             app:counterEnabled="true"
             app:counterMaxLength="@integer/max_domain_name"
@@ -92,17 +78,41 @@
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
+        <include
+            layout="@layout/open_shop_address_view_holder"
+            android:visibility="visible" />
+
         <View
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_8">
+
+            <CheckBox
+                android:id="@+id/cb_shop_tnc"
+                style="@style/shopOpenTncCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_shop_tnc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/dp_4"
+                app:fontSize="small"
+                android:text="Anda telah menyetujui Syarat dan Ketentuan serta Kebijakan Privasi Tokopedia."/>
+        </LinearLayout>
 
         <Button
             android:id="@+id/button_submit"
             style="@style/Button.Submit.Green"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
-            android:layout_marginTop="@dimen/dp_20"
             android:foreground="?attr/selectableItemBackground"
             android:text="@string/title_open_shop" />
     </LinearLayout>

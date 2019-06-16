@@ -64,8 +64,8 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductVie
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragmentContract;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
@@ -106,7 +106,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLI
 public class HotlistFragment extends BrowseSectionFragment
         implements
         HotlistFragmentContract.View,
-        RefreshHandler.OnRefreshHandlerListener, SearchSectionGeneralAdapter.OnItemChangeView,
+        RefreshHandler.OnRefreshHandlerListener, BrowseSectionGeneralAdapter.OnItemChangeView,
         HotlistListener, TopAdsListener, TopAdsItemClickListener,
         HotlistActivity.FragmentListener {
 
@@ -419,12 +419,12 @@ public class HotlistFragment extends BrowseSectionFragment
     }
 
     @Override
-    protected SearchSectionGeneralAdapter getAdapter() {
+    protected BrowseSectionGeneralAdapter getAdapter() {
         return hotlistAdapter;
     }
 
     @Override
-    protected SearchSectionFragmentPresenter getPresenter() {
+    protected BrowseSectionFragmentPresenter getPresenter() {
         return presenter;
     }
 

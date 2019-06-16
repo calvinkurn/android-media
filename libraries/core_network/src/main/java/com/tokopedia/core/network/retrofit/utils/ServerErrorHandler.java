@@ -34,12 +34,14 @@ public class ServerErrorHandler {
         LocalBroadcastManager.getInstance(CoreNetworkApplication.getAppContext()).sendBroadcast(intent);
     }
 
-    public static void sendForceLogoutAnalytics(String url) {
+    public static void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
         AnalyticsLog.logForceLogout(
                 CoreNetworkApplication.getAppContext(),
                 CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
                 CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
-                url);
+                url,
+                isInvalidToken,
+                isRequestDenied);
     }
 
     public static void sendErrorNetworkAnalytics(String url, int errorCode) {

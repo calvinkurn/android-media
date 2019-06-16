@@ -12,7 +12,7 @@ import java.util.List;
  * Created by henrypriyono on 14/02/18.
  */
 
-public class GuidedSearchViewModel implements Visitable<ProductListTypeFactory>, Parcelable {
+public class GuidedSearchViewModel implements Parcelable {
     private List<Item> itemList;
 
     public List<Item> getItemList() {
@@ -26,7 +26,7 @@ public class GuidedSearchViewModel implements Visitable<ProductListTypeFactory>,
     public static class Item implements Parcelable {
         private String keyword;
         private String url;
-        private String currentPage;
+        private int position;
         private String previousKey;
 
         public String getKeyword() {
@@ -45,12 +45,12 @@ public class GuidedSearchViewModel implements Visitable<ProductListTypeFactory>,
             this.url = url;
         }
 
-        public void setCurrentPage(String currentPage) {
-            this.currentPage = currentPage;
+        public void setPosition(int position) {
+            this.position = position;
         }
 
-        public String getCurrentPage() {
-            return currentPage;
+        public int getPosition() {
+            return position;
         }
 
         public void setPreviousKey(String previousKey) {
@@ -59,6 +59,9 @@ public class GuidedSearchViewModel implements Visitable<ProductListTypeFactory>,
 
         public String getPreviousKey() {
             return previousKey;
+        }
+
+        public Item() {
         }
 
         @Override
@@ -70,17 +73,14 @@ public class GuidedSearchViewModel implements Visitable<ProductListTypeFactory>,
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.keyword);
             dest.writeString(this.url);
-            dest.writeString(this.currentPage);
+            dest.writeInt(this.position);
             dest.writeString(this.previousKey);
-        }
-
-        public Item() {
         }
 
         protected Item(Parcel in) {
             this.keyword = in.readString();
             this.url = in.readString();
-            this.currentPage = in.readString();
+            this.position = in.readInt();
             this.previousKey = in.readString();
         }
 
@@ -95,11 +95,6 @@ public class GuidedSearchViewModel implements Visitable<ProductListTypeFactory>,
                 return new Item[size];
             }
         };
-    }
-
-    @Override
-    public int type(ProductListTypeFactory typeFactory) {
-        return typeFactory.type(this);
     }
 
     @Override

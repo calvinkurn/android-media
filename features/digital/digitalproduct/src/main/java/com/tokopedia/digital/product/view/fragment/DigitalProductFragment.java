@@ -1,6 +1,5 @@
 package com.tokopedia.digital.product.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -38,7 +37,6 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
@@ -84,6 +82,7 @@ import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -92,25 +91,19 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSession;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
-
 import static com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER;
 
 /**
  * @author anggaprasetiyo on 4/25/17.
  */
-@RuntimePermissions
 public class DigitalProductFragment extends BaseDaggerFragment
         implements IProductDigitalView, BaseDigitalProductView.ActionListener, IUssdUpdateListener,
         CheckPulsaBalanceView.ActionListener {
@@ -212,6 +205,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private PerformanceMonitoring performanceMonitoring;
 
     private SaveInstanceCacheManager saveInstanceCacheManager;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     @Inject
     ProductDigitalPresenter presenter;
@@ -244,6 +238,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(DIGITAL_DETAIL_TRACE);
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
+        permissionCheckerHelper = new PermissionCheckerHelper();
     }
 
     @Override
@@ -722,7 +717,28 @@ public class DigitalProductFragment extends BaseDaggerFragment
                     operator, phoneNumber)) {
                 presenter.storeUssdPhoneNumber(simPosition, "");
             }
-            DigitalProductFragmentPermissionsDispatcher.checkBalanceByUSSDWithCheck(this, simPosition, ussdCode);
+            String[] listOfPermission = {PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
+                    PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE};
+            permissionCheckerHelper.checkPermissions(getActivity(), listOfPermission, new PermissionCheckerHelper.PermissionCheckListener() {
+                @Override
+                public void onPermissionDenied(@NotNull String permissionText) {
+                    permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+                    digitalAnalytics.eventUssdAttempt(categoryDataState.getName(),
+                            getString(R.string.ussd_permission_denied_label));
+                }
+
+                @Override
+                public void onNeverAskAgain(@NotNull String permissionText) {
+                    permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+                    digitalAnalytics.eventUssdAttempt(categoryDataState.getName(),
+                            getString(R.string.ussd_permission_denied_label));
+                }
+
+                @Override
+                public void onPermissionGranted() {
+                    checkBalanceByUSSD(simPosition, ussdCode);
+                }
+            }, "");
         }
     }
 
@@ -750,7 +766,23 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void onButtonContactPickerClicked() {
-        DigitalProductFragmentPermissionsDispatcher.openContactPickerWithCheck(this);
+        permissionCheckerHelper.checkPermission(getActivity(),
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACTS, new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        openContactPicker();
+                    }
+                }, "");
     }
 
     @Override
@@ -969,12 +1001,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        DigitalProductFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                this, requestCode, grantResults
-        );
+        permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
     }
 
-    @NeedsPermission(Manifest.permission.READ_CONTACTS)
     public void openContactPicker() {
         Intent contactPickerIntent = new Intent(
                 Intent.ACTION_PICK,
@@ -991,33 +1020,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
         }
     }
 
-    @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
-    void showDeniedForContacts() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_CONTACTS);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
-    void showNeverAskForContacts() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_CONTACTS);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_CONTACTS)
-    void showRationaleForContacts(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(),
-                new RequestPermissionUtil.PermissionRequestListener() {
-                    @Override
-                    public void onProceed() {
-                        request.proceed();
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        request.cancel();
-                    }
-                }, Manifest.permission.READ_CONTACTS);
-    }
-
-    @NeedsPermission({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     public void checkBalanceByUSSD(int simPosition, String ussdCode) {
         presenter.processToCheckBalance(null, simPosition, ussdCode);
 
@@ -1029,20 +1031,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
         );
         digitalAnalytics.eventUssdAttempt(categoryDataState.getName(),
                 getString(R.string.ussd_permission_allowed_label));
-    }
-
-    @OnPermissionDenied({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
-    void showDeniedForPhone() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CALL_PHONE);
-        digitalAnalytics.eventUssdAttempt(categoryDataState.getName(),
-                getString(R.string.ussd_permission_denied_label));
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
-    void showNeverAskForPhone() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CALL_PHONE);
-        digitalAnalytics.eventUssdAttempt(categoryDataState.getName(),
-                getString(R.string.ussd_permission_denied_label));
     }
 
     private void renderContactDataToClientNumber(ContactData contactData) {

@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
@@ -27,7 +26,6 @@ import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavWidgetListener;
 import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
-import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.widget.GlobalNavWidget;
@@ -364,7 +362,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             textView.setText(item.getKeyword());
             textView.setOnClickListener(view -> {
                 if (guidedSearchListener != null) {
-                    SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
+                    SearchTracking.eventClickGuidedSearch(item.getPreviousKey(), item.getPosition(), item.getKeyword());
                     guidedSearchListener.onSearchGuideClicked(Uri.parse(item.getUrl()).getEncodedQuery());
                 }
             });

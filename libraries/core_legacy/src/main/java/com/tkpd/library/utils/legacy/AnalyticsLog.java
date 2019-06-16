@@ -12,6 +12,7 @@ import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.track.TrackApp;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -24,8 +25,10 @@ public class AnalyticsLog {
     private static AndroidLogger instance;
     private static final String TOKEN_LOG_NOTIFIER = "2719adf1-18c8-4cc6-8c92-88a07594f7db";
     private static final String TOKEN_LOG_NOTIFIER_NOTP = "44ec54a0-bcc2-437e-a061-9c7b3e124165";
+    private static final String EVENT_CLICK_LOGOUT = "clickLogout";
+    private static final String CATEGORY_FORCE_LOGOUT = "force logout";
 
-    public static void logForceLogout(Context context, GCMHandler gcmHandler, SessionHandler sessionHandler, String url) {
+    public static void logForceLogout(Context context, GCMHandler gcmHandler, SessionHandler sessionHandler, String url, boolean isInvalidToken, boolean isRequestDenied) {
         String baseUrl = getBaseUrl(url);
 
         AnalyticsLog.log(context, "ErrorType=Force Logout!"
@@ -42,12 +45,28 @@ public class AnalyticsLog {
                 + " Environment=" + isStaging(baseUrl)
 
         );
+
+        if (isInvalidToken) {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(
+                    EVENT_CLICK_LOGOUT,
+                    CATEGORY_FORCE_LOGOUT,
+                    baseUrl,
+                    "get invalid request"
+            );
+        } else if (isRequestDenied) {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(
+                    EVENT_CLICK_LOGOUT,
+                    CATEGORY_FORCE_LOGOUT,
+                    baseUrl,
+                    "request denied"
+            );
+        }
     }
 
     public static void logForceLogoutToken(Context context, GCMHandler gcmHandler, SessionHandler sessionHandler, String url) {
         String baseUrl = getBaseUrl(url);
 
-        AnalyticsLog.log(context,"ErrorType=Force Logout Token!"
+        AnalyticsLog.log(context, "ErrorType=Force Logout Token!"
                 + " UserID=" + (sessionHandler.getLoginID()
                 .equals("") ? "0" : sessionHandler.getLoginID())
                 + " Url=" + "'" + url + "'"
@@ -59,7 +78,13 @@ public class AnalyticsLog {
                 + " DeviceModel=" + Build.MODEL
                 + " DeviceId=" + "'" + gcmHandler.getRegistrationId() + "'"
                 + " Environment=" + isStaging(baseUrl)
+        );
 
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_LOGOUT,
+                CATEGORY_FORCE_LOGOUT,
+                baseUrl,
+                "get invalid token"
         );
     }
 
@@ -154,7 +179,7 @@ public class AnalyticsLog {
 
     public static void printNOTPLog(Context context, String msg) {
         SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
-        getAndroidNOTPLogger(context).log(msg + " - Phone Number:-" +  sessionHandler.getPhoneNumber()
+        getAndroidNOTPLogger(context).log(msg + " - Phone Number:-" + sessionHandler.getPhoneNumber()
                 + " - LoginID - " + sessionHandler.getLoginID());
     }
 
