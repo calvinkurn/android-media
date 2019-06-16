@@ -700,11 +700,15 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             );
         }
 
+        //show pop up only after transition period
+        if (shopStatusModel.isTransitionPeriod()) {
+            return;
+        }
+
         PowerMerchantSuccessBottomSheet.BottomSheetModel model = null;
         String redirectUrl = "";
 
-        //show pop up only after transition period
-        if (!shopStatusModel.isTransitionPeriod() && popUpManager.isEverPowerMerchant(shopId)) {
+        if (popUpManager.isEverPowerMerchant(shopId)) {
             if (shopStatusModel.isPowerMerchantActive()
                     && !popUpManager.isActivePowerMerchantShown(shopId)) {
                 popUpManager.setActivePowerMerchantShown(shopId, true);
@@ -727,18 +731,31 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         getString(R.string.pm_popup_idle_btn)
                 );
                 redirectUrl = "https://www.tokopedia.com/blog/panduan-keamanan-tokopedia/";
-                //TODO milhamj change image url above
+                //TODO milhamj change redirect url above
 
             } else if (shopStatusModel.isPowerMerchantInactive()
                     && !popUpManager.isRegularMerchantShown(shopId)) {
                 popUpManager.setRegularMerchantShown(shopId, true);
                 model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                        getString(R.string.pm_popup_deactivated_title),
+                        getString(R.string.pm_popup_deactivated_desc),
+                        IMG_URL_PM_IDLE,
+                        getString(R.string.pm_popup_deactivated_btn)
+                );
+                redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
+            }
+        } else {
+            if (shopStatusModel.isPowerMerchantInactive()
+                    && !popUpManager.isRegularMerchantShown(shopId)) {
+                popUpManager.setRegularMerchantShown(shopId, true);
+                model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
                         getString(R.string.pm_popup_regular_title),
                         getString(R.string.pm_popup_regular_desc),
-                        IMG_URL_PM_IDLE,
+                        "",
                         getString(R.string.pm_popup_regular_btn)
                 );
                 redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
+                //TODO milhamj change image url above
             }
         }
 

@@ -40,6 +40,10 @@
     <string name="pm_popup_idle_desc"><![CDATA[Gunakan kembali fitur Power Merchant dengan meningkatkan skor performa tokomu minimum <b>65 poin.</b>]]></string>
     <string name="pm_popup_idle_btn">Cara Tingkatkan Performa</string>
 
+    <string name="pm_popup_deactivated_title">Yaah, layanan Power Merchant kamu dihentikan</string>
+    <string name="pm_popup_deactivated_desc">Segera gabung Power Merchant, agar semakin mudah mengoptimalkan penjualanmu. Bebas biaya bulanan!</string>
+    <string name="pm_popup_deactivated_btn">Upgrade Tokomu</string>
+
     <string name="pm_popup_regular_title">Yaah, layanan Power Merchant kamu dihentikan</string>
     <string name="pm_popup_regular_desc">Segera gabung Power Merchant, agar semakin mudah mengoptimalkan penjualanmu. Bebas biaya bulanan!</string>
     <string name="pm_popup_regular_btn">Upgrade Tokomu</string>

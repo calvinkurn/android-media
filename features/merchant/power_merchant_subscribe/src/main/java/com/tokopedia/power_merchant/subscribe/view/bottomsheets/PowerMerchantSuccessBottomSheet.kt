@@ -60,7 +60,7 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
     }
 
     private fun initVar() {
-        model = arguments?.getParcelable(MODEL) ?: return
+        model = arguments?.getParcelable(MODEL) ?: BottomSheetModel()
     }
 
     interface BottomSheetListener {
