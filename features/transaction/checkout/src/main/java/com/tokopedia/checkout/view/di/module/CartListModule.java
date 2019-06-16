@@ -22,11 +22,13 @@ import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.user.session.UserSession;
@@ -108,6 +110,18 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    GraphqlUseCase providesGraphqlUseCase()  {
+        return new GraphqlUseCase();
+    }
+
+    @Provides
+    @CartListScope
+    GetRecommendationUseCase provideGetRecommendationUseCase(GraphqlUseCase graphqlUseCase, UserSessionInterface userSessionInterface) {
+        return new GetRecommendationUseCase(cartListView.getActivity(), graphqlUseCase, userSessionInterface);
+    }
+
+    @Provides
+    @CartListScope
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
                                                  DeleteCartUseCase deleteCartUseCase,
                                                  DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
@@ -125,13 +139,14 @@ public class CartListModule {
                                                  TopAdsGqlUseCase topAdsGqlUseCase,
                                                  ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                                                  GetRecentViewUseCase getRecentViewUseCase,
-                                                 GetWishlistUseCase getWishlistUseCase) {
+                                                 GetWishlistUseCase getWishlistUseCase,
+                                                 GetRecommendationUseCase getRecommendationUseCase) {
         return new CartListPresenter(getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,
                 updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
-                clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase);
+                clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase, getRecommendationUseCase);
     }
 
     @Provides

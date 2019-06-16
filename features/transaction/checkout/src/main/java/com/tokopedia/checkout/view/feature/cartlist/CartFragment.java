@@ -40,15 +40,12 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
-import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.ResponseFirstStep;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
@@ -60,23 +57,19 @@ import com.tokopedia.checkout.view.di.component.CartListComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartListComponent;
 import com.tokopedia.checkout.view.di.module.CartListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
-import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.feature.bottomsheetpromostacking.ClashBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
-import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartSectionHeaderViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecommendationItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartSectionHeaderHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHolderData;
-import com.tokopedia.checkout.view.feature.emptycart.viewholder.RecentViewViewHolder;
-import com.tokopedia.checkout.view.feature.emptycart2.viewholder.RecentViewItemViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -87,14 +80,13 @@ import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
-import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -183,6 +175,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private boolean isTraceStopped;
 
     private SaveInstanceCacheManager saveInstanceCacheManager;
+
+    private int recommendationCurrentPage = 0;
 
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
@@ -1020,6 +1014,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
             dPresenter.processGetRecentViewData();
             dPresenter.processGetWishlistData();
+            dPresenter.processGetRecommendationData();
 
             if (toolbar != null) {
                 setVisibilityRemoveButton(!cartListData.getShopGroupDataList().isEmpty());
@@ -1839,7 +1834,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
         cartSectionHeaderHolderData.setTitle("Terakhir Dilihat");
-        cartSectionHeaderHolderData.setShowAllAppLink(ApplinkConst.RECENT_VIEW);
         cartAdapter.addSectionHeaderData(cartSectionHeaderHolderData);
 
         CartRecentViewHolderData cartRecentViewHolderData = new CartRecentViewHolderData();
@@ -1868,5 +1862,23 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         CartWishlistHolderData cartRecentViewHolderData = new CartWishlistHolderData();
         cartRecentViewHolderData.setWishList(cartWishlistItemHolderDataList);
         cartAdapter.addCartWishlistData(cartRecentViewHolderData);
+    }
+
+    @Override
+    public void renderRecommendation(List<RecommendationItem> recommendationItems) {
+        List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
+        for (RecommendationItem recommendationItem : recommendationItems) {
+            CartRecommendationItemHolderData cartRecommendationItemHolderData = new CartRecommendationItemHolderData(recommendationItem);
+            cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
+        }
+
+        if (recommendationCurrentPage == 0) {
+            CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
+            cartSectionHeaderHolderData.setTitle("Rekomendasi");
+            cartAdapter.addSectionHeaderData(cartSectionHeaderHolderData);
+        }
+
+        recommendationCurrentPage++;
+        cartAdapter.addCartRecommendationData(cartRecommendationItemHolderDataList);
     }
 }

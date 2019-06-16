@@ -15,7 +15,6 @@ import rx.Subscriber;
 
 public class GetWishlistSubscriber extends Subscriber<GraphqlResponse> {
 
-    private static final int ITEM_SHOW_COUNT = 2;
     private ICartListView view;
     private ICartListPresenter presenter;
 
