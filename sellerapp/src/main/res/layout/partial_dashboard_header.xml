@@ -57,25 +57,41 @@
                     tools:text="Toko Kelontong Indonesia" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:layout_marginTop="@dimen/dp_8">
 
-                    <com.tokopedia.gm.resource.GMImageView
-                        android:id="@+id/image_view_gm_icon"
-                        android:layout_width="@dimen/dp_16"
-                        android:layout_height="@dimen/dp_16"
-                        android:layout_gravity="center_vertical"
-                        android:visibility="gone"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:layout_marginEnd="@dimen/dp_5"
-                        tools:visibility="visible" />
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/iv_power_merchant_logo"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        tools:src="@drawable/ic_power_merchant"
+                        android:layout_marginRight="@dimen/dp_4"/>
 
                     <TextView
-                        android:id="@+id/text_view_gm_status"
-                        style="@style/TextView.Small"
-                        android:layout_gravity="center_vertical"
-                        tools:text="Regular Merchant" />
+                        android:id="@+id/tv_shop_membership_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif"
+                        android:textStyle="bold"
+                        android:textColor="#b3000000"
+                        android:lineSpacingExtra="6sp"
+                        tools:text="Regular Merchant"
+                        android:layout_marginRight="@dimen/dp_4"/>
+
+                    <TextView
+                        android:id="@+id/tv_shop_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:fontFamily="sans-serif"
+                        android:textStyle="normal"
+                        android:textColor="#ae31353b"
+                        android:lineSpacingExtra="8sp"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        tools:text="Aktif" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -111,12 +127,6 @@
     <com.tokopedia.sellerapp.dashboard.view.widget.ShopScorePMWidget
         android:id="@+id/shop_score_widget_pm"
         android:layout_margin="@dimen/dp_16"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <com.tokopedia.seller.shopscore.view.widget.ShopScoreWidget
-        android:id="@+id/shop_score_widget"
-        style="@style/LabelLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -91,10 +91,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private LoadingStateView footerShopInfoLoadingStateView;
     private ImageView shopIconImageView;
     private TextView shopNameTextView;
-    private ImageView gmIconImageView;
-    private TextView gmStatusTextView;
 
-    private ShopScoreWidget shopScoreWidget;
     private ShopScorePMWidget shopScorePMWidget;
 
     private TextView reputationPointTextView;
@@ -136,8 +133,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
         shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
-        gmIconImageView = (ImageView) view.findViewById(R.id.image_view_gm_icon);
-        gmStatusTextView = (TextView) view.findViewById(R.id.text_view_gm_status);
         View ivSettingIcon = view.findViewById(R.id.iv_setting);
         shopWarningTickerView = (ShopWarningTickerView) view.findViewById(R.id.shop_warning_ticker_view);
         verificationWarningTickerView = view.findViewById(R.id.verification_warning_ticker);
@@ -155,7 +150,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         messageLabelView = (LabelView) view.findViewById(R.id.label_view_message);
         discussionLabelView = (LabelView) view.findViewById(R.id.label_view_discussion);
         reviewLabelView = (LabelView) view.findViewById(R.id.label_view_review);
-        shopScoreWidget = view.findViewById(R.id.shop_score_widget);
         shopScorePMWidget = view.findViewById(R.id.shop_score_widget_pm);
 
         progressDialog = new ProgressDialog(getActivity());
@@ -241,7 +235,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
             }
         });
-        shopScoreWidget.setOnClickListener(new View.OnClickListener() {
+        shopScorePMWidget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(getActivity(), AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
@@ -315,14 +309,15 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                                              ShopStatusModel shopStatusModel,
                                              ShopScoreResult shopScoreResult) {
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
-        updateShopInfo(shopModel);
+        updateShopInfo(shopModel, shopStatusModel);
         updateReputation(shopModel);
         updateTransaction(shopModel);
         updateViewShopOpen(shopModel);
-        // TODO #GM below to be removed
-        //shopScoreWidget.renderView(shopScoreViewModel);
-        // TODO #GM
-        shopScorePMWidget.setProgress(55);
+        try {
+            shopScorePMWidget.setProgress(shopScoreResult.getData().getData().getValue());
+        } catch (Exception e) {
+            shopScorePMWidget.setProgress(0);
+        }
 
         swipeRefreshLayout.setRefreshing(false);
         hideSnackBarRetry();
@@ -377,25 +372,25 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         }
     }
 
-    private void updateShopInfo(ShopModel shopModel) {
+    private void updateShopInfo(ShopModel shopModel, ShopStatusModel shopStatusModel) {
         Info shopModelInfo = shopModel.info;
         String shopName = shopModelInfo.getShopName();
         if (!TextUtils.isEmpty(shopName)) {
             shopName = MethodChecker.fromHtml(shopName).toString();
         }
         shopNameTextView.setText(shopName);
-        if (shopModelInfo.isOfficialStore()) {
-            gmIconImageView.setVisibility(View.VISIBLE);
-            gmIconImageView.setImageResource(R.drawable.ic_official);
-            gmStatusTextView.setText(R.string.dashboard_label_official_store);
-        } else if (shopModelInfo.isGoldMerchant()) {
-            gmIconImageView.setVisibility(View.VISIBLE);
-            gmIconImageView.setImageDrawable(GMConstant.getGMDrawable(getContext()));
-            gmStatusTextView.setText(GMConstant.getGMTitleResource(getContext()));
-        } else {
-            gmIconImageView.setVisibility(View.GONE);
-            gmStatusTextView.setText(R.string.dashboard_label_regular_merchant);
-        }
+//        if (shopModelInfo.isOfficialStore()) {
+//            gmIconImageView.setVisibility(View.VISIBLE);
+//            gmIconImageView.setImageResource(R.drawable.ic_official);
+//            gmStatusTextView.setText(R.string.dashboard_label_official_store);
+//        } else if (shopModelInfo.isGoldMerchant()) {
+//            gmIconImageView.setVisibility(View.VISIBLE);
+//            gmIconImageView.setImageDrawable(GMConstant.getGMDrawable(getContext()));
+//            gmStatusTextView.setText(GMConstant.getGMTitleResource(getContext()));
+//        } else {
+//            gmIconImageView.setVisibility(View.GONE);
+//            gmStatusTextView.setText(R.string.dashboard_label_regular_merchant);
+//        }
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
             ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
         } else {
