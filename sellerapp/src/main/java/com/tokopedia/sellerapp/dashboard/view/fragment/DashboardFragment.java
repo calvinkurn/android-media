@@ -625,12 +625,37 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     private void shopPowerMerchantPopup(ShopStatusModel shopStatusModel) {
+        //don't show any pop up for OS
         if (shopStatusModel.isOfficialStore()) {
             return;
         }
 
+        String shopId = String.valueOf(shopStatusModel.getShopId());
         if (shopStatusModel.isPowerMerchantActive()) {
+            popUpManager.setEverPowerMerchant(
+                    shopId,
+                    true
+            );
+        }
 
+        //show pop up only after transition period
+        if (!shopStatusModel.isTransitionPeriod() && popUpManager.isEverPowerMerchant(shopId)) {
+            if (shopStatusModel.isPowerMerchantActive()
+                    && !popUpManager.isActivePowerMerchantShown(shopId)) {
+                popUpManager.setActivePowerMerchantShown(shopId, true);
+                //TODO milhamj power merchant popup
+
+            } else if (shopStatusModel.isPowerMerchantIdle()
+                    && !popUpManager.isIdlePowerMerchantShown(shopId)) {
+                popUpManager.setIdlePowerMerchantShown(shopId, true);
+                //TODO milhamj power merchant popup
+
+            } else if (shopStatusModel.isPowerMerchantInactive()
+                    && !popUpManager.isRegularMerchantShown(shopId)) {
+                popUpManager.setRegularMerchantShown(shopId, true);
+                //TODO milhamj power merchant popup
+
+            }
         }
     }
 
