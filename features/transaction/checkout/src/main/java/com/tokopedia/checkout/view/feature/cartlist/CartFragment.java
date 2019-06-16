@@ -64,9 +64,11 @@ import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActiv
 import com.tokopedia.checkout.view.feature.bottomsheetpromostacking.ClashBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartSectionHeaderViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartSectionHeaderHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHolderData;
@@ -595,6 +597,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onClickShopNow() {
         RouteManager.route(getActivity(), ApplinkConst.HOME);
+    }
+
+    @Override
+    public void onShowAllItem(@NotNull String appLink) {
+        RouteManager.route(getActivity(), appLink);
     }
 
     @NonNull
@@ -1830,9 +1837,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartRecentViewItemHolderDataList.add(cartRecentViewItemHolderData);
         }
 
+        CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
+        cartSectionHeaderHolderData.setTitle("Terakhir Dilihat");
+        cartSectionHeaderHolderData.setShowAllAppLink(ApplinkConst.RECENT_VIEW);
+        cartAdapter.addSectionHeaderData(cartSectionHeaderHolderData);
+
         CartRecentViewHolderData cartRecentViewHolderData = new CartRecentViewHolderData();
         cartRecentViewHolderData.setRecentViewList(cartRecentViewItemHolderDataList);
-
         cartAdapter.addCartRecentViewData(cartRecentViewHolderData);
     }
 
@@ -1849,9 +1860,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartWishlistItemHolderDataList.add(cartWishlistItemHolderData);
         }
 
+        CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
+        cartSectionHeaderHolderData.setTitle("Wishlist");
+        cartSectionHeaderHolderData.setShowAllAppLink(ApplinkConst.WISHLIST);
+        cartAdapter.addSectionHeaderData(cartSectionHeaderHolderData);
+
         CartWishlistHolderData cartRecentViewHolderData = new CartWishlistHolderData();
         cartRecentViewHolderData.setWishList(cartWishlistItemHolderDataList);
-
         cartAdapter.addCartWishlistData(cartRecentViewHolderData);
     }
 }

@@ -30,4 +30,6 @@ interface ActionListener {
 
     fun onCartItemTickerErrorActionClicked(data: CartItemTickerErrorHolderData, position: Int)
 
+    fun onShowAllItem(appLink: String);
+
 }
