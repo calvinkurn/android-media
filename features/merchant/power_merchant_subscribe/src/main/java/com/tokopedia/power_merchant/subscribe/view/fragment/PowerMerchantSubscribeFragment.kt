@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.kotlin.extensions.view.hideLoading
@@ -54,6 +55,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     var shopScore: Int = 0
     var minScore: Int = 0
     var isSuccessActivatedPm: Boolean = false
+    var isSuccessCancellationPm: Boolean = false
     lateinit var bottomSheetSuccess: PowerMerchantSuccessBottomSheet
     lateinit var bottomSheetCancel: PowerMerchantCancelBottomSheet
 
@@ -129,6 +131,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         presenter.setAutoExtendOff(false)
     }
 
+    override fun onSuccessCancelMembership() {
+        isSuccessCancellationPm = true
+        refreshData()
+    }
 
     override fun refreshData() {
         root_view_pm.showLoading()
@@ -147,6 +153,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                     ToasterError.LENGTH_LONG).setAction(R.string.error_cancellation_tryagain) {
                 cancelMembership()
             }
+                    .show()
+        }
+    }
+
+    private fun showToasterSuccess() {
+        activity?.run {
+            ToasterNormal.make(findViewById(android.R.id.content),
+                    "Berhasil Membatlkan Power Merchant",
+                    ToasterNormal.LENGTH_LONG)
                     .show()
         }
     }
@@ -245,8 +260,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             showBottomSheetSuccess(shopStatusModel)
         }
 
-        showBottomSheetCancel()
-
+        if (isSuccessCancellationPm) {
+            showToasterSuccess()
+        }
     }
 
     private fun renderViewNonTransitionPeriod() {
@@ -309,18 +325,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
-    override fun onErrorGetPmInfo(throwable: Throwable) {
-    }
 
     override fun showEmptyState(throwable: Throwable) {
         root_view_pm.showEmptyState(ErrorHandler.getErrorMessage(context, throwable), ::refreshData)
         root_view_pm.hideLoading()
-    }
-
-    private fun showError(message: String, listener: View.OnClickListener?) {
-        ToasterError.make(view, message, ToasterError.LENGTH_LONG)
-                .setAction(R.string.title_try_again, listener)
-                .show()
     }
 
     private fun showExpiredDate() {
