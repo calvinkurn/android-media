@@ -1,44 +1,41 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheets
 
 import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.TextViewCompat
-import com.tokopedia.power_merchant.subscribe.IMG_URL_BS_SUCCESS
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
-import kotlinx.android.synthetic.main.bottom_sheets_pm_success.view.*
 
 class PowerMerchantSuccessBottomSheet : BottomSheets() {
 
-    lateinit var buttonSubmit: Button
-    private lateinit var listener: PmSubscribeContract.View
-    lateinit var imgSuccessPm: ImageView
-    lateinit var txtSuccessHeaderBs: TextViewCompat
-    lateinit var txtSuccessDescBs: TextViewCompat
-    var isTransitionPeriod:Boolean = false
+    private lateinit var buttonSubmit: Button
+    private lateinit var imgSuccessPm: ImageView
+    private lateinit var txtSuccessHeaderBs: TextViewCompat
+    private lateinit var txtSuccessDescBs: TextViewCompat
+    private lateinit var model: BottomSheetModel
+    private var listener: BottomSheetListener? = null
 
     companion object {
-        const val ARGUMENT_DATA_BOTTOM_SHEET_SUCCESS = "data_success"
-        @JvmStatic
-        fun newInstance(isTransitionPeriod: Boolean): PowerMerchantSuccessBottomSheet {
-            val bundle = Bundle()
-            bundle.putBoolean(ARGUMENT_DATA_BOTTOM_SHEET_SUCCESS, isTransitionPeriod)
-            val fragment = PowerMerchantSuccessBottomSheet()
-            fragment.arguments = bundle
+        private const val MODEL = "model"
 
-            return fragment
+        @JvmStatic
+        fun newInstance(model: BottomSheetModel): PowerMerchantSuccessBottomSheet {
+            return PowerMerchantSuccessBottomSheet().apply {
+                val bundle = Bundle()
+                bundle.putParcelable(MODEL, model)
+                arguments = bundle
+            }
         }
     }
 
-    fun setListener(listener: PmSubscribeContract.View){
+    fun setListener(listener: BottomSheetListener) {
         this.listener = listener
-    }
-    private fun getArgumentsValue() {
-        isTransitionPeriod = arguments?.getBoolean(ARGUMENT_DATA_BOTTOM_SHEET_SUCCESS,false) ?: false
     }
 
     override fun getLayoutResourceId(): Int {
@@ -46,20 +43,58 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
     }
 
     override fun initView(view: View) {
-        getArgumentsValue()
+        initVar()
         imgSuccessPm = view.findViewById(R.id.img_btm_sheets)
         buttonSubmit = view.findViewById(R.id.button_checknow)
         txtSuccessHeaderBs = view.findViewById(R.id.txt_success_header_bs)
         txtSuccessDescBs = view.findViewById(R.id.txt_success_desc_bs)
-        ImageHandler.LoadImage(view.img_btm_sheets, IMG_URL_BS_SUCCESS)
-        if (isTransitionPeriod) {
-            txtSuccessDescBs.text = getString(R.string.pm_label_bs_success_desc_transition)
-            txtSuccessHeaderBs.text = getString(R.string.pm_label_bs_success_header_transition)
-            buttonSubmit.text = getString(R.string.pm_label_bs_success_button_transition)
+
+        imgSuccessPm.loadImage(model.imageUrl)
+        txtSuccessHeaderBs.text = MethodChecker.fromHtml(model.title)
+        txtSuccessDescBs.text = MethodChecker.fromHtml(model.desc)
+
+        buttonSubmit.text = model.title
+        buttonSubmit.setOnClickListener {
+            listener?.onButtonClicked()
+        }
+    }
+
+    private fun initVar() {
+        model = arguments?.getParcelable(MODEL) ?: return
+    }
+
+    interface BottomSheetListener {
+        fun onButtonClicked()
+    }
+
+    data class BottomSheetModel(
+            val title: String = "",
+            val desc: String = "",
+            val imageUrl: String = "",
+            val btnTitle: String = ""
+    ) : Parcelable {
+        constructor(source: Parcel) : this(
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: ""
+        )
+
+        override fun describeContents() = 0
+
+        override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+            writeString(title)
+            writeString(desc)
+            writeString(imageUrl)
+            writeString(btnTitle)
         }
 
-        buttonSubmit.setOnClickListener {
-            listener.refreshData()
+        companion object {
+            @JvmField
+            val CREATOR: Parcelable.Creator<BottomSheetModel> = object : Parcelable.Creator<BottomSheetModel> {
+                override fun createFromParcel(source: Parcel): BottomSheetModel = BottomSheetModel(source)
+                override fun newArray(size: Int): Array<BottomSheetModel?> = arrayOfNulls(size)
+            }
         }
     }
 }

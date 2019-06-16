@@ -179,9 +179,16 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     fun showBottomSheetSuccess(shopStatusModel: ShopStatusModel) {
-        bottomSheetSuccess = PowerMerchantSuccessBottomSheet.newInstance(shopStatusModel.powerMerchant.shopPopup)
-        bottomSheetSuccess.setListener(this)
-        bottomSheetSuccess.show(childFragmentManager, "power_merchant_success")
+        //TODO yehez
+//        bottomSheetSuccess = PowerMerchantSuccessBottomSheet.newInstance(
+//
+//        )
+//        bottomSheetSuccess.setListener(object : PowerMerchantSuccessBottomSheet.BottomSheetListener{
+//            override fun onButtonClicked() {
+//                refreshData()
+//            }
+//        })
+//        bottomSheetSuccess.show(childFragmentManager, "power_merchant_success")
     }
 
     fun showBottomSheetCancel() {
