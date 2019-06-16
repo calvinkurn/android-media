@@ -122,6 +122,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private ShowCaseDialog showCaseDialog;
 
+    private View tickerContainer;
+    private View buttonActivatePowerMerchant;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -145,6 +148,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         ivShopMembershipLogo = view.findViewById(R.id.iv_power_merchant_logo);
         tvShopMembershipTitle = view.findViewById(R.id.tv_shop_membership_title);
         tvShopMembershipStatus = view.findViewById(R.id.tv_shop_status);
+
+        tickerContainer = view.findViewById(R.id.ticker_container);
+        buttonActivatePowerMerchant = view.findViewById(R.id.button_activate);
 
         shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
         shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
@@ -330,11 +336,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         updateReputation(shopModel);
         updateTransaction(shopModel);
         updateViewShopOpen(shopModel);
-        try {
-            shopScoreWidget.setProgress(shopScoreResult.getData().getValue());
-        } catch (Exception e) {
-            shopScoreWidget.setProgress(0);
-        }
+        shopScoreWidget.setProgress(shopScoreResult.getData().getValue());
 
         swipeRefreshLayout.setRefreshing(false);
         hideSnackBarRetry();
@@ -461,11 +463,16 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             ivShopMembershipLogo.setVisibility(View.GONE);
             tvShopMembershipTitle.setText(R.string.label_regular_merchant);
             tvShopMembershipStatus.setVisibility(View.GONE);
+            tickerContainer.setVisibility(View.VISIBLE);
+            buttonActivatePowerMerchant.setVisibility(View.VISIBLE);
+            //TODO #PM
         } else if (shopStatusModel.isOfficialStore()) {
             ivShopMembershipLogo.setVisibility(View.VISIBLE);
             ivShopMembershipLogo.setImageResource(R.drawable.ic_badge_shop_official);
             tvShopMembershipTitle.setText(getString(R.string.label_official_store));
             tvShopMembershipStatus.setVisibility(View.GONE);
+            tickerContainer.setVisibility(View.GONE);
+            buttonActivatePowerMerchant.setVisibility(View.GONE);
         } else {
             ivShopMembershipLogo.setVisibility(View.VISIBLE);
             ivShopMembershipLogo.setImageResource(R.drawable.ic_power_merchant);
@@ -476,6 +483,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             } else {
                 tvShopMembershipStatus.setText(getString(R.string.bracket_format, getString(R.string.inactive_label)));
             }
+            //TODO #PM
         }
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
             ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);

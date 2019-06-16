@@ -9,7 +9,7 @@ data class ShopScoreResult(
         val data: ShopScoreDetailItemServiceModel = ShopScoreDetailItemServiceModel(),
         @SerializedName("BadgeScore")
         @Expose
-        val badgeScore: Int? = 0
+        val badgeScore: Int = 0
 
 )
 
@@ -19,7 +19,7 @@ data class ShopScoreDetailItemServiceModel(
         val title: String? = "",
         @SerializedName("Value")
         @Expose
-        val value: Int? = 0,
+        val value: Int = 0,
         @SerializedName("Description")
         @Expose
         val description: String? = "",
