@@ -53,7 +53,7 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
         txtSuccessHeaderBs.text = MethodChecker.fromHtml(model.title)
         txtSuccessDescBs.text = MethodChecker.fromHtml(model.desc)
 
-        buttonSubmit.text = model.title
+        buttonSubmit.text = model.btnTitle
         buttonSubmit.setOnClickListener {
             listener?.onButtonClicked()
         }
