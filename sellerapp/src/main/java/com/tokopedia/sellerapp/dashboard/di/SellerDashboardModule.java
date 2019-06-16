@@ -260,6 +260,7 @@ public class SellerDashboardModule {
         return context;
     }
 
+    @SellerDashboardScope
     @Provides
     public TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context) {
         return new TkpdAuthInterceptor(context, (AbstractionRouter) context.getApplicationContext());
