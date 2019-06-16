@@ -60,7 +60,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/dp_8">
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:gravity="center_vertical">
 
                     <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/iv_power_merchant_logo"
@@ -73,9 +74,8 @@
                         android:id="@+id/tv_shop_membership_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/sp_12"
                         android:fontFamily="sans-serif"
-                        android:textStyle="bold"
                         android:textColor="#b3000000"
                         android:lineSpacingExtra="6sp"
                         tools:text="Regular Merchant"
@@ -85,12 +85,12 @@
                         android:id="@+id/tv_shop_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sp_12"
                         android:fontFamily="sans-serif"
                         android:textStyle="normal"
                         android:textColor="#ae31353b"
                         android:lineSpacingExtra="8sp"
-                        android:layout_marginLeft="@dimen/dp_8"
+                        android:layout_marginLeft="@dimen/dp_4"
                         tools:text="Aktif" />
                 </LinearLayout>
 
@@ -126,9 +126,12 @@
 
     <com.tokopedia.sellerapp.dashboard.view.widget.ShopScorePMWidget
         android:id="@+id/shop_score_widget"
-        android:layout_margin="@dimen/dp_16"
+        android:padding="@dimen/dp_16"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:layout_height="80dp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground" />
 
     <LinearLayout
         android:layout_width="match_parent"

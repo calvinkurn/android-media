@@ -96,7 +96,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private ImageView shopIconImageView;
     private TextView shopNameTextView;
 
-    private ShopScorePMWidget shopScorePMWidget;
+    private ShopScorePMWidget shopScoreWidget;
 
     private TextView reputationPointTextView;
     private ShopReputationView shopReputationView;
@@ -165,7 +165,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         messageLabelView = (LabelView) view.findViewById(R.id.label_view_message);
         discussionLabelView = (LabelView) view.findViewById(R.id.label_view_discussion);
         reviewLabelView = (LabelView) view.findViewById(R.id.label_view_review);
-        shopScorePMWidget = view.findViewById(R.id.shop_score_widget);
+        shopScoreWidget = view.findViewById(R.id.shop_score_widget);
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -252,7 +252,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
             }
         });
-        shopScorePMWidget.setOnClickListener(new View.OnClickListener() {
+        shopScoreWidget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(getActivity(), AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
@@ -331,9 +331,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         updateTransaction(shopModel);
         updateViewShopOpen(shopModel);
         try {
-            shopScorePMWidget.setProgress(shopScoreResult.getData().getValue());
+            shopScoreWidget.setProgress(shopScoreResult.getData().getValue());
         } catch (Exception e) {
-            shopScorePMWidget.setProgress(0);
+            shopScoreWidget.setProgress(0);
         }
 
         swipeRefreshLayout.setRefreshing(false);
@@ -472,9 +472,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             tvShopMembershipTitle.setText(getString(R.string.label_power_merchant));
             tvShopMembershipStatus.setVisibility(View.VISIBLE);
             if (shopStatusModel.isPowerMerchantActive()) {
-                tvShopMembershipStatus.setText(R.string.active_label);
+                tvShopMembershipStatus.setText(getString(R.string.bracket_format, getString(R.string.active_label)) );
             } else {
-                tvShopMembershipStatus.setText(R.string.inactive_label);
+                tvShopMembershipStatus.setText(getString(R.string.bracket_format, getString(R.string.inactive_label)));
             }
         }
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {

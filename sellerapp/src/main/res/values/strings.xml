@@ -35,4 +35,5 @@
     <string name="title_dialog_tokopedia_app_not_valid">Aplikasi Tokopedia tidak valid</string>
     <string name="title_message_install_from_playstore">Install Tokopedia dari Google Play Store untuk melanjutkan</string>
     <string name="score_of_total_score" translatable="false"><![CDATA[<b>%1$d</b>/%2$d]]></string>
+    <string name="bracket_format">(%1$s)</string>
 </resources>
