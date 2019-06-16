@@ -68,6 +68,8 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.checkout.view.feature.emptycart.viewholder.RecentViewViewHolder;
 import com.tokopedia.checkout.view.feature.emptycart2.viewholder.RecentViewItemViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
@@ -102,6 +104,7 @@ import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -173,7 +176,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private boolean isToolbarWithBackButton = true;
 
     private CartListData cartListData;
-    private List<RecentView> recentViewList;
 
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
@@ -1010,6 +1012,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
 
             dPresenter.processGetRecentViewData();
+            dPresenter.processGetWishlistData();
 
             if (toolbar != null) {
                 setVisibilityRemoveButton(!cartListData.getShopGroupDataList().isEmpty());
@@ -1831,5 +1834,24 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartRecentViewHolderData.setRecentViewList(cartRecentViewItemHolderDataList);
 
         cartAdapter.addCartRecentViewData(cartRecentViewHolderData);
+    }
+
+    @Override
+    public void renderWishlist(List<Wishlist> wishlist) {
+        List<CartWishlistItemHolderData> cartWishlistItemHolderDataList = new ArrayList<>();
+        for (Wishlist item : wishlist) {
+            CartWishlistItemHolderData cartWishlistItemHolderData = new CartWishlistItemHolderData();
+            cartWishlistItemHolderData.setId(item.getId());
+            cartWishlistItemHolderData.setName(item.getName());
+            cartWishlistItemHolderData.setPrice(item.getPriceFmt());
+            cartWishlistItemHolderData.setImageUrl(item.getImageUrl());
+
+            cartWishlistItemHolderDataList.add(cartWishlistItemHolderData);
+        }
+
+        CartWishlistHolderData cartRecentViewHolderData = new CartWishlistHolderData();
+        cartRecentViewHolderData.setWishList(cartWishlistItemHolderDataList);
+
+        cartAdapter.addCartWishlistData(cartRecentViewHolderData);
     }
 }

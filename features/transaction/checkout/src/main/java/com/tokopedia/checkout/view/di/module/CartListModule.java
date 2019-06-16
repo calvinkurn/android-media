@@ -32,6 +32,7 @@ import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import dagger.Module;
@@ -101,6 +102,12 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    GetWishlistUseCase provideGetWishlistUseCase() {
+        return new GetWishlistUseCase(cartListView.getActivity());
+    }
+
+    @Provides
+    @CartListScope
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
                                                  DeleteCartUseCase deleteCartUseCase,
                                                  DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
@@ -117,13 +124,14 @@ public class CartListModule {
                                                  UserSessionInterface userSessionInterface,
                                                  TopAdsGqlUseCase topAdsGqlUseCase,
                                                  ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
-                                                 GetRecentViewUseCase getRecentViewUseCase) {
+                                                 GetRecentViewUseCase getRecentViewUseCase,
+                                                 GetWishlistUseCase getWishlistUseCase) {
         return new CartListPresenter(getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,
                 updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
-                clearCacheAutoApplyStackUseCase, getRecentViewUseCase);
+                clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase);
     }
 
     @Provides

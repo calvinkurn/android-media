@@ -17,6 +17,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
+import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 
 import java.util.List;
 import java.util.Map;
@@ -87,4 +88,6 @@ public interface ICartListView extends IBaseView {
     void onSuccessClearPromoStackAfterClash();
 
     void renderRecentView(List<RecentView> recentViewList);
+
+    void renderWishlist(List<Wishlist> wishlist);
 }

@@ -15,7 +15,6 @@ import rx.Subscriber;
 
 public class GetRecentViewSubscriber extends Subscriber<GraphqlResponse> {
 
-    private static final int ITEM_SHOW_COUNT = 2;
     private final ICartListView view;
     private final ICartListPresenter presenter;
 
@@ -32,10 +31,6 @@ public class GetRecentViewSubscriber extends Subscriber<GraphqlResponse> {
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        if (view != null) {
-//            view.renderHasNoRecentView();
-            stopTrace();
-        }
     }
 
     @Override
@@ -47,23 +42,9 @@ public class GetRecentViewSubscriber extends Subscriber<GraphqlResponse> {
                         gqlRecentViewResponse.getGqlRecentView().getRecentViewList() != null &&
                         gqlRecentViewResponse.getGqlRecentView().getRecentViewList().size() > 0) {
                     view.renderRecentView(gqlRecentViewResponse.getGqlRecentView().getRecentViewList());
-//                    presenter.setRecentViewListModels(gqlRecentViewResponse.getGqlRecentView().getRecentViewList());
-//                    view.renderHasRecentView(gqlRecentViewResponse.getGqlRecentView().getRecentViewList().size() > ITEM_SHOW_COUNT);
-//                } else {
-//                    view.renderHasNoRecentView();
                 }
-//            } else {
-//                view.renderHasNoRecentView();
             }
-            stopTrace();
         }
-    }
-
-    private void stopTrace() {
-//        if (!view.isAllTraceStopped()) {
-//            presenter.setLoadApiStatus(EmptyCartApi.LAST_SEEN, true);
-//            view.stopAllTrace();
-//        }
     }
 
 }

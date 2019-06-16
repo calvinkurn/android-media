@@ -30,6 +30,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetRecentViewSubscriber;
+import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetWishlistSubscriber;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
@@ -54,6 +55,7 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.ArrayList;
@@ -110,6 +112,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final UserSessionInterface userSessionInterface;
     private final GetRecentViewUseCase getRecentViewUseCase;
+    private final GetWishlistUseCase getWishlistUseCase;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
 
@@ -130,7 +133,8 @@ public class CartListPresenter implements ICartListPresenter {
                              UserSessionInterface userSessionInterface,
                              TopAdsGqlUseCase topAdsUseCase,
                              ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
-                             GetRecentViewUseCase getRecentViewUseCase) {
+                             GetRecentViewUseCase getRecentViewUseCase,
+                             GetWishlistUseCase getWishlistUseCase) {
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartUseCase = deleteCartUseCase;
@@ -148,6 +152,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.topAdsUseCase = topAdsUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
         this.getRecentViewUseCase = getRecentViewUseCase;
+        this.getWishlistUseCase = getWishlistUseCase;
     }
 
     @Override
@@ -172,6 +177,9 @@ public class CartListPresenter implements ICartListPresenter {
         }
         if (getRecentViewUseCase != null) {
             getRecentViewUseCase.unsubscribe();
+        }
+        if (getWishlistUseCase != null) {
+            getWishlistUseCase.unsubscribe();
         }
         view = null;
     }
@@ -1222,5 +1230,9 @@ public class CartListPresenter implements ICartListPresenter {
         }
     }
 
+    @Override
+    public void processGetWishlistData() {
+        getWishlistUseCase.createObservable(new GetWishlistSubscriber(view, this));
+    }
 
 }

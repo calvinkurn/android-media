@@ -63,4 +63,6 @@ public interface ICartListPresenter {
 
     void processGetRecentViewData();
 
+    void processGetWishlistData();
+
 }
