@@ -2582,11 +2582,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
-    @Override
     /**
      * Global Nav Router
      */
-
     @Override
     public Intent gotoWishlistPage(Context context) {
         Intent intent = new Intent(context, SimpleHomeActivity.class);

@@ -18,7 +18,6 @@ include "features:content:interest_pick"
 include "features:category:tradein_common"
 include "features:category:tradein"
 
-include "features:digital:flight_no_op"
 include "features:digital:digital_browse"
 include "features:digital:digital_deals"
 include "features:digital:event"
@@ -147,6 +146,7 @@ include "features:user:chat_common"
 include "features:user:chatbot"
 //include "features:user:chatbot_no_op"
 include "features:user:changepassword"
+//include "features:user:changepassword_no_op"
 include "features:user:changephonenumber"
 include "features:user:groupchat"
 //include "features:user:groupchat_no_op"
@@ -168,8 +168,6 @@ include "features:user:user_identification"
 include "features:user:user_identification_common"
 include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
-
-include "dynamic-features:shop_settings"
 
 include 'logisticanalytics'
 include 'tkpdfeed'
