@@ -13,6 +13,8 @@
     <string name="pm_label_member">Terdaftar</string>
     <string name="pm_label_member_status">Status layanan</string>
 
+    <string name="error_cancellation_tryagain">Coba Lagi</string>
+
     <string name="pm_label_kyc_verification_header">Semakin terpercaya dengan verifikasi diri di Power Merchant</string>
     <string name="pm_label_kyc_verification_desc_1">Untuk menjadi Power Merchant kamu harus upload foto KTP dan selfie dengan KTP melalui aplikasi Tokopedia. </string>
     <string name="pm_label_kyc_button_submit">Lebih Lanjut</string>

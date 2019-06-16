@@ -144,7 +144,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         activity?.run {
             ToasterError.make(findViewById(android.R.id.content),
                     ErrorHandler.getErrorMessage(this, throwable),
-                    ToasterError.LENGTH_LONG).setAction(R.string.try_again) {
+                    ToasterError.LENGTH_LONG).setAction(R.string.error_cancellation_tryagain) {
                 cancelMembership()
             }
                     .show()
