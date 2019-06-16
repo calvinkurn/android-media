@@ -63,6 +63,11 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
         model = arguments?.getParcelable(MODEL) ?: return
     }
 
+    override fun title(): String {
+        super.title()
+        return ""
+    }
+
     interface BottomSheetListener {
         fun onButtonClicked()
     }

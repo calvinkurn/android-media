@@ -218,12 +218,13 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             renderViewNonTransitionPeriod()
         }
         partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
-        isSuccessActivatedPm = true
         root_view_pm.hideLoading()
 
         if (isSuccessActivatedPm) {
             showBottomSheetSuccess(shopStatusModel)
         }
+
+        showBottomSheetCancel()
 
     }
 
@@ -236,7 +237,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 showExpiredDate()
             }
         }
-
     }
 
     private fun renderViewTransitionPeriod() {
