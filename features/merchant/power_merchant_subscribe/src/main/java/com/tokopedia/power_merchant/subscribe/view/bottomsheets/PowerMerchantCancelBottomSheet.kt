@@ -1,14 +1,15 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheets
 
+import android.content.Context
 import android.view.View
 import android.widget.Button
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.power_merchant.subscribe.R
-import kotlinx.android.synthetic.main.bottom_sheet_pm_cancel.*
-import kotlinx.android.synthetic.main.partial_member_power_merchant.*
+import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
 
-class PowerMerchantCancelBottomSheet() : BottomSheets() {
+class PowerMerchantCancelBottomSheet : BottomSheets() {
     lateinit var buttonCancel: Button
+    lateinit var listener: PmSubscribeContract.View
 
     override fun getLayoutResourceId(): Int {
         return R.layout.bottom_sheet_pm_cancel
@@ -17,15 +18,12 @@ class PowerMerchantCancelBottomSheet() : BottomSheets() {
     override fun initView(view: View) {
         buttonCancel = view.findViewById(R.id.button_cancel_bs)
         buttonCancel.setOnClickListener {
-
+            listener.cancelMembership()
         }
     }
 
-    fun setCancelButtonPm(unit: () -> Unit) {
-        unit()
-    }
-
-    interface PmSuccessBottomSheetListener {
-        fun setPresenterAutoExtend()
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        listener = context as PmSubscribeContract.View
     }
 }

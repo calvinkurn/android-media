@@ -3,8 +3,8 @@ package com.tokopedia.shop.common.graphql.data.shopscore
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ShopScoreResponse(
-        @SerializedName("shopScore")
+data class ShopScoreError(
+        @SerializedName("message")
         @Expose
-        val shopScore: ShopScore = ShopScore()
+        val message: String = ""
 )

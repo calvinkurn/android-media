@@ -1,6 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.view.fragment
 
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
@@ -23,9 +24,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showEmptyState
 import com.tokopedia.kotlin.extensions.view.showLoading
-import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
-import com.tokopedia.power_merchant.subscribe.ACTION_AUTO_EXTEND
-import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.*
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.activity.TransitionPeriodPmActivity
@@ -36,15 +35,13 @@ import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialBenefitPmVi
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHolder
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo
 import kotlinx.android.synthetic.main.dialog_kyc_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
-
-
 import javax.inject.Inject
 
-class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract.View, PowerMerchantCancelBottomSheet.PmSuccessBottomSheetListener {
-
+class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract.View {
     @Inject
     lateinit var presenter: PmSubscribeContract.Presenter
     @Inject
@@ -56,6 +53,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     lateinit var getApprovalStatusPojo: GetApprovalStatusPojo
     var shopScore: Int = 0
     var minScore: Int = 0
+    var isSuccessActivatedPm: Boolean = false
+    lateinit var bottomSheetSuccess: PowerMerchantSuccessBottomSheet
+    lateinit var bottomSheetCancel: PowerMerchantCancelBottomSheet
 
     override fun getScreenName(): String = ""
 
@@ -73,6 +73,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         fun createInstance() = PowerMerchantSubscribeFragment()
         const val ACTIVATE_INTENT_CODE = 123
         const val AUTOEXTEND_INTENT_CODE = 321
+        const val MINIMUM_SCORE_ACTIVATE_REGULAR = 75
+        const val MINIMUM_SCORE_ACTIVATE_IDLE = 65
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -84,21 +86,26 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         root_view_pm.showLoading()
-        ImageHandler.LoadImage(img_top_1, "https://ecs7.tokopedia.net/img/android/power_merchant_subscribe/pm_intro.png")
+        ImageHandler.LoadImage(img_top_1, IMG_URL_PM_INTRO)
         initializePartialPart(view)
         partialTncViewHolder.renderPartialTnc()
+
         button_activate_root.setOnClickListener {
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 1) {
-                if (shopScore < 65) {
-                    setupDialogScore()?.show()
-                } else {
-                    if (shopStatusModel.isPowerMerchantInactive()) {
-                        val intent = context?.let { it1 -> PowerMerchantTermsActivity.createIntent(it1, ACTION_ACTIVATE) }
-                        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
-                    } else if (shopStatusModel.isPowerMerchantActive()) {
-                        val intent = context?.let { it1 -> PowerMerchantTermsActivity.createIntent(it1, ACTION_AUTO_EXTEND) }
-                        startActivityForResult(intent, AUTOEXTEND_INTENT_CODE)
+                if (shopStatusModel.isPowerMerchantInactive()) {
+                    if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
+                        setupDialogScore()?.show()
+                        return@setOnClickListener
                     }
+                    val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE) }
+                    startActivityForResult(intent, ACTIVATE_INTENT_CODE)
+                } else {
+                    if (shopScore < MINIMUM_SCORE_ACTIVATE_IDLE) {
+                        setupDialogScore()?.show()
+                        return@setOnClickListener
+                    }
+                    val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_AUTO_EXTEND) }
+                    startActivityForResult(intent, AUTOEXTEND_INTENT_CODE)
                 }
             } else {
                 setupDialogKyc()?.show()
@@ -112,16 +119,20 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         when (it.id) {
             R.id.member_cancellation_button -> showBottomSheetCancel()
             else -> {
+
             }
         }
     }
 
-    override fun setPresenterAutoExtend() {
+    override fun cancelMembership() {
+        bottomSheetCancel.dismiss()
         presenter.setAutoExtendOff(false)
     }
 
+
     override fun refreshData() {
         root_view_pm.showLoading()
+        bottomSheetSuccess.dismiss()
         presenter.getPmStatusInfo(userSessionInterface.shopId)
     }
 
@@ -164,20 +175,35 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             return dialog
         }
         return null
-
     }
 
-    fun showBottomSheetSuccess() {
-        val bottomSheet = PowerMerchantSuccessBottomSheet();
-        bottomSheet.show(childFragmentManager, "power_merchant_success")
+    private fun showBottomSheetSuccess(shopStatusModel: ShopStatusModel) {
+        val imgUrl = IMG_URL_BS_SUCCESS
+        val bottomSheetModel: PowerMerchantSuccessBottomSheet.BottomSheetModel =
+                if (shopStatusModel.isTransitionPeriod()) {
+                    val headerString = getString(R.string.pm_label_bs_success_header_transition)
+                    val descString = getString(R.string.pm_label_bs_success_desc_transition)
+                    val btnString = getString(R.string.pm_label_bs_success_button_transition)
+                    PowerMerchantSuccessBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString)
+                } else {
+                    val headerString = getString(R.string.pm_label_bs_success_header)
+                    val descString = getString(R.string.pm_label_bs_success_desc)
+                    val btnString = getString(R.string.pm_label_bs_success_desc_transition)
+                    PowerMerchantSuccessBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString)
+                }
+
+        bottomSheetSuccess = PowerMerchantSuccessBottomSheet.newInstance(bottomSheetModel)
+        bottomSheetSuccess.setListener(object : PowerMerchantSuccessBottomSheet.BottomSheetListener {
+            override fun onButtonClicked() {
+                refreshData()
+            }
+        })
+        bottomSheetSuccess.show(childFragmentManager, "power_merchant_success")
     }
 
     fun showBottomSheetCancel() {
-        val bottomSheet = PowerMerchantCancelBottomSheet()
-        bottomSheet.setCancelButtonPm {
-            setPresenterAutoExtend()
-        }
-        bottomSheet.show(childFragmentManager, "power_merchant_cancel")
+        bottomSheetCancel = PowerMerchantCancelBottomSheet()
+        bottomSheetCancel.show(childFragmentManager, "power_merchant_cancel")
     }
 
     override fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
@@ -185,39 +211,40 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         getApprovalStatusPojo = powerMerchantStatus.getApprovalStatusPojo
         shopScore = powerMerchantStatus.shopScore.data?.data?.value ?: 0
         minScore = powerMerchantStatus.shopScore.data?.badgeScore ?: 0
-        if (shopStatusModel.isTransitionPeriod()) {
+        var isTransitionPeriod = shopStatusModel.isTransitionPeriod()
+        if (isTransitionPeriod) {
             renderViewTransitionPeriod()
         } else {
             renderViewNonTransitionPeriod()
         }
         partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
+        isSuccessActivatedPm = true
         root_view_pm.hideLoading()
-    }
 
-    private fun showError(message: String) {
-        showError(message, null)
+        if (isSuccessActivatedPm) {
+            showBottomSheetSuccess(shopStatusModel)
+        }
+
     }
 
     private fun renderViewNonTransitionPeriod() {
-        if (shopStatusModel.isPowerMerchantIdle()) {
-            //check score
-        } else if (shopStatusModel.isPowerMerchantActive()) {
+        var isPowerMerchant = shopStatusModel.isPowerMerchantIdle() or shopStatusModel.isPowerMerchantActive()
+        if (isPowerMerchant) {
             if (isAutoExtend()) {
                 hideButtonActivatedPm()
             } else {
                 showExpiredDate()
-            }
-        } else if (shopStatusModel.isPowerMerchantInactive()) {
-            if (isAutoExtend()) {
-                hideButtonActivatedPm()
             }
         }
 
     }
 
     private fun renderViewTransitionPeriod() {
-        if (shopStatusModel.isPowerMerchantActive() or shopStatusModel.isPowerMerchantIdle()) {
-            if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status != 1) {
+        var isPowerMerchant = shopStatusModel.isPowerMerchantActive() or shopStatusModel.isPowerMerchantIdle()
+        var isPending = shopStatusModel.isPowerMerchantPending()
+        if (isPowerMerchant) {
+            var isKyc = getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status != KYCConstant.STATUS_VERIFIED
+            if (isKyc) {
                 val intent = context?.let { TransitionPeriodPmActivity.newInstance(it) }
                 startActivity(intent)
                 activity?.finish()
@@ -227,11 +254,12 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 }
                 ticker_blue_container.visibility = View.VISIBLE
             }
-        } else if (shopStatusModel.isPowerMerchantPending()) {
+        } else if (isPending) {
             ticker_yellow_container.visibility = View.VISIBLE
-            ll_footer_submit.visibility = View.GONE
+            hideButtonActivatedPm()
         } else {
-            //if inactive do nothing
+            // if inactive do nothing
+            // default state: button activate is visible
         }
     }
 
@@ -251,9 +279,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ACTIVATE_INTENT_CODE) {
+        if (requestCode == ACTIVATE_INTENT_CODE && resultCode == Activity.RESULT_OK) {
+            isSuccessActivatedPm = true
             refreshData()
-        } else if (requestCode == AUTOEXTEND_INTENT_CODE){
+        } else if (requestCode == AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK) {
+            isSuccessActivatedPm = true
             refreshData()
         }
     }
@@ -271,15 +301,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 .setAction(R.string.title_try_again, listener)
                 .show()
     }
-
-    private fun renderViewIsPmExtend() {
-        hideButtonActivatedPm()
-    }
-
-    private fun renderViewIsPmNotExtend() {
-        showExpiredDate()
-    }
-
 
     private fun showExpiredDate() {
         ticker_yellow_container.visibility = View.VISIBLE

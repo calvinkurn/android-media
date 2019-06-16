@@ -59,8 +59,13 @@ import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.sellerapp.dashboard.view.preference.PowerMerchantPopUpManager;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopScorePMWidget;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycWidgetUtil;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
@@ -108,9 +113,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private ShopWarningTickerView shopWarningTickerView;
     private WarningTickerView verificationWarningTickerView;
 
+    private PowerMerchantPopUpManager popUpManager;
     private ProgressDialog progressDialog;
 
     private SnackbarRetry snackBarRetry;
+
+    private ShowCaseDialog showCaseDialog;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -154,6 +163,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+
+        popUpManager = new PowerMerchantPopUpManager(getContext());
 
         ivSettingIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -324,6 +335,56 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         setShopInfoToLabelFragment(shopModel.info);
     }
+
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .backgroundContentColorRes(R.color.black)
+                .shadowColorRes(R.color.shadow)
+                .titleTextColorRes(R.color.white)
+                .textColorRes(R.color.grey_400)
+                .textSizeRes(R.dimen.sp_12)
+                .titleTextSizeRes(R.dimen.sp_16)
+                .nextStringRes(R.string.next)
+                .prevStringRes(R.string.previous)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .build();
+    }
+
+    public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
+        final String showCaseTag = DashboardFragment.class.getName() + ".score";
+        if (ShowCasePreference.hasShown(getActivity().getApplicationContext(), showCaseTag) || showCaseDialog != null
+                || showCaseObjects == null) {
+            return;
+        }
+//
+//        showCaseDialog = createShowCase();
+//
+//        int bottomNavTopPos = bottomNavigation.getTop();
+//        int bottomNavBottomPos = bottomNavigation.getBottom();
+//
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+//            bottomNavBottomPos =
+//                    bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
+//            bottomNavTopPos =
+//                    bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
+//        }
+//        ArrayList<ShowCaseObject> showcases = new ArrayList<>();
+//        showcases.add(new ShowCaseObject(
+//                bottomNavigation,
+//                getString(R.string.title_showcase),
+//                getString(R.string.desc_showcase))
+//                .withCustomTarget(new int[]{
+//                        bottomNavigation.getLeft(),
+//                        bottomNavTopPos,
+//                        bottomNavigation.getRight(),
+//                        bottomNavBottomPos} ));
+//        showcases.addAll(showCaseObjects);
+//
+//        showCaseDialog.show(this, showCaseTag, showcases);
+    }
+
 
     public void setShopInfoToLabelFragment(Info shopInfo) {
         MitraToppersPreApproveLabelFragment mitraToppersPreApproveLabelFragment =
@@ -622,6 +683,41 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             tickerView.setVisibility(View.GONE);
         } else {
             tickerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void shopPowerMerchantPopup(ShopStatusModel shopStatusModel) {
+        //don't show any pop up for OS
+        if (shopStatusModel.isOfficialStore()) {
+            return;
+        }
+
+        String shopId = String.valueOf(shopStatusModel.getShopId());
+        if (shopStatusModel.isPowerMerchantActive()) {
+            popUpManager.setEverPowerMerchant(
+                    shopId,
+                    true
+            );
+        }
+
+        //show pop up only after transition period
+        if (!shopStatusModel.isTransitionPeriod() && popUpManager.isEverPowerMerchant(shopId)) {
+            if (shopStatusModel.isPowerMerchantActive()
+                    && !popUpManager.isActivePowerMerchantShown(shopId)) {
+                popUpManager.setActivePowerMerchantShown(shopId, true);
+                //TODO milhamj power merchant popup
+
+            } else if (shopStatusModel.isPowerMerchantIdle()
+                    && !popUpManager.isIdlePowerMerchantShown(shopId)) {
+                popUpManager.setIdlePowerMerchantShown(shopId, true);
+                //TODO milhamj power merchant popup
+
+            } else if (shopStatusModel.isPowerMerchantInactive()
+                    && !popUpManager.isRegularMerchantShown(shopId)) {
+                popUpManager.setRegularMerchantShown(shopId, true);
+                //TODO milhamj power merchant popup
+
+            }
         }
     }
 

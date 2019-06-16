@@ -11,12 +11,14 @@
     android:id="@+id/base_partial_tnc"
     android:paddingBottom="@dimen/dp_30">
 
-    <android.support.v7.widget.AppCompatTextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/appCompatTextView"
-        style="@style/TextView.SubHeadline.Bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:fontSize="small"
         android:text="@string/pm_label_tnc_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,12 +40,15 @@
             android:layout_gravity="center"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
 
-        <TextView
-            android:layout_width="@dimen/dp_250"
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="@dimen/dp_200"
             android:layout_height="wrap_content"
             android:text="@string/pm_label_kyc_verivication"
-            style="@style/TextView.TitleMedium.Bold"
-            android:layout_marginLeft="@dimen/dp_10"/>
+            app:fontSize="small"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10" />
 
     </LinearLayout>
 
@@ -65,29 +70,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_width="@dimen/dp_250"
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="@dimen/dp_200"
             android:layout_height="wrap_content"
             android:text="@string/pm_label_score_point"
-            style="@style/TextView.TitleMedium.Bold"
-            android:layout_marginLeft="@dimen/dp_10"/>
+            app:fontSize="small"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10" />
 
     </LinearLayout>
 
-    <android.support.v7.widget.AppCompatTextView
-        android:layout_width="match_parent"
+    <com.tokopedia.design.component.TextViewCompat
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/pm_label_cost_1"
-        style="@style/TextView.Small"/>
+        app:fontSize="micro"
+        />
 
-    <android.support.v7.widget.AppCompatTextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/txt_cost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/pm_label_cost_3"
+        app:fontSize="micro"
         android:textColor="@color/tkpd_green_header"
-        android:textStyle="bold"
         style="@style/TextView.Small"/>
 
 </LinearLayout>

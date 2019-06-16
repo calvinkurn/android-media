@@ -22,44 +22,39 @@
             <ImageView
                 android:id="@+id/img_top_1"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                tools:src="@tools:sample/avatars" />
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/txt_join_1"
-                style="@style/TextView.SubHeadline.Bold"
-                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/img_top_1"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="@string/pm_label_join_1" />
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/txt_join_2"
-                style="@style/TextView.SubHeadline.Bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txt_join_1"
-                android:layout_centerHorizontal="true"
+                android:text="@string/pm_label_join_1"
                 android:textStyle="bold"
-                android:text="@string/pm_label_join_2" />
+                android:textColor="@color/black"
+                app:fontSize="titleBig"
+                />
+
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/txt_info"
-                style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txt_join_2"
+                android:layout_below="@id/txt_join_1"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/dp_18"
                 android:layout_marginTop="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_18"
                 android:layout_marginBottom="@dimen/dp_22"
                 android:gravity="center"
-                android:lineSpacingExtra="@dimen/sp_6"
+                app:fontSize="title"
+                android:lineSpacingExtra="@dimen/sp_4"
                 android:text="@string/pm_label_info" />
 
 
@@ -89,7 +84,7 @@
 
                         <com.tokopedia.design.component.TextViewCompat
                             android:id="@+id/txt_ticker_yellow"
-                            style="@style/TextView.Small"
+                            app:fontSize="small"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/pm_label_cancellation_duration" />
@@ -108,9 +103,9 @@
                 layout="@layout/partial_member_power_merchant"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
+                android:layout_below="@id/ticker_yellow_container"
                 android:visibility="gone"
-                tools:visibility="visible"
-                android:layout_below="@id/ticker_yellow_container" />
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/base_partial_benefit"
@@ -141,12 +136,12 @@
                     app:cardCornerRadius="@dimen/dp_8">
 
                     <com.tokopedia.design.component.TextViewCompat
-                        style="@style/TextView.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dp_5"
                         android:lineSpacingExtra="@dimen/sp_6"
                         android:padding="@dimen/dp_8"
+                        app:fontSize="small"
                         android:text="@string/pm_label_price_cashback" />
 
                     <ImageView

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/base_partial_member"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -20,17 +20,20 @@
         android:padding="@dimen/dp_16">
 
         <com.tokopedia.design.component.TextViewCompat
-            style="@style/TextView.Micro.BlackDisabled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_5"
+            app:fontSize="micro"
+            app:textViewTheme="lightSecondary"
             android:text="@string/pm_label_member_status" />
 
         <com.tokopedia.design.component.TextViewCompat
-            style="@style/TextView.SubHeadline.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_10"
+            app:fontSize="title"
+            android:textStyle="bold"
+            android:textColor="@color/black"
             android:text="@string/pm_label_member" />
 
         <RelativeLayout
@@ -47,7 +50,6 @@
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/txt_cancel_member"
-                style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -55,8 +57,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="@dimen/dp_10"
+                app:fontSize = "micro"
+                app:textViewTheme="lightSecondary"
                 android:layout_below="@+id/view_line_pm"
-                android:text="@string/pm_label_cancellation_header" />
+                android:text="@string/pm_label_member_cancel" />
 
             <ImageView
                 android:layout_width="wrap_content"
