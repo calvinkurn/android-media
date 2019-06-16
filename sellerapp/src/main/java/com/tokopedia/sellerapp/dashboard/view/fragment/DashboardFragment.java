@@ -325,7 +325,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         updateTransaction(shopModel);
         updateViewShopOpen(shopModel);
         try {
-            shopScorePMWidget.setProgress(shopScoreResult.getData().getData().getValue());
+            shopScorePMWidget.setProgress(shopScoreResult.getData().getValue());
         } catch (Exception e) {
             shopScorePMWidget.setProgress(0);
         }
