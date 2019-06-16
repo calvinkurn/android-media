@@ -5,7 +5,6 @@ import android.content.res.Resources;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
@@ -30,8 +29,9 @@ import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.gm.common.data.source.cloud.GetShopScoreCloudSource;
+import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.di.GmCommonModule;
-import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeModule;
 import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
@@ -266,5 +266,10 @@ public class SellerDashboardModule {
         return new TkpdAuthInterceptor(context, (AbstractionRouter) context.getApplicationContext());
     }
 
+    @SellerDashboardScope
+    @Provides
+    public GetShopScoreCloudSource provideGetShopScoreCloudSource(GMCommonApi gmCommonApi) {
+        return new GetShopScoreCloudSource(gmCommonApi);
+    }
 
 }
