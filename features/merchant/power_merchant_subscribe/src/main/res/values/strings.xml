@@ -27,9 +27,12 @@
     <string name="pm_label_score_verification_header_2">kurang dari 65</string>
     <string name="pm_label_score_verification_desc">Tingkatkan performa tokomu. Poin di bawah 65 dapat menonaktifkan  keanggotaan Power Merchant.</string>
 
-    <string name="pm_label_success_header">Selamat! Tokomu sudah menjadi Power Merchant</string>
-    <string name="pm_label_success_desc">Saatnya mengakses Wawasan Pasar, pasang Voucher Toko dan fitur-fitur spesial Power Merchant!</string>
-    <string name="pm_label_success_button">Cek Sekarang</string>
+    <string name="pm_label_bs_success_header_transition">Tokomu sudah bergabung dalam Power Merchant</string>
+    <string name="pm_label_bs_success_header">Selamat! Tokomu sudah menjadi Power Merchant</string>
+    <string name="pm_label_bs_success_desc_transition">Nantikan perubahannya pada1 Juli 2019. Yuk, pelajari keuntungan dari Power Merchant baru.</string>
+    <string name="pm_label_bs_success_desc">Saatnya mengakses fitur-fitur khusus Power Merchant untuk mengoptimalkan penjualan tokomu.</string>
+    <string name="pm_label_bs_success_button_transition">Pelajari Power Merchant</string>
+    <string name="pm_label_bs_success_button">Mulai</string>
 
     <string name="pm_label_transition_period_header_1">Verifikasi tokomu untuk </string>
     <string name="pm_label_transition_period_header_2">jadi Power Merchant dengan sistem baru</string>

@@ -42,12 +42,9 @@ import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo
 import kotlinx.android.synthetic.main.dialog_kyc_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
-
-
 import javax.inject.Inject
 
 class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract.View {
-
     @Inject
     lateinit var presenter: PmSubscribeContract.Presenter
     @Inject
@@ -59,6 +56,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     lateinit var getApprovalStatusPojo: GetApprovalStatusPojo
     var shopScore: Int = 0
     var minScore: Int = 0
+    var isSuccessActivatedPm: Boolean = false
+    lateinit var bottomSheetSuccess: PowerMerchantSuccessBottomSheet
+    lateinit var bottomSheetCancel: PowerMerchantCancelBottomSheet
 
     override fun getScreenName(): String = ""
 
@@ -90,18 +90,23 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         ImageHandler.LoadImage(img_top_1, IMG_URL_PM_INTRO)
         initializePartialPart(view)
         partialTncViewHolder.renderPartialTnc()
+
         button_activate_root.setOnClickListener {
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 1) {
-                if (shopScore < 65) {
-                    setupDialogScore()?.show()
-                } else {
-                    if (shopStatusModel.isPowerMerchantInactive()) {
-                        val intent = context?.let { it1 -> PowerMerchantTermsActivity.createIntent(it1, ACTION_ACTIVATE) }
-                        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
-                    } else if (shopStatusModel.isPowerMerchantActive()) {
-                        val intent = context?.let { it1 -> PowerMerchantTermsActivity.createIntent(it1, ACTION_AUTO_EXTEND) }
-                        startActivityForResult(intent, AUTOEXTEND_INTENT_CODE)
+                if (shopStatusModel.isPowerMerchantInactive()) {
+                    if (shopScore < 75) {
+                        setupDialogScore()?.show()
+                        return@setOnClickListener
                     }
+                    val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE) }
+                    startActivityForResult(intent, ACTIVATE_INTENT_CODE)
+                } else {
+                    if (shopScore < 65) {
+                        setupDialogScore()?.show()
+                        return@setOnClickListener
+                    }
+                    val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_AUTO_EXTEND) }
+                    startActivityForResult(intent, AUTOEXTEND_INTENT_CODE)
                 }
             } else {
                 setupDialogKyc()?.show()
@@ -120,8 +125,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
+    override fun cancelMembership() {
+        bottomSheetCancel.dismiss()
+        presenter.setAutoExtendOff(false)
+    }
+
+
     override fun refreshData() {
         root_view_pm.showLoading()
+        bottomSheetSuccess.dismiss()
         presenter.getPmStatusInfo(userSessionInterface.shopId)
     }
 
@@ -164,20 +176,17 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             return dialog
         }
         return null
-
     }
 
-    fun showBottomSheetSuccess() {
-        val bottomSheet = PowerMerchantSuccessBottomSheet();
-        bottomSheet.show(childFragmentManager, "power_merchant_success")
+    fun showBottomSheetSuccess(shopStatusModel: ShopStatusModel) {
+        bottomSheetSuccess = PowerMerchantSuccessBottomSheet.newInstance(shopStatusModel.powerMerchant.shopPopup)
+        bottomSheetSuccess.setListener(this)
+        bottomSheetSuccess.show(childFragmentManager, "power_merchant_success")
     }
 
     fun showBottomSheetCancel() {
-        val bottomSheet = PowerMerchantCancelBottomSheet()
-        bottomSheet.setCancelButtonPm {
-            presenter.setAutoExtendOff(false)
-        }
-        bottomSheet.show(childFragmentManager, "power_merchant_cancel")
+        bottomSheetCancel = PowerMerchantCancelBottomSheet()
+        bottomSheetCancel.show(childFragmentManager, "power_merchant_cancel")
     }
 
     override fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
@@ -192,7 +201,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             renderViewNonTransitionPeriod()
         }
         partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
+        isSuccessActivatedPm = true
         root_view_pm.hideLoading()
+        showBottomSheetSuccess(shopStatusModel)
+
     }
 
     private fun showError(message: String) {
@@ -252,11 +264,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ACTIVATE_INTENT_CODE && resultCode == Activity.RESULT_OK) {
-            //get flag
-            showBottomSheetSuccess()
+            isSuccessActivatedPm = true
+            refreshData()
         } else if (requestCode == AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK) {
-            //get flag
-            showBottomSheetSuccess()
+            isSuccessActivatedPm = true
+            refreshData()
         }
     }
 
