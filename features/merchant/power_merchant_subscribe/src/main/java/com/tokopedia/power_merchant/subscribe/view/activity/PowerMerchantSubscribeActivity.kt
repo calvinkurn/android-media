@@ -20,7 +20,6 @@ class PowerMerchantSubscribeActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-       startActivity(PowerMerchantTermsActivity.createIntent(this, ACTION_ACTIVATE))
         return PowerMerchantSubscribeFragment.createInstance()
     }
 
