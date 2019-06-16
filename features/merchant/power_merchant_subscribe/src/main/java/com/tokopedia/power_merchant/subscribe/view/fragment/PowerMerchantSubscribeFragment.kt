@@ -24,10 +24,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showEmptyState
 import com.tokopedia.kotlin.extensions.view.showLoading
-import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
-import com.tokopedia.power_merchant.subscribe.ACTION_AUTO_EXTEND
-import com.tokopedia.power_merchant.subscribe.IMG_URL_PM_INTRO
-import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.*
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.activity.TransitionPeriodPmActivity
@@ -76,6 +73,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         fun createInstance() = PowerMerchantSubscribeFragment()
         const val ACTIVATE_INTENT_CODE = 123
         const val AUTOEXTEND_INTENT_CODE = 321
+        const val MINIMUM_SCORE_ACTIVATE_REGULAR = 75
+        const val MINIMUM_SCORE_ACTIVATE_IDLE = 65
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -94,14 +93,14 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         button_activate_root.setOnClickListener {
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 1) {
                 if (shopStatusModel.isPowerMerchantInactive()) {
-                    if (shopScore < 75) {
+                    if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
                         setupDialogScore()?.show()
                         return@setOnClickListener
                     }
                     val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE) }
                     startActivityForResult(intent, ACTIVATE_INTENT_CODE)
                 } else {
-                    if (shopScore < 65) {
+                    if (shopScore < MINIMUM_SCORE_ACTIVATE_IDLE) {
                         setupDialogScore()?.show()
                         return@setOnClickListener
                     }
@@ -178,17 +177,28 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         return null
     }
 
-    fun showBottomSheetSuccess(shopStatusModel: ShopStatusModel) {
-        //TODO yehez
-//        bottomSheetSuccess = PowerMerchantSuccessBottomSheet.newInstance(
-//
-//        )
-//        bottomSheetSuccess.setListener(object : PowerMerchantSuccessBottomSheet.BottomSheetListener{
-//            override fun onButtonClicked() {
-//                refreshData()
-//            }
-//        })
-//        bottomSheetSuccess.show(childFragmentManager, "power_merchant_success")
+    private fun showBottomSheetSuccess(shopStatusModel: ShopStatusModel) {
+        val imgUrl = IMG_URL_BS_SUCCESS
+        val bottomSheetModel: PowerMerchantSuccessBottomSheet.BottomSheetModel =
+                if (shopStatusModel.isTransitionPeriod()) {
+                    val headerString = getString(R.string.pm_label_bs_success_header_transition)
+                    val descString = getString(R.string.pm_label_bs_success_desc_transition)
+                    val btnString = getString(R.string.pm_label_bs_success_button_transition)
+                    PowerMerchantSuccessBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString)
+                } else {
+                    val headerString = getString(R.string.pm_label_bs_success_header)
+                    val descString = getString(R.string.pm_label_bs_success_desc)
+                    val btnString = getString(R.string.pm_label_bs_success_desc_transition)
+                    PowerMerchantSuccessBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString)
+                }
+
+        bottomSheetSuccess = PowerMerchantSuccessBottomSheet.newInstance(bottomSheetModel)
+        bottomSheetSuccess.setListener(object : PowerMerchantSuccessBottomSheet.BottomSheetListener {
+            override fun onButtonClicked() {
+                refreshData()
+            }
+        })
+        bottomSheetSuccess.show(childFragmentManager, "power_merchant_success")
     }
 
     fun showBottomSheetCancel() {
@@ -210,12 +220,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
         isSuccessActivatedPm = true
         root_view_pm.hideLoading()
-        showBottomSheetSuccess(shopStatusModel)
 
-    }
+        if (isSuccessActivatedPm) {
+            showBottomSheetSuccess(shopStatusModel)
+        }
 
-    private fun showError(message: String) {
-        showError(message, null)
     }
 
     private fun renderViewNonTransitionPeriod() {
