@@ -358,11 +358,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 .build();
     }
 
-    public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
+    public void onReadytoShowBoarding() {
         final String showCaseTag = DashboardFragment.class.getName() + ".score";
         if (getContext() != null) {
-            if (ShowCasePreference.hasShown(getContext(), showCaseTag) || showCaseDialog != null
-                    || showCaseObjects == null) {
+            if (ShowCasePreference.hasShown(getContext(), showCaseTag) || showCaseDialog != null) {
                 return;
             }
 
@@ -396,8 +395,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                             shopScoreWidgetTop,
                             shopScoreWidget.getRight(),
                             shopScoreWidgetBottom}));
-            showcases.addAll(showCaseObjects);
-
             showCaseDialog.show(getActivity(), showCaseTag, showcases);
         }
     }
