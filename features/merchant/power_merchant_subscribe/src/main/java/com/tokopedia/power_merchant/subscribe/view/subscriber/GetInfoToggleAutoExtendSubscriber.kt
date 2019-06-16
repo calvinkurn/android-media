@@ -16,6 +16,6 @@ class GetInfoToggleAutoExtendSubscriber(private val view: PmSubscribeContract.Vi
 
     override fun onError(e: Throwable?) {
         e?.debugTrace()
-        e?.let { view.showEmptyState(it) }
+        e?.let { view.onErrorCancelMembership(it) }
     }
 }

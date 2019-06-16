@@ -11,6 +11,7 @@ interface PmSubscribeContract {
         fun showEmptyState(throwable: Throwable)
         fun refreshData()
         fun cancelMembership()
+        fun onErrorCancelMembership(throwable: Throwable)
 
     }
 
