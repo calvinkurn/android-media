@@ -21,6 +21,7 @@ class PartialTncViewHolder private constructor(private val view:View , private v
     }
 
     fun renderPartialTnc(){
+        txtLearnMore = view.findViewById(R.id.txt_learn_more)
         val string = activity?.getString(R.string.pm_label_cost_3)
         val spanText = SpannableString(string)
 
