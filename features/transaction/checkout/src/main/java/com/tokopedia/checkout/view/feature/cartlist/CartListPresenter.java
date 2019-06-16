@@ -1245,9 +1245,9 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processGetRecommendationData() {
+    public void processGetRecommendationData(int page) {
         RequestParams requestParam = getRecommendationUseCase.getRecomParams(
-                0, "recom_widget", "cart");
+                page, "recom_widget", "cart");
         getRecommendationUseCase.execute(requestParam, new GetRecommendationSubscriber(view, this));
     }
 }

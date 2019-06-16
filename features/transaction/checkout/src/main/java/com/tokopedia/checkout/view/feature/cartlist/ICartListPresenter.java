@@ -65,6 +65,6 @@ public interface ICartListPresenter {
 
     void processGetWishlistData();
 
-    void processGetRecommendationData();
+    void processGetRecommendationData(int page);
 
 }

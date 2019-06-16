@@ -11,6 +11,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -60,6 +62,7 @@ import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.feature.bottomsheetpromostacking.ClashBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartRecommendationViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItemHolderData;
@@ -176,7 +179,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     private SaveInstanceCacheManager saveInstanceCacheManager;
 
-    private int recommendationCurrentPage = 0;
+    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
+    private boolean hasLoadRecommendation;
 
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
@@ -330,7 +334,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         progressDialog.setCancelable(false);
 
         refreshHandler = new RefreshHandler(getActivity(), view, this);
-        cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        cartRecyclerView.setLayoutManager(layoutManager);
         cartRecyclerView.setAdapter(cartAdapter);
         cartRecyclerView.addItemDecoration(cartItemDecoration);
         cartRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -349,6 +354,24 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
         });
         ((SimpleItemAnimator) cartRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.Companion.getLAYOUT()) {
+                    return 1;
+                }
+                return 2;
+            }
+        });
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                if (hasLoadRecommendation) {
+                    dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
+                }
+            }
+        };
+        cartRecyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
     }
 
     private void setupToolbar(View view) {
@@ -1014,7 +1037,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
             dPresenter.processGetRecentViewData();
             dPresenter.processGetWishlistData();
-            dPresenter.processGetRecommendationData();
+            dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
 
             if (toolbar != null) {
                 setVisibilityRemoveButton(!cartListData.getShopGroupDataList().isEmpty());
@@ -1872,13 +1895,14 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
         }
 
-        if (recommendationCurrentPage == 0) {
+        if (endlessRecyclerViewScrollListener.getCurrentPage() == 0) {
             CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
             cartSectionHeaderHolderData.setTitle("Rekomendasi");
             cartAdapter.addSectionHeaderData(cartSectionHeaderHolderData);
         }
 
-        recommendationCurrentPage++;
+        endlessRecyclerViewScrollListener.updateStateAfterGetData();
+        hasLoadRecommendation = true;
         cartAdapter.addCartRecommendationData(cartRecommendationItemHolderDataList);
     }
 }
