@@ -5,6 +5,7 @@ import android.content.res.Resources;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -247,8 +248,15 @@ public class SellerDashboardModule {
 
     @SellerDashboardScope
     @Provides
-    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+    public UserSessionInterface provideUserSession(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context) {
         return new com.tokopedia.user.session.UserSession(context);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    @com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+    public Context provideApplicationContext(@ApplicationContext Context context) {
+        return context;
     }
 
 
