@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,9 @@ import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.kyc.view.interfaces.GenericOperationsView;
 import com.tokopedia.kyc.view.interfaces.LoaderUiListener;
 import com.tokopedia.kyc.view.presenter.TnCConfirmationPresenter;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 
 import java.util.ArrayList;
@@ -53,6 +57,7 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     private TextView tncTxtv;
     public static String TAG = "tnc_page";
     private AlertDialog alertDialog;
+
     @Inject
     TnCConfirmationPresenter tnCConfirmationPresenter;
 
@@ -67,8 +72,13 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
             executePrcdTnC();
         }
         else if (i == R.id.txtv_tnc){
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+            String ovotncUrl = remoteConfig.getString(RemoteConfigKey.OVO_TNC_LINK);
+            if(TextUtils.isEmpty(ovotncUrl)){
+                ovotncUrl = Constants.URLs.OVO_TNC_PAGE;
+            }
             ((KYCRouter)getContext().getApplicationContext()).actionOpenGeneralWebView(getActivity(),
-                    Constants.URLs.OVO_TNC_PAGE);
+                    ovotncUrl);
         }
         else if(i == R.id.back_btn){
             executeBckBtn();
@@ -283,7 +293,20 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
     @Override
     public void failure(ConfirmSubmitResponse data) {
         if(activityListener != null) {
-            activityListener.addReplaceFragment(ErrorKycConfirmation.newInstance(), true, ErrorKycConfirmation.TAG);
+            ErrorKycConfirmation errorKycConfirmation = ErrorKycConfirmation.newInstance();
+            if(data != null && data.getConfirmSubmitResponse() != null
+                    && data.getConfirmSubmitResponse().getErrors() != null &&
+                    data.getConfirmSubmitResponse().getErrors().size() > 0){
+                String errorMessage = data.
+                        getConfirmSubmitResponse().getErrors().get(0).get(Constants.Keys.MESSAGE);
+                if(!TextUtils.isEmpty(errorMessage)){
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constants.Keys.MESSAGE, errorMessage);
+                    errorKycConfirmation.setArguments(bundle);
+                }
+            }
+            activityListener.addReplaceFragmentWithCustAnim(errorKycConfirmation,
+                    true, ErrorKycConfirmation.TAG, R.anim.enter_from_bottom_to_top, R.anim.exit_from_top_to_bottom);
         }
     }
 
