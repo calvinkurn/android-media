@@ -56,11 +56,6 @@ class GmCommonModule {
         return builder.build()
     }
 
-    @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, context.applicationContext as AbstractionRouter)
-    }
-
     @GmCommonQualifier
     @Provides
     fun provideVoteRetrofit(retrofitBuilder: Retrofit.Builder,
