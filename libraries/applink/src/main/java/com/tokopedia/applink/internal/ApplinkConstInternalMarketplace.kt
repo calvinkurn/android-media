@@ -42,4 +42,21 @@ object ApplinkConstInternalMarketplace {
     //ShopOpenRoutingActivity
     @JvmField
     val OPEN_SHOP = "$INTERNAL_MARKETPLACE/buka-toko"
+
+    // CustomerApp only: GoldMerchantRedirectActivity
+    @JvmField
+    val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
+
+    // GmSubscribeHomeActivity
+    @JvmField
+    val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"
+
+    // GmMembershipActivity
+    @JvmField
+    val GOLD_MERCHANT_MEMBERSHIP = "$INTERNAL_MARKETPLACE/gold-merchant-membership"
+
+    // ShopScoreDetailActivity
+    @JvmField
+    val SHOP_SCORE_DETAIL = "$INTERNAL_MARKETPLACE/shop-score-detail"
+
 }

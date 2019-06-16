@@ -20,6 +20,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -151,6 +152,12 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         tickerContainer = view.findViewById(R.id.ticker_container);
         buttonActivatePowerMerchant = view.findViewById(R.id.button_activate);
+        buttonActivatePowerMerchant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
+            }
+        });
 
         shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
         shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
@@ -463,9 +470,15 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             ivShopMembershipLogo.setVisibility(View.GONE);
             tvShopMembershipTitle.setText(R.string.label_regular_merchant);
             tvShopMembershipStatus.setVisibility(View.GONE);
-            tickerContainer.setVisibility(View.VISIBLE);
-            buttonActivatePowerMerchant.setVisibility(View.VISIBLE);
-            //TODO #PM
+            if (shopStatusModel.isTransitionPeriod()) {
+                tickerContainer.setVisibility(View.GONE);
+                buttonActivatePowerMerchant.setVisibility(View.GONE);
+            } else {
+                tickerContainer.setVisibility(View.VISIBLE);
+                buttonActivatePowerMerchant.setVisibility(View.VISIBLE);
+                ((TextView)tickerContainer.findViewById(R.id.tv_ticker)).setText(R.string.regular_merchant_ticker);
+                ((ImageView)tickerContainer.findViewById(R.id.iv_ticker_logo)).setImageResource(0);
+            }
         } else if (shopStatusModel.isOfficialStore()) {
             ivShopMembershipLogo.setVisibility(View.VISIBLE);
             ivShopMembershipLogo.setImageResource(R.drawable.ic_badge_shop_official);
@@ -483,7 +496,20 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             } else {
                 tvShopMembershipStatus.setText(getString(R.string.bracket_format, getString(R.string.inactive_label)));
             }
-            //TODO #PM
+            if (shopStatusModel.isTransitionPeriod()) {
+                tickerContainer.setVisibility(View.GONE);
+                buttonActivatePowerMerchant.setVisibility(View.GONE);
+            } else {
+                tickerContainer.setVisibility(View.VISIBLE);
+                ((ImageView)tickerContainer.findViewById(R.id.iv_ticker_logo)).setImageResource(R.drawable.ic_ticker_announcement_cropped);
+                if (shopStatusModel.isPowerMerchantActive()) {
+                    buttonActivatePowerMerchant.setVisibility(View.GONE);
+                    ((TextView)tickerContainer.findViewById(R.id.tv_ticker)).setText(R.string.power_merchant_active_ticker);
+                } else {
+                    buttonActivatePowerMerchant.setVisibility(View.VISIBLE);
+                    ((TextView)tickerContainer.findViewById(R.id.tv_ticker)).setText(R.string.power_merchant_inactive_ticker);
+                }
+            }
         }
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
             ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
