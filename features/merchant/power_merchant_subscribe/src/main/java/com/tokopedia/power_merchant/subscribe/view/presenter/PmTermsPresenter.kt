@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantActivationResult
 import com.tokopedia.gm.common.domain.interactor.ActivatePowerMerchantUseCase
 import com.tokopedia.gm.common.domain.interactor.ToggleAutoExtendPowerMerchantUseCase
+import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.power_merchant.subscribe.view.contract.PmTermsContract
 import rx.Subscriber
 import javax.inject.Inject
@@ -28,13 +29,12 @@ class PmTermsPresenter @Inject constructor(
             }
 
             override fun onError(e: Throwable?) {
+                e?.debugTrace()
                 if (isViewNotAttached) {
                     return
                 }
                 view.hideLoading()
-                if (e != null) {
-                    view.onError(e)
-                }
+                view.onError(e)
             }
         })
     }
@@ -53,13 +53,12 @@ class PmTermsPresenter @Inject constructor(
                     }
 
                     override fun onError(e: Throwable?) {
+                        e?.debugTrace()
                         if (isViewNotAttached) {
                             return
                         }
                         view.hideLoading()
-                        if (e != null) {
-                            view.onError(e)
-                        }
+                        view.onError(e)
                     }
                 })
     }

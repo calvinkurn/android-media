@@ -6,7 +6,10 @@ import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.shop.common.R;
+import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
@@ -20,6 +23,8 @@ import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.shop.common.util.CacheApiTKPDResponseValidator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -105,5 +110,11 @@ public class ShopCommonModule {
     @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @Provides
+    @Named(ShopCommonParamApiConstant.QUERY_SHOP_SCORE)
+    public String provideQueryShopScore(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_query_shop_score);
     }
 }

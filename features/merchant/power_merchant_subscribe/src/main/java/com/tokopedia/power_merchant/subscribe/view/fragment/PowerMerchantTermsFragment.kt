@@ -1,9 +1,9 @@
 package com.tokopedia.power_merchant.subscribe.view.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.View
-import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.gm.common.di.GmCommonQualifier
@@ -93,19 +93,19 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
     }
 
     override fun onSuccessActivate() {
-        Toast.makeText(context, "succces activate", Toast.LENGTH_LONG).show()
+        resultOkAndFinish()
     }
 
     override fun onSuccessAutoExtend() {
-        Toast.makeText(context, "succces activate", Toast.LENGTH_LONG).show()
+        resultOkAndFinish()
     }
 
-    override fun onError(throwable: Throwable) {
+    override fun onError(throwable: Throwable?) {
         view?.showErrorToaster(ErrorHandler.getErrorMessage(context, throwable))
     }
 
     private fun initVar() {
-        action = arguments?.getString(ACTION_KEY) ?: ""
+        setAction(arguments?.getString(ACTION_KEY) ?: "")
     }
 
     private fun initView() {
@@ -128,5 +128,14 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
         isTermsAgreed = !isTermsAgreed
         checkbox.isChecked = isTermsAgreed
         activateBtn.isEnabled = isTermsAgreed
+    }
+
+    private fun setAction(action: String) {
+        this.action = action
+    }
+
+    private fun resultOkAndFinish() {
+        activity?.setResult(Activity.RESULT_OK)
+        activity?.finish()
     }
 }

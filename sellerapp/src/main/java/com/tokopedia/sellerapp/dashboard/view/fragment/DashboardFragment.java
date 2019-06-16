@@ -41,6 +41,7 @@ import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.widget.WarningTickerView;
+import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
@@ -57,6 +58,7 @@ import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.sellerapp.dashboard.view.preference.PowerMerchantPopUpManager;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -111,6 +113,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private ShopWarningTickerView shopWarningTickerView;
     private WarningTickerView verificationWarningTickerView;
 
+    private PowerMerchantPopUpManager popUpManager;
     private ProgressDialog progressDialog;
 
     private SnackbarRetry snackBarRetry;
@@ -162,6 +165,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+
+        popUpManager = new PowerMerchantPopUpManager(getContext());
 
         ivSettingIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -673,6 +678,41 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             tickerView.setVisibility(View.GONE);
         } else {
             tickerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void shopPowerMerchantPopup(ShopStatusModel shopStatusModel) {
+        //don't show any pop up for OS
+        if (shopStatusModel.isOfficialStore()) {
+            return;
+        }
+
+        String shopId = String.valueOf(shopStatusModel.getShopId());
+        if (shopStatusModel.isPowerMerchantActive()) {
+            popUpManager.setEverPowerMerchant(
+                    shopId,
+                    true
+            );
+        }
+
+        //show pop up only after transition period
+        if (!shopStatusModel.isTransitionPeriod() && popUpManager.isEverPowerMerchant(shopId)) {
+            if (shopStatusModel.isPowerMerchantActive()
+                    && !popUpManager.isActivePowerMerchantShown(shopId)) {
+                popUpManager.setActivePowerMerchantShown(shopId, true);
+                //TODO milhamj power merchant popup
+
+            } else if (shopStatusModel.isPowerMerchantIdle()
+                    && !popUpManager.isIdlePowerMerchantShown(shopId)) {
+                popUpManager.setIdlePowerMerchantShown(shopId, true);
+                //TODO milhamj power merchant popup
+
+            } else if (shopStatusModel.isPowerMerchantInactive()
+                    && !popUpManager.isRegularMerchantShown(shopId)) {
+                popUpManager.setRegularMerchantShown(shopId, true);
+                //TODO milhamj power merchant popup
+
+            }
         }
     }
 
