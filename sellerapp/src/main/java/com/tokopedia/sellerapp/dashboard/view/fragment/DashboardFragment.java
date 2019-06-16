@@ -43,7 +43,6 @@ import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.widget.WarningTickerView;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
-import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -51,8 +50,6 @@ import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
-import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
-import com.tokopedia.seller.shopscore.view.widget.ShopScoreWidget;
 import com.tokopedia.seller.shopsettings.ManageShopActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
@@ -109,6 +106,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private LabelView messageLabelView;
     private LabelView discussionLabelView;
     private LabelView reviewLabelView;
+    private ImageView ivShopMembershipLogo;
+    private TextView tvShopMembershipTitle;
+    private TextView tvShopMembershipStatus;
 
     private ShopWarningTickerView shopWarningTickerView;
     private WarningTickerView verificationWarningTickerView;
@@ -139,6 +139,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         tickerView = (TickerView) view.findViewById(R.id.ticker_view);
         headerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_header);
         footerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_footer);
+
+        ivShopMembershipLogo = view.findViewById(R.id.iv_power_merchant_logo);
+        tvShopMembershipTitle = view.findViewById(R.id.tv_shop_membership_title);
+        tvShopMembershipStatus = view.findViewById(R.id.tv_shop_status);
 
         shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
         shopNameTextView = (TextView) view.findViewById(R.id.text_view_shop_name);
@@ -440,18 +444,26 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             shopName = MethodChecker.fromHtml(shopName).toString();
         }
         shopNameTextView.setText(shopName);
-//        if (shopModelInfo.isOfficialStore()) {
-//            gmIconImageView.setVisibility(View.VISIBLE);
-//            gmIconImageView.setImageResource(R.drawable.ic_official);
-//            gmStatusTextView.setText(R.string.dashboard_label_official_store);
-//        } else if (shopModelInfo.isGoldMerchant()) {
-//            gmIconImageView.setVisibility(View.VISIBLE);
-//            gmIconImageView.setImageDrawable(GMConstant.getGMDrawable(getContext()));
-//            gmStatusTextView.setText(GMConstant.getGMTitleResource(getContext()));
-//        } else {
-//            gmIconImageView.setVisibility(View.GONE);
-//            gmStatusTextView.setText(R.string.dashboard_label_regular_merchant);
-//        }
+        if (shopStatusModel.isRegularMerchant()) {
+            ivShopMembershipLogo.setVisibility(View.GONE);
+            tvShopMembershipTitle.setText(R.string.label_regular_merchant);
+            tvShopMembershipStatus.setVisibility(View.GONE);
+        } else if (shopStatusModel.isOfficialStore()) {
+            ivShopMembershipLogo.setVisibility(View.VISIBLE);
+            ivShopMembershipLogo.setImageResource(R.drawable.ic_badge_shop_official);
+            tvShopMembershipTitle.setText(getString(R.string.label_official_store));
+            tvShopMembershipStatus.setVisibility(View.GONE);
+        } else {
+            ivShopMembershipLogo.setVisibility(View.VISIBLE);
+            ivShopMembershipLogo.setImageResource(R.drawable.ic_power_merchant);
+            tvShopMembershipTitle.setText(getString(R.string.label_power_merchant));
+            tvShopMembershipStatus.setVisibility(View.VISIBLE);
+            if (shopStatusModel.isPowerMerchantActive()) {
+                tvShopMembershipStatus.setText(R.string.active_label);
+            } else {
+                tvShopMembershipStatus.setText(R.string.inactive_label);
+            }
+        }
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
             ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
         } else {
