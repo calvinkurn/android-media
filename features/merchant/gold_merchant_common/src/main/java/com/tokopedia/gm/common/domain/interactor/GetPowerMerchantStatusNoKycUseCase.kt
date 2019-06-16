@@ -30,6 +30,7 @@ class GetPowerMerchantStatusNoKycUseCase @Inject constructor(private val getShop
     }
 
     companion object {
+        @JvmStatic
         fun createRequestParams(shopId: String): RequestParams {
             return RequestParams.create().apply {
                 putString(GMParamApiContant.SHOP_ID, shopId)

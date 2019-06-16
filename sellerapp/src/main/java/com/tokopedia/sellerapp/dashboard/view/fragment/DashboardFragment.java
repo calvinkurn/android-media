@@ -41,6 +41,8 @@ import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.widget.WarningTickerView;
+import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
+import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
@@ -309,16 +311,18 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     @Override
-    public void onSuccessGetShopInfoAndScore(ShopModel shopModel, ShopScoreViewModel shopScoreViewModel) {
+    public void onSuccessGetShopInfoAndScore(ShopModel shopModel,
+                                             ShopStatusModel shopStatusModel,
+                                             ShopScoreResult shopScoreResult) {
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
         updateShopInfo(shopModel);
         updateReputation(shopModel);
         updateTransaction(shopModel);
         updateViewShopOpen(shopModel);
         // TODO #GM below to be removed
-        shopScoreWidget.renderView(shopScoreViewModel);
+        //shopScoreWidget.renderView(shopScoreViewModel);
         // TODO #GM
-        shopScorePMWidget.setProgress(shopScoreViewModel.getData().getValue());
+        shopScorePMWidget.setProgress(55);
 
         swipeRefreshLayout.setRefreshing(false);
         hideSnackBarRetry();

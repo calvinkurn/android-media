@@ -30,6 +30,7 @@
         app:rcBackgroundColor="@color/transparent"
         app:rcMax="100"
         app:rcRadius="20dp"
+        app:rcProgressColor="@color/tkpd_main_green"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_below="@+id/tv_score_title"/>
 
