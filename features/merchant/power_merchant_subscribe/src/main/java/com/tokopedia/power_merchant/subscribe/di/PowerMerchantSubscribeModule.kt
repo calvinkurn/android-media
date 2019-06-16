@@ -33,14 +33,14 @@ class PowerMerchantSubscribeModule {
 
     @PowerMerchantSubscribeScope
     @Provides
-    internal fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
+    internal fun provideResources(@ApplicationContext context: Context): Resources {
+        return context.resources
     }
 
     @PowerMerchantSubscribeScope
     @Provides
-    internal fun provideResources(@ApplicationContext context: Context): Resources {
-        return context.resources
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 
 }

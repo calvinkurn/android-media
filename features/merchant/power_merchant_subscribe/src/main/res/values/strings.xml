@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">power_merchant_subscribe</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="pm_label_join_1">Yuk Join Power Merchant</string>
+    <string name="pm_label_join_1">Yuk, gabung Power Merchant!</string>
     <string name="pm_label_join_2">dengan Sistem Baru</string>
     <string name="pm_label_benefit_header">Keuntungan</string>
     <string name="pm_label_power_merchant_badge">Badge Power Merchant</string>
@@ -11,7 +10,7 @@
     <string name="pm_label_special_promo_big">Ikut Promo Besar Tokopedia</string>
     <string name="pm_label_topads_credit">Tambahan Credit TopAds</string>
     <string name="pm_label_market_insight">Fitur Wawasan Pasar</string>
-    <string name="pm_label_member">Status keanggotaan : Terdaftar</string>
+    <string name="pm_label_member">Terdaftar</string>
     <string name="pm_label_member_status">Status layanan</string>
 
     <string name="pm_label_kyc_verification_header_1">Lengkapi informasi kartu</string>
@@ -44,7 +43,7 @@
     <string name="pm_label_bottom_sheet_cancel_button">Batalkan Keanggotaan</string>
     <string name="pm_label_bottom_sheet_cancel_desc">Dengan membatalkan, kamu tidak dapat mengakses fitur-fitur Power Merchant berikut:</string>
 
-    <string name="pm_label_button_activate">Aktivasi Power Merchant</string>
+    <string name="pm_label_button_activate">Upgrade Tokomu</string>
     <string name="pm_label_member_cancel">Batalkan keanggotaan kapan saja</string>
     <string name="pm_label_member_cancel_learnmore">Status keanggotaan aktif jika skor performa toko minimum 65 poin. Pelajari Selengkapnya</string>
     <string name="pm_period">Periode baru dimulai pada 1 Juli 2019 pukul 04.00</string>
@@ -56,9 +55,12 @@
     <string name="pm_label_score_point">Skor performa toko lebih dari 75 poin </string>
     <string name="pm_label_tnc_header">Syarat menjadi Power Merchant</string>
     <string name="pm_label_price_cashback">Sisa biaya langganan Power Merchant sebelumnya akan dikembalikan ke Saldo Tokopedia paling lambat 1 minggu.</string>
-    <string name="pm_label_info">Sekilas info tentang kenapa sih PM ini berubah, apa yang lebih baik, apa yang ditawarkan, etc…</string>
+    <string name="pm_label_info">Akses banyak fitur eksklusif, hanya dengan biaya layanan 1% dari setiap transaksi.</string>
     <string name="pm_upgrade_shop">Upgrade Tokomu</string>
     <string name="pm_terms_agree">Dengan ini, saya menyetujui syarat dan ketentuan Power Merchant Tokopedia.</string>
 
     <string name="pm_title_tnc">Syarat dan Ketentuan</string>
+    <string name="pm_benefit_credit">Dapatkan bonus kredit 5% setiap top-up Kredit TopAds</string>
+    <string name="pm_big_promo">Tingkatkan penjualan dengan berpartisipasi di kegiatan promosi tahunan.</string>
+    <string name="pm_special_promo">Lebih banyak pilihan promo khusus Power Merchant.</string>
 </resources>

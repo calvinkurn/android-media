@@ -20,6 +20,7 @@ data class ShopStatusModel(
         const val STATUS_IDLE = "idle"
         const val STATUS_OFF = "off"
         const val STATUS_ON = "on"
+        const val STATUS_PENDING = "pending"
     }
 
     fun isPowerMerchantActive(): Boolean {
@@ -30,12 +31,20 @@ data class ShopStatusModel(
         return powerMerchant.status == STATUS_IDLE
     }
 
+    fun isPowerMerchantPending(): Boolean {
+        return powerMerchant.status == STATUS_PENDING
+    }
+
     fun isPowerMerchantInactive(): Boolean {
         return powerMerchant.status == STATUS_INACTIVE
     }
 
     fun isRegularMerchant(): Boolean {
         return powerMerchant.status == STATUS_INACTIVE && officialStore.status == STATUS_INACTIVE
+    }
+
+    fun isOfficialStore(): Boolean {
+        return officialStore.status == STATUS_ACTIVE
     }
 
     fun isTransitionPeriod(): Boolean {

@@ -7,7 +7,6 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -19,6 +18,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
+import android.widget.TextView
+import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -31,7 +32,7 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.utils.StringUtils
-import com.tokopedia.gm.resource.GMConstant
+import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
@@ -45,7 +46,7 @@ import com.tokopedia.shop.settings.common.util.FORMAT_DATE
 import com.tokopedia.shop.settings.common.util.toReadableString
 import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
-import kotlinx.android.synthetic.main.partial_shop_settings_info_membership.*
+import kotlinx.android.synthetic.main.partial_shop_settings_info_power_merchant.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_status.*
 import java.util.*
 import javax.inject.Inject
@@ -106,17 +107,17 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         when {
             itemMenuTitle.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
                 val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                        getString(R.string.schedule_shop_close), false)
+                    getString(R.string.schedule_shop_close), false)
                 startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
             }
             itemMenuTitle.equals(getString(R.string.label_close_shop_now), ignoreCase = true) -> {
                 val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                        getString(R.string.label_close_shop_now), true)
+                    getString(R.string.label_close_shop_now), true)
                 startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
             }
             itemMenuTitle.equals(getString(R.string.change_schedule), ignoreCase = true) -> {
                 val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                        getString(R.string.change_schedule), false)
+                    getString(R.string.change_schedule), false)
                 startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
             }
             itemMenuTitle.equals(getString(R.string.remove_schedule), ignoreCase = true) -> {
@@ -130,11 +131,11 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                             //remove schedule
                             showSubmitLoading(getString(R.string.title_loading))
                             shopSettingsInfoPresenter.updateShopSchedule(
-                                    if (shopBasicDataModel!!.isClosed)
-                                        ShopScheduleActionDef.CLOSED
-                                    else
-                                        ShopScheduleActionDef.OPEN,
-                                    false, "", "", "")
+                                if (shopBasicDataModel!!.isClosed)
+                                    ShopScheduleActionDef.CLOSED
+                                else
+                                    ShopScheduleActionDef.OPEN,
+                                false, "", "", "")
                             dismiss()
                         }
                         setOnCancelClickListener { dismiss() }
@@ -146,7 +147,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 // open now
                 showSubmitLoading(getString(R.string.title_loading))
                 shopSettingsInfoPresenter.updateShopSchedule(ShopScheduleActionDef.OPEN, false,
-                        "", "", "")
+                    "", "", "")
             }
         }
     }
@@ -206,23 +207,26 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun loadShopBasicData() {
         showLoading()
-        shopSettingsInfoPresenter.getShopBasicData()
+        shopSettingsInfoPresenter.getShopData()
     }
 
     override fun initInjector() {
         DaggerShopSettingsComponent.builder()
-                .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
         shopSettingsInfoPresenter.attachView(this)
     }
 
-    override fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel?) {
+    override fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, ShopStatusModel?>) {
+        val (shopBasicDataModel, shopStatusModel) = result
         this.shopBasicDataModel = shopBasicDataModel
         hideLoading()
         shopBasicDataModel?.let {
             setUIShopBasicData(it)
             setUIStatus(it)
+        }
+        shopStatusModel?.let {
             setUIMembership(it)
         }
     }
@@ -305,53 +309,105 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         }
     }
 
-    private fun setUIMembership(shopBasicDataModel: ShopBasicDataModel) {
-        if (shopBasicDataModel.isRegular) {
-            ivShopMembership.setImageDrawable(GMConstant.getGMRegularBadgeDrawable(activity))
-            ivShopMembership.setPadding(0, 0, 0, 0)
-            tvMembershipName.text = getString(R.string.label_regular_merchant)
-
-            val goldMerchantString = getString(GMConstant.getGMTitleResource(context))
-            val goldMerchantInviteString = getString(R.string.shop_settings_gold_merchant_invite, goldMerchantString);
-            val spannable = SpannableString(goldMerchantInviteString)
-            val indexStart = goldMerchantInviteString.indexOf(goldMerchantString)
-            val indexEnd = indexStart + goldMerchantString.length
-
-            val color = ContextCompat.getColor(context!!, R.color.tkpd_main_green)
-            spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            val clickableSpan = object : ClickableSpan() {
-                override fun onClick(widget: View) {
-                    navigateToGMHome()
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                    ds.color = color
-                }
-            }
-            spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            tvMembershipDescription.movementMethod = LinkMovementMethod.getInstance()
-            tvMembershipDescription.text = spannable
-
-            vgMembershipContainer.setOnClickListener(null)
-        } else if (shopBasicDataModel.isOfficialStore) {
-            ivShopMembership.setImageResource(R.drawable.ic_badge_shop_official)
-            val padding = resources.getDimensionPixelOffset(R.dimen.dp_8)
-            ivShopMembership.setPadding(padding, padding, padding, padding)
-            tvMembershipName.text = getString(R.string.label_official_store)
-            tvMembershipDescription.text = getString(R.string.valid_until_x,
-                    toReadableString(FORMAT_DATE, shopBasicDataModel.expired ?: ""))
-            vgMembershipContainer.setOnClickListener(null)
-        } else if (shopBasicDataModel.isGold) {
-            ivShopMembership.setImageDrawable(GMConstant.getGMDrawable(context))
-            ivShopMembership.setPadding(0, 0, 0, 0)
-            tvMembershipName.text = getString(GMConstant.getGMTitleResource(context))
-            tvMembershipDescription.text = getString(R.string.valid_until_x,
-                    toReadableString(FORMAT_DATE, shopBasicDataModel.expired ?: ""))
-            tvManageGmSubscribe.visibility = View.VISIBLE
-            vgMembershipContainer.setOnClickListener { navigateToAboutGM() }
+    private fun setUIMembership(shopStatusModel: ShopStatusModel) {
+        if (shopStatusModel.isRegularMerchant()) {
+            showRegularMerchantMembership(shopStatusModel)
+        } else if (shopStatusModel.isOfficialStore()) {
+            showOfficialStore()
+        } else {
+            showPowerMerchant(shopStatusModel)
         }
+    }
+
+    private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel) {
+        tvManageGmSubscribe.visibility = View.GONE
+        vgMembershipContainer.setOnClickListener { }
+        vgMembershipContainer.isClickable = false
+        iv_power_merchant_logo.visibility = View.GONE
+        tv_shop_membership_title.text = getString(R.string.label_regular_merchant)
+        tv_shop_status.visibility = View.GONE
+        ticker_container.visibility = View.GONE
+        if (shopStatusModel.isTransitionPeriod()) {
+            tv_ticker_info.visibility = View.GONE
+            button_activate.visibility = View.GONE
+        } else {
+            tv_ticker_info.visibility = View.VISIBLE
+            setTextViewLearnMore(tv_ticker_info,getString(R.string.regular_merchant_learn_more),getString(R.string.learn_more)) {
+                //TODO go to score calculation for Power Merchant
+                Toast.makeText(context,"TODO go to regular merchant learn more", Toast.LENGTH_LONG).show()
+            }
+
+            button_activate.visibility = View.VISIBLE
+            button_activate.setOnClickListener {
+                //TODO go to activate power merchant activity
+                Toast.makeText(context,"TODO go to PM", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun showPowerMerchant(shopStatusModel: ShopStatusModel) {
+        tvManageGmSubscribe.visibility = View.VISIBLE
+        button_activate.visibility = View.GONE
+        vgMembershipContainer.setOnClickListener {
+            //TODO go to activate power merchant activity
+            Toast.makeText(context,"TODO go to PM", Toast.LENGTH_LONG).show()
+        }
+        iv_power_merchant_logo.visibility = View.VISIBLE
+        iv_power_merchant_logo.setImageResource(R.drawable.ic_power_merchant)
+        tv_shop_membership_title.text = getString(R.string.label_power_merchant)
+        tv_shop_status.visibility = View.VISIBLE
+        tv_shop_status.text = getString(if (shopStatusModel.isPowerMerchantActive()) {
+            R.string.active_label
+        } else {
+            R.string.inactive_label
+        })
+        if (shopStatusModel.isTransitionPeriod()) {
+            ticker_container.visibility = View.GONE
+        } else {
+            ticker_container.visibility = View.VISIBLE
+            tv_ticker.setText(R.string.power_merchant_learn_more)
+            setTextViewLearnMore(tv_ticker,getString(R.string.power_merchant_learn_more),getString(R.string.learn_more)) {
+                //TODO go to score calculation for Power Merchant
+                Toast.makeText(context,"TODO go to Score", Toast.LENGTH_LONG).show()
+            }
+        }
+        tv_ticker_info.visibility = View.GONE
+    }
+
+    private fun showOfficialStore() {
+        tvManageGmSubscribe.visibility = View.GONE
+        button_activate.visibility = View.GONE
+        vgMembershipContainer.setOnClickListener { }
+        vgMembershipContainer.isClickable = false
+        iv_power_merchant_logo.visibility = View.VISIBLE
+        iv_power_merchant_logo.setImageResource(R.drawable.ic_badge_shop_official)
+        tv_shop_membership_title.text = getString(R.string.label_official_store)
+        tv_shop_status.visibility = View.GONE
+        ticker_container.visibility = View.GONE
+        tv_ticker_info.visibility = View.GONE
+    }
+
+    private fun setTextViewLearnMore (textView: TextView, allText:String, learnMoreString: String, onClickLearnMore:(()->(Unit))){
+        val spannable = SpannableString(allText)
+        val indexStart = allText.indexOf(learnMoreString)
+        val indexEnd = indexStart + learnMoreString.length
+
+        val color = ContextCompat.getColor(context!!, R.color.tkpd_main_green)
+        spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                onClickLearnMore.invoke()
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+                ds.color = color
+            }
+        }
+        spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        textView.movementMethod = LinkMovementMethod.getInstance()
+        textView.text = spannable
     }
 
     private fun navigateToGMHome() {

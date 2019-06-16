@@ -8,10 +8,14 @@ interface PmSubscribeContract {
     interface View : CustomerView {
         fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus)
         fun onErrorGetPmInfo(throwable: Throwable)
+        fun showEmptyState(throwable: Throwable)
+        fun refreshData()
+
     }
 
     interface Presenter : CustomerPresenter<View> {
         fun getPmStatusInfo(shopId: String)
+        fun setAutoExtendOff(autoExtend:Boolean)
 
     }
 }

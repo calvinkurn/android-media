@@ -1,27 +1,28 @@
 package com.tokopedia.power_merchant.subscribe.view.viewholder
 
-import android.app.Activity
 import android.view.View
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.partial_member_power_merchant.view.*
 
 class PartialMemberPmViewHolder private constructor(private val view: View,
-                                                    private val activity: Activity? = null) {
+                                                    private val clickListener: View.OnClickListener):
+        View.OnClickListener by clickListener  {
 
     companion object {
-        fun build(_view: View, _activity: Activity?) = PartialMemberPmViewHolder(_view, _activity)
+        fun build(_view: View, _clickListener: View.OnClickListener) = PartialMemberPmViewHolder(_view, _clickListener)
     }
 
     fun renderPartialMember(shopStatusModel: ShopStatusModel, isAutoExtend: Boolean) {
-        if (shopStatusModel.powerMerchant.status == "activate" || shopStatusModel.powerMerchant.status == "inactive") {
+        if (shopStatusModel.isPowerMerchantActive() or shopStatusModel.isPowerMerchantPending()) {
             showCancellationButton(isAutoExtend)
             view.show()
         } else if (shopStatusModel.isPowerMerchantInactive()){
             view.hide()
         }
+        view.member_cancellation_button.setOnClickListener(this@PartialMemberPmViewHolder)
+
     }
 
     fun showCancellationButton(isAutoExtend: Boolean){
@@ -32,5 +33,4 @@ class PartialMemberPmViewHolder private constructor(private val view: View,
 
         }
     }
-
 }
