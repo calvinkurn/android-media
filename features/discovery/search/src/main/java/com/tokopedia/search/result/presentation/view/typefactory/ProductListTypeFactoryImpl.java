@@ -11,6 +11,7 @@ import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.EmptySearchViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GridProductItem2019ViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.HeaderViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder;
@@ -37,7 +38,6 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     private final BannerAdsListener bannerAdsListener;
     private final EmptyStateListener emptyStateListener;
     private final Config topAdsConfig;
-    private final String searchQuery;
 
     public ProductListTypeFactoryImpl(ProductListener productListener,
                                       SuggestionListener suggestionListener,
@@ -47,7 +47,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
                                       GlobalNavWidgetListener globalNavWidgetListener,
                                       BannerAdsListener bannerAdsListener,
                                       EmptyStateListener emptyStateListener,
-                                      Config config, String searchQuery) {
+                                      Config config) {
 
         this.productListener = productListener;
         this.suggestionListener = suggestionListener;
@@ -58,7 +58,6 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         this.bannerAdsListener = bannerAdsListener;
         this.emptyStateListener = emptyStateListener;
         this.topAdsConfig = config;
-        this.searchQuery = searchQuery;
     }
 
     @Override
@@ -75,7 +74,8 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
                 return BigGridProductItemViewHolder.LAYOUT;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
             default:
-                return GridProductItemViewHolder.LAYOUT;
+//                return GridProductItemViewHolder.LAYOUT;
+                return GridProductItem2019ViewHolder.Companion.getLAYOUT();
         }
     }
 
@@ -96,11 +96,12 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
-
         AbstractViewHolder viewHolder;
 
         if (type == ListProductItemViewHolder.LAYOUT) {
             viewHolder = new ListProductItemViewHolder(view, productListener);
+        } else if(type == GridProductItem2019ViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new GridProductItem2019ViewHolder(view, productListener);
         } else if (type == GridProductItemViewHolder.LAYOUT) {
             viewHolder = new GridProductItemViewHolder(view, productListener);
         } else if (type == BigGridProductItemViewHolder.LAYOUT) {

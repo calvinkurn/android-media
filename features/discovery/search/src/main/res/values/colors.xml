@@ -9,4 +9,8 @@
 
     <color name="color_item_preview_border">#e0e0e0</color>
     <color name="black_54">#8a000000</color>
+
+    <color name="product_card_title_black">#f531353b</color>
+    <color name="product_card_price_orange">#fa591d</color>
+    <color name="product_card_location_grey">#ae31353b</color>
 </resources>

@@ -233,7 +233,7 @@ public class ProductListFragment
                 this, this,
                 this, this,
                 this, this,
-                topAdsConfig, getQueryKey());
+                topAdsConfig);
         adapter = new ProductListAdapter(getActivity(), this, productListTypeFactory);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.setAdapter(adapter);
