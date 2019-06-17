@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.analytics.firebase.FirebaseParams;
+import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -22,12 +23,18 @@ public class RegisterAnalytics {
 
     private static final String EVENT_CLICK_LOGIN = "clickLogin";
     private static final String EVENT_CLICK_REGISTER = "clickRegister";
+    private static final String EVENT_CLICK_ACTIVATION = "clickActivation";
 
     private static final String CATEGORY_LOGIN_PAGE = "login page";
     private static final String CATEGORY_REGISTER_PAGE = "register page";
     private static final String CATEGORY_REGISTER_WITH_EMAIL_PAGE = "register with email page";
     private static final String CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP =
             "register with phone number otp";
+    private static final String CATEGORY_REGISTER_WITH_PHONE_NUMBER_PAGE =
+            "register with phone number page";
+    private static final String CATEGORY_EMAIL_AKTIVASI_AKUN = "" +
+            "email aktivasi akun";
+    private static final String CATEGORY_ACTIVATION_PAGE = "activation page";
 
     private static final String ACTION_CLICK_DAFTAR_TOP = "click daftar top";
     private static final String ACTION_CLICK_DAFTAR_BOTTOM = "click daftar bottom";
@@ -55,6 +62,15 @@ public class RegisterAnalytics {
             "click ubah terdaftar - phone number";
     private static final String ACTION_CLICK_ON_BUTTON_BACK_PHONE =
             "click ubah terdaftar - phone number";
+    private static final String ACTION_CLICK_SYARAT_DAN_KETENTUAN = "click syarat dan ketentuan";
+    private static final String ACTION_CLICK_KEBIJAKAN_PRIVASI = "click kebijakan privasi";
+    private static final String ACTION_CLICK_ON_AKTIFKAN_AKUN_ANDA = "click on aktifkan akun anda";
+    private static final String ACTION_CLICK_ON_BUTTON_AKTIVASI = "click on button aktivasi";
+    private static final String ACTION_CLICK_KIRIM_ULANG = "click kirim ulang";
+    private static final String ACTION_CLICK_OK_KIRIM_ULANG = "click ok (kirim ulang email)";
+    private static final String ACTION_CLICK_UBAH_EMAIL_ACTIVATION = "click ubah email";
+    private static final String ACTION_CLICK_ON_BUTTON_VERIFIKASI = "click on button verifikasi";
+    private static final String ACTION_CLICK_ON_BUTTON_SELESAI = "click on button selesai";
 
     private static final String LABEL_EMPTY = "";
     private static final String LABEL_CLICK = "click";
@@ -169,6 +185,16 @@ public class RegisterAnalytics {
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
                 LABEL_CLICK
+        ));
+    }
+
+    //#R5
+    public void trackSuccessClickPhoneSignUpButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
+                LABEL_SUCCESS
         ));
     }
 
@@ -468,6 +494,317 @@ public class RegisterAnalytics {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_UBAH_TERDAFTAR_PHONE,
+                LABEL_EMPTY
+        ));
+    }
+
+
+    //#R19
+    public void trackClickSignUpButtonEmail(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_EMAIL_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR,
+                LABEL_CLICK
+        ));
+    }
+
+    //#R19
+    public void trackSuccessClickSignUpButtonEmail(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_EMAIL_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR,
+                LABEL_SUCCESS
+        ));
+    }
+
+    //#R19
+    public void trackFailedClickSignUpButtonEmail(String failedMessage){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_EMAIL_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR,
+                LABEL_FAILED + failedMessage
+        ));
+    }
+
+    //#R20
+    public void trackClickTermConditionButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_EMAIL_PAGE,
+                ACTION_CLICK_SYARAT_DAN_KETENTUAN,
+                LABEL_EMPTY
+        ));
+    }
+
+    //#R21
+    public void trackClickPrivacyPolicyButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_EMAIL_PAGE,
+                ACTION_CLICK_KEBIJAKAN_PRIVASI,
+                LABEL_EMPTY
+        ));
+    }
+
+    //#R22
+    public void trackClickRegisterActivationLinkButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_EMAIL_AKTIVASI_AKUN,
+                ACTION_CLICK_ON_AKTIFKAN_AKUN_ANDA,
+                LABEL_EMPTY
+        ));
+    }
+
+    //#R22
+    public void trackSuccessClickRegisterActivationLinkButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_EMAIL_AKTIVASI_AKUN,
+                ACTION_CLICK_ON_AKTIFKAN_AKUN_ANDA,
+                LABEL_SUCCESS
+        ));
+    }
+
+    //#R22
+    public void trackFailedClickRegisterActivationLinkButton(String failedMessage){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_EMAIL_AKTIVASI_AKUN,
+                ACTION_CLICK_ON_AKTIFKAN_AKUN_ANDA,
+                LABEL_FAILED + failedMessage
+        ));
+    }
+
+    //#R23
+    public void trackClickOnBackButtonActivation(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_ACTIVATION_PAGE,
+                ACTION_CLICK_ON_BUTTON_BACK,
+                LABEL_EMPTY
+        ));
+    }
+
+    //#R24
+    public void trackClickActivationButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_ACTIVATION_PAGE,
+                ACTION_CLICK_ON_BUTTON_AKTIVASI,
+                LABEL_CLICK
+        ));
+    }
+
+    //#R24
+    public void trackSuccessClickActivationButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_ACTIVATION_PAGE,
+                ACTION_CLICK_ON_BUTTON_AKTIVASI,
+                LABEL_SUCCESS
+        ));
+    }
+
+    //#R24
+    public void trackFailedClickActivationButton(String failedMessage){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_ACTIVATION_PAGE,
+                ACTION_CLICK_ON_BUTTON_AKTIVASI,
+                LABEL_FAILED + failedMessage
+        ));
+    }
+
+    //#R25
+    public void trackClickResendButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_ACTIVATION_PAGE,
+                ACTION_CLICK_KIRIM_ULANG,
+                LABEL_CLICK
+        ));
+    }
+
+    //#R25
+    public void trackSuccessClickResendButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_ACTIVATION_PAGE,
+                ACTION_CLICK_KIRIM_ULANG,
+                LABEL_SUCCESS
+        ));
+    }
+
+    //#R25
+    public void trackFailedClickResendButton(String failedMessage){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_ACTIVATION_PAGE,
+                ACTION_CLICK_KIRIM_ULANG,
+                LABEL_SUCCESS + failedMessage
+        ));
+    }
+
+    //#R26
+    public void trackClickOkResendButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_ACTIVATION_PAGE,
+                ACTION_CLICK_OK_KIRIM_ULANG,
+                LABEL_CLICK
+        ));
+    }
+
+    //#R26
+    public void trackSuccessClickOkResendButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_ACTIVATION_PAGE,
+                ACTION_CLICK_OK_KIRIM_ULANG,
+                LABEL_SUCCESS
+        ));
+    }
+
+    //#R26
+    public void trackFailedClickOkResendButton(String failedMessage){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_ACTIVATION_PAGE,
+                ACTION_CLICK_OK_KIRIM_ULANG,
+                LABEL_FAILED + failedMessage
+        ));
+    }
+
+    //#R27
+    public void trackClickChangeEmail(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_ACTIVATION,
+                CATEGORY_ACTIVATION_PAGE,
+                ACTION_CLICK_UBAH_EMAIL_ACTIVATION,
+                LABEL_EMPTY
+        ));
+    }
+
+    //#R28
+    public void trackClickVerificationButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                ACTION_CLICK_ON_BUTTON_VERIFIKASI,
+                LABEL_CLICK
+        ));
+    }
+
+    //#R28
+    public void trackSuccessClickVerificationButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                ACTION_CLICK_ON_BUTTON_VERIFIKASI,
+                LABEL_SUCCESS
+        ));
+    }
+
+    //#R28
+    public void trackFailedClickVerificationButton(String failedMessage){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                ACTION_CLICK_ON_BUTTON_VERIFIKASI,
+                LABEL_FAILED + failedMessage
+        ));
+    }
+
+    //#R29
+    public void trackClickResendPhoneOtpButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                ACTION_CLICK_KIRIM_ULANG,
+                LABEL_CLICK
+        ));
+    }
+
+    //#R29
+    public void trackSuccessClickResendPhoneOtpButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                ACTION_CLICK_KIRIM_ULANG,
+                LABEL_SUCCESS
+        ));
+    }
+
+    //#R29
+    public void trackFailedClickResendPhoneOtpButton(String failedMessage){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                ACTION_CLICK_KIRIM_ULANG,
+                LABEL_FAILED + failedMessage
+        ));
+    }
+
+    //#R30
+    public void trackClickOnBackButtonPhoneNumber(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_PAGE,
+                ACTION_CLICK_ON_BUTTON_BACK,
+                LABEL_EMPTY
+        ));
+    }
+
+    //#R31
+    public void trackClickFinishButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_PAGE,
+                ACTION_CLICK_ON_BUTTON_SELESAI,
+                LABEL_CLICK
+        ));
+    }
+
+    //#R31
+    public void trackSuccessClickFinishButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_PAGE,
+                ACTION_CLICK_ON_BUTTON_SELESAI,
+                LABEL_SUCCESS
+        ));
+    }
+
+    //#R31
+    public void trackFailedClickFinishButton(String failedMessage){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_PAGE,
+                ACTION_CLICK_ON_BUTTON_SELESAI,
+                LABEL_FAILED + failedMessage
+        ));
+    }
+
+    //#R32
+    public void trackClickTermConditionButtonPhoneNumber(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_PAGE,
+                ACTION_CLICK_SYARAT_DAN_KETENTUAN,
+                LABEL_EMPTY
+        ));
+    }
+
+    //#R33
+    public void trackClickPrivacyPolicyButtonPhoneNumber(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_PHONE_NUMBER_PAGE,
+                ACTION_CLICK_KEBIJAKAN_PRIVASI,
                 LABEL_EMPTY
         ));
     }

@@ -91,6 +91,8 @@ public interface ProductListSectionContract {
         Map<String, String> getAdditionalParamsMap();
 
         void launchLoginActivity(String productId);
+
+        void sendImpressionGuidedSearch();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
