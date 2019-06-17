@@ -46,5 +46,5 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.appCompactV7
 
-    implementation project(rootProject.ext.libraries.unifyPrinciples)
+    implementation 'com.tokopedia.unify:principles:0.0.1-SNAPSHOT@aar'
 }

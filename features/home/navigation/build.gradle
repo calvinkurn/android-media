@@ -61,5 +61,5 @@ dependencies {
     testImplementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     testAnnotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    implementation project(rootProject.ext.libraries.unifyPrinciples)
+    implementation 'com.tokopedia.unify:principles:0.0.1-SNAPSHOT@aar'
 }
