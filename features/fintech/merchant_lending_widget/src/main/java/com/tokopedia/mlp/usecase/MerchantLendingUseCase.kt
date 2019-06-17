@@ -5,33 +5,38 @@ import com.example.merchant_lending_widget.R
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.mlp.model.LeWidget
+import com.tokopedia.mlp.contractModel.LeWidget
+import com.tokopedia.mlp.contractModel.LeWidgetData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 
-class MerchandLendingUsecase @Inject constructor(private val context: Context,
+class MerchantLendingUseCase @Inject constructor(private val context: Context,
                                                  private val graphqlUseCase: GraphqlUseCase/*,
                                                  private val rawQueries: Map<String, String>*/)
-    : UseCase<LeWidget>() {
+    : UseCase<LeWidgetData>() {
 
 
-    fun createRequestParams(merchantid: Int): RequestParams {
+/*
+
+    fun createRequestParams(merchantID: Int): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putInt("merchantid", merchantid)
+        requestParams.putInt("merchantID", merchantID)
         return requestParams
     }
 
+*/
 
-    override fun createObservable(requestParams: RequestParams?): Observable<LeWidget> {
+
+    override fun createObservable(requestParams: RequestParams?): Observable<LeWidgetData> {
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.merchant_lending_query)/*rawQueries[BrowseRawQueryKeyConstant.CATEGORY_LIST]*/, LeWidget::class.java, requestParams!!.parameters, false)
+                R.raw.merchant_lending_query_contract)/*rawQueries[BrowseRawQueryKeyConstant.CATEGORY_LIST]*/, LeWidgetData::class.java, false)
         graphqlUseCase.clearRequest()
 
         graphqlUseCase.addRequest(graphqlRequest)
-        return graphqlUseCase.createObservable(requestParams).map { it.getData(LeWidget::class.java) as LeWidget }
+        return graphqlUseCase.createObservable(requestParams).map { it.getData(LeWidgetData::class.java) as LeWidgetData }
 
     }
 

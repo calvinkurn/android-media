@@ -38,9 +38,9 @@
 
             </com.tokopedia.design.loading.LoadingStateView>
 
-            <fragment
+          <fragment
                 android:id="@+id/mlp"
-                android:name="com.tokopedia.mlp.fragment.MerchantLending"
+                android:name="com.tokopedia.mlp.fragment.MerchantLendingFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <fragment

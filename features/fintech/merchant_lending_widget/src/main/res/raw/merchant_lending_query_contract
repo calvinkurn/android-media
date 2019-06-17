@@ -1,5 +1,5 @@
-query LeWidget{
-  le_widget{
+query LeWidget(){
+  le_widget(){
     widgets{
       header{
         logo

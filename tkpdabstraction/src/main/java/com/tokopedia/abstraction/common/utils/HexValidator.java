@@ -18,6 +18,8 @@ public class HexValidator {
      * @return true valid hex, false invalid hex
      */
     public static boolean validate(final String hex) {
+        if(hex == null)
+            return false;
         Pattern pattern = Pattern.compile(HEX_PATTERN);
         Matcher matcher = pattern.matcher(hex);
         return matcher.matches();
