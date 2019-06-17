@@ -55,6 +55,10 @@ public interface Ad extends ItemType, Parcelable {
 
     String getName();
 
+    String getStatTotalGrossProfit();
+
+    String getStatTotalSold();
+
     String getProductImageUrl();
 
     boolean isAutoAds();

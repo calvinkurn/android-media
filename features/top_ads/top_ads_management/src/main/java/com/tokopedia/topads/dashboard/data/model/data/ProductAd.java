@@ -113,6 +113,28 @@ public class ProductAd implements Ad, Parcelable, Visitable<TopAdsListAdapterTyp
     @SerializedName("product_image_uri")
     @Expose
     private String productImageUrl;
+    @SerializedName("stat_total_gross_profit")
+    @Expose
+    private String statTotalGrossProfit;
+    @SerializedName("stat_total_sold")
+    @Expose
+    private String statTotalSold;
+
+    public String getStatTotalGrossProfit() {
+        return statTotalGrossProfit;
+    }
+
+    public void setStatTotalGrossProfit(String statTotalGrossProfit) {
+        this.statTotalGrossProfit = statTotalGrossProfit;
+    }
+
+    public String getStatTotalSold() {
+        return statTotalSold;
+    }
+
+    public void setStatTotalSold(String statTotalSold) {
+        this.statTotalSold = statTotalSold;
+    }
 
     @Override
     public String getProductImageUrl() {
@@ -318,6 +340,8 @@ public class ProductAd implements Ad, Parcelable, Visitable<TopAdsListAdapterTyp
         dest.writeInt(this.productActive);
         dest.writeString(this.groupName);
         dest.writeString(this.productImageUrl);
+        dest.writeString(this.statTotalGrossProfit);
+        dest.writeString(this.statTotalSold);
         dest.writeLong(this.groupId);
         dest.writeByte((byte) (isAutoAds ? 1 : 0));
     }
@@ -353,6 +377,8 @@ public class ProductAd implements Ad, Parcelable, Visitable<TopAdsListAdapterTyp
         this.productActive = in.readInt();
         this.groupName = in.readString();
         this.productImageUrl = in.readString();
+        this.statTotalGrossProfit = in.readString();
+        this.statTotalSold = in.readString();
         this.groupId = in.readLong();
         this.isAutoAds = in.readByte() != 0;
     }

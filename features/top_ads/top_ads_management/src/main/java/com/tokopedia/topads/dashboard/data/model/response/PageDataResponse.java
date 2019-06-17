@@ -37,7 +37,6 @@ public class PageDataResponse<T> extends DataResponse<T> {
         this.page = page;
     }
 
-    @Override
     public boolean isAutoAds() {
         return isAutoAds;
     }

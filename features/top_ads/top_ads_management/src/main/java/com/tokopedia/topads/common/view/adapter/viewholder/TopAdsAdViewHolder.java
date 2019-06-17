@@ -28,6 +28,8 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
     public final static int LAYOUT = R.layout.item_top_ads_ad;
 
     private TextView titleProduct;
+    private TextView totalSoldTxt;
+    private TextView profitTxt;
     private View statusActiveDot;
     private TextView statusActive;
     private TextView promoPriceUsed;
@@ -40,10 +42,15 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
     private View optionImageButton;
     private CheckBox checkBox;
     private ImageView thumb;
+    private View promoPerClickContainer;
+    private View promoPriceUsedContainer;
+    private View statusActiveContainer;
 
     public TopAdsAdViewHolder(View view) {
         super(view);
         titleProduct = (TextView) view.findViewById(R.id.title_product);
+        totalSoldTxt = (TextView) view.findViewById(R.id.total_sold);
+        profitTxt = (TextView) view.findViewById(R.id.profit);
         statusActiveDot = view.findViewById(R.id.status_active_dot);
         statusActive = (TextView) view.findViewById(R.id.status_active);
         promoPriceUsed = (TextView) view.findViewById(R.id.promo_price_used);
@@ -56,6 +63,9 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
         optionImageButton = view.findViewById(R.id.image_button_option);
         checkBox = (CheckBox) view.findViewById(R.id.check_box_product);
         thumb = (ImageView) view.findViewById(R.id.thumb);
+        promoPerClickContainer = (View) view.findViewById(R.id.promo_per_click_container);
+        promoPriceUsedContainer = (View) view.findViewById(R.id.promo_price_used_container);
+        statusActiveContainer = (View) view.findViewById(R.id.status_active_container);
 
         // programmatically styling for ProgressBar
         // http://stackoverflow.com/questions/16893209/how-to-customize-a-progress-bar-in-android
@@ -110,6 +120,23 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
                 }
             }
         });
+        if(ad.isAutoAds()){
+            totalSoldTxt.setVisibility(View.VISIBLE);
+            profitTxt.setVisibility(View.VISIBLE);
+            totalSoldTxt.setText(String.format("Total Terjual : %s", ad.getStatTotalGrossProfit()));
+            profitTxt.setText(String.format("Pendapatan : %s", ad.getStatTotalSold()));
+            groupNameView.setVisibility(View.GONE);
+            promoPerClickContainer.setVisibility(View.GONE);
+            promoPriceUsedContainer.setVisibility(View.GONE);
+            statusActiveContainer.setVisibility(View.GONE);
+
+        } else {
+            totalSoldTxt.setVisibility(View.GONE);
+            profitTxt.setVisibility(View.GONE);
+            promoPerClickContainer.setVisibility(View.VISIBLE);
+            promoPriceUsedContainer.setVisibility(View.VISIBLE);
+            statusActiveContainer.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

@@ -36,6 +36,24 @@ public class KeywordAd implements Ad, Parcelable, ItemType, Visitable<TopAdsList
     private String labelPerClick;
     private boolean isAutoAds;
     private String productImageUrl;
+    private String statTotalGrossProfit;
+    private String statTotalSold;
+
+    public String getStatTotalGrossProfit() {
+        return statTotalGrossProfit;
+    }
+
+    public void setStatTotalGrossProfit(String statTotalGrossProfit) {
+        this.statTotalGrossProfit = statTotalGrossProfit;
+    }
+
+    public String getStatTotalSold() {
+        return statTotalSold;
+    }
+
+    public void setStatTotalSold(String statTotalSold) {
+        this.statTotalSold = statTotalSold;
+    }
 
     public KeywordAd() {
     }
@@ -298,6 +316,8 @@ public class KeywordAd implements Ad, Parcelable, ItemType, Visitable<TopAdsList
         dest.writeString(this.labelPerClick);
         dest.writeString(this.keywordTypeDesc);
         dest.writeString(this.productImageUrl);
+        dest.writeString(this.statTotalGrossProfit);
+        dest.writeString(this.statTotalSold);
         dest.writeInt(this.groupBid);
         dest.writeByte((byte) (isAutoAds ? 1 : 0));
     }
@@ -321,6 +341,8 @@ public class KeywordAd implements Ad, Parcelable, ItemType, Visitable<TopAdsList
         this.labelPerClick = in.readString();
         this.keywordTypeDesc = in.readString();
         this.productImageUrl = in.readString();
+        this.statTotalGrossProfit = in.readString();
+        this.statTotalSold = in.readString();
         this.groupBid = in.readInt();
         this.isAutoAds = in.readByte() != 0;
     }

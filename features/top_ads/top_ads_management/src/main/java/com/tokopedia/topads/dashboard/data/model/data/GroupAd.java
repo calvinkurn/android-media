@@ -107,6 +107,28 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
     @SerializedName("negative_count")
     @Expose
     private int negativeCount;
+    @SerializedName("stat_total_gross_profit")
+    @Expose
+    private String statTotalGrossProfit;
+    @SerializedName("stat_total_sold")
+    @Expose
+    private String statTotalSold;
+
+    public String getStatTotalGrossProfit() {
+        return statTotalGrossProfit;
+    }
+
+    public void setStatTotalGrossProfit(String statTotalGrossProfit) {
+        this.statTotalGrossProfit = statTotalGrossProfit;
+    }
+
+    public String getStatTotalSold() {
+        return statTotalSold;
+    }
+
+    public void setStatTotalSold(String statTotalSold) {
+        this.statTotalSold = statTotalSold;
+    }
 
     private String keywordTotal;
 
@@ -365,6 +387,8 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
         dest.writeInt(this.positiveCount);
         dest.writeInt(this.negativeCount);
         dest.writeString(this.keywordTotal);
+        dest.writeString(this.statTotalGrossProfit);
+        dest.writeString(this.statTotalSold);
         dest.writeParcelable(this.datum, flags);
         dest.writeByte((byte) (isAutoAds ? 1 : 0));
     }
@@ -400,6 +424,8 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
         this.positiveCount = in.readInt();
         this.negativeCount = in.readInt();
         this.keywordTotal = in.readString();
+        this.statTotalGrossProfit = in.readString();
+        this.statTotalSold = in.readString();
         this.datum = in.readParcelable(GetSuggestionResponse.Datum.class.getClassLoader());
         this.isAutoAds = in.readByte() != 0;
     }

@@ -99,6 +99,28 @@ public class ShopAd implements Ad, Parcelable {
     @SerializedName("shop_uri")
     @Expose
     private String shopUri;
+    @SerializedName("stat_total_gross_profit")
+    @Expose
+    private String statTotalGrossProfit;
+    @SerializedName("stat_total_sold")
+    @Expose
+    private String statTotalSold;
+
+    public String getStatTotalGrossProfit() {
+        return statTotalGrossProfit;
+    }
+
+    public void setStatTotalGrossProfit(String statTotalGrossProfit) {
+        this.statTotalGrossProfit = statTotalGrossProfit;
+    }
+
+    public String getStatTotalSold() {
+        return statTotalSold;
+    }
+
+    public void setStatTotalSold(String statTotalSold) {
+        this.statTotalSold = statTotalSold;
+    }
 
     @Override
     public String getProductImageUrl() {
@@ -273,6 +295,8 @@ public class ShopAd implements Ad, Parcelable {
         dest.writeLong(this.shopId);
         dest.writeString(this.shopUri);
         dest.writeString(this.productImageUrl);
+        dest.writeString(this.statTotalGrossProfit);
+        dest.writeString(this.statTotalSold);
         dest.writeByte((byte) (isAutoAds ? 1 : 0));
     }
 
@@ -306,6 +330,8 @@ public class ShopAd implements Ad, Parcelable {
         this.shopId = in.readLong();
         this.shopUri = in.readString();
         this.productImageUrl = in.readString();
+        this.statTotalGrossProfit = in.readString();
+        this.statTotalSold = in.readString();
         this.isAutoAds = in.readByte() != 0;
     }
 
