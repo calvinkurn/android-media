@@ -52,9 +52,9 @@ class SubmitReportUseCase (private val userSession: UserSessionInterface,
             val gqlError = gqlResponse.getError(SubmitReportResponse.Data::class.java)
                     ?.filter { it.message.isNotBlank() }?.map { it.message } ?: listOf()
             if (gqlError.isNotEmpty()){
-                Observable.just(gqlResponse.getData<SubmitReportResponse.Data>(SubmitReportResponse.Data::class.java).response.isSuccess)
-            } else {
                 Observable.error(MessageErrorException(gqlError.joinToString(", ")))
+            } else {
+                Observable.just(gqlResponse.getData<SubmitReportResponse.Data>(SubmitReportResponse.Data::class.java).response.isSuccess)
             }
         }
     }

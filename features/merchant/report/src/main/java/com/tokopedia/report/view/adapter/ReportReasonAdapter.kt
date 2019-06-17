@@ -138,6 +138,7 @@ class ReportReasonAdapter(private val listener: OnReasonClick,
 
             itemView.setOnClickListener {
                 if (reason.children.isNotEmpty()) {
+                    tracking.eventReportReason(reason.strLabel)
                     if (filteredId.isEmpty()){
                         baseParent = reason
                     }

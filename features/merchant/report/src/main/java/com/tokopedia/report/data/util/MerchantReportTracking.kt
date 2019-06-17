@@ -45,9 +45,9 @@ class MerchantReportTracking {
         private const val CATEGORY = "report product"
         private const val CATEGORY_DISCLAIMER = "report disclaimer - %s"
         private const val ACTION_FORMAT = "click %s"
-        private const val ACTION_LEARN_MORE = "click pelajari lebih lanjut"
-        private const val ACTION_REPORT_CLICK_DETAIL = "click lapor di details - %s"
-        private const val ACTION_REPORT_ADD_PHOTO = "click tambah foto di details - %s"
+        private const val ACTION_LEARN_MORE = "pelajari lebih lanjut"
+        private const val ACTION_REPORT_CLICK_DETAIL = "lapor di details - %s"
+        private const val ACTION_REPORT_ADD_PHOTO = "tambah foto di details - %s"
         private const val ACTION_CANCEL_DISCLAIMER = "click batal di disclaimer"
         private const val ACTION_LAPOR_DISCLAIMER = "click lapor di disclaimer"
     }
