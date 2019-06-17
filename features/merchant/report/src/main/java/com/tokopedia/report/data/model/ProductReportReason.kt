@@ -29,6 +29,10 @@ data class ProductReportReason(
         @Expose
         val value: String = ""
 ) {
+        @Transient var parentLabel = ""
+
+        val strLabel
+                get() = (if (parentLabel.isEmpty()) value else "$parentLabel - $value").toLowerCase()
 
     data class AdditionalField(
             @SerializedName("detail")

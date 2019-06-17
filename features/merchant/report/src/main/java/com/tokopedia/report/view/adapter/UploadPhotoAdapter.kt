@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.report.R
+import com.tokopedia.report.data.util.MerchantReportTracking
 import kotlinx.android.synthetic.main.item_filled_photo.view.*
 
 class UploadPhotoAdapter (var type: String,

@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.report.R
 import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
+import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.view.util.SpaceItemDecoration
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import kotlinx.android.synthetic.main.item_header_form.view.*
@@ -29,9 +30,13 @@ import kotlinx.android.synthetic.main.item_textarea_form.view.*
 
 @Suppress("UNCHECKED_CAST")
 class ReportFormAdapter(private val item: ProductReportReason,
+                        private val tracking: MerchantReportTracking,
                         private val inputDetailListener:((String, String, Int, Int) -> Unit),
                         private val addPhotoListener: ((String) -> Unit),
                         private val submitForm: (()-> Unit)) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    val trackingReasonLabel: String
+        get() = item.value.toLowerCase()
 
     private val items = mutableListOf<Pair<String, Any>>()
     val inputs = mutableMapOf<String, Any>()
@@ -89,7 +94,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
     }
 
     fun updatePhotoForType(type: String, photoUri: String) {
-        val imgUriList: MutableList<String> = inputs[type] as? MutableList<String> ?: mutableListOf<String>()
+        val imgUriList: MutableList<String> = inputs[type] as? MutableList<String> ?: mutableListOf()
         imgUriList.add(photoUri)
         inputs[type] = imgUriList
         notifyDataSetChanged()
@@ -126,6 +131,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                     val urlSpan = WebViewURLSpan( it.url).apply {
                         listener = object : WebViewURLSpan.OnClickListener {
                             override fun onClick(url: String) {
+                                tracking.eventReportLearnMore(item.value.toLowerCase())
                                 itemView.context.startActivity(BaseSimpleWebViewActivity.getStartIntent(
                                         itemView.context, GeneralConstant.URL_REPORT_TYPE
                                 ))
@@ -145,6 +151,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                     btn_lapor.visible()
                 }
                 btn_lapor.setOnClickListener {
+                    tracking.eventReportClickDetail(item.value.toLowerCase())
                     submitForm.invoke()
                 }
             }
@@ -157,6 +164,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
             with(itemView){
                 link.text = text
                 link.setOnClickListener {
+                    tracking.eventReportClickLink(text, trackingReasonLabel)
                     context.startActivity(BaseSimpleWebViewActivity.getStartIntent(context, url))
                 }
             }

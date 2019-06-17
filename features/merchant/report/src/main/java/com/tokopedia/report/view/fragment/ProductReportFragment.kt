@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_product_report.*
 import javax.inject.Inject
 import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
+import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.view.activity.ProductReportFormActivity
 
 
@@ -28,12 +29,14 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
 
     private lateinit var smoothScroller: RecyclerView.SmoothScroller
     private var productId = "-1"
+    private val tracking by lazy { MerchantReportTracking() }
 
     override fun scrollToTop() {
         //smoothScroller.targetPosition = 0
     }
 
     override fun gotoForm(reason: ProductReportReason) {
+        tracking.eventReportReason(reason.strLabel)
         activity?.let {
             startActivityForResult(ProductReportFormActivity.createIntent(it, reason, productId), 100)
         }
@@ -45,7 +48,7 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: ProductReportViewModel
-    private val adapter: ReportReasonAdapter by lazy { ReportReasonAdapter(this) }
+    private val adapter: ReportReasonAdapter by lazy { ReportReasonAdapter(this, tracking) }
 
     override fun getScreenName(): String? = null
 

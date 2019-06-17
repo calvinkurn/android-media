@@ -16,12 +16,14 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.report.R
 import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
+import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import kotlinx.android.synthetic.main.item_footer.view.title as titleFooter
 import kotlinx.android.synthetic.main.item_header.view.title as titleHeader
 import kotlinx.android.synthetic.main.item_report_type.view.*
 
-class ReportReasonAdapter(private val listener: OnReasonClick): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ReportReasonAdapter(private val listener: OnReasonClick,
+                          private val tracking: MerchantReportTracking): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val filteredId = mutableListOf<Int>()
 
     private var title: String = ""
@@ -104,6 +106,7 @@ class ReportReasonAdapter(private val listener: OnReasonClick): RecyclerView.Ada
                     val urlSpan = WebViewURLSpan( it.url).apply {
                         listener = object : WebViewURLSpan.OnClickListener {
                             override fun onClick(url: String) {
+                                tracking.eventReportLearnMore()
                                 itemView.context.startActivity(BaseSimpleWebViewActivity.getStartIntent(
                                         itemView.context, GeneralConstant.URL_REPORT_TYPE
                                 ))
@@ -145,7 +148,9 @@ class ReportReasonAdapter(private val listener: OnReasonClick): RecyclerView.Ada
                 } else {
                     val fieldReason = if (baseParent != null && filteredId.isNotEmpty()){
                         reason.copy(additionalInfo = baseParent!!.additionalInfo,
-                                additionalFields = baseParent!!.additionalFields)
+                                additionalFields = baseParent!!.additionalFields).apply {
+                            parentLabel = baseParent!!.strLabel
+                        }
                     } else reason
 
                     listener.gotoForm(fieldReason)

@@ -17,6 +17,7 @@ import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
+import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.di.MerchantReportComponent
 import com.tokopedia.report.view.activity.ProductReportFormActivity
 import com.tokopedia.report.view.activity.ReportInputDetailActivity
@@ -31,6 +32,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     override fun getScreenName(): String? = null
     private var dialogSubmit: Dialog? = null
     private var productId: String = "0"
+    private val tracking by lazy { MerchantReportTracking() }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -72,18 +74,32 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                     setDesc(popupField.detail)
                     setBtnOk(getString(R.string.label_report))
                     setBtnCancel(getString(R.string.cancel))
-                    setOnCancelClickListener { dismiss() }
+                    setOnCancelClickListener {
+                        tracking.eventReportCancelDisclaimer(reasonItem.value.toLowerCase())
+                        dismiss()
+                    }
                     setOnOkClickListener {
                         dismiss()
-                        viewModel.submitReport(productId.toIntOrNull() ?: 0, reasonItem.categoryId, adapter.inputs)
+                        viewModel.submitReport(productId.toIntOrNull() ?: 0,
+                                reasonItem.categoryId, adapter.inputs, this@ProductReportSubmitFragment::onSuccessSubmit,
+                                this@ProductReportSubmitFragment::onFailSubmit)
                         adapter.inputs
                     }
                 }
             }
 
-            adapter = ReportFormAdapter(reasonItem, this::openInputDetail, this::openPhotoPicker, this::onSubmitClicked)
+            adapter = ReportFormAdapter(reasonItem, tracking, this::openInputDetail,
+                    this::openPhotoPicker, this::onSubmitClicked)
             recycler_view.adapter = adapter
         }
+    }
+
+    private fun onSuccessSubmit(isSuccess: Boolean){
+        tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, true)
+    }
+
+    private fun onFailSubmit(throwable: Throwable?){
+        tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, false)
     }
 
     private fun onSubmitClicked(){
@@ -126,8 +142,9 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && data != null){
-            if (requestCode == REQUEST_CODE_IMAGE) {
+        if (requestCode == REQUEST_CODE_IMAGE){
+            if (resultCode == Activity.RESULT_OK && data != null){
+                tracking.eventReportAddPhotoOK(adapter.trackingReasonLabel)
                 val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                 if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
                     photoTypeSelected?.let {
@@ -135,7 +152,11 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                     }
                     photoTypeSelected = null
                 }
-            } else if (requestCode == REQUEST_CODE_DETAIL_INPUT){
+            } else {
+                tracking.eventReportAddPhotoFail(adapter.trackingReasonLabel)
+            }
+        } else if (resultCode == Activity.RESULT_OK && data != null){
+            if (requestCode == REQUEST_CODE_DETAIL_INPUT){
                 photoTypeSelected?.let {
                     val input = data.getStringExtra(ReportInputDetailFragment.INPUT_VALUE)
                     adapter.updateTextInput(it, input)

@@ -10,15 +10,18 @@ import javax.inject.Inject
 class ProductReportSubmitViewModel @Inject constructor(private val useCase: SubmitReportUseCase,
                                                        dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
 
-    fun submitReport(productId: Int, categoryId: Int, input: Map<String, Any>){
+    fun submitReport(productId: Int, categoryId: Int, input: Map<String, Any>,
+                     onSuccess: (Boolean) -> Unit, onFail: (Throwable?) -> Unit){
         useCase.execute(SubmitReportUseCase.createRequestParamn(categoryId, productId, input), object : Subscriber<Boolean>() {
             override fun onNext(t: Boolean) {
+                onSuccess.invoke(t)
                 Log.e("SUCCESS RESULT", t.toString())
             }
 
             override fun onCompleted() {}
 
             override fun onError(e: Throwable?) {
+                onFail.invoke(e)
                 e?.printStackTrace()
             }
 
