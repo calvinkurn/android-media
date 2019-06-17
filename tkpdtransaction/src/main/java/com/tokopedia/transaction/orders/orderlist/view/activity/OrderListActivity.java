@@ -63,7 +63,7 @@ public class OrderListActivity extends BaseSimpleActivity
     }
 
     @DeepLink(ApplinkConst.HOTEL_ORDER)
-    public static Intent getFlightOrderListIntent(Context context, Bundle bundle) {
+    public static Intent getHotelOrderListIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         bundle.putString(ORDER_CATEGORY, OrderCategory.HOTELS);
         return new Intent(context, OrderListActivity.class)
