@@ -78,6 +78,7 @@ import javax.inject.Inject;
 import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_BS_SUCCESS;
 import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_PM_IDLE;
 import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_RM_ILLUSTRATION;
+import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.URL_GAINS_SCORE_POINT;
 
 /**
  * Created by nathan on 9/6/17.
@@ -791,7 +792,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         IMG_URL_PM_IDLE,
                         getString(R.string.pm_popup_idle_btn)
                 );
-                redirectUrl = "https://www.tokopedia.com/blog/panduan-keamanan-tokopedia/";
+                redirectUrl = URL_GAINS_SCORE_POINT;
 
             } else if (shopStatusModel.isPowerMerchantInactive()
                     && !popUpManager.isRegularMerchantShown(shopId)) {
