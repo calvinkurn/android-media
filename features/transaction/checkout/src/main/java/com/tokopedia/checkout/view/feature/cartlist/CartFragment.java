@@ -630,6 +630,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         dPresenter.processRemoveFromWishlist(productId, userSession.getUserId(), this);
     }
 
+    @Override
+    public void onProductClicked(@NotNull String productId) {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
+        startActivity(intent);
+    }
+
     @NonNull
     @Override
     public String getDefaultCartErrorMessage() {

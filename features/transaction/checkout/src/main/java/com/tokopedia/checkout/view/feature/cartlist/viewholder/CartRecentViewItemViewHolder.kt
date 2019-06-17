@@ -42,6 +42,10 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
             }
         }
 
+        itemView.setOnClickListener {
+            actionListener.onProductClicked(element.id)
+        }
+
     }
 
 }

@@ -43,6 +43,7 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
         }
 
         itemView.setOnClickListener {
+            actionListener.onProductClicked(element.id)
         }
     }
 }

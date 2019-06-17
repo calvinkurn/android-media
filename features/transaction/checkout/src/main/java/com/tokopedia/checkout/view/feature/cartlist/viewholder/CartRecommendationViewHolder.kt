@@ -13,14 +13,27 @@ import kotlinx.android.synthetic.main.item_cart_recommendation.view.*
  * Created by Irfan Khoirul on 2019-05-29.
  */
 
-class CartRecommendationViewHolder(val view: View, val listener: ActionListener) : RecyclerView.ViewHolder(view), RecommendationCardView.TrackingListener {
+class CartRecommendationViewHolder(val view: View, val actionListener: ActionListener) : RecyclerView.ViewHolder(view), RecommendationCardView.TrackingListener {
+
+    val padding14 = itemView.resources.getDimension(R.dimen.dp_14).toInt()
+    val padding2 = itemView.resources.getDimension(R.dimen.dp_2).toInt()
 
     companion object {
         val LAYOUT = R.layout.item_cart_recommendation
     }
 
     fun bind(element: CartRecommendationItemHolderData) {
-        itemView.productCardView.setRecommendationModel(element.recommendationItem, this);
+        itemView.productCardView.setRecommendationModel(element.recommendationItem, this)
+
+        if (adapterPosition % 2 == 0) {
+            itemView.setPadding(padding14, 0, padding2, 0)
+        } else {
+            itemView.setPadding(padding2, 0, padding14, 0)
+        }
+
+        itemView.setOnClickListener {
+            actionListener.onProductClicked(element.recommendationItem.productId.toString())
+        }
     }
 
     override fun onImpressionTopAds(item: RecommendationItem) {

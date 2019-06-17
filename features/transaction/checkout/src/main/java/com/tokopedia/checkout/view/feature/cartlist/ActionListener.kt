@@ -36,4 +36,5 @@ interface ActionListener {
 
     fun onRemoveFromWishlist(productId: String)
 
+    fun onProductClicked(productId: String);
 }
