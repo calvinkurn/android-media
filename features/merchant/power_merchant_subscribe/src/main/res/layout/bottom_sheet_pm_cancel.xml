@@ -2,28 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="@dimen/dp_16">
 
     <com.tokopedia.design.component.TextViewCompat
         android:layout_width="@dimen/dp_240"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_20"
         android:lineSpacingExtra="@dimen/sp_6"
-        app:fontSize="title"
+        android:text="@string/pm_label_bottom_sheet_cancel_header"
         android:textColor="@color/black"
         android:textStyle="bold"
-        android:text="@string/pm_label_bottom_sheet_cancel_header"
-        android:layout_marginBottom="@dimen/dp_20"/>
+        app:fontSize="title" />
 
     <com.tokopedia.design.component.TextViewCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/sp_6"
-        app:fontSize="small"
         android:layout_marginBottom="@dimen/dp_5"
-        android:text="@string/pm_label_bottom_sheet_cancel_desc"/>
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/pm_label_bottom_sheet_cancel_desc"
+        app:fontSize="small" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_64"
             android:layout_marginTop="@dimen/dp_20"
-            android:src="@drawable/ic_promo_special"
+            android:src="@drawable/ic_power_merchant"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -44,22 +44,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
-            android:text="@string/pm_label_special_promo"
-            android:textStyle="bold"
+            android:text="@string/pm_exclusive_promo"
             android:textColor="@color/black"
+            android:textStyle="bold"
             app:fontSize="micro"
             app:layout_constraintStart_toEndOf="@+id/imageView6"
-            app:layout_constraintTop_toTopOf="@+id/imageView6"
-            />
+            app:layout_constraintTop_toTopOf="@+id/imageView6" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat3"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:minLines="2"
             android:layout_marginTop="@dimen/dp_5"
-
-            android:text="@string/pm_special_promo"
+            android:minLines="2"
+            android:text="@string/pm_exclusive_promo_desc"
             app:fontSize="micro"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat2"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat2" />
@@ -69,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_64"
             android:layout_marginTop="8dp"
-            android:src="@drawable/ic_topads_credit"
+            android:src="@drawable/ic_market"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 
@@ -79,10 +77,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:text="@string/pm_label_topads_credit"
+            android:text="@string/pm_label_market_insight"
+            android:textColor="@color/black"
             android:textStyle="bold"
             app:fontSize="micro"
-            android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/imageView7"
             app:layout_constraintTop_toTopOf="@+id/imageView7" />
 
@@ -92,8 +90,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:minLines="2"
+            android:text="@string/pm_label_market_insight_desc"
             app:fontSize="micro"
-            android:text="@string/pm_benefit_credit"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat4"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat4" />
 
@@ -101,9 +99,8 @@
             android:id="@+id/imageView8"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_64"
-
             android:layout_marginTop="8dp"
-            android:src="@drawable/ic_big_promo"
+            android:src="@drawable/ic_topads_credit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
@@ -113,10 +110,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
-            android:text="@string/pm_label_special_promo_big"
+            android:text="@string/pm_label_topads_credit"
+            android:textColor="@color/black"
             android:textStyle="bold"
             app:fontSize="micro"
-            android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/imageView8"
             app:layout_constraintTop_toTopOf="@+id/imageView8" />
 
@@ -126,8 +123,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:minLines="2"
+            android:text="@string/pm_credit_desc"
             app:fontSize="micro"
-            android:text="@string/pm_big_promo"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat6"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat6" />
 
@@ -151,14 +148,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_margin="@dimen/dp_5"
                 android:padding="@dimen/dp_10">
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/txt_ticker_yellow"
-                    app:fontSize="small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/pm_label_cancellation_duration" />
+                    android:text="@string/pm_label_cancellation_duration"
+                    app:fontSize="small" />
             </LinearLayout>
 
             <ImageView
@@ -171,11 +169,11 @@
 
     <Button
         android:id="@+id/button_cancel_bs"
+        style="@style/Button.Submit.Green.Full"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
-        style="@style/Button.Submit.Green.Full"
         android:layout_marginBottom="@dimen/dp_10"
-        android:text="@string/pm_label_bottom_sheet_cancel_button"/>
+        android:text="@string/pm_label_bottom_sheet_cancel_button" />
 
 </LinearLayout>
