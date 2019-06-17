@@ -861,7 +861,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.getErrorMessage());
-                    getView().renderCheckoutCartError(checkoutData.getErrorMessage());
+                    if (!checkoutData.getErrorMessage().isEmpty()) {
+                        getView().renderCheckoutCartError(checkoutData.getErrorMessage());
+                    } else {
+                        getView().renderCheckoutCartError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
+                    }
                 }
             }
         };
@@ -1232,7 +1236,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance()) ? 1 : 0)
                 .isDropship((shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper() != null &&
                         shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) ? 1 : 0)
+                .isOrderPriority((shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority() != null &&
+                        shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority()) ? 1 : 0)
                 .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
+                .warehouseId(shipmentCartItemModel.getFulfillmentId())
                 .dropshipData(dropshipDataBuilder)
                 .shippingInfoData(shippingInfoDataBuilder)
                 .productDataList(shipmentStateProductDataList);

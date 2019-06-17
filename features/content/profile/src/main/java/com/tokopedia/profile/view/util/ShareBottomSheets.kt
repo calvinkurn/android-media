@@ -232,7 +232,9 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
                         DataMapper().getLinkerShareData(data),
                         object : ShareCallback {
                             override fun urlCreated(linkerShareData: LinkerShareResult) {
-                                ClipboardHandler().CopyToClipboard(activity!!, linkerShareData.getShareUri())
+                                activity?.let {
+                                    ClipboardHandler().CopyToClipboard(it, data.originalTextContent)
+                                }
                             }
 
                             override fun onError(linkerError: LinkerError) {
@@ -260,7 +262,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
                         0, DataMapper().getLinkerShareData(data),
                         object : ShareCallback {
                             override fun urlCreated(linkerShareData: LinkerShareResult) {
-                                val intent = getIntent(linkerShareData.getShareContents())
+                                val intent = getIntent(data.originalTextContent)
                                 startActivity(Intent.createChooser(intent, getString(R.string.other)))
                                 sendTracker(packageName)
                             }

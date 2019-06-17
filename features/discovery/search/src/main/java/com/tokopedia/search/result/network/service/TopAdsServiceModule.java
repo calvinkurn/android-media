@@ -2,14 +2,11 @@ package com.tokopedia.search.result.network.service;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
-import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.search.di.module.CacheApiInterceptorModule;
@@ -17,7 +14,6 @@ import com.tokopedia.search.di.module.FingerprintInterceptorModule;
 import com.tokopedia.search.di.module.SearchRetrofitBuilderModule;
 import com.tokopedia.search.di.qualifier.SearchQualifier;
 import com.tokopedia.search.di.qualifier.TopAdsQualifier;
-import com.tokopedia.search.result.network.converterfactory.GeneratedHostConverter;
 import com.tokopedia.search.result.network.interceptor.TopAdsAuthInterceptor;
 import com.tokopedia.search.result.network.interceptor.TopAdsAuthInterceptorModule;
 import com.tokopedia.search.result.network.response.TopAdsResponseError;
@@ -28,8 +24,6 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 @SearchScope
 @Module(includes = {

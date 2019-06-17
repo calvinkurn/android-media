@@ -52,9 +52,21 @@ public class ShopListAdapter extends SearchSectionGeneralAdapter {
         return list.size();
     }
 
+    @Override
+    public void clearData() {
+        int currentSize = getItemCount();
+
+        this.list.clear();
+
+        notifyItemRangeRemoved(0, currentSize);
+    }
+
     public void appendItems(List<ShopViewModel.ShopViewItem> list) {
+        int newItemsFirstPosition = getItemCount();
+
         this.list.addAll(list);
-        notifyDataSetChanged();
+
+        notifyItemRangeInserted(newItemsFirstPosition, list.size());
     }
 
     public void addLoading() {
