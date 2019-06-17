@@ -7,12 +7,12 @@ import com.tokopedia.settingnotif.usersetting.domain.pojo.Setting
 
 abstract class SettingViewHolder<T : Setting>(itemView: View?) : AbstractViewHolder<T>(itemView) {
 
-    private val settingSwitch: Switch? = getSwitchView(itemView)
+    protected val settingSwitch: Switch? = getSwitchView(itemView)
 
     abstract fun getSwitchView(itemView: View?): Switch?
 
     override fun bind(element: T?) {
-        settingSwitch?.text = element?.name
+
     }
 
 }

@@ -23,8 +23,7 @@ abstract class Setting(
         var name: String,
         var icon: String,
         var key: String,
-        var status: Boolean,
-        var description: String
+        var status: Boolean
 ) : Visitable<SettingFieldTypeFactory>
 
 class ParentSettingPojo(
@@ -32,13 +31,15 @@ class ParentSettingPojo(
         icon: String,
         key: String,
         status: Boolean,
-        description: String,
+        val description: String,
         val childSettings: List<ChildSettingPojo>
-) : Setting(name, icon, key, status, description) {
+) : Setting(name, icon, key, status) {
 
     override fun type(typeFactory: SettingFieldTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun hasDescription(): Boolean = description.isNotEmpty()
 
 }
 
@@ -46,9 +47,8 @@ class ChildSettingPojo(
         name: String,
         icon: String,
         key: String,
-        status: Boolean,
-        description: String
-) : Setting(name, icon, key, status, description) {
+        status: Boolean
+) : Setting(name, icon, key, status) {
 
     override fun type(typeFactory: SettingFieldTypeFactory): Int {
         return typeFactory.type(this)
@@ -64,21 +64,31 @@ object SettingHelper {
                 ParentSettingPojo("Transaksi Pembelian", "", "1", true, "", emptyList())
         )
 
-        val chatSetting = listOf(
-                ChildSettingPojo("Dari Tokopedia", "", "1", true, ""),
-                ChildSettingPojo("Chat Promosi dari Penjual", "", "1", true, ""),
-                ChildSettingPojo("Chat Penjual", "", "1", true, "")
+        val chatChildSetting = listOf(
+                ChildSettingPojo("Dari Tokopedia", "", "1", true),
+                ChildSettingPojo("Chat Promosi dari Penjual", "", "1", true),
+                ChildSettingPojo("Chat Penjual", "", "1", true)
         )
         val inboxSettings = listOf(
-                ParentSettingPojo("Chat", "", "1", true, "", chatSetting),
+                ParentSettingPojo("Chat", "", "1", true, "", chatChildSetting),
                 ParentSettingPojo("Diskusi", "", "1", true, "", emptyList()),
                 ParentSettingPojo("Ulasan", "", "1", true, "", emptyList())
         )
 
+        val promoChildSetting = listOf(
+                ChildSettingPojo("Promo untuk Pembeli", "", "1", true),
+                ChildSettingPojo("Promo untuk Penjual", "", "1", true)
+        )
+
+        val infoChildSetting = listOf(
+                ChildSettingPojo("Info untuk Pembeli", "", "1", true),
+                ChildSettingPojo("Info untuk Penjual", "", "1", true)
+        )
+
         val updateSettings = listOf(
                 ParentSettingPojo("Aktivitas", "", "1", true, "Reminder, Feeds, dan Aktivitas akun kamu", emptyList()),
-                ParentSettingPojo("Promo", "", "1", true, "", emptyList()),
-                ParentSettingPojo("Info", "", "1", true, "Informasi terbaru seputar Tokopedia", emptyList())
+                ParentSettingPojo("Promo", "", "1", true, "", promoChildSetting),
+                ParentSettingPojo("Info", "", "1", true, "Informasi terbaru seputar Tokopedia", infoChildSetting)
         )
 
         val emailSectionSettings = listOf(

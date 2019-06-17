@@ -12,6 +12,12 @@ class ChildSettingViewHolder(itemView: View?) : SettingViewHolder<ChildSettingPo
         return itemView?.findViewById(R.id.sw_setting)
     }
 
+    override fun bind(element: ChildSettingPojo?) {
+        super.bind(element)
+
+        settingSwitch?.text = element?.name
+    }
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_child_setting
