@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <FrameLayout
-        android:background="@color/white"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/dp_16"
+        android:weightSum="10">
 
         <FrameLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_8"
+            android:layout_weight="9"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@color/grey_100">
 
             <EditText
@@ -23,33 +27,50 @@
                 android:background="@null"
                 android:hint="@string/input_number"
                 android:imeOptions="actionDone"
-                android:inputType="numberDecimal"
+                android:inputType="number"
+                android:maxLines="1"
                 android:padding="@dimen/dp_12"
-                android:textColor="#212121"
-                android:textColorHint="@color/black_38"
-                android:textSize="@dimen/sp_16"
-                android:maxLines="1" />
+                android:textColor="#f531353b"
+                android:textColorHint="#e131353b"
+                android:textSize="@dimen/sp_14" />
 
             <Button
-                android:layout_height="@dimen/dp_25"
-                android:layout_width="@dimen/dp_25"
                 android:id="@+id/btn_clear_number"
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
                 android:layout_gravity="end|center"
-                android:layout_marginRight="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
                 android:background="@drawable/digital_topup_ic_close"
                 android:visibility="visible" />
 
         </FrameLayout>
 
-    </FrameLayout>
+        <LinearLayout
+            android:id="@+id/contact_picker_layout"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_44"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:visibility="visible"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/btn_copy_promo"
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                android:layout_gravity="end|center"
+                android:background="@drawable/digital_topup_ic_contact" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="@dimen/dp_16"
-        tools:listitem="@layout/item_autocomplete_fav_num"
         android:id="@+id/recyclerview_number_list"
-        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        tools:listitem="@layout/item_autocomplete_fav_num" />
 
 </LinearLayout>

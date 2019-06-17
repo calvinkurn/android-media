@@ -116,7 +116,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onClientNumberHasFocus(clientNumber: String) {
-                startActivityForResult(DigitalSearchNumberActivity.newInstance(activity, null, ""),
+                startActivityForResult(activity?.let { DigitalSearchNumberActivity.newInstance(it, DigitalFavNumber(), "") },
                         REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
         })

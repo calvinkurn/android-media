@@ -1,0 +1,67 @@
+package com.tokopedia.topupbills.telco.view.activity
+
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.os.Parcelable
+
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment
+import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
+import com.tokopedia.topupbills.telco.view.model.DigitalOrderClientNumber
+
+import java.util.ArrayList
+
+/**
+ * @author rizkyfadillah on 10/4/2017.
+ */
+
+class DigitalSearchNumberActivity : BaseSimpleActivity(), DigitalSearchNumberFragment.OnClientNumberClickListener {
+
+    private lateinit var categoryId: String
+    private lateinit var clientNumber: DigitalFavNumber
+    private lateinit var number: String
+    private lateinit var numberList: List<DigitalOrderClientNumber>
+
+    override fun getScreenName(): String? {
+        return DigitalSearchNumberActivity::class.java.simpleName
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        val extras = intent.extras
+        extras?.let {
+            this.clientNumber = extras.getParcelable(EXTRA_CLIENT_NUMBER)
+            this.number = extras.getString(EXTRA_NUMBER)
+        }
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun getNewFragment(): android.support.v4.app.Fragment {
+        return DigitalSearchNumberFragment
+                .newInstance(clientNumber, number)
+    }
+
+    override fun onClientNumberClicked(orderClientNumber: DigitalOrderClientNumber?) {
+        setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber))
+        finish()
+    }
+
+    companion object {
+
+        private val EXTRA_NUMBER_LIST = "EXTRA_NUMBER_LIST"
+        private val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
+        private val EXTRA_NUMBER = "EXTRA_NUMBER"
+        private val EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID"
+
+        val EXTRA_CALLBACK_CLIENT_NUMBER = "EXTRA_CALLBACK_CLIENT_NUMBER"
+
+        fun newInstance(activity: Activity, clientNumber: DigitalFavNumber,
+                        number: String): Intent {
+            val intent = Intent(activity, DigitalSearchNumberActivity::class.java)
+            intent.putExtra(EXTRA_CLIENT_NUMBER, clientNumber)
+            intent.putExtra(EXTRA_NUMBER, number)
+            return intent
+        }
+    }
+
+}

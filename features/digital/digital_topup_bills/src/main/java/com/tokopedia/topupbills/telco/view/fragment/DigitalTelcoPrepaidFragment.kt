@@ -22,6 +22,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
 import com.tokopedia.topupbills.telco.view.model.DigitalOrderClientNumber
 import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
@@ -177,7 +178,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onClientNumberHasFocus(clientNumber: String) {
-                startActivityForResult(DigitalSearchNumberActivity.newInstance(activity, null, ""),
+                startActivityForResult(activity?.let { DigitalSearchNumberActivity.newInstance(it, DigitalFavNumber(), "") },
                         REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
         })
