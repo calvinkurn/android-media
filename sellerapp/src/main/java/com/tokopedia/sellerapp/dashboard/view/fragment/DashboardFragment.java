@@ -5,10 +5,17 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -505,18 +513,27 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             } else {
                 tvShopMembershipStatus.setText(getString(R.string.bracket_format, getString(R.string.inactive_label)));
             }
+            buttonActivatePowerMerchant.setVisibility(View.GONE);
             if (shopStatusModel.isTransitionPeriod()) {
                 tickerContainer.setVisibility(View.GONE);
-                buttonActivatePowerMerchant.setVisibility(View.GONE);
             } else {
                 tickerContainer.setVisibility(View.VISIBLE);
                 ((ImageView)tickerContainer.findViewById(R.id.iv_ticker_logo)).setImageResource(R.drawable.ic_ticker_announcement_cropped);
+                TextView tvTicker = tickerContainer.findViewById(R.id.tv_ticker);
+                View.OnClickListener onClickListener = new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT);
+                    }
+                };
                 if (shopStatusModel.isPowerMerchantActive()) {
-                    buttonActivatePowerMerchant.setVisibility(View.GONE);
-                    ((TextView)tickerContainer.findViewById(R.id.tv_ticker)).setText(R.string.power_merchant_active_ticker);
+                    String tickerString = getString(R.string.power_merchant_active_ticker_with_tip);
+                    tvTicker.setText(tickerString);
+                    setTextViewClickSpan(tvTicker, tickerString, getString(R.string.tip_increase_score), onClickListener);
                 } else {
-                    buttonActivatePowerMerchant.setVisibility(View.VISIBLE);
-                    ((TextView)tickerContainer.findViewById(R.id.tv_ticker)).setText(R.string.power_merchant_inactive_ticker);
+                    String tickerString = getString(R.string.power_merchant_inactive_ticker_with_tip);
+                    tvTicker.setText(tickerString);
+                    setTextViewClickSpan(tvTicker, tickerString, getString(R.string.tip_increase_score), onClickListener);
                 }
             }
         }
@@ -525,6 +542,31 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         } else {
             shopIconImageView.setImageResource(R.drawable.ic_placeholder_shop_with_padding);
         }
+    }
+
+    private void setTextViewClickSpan(TextView textView, String allText, String learnMoreString, View.OnClickListener onClickListener) {
+        SpannableString spannable = new SpannableString(allText);
+        int indexStart = allText.indexOf(learnMoreString);
+        int indexEnd = indexStart + learnMoreString.length();
+
+        int color = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
+        spannable.setSpan(new ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                onClickListener.onClick(textView);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(color);
+            }
+        };
+        spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        textView.setText(spannable);
     }
 
     private void updateViewShopOpen(ShopModel shopModel) {
