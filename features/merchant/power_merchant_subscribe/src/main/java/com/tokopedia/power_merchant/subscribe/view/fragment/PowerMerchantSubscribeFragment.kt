@@ -22,8 +22,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
@@ -113,7 +113,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                     }
                     val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE) }
                     startActivityForResult(intent, ACTIVATE_INTENT_CODE)
-                } else {t
+                } else {
                     if (shopScore < MINIMUM_SCORE_ACTIVATE_IDLE) {
                         setupDialogScore()?.show()
                         return@setOnClickListener
