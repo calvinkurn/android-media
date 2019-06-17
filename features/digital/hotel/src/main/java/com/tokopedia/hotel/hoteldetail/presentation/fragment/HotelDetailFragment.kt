@@ -17,6 +17,7 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
@@ -50,10 +51,12 @@ class HotelDetailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var detailViewModel: HotelDetailViewModel
+    lateinit var trackingHotelUtil: TrackingHotelUtil
 
     private var hotelHomepageModel = HotelHomepageModel()
     private var isButtonEnabled: Boolean = true
     private var hotelName: String = ""
+    private var hotelId: Int = 0
 
     private val thumbnailImageList = mutableListOf<String>()
     private val imageList = mutableListOf<String>()
@@ -123,6 +126,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
                 is Success -> {
                     setupLayout(it.data)
                     hotelName = it.data.property.name
+                    hotelId = it.data.property.id
                 }
                 is Fail -> {
                     // TODO Fail get Hotel Info
@@ -383,7 +387,9 @@ class HotelDetailFragment : BaseDaggerFragment() {
         container_bottom.visibility = View.VISIBLE
 
         if (data.isNotEmpty()) {
-            tv_hotel_price.text = data[0].roomPrice.roomPrice
+            val roomPrice = data[0].roomPrice.roomPrice
+            trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPrice)
+            tv_hotel_price.text = roomPrice
             btn_see_room.setOnClickListener {
                 startActivityForResult(HotelRoomListActivity.createInstance(context!!, hotelHomepageModel.locId, hotelName,
                         hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,

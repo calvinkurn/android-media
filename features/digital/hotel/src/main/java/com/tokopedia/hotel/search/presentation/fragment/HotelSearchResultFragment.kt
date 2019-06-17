@@ -43,7 +43,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     lateinit var searchResultviewModel: HotelSearchResultViewModel
     lateinit var sortMenu: HotelClosedSortBottomSheets
     private var onFilterClick: View.OnClickListener? = null
-    lateinit var trackingHotelUtils: TrackingHotelUtil
+    lateinit var trackingHotelUtil: TrackingHotelUtil
 
     var searchDestinationName = ""
 
@@ -137,8 +137,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             if (requestCode == REQUEST_FILTER && data != null && data.hasExtra(CommonParam.ARG_CACHE_FILTER_ID)) {
                 val cacheId = data.getStringExtra(CommonParam.ARG_CACHE_FILTER_ID)
                 val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheId) } ?: return
-                searchResultviewModel.addFilter(cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java)
-                        ?: ParamFilter())
+                val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java) ?: ParamFilter()
+
+                trackingHotelUtil.hotelUserClickFilter(paramFilter.toString())
+                searchResultviewModel.addFilter(paramFilter)
                 loadInitialData()
             }
         }
@@ -147,7 +149,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     private fun onSuccessGetResult(data: PropertySearch) {
         var searchParam = searchResultviewModel.searchParam
-        trackingHotelUtils.hotelViewHotelListImpression(
+        trackingHotelUtil.hotelViewHotelListImpression(
                 searchDestinationName,
                 searchParam.room,
                 searchParam.guest.adult,
@@ -191,6 +193,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         sortMenu.onMenuSelect = object : HotelOptionMenuAdapter.OnSortMenuSelected {
             override fun onSelect(sort: Sort) {
+                trackingHotelUtil.hotelUserClickSort(sort.displayName)
+
                 searchResultviewModel.addSort(sort)
                 sortMenu.dismiss()
                 loadInitialData()

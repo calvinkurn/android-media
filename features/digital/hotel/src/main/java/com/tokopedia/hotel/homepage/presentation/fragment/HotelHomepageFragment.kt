@@ -43,7 +43,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var homepageViewModel: HotelHomepageViewModel
-    lateinit var trackingHotelUtils: TrackingHotelUtil
+    lateinit var trackingHotelUtil: TrackingHotelUtil
 
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
 
@@ -103,7 +103,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     override fun getScreenName(): String = ""
 
     override fun onSaveGuest(room: Int, adult: Int) {
-        trackingHotelUtils.hotelSelectRoomGuest(room, adult, 0)
+        trackingHotelUtil.hotelSelectRoomGuest(room, adult, 0)
 
         hotelHomepageModel.roomCount = room
         hotelHomepageModel.adultCount = adult
@@ -264,7 +264,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     private fun trackRoomDates() {
         val dayDiff = HotelUtils.countCurrentDayDifference(hotelHomepageModel.checkInDate)
         val dateRange = "${hotelHomepageModel.checkInDate} - ${hotelHomepageModel.checkOutDate}"
-        trackingHotelUtils.hotelSelectStayDate(dayDiff.toInt(), dateRange)
+        trackingHotelUtil.hotelSelectStayDate(dayDiff.toInt(), dateRange)
     }
 
     private fun onDestinationNearBy(longitude: Double, latitude: Double) {
@@ -275,7 +275,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     }
 
     private fun onDestinationChanged(name: String, destinationId: Int, type: String) {
-        trackingHotelUtils.hotelSelectDestination(name)
+        trackingHotelUtil.hotelSelectDestination(name)
 
         hotelHomepageModel.locName = name
         hotelHomepageModel.locId = destinationId
@@ -284,7 +284,7 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
     }
 
     private fun onSearchButtonClicked() {
-        trackingHotelUtils.searchHotel(
+        trackingHotelUtil.searchHotel(
                 "",
                 hotelHomepageModel.locName,
                 hotelHomepageModel.roomCount,

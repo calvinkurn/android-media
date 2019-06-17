@@ -79,18 +79,14 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $sortValue")
     }
 
-    fun hotelChooseViewRoom(hotelId: String,
-                            roomId: String,
-                            price: Int){
+    fun hotelChooseViewRoom(hotelId: Int, price: String){
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CHOOSE_VIEW_ROOM,
-                "$HOTEL_LABEL - $hotelId - $roomId - $price")
+                "$HOTEL_LABEL - $hotelId - $price")
     }
 
-    fun hotelViewRoomList(hotelId: String,
-                          roomId: String,
-                          price: Int) {
+    fun hotelViewRoomList(hotelId: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, VIEW_ROOM_LIST,
-                "$HOTEL_LABEL - $hotelId - $roomId - $price")
+                "$HOTEL_LABEL - $hotelId")
     }
 
     fun hotelChooseRoom(hotelId: String,

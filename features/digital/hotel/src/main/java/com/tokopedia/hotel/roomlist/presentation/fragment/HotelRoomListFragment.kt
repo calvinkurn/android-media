@@ -19,6 +19,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomdetail.presentation.fragment.HotelRoomDetailFragment
@@ -53,6 +54,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var roomListViewModel: HotelRoomListViewModel
+    lateinit var trackingHotelUtil: TrackingHotelUtil
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
@@ -96,6 +98,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                         showFilterRecyclerView(it.data.size > 0)
                     } else showFilterRecyclerView(true)
                     clearAllData()
+                    trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId)
                     renderList(it.data, false)
                 }
                 is Fail -> {
