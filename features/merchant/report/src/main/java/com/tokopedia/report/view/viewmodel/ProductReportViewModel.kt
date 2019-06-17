@@ -20,6 +20,8 @@ import javax.inject.Named
 class ProductReportViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                  @Named("product_report_reason")
                                                  private val reportReasonQuery: String,
+                                                 @Named("dummy_response")
+                                                 private val dummyJsonStr: String,
                                                  dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
 
     val reasonResponse =  MutableLiveData<Result<List<ProductReportReason>>>()
@@ -34,7 +36,9 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
             val data = withContext(Dispatchers.IO){
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }
-            val list = data.getSuccessData<ProductReportReason.Response>().data
+            val gson =Gson()
+            val list = gson.fromJson(dummyJsonStr, ProductReportReason.Response::class.java).data
+            //val list = data.getSuccessData<ProductReportReason.Response>().data
             reasonResponse.value = Success(list)
         }){
             reasonResponse.value = Fail(it)
