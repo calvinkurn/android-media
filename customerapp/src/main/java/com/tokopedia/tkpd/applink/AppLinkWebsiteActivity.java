@@ -37,7 +37,6 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     private static final String KEY_APP_LINK_QUERY_NEED_LOGIN = "need_login";
 
 
-
     private FragmentGeneralWebView fragmentGeneralWebView;
 
     private String url;
@@ -85,9 +84,7 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         if (TextUtils.isEmpty(webUrl)) {
             webUrl = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL;
         }
-
         return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar, needLogin);
-
     }
 
     @SuppressWarnings("unused")
