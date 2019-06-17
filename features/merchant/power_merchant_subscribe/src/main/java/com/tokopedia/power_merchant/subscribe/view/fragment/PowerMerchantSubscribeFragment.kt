@@ -5,8 +5,12 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.kotlin.extensions.view.hideLoading
@@ -54,6 +59,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     var shopScore: Int = 0
     var minScore: Int = 0
     var isSuccessActivatedPm: Boolean = false
+    var isSuccessCancellationPm: Boolean = false
     lateinit var bottomSheetSuccess: PowerMerchantSuccessBottomSheet
     lateinit var bottomSheetCancel: PowerMerchantCancelBottomSheet
 
@@ -86,9 +92,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         root_view_pm.showLoading()
-        ImageHandler.LoadImage(img_top_1, IMG_URL_PM_INTRO)
-        initializePartialPart(view)
-        partialTncViewHolder.renderPartialTnc()
+        renderInitialLayout()
 
         button_activate_root.setOnClickListener {
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 1) {
@@ -115,6 +119,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         presenter.getPmStatusInfo(userSessionInterface.shopId)
     }
 
+    private fun renderInitialLayout() {
+        ImageHandler.LoadImage(img_top_1, IMG_URL_PM_INTRO)
+        renderDefaultTickerYellow()
+        renderDefaultTickerBlue()
+        initializePartialPart(view)
+        partialBenefitPmViewHolder.renderPartialBenefit()
+        partialTncViewHolder.renderPartialTnc()
+    }
+
     private val onViewClickListener = View.OnClickListener {
         when (it.id) {
             R.id.member_cancellation_button -> showBottomSheetCancel()
@@ -129,6 +142,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         presenter.setAutoExtendOff(false)
     }
 
+    override fun onSuccessCancelMembership() {
+        isSuccessCancellationPm = true
+        refreshData()
+    }
 
     override fun refreshData() {
         root_view_pm.showLoading()
@@ -151,6 +168,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
+    private fun showToasterSuccess() {
+        activity?.run {
+            ToasterNormal.make(findViewById(android.R.id.content),
+                    "Berhasil Membatlkan Power Merchant",
+                    ToasterNormal.LENGTH_LONG)
+                    .show()
+        }
+    }
+
     private fun setupDialogKyc(): Dialog? {
         context?.let {
             val dialog = Dialog(it)
@@ -169,7 +195,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             return dialog
         }
         return null
-
     }
 
     private fun setupDialogScore(): Dialog? {
@@ -181,8 +206,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             dialog.setContentView(R.layout.dialog_score_verification)
 
             dialog.btn_submit_kyc.setOnClickListener {
-                //                RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
-//                activity.finish()
+                RouteManager.route(context, String.format("%s?url=%s",
+                        ApplinkConst.WEBVIEW,
+                        URL_GAINS_SCORE_POINT))
             }
             dialog.btn_close_kyc.setOnClickListener {
                 dialog.hide()
@@ -245,8 +271,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             showBottomSheetSuccess(shopStatusModel)
         }
 
-        showBottomSheetCancel()
-
+        if (isSuccessCancellationPm) {
+            showToasterSuccess()
+        }
     }
 
     private fun renderViewNonTransitionPeriod() {
@@ -255,7 +282,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             if (isAutoExtend()) {
                 hideButtonActivatedPm()
             } else {
-                showExpiredDate()
+                showExpiredDateTickerYellow()
             }
         }
     }
@@ -309,26 +336,41 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
-    override fun onErrorGetPmInfo(throwable: Throwable) {
-    }
 
     override fun showEmptyState(throwable: Throwable) {
         root_view_pm.showEmptyState(ErrorHandler.getErrorMessage(context, throwable), ::refreshData)
         root_view_pm.hideLoading()
     }
 
-    private fun showError(message: String, listener: View.OnClickListener?) {
-        ToasterError.make(view, message, ToasterError.LENGTH_LONG)
-                .setAction(R.string.title_try_again, listener)
-                .show()
+    private fun renderDefaultTickerYellow() {
+        val spanText = SpannableString(getString(R.string.pm_label_cancellation_duration))
+
+        spanText.setSpan(StyleSpan(Typeface.BOLD),
+                10, 27, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanText.setSpan(StyleSpan(Typeface.BOLD),
+                spanText.length - 13, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        txt_ticker_yellow.text = spanText
     }
 
-    private fun showExpiredDate() {
+    private fun renderDefaultTickerBlue() {
+        val spanText = SpannableString(getString(R.string.pm_label_price_cashback))
+        spanText.setSpan(StyleSpan(Typeface.BOLD),
+                48, 60, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanText.setSpan(StyleSpan(Typeface.BOLD),
+                81, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        txt_blue_ticker.text = spanText
+    }
+
+
+    private fun showExpiredDateTickerYellow() {
         ticker_yellow_container.visibility = View.VISIBLE
         val shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,
                 DateFormatUtils.FORMAT_D_MMMM_YYYY,
                 shopStatusModel.powerMerchant.expiredTime)
-        txt_ticker_yellow.text = getString(R.string.expired_label, shopCloseUntilString)
+        val spanText = SpannableString(getString(R.string.expired_label, shopCloseUntilString))
+        spanText.setSpan(StyleSpan(Typeface.BOLD),
+                78, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        txt_ticker_yellow.text = spanText
     }
 
     private fun initializePartialPart(view: View?) {

@@ -30,17 +30,16 @@
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/txt_join_1"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_250"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/img_top_1"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="@string/pm_label_join_1"
+                android:gravity="center"
+                android:text="@string/pm_label_join_header"
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                app:fontSize="titleBig"
-                />
-
+                app:fontSize="titleBig" />
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/txt_info"
@@ -80,6 +79,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
+                        android:layout_margin="@dimen/dp_5"
                         android:padding="@dimen/dp_10">
 
                         <com.tokopedia.design.component.TextViewCompat
@@ -136,6 +136,7 @@
                     app:cardCornerRadius="@dimen/dp_8">
 
                     <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/txt_blue_ticker"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dp_5"
