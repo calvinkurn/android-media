@@ -8,6 +8,8 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomInfo
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
+import com.tokopedia.hotel.roomlist.widget.ImageViewPager
+import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import kotlinx.android.synthetic.main.item_hotel_room_full.view.*
 import kotlinx.android.synthetic.main.item_hotel_room_list.view.*
 import kotlin.math.min
@@ -30,7 +32,9 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
                 setImageViewPager(roomListModel.images)
                 room_name_text_view.text = roomListModel.roomName
                 max_occupancy_text_view.text = roomListModel.occupancyText
-                bed_info_text_view.text = "${Html.fromHtml(roomListModel.roomSize)} • ${roomListModel.bedInfo}"
+                bed_info_text_view.text = context.getString(R.string.hotel_room_list_room_description,
+                        roomListModel.roomSize,
+                        roomListModel.bedInfo)
                 room_price_text_view.text = roomListModel.price
                 pay_hotel_layout.visibility = if (roomListModel.payInHotel) View.VISIBLE else View.GONE
                 room_left_text_view.visibility = if (roomListModel.roomLeft <= 2) View.VISIBLE else View.GONE
@@ -83,6 +87,13 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
     fun setImageViewPager(imageUrls: List<String>) {
         with(itemView) {
             room_image_view_pager.setImages(imageUrls)
+            room_image_view_pager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener{
+                override fun onImageClicked(position: Int) {
+                    context.startActivity(ImagePreviewSliderActivity.getCallingIntent(
+                            context!!, "Image", imageUrls, imageUrls, position
+                    ))
+                }
+            }
             room_image_view_pager.buildView()
         }
     }

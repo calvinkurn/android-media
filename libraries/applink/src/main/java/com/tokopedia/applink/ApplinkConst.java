@@ -122,6 +122,7 @@ public interface ApplinkConst {
     String GIFT_CARDS_ORDER = "tokopedia://giftcards/order";
     String INSURANCE_ORDER = "tokopedia://insurance/order";
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
+    String HOTEL_ORDER = "tokopedia://hotel/order/";
 
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";

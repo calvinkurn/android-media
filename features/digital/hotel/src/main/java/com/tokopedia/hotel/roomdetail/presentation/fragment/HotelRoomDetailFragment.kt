@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
+import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
@@ -42,7 +43,7 @@ import javax.inject.Inject
  * @author by resakemal on 23/04/19
  */
 
-class HotelRoomDetailFragment : BaseDaggerFragment() {
+class HotelRoomDetailFragment : HotelBaseFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -321,6 +322,9 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(HotelRoomDetailComponent::class.java).inject(this)
+    }
+
+    override fun onErrorRetryClicked() {
     }
 
     companion object {

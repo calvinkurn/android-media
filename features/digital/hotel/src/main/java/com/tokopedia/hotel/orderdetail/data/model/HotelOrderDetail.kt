@@ -14,23 +14,43 @@ data class HotelOrderDetail(
 
         @SerializedName("title")
         @Expose
-        val title: List<Title> = listOf(),
+        val title: List<LabelValue> = listOf(),
 
         @SerializedName("invoice")
         @Expose
         val invoice: Invoice = Invoice(),
 
-        @SerializedName("contactUs")
+        @SerializedName("conditionalInfo")
         @Expose
-        val contactUs: Contact = Contact(),
+        val conditionalInfo: ConditionalInfo = ConditionalInfo(),
+
+        @SerializedName("conditionalInfoBottom")
+        @Expose
+        val conditionalInfoBottom: ConditionalInfo = ConditionalInfo(),
 
         @SerializedName("actionButtons")
         @Expose
         val actionButtons: List<ActionButton> = listOf(),
 
+        @SerializedName("payMethod")
+        @Expose
+        val payMethod: List<LabelValue> = listOf(),
+
+        @SerializedName("pricing")
+        @Expose
+        val pricing: List<PaymentData> = listOf(),
+
+        @SerializedName("paymentsData")
+        @Expose
+        val paymentsData: List<PaymentData> = listOf(),
+
+        @SerializedName("contactUs")
+        @Expose
+        val contactUs: Contact = Contact(),
+
         @SerializedName("hotelTransportDetails")
         @Expose
-        val hotelTransportDetails: List<HotelTransportDetail> = listOf()
+        val hotelTransportDetails: HotelTransportDetail = HotelTransportDetail()
 ) {
     data class Status(
             @SerializedName("status")
@@ -39,10 +59,26 @@ data class HotelOrderDetail(
 
             @SerializedName("statusText")
             @Expose
-            val statusText: String = ""
+            val statusText: String = "",
+
+            @SerializedName("iconUrl")
+            @Expose
+            val iconUrl: String = "",
+
+            @SerializedName("textColor")
+            @Expose
+            val textColor: String = "",
+
+            @SerializedName("backgroundColor")
+            @Expose
+            val backgroundColor: String = "",
+
+            @SerializedName("fontSize")
+            @Expose
+            val fontsize: String = ""
     )
 
-    data class Title(
+    data class LabelValue(
             @SerializedName("label")
             @Expose
             val label: String = "",
@@ -62,14 +98,10 @@ data class HotelOrderDetail(
             val invoiceUrl: String = ""
     )
 
-    data class Contact(
-            @SerializedName("helpText")
+    data class ConditionalInfo(
+            @SerializedName("Title")
             @Expose
-            val helpText: String = "",
-
-            @SerializedName("helpUrl")
-            @Expose
-            val helpUrl: String = ""
+            val title: String = ""
     )
 
     data class ActionButton(
@@ -92,6 +124,38 @@ data class HotelOrderDetail(
             @SerializedName("weight")
             @Expose
             val weight: Int = 0
+    )
+
+    data class PaymentData(
+            @SerializedName("label")
+            @Expose
+            val label: String = "",
+
+            @SerializedName("value")
+            @Expose
+            val value: String = "",
+
+            @SerializedName("textColor")
+            @Expose
+            val textColor: String = "",
+
+            @SerializedName("backgroundColor")
+            @Expose
+            val backgroundColor: String = "",
+
+            @SerializedName("imageUrl")
+            @Expose
+            val imageUrl: String = ""
+    )
+
+    data class Contact(
+            @SerializedName("helpText")
+            @Expose
+            val helpText: String = "",
+
+            @SerializedName("helpUrl")
+            @Expose
+            val helpUrl: String = ""
     )
 
     data class Response(

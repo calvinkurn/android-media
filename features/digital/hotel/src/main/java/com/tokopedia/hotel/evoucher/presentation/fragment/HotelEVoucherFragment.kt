@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.evoucher.di.HotelEVoucherComponent
 import com.tokopedia.hotel.evoucher.presentation.viewmodel.HotelEVoucherViewModel
@@ -32,7 +33,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 14/05/19
  */
-class HotelEVoucherFragment : BaseDaggerFragment() {
+class HotelEVoucherFragment : HotelBaseFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -142,13 +143,12 @@ class HotelEVoucherFragment : BaseDaggerFragment() {
     }
 
     private fun renderData(data: HotelOrderDetail) {
-        if (data.hotelTransportDetails.isNotEmpty()) {
 
-            tv_guest_title.text = data.hotelTransportDetails[0].guestDetail.title
-            tv_guest_name.text = data.hotelTransportDetails[0].guestDetail.content
+            tv_guest_title.text = data.hotelTransportDetails.guestDetail.title
+            tv_guest_name.text = data.hotelTransportDetails.guestDetail.content
 
-            if (data.hotelTransportDetails[0].propertyDetail.isNotEmpty()) {
-                val propertyDetail = data.hotelTransportDetails[0].propertyDetail[0]
+            if (data.hotelTransportDetails.propertyDetail.isNotEmpty()) {
+                val propertyDetail = data.hotelTransportDetails.propertyDetail[0]
 
                 tv_property_name.text = propertyDetail.propertyInfo.name
                 tv_property_address.text = propertyDetail.propertyInfo.address
@@ -156,7 +156,7 @@ class HotelEVoucherFragment : BaseDaggerFragment() {
                 rdv_checkin_checkout_date.setRoomDatesFormatted(
                         propertyDetail.checkInOut[0].checkInOut.date,
                         propertyDetail.checkInOut[1].checkInOut.date,
-                        propertyDetail.checkInOut[2].content)
+                        propertyDetail.stayLength.content)
 
                 for (i in 1..propertyDetail.propertyInfo.starRating) {
                     container_rating_view.addView(RatingStarView(context!!))
@@ -186,12 +186,17 @@ class HotelEVoucherFragment : BaseDaggerFragment() {
             }
 
             var phoneString = ""
-            for ((index, item) in data.hotelTransportDetails[0].contactInfo.withIndex()) {
+            for ((index, item) in data.hotelTransportDetails.contactInfo.withIndex()) {
                 phoneString += item.number
-                if (index < data.hotelTransportDetails[0].contactInfo.size - 1) phoneString += ", "
+                if (index < data.hotelTransportDetails.contactInfo.size - 1) phoneString += ", "
             }
             tv_property_phone.text = getString(R.string.hotel_e_voucher_phone, phoneString)
-        }
+
+    }
+
+    override fun onErrorRetryClicked() {
+        eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_hotel_order_list_detail), orderId)
     }
 
     companion object {

@@ -42,6 +42,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         param.rows = PARAM_ROWS
         param.sortBy = PARAM_SORT_BY_TIME
         param.sortType = PARAM_SORT_TYPE_DESC
+        param.filterByCountry = COUNTRY_ID
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,6 +87,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
     }
 
     fun initSwitch() {
+        indonesia_review_switch.isChecked = true
         indonesia_review_switch.setOnCheckedChangeListener { buttonView, isChecked ->
             param.filterByCountry = if (isChecked) COUNTRY_ID else COUNTRY_ALL
             //add param to get Indo
@@ -129,7 +131,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
             showHotelMetaReview(false)
             isFirstTime = false
         }
-        param.page = page
+        param.page = page - 1
         reviewViewModel.getReview(GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review), param,
                 GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_review))
 

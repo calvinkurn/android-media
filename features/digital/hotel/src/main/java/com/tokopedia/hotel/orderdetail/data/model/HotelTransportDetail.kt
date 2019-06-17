@@ -9,13 +9,13 @@ import com.google.gson.annotations.SerializedName
 
 data class HotelTransportDetail(
 
-        @SerializedName("conditionalInfoTop")
+        @SerializedName("paymentType")
         @Expose
-        val conditionalInfoTop: ConditionalInfo = ConditionalInfo(),
+        val paymentType: String = "",
 
-        @SerializedName("conditionalInfoBottom")
+        @SerializedName("isShowEVoucher")
         @Expose
-        val conditionalInfoBottom: ConditionalInfo = ConditionalInfo(),
+        val isShowEVoucher: Boolean = false,
 
         @SerializedName("guestDetail")
         @Expose
@@ -24,10 +24,6 @@ data class HotelTransportDetail(
         @SerializedName("propertyDetail")
         @Expose
         val propertyDetail: List<PropertyDetail> = listOf(),
-
-        @SerializedName("payment")
-        @Expose
-        val payment: Payment = Payment(),
 
         @SerializedName("cancellationPolicies")
         @Expose
@@ -38,13 +34,16 @@ data class HotelTransportDetail(
         val contactInfo: List<ContactInfo> = listOf()
 ) {
 
-    data class ConditionalInfo(
-            @SerializedName("Title")
-            @Expose
-            val title: String = ""
-    )
-
     data class PropertyDetail(
+
+            @SerializedName("propertyCountry")
+            @Expose
+            val propertyCountry: String = "",
+
+            @SerializedName("applink")
+            @Expose
+            val applink: String = "",
+
             @SerializedName("bookingKey")
             @Expose
             val bookingKey: TitleContent = TitleContent(),
@@ -56,6 +55,10 @@ data class HotelTransportDetail(
             @SerializedName("checkInOut")
             @Expose
             val checkInOut: List<CheckInOut> = listOf(),
+
+            @SerializedName("stayLength")
+            @Expose
+            val stayLength: TitleContent = TitleContent(),
 
             @SerializedName("propertyInfo")
             @Expose
@@ -75,17 +78,17 @@ data class HotelTransportDetail(
     )
 
     data class Image(
+            @SerializedName("urlMax360")
+            @Expose
+            val urlMax360: String = "",
+
             @SerializedName("urlSquare60")
             @Expose
             val urlSquare60: String = "",
 
             @SerializedName("urlOriginal")
             @Expose
-            val urlOriginal: String = "",
-
-            @SerializedName("urlMax300")
-            @Expose
-            val urlMax300: String = ""
+            val urlOriginal: String = ""
     )
 
     data class CheckInOut(
@@ -153,25 +156,6 @@ data class HotelTransportDetail(
                 val content: String
         )
     }
-
-    data class Payment(
-
-            @SerializedName("title")
-            @Expose
-            val title: String = "",
-
-            @SerializedName("detail")
-            @Expose
-            val detail: List<TitleContent> = listOf(),
-
-            @SerializedName("fares")
-            @Expose
-            val fares: List<TitleContent> = listOf(),
-
-            @SerializedName("summary")
-            @Expose
-            val summary: List<TitleContent> = listOf()
-    )
 
     data class Cancellation(
             @SerializedName("title")
