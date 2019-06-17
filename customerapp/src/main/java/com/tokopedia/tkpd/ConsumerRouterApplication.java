@@ -1047,7 +1047,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onLogout(AppComponent appComponent) {
         PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
-        new CacheApiClearAllUseCase().executeSync();
+        new CacheApiClearAllUseCase(this).executeSync();
         TkpdSellerLogout.onLogOut(appComponent);
     }
 
@@ -2019,6 +2019,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setType(LinkerData.SHOP_TYPE)
                 .setName(getString(R.string.message_share_shop))
                 .setTextContent(shareLabel)
+                .setCustMsg(shareLabel)
                 .setUri(shopUrl)
                 .setId(shopId)
                 .build();
@@ -3167,4 +3168,5 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
         return baseDaggerFragment;
     }
+
 }

@@ -76,10 +76,6 @@ dependencies {
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.viewDependencies.appIntro
 
-    annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
-
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
 
@@ -91,6 +87,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.apacheLang
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'

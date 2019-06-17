@@ -9,7 +9,10 @@ import com.tokopedia.discovery.newdynamicfilter.helper.DynamicFilterDbManager;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by hangnadi on 10/16/17.
@@ -51,9 +54,29 @@ public class GetDynamicFilterSubscriber extends Subscriber<DynamicFilterModel> {
         Gson gson = new Gson();
         String filterData = gson.toJson(model.getData().getFilter(), listType);
 
-        DynamicFilterDbManager cache = new DynamicFilterDbManager();
-        cache.setFilterID(view.getScreenNameId());
-        cache.setFilterData(filterData);
-        cache.store();
+        Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                DynamicFilterDbManager.store(view.getContext(), view.getScreenNameId(), filterData);
+                subscriber.onNext(true);
+            }
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+
+                    }
+                });
     }
 }
