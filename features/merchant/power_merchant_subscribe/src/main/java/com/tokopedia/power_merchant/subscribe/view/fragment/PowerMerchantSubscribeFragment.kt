@@ -139,8 +139,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 it.finish()
             }
         }
-
-        showBottomSheetSuccess(shopStatusModel)
     }
 
     private fun renderInitialLayout() {
@@ -295,6 +293,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         if (isSuccessCancellationPm) {
             showToasterSuccess()
         }
+
+        //DELETE TESTING PURPOSE
+        showBottomSheetSuccess(shopStatusModel)
+
     }
 
     private fun renderViewNonTransitionPeriod() {
