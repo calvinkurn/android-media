@@ -41,6 +41,21 @@ Anda di sini.</string>
     <string name="address">Alamat</string>
     <string name="category_ticket">Kategori Tiket</string>
     <string name="number_of_bookings">Jumlah Tiket</string>
+    <string name="tkpdtransaction_label_tx_confirmed">Menunggu Konfirmasi</string>
+    <string name="tkpdtransaction_label_tx_processed">Pesanan Diproses</string>
+    <string name="tkpdtransaction_label_tx_shipped">Sedang Dikirim</string>
+    <string name="tkpdtransaction_label_tx_delivered">Sampai Tujuan</string>
+    <string name="kode_booking_label">Kode booking pengiriman</string>
+
+    <string name="barcode_helper">Tunjukkan barcode atau kode booking kepada petugas di gerai kurir saat mengirim barang.</string>
+    <string name="message_label">Informasi tambahan mengenai sistem kode booking</string>
+    <string name="title_booking_code_detail">Detail Kode Booking</string>
+    <string name="booking_code_copied_notif">Kode booking berhasil disalin</string>
+    <string name="barcode_label_one">Kode booking pengiriman</string>
+    <string name="barcode_label_two">(tap untuk perbesar)</string>
+    <string name="barcode_image_content_description">Barcode Image</string>
+    <string name="protection_count_label">Biaya Proteksi Produk (%d barang)</string>
+    <string name="button_order_detail_buy_again">Beli Lagi</string>
     <string name="filter">Filter</string>
     <string name="try_again">Belanja Sekarang</string>
     <string name="detail_product">Detail Pengiriman</string>

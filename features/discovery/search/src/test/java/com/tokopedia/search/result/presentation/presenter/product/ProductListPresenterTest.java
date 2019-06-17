@@ -18,6 +18,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+// TODO:: Revamp this Test class. It should execute SearchProductUseCase and verify view methods is called.
+// TODO:: See ShopListPresenterTest for comparison
 public class ProductListPresenterTest {
 
     private static class MockSearchProductModelUseCase extends UseCase<SearchProductModel> {

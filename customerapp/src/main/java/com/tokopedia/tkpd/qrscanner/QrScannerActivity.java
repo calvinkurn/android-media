@@ -90,7 +90,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     @DeepLink({ApplinkConst.QRSCAN})
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        Intent intent = newInstance(context, true);
+        Intent intent = newInstance(context, false);
         return intent.setData(uri.build());
     }
 

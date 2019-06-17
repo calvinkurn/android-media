@@ -206,6 +206,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.model.Configuration;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
@@ -318,7 +319,6 @@ import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
@@ -434,6 +434,9 @@ import tradein_common.TradeInUtils;
 import tradein_common.router.TradeInRouter;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
+import static com.tokopedia.iris.ConstantKt.DEFAULT_CONFIG;
+import static com.tokopedia.iris.ConstantKt.DEFAULT_MAX_ROW;
+import static com.tokopedia.iris.ConstantKt.DEFAULT_SERVICE_TIME;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
@@ -526,10 +529,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OvoPayWithQrRouter,
         KYCRouter{
 
-
-    private final static int IRIS_ROW_LIMIT = 50;
-    private final static long IRIS_TIME_MINUTES = 15;
-
     private static final String EXTRA = "extra";
 
     @Inject
@@ -572,15 +571,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initIris() {
-        mIris = Iris.Companion.init(this);
+        mIris = IrisAnalytics.Companion.getInstance(this);
 
         boolean irisEnable = getBooleanRemoteConfig(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true);
+        String irisConfig = getStringRemoteConfig(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG);
 
-        mIris.setService(new Configuration(
-                IRIS_ROW_LIMIT,
-                IRIS_TIME_MINUTES,
-                irisEnable
-        ));
+        if (!irisConfig.isEmpty()) {
+            mIris.setService(irisConfig, irisEnable);
+        } else {
+            Configuration configuration = new Configuration(
+                    DEFAULT_MAX_ROW,
+                    DEFAULT_SERVICE_TIME,
+                    irisEnable
+            );
+            mIris.setService(configuration);
+        }
     }
 
     @Override
@@ -594,14 +599,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
         return flightConsumerComponent;
     }
-
-    @Override
-    public void goToProfileShop(Context context, String userId) {
-        context.startActivity(
-                getTopProfileIntent(context, userId)
-        );
-    }
-
 
     private void initializeDagger() {
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
@@ -1043,7 +1040,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onLogout(AppComponent appComponent) {
         PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
-        new CacheApiClearAllUseCase().executeSync();
+        new CacheApiClearAllUseCase(this).executeSync();
         TkpdSellerLogout.onLogOut(appComponent);
     }
 
@@ -1996,13 +1993,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setType(LinkerData.SHOP_TYPE)
                 .setName(getString(R.string.message_share_shop))
                 .setTextContent(shareLabel)
+                .setCustMsg(shareLabel)
                 .setUri(shopUrl)
                 .setId(shopId)
                 .build();
         new DefaultShare(activity, shareData).show();
     }
 
-    @Override
     public void goToManageShop(Context context) {
         context.startActivity(StoreSettingActivity.createIntent(context));
     }
@@ -2012,19 +2009,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(this, BannerWebView.class);
         intent.putExtra(BannerWebView.EXTRA_URL, url);
         context.startActivity(intent);
-    }
-
-    @Override
-    public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
-        UserSessionInterface userSession = new UserSession(this);
-        if (userSession.isLoggedIn()) {
-            UnifyTracking.eventShopSendChat();
-            Intent intent = getAskSellerIntent(this, shopId, shopName, "", TkpdInboxRouter.SHOP);
-            context.startActivity(intent);
-        } else {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent(context);
-            ((Activity) context).startActivityForResult(intent, 100);
-        }
     }
 
     public void init() {
@@ -2493,24 +2477,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToShopReview(Context context, String shopId, String shopDomain) {
-        ReputationTracking tracking = new ReputationTracking(this);
-        UserSessionInterface userSession = new UserSession(this);
-        tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, userSession.getShopId().equals(shopId));
-        context.startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
-    }
-
-    @Override
-    public void goToShopDiscussion(Context context, String shopId) {
-        context.startActivity(ShopTalkActivity.Companion.createIntent(context, shopId));
-    }
-
-    @Override
-    public void goToManageShipping(Context context) {
-        context.startActivity(new Intent(context, EditShippingActivity.class));
-    }
-
-    @Override
     public FingerprintModel getFingerprintModel() {
         return FingerprintModelGenerator.generateFingerprintModel(this);
     }
@@ -2761,19 +2727,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return FlightOrderListFragment.createInstance();
     }
 
-    public void onShowRationale(Context context, PermissionRequest request, String permission) {
-        RequestPermissionUtil.onShowRationale(context, request, permission);
-    }
-
-    public void onPermissionDenied(Context context, String permission) {
-        RequestPermissionUtil.onPermissionDenied(context, permission);
-    }
-
-    public void onNeverAskAgain(Context context, String permission) {
-        RequestPermissionUtil.onNeverAskAgain(context, permission);
-    }
-
-
     @Override
     public void logoutToHome(Activity activity) {
         //From DialogLogoutFragment
@@ -2845,10 +2798,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getMitraToppersActivityIntent(Context context) {
         return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
-    }
-
-    public boolean isFeedShopPageEnabled() {
-        return remoteConfig.getBoolean("mainapp_enable_feed_shop_page", Boolean.TRUE);
     }
 
     @Override
@@ -3193,4 +3142,5 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
         return baseDaggerFragment;
     }
+
 }

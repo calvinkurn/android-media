@@ -12,6 +12,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -76,7 +78,7 @@ public abstract class TActivity extends BaseActivity {
     }
 
     protected boolean onSearchOptionSelected() {
-        Intent intent = BrowseProductRouter.getSearchProductIntent(this);
+        Intent intent = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
         startActivity(intent);
         return true;
     }
