@@ -280,6 +280,8 @@ class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets
         hotelHomepageModel.locName = getString(R.string.hotel_homepage_near_by_destination)
         hotelHomepageModel.locLat = latitude
         hotelHomepageModel.locLong = longitude
+        hotelHomepageModel.locId = 0
+        hotelHomepageModel.locType = ""
         renderView()
     }
 
@@ -289,6 +291,8 @@ class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets
         hotelHomepageModel.locName = name
         hotelHomepageModel.locId = destinationId
         hotelHomepageModel.locType = type
+        hotelHomepageModel.locLat = 0.0
+        hotelHomepageModel.locLong = 0.0
         renderView()
     }
 
