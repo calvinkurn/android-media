@@ -33,6 +33,7 @@ import com.tokopedia.hotel.booking.data.model.*
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
+import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.kotlin.extensions.view.getDimens
@@ -45,7 +46,7 @@ import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
 
 
-class HotelBookingFragment : BaseDaggerFragment() {
+class HotelBookingFragment : HotelBaseFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -389,6 +390,11 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(HotelBookingComponent::class.java).inject(this)
+    }
+
+    override fun onErrorRetryClicked() {
+        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId,
+                GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_cart))
     }
 
     companion object {

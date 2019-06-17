@@ -2,14 +2,14 @@ package com.tokopedia.hotel.roomdetail.presentation.fragment
 
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
-import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
-import android.text.style.ImageSpan
+import android.text.style.LeadingMarginSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
+import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
@@ -31,6 +32,8 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_detail.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
@@ -40,7 +43,7 @@ import javax.inject.Inject
  * @author by resakemal on 23/04/19
  */
 
-class HotelRoomDetailFragment : BaseDaggerFragment() {
+class HotelRoomDetailFragment : HotelBaseFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -69,6 +72,21 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
         val hotelRoomDetailModel = manager.get(EXTRA_ROOM_DATA, HotelRoomDetailModel::class.java, HotelRoomDetailModel())!!
         hotelRoom = hotelRoomDetailModel.hotelRoom
         addToCartParam = hotelRoomDetailModel.addToCartParam
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        roomDetailViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    val cartId = it.data.cartId
+                    startActivity(HotelBookingActivity.getCallingIntent(context!!, cartId))
+                }
+                is Fail -> {
+                }
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -101,11 +119,15 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupCollapsingToolbar() {
-        (activity as HotelRoomDetailActivity).setSupportActionBar(detail_toolbar)
+        (activity as HotelRoomDetailActivity).setSupportActionBar(room_detail_detail_toolbar)
         (activity as HotelRoomDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        collapsing_toolbar.title = ""
-        app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+        val navIcon = room_detail_detail_toolbar.navigationIcon
+        navIcon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
+        (activity as HotelRoomDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
+
+        room_detail_collapsing_toolbar.title = ""
+        room_detail_app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
             var scrollRange = -1
 
@@ -114,10 +136,12 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
                     scrollRange = appBarLayout.totalScrollRange
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsing_toolbar.title = hotelRoom.roomInfo.name
+                    room_detail_collapsing_toolbar.title = hotelRoom.roomInfo.name
+                    navIcon?.setColorFilter(resources.getColor(R.color.black), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
-                    collapsing_toolbar.title = " "
+                    room_detail_collapsing_toolbar.title = " "
+                    navIcon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
             }
@@ -146,7 +170,7 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
         tv_room_detail_title.text = hotelRoom.roomInfo.name
         tv_room_detail_occupancy.text = getString(R.string.hotel_room_detail_header_occupancy,
                 hotelRoom.occupancyInfo.occupancyText)
-        tv_room_detail_size.text = hotelRoom.bedInfo
+        tv_room_detail_size.text = getString(R.string.hotel_room_detail_header_room_size, hotelRoom.roomInfo.size, hotelRoom.bedInfo)
 
         val breakfastTextView = FacilityTextView(context!!)
         if (hotelRoom.breakfastInfo.isBreakfastIncluded) {
@@ -173,20 +197,19 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
 
     fun setupRoomPayAtHotel() {
         if (!hotelRoom.additionalPropertyInfo.isDirectPayment) {
-            val spannableString = SpannableString("   " + hotelRoom.creditCardInfo.creditCardInfo
-                    + getString(R.string.hotel_room_detail_pay_at_hotel_desc))
+            pay_at_hotel_container.visibility = View.VISIBLE
+
             val iconId = if (hotelRoom.additionalPropertyInfo.isCvCRequired)
                 R.drawable.ic_pay_at_hotel_cc else R.drawable.ic_pay_at_hotel_no_cc
-            val icon = ContextCompat.getDrawable(context!!, iconId)
-            icon?.setBounds(0, -6, 50, 50)
-            spannableString.setSpan(StyleSpan(Typeface.BOLD), 3, 3 + hotelRoom.creditCardInfo.creditCardInfo.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannableString.setSpan(ImageSpan(icon!!, ImageSpan.ALIGN_BASELINE), 0, 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            pay_at_hotel_icon.setBackgroundResource(iconId)
 
-            room_detail_pay_at_hotel.setTitleAndDescription(getString(R.string.hotel_room_detail_pay_at_hotel), spannableString)
-            room_detail_pay_at_hotel.truncateDescription = false
-            room_detail_pay_at_hotel.buildView()
+            val spannableString = SpannableString(" " + hotelRoom.creditCardInfo.creditCardInfo
+                    + getString(R.string.hotel_room_detail_pay_at_hotel_desc))
+            spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 1 + hotelRoom.creditCardInfo.creditCardInfo.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(LeadingMarginSpan.Standard(50, 0), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            pay_at_hotel_title.text = getString(R.string.hotel_room_detail_pay_at_hotel)
+            pay_at_hotel_desc.text = spannableString
         }
     }
 
@@ -280,16 +303,13 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
     fun setupRoomPrice() {
         tv_room_detail_price.text = hotelRoom.roomPrice.roomPrice
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
-        room_detail_button.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                if (userSessionInterface.isLoggedIn) {
-//                    roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
-                    startActivity(HotelBookingActivity.getCallingIntent(context!!,""))
-                } else {
-                    goToLoginPage()
-                }
+        room_detail_button.setOnClickListener {
+            if (userSessionInterface.isLoggedIn) {
+                roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
+            } else {
+                goToLoginPage()
             }
-        })
+        }
     }
 
     fun goToLoginPage() {
@@ -302,6 +322,9 @@ class HotelRoomDetailFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(HotelRoomDetailComponent::class.java).inject(this)
+    }
+
+    override fun onErrorRetryClicked() {
     }
 
     companion object {

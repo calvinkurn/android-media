@@ -41,10 +41,6 @@ class HotelReviewViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         }
     }
 
-    fun test() {
-        reviewResult.value = Success(data = HotelReview.ReviewData())
-    }
-
     companion object {
         const val PARAM_REVIEW_KEY = "data"
     }

@@ -1,13 +1,17 @@
 {
     "orderDetails": {
       "status": {
-        "status": 700,
-        "statusText": "Transaksi berhasil"
+        "status": 101,
+        "statusText": "Menunggu Pembayaran",
+        "iconUrl": "",
+        "textColor": "#4C4C4C",
+        "backgroundColor": "",
+        "fontSize": ""
       },
       "title": [
         {
           "label": "Tanggal Transaksi",
-          "value": "02 Apr 2019, 13:57"
+          "value": "Mon, 10 Jun 2019 13:16"
         },
         {
           "label": "Kategori Produk",
@@ -15,188 +19,162 @@
         }
       ],
       "invoice": {
-        "invoiceRefNum": "IVR/20170713/XVII/VII/16205811",
-        "invoiceUrl": "https://api.tokopedia.com/travel/v1/flight/invoice?invoice_id=PPB-LTJMO-M96Y&amp;user_id=17154331"
+        "invoiceRefNum": "",
+        "invoiceUrl": ""
       },
-      "contactUs": {
-        "helpText": "Butuh bantuan ? Klik <hyperlink>disini</hyperlink>",
-        "helpUrl": "https://www.tokopedia.com/contact-us?pid=46&amp;ivtype=4&amp;iv=PPB-LTJMO-M96Y&amp;ostat=700"
+      "conditionalInfo": {
+        "title": ""
+      },
+      "conditionalInfoBottom": {
+        "title": ""
       },
       "actionButtons": [
         {
-          "label": "Batalkan",
-          "buttonType": "buy",
-          "uri": "tokopedia://hotel",
-          "uriWeb": "https://tokopedia.com/hotel",
-          "weight": 1
+          "label": "Beli Lagi",
+          "buttonType": "Buy",
+          "uri": "tokopedia://hotel/",
+          "weight": 1,
+          "uriWeb": ""
         },
         {
-          "label": "Kembalikan",
-          "buttonType": "refund",
-          "uri": "tokopedia://hotel",
-          "uriWeb": "https://tokopedia.com/hotel",
-          "weight": 2
+          "label": "Batalkan",
+          "buttonType": "Cancel",
+          "uri": "tokopedia://hotel/cancel/102",
+          "weight": 2,
+          "uriWeb": ""
         }
       ],
-      "hotelTransportDetails": [
+      "payMethod": [
         {
-          "conditionalInfoTop": {
-            "Title": "Dana Pembayaran blablabla"
-          },
-          "conditionalInfoBottom": {
-            "Title": "credit card tidak ditagih"
-          },
-          "guestDetail": {
-            "title": "Nama Tamu",
-            "content": "Stevanus Kurniawan Suharyanto"
-          },
-          "propertyDetail": [
-            {
-              "bookingKey": {
-                "title": "Kode Booking",
-                "content": "P231PC"
-              },
-              "image": [
-                {
-                  "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/156940807.jpg?k=35c02516917d301b8ccf7dc034878e6ef0e6ee4b874c4782af9dcd6ea25749a8&amp;o=",
-                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max500/156940807.jpg?k=35c02516917d301b8ccf7dc034878e6ef0e6ee4b874c4782af9dcd6ea25749a8&amp;o=",
-                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/156940807.jpg?k=35c02516917d301b8ccf7dc034878e6ef0e6ee4b874c4782af9dcd6ea25749a8&amp;o="
-                }
-              ],
-              "checkInOut": [
-                {
-                  "title": "checkin",
-                  "content": "",
-                  "checkInOut": {
-                    "date": "12 Des 2018",
-                    "day": "Senin",
-                    "time": "14.00"
-                  }
-                },
-                {
-                  "title": "checkout",
-                  "content": "",
-                  "checkInOut": {
-                    "date": "18 Des 2018",
-                    "day": "Senin",
-                    "time": "14.00"
-                  }
-                },
-                {
-                  "title": "staylength",
-                  "content": "10 malam",
-                  "checkInOut": {
-                    "date": "",
-                    "day": "",
-                    "time": ""
-                  }
-                }
-              ],
-              "propertyInfo": {
-                "type": "hotel",
-                "name": "Avissa Suites",
-                "address": "Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat.",
-                "starRating": 5
-              },
-              "room": [
-                {
-                  "title": "Kamar Deluxe Double",
-                  "content": "2 kamar, 2 tamu",
-                  "amenities": [
-                    {
-                      "content": "termasuk sarapan"
-                    }
-                  ]
-                }
-              ],
-              "specialRequest": [
-                {
-                  "title": "Permintaan Khusus",
-                  "content": "kamar view pantai"
-                }
-              ],
-              "extraInfo": "Dana deposit, pajak wisata, dan biaya lainnya mungkin akan ditagihkan saat check-in. Pelajari lebih lanjut"
-            }
-          ],
-          "payment": {
-            "title": "Informasi Pembayaran",
-            "detail": [
-              {
-                "title": "metode pembayaran",
-                "content": "bayar di hotel"
-              },
-              {
-                "title": "mata uang berlaku",
-                "content": "SGD"
-              },
-              {
-                "title": "kartu yang diterima",
-                "content": "Mastercard, JCB, Visa, ..."
-              },
-              {
-                "title": "Kode Pembayaran",
-                "content": "881 881 881  8881"
-              },
-              {
-                "title": "batas akhir pembayaran",
-                "content": "2 sep 2018, 20:30 WIB"
-              }
-            ],
-            "fares": [
-              {
-                "title": "2 Kamar x 1 Malam",
-                "content": "Rp 239.000"
-              },
-              {
-                "title": "Pajak",
-                "content": "Sudah Termasuk"
-              }
-            ],
-            "summary": [
-              {
-                "title": "estimasi pembayaran",
-                "content": "Rp. 200.000"
-              },
-              {
-                "title": "dalam mata uang lokal",
-                "content": "SGD 100"
-              }
-            ]
-          },
-          "cancellationPolicies": {
-            "title": "Refund Bersyarat",
-            "content": "silahkan klik disini",
-            "isClickable": true,
-            "policies": [
-              {
-                "shortTitle": "Pembatalan Gratis",
-                "longTitle": "Free Cancellation",
-                "shortDesc": "Pembatalan gratis",
-                "longDesc": "Pembatalan Gratis Tidak Dikenakan Biaya",
-                "active": false
-              },
-              {
-                "shortTitle": "Dikenakan biaya",
-                "longTitle": "Biaya pemesanan dikembalikan Rp 50.000.000",
-                "shortDesc": "pengajuan pembatalan sebelum 30 November 2019, pelajari lebih lanjut",
-                "longDesc": "Untuk pengajuan pembatalan antara 24 November 2019, 21:00 - 30 November 2019, 21:00",
-                "active": true
-              },
-              {
-                "shortTitle": "Non Refundable",
-                "longTitle": "Biaya pemesanan Tidak Dapat dikembalikan",
-                "shortDesc": "Tidak Dapat Dikembalikan",
-                "longDesc": "Untuk pengajuan pembatalan setelah 15 Desember 2019, 21:00 biaya pemesanan tidak bisa dikembalikan.",
-                "active": false
-              }
-            ]
-          },
-          "contactInfo": [
-            {
-              "number": "+62 812 12314"
-            }
-          ]
+          "label": "Metode Pembayaran",
+          "value": "Bayar Di Hotel"
+        },
+        {
+          "label": "Mata Uang Berlaku",
+          "value": "SGD"
+        },
+        {
+          "label": "Kartu Yang Diterima",
+          "value": "Visa, Master"
+        },
+        {
+          "label": "Kode Pembayaran",
+          "value": "80777081262976809"
+        },
+        {
+          "label": "Batas Waktu Pembayaran",
+          "value": "11 Jun 2019, 16:15"
         }
-      ]
+      ],
+      "pricing": [
+        {
+          "label": "2 Kamar x 1 Malam",
+          "value": "100000",
+          "textColor": "",
+          "backgroundColor": "",
+          "imageUrl": ""
+        },
+        {
+          "label": "Pajak",
+          "value": "Sudah Termasuk",
+          "textColor": "",
+          "backgroundColor": "",
+          "imageUrl": ""
+        }
+      ],
+      "paymentsData": [
+        {
+          "id": "inHotelCurrency",
+          "label": "Total Pembayaran",
+          "value": "100000",
+          "textColor": "#ff5722",
+          "backgroundColor": "",
+          "imageUrl": ""
+        },
+        {
+          "id": "inHotelCurrency",
+          "label": "Total Pembayaran",
+          "value": "100000",
+          "textColor": "#ff5722",
+          "backgroundColor": "",
+          "imageUrl": ""
+        }
+      ],
+      "contactUs": {
+        "helpText": "Butuh Bantuan Klik Disini",
+        "helpUrl": "https://www.tokopedia.com/help"
+      },
+      "hotelTransportDetails": {
+        "paymentType": "payNow",
+        "isShowEVoucher": true,
+        "guestDetail": {
+          "title": "Nama Tamu",
+          "content": "Edwin"
+        },
+        "propertyDetail": [
+          {
+            "propertyCountry": "ID",
+            "appLink": "tokopedia://hotel/detail/6",
+            "bookingKey": {
+              "title": "Kode Booking",
+              "content": ""
+            },
+            "image": [
+              {
+                "urlMax360": "https://images.google.com",
+                "urlSquare60": "https://images.google.com",
+                "urlOriginal": "https://images.google.com"
+              }
+            ],
+            "checkInOut": [
+              {
+                "title": "Check In",
+                "content": "",
+                "checkInOut": {
+                  "day": "Monday",
+                  "date": "10 June 2019",
+                  "time": "13.16"
+                }
+              },
+              {
+                "title": "Check Out",
+                "content": "",
+                "checkInOut": {
+                  "day": "Monday",
+                  "date": "10 June 2019",
+                  "time": "13.16"
+                }
+              }
+            ],
+            "stayLength": {
+              "title": "Stay Length",
+              "content": "0 Malam"
+            },
+            "propertyInfo": {
+              "types": "Hotel",
+              "name": "property name",
+              "address": "Property Address",
+              "starRating": "4"
+            },
+            "room": [],
+            "specialRequest": {
+              "title": "Permintaan Khusus",
+              "content": "murain hotelnya"
+            },
+            "extraInfo": "extra info"
+          }
+        ],
+        "cancellationPolicies": {
+          "title": "Cancellation",
+          "content": "Silahkan Klik Disini",
+          "isClickable": true,
+          "policies": []
+        },
+        "contactInfo": [
+          {
+            "number": "+12312313"
+          }
+        ]
+      }
     }
-  }
+}

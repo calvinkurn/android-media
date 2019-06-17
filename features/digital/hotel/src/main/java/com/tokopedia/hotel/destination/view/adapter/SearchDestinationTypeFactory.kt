@@ -38,16 +38,15 @@ class SearchDestinationTypeFactory(val searchDestinationListener: SearchDestinat
         return HotelDestinationShimmeringViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: ErrorNetworkModel): Int {
-        return errorLayout
-    }
-
     override fun type(viewModel: EmptyModel): Int {
         return emptyLayout
     }
 
+    override fun type(viewModel: ErrorNetworkModel): Int {
+        return errorLayout
+    }
     companion object {
-        val errorLayout: Int = R.layout.item_network_error_view
         val emptyLayout: Int = R.layout.item_hotel_room_empty_list
+        val errorLayout: Int = R.layout.item_network_error_view
     }
 }

@@ -14,7 +14,7 @@ data class HotelReviewParam(
 
         @SerializedName("page")
         @Expose
-        var page: Int = 1,
+        var page: Int = 0,
 
         @SerializedName("rows")
         @Expose
