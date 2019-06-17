@@ -26,6 +26,8 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
+import com.tokopedia.videoplayer.utils.RepeatMode
+import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -84,6 +86,10 @@ open class PlayActivity : BaseSimpleActivity() {
     private fun initView() {
         setupToolbar()
         setFragment()
+        TkpdVideoPlayer.Builder()
+                .transaction(R.id.playerView, supportFragmentManager)
+                .repeatMode(RepeatMode.REPEAT_MODE_ALL)
+                .build()
     }
 
     private fun setFragment() {
