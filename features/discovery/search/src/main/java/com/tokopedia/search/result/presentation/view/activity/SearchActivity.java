@@ -334,7 +334,7 @@ public class SearchActivity extends BaseActivity
         getExtrasFromIntent(intent);
 
         if (isFromApplink) {
-            performNewProductSearch(searchParameter.getSearchQuery());
+            performProductSearch("");
         } else {
             onSearchingStart();
             loadSection();
@@ -700,14 +700,14 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public void onProductDataReady() {
+    public void onProductLoadingFinished() {
         showLoadingView(false);
         showContainer(true);
         showBottomNavigation();
     }
 
     private void showContainer(boolean visible) {
-        container.setVisibility(visible ? View.VISIBLE : View.GONE);
+        container.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override

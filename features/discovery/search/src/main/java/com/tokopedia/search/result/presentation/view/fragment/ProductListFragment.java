@@ -324,7 +324,6 @@ public class ProductListFragment
     }
 
     public void setProductList(List<Visitable> list) {
-        redirectionListener.onProductDataReady();
         adapter.clearDataBeforeSet();
 
         addProductList(list);
@@ -850,6 +849,7 @@ public class ProductListFragment
 
     @Override
     public void removeLoading() {
+        redirectionListener.onProductLoadingFinished();
         adapter.removeLoading();
     }
 
