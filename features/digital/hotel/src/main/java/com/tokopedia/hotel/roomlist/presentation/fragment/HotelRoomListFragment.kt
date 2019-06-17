@@ -54,6 +54,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var roomListViewModel: HotelRoomListViewModel
+
+    @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     @Inject
@@ -261,6 +263,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onItemClicked(room: HotelRoom) {
+        trackingHotelUtil.hotelClickRoomDetails(hotelRoomListPageModel.propertyId, room.roomId, room.roomPrice.totalPrice)
         val objectId = System.currentTimeMillis().toString()
         SaveInstanceCacheManager(context!!, objectId).apply {
             val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)

@@ -51,12 +51,15 @@ class HotelDetailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var detailViewModel: HotelDetailViewModel
+
+    @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     private var hotelHomepageModel = HotelHomepageModel()
     private var isButtonEnabled: Boolean = true
     private var hotelName: String = ""
     private var hotelId: Int = 0
+    private var roomPrice: String = "0"
 
     private val thumbnailImageList = mutableListOf<String>()
     private val imageList = mutableListOf<String>()
@@ -238,6 +241,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
                 1 -> {
                     iv_first_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     iv_first_photo_preview.setOnClickListener {
+                        trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPrice)
                         openImagePreview(imageIndex)
                     }
                     imageCounter++
@@ -245,6 +249,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
                 2 -> {
                     iv_second_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     iv_second_photo_preview.setOnClickListener {
+                        trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPrice)
                         openImagePreview(imageIndex)
                     }
                     imageCounter++
@@ -252,6 +257,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
                 3 -> {
                     iv_third_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     iv_third_photo_preview.setOnClickListener {
+                        trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPrice)
                         openImagePreview(imageIndex)
                     }
                     imageCounter++
@@ -260,6 +266,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
             if (item.mainPhoto) {
                 iv_main_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                 iv_main_photo_preview.setOnClickListener {
+                    trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPrice)
                     openImagePreview(imageIndex)
                 }
                 imageCounter++
@@ -315,6 +322,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
             rv_best_review.adapter = detailReviewAdapter
 
             tv_hotel_detail_all_promo.setOnClickListener {
+                trackingHotelUtil.hotelClickHotelReviews(hotelId, roomPrice)
                 startActivityForResult(HotelReviewActivity.getCallingIntent(context!!, hotelHomepageModel.locId), RESULT_REVIEW)
             }
         } else {
@@ -387,7 +395,7 @@ class HotelDetailFragment : BaseDaggerFragment() {
         container_bottom.visibility = View.VISIBLE
 
         if (data.isNotEmpty()) {
-            val roomPrice = data[0].roomPrice.roomPrice
+            roomPrice = data[0].roomPrice.roomPrice
             trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPrice)
             tv_hotel_price.text = roomPrice
             btn_see_room.setOnClickListener {

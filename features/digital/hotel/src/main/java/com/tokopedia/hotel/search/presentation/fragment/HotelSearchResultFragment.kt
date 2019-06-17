@@ -43,9 +43,12 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     lateinit var searchResultviewModel: HotelSearchResultViewModel
     lateinit var sortMenu: HotelClosedSortBottomSheets
     private var onFilterClick: View.OnClickListener? = null
+
+    @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     var searchDestinationName = ""
+    var searchProperties: List<Property> = listOf()
 
     companion object {
         private const val REQUEST_FILTER = 0x10
@@ -148,7 +151,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     private fun onSuccessGetResult(data: PropertySearch) {
-        var searchParam = searchResultviewModel.searchParam
+        val searchParam = searchResultviewModel.searchParam
         trackingHotelUtil.hotelViewHotelListImpression(
                 searchDestinationName,
                 searchParam.room,
@@ -158,8 +161,9 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 mapPropertySearch(data)
         )
 
+        searchProperties = data.properties
         bottom_action_view.visible()
-        super.renderList(data.properties, data.properties.size > 0)
+        super.renderList(searchProperties, searchProperties.size > 0)
         generateSortMenu(data.displayInfo.sort)
         initializeFilterClick(data.displayInfo.filter)
     }
@@ -167,7 +171,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     private fun mapPropertySearch(data: PropertySearch): List<TrackingHotelUtil.HotelImpressionProduct> {
         return data.properties.map {
             TrackingHotelUtil.HotelImpressionProduct(it.name, "", it.id,
-                it.roomPrice.minBy { it.totalPriceAmount }?.totalPriceAmount?.toInt() ?: 0)
+                it.roomPrice.minBy { it.priceAmount }?.priceAmount?.toInt() ?: 0)
         }
     }
 
@@ -206,10 +210,23 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun onItemClicked(t: Property) {
         with(searchResultviewModel.searchParam) {
+            trackingHotelUtil.chooseHotel(
+                    t.id.toString(), HotelUtils.countCurrentDayDifference(checkIn).toInt(),
+                    t.roomPrice.firstOrNull()?.priceAmount?.toInt() ?: 0,
+                    listOf(mapToHotelPromotions(searchProperties)))
+
             startActivityForResult(HotelDetailActivity.getCallingIntent(context!!,
                     checkIn, checkOut, t.id, room, guest.adult),
                     REQUEST_CODE_DETAIL_HOTEL)
         }
+    }
+
+    private fun mapToHotelPromotions(data: List<Property>): TrackingHotelUtil.HotelPromotions {
+        val promoProduct = data.mapIndexed { index, it ->
+            TrackingHotelUtil.HotelPromoProduct(
+                    it.name, it.id, it.roomPrice.firstOrNull()?.priceAmount?.toInt() ?: 0, index)
+        }
+        return TrackingHotelUtil.HotelPromotions(promoProduct)
     }
 
     override fun getScreenName(): String? = null

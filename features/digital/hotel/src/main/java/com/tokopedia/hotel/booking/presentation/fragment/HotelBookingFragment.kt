@@ -32,6 +32,7 @@ import com.tokopedia.hotel.booking.data.model.*
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.kotlin.extensions.view.getDimens
@@ -49,6 +50,9 @@ class HotelBookingFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var bookingViewModel: HotelBookingViewModel
+
+    @Inject
+    lateinit var trackingHotelUtil: TrackingHotelUtil
 
     lateinit var hotelCart: HotelCart
     var hotelBookingPageModel = HotelBookingPageModel()
@@ -382,6 +386,7 @@ class HotelBookingFragment : BaseDaggerFragment() {
 
     private fun onBookingButtonClicked() {
         if (validateData()) {
+            trackingHotelUtil.hotelClickNext(true)
             hotelBookingPageModel.guestName = tv_guest_input.text.toString()
             hotelBookingPageModel.roomRequest = tv_room_request_input.text.toString()
 

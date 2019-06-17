@@ -79,6 +79,16 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $sortValue")
     }
 
+    fun hotelClickHotelPhoto(hotelId: Int, price: String){
+        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, CLICK_HOTEL_PHOTO,
+                "$HOTEL_LABEL - $hotelId - $price")
+    }
+
+    fun hotelClickHotelReviews(hotelId: Int, price: String){
+        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, CLICK_HOTEL_REVIEWS,
+                "$HOTEL_LABEL - $hotelId - $price")
+    }
+
     fun hotelChooseViewRoom(hotelId: Int, price: String){
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CHOOSE_VIEW_ROOM,
                 "$HOTEL_LABEL - $hotelId - $price")
@@ -103,6 +113,21 @@ class TrackingHotelUtil {
         val addObj = mapOf(ADD_LABEL to productsObj)
         map.put(ECOMMERCE_LABEL, addObj)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun hotelClickRoomListPhoto(hotelId: Int, roomId: String, price: String){
+        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, CLICK_HOTEL_PHOTO,
+                "$HOTEL_LABEL - $hotelId - $roomId - $price")
+    }
+
+    fun hotelClickRoomDetails(hotelId: Int, roomId: String, price: String){
+        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, CLICK_HOTEL_PHOTO,
+                "$HOTEL_LABEL - $hotelId - $roomId - $price")
+    }
+
+    fun hotelClickRoomDetailsPhoto(hotelId: Int, roomId: String, price: String){
+        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, CLICK_HOTEL_PHOTO,
+                "$HOTEL_LABEL - $hotelId - $roomId - $price")
     }
 
     fun hotelChooseRoomDetails(hotelId: String,
@@ -193,7 +218,7 @@ class TrackingHotelUtil {
 
         @SerializedName("id")
         @Expose
-        val productId: String = "",
+        val productId: Int = 0,
 
         @SerializedName("price")
         @Expose
