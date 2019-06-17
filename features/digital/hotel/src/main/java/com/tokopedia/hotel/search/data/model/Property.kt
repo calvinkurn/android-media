@@ -48,14 +48,18 @@ data class Property(
 
         @SerializedName("location")
         @Expose
-        val location: Location = Location()
-): Visitable<PropertyAdapterTypeFactory> {
+        val location: Location = Location(),
 
-        override fun type(typeFactory: PropertyAdapterTypeFactory?): Int {
-            return typeFactory?.type(this) ?: 0
-        }
+        @SerializedName("isDirectPayment")
+        @Expose
+        val isDirectPayment: Boolean = false
+) : Visitable<PropertyAdapterTypeFactory> {
 
-        data class Review(
+    override fun type(typeFactory: PropertyAdapterTypeFactory?): Int {
+        return typeFactory?.type(this) ?: 0
+    }
+
+    data class Review(
             @SerializedName("reviewScore")
             @Expose
             val score: Float = 0.0f,
