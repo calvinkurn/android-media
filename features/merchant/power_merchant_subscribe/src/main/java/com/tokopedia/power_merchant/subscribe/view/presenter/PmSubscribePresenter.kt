@@ -25,5 +25,6 @@ class PmSubscribePresenter @Inject constructor(
 
     override fun detachView() {
         getPowerMerchantStatusUseCase.unsubscribe()
+        toggleAutoExtend.unsubscribe()
     }
 }
