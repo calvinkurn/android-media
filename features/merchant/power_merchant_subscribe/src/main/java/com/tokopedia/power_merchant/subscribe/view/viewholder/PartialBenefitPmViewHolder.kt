@@ -30,8 +30,8 @@ class PartialBenefitPmViewHolder private constructor(private val view: View, pri
         val string = activity?.getString(R.string.pm_label_learn_more_benefit)
         val spanText = SpannableString(string)
 
-        spanText.setSpan(object : ClickableSpan(){
-            override fun onClick(widget: View) {
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(textView: View) {
                 RouteManager.route(view.context, String.format("%s?url=%s",
                         ApplinkConst.WEBVIEW,
                         URL_LEARN_MORE_BENEFIT))
@@ -41,12 +41,14 @@ class PartialBenefitPmViewHolder private constructor(private val view: View, pri
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
             }
-        },0 , spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+
+        spanText.setSpan(clickableSpan,spanText.length-22 , spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanText.setSpan(StyleSpan(Typeface.BOLD),
                 spanText.length-22, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanText.setSpan(ForegroundColorSpan(ContextCompat.getColor(view.context, R.color.pm_green_link)),
                 spanText.length-22, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        txtLearnMoreBenefit.movementMethod = LinkMovementMethod.getInstance();
+        txtLearnMoreBenefit.movementMethod = LinkMovementMethod.getInstance()
         txtLearnMoreBenefit.text = spanText
     }
 }
