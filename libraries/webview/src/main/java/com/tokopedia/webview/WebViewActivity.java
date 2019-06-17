@@ -18,7 +18,6 @@ public class WebViewActivity extends BaseSimpleActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         Uri uri = getIntent().getData();
         if (uri != null) {
             url = uri.getQueryParameter(URL);
@@ -30,6 +29,7 @@ public class WebViewActivity extends BaseSimpleActivity {
         if (TextUtils.isEmpty(title)) {
             title = getTitle().toString();
         }
+        super.onCreate(savedInstanceState);
     }
 
     @Override
