@@ -452,9 +452,7 @@ final class ProductListPresenter
 
             @Override
             public void onCompleted() {
-                if (isFirstTimeLoad) { // TODO:: For testing only, remove this later
-                    loadDataSubscriberOnCompleteIfViewAttached(searchParameter);
-                }
+                loadDataSubscriberOnCompleteIfViewAttached(searchParameter);
             }
 
             @Override
@@ -464,9 +462,7 @@ final class ProductListPresenter
 
             @Override
             public void onNext(SearchProductModel searchProductModel) {
-                if(isFirstTimeLoad) { // TODO:: For testing only, remove this later
-                    loadDataSubscriberOnNextIfViewAttached(searchProductModel, isFirstTimeLoad);
-                }
+                loadDataSubscriberOnNextIfViewAttached(searchProductModel, isFirstTimeLoad);
             }
         };
     }
@@ -506,7 +502,7 @@ final class ProductListPresenter
             if (productViewModel.getProductList().isEmpty()) {
                 getViewToShowEmptySearch();
             } else {
-                getViewToShowProductList(productViewModel);
+                getViewToShowProductList(productViewModel, isFirstTimeLoad);
             }
 
             getView().storeTotalData(productViewModel.getTotalData());
@@ -523,7 +519,9 @@ final class ProductListPresenter
         getView().setTotalSearchResultCount("0");
     }
 
-    private void getViewToShowProductList(ProductViewModel productViewModel) {
+    private void getViewToShowProductList(ProductViewModel productViewModel,
+                                          boolean isFirstTimeLoad
+                                          ) {
         List<Visitable> list = new ArrayList<>();
 
         HeaderViewModel headerViewModel = new HeaderViewModel();
@@ -553,9 +551,13 @@ final class ProductListPresenter
 
         getView().setAdditionalParams(productViewModel.getAdditionalParams());
         getView().removeLoading();
-        getView().setProductList(list);
-        getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
-        getView().addLoading();
+
+        if(isFirstTimeLoad) { // TODO:: For testing, remove this later
+            getView().setProductList(list);
+            getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
+            getView().addLoading();
+        }
+
         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         getView().stopTracePerformanceMonitoring();
     }
