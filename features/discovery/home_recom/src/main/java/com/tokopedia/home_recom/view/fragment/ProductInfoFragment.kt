@@ -69,8 +69,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab_detail.visibility = View.GONE
         product_name.text = productDataModel.productDetailData.name
+        fab_detail.visibility = View.GONE
         handleDiscount()
         product_price.text = productDataModel.productDetailData.price
         location.text = productDataModel.productDetailData.shop.location
