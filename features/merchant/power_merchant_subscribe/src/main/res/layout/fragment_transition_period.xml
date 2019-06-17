@@ -64,7 +64,7 @@
             android:id="@+id/txt_learnmore_transition_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btn_kyc_verification"
+            android:layout_below="@id/btn_kyc_verification_transition"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_8"
             android:gravity="center"
