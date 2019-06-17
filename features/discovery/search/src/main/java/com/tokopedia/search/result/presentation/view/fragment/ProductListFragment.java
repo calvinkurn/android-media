@@ -195,6 +195,9 @@ public class ProductListFragment
         initTopAdsParams();
         setupAdapter();
         setupListener();
+        if (getUserVisibleHint()) {
+            setupSearchNavigation();
+        }
     }
 
     @Override

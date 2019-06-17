@@ -104,10 +104,6 @@ public abstract class SearchSectionFragment
         initLayoutManager();
         initSwipeToRefresh(view);
 
-        if (getUserVisibleHint()) {
-            setupSearchNavigation();
-        }
-
         if (savedInstanceState == null) {
             refreshLayout.post(this::onFirstTimeLaunch);
         } else {
@@ -184,7 +180,7 @@ public abstract class SearchSectionFragment
         }
     }
 
-    private void setupSearchNavigation() {
+    protected void setupSearchNavigation() {
         searchNavigationListener
                 .setupSearchNavigation(new SearchNavigationListener.ClickListener() {
                     @Override
