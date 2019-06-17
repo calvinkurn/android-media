@@ -165,7 +165,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onSuccessCancelMembership() {
         isSuccessCancellationPm = true
-        isSuccessActivatedPm = false
         refreshData()
     }
 
@@ -190,7 +189,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
-    private fun showToasterSuccess() {
+    private fun showToasterCancellationSuccess() {
+        isSuccessCancellationPm = false
         activity?.let {
             ToasterNormal.showClose(it,
                     getString(R.string.pm_cancellation_success))
@@ -238,6 +238,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     private fun showBottomSheetSuccess(shopStatusModel: ShopStatusModel) {
         val imgUrl = IMG_URL_BS_SUCCESS
+        isSuccessActivatedPm = false
         val bottomSheetModel: PowerMerchantSuccessBottomSheet.BottomSheetModel =
                 if (shopStatusModel.isTransitionPeriod()) {
                     val headerString = getString(R.string.pm_label_bs_success_header_transition)
@@ -290,7 +291,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
 
         if (isSuccessCancellationPm) {
-            showToasterSuccess()
+            showToasterCancellationSuccess()
         }
 
         //DELETE TESTING PURPOSE
@@ -351,11 +352,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ACTIVATE_INTENT_CODE && resultCode == Activity.RESULT_OK) {
             isSuccessActivatedPm = true
-            isSuccessCancellationPm = false
             refreshData()
         } else if (requestCode == AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK) {
             isSuccessActivatedPm = true
-            isSuccessCancellationPm = false
             refreshData()
         }
     }
