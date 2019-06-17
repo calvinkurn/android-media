@@ -4,4 +4,5 @@
     <color name="ticker_blue">#ebf6f6</color>
     <color name="pm_start_gradient">#ffffff</color>
     <color name="pm_end_gradient">#ebffef</color>
+    <color name="pm_green_link">#03ac0e</color>
 </resources>
