@@ -172,7 +172,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     // For shipment recommendation
     private ShippingDurationBottomsheet shippingDurationBottomsheet;
     private ShippingCourierBottomsheet shippingCourierBottomsheet;
-
+    private Snackbar snackbarError;
     private PerformanceMonitoring shipmentTracePerformance;
     private boolean isShipmentTraceStopped;
     private String cornerId;
@@ -317,6 +317,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         rvShipment = view.findViewById(R.id.rv_shipment);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
+
+        snackbarError = Snackbar.make(view, "", BaseToaster.LENGTH_SHORT);
 
         progressDialogNormal = new ProgressDialog(getActivity());
         progressDialogNormal.setMessage(getString(R.string.title_loading));
@@ -524,19 +526,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentAdapter == null || shipmentAdapter.getItemCount() == 0) {
                 renderErrorPage(message);
             } else {
-                Snackbar snackbar = Snackbar.make(getView(), message, BaseToaster.LENGTH_SHORT);
-                TextView snackbarTextView = snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-                Button snackbarActionButton = snackbar.getView().findViewById(android.support.design.R.id.snackbar_action);
-                snackbar.getView().setBackground(ContextCompat.getDrawable(getView().getContext(), com.tokopedia.design.R.drawable.bg_snackbar_error));
-                snackbarTextView.setTextColor(ContextCompat.getColor(getView().getContext(), R.color.font_black_secondary_54));
-                snackbarActionButton.setTextColor(ContextCompat.getColor(getView().getContext(), R.color.font_black_primary_70));
-                snackbarTextView.setMaxLines(5);
-                snackbar.setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                if (snackbarError == null) {
+                    snackbarError = Snackbar.make(getView(), "", BaseToaster.LENGTH_SHORT);
+                }
+                if (!snackbarError.isShownOrQueued()) {
+                    snackbarError.setText(message);
+                    TextView snackbarTextView = snackbarError.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    Button snackbarActionButton = snackbarError.getView().findViewById(android.support.design.R.id.snackbar_action);
+                    snackbarError.getView().setBackground(ContextCompat.getDrawable(getView().getContext(), com.tokopedia.design.R.drawable.bg_snackbar_error));
+                    snackbarTextView.setTextColor(ContextCompat.getColor(getView().getContext(), R.color.font_black_secondary_54));
+                    snackbarActionButton.setTextColor(ContextCompat.getColor(getView().getContext(), R.color.font_black_primary_70));
+                    snackbarTextView.setMaxLines(5);
+                    snackbarError.setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 
-                    }
-                }).show();
+                        }
+                    }).show();
+                }
             }
         }
     }
@@ -1320,7 +1327,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                          List<ShopShipment> shopShipmentList,
                                          int cartPosition) {
         String isBlackbox = "0";
-        if (shipmentCartItemModel.getIsBlackbox()) isBlackbox = "1";
+        if (shipmentCartItemModel.isHidingCourier()) isBlackbox = "1";
         sendAnalyticsOnClickChooseShipmentDurationOnShipmentRecomendation(isBlackbox);
         showShippingDurationBottomsheet(shipmentCartItemModel, recipientAddressModel, shopShipmentList, cartPosition);
         if (isTradeIn()) {
@@ -1618,15 +1625,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, Object shipmentData,
-                                              int errorPosition, int requestCode) {
+    public void onCheckoutValidationResult(boolean result, Object shipmentData,
+                                           int errorPosition, int requestCode) {
         if (shipmentData == null && result) {
             CheckPromoParam checkPromoParam = new CheckPromoParam();
             checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
             switch (requestCode) {
                 case REQUEST_CODE_NORMAL_CHECKOUT:
-                    shipmentPresenter.processSaveShipmentState();
-                    shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());
+                    if (shipmentAdapter.getPromoGlobalStackData() != null &&
+                            shipmentAdapter.getPromoGlobalStackData().getState() == TickerPromoStackingCheckoutView.State.FAILED) {
+                        rvShipment.smoothScrollToPosition(0);
+                        showToastError(shipmentAdapter.getPromoGlobalStackData().getDescription());
+                    } else {
+                        shipmentPresenter.processSaveShipmentState();
+                        shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());
+                    }
                     break;
                 case REQUEST_CODE_COD:
                     shipmentPresenter.proceedCodCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());

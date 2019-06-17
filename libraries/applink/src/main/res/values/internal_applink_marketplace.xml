@@ -36,6 +36,7 @@
     <string name="path_shop_setting" translatable="false">/shop/setting</string>
     <string name="path_shop_setting_etalase" translatable="false">/shop/setting/etalase</string>
     <string name="path_shop_setting_note" translatable="false">/shop/setting/notes</string>
+    <string name="path_shop_setting_shipping" translatable="false">/shop/setting/shipping</string>
 
     <string name="path_district_recommendation_shop_settings" translatable="false">/district-recommendation-shop-settings</string>
 
