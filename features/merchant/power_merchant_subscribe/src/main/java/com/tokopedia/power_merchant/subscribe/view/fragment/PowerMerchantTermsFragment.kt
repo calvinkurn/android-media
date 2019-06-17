@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.gm.common.di.GmCommonQualifier
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.showLoading
@@ -116,10 +115,14 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
             onCheckBoxClicked()
         }
         activateBtn.setOnClickListener {
-            if (action == ACTION_ACTIVATE) {
-                presenter.activatePowerMerchant()
-            } else if (action == ACTION_AUTO_EXTEND) {
-                presenter.autoExtendPowerMerchant()
+            if (!isTermsAgreed) {
+                mainView.showErrorToaster(getString(R.string.pm_terms_error_no_agreed))
+            } else {
+                if (action == ACTION_ACTIVATE) {
+                    presenter.activatePowerMerchant()
+                } else if (action == ACTION_AUTO_EXTEND) {
+                    presenter.autoExtendPowerMerchant()
+                }
             }
         }
     }
@@ -127,7 +130,6 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
     private fun onCheckBoxClicked() {
         isTermsAgreed = !isTermsAgreed
         checkbox.isChecked = isTermsAgreed
-        activateBtn.isEnabled = isTermsAgreed
     }
 
     private fun setAction(action: String) {

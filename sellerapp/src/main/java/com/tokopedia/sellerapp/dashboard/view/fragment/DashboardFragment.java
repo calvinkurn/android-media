@@ -67,6 +67,7 @@ import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycWidgetUtil;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
@@ -77,6 +78,8 @@ import javax.inject.Inject;
 
 import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_BS_SUCCESS;
 import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_PM_IDLE;
+import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_RM_ILLUSTRATION;
+import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.URL_GAINS_SCORE_POINT;
 
 /**
  * Created by nathan on 9/6/17.
@@ -94,6 +97,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Inject
     public SellerDashboardPresenter sellerDashboardPresenter;
+
+    @Inject
+    public UserSessionInterface userSession;
 
     private TickerView tickerView;
     private LoadingStateView headerShopInfoLoadingStateView;
@@ -461,6 +467,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     private void updateShopInfo(ShopModel shopModel, ShopStatusModel shopStatusModel) {
+        userSession.setIsGoldMerchant(!shopStatusModel.isRegularMerchant());
+
         Info shopModelInfo = shopModel.info;
         String shopName = shopModelInfo.getShopName();
         if (!TextUtils.isEmpty(shopName)) {
@@ -790,8 +798,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         IMG_URL_PM_IDLE,
                         getString(R.string.pm_popup_idle_btn)
                 );
-                redirectUrl = "https://www.tokopedia.com/blog/panduan-keamanan-tokopedia/";
-                //TODO milhamj change redirect url above
+                redirectUrl = URL_GAINS_SCORE_POINT;
 
             } else if (shopStatusModel.isPowerMerchantInactive()
                     && !popUpManager.isRegularMerchantShown(shopId)) {
@@ -811,11 +818,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
                         getString(R.string.pm_popup_regular_title),
                         getString(R.string.pm_popup_regular_desc),
-                        "",
+                        IMG_URL_RM_ILLUSTRATION,
                         getString(R.string.pm_popup_regular_btn)
                 );
                 redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
-                //TODO milhamj change image url above
             }
         }
 

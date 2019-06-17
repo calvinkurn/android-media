@@ -54,7 +54,7 @@
     <string name="pm_popup_deactivated_desc">Segera gabung Power Merchant, agar semakin mudah mengoptimalkan penjualanmu. Bebas biaya bulanan!</string>
     <string name="pm_popup_deactivated_btn">Upgrade Tokomu</string>
 
-    <string name="pm_popup_regular_title">Yaah, layanan Power Merchant kamu dihentikan</string>
-    <string name="pm_popup_regular_desc">Segera gabung Power Merchant, agar semakin mudah mengoptimalkan penjualanmu. Bebas biaya bulanan!</string>
+    <string name="pm_popup_regular_title">Kini Power Merchant bebas biaya bulanan!</string>
+    <string name="pm_popup_regular_desc">Dapatkan akses Promo Eksklusif Power Merchant, ekstra Kredit TopAds, dan gabung di Event Promo Tokopedia.</string>
     <string name="pm_popup_regular_btn">Upgrade Tokomu</string>
 </resources>
