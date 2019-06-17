@@ -7,8 +7,8 @@
     <string name="title_activity_deals">Deals</string>
     <string name="bantuan">Bantuan</string>
     <string name="promo">Promo</string>
-    <string name="trending_deals">TRENDING DEALS</string>
-    <string name="search_input_hint_deals">Cari Voucher/Outlet</string>
+    <string name="trending_deals">Trending Deals</string>
+    <string name="search_input_hint_deals">Cari Deals atau Brand</string>
     <string name="search_input_hint_location">Cari Kota</string>
     <string name="empty_search_text_upper">Hasil pencarian Anda tidak dapat ditemukan.</string>
     <string name="empty_search_text_lower">Silakan lakukan pencarian dengan kata kunci / filter lain</string>
@@ -33,12 +33,12 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="hot_deal">HOT DEAL</string>
-    <string name="text_trending_deals">Trending Deals</string>
+    <string name="text_trending_deals">Pilihan Deals terbaik</string>
+    <string name="text_trending_promos">Hemat dengan promo Deals</string>
     <string name="text_all_deals">Semua Deals</string>
     <string name="favourite">Favourite Deals</string>
     <string name="collapse">Sembunyikan</string>
     <string name="expand">Selengkapnya</string>
-
 
 
     <string name="valid_through">Berlaku hingga tanggal %s</string>
@@ -50,7 +50,7 @@
     <string name="deals_search_location_result">Hasil Pencarian untuk ‘%1$s’</string>
     <string name="change_location">Ubah Lokasi</string>
     <string name="popular_deals_in_location">Populer di %1$s\u0020</string>
-    <string name="popular_brand">Brand Populer</string>
+    <string name="popular_brand">Brand populer</string>
     <string name="all_brands">Semua Brand</string>
     <string name="search_input_hint_brand">Cari Brand</string>
     <string name="see_on_map">Lihat Peta</string>
@@ -93,5 +93,17 @@
     <string name="text_available_locations">Tersedia di\u0020%d\u0020Lokasi</string>
     <string name="product_expired">Maaf, Deals yang Anda pilih sudah kadaluwarsa</string>
     <string name="deals_all_indonesia">Seluruh Indonesia</string>
+    <string name="location_bottomsheet_title">Pilih Deals di kota yang kamu mau</string>
+    <string name="select_location_bottomsheet_title">Ganti lokasi</string>
+    <string name="category_title">Pilih Kategori Deals</string>
+    <string name="sell_all_category">Semua\nKategori</string>
+    <string name="deals_toolbar_title">Lokasi Deals</string>
+    <string name="selected_location_text">(Terpilih)</string>
+    <string name="brands_title_search">PILIHAN BRAND</string>
+    <string name="products_title_search" formatted="false">DEALS POPULER DI %s</string>
+    <string name="products_title_search_default">PILIHAN DEALS</string>
+    <string name="location_text_search">Lokasi</string>
+    <string name="no_brand_text">Yaah, Deals yang kamu cari nggak ketemu</string>
+    <string name="no_brand_subtext">Coba cari lagi pakai kata kunci lain, yuk!</string>
 
 </resources>

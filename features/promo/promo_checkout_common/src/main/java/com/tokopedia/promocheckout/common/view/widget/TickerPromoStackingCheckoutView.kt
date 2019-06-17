@@ -36,6 +36,11 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
             field = value
             initView()
         }
+    var counterCoupons: String = ""
+        set(value) {
+            field = value
+            initView()
+        }
     var desc: String = ""
         set(value) {
             field = value
@@ -49,6 +54,7 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         try {
             state = State.fromId(styledAttributes.getInteger(R.styleable.TickerCheckoutView_state, 4))
             title = styledAttributes.getString(R.styleable.TickerCheckoutView_title) ?: ""
+            counterCoupons = styledAttributes.getString(R.styleable.TickerCheckoutView_counter) ?: ""
             desc = styledAttributes.getString(R.styleable.TickerCheckoutView_desc) ?: ""
 
         } finally {
@@ -145,12 +151,24 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
     private fun setViewGlobal() {
         ic_button_coupon.setImageResource(R.drawable.ic_kupon_telur)
         ic_button_coupon.visibility = View.VISIBLE
-        title_button_coupon.setText(R.string.promo_global_title)
+        if (title.isEmpty()) {
+            title_button_coupon.setText(R.string.promo_global_title)
+        } else {
+            title_button_coupon.text = title
+        }
+
+        if (counterCoupons.isEmpty()) {
+            layout_counter_coupons.visibility = View.GONE
+        } else {
+            layout_counter_coupons.visibility = View.VISIBLE
+            counter_coupons.text = counterCoupons
+        }
     }
 
     private fun setViewMerchant() {
         ic_button_coupon.setImageResource(R.drawable.ic_merchant_promo)
         ic_button_coupon.visibility = View.GONE
+        layout_counter_coupons.visibility = View.GONE
         title_button_coupon.setText(R.string.promo_merchant_title)
     }
 

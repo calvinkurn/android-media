@@ -59,6 +59,7 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_product_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
@@ -197,7 +198,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textColor="@color/black_39"
-                tools:text="Proteksi Gadget" />
+                tools:text="Proteksi Produk" />
 
             <TextView
                 android:id="@+id/text_price_per_product"

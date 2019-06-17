@@ -30,6 +30,7 @@ import com.tokopedia.cameraview.CameraOptions;
 import com.tokopedia.cameraview.CameraUtils;
 import com.tokopedia.cameraview.CameraView;
 import com.tokopedia.cameraview.Flash;
+import com.tokopedia.cameraview.Mode;
 import com.tokopedia.cameraview.PictureResult;
 import com.tokopedia.cameraview.Size;
 import com.tokopedia.imagepicker.R;
@@ -118,6 +119,9 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         previewLayout = view.findViewById(R.id.layout_preview);
         View useImageLayout = view.findViewById(R.id.layout_use);
         View recaptureLayout = view.findViewById(R.id.layout_recapture);
+
+        //initialize of cameraView mode
+        cameraView.setMode(Mode.PICTURE);
 
         //noinspection SuspiciousNameCombination
         cameraListener = new CameraListener() {
@@ -427,12 +431,16 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     }
 
     private int getDeviceWidth() {
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
-        return width;
+        if (getActivity() != null) {
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int width = size.x;
+            int height = size.y;
+            return width;
+        } else {
+            return 0;
+        }
     }
 
     @Override

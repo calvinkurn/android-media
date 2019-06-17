@@ -33,7 +33,6 @@ import com.tokopedia.session.forgotpassword.listener.ForgotPasswordFragmentView;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenter;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenterImpl;
 
-import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
 
 /**

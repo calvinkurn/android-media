@@ -34,6 +34,7 @@ public class FeedEnhancedTracking {
         private static final String KEY_ID = "id";
         private static final String KEY_NAME = "name";
         private static final String KEY_CREATIVE = "creative";
+        private static final String KEY_CREATIVE_URL = "creative_url";
         private static final String KEY_POSITION = "position";
         private static final String KEY_CATEGORY = "category";
         private static final String KEY_PROMO_ID = "promo_id";
@@ -67,6 +68,7 @@ public class FeedEnhancedTracking {
             map.put(KEY_ID, String.valueOf(promo.getId()));
             map.put(KEY_NAME, promo.getName());
             map.put(KEY_CREATIVE, promo.getCreative());
+            map.put(KEY_CREATIVE_URL, promo.getCreativeUrl());
             map.put(KEY_POSITION, String.valueOf(promo.getPosition()));
             map.put(KEY_CATEGORY, promo.getCategory());
             map.put(KEY_PROMO_ID, String.valueOf(promo.getPromoId()));
@@ -83,14 +85,6 @@ public class FeedEnhancedTracking {
         private static final String PRODUCT = "product";
         private static final String SHOP = "shop";
         private static final String TOKOPEDIA_CONTENT = "tokopedia_content";
-        private static final String KOL_RECOMMENDATION = "kolrecommendation";
-        private static final String PRODUCT_UPLOAD = "product_upload";
-        private static final String SINGLE = "single";
-        private static final String MULTIPLE = "multiple";
-        private static final String ANNOUNCEMENT = "announcement";
-        private static final String VOTE = "vote";
-        private static final String BANNER = "banner";
-        private static String PROFILE = "profile";
 
         public static final String TRACKING_NONE = "none";
         public static final String TRACKING_EMPTY = "-";
@@ -98,6 +92,7 @@ public class FeedEnhancedTracking {
         int id;
         String name;
         String creative;
+        String creativeUrl = "";
         int position;
         String category;
         int promoId;
@@ -108,6 +103,18 @@ public class FeedEnhancedTracking {
             this.id = id;
             this.name = name;
             this.creative = creative;
+            this.position = position;
+            this.category = category;
+            this.promoId = promoId;
+            this.promoCode = promoCode;
+        }
+
+        public Promotion(int id, String name, String creative, String creativeUrl, int position,
+                         String category, int promoId, String promoCode) {
+            this.id = id;
+            this.name = name;
+            this.creative = creative;
+            this.creativeUrl = creativeUrl;
             this.position = position;
             this.category = category;
             this.promoId = promoId;
@@ -126,6 +133,10 @@ public class FeedEnhancedTracking {
             return creative;
         }
 
+        public String getCreativeUrl() {
+            return creativeUrl;
+        }
+
         public int getPosition() {
             return position;
         }
@@ -142,10 +153,6 @@ public class FeedEnhancedTracking {
             return promoCode;
         }
 
-        public static String createContentNameRecommendation() {
-            return CONTENT_FEED + " - " + KOL_RECOMMENDATION + " - " + PROFILE;
-        }
-
         public static String createContentNameTopadsProduct(){
             return String.format("/%s - %s - %s", CONTENT_FEED, TOPADS, PRODUCT);
         }
@@ -154,33 +161,6 @@ public class FeedEnhancedTracking {
             return String.format("/%s - %s - %s", CONTENT_FEED, TOPADS, SHOP);
         }
 
-        public static String createContentNameProductUpload(int totalProduct) {
-            if (totalProduct == 1) {
-                return String.format("/%s - %s - %s", CONTENT_FEED, PRODUCT_UPLOAD, SINGLE);
-            } else if (totalProduct > 1) {
-                return String.format("/%s - %s - %s", CONTENT_FEED, PRODUCT_UPLOAD, MULTIPLE);
-            }
-            return "";
-        }
-
-        public static String createContentNameVote() {
-            return String.format("/%s - %s - %s", CONTENT_FEED, ANNOUNCEMENT, VOTE);
-        }
-
-        public static String createContentNameBanner() {
-            return String.format("/%s - %s - %s", CONTENT_FEED, ANNOUNCEMENT, BANNER);
-        }
-
-        public static String createContentNameAnnouncement(String tagsType, String cardType) {
-            return String.format("/%s - %s - %s - %s", CONTENT_FEED, ANNOUNCEMENT, cardType,
-                    tagsType);
-        }
-
-        public static String createContentName(String tagsType, String cardType) {
-            return CONTENT_FEED + " - "
-                    + cardType + " - "
-                    + tagsType;
-        }
     }
 
     public static Map<String, Object> getImpressionTracking(List<Promotion> listPromotion,

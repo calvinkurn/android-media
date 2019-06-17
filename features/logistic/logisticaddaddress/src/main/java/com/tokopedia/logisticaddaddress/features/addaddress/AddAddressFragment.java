@@ -3,7 +3,6 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -60,11 +59,11 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_ADDRESS;
-import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_INSTANCE_TYPE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_PLATFORM_PAGE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_DEFAULT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
@@ -125,7 +124,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     private CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-    private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
     @Inject
     AddAddressContract.Presenter mPresenter;
@@ -155,13 +153,16 @@ public class AddAddressFragment extends BaseDaggerFragment
             Bundle arguments = getArguments();
             this.token = arguments.getParcelable(KERO_TOKEN);
             this.address = arguments.getParcelable(EDIT_PARAM);
-            this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
             this.instanceType = arguments.getInt(EXTRA_INSTANCE_TYPE, INSTANCE_TYPE_DEFAULT);
         }
+
+        checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress();
 
         if (token == null && getActivity() != null) {
             getActivity().setResult(ERROR_RESULT_CODE);
             getActivity().finish();
+        } else {
+            if (!isEdit()) sendAnalyticsScreenName(getScreenName());
         }
     }
 
@@ -182,7 +183,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void onStart() {
         super.onStart();
-        if (!isEdit()) sendAnalyticsScreenName(getScreenName());
     }
 
     @Override
@@ -734,7 +734,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     protected void initialVar() {
 
-        checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress();
         checkoutAnalyticsMultipleAddress = new CheckoutAnalyticsMultipleAddress();
         if (isEdit() && address != null) {
             receiverNameEditText.setText(address.getReceiverName());
@@ -895,7 +894,7 @@ public class AddAddressFragment extends BaseDaggerFragment
                 address.getLongitude() != null &&
                 !address.getLatitude().equals("") &&
                 !address.getLongitude().equals("")
-                ) {
+        ) {
             mPresenter.requestReverseGeoCode(getContext(), address);
         }
     }
@@ -949,6 +948,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     private boolean isFromMarketPlaceCartEmptyAddressFirst() {
-        return isFromMarketPlaceCartEmptyAddressFirst;
+        return instanceType == INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
     }
 }

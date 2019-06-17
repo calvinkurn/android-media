@@ -56,6 +56,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -65,6 +66,9 @@ import javax.inject.Inject
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener, TypingListener {
+    override fun clearChatText() {
+        replyEditText.setText("")
+    }
 
     val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
     val REQUEST_CODE_CHAT_IMAGE = 115
@@ -227,10 +231,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
             val strings: ArrayList<String> = ArrayList()
             strings.add(imageUrl)
-            val chatbotRouter = (it.applicationContext as ChatbotRouter)
-
-            chatbotRouter.openImagePreviewFromChat(it, strings, ArrayList(),
-                    opponentName, replyTime)
+            it.startActivity(ImagePreviewActivity.getCallingIntent(it,
+                    strings,
+                    null, 0))
         }
 
 

@@ -6,9 +6,11 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.util.MERCHANT
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.usecase.RequestParams
@@ -24,6 +26,8 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
         private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
         private val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper
 ) : BaseDaggerPresenter<MerchantVoucherListBottomsheetContract.View>(), MerchantVoucherListBottomsheetContract.Presenter {
+    private val paramMerchant = "merchant"
+    private val statusOK = "OK"
 
     override fun getVoucherList(shopId: String, numVoucher: Int) {
         getMerchantVoucherListUseCase.execute(GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher),
@@ -58,6 +62,16 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                     val codes = ArrayList<String>()
                     if (order.uniqueId == currentCartString) {
                         codes.add(promoMerchantCode)
+
+                        var currentApplyCode: CurrentApplyCode? = null
+                        if (promoMerchantCode.isNotEmpty()) {
+                            currentApplyCode = CurrentApplyCode(
+                                    promoMerchantCode,
+                                    paramMerchant
+                            )
+                        }
+                        promo.currentApplyCode = currentApplyCode
+
                     }
                     order.codes = codes
                 }
@@ -81,26 +95,24 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                     if (isViewAttached) {
                         view.hideLoadingDialog()
                         val responseGetPromoStack = checkPromoStackingCodeMapper.call(response)
-                        if (responseGetPromoStack.status != "OK" || responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-                            val message = responseGetPromoStack.data.message.text
-                            view.onErrorCheckPromoFirstStep(message)
-                        } else {
-                            if (responseGetPromoStack.data.codes.isEmpty() && responseGetPromoStack.data.voucherOrders.isEmpty()) {
-                                view.hideLoadingDialog()
-                                view.onErrorCheckPromoFirstStep("")
+                        if (responseGetPromoStack.status.equals(statusOK, true)) {
+                            if (responseGetPromoStack.data.clashings.isClashedPromos) {
+                                view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings, paramMerchant)
                             } else {
                                 responseGetPromoStack.data.voucherOrders.forEach {
-                                    if (!it.success && it.message.state.equals("red")) {
-                                        view.onErrorCheckPromoFirstStep(it.message.text)
-                                        return
+                                    if (it.code.equals(promoMerchantCode, true)) {
+                                        if (it.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+                                            view?.hideProgressLoading()
+                                            view.onErrorCheckPromoFirstStep(it.message.text)
+                                        } else {
+                                            view.onSuccessCheckPromoFirstStep(responseGetPromoStack, promoMerchantCode, isFromList)
+                                        }
                                     }
                                 }
-                                if (responseGetPromoStack.data.clashings.isClashedPromos) {
-                                    view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings)
-                                } else {
-                                    view.onSuccessCheckPromoFirstStep(responseGetPromoStack, promoMerchantCode, isFromList)
-                                }
                             }
+                        } else {
+                            view?.hideProgressLoading()
+                            view.onErrorCheckPromoFirstStep(responseGetPromoStack.data.message.text)
                         }
                     }
                 }

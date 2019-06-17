@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdynamicfilter.view;
 
-import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.discovery.common.data.Option;
 
 /**
  * Created by henrypriyono on 8/28/17.

@@ -294,4 +294,12 @@
         <key>nonb_5_dsc</key>
         <value>Buka toko gratis, nikmati transaksi mudah, aman, dan dikunjungi jutaan pembeli</value>
     </entry>
+    <entry>
+        <key>android_shop_etalase_toggle</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_seller_account_ticker_msg</key>
+        <value>Perkuat bisnismu dengan Power Merchant versi baru.</value>
+    </entry>
 </defaultsMap>

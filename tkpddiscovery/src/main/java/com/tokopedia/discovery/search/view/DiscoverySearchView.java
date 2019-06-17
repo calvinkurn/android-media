@@ -23,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Filter;
@@ -749,12 +750,18 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     private void textViewRequestFocus() {
         mSearchSrcTextView.setText(lastQuery);
-        searchTextViewRequestFocus();
-        searchTextViewSetCursorSelectionAtTextEnd();
+
+        searchTextViewShowKeyboard();
     }
 
-    public void searchTextViewRequestFocus() {
-        mSearchSrcTextView.requestFocus();
+    public void searchTextViewShowKeyboard() {
+        mSearchSrcTextView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showKeyboard(mSearchSrcTextView);
+                mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
+            }
+        }, 200);
     }
 
     public void searchTextViewSetCursorSelectionAtTextEnd() {

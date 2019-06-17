@@ -66,7 +66,7 @@
                         app:layoutManager="android.support.v7.widget.GridLayoutManager"
                         app:layout_constraintTop_toBottomOf="@+id/tv_popular_brand"
                         app:spanCount="4"
-                        tools:listitem="@layout/item_brand" />
+                        tools:listitem="@layout/item_brand_short" />
                 </android.support.constraint.ConstraintLayout>
 
 

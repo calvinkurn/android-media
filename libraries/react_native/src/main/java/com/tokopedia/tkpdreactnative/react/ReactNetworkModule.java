@@ -1,12 +1,14 @@
 package com.tokopedia.tkpdreactnative.react;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.Arguments;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableMap;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.utils.AuthUtil;
 
@@ -296,6 +298,7 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
                 if(!TextUtils.isEmpty(getSensorData()))
                 headers.put("X-acf-sensor-data", getSensorData());
             }
+            headers.put("User-Agent", getUserAgent());
             builder.setHeaders(headers);
             builder.setParams(getHashMap.convert(maps, ReactConst.Networking.PARAMS));
             ReactNetworkingConfiguration configuration = builder.build();
@@ -326,5 +329,10 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             promise.reject(e);
         }
+    }
+
+    private static final String userAgentFormat = "TkpdConsumer/%s (%s;)";
+    public static String getUserAgent(){
+        return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android "+ Build.VERSION.RELEASE);
     }
 }

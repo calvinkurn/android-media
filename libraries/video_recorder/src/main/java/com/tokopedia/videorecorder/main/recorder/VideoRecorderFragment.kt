@@ -84,6 +84,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
 
     private fun cameraPrepared() {
         cameraView.mode = Mode.VIDEO
+        cameraView.audio = Audio.ON
         cameraView.clearCameraListeners()
         cameraView.addCameraListener(cameraListener())
         cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER)

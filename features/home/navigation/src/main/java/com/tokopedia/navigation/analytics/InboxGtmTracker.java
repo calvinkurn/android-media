@@ -1,7 +1,12 @@
 package com.tokopedia.navigation.analytics;
 
+import android.content.Context;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.navigation.domain.model.Recomendation;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
@@ -17,9 +22,12 @@ public class InboxGtmTracker {
     private List<Object> dataLayerList;
     private static volatile InboxGtmTracker gtmTracker = new InboxGtmTracker();
 
-
     public static InboxGtmTracker getInstance() {
         return gtmTracker;
+    }
+
+    public static ContextAnalytics getTracker(Context context) {
+        return TrackApp.getInstance().getGTM();
     }
 
     public InboxGtmTracker() {
@@ -47,35 +55,38 @@ public class InboxGtmTracker {
         }
     }
 
-    public void addInboxProductViewImpressions(Recomendation product, int position) {
-        this.dataLayerList.add(DataLayer.mapOf("name", product.getProductName(),
-                "id", product.getProductId(),
-                "price", product.getPrice().replaceAll("[^0-9]", ""),
+    public void addInboxProductViewImpressions(RecommendationItem recommendationItem, int position) {
+        this.dataLayerList.add(DataLayer.mapOf("name", recommendationItem.getName(),
+                "id", recommendationItem.getProductId(),
+                "price", recommendationItem.getPrice().replaceAll("[^0-9]", ""),
                 "brand", "none/other",
                 "varian", "none/other",
-                "category", product.getDepartementId(),
-                "list", "/inbox - rekomendasi untuk anda "+product.getRecommendationType(),
-                "position", position + 1));
+                "category", recommendationItem.getDepartmentId(),
+                "list", "/inbox - rekomendasi untuk anda - "+recommendationItem.getRecommendationType(),
+                "position", position));
     }
 
-    public void eventInboxProductClick(TrackingQueue trackingQueue, Recomendation product, int position) {
-        Map<String, Object> map = DataLayer.mapOf(
-                "event", "productClick",
-                "eventCategory", "inbox",
-                "eventAction", "click on product recommendation",
-                "eventLabel", "",
-                "ecommerce", DataLayer.mapOf(
-                        "click", DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", "/inbox - rekomendasi untuk anda - "+product.getRecommendationType()),
-                                "product", DataLayer.listOf(DataLayer.mapOf(
-                                        "name", product.getProductName(),
-                                        "id", product.getProductId(),
-                                        "price", product.getPrice().replaceAll("[^0-9]", ""),
-                                        "brand", "none/other",
-                                        "category", product.getDepartementId(),
-                                        "varian", "none/other",
-                                        "position", position + 1))))
-        );
-        trackingQueue.putEETracking((HashMap<String, Object>) map);
+    public void eventInboxProductClick(Context context, RecommendationItem recommendationItem, int position) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "productClick",
+                    "eventCategory", "inbox",
+                    "eventAction", "click on product recommendation",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                            "click", DataLayer.mapOf("actionField",
+                                    DataLayer.mapOf("list", "/inbox - rekomendasi untuk anda - "+recommendationItem.getRecommendationType()),
+                                    "product", DataLayer.listOf(DataLayer.mapOf(
+                                            "name", recommendationItem.getName(),
+                                            "id", recommendationItem.getProductId(),
+                                            "price", recommendationItem.getPrice().replaceAll("[^0-9]", ""),
+                                            "brand", "none/other",
+                                            "category", recommendationItem.getDepartmentId(),
+                                            "varian", "none/other",
+                                            "position", position))))
+            );
+            tracker.sendEnhanceEcommerceEvent(map);
+        }
     }
 }

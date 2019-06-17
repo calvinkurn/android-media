@@ -11,8 +11,11 @@
     <string name="path_category_detail" translatable="false">/category/.*\\/</string>
 
     <string name="path_checkout_variant" translatable="false">/checkout-variant</string>
+    <string name="path_cart" translatable="false">/cart</string>
 
     <string name="path_gold_merchant_subscribe_dashboard" translatable="false">/gold-merchant-subscribe-dashboard</string>
+    <string name="path_gold_merchant_membership" translatable="false">/gold-merchant-membership</string>
+    <string name="path_gold_merchant_redirect" translatable="false">/gold-merchant-redirect</string>
 
     <string name="path_product_add_item" translatable="false">/product-add-item</string>
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>
@@ -24,7 +27,17 @@
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
     <string name="path_product_review_gallery" translatable="false">/product/.*\\/review/gallery</string>
-
+    <string name="path_store_setting" translatable="false">/store-setting</string>
+    <string name="path_qr_scanner" translatable="false">/qr-scanner</string>
     <string name="path_shop_open" translatable="false">/shop-open</string>
+    <string name="path_onboarding" translatable="false">/onboarding</string>
+
+    <string name="path_shop_setting_address" translatable="false">/shop/setting/address</string>
+    <string name="path_shop_setting" translatable="false">/shop/setting</string>
+    <string name="path_shop_setting_etalase" translatable="false">/shop/setting/etalase</string>
+    <string name="path_shop_setting_note" translatable="false">/shop/setting/notes</string>
+    <string name="path_shop_setting_shipping" translatable="false">/shop/setting/shipping</string>
+
+    <string name="path_district_recommendation_shop_settings" translatable="false">/district-recommendation-shop-settings</string>
 
 </resources>

@@ -99,7 +99,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     }
 
     @Override
-    public void setCoupon(int coupons) {
+    public void setCoupon(String coupons) {
         textCouponAmount.setText(String.format(getContext().getString(R.string.label_total_coupon), coupons));
     }
 

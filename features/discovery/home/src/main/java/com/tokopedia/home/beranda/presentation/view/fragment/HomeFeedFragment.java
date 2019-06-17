@@ -110,7 +110,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
         ((StaggeredGridLayoutManager) getRecyclerView(getView()).getLayoutManager())
                 .setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         getRecyclerView(getView()).addItemDecoration(
-                new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_8))
+                new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_4))
         );
     }
 
@@ -121,18 +121,20 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     }
 
     private void hitHomeFeedImpressionTracker(HomeFeedViewModel homeFeedViewModel) {
-        if (userSession.isLoggedIn()) {
-            HomePageTracking.eventImpressionOnProductRecommendationForLoggedInUser(
-                    homeTrackingQueue,
-                    homeFeedViewModel,
-                    tabName.toLowerCase()
-            );
-        } else {
-            HomePageTracking.eventImpressionOnProductRecommendationForNonLoginUser(
-                    homeTrackingQueue,
-                    homeFeedViewModel,
-                    tabName.toLowerCase()
-            );
+        if(homeTrackingQueue != null) {
+            if (userSession.isLoggedIn()) {
+                HomePageTracking.eventImpressionOnProductRecommendationForLoggedInUser(
+                        homeTrackingQueue,
+                        homeFeedViewModel,
+                        tabName.toLowerCase()
+                );
+            } else {
+                HomePageTracking.eventImpressionOnProductRecommendationForNonLoginUser(
+                        homeTrackingQueue,
+                        homeFeedViewModel,
+                        tabName.toLowerCase()
+                );
+            }
         }
     }
 
@@ -227,7 +229,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     }
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
-        getActivity().startActivity(getProductIntent(productId));
+        RouteManager.route(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
     }
 
     private Intent getProductIntent(String productId) {
@@ -303,9 +305,9 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @Override
     public void onPause() {
-        TopAdsGtmTracker.getInstance().eventRecomendationProductView(homeTrackingQueue,
-                tabName.toLowerCase(), userSession.isLoggedIn());
-        if (homeTrackingQueue != null) {
+        if(homeTrackingQueue != null) {
+            TopAdsGtmTracker.getInstance().eventRecomendationProductView(homeTrackingQueue,
+                    tabName.toLowerCase(), userSession.isLoggedIn());
             homeTrackingQueue.sendAll();
         }
         super.onPause();

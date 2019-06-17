@@ -428,8 +428,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public void hideUserFinancialStatusLayout() {
         merchantStatusLL.setVisibility(View.GONE);
-        hideSaldoPrioritasFragment();
-        hideMerchantCreditLineFragment();
     }
 
     private void showBottomSheetInfoDialog(boolean isSellerClicked) {

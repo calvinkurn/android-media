@@ -8,7 +8,7 @@ import android.os.Parcelable
  * @author anggaprasetiyo on 3/9/17.
  */
 
-class CheckoutDataParameter : Parcelable {
+class CheckoutDataParameter() : Parcelable {
 
     var voucherCode: String? = null
         private set
@@ -31,7 +31,7 @@ class CheckoutDataParameter : Parcelable {
     var isNeedOtp: Boolean = false
         private set
 
-    private constructor(builder: Builder) {
+    private constructor(builder: Builder): this() {
         voucherCode = builder.voucherCode
         cartId = builder.cartId
         transactionAmount = builder.transactionAmount
@@ -148,7 +148,7 @@ class CheckoutDataParameter : Parcelable {
         dest.writeByte(if (this.isNeedOtp) 1.toByte() else 0.toByte())
     }
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel): this() {
         this.voucherCode = `in`.readString()
         this.cartId = `in`.readString()
         this.transactionAmount = `in`.readLong()
