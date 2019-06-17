@@ -236,7 +236,7 @@ public class ProductListFragment
                 this, this,
                 topAdsConfig);
         adapter = new ProductListAdapter(getActivity(), this, productListTypeFactory);
-        recyclerView.setLayoutManager(getGridLayoutManager());
+        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new ProductItemDecoration(
                 getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
@@ -255,8 +255,8 @@ public class ProductListFragment
         recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
     }
 
-    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(RecyclerView.LayoutManager linearLayoutManager) {
-        return new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(RecyclerView.LayoutManager recyclerViewLayoutManager) {
+        return new EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (isAllowLoadMore()) {
