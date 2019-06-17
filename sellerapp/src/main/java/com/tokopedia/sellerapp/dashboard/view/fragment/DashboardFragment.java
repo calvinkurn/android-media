@@ -77,6 +77,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_BS_SUCCESS;
 import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_PM_IDLE;
+import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_RM_ILLUSTRATION;
 
 /**
  * Created by nathan on 9/6/17.
@@ -791,7 +792,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         getString(R.string.pm_popup_idle_btn)
                 );
                 redirectUrl = "https://www.tokopedia.com/blog/panduan-keamanan-tokopedia/";
-                //TODO milhamj change redirect url above
 
             } else if (shopStatusModel.isPowerMerchantInactive()
                     && !popUpManager.isRegularMerchantShown(shopId)) {
@@ -811,11 +811,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
                         getString(R.string.pm_popup_regular_title),
                         getString(R.string.pm_popup_regular_desc),
-                        "",
+                        IMG_URL_RM_ILLUSTRATION,
                         getString(R.string.pm_popup_regular_btn)
                 );
                 redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
-                //TODO milhamj change image url above
             }
         }
 

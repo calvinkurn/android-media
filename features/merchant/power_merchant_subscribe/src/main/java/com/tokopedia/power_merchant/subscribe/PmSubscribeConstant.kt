@@ -11,4 +11,5 @@ const val IMG_URL_PM_INTRO ="https://ecs7.tokopedia.net/img/android/power_mercha
 const val URL_LEARN_MORE = "https://seller.tokopedia.com/edu/fitur-power-merchant/"
 const val IMG_URL_BS_SUCCESS = "https://ecs7.tokopedia.net/img/android/power_merchant_subscribe/pm_success.png"
 const val IMG_URL_PM_IDLE = "https://ecs7.tokopedia.net/img/android/power_merchant_subscribe/power_merchant_idle.png"
+const val IMG_URL_RM_ILLUSTRATION = "https://ecs7.tokopedia.net/img/android/power_merchant_subscribe/power_merchant_logo_illustration.png"
 const val IMG_URL_KYC_TRANSITION = "https://ecs7.tokopedia.net/img/android/seller_dashboard_shop/xhdpi/seller_dashboard.png"
