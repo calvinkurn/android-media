@@ -33,7 +33,7 @@
             android:layout_height="@dimen/dp_64"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_20"
-            android:src="@drawable/ic_promo_special"
+            android:src="@drawable/ic_power_merchant"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
-            android:text="@string/pm_label_special_promo"
+            android:text="@string/pm_exclusive_promo"
             android:textStyle="bold"
             android:textColor="@color/black"
             app:fontSize="micro"
@@ -56,8 +56,7 @@
             android:layout_height="wrap_content"
             android:minLines="2"
             android:layout_marginTop="@dimen/dp_5"
-
-            android:text="@string/pm_special_promo"
+            android:text="@string/pm_exclusive_promo_desc"
             app:fontSize="micro"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat2"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat2" />
@@ -69,7 +68,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
-            android:src="@drawable/ic_topads_credit"
+            android:src="@drawable/ic_market"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 
@@ -79,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:text="@string/pm_label_topads_credit"
+            android:text="@string/pm_label_market_insight"
             android:textStyle="bold"
             app:fontSize="micro"
             android:textColor="@color/black"
@@ -93,7 +92,7 @@
             android:layout_marginTop="@dimen/dp_5"
             android:minLines="2"
             app:fontSize="micro"
-            android:text="@string/pm_benefit_credit"
+            android:text="@string/pm_label_market_insight_desc"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat4"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat4" />
 
@@ -104,7 +103,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="8dp"
-            android:src="@drawable/ic_big_promo"
+            android:src="@drawable/ic_topads_credit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
@@ -114,7 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
-            android:text="@string/pm_label_special_promo_big"
+            android:text="@string/pm_label_topads_credit"
             android:textStyle="bold"
             app:fontSize="micro"
             android:textColor="@color/black"
@@ -128,7 +127,7 @@
             android:layout_marginTop="@dimen/dp_5"
             android:minLines="2"
             app:fontSize="micro"
-            android:text="@string/pm_big_promo"
+            android:text="@string/pm_credit_desc"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat6"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat6" />
 
@@ -151,17 +150,18 @@
             android:text="Fitur Khusus Power Merchant"
             android:textColor="@color/black"
             android:textStyle="bold"
-            app:fontSize="small"
+            app:fontSize="micro"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView8" />
 
         <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/txt_learn_more_benefit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="@dimen/dp_10"
-            android:text="Optimalkan penjualan dengan Flash Sale, Modal Toko dan fitur eksklusif lainnya. Pelajari Selengkapnya"
+            android:text="@string/pm_label_learn_more_benefit"
             app:fontSize="micro"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat" />

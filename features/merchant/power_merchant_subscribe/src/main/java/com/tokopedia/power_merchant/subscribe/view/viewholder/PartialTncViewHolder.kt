@@ -11,7 +11,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.URL_LEARN_MORE
+import com.tokopedia.power_merchant.subscribe.URL_LEARN_MORE_TNC
 
 class PartialTncViewHolder private constructor(private val view:View , private val activity:Activity?) {
 
@@ -29,7 +29,7 @@ class PartialTncViewHolder private constructor(private val view:View , private v
             override fun onClick(widget: View) {
                 RouteManager.route(view.context, String.format("%s?url=%s",
                         ApplinkConst.WEBVIEW,
-                        URL_LEARN_MORE))
+                        URL_LEARN_MORE_TNC))
             }
 
             override fun updateDrawState(ds: TextPaint) {
