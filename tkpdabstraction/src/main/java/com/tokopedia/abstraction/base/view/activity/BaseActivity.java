@@ -36,7 +36,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     public static final String INAPP_UPDATE = "inappupdate";
-    protected static final String odfa = "";
     private static final long DISMISS_TIME = 10000;
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
