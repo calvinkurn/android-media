@@ -26,7 +26,6 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
         )
 
         itemView.img_product.layoutParams.width = itemWidth
-        itemView.img_product.layoutParams.height = itemWidth
         itemView.img_product.requestLayout()
 
         itemView.setOnClickListener { v ->
