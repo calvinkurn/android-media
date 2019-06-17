@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.support.annotation.LayoutRes
+import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -37,21 +38,35 @@ class GridProductItem2019ViewHolder(
 
     private fun initProductCardContainer(productItem: ProductItemViewModel) {
         itemView.productCardContainer.setOnLongClickListener {
-            productListener.onLongClick(productItem, adapterPosition)
+            callListenerWithAdapterPositionValidation { validatedAdapterPosition ->
+                productListener.onLongClick(productItem, validatedAdapterPosition)
+            }
+
             true
         }
 
         itemView.productCardContainer.setOnClickListener {
-            productListener.onItemClicked(productItem, adapterPosition)
+            callListenerWithAdapterPositionValidation { validatedAdapterPosition ->
+                productListener.onItemClicked(productItem, validatedAdapterPosition)
+            }
         }
     }
 
     private fun initProductImage(productItem: ProductItemViewModel) {
         itemView.productImage.setViewHintListener(productItem) {
-            productListener.onProductImpressed(productItem, adapterPosition)
+            callListenerWithAdapterPositionValidation { validatedAdapterPosition ->
+                productListener.onProductImpressed(productItem, validatedAdapterPosition)
+            }
         }
 
         ImageHandler.loadImageThumbs(context, itemView.productImage, productItem.imageUrl)
+    }
+
+    private fun callListenerWithAdapterPositionValidation(listenerCall: (validatedAdapterPosition: Int) -> Unit) {
+        val position = adapterPosition
+        if(position != RecyclerView.NO_POSITION) {
+            listenerCall(position)
+        }
     }
 
     private fun initWishlistButtonContainer(productItem: ProductItemViewModel) {
@@ -88,30 +103,11 @@ class GridProductItem2019ViewHolder(
 
     private fun initLocationTextView(productItem: ProductItemViewModel) {
         if(!TextUtils.isEmpty(productItem.shopCity)) {
-            itemView.locationTextView.text = getLocationText(productItem)
+            itemView.locationTextView.text = MethodChecker.fromHtml(productItem.shopCity)
             itemView.locationTextView.visibility = View.VISIBLE
         }
         else {
             itemView.locationTextView.visibility = View.GONE
         }
-    }
-
-    private fun getLocationText(productItem: ProductItemViewModel) : CharSequence {
-        return ( if(isBadgesExist(productItem)) " \u2022 " else "" ) + MethodChecker.fromHtml(productItem.shopCity)
-    }
-
-    private fun isBadgesExist(productItem: ProductItemViewModel): Boolean {
-        val badgesList = productItem.badgesList
-
-        if (badgesList == null || badgesList.isEmpty()) {
-            return false
-        }
-
-        for (badgeItem in badgesList) {
-            if (badgeItem.isShown) {
-                return true
-            }
-        }
-        return false
     }
 }
