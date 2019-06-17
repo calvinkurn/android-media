@@ -18,8 +18,8 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
-import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
@@ -30,6 +30,7 @@ import com.tokopedia.report.view.adapter.ReportFormAdapter
 import com.tokopedia.report.view.viewmodel.ProductReportSubmitViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_product_report.*
+import kotlinx.android.synthetic.main.partial_loading_transparent_layout.*
 import javax.inject.Inject
 
 class ProductReportSubmitFragment : BaseDaggerFragment() {
@@ -86,7 +87,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                     }
                     setOnOkClickListener {
                         dismiss()
-                        this@ProductReportSubmitFragment.view?.showLoadingTransparent()
+                        loadingTransparentView?.visible()
                         viewModel.submitReport(productId.toIntOrNull() ?: 0,
                                 reasonItem.categoryId, adapter.inputs, this@ProductReportSubmitFragment::onSuccessSubmit,
                                 this@ProductReportSubmitFragment::onFailSubmit)
@@ -103,7 +104,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
 
     private fun onSuccessSubmit(isSuccess: Boolean){
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, isSuccess)
-        view?.hideLoadingTransparent()
+        loadingTransparentView?.gone()
         if (!isSuccess){
             view?.let {
                 Toaster.showRedWithAction(it, getString(R.string.fail_to_report),
@@ -122,7 +123,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     }
 
     private fun onFailSubmit(throwable: Throwable?){
-        view?.hideLoadingTransparent()
+        loadingTransparentView?.gone()
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, false)
         view?.let {
             Toaster.showRedWithAction(it, ErrorHandler.getErrorMessage(it.context, throwable),

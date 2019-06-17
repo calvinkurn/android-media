@@ -1,6 +1,5 @@
 package com.tokopedia.report.view.viewmodel
 
-import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.report.domain.interactor.SubmitReportUseCase
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,7 +14,6 @@ class ProductReportSubmitViewModel @Inject constructor(private val useCase: Subm
         useCase.execute(SubmitReportUseCase.createRequestParamn(categoryId, productId, input), object : Subscriber<Boolean>() {
             override fun onNext(t: Boolean) {
                 onSuccess.invoke(t)
-                Log.e("SUCCESS RESULT", t.toString())
             }
 
             override fun onCompleted() {}
