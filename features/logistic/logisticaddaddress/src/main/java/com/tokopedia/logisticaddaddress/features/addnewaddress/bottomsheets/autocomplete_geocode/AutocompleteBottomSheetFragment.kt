@@ -105,6 +105,9 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
             }
         } else {
             hideListPointOfInterest()
+            rlCurrentLocation.setOnClickListener {
+                // show undetected bottomsheet
+            }
         }
 
         onAddressTyped()
@@ -132,7 +135,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
     }
 
     override fun hideListPointOfInterest() {
-        rv_poi_list.visibility = View.GONE
+        rvPoiList.visibility = View.GONE
     }
 
     private fun loadAutocompleteGeocode() {
@@ -156,6 +159,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
 
     override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
         if (dataUiModel.listPredictions.isNotEmpty()){
+            rvPoiList.visibility = View.VISIBLE
             adapter.isAutocompleteGeocode = false
             adapter.dataAutocomplete = dataUiModel.listPredictions.toMutableList()
             adapter.notifyDataSetChanged()
@@ -194,9 +198,6 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
             }
 
             override fun afterTextChanged(s: Editable) {
-                /*handler.postDelayed({
-                    println("## afterTextChanged - s = $s")
-                }, 1000)*/
             }
         })
     }

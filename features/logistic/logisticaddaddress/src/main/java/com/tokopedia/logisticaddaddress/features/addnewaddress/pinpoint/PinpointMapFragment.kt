@@ -58,9 +58,8 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-08.
  */
-class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, ResultCallback<LocationSettingsResult>,
-        AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent>, LocationListener {
+class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReadyCallback,
+        AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent> {
 
     private var googleMap: GoogleMap? = null
     private var currentLat: Double? = 0.0
@@ -147,7 +146,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         map_view?.onCreate(savedInstanceState)
         map_view?.getMapAsync(this)
-        presenter.connectGoogleApi(this)
+        // presenter.connectGoogleApi(this)
 
         bottomSheetBehavior = BottomSheetBehavior.from<CoordinatorLayout>(bottomsheet_getdistrict)
         getdistrict_container.visibility = View.GONE
@@ -157,7 +156,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
 
         back_button.setOnClickListener {
             map_view?.onPause()
-            presenter.disconnectGoogleApi()
+            // presenter.disconnectGoogleApi()
             activity?.finish()
         }
     }
@@ -204,6 +203,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         if (isShowingAutocomplete == true) {
             handler.postDelayed({
                 showAutocompleteGeocodeBottomSheet(lat, long)
+                isShowingAutocomplete = false
             }, 1000)
         }
     }
@@ -231,7 +231,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
 
     override fun onStop() {
         super.onStop()
-        presenter.disconnectGoogleApi()
+        // presenter.disconnectGoogleApi()
     }
 
     override fun onDestroy() {
@@ -242,18 +242,6 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     override fun onLowMemory() {
         super.onLowMemory()
         map_view?.onLowMemory()
-    }
-
-    override fun onConnected(bundle: Bundle?) {
-    }
-
-    override fun onConnectionSuspended(p0: Int) {
-    }
-
-    override fun onConnectionFailed(p0: ConnectionResult) {
-    }
-
-    override fun onResult(locationSettingsResult: LocationSettingsResult) {
     }
 
     private fun showAutocompleteGeocodeBottomSheet(lat: Double, long: Double) {
@@ -270,29 +258,35 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
 
     override fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel) {
         invalid_container.visibility = View.GONE
-        whole_loading_container.visibility = View.GONE
-        getdistrict_container.visibility = View.VISIBLE
+
         currentLat = getDistrictDataUiModel.latitude.toDouble()
         currentLong = getDistrictDataUiModel.longitude.toDouble()
         isGetDistrict = true
         moveMap(PinpointMapUtils.generateLatLng(currentLat, currentLong))
-        updateGetDistrictBottomSheet(presenter.convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel, zipCodes))
+
+        if (!isShowingAutocomplete!!) {
+            whole_loading_container.visibility = View.GONE
+            getdistrict_container.visibility = View.VISIBLE
+            updateGetDistrictBottomSheet(presenter.convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel, zipCodes))
+        }
     }
 
     override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
-        invalid_container.visibility = View.GONE
-        whole_loading_container.visibility = View.GONE
-        getdistrict_container.visibility = View.VISIBLE
+        if (!isShowingAutocomplete!!) {
+            invalid_container.visibility = View.GONE
+            whole_loading_container.visibility = View.GONE
+            getdistrict_container.visibility = View.VISIBLE
 
-        this.isPolygon?.let {
-            if (this.isPolygon as Boolean) {
-                if (autofillDataUiModel.districtId != districtId) {
-                    showToastError(getString(R.string.invalid_district))
+            this.isPolygon?.let {
+                if (this.isPolygon as Boolean) {
+                    if (autofillDataUiModel.districtId != districtId) {
+                        showToastError(getString(R.string.invalid_district))
+                    } else {
+                        updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
+                    }
                 } else {
                     updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
                 }
-            } else {
-                updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
             }
         }
     }
@@ -307,9 +301,11 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
             invalid_desc.text = saveAddressDataModel.formattedAddress
 
         } else {
-            invalid_container.visibility = View.GONE
-            whole_loading_container.visibility = View.GONE
-            getdistrict_container.visibility = View.VISIBLE
+            if (!isShowingAutocomplete!!) {
+                invalid_container.visibility = View.GONE
+                whole_loading_container.visibility = View.GONE
+                getdistrict_container.visibility = View.VISIBLE
+            }
 
             tv_title_getdistrict.text = saveAddressDataModel.title
             tv_address_getdistrict.text = saveAddressDataModel.formattedAddress

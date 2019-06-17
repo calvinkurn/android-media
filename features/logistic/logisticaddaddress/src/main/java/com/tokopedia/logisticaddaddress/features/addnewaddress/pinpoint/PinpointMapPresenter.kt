@@ -38,14 +38,14 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
                                                private val autofillMapper: AutofillMapper,
                                                private val districtBoundaryUseCase: DistrictBoundaryUseCase,
                                                private val districtBoundaryMapper: DistrictBoundaryMapper): BaseDaggerPresenter<PinpointMapListener>() {
-    var googleApiClient: GoogleApiClient? = null
+    // var googleApiClient: GoogleApiClient? = null
 
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
     private var saveAddressDataModel = SaveAddressDataModel()
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
-    fun connectGoogleApi(mapFragment: PinpointMapFragment) {
+    /*fun connectGoogleApi(mapFragment: PinpointMapFragment) {
         this.googleApiClient = GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API)
                 .addApi(Places.GEO_DATA_API)
@@ -60,7 +60,7 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
         if (googleApiClient?.isConnected!!) {
             googleApiClient?.disconnect()
         }
-    }
+    }*/
 
     fun getDistrict(placeId: String) {
         getDistrictUseCase.setParams(placeId)

@@ -99,6 +99,9 @@
     <string name="choose_district_first">Silahkan Pilih Kota/Kecamatan terlebih dahulu</string>
     <string name="invalid_district">Alamat tidak sesuai dengan peta. Mohon pilih kembali alamat pada peta.</string>
     <string name="rationale_need_location">Akses lokasi diperlukan untuk menggunakan fitur ini. Perbolehkan?</string>
+    <string name="undetected_location">Lokasi tidak terdeteksi</string>
+    <string name="undetected_location_desc">Kami tidak dapat mengakses lokasi Anda. Untuk menggunakan fitur ini silakan aktifkan layanan lokasi Anda.</string>
+    <string name="activate_location_service">Aktifkan Layanan Lokasi</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>
