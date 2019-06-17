@@ -11,6 +11,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.unifyPrinciples)
+    implementation project(rootProject.ext.libraries.unifyComponents)
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)

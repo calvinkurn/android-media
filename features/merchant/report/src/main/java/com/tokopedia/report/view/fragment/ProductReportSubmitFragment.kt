@@ -5,16 +5,21 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.design.component.ToasterError
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
+import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
@@ -23,6 +28,7 @@ import com.tokopedia.report.view.activity.ProductReportFormActivity
 import com.tokopedia.report.view.activity.ReportInputDetailActivity
 import com.tokopedia.report.view.adapter.ReportFormAdapter
 import com.tokopedia.report.view.viewmodel.ProductReportSubmitViewModel
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_product_report.*
 import javax.inject.Inject
 
@@ -80,6 +86,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                     }
                     setOnOkClickListener {
                         dismiss()
+                        this@ProductReportSubmitFragment.view?.showLoadingTransparent()
                         viewModel.submitReport(productId.toIntOrNull() ?: 0,
                                 reasonItem.categoryId, adapter.inputs, this@ProductReportSubmitFragment::onSuccessSubmit,
                                 this@ProductReportSubmitFragment::onFailSubmit)
@@ -95,11 +102,32 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessSubmit(isSuccess: Boolean){
-        tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, true)
+        tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, isSuccess)
+        view?.hideLoadingTransparent()
+        if (!isSuccess){
+            view?.let {
+                Toaster.showRedWithAction(it, getString(R.string.fail_to_report),
+                        Snackbar.LENGTH_LONG, getString(R.string.OK), View.OnClickListener {})
+            }
+        } else {
+            sendResult()
+        }
+    }
+
+    private fun sendResult() {
+        activity?.run {
+            setResult(Activity.RESULT_OK)
+            finish()
+        }
     }
 
     private fun onFailSubmit(throwable: Throwable?){
+        view?.hideLoadingTransparent()
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, false)
+        view?.let {
+            Toaster.showRedWithAction(it, ErrorHandler.getErrorMessage(it.context, throwable),
+                    Snackbar.LENGTH_LONG, getString(R.string.OK), View.OnClickListener {})
+        }
     }
 
     private fun onSubmitClicked(){
@@ -112,8 +140,6 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         }
         if (valid){
             dialogSubmit?.show()
-        } else {
-            Toast.makeText(context, "YAH GA VALID", Toast.LENGTH_SHORT).show()
         }
     }
 

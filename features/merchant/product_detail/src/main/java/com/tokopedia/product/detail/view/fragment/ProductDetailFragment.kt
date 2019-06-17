@@ -107,6 +107,7 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.transaction.common.TransactionRouter
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -930,6 +931,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
             REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
                 doBuy()
             }
+            REQUEST_CODE_REPORT -> {
+                if (resultCode == Activity.RESULT_OK)
+                    showToastSuccessReport()
+            }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
         }
@@ -1354,6 +1359,13 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 message,
                 ToasterNormal.LENGTH_LONG)
                 .show()
+        }
+    }
+
+    private fun showToastSuccessReport() {
+        activity?.run {
+            Toaster.showGreen(findViewById(android.R.id.content),
+                    getString(R.string.success_to_report), Snackbar.LENGTH_LONG)
         }
     }
 

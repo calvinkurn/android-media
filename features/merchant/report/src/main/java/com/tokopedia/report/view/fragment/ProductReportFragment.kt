@@ -1,8 +1,10 @@
 package com.tokopedia.report.view.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +40,7 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
     override fun gotoForm(reason: ProductReportReason) {
         tracking.eventReportReason(reason.strLabel)
         activity?.let {
-            startActivityForResult(ProductReportFormActivity.createIntent(it, reason, productId), 100)
+            startActivityForResult(ProductReportFormActivity.createIntent(it, reason, productId), REQUEST_CODE_FORM_SUBMIT)
         }
     }
 
@@ -95,6 +97,16 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
         recycler_view.clearItemDecoration()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_FORM_SUBMIT){
+            activity?.run {
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
+        } else
+            super.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun onDestroy() {
         viewModel.reasonResponse.removeObservers(this)
         viewModel.clear()
@@ -107,6 +119,7 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
 
     companion object{
         private const val ARG_PRODUCT_ID = "arg_product_id"
+        private const val REQUEST_CODE_FORM_SUBMIT = 100
 
         fun createInstance(productId: String) = ProductReportFragment().apply {
             arguments = Bundle().also {
