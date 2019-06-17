@@ -31,6 +31,7 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
         buttonCancel.setOnClickListener {
             listener?.onclickButton()
         }
+        updateHeight()
     }
 
 }

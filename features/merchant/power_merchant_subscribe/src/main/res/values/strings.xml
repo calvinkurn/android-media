@@ -65,6 +65,8 @@
     <string name="pm_terms_agree">Dengan ini, saya menyetujui syarat dan ketentuan Power Merchant Tokopedia.</string>
     <string name="pm_terms_error_no_agreed">Kamu harus menyetujui Syarat dan Ketentuan.</string>
 
+    <string name="pm_cancellation_success">Pengajuan pembatalan berhasil.</string>
+
     <string name="pm_title_tnc">Syarat dan Ketentuan</string>
     <string name="pm_credit_desc">Dapatkan bonus kredit 5% setiap top-up kredit Top-Ads.</string>
     <string name="pm_big_promo">Tingkatkan penjualan dengan berpartisipasi di kegiatan promosi tahunan.</string>

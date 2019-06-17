@@ -61,8 +61,8 @@
                 android:layout_marginBottom="@dimen/dp_8"
                 app:fontSize = "micro"
                 app:textViewTheme="lightSecondary"
-                android:layout_below="@+id/view_line_pm"
-                android:text="@string/pm_label_member_cancel" />
+                android:text="@string/pm_label_member_cancel"
+                android:layout_below="@+id/view_line_pm" />
 
             <ImageView
                 android:layout_width="wrap_content"

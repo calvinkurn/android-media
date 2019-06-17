@@ -57,6 +57,7 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
         buttonSubmit.setOnClickListener {
             listener?.onButtonClicked()
         }
+        updateHeight()
     }
 
     private fun initVar() {
