@@ -42,6 +42,7 @@ query PropertySearch($data:PropertySearchRequest!){
           latitude
           longitude
         }
+        isDirectPayment
       }
       propertyDisplayInfo{
         filter{
