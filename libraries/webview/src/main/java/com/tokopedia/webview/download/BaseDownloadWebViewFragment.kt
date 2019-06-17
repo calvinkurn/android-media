@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
+import android.webkit.URLUtil
 import android.webkit.WebView
 import com.google.gson.Gson
 import com.tokopedia.applink.RouteManager
@@ -12,79 +13,43 @@ import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.BaseSessionWebViewFragment
 import com.tokopedia.webview.BaseWebViewFragment
 
-class BaseDownloadWebViewFragment : BaseWebViewFragment() {
+class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
 
     private var userSession: UserSessionInterface? = null
     private var isTokopediaUrl: Boolean = false
     val TOKOPEDIA_STRING = "tokopedia"
-    private var url: String? = null
     private var extArray: Array<String>? = null
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
 
     companion object {
-        val ARGS_URL = "KEY_URL"
         val ARGS_EXT = "KEY_EXT"
 
         fun newInstance(url: String, extensions: String): BaseDownloadWebViewFragment {
-            val fragment = BaseDownloadWebViewFragment()
-            val args = Bundle()
-            args.putString(ARGS_URL, url)
-            args.putString(ARGS_EXT, extensions)
-            fragment.arguments = args
-            return fragment
+            val fragment = BaseSessionWebViewFragment.newInstance(url);
+            val args = fragment.arguments;
+            args?.putString(ARGS_EXT, extensions)
+            val thisFragment = BaseDownloadWebViewFragment();
+            thisFragment.arguments = args
+            return thisFragment
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        url = arguments!!.getString(ARGS_URL)
         val converter = Gson()
         extArray= converter.fromJson<Array<String>>(arguments!!.getString(ARGS_EXT),Array<String>::class.java)
-        isTokopediaUrl = Uri.parse(url).host!!.contains(TOKOPEDIA_STRING)
-        userSession = UserSession(activity!!.applicationContext)
-    }
-
-    protected fun getPlainUrl(): String? {
-        return url
-    }
-
-
-    override fun getUrl(): String? {
-        return if (isTokopediaUrl) {
-            val gcmId = userSession?.deviceId
-            val userId = userSession?.userId
-            URLGenerator.generateURLSessionLogin(
-                    Uri.encode(getPlainUrl()),
-                    gcmId,
-                    userId)
-        } else {
-            url
-        }
-    }
-
-    override fun getUserIdForHeader(): String? {
-        return if (isTokopediaUrl) {
-            userSession?.getUserId()
-        } else null
-    }
-
-    override fun getAccessToken(): String? {
-        return if (isTokopediaUrl) {
-            userSession?.accessToken
-        } else null
     }
 
 
     override fun shouldOverrideUrlLoading(webView: WebView?, url: String): Boolean {
         if (isdownloadable(url)) {
-
             checkPermissionAndDownload(url)
-
             return true
-        } else if (RouteManager.isSupportApplink(activity, url)) {
+        } else if (!URLUtil.isNetworkUrl(url) && RouteManager.isSupportApplink(activity, url)) {
             RouteManager.route(activity, url)
             return true
         }
