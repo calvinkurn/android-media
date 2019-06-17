@@ -937,6 +937,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             this.cartListData = cartListData;
             cartAdapter.resetData();
 
+            // TODO: 17/6/19 get insurance products
+
             boolean flagAutoApplyStack = false;
             PromoStackingData.Builder builderGlobal = new PromoStackingData.Builder();
             if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()
