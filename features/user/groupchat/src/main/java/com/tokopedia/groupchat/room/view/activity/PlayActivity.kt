@@ -220,12 +220,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
         invalidateOptionsMenu()
     }
 
-    fun setSwipeable(swipeable: Boolean) {
-        if (!swipeable) {
-        } else {
-        }
-    }
-
     companion object {
 
         private val KEYBOARD_THRESHOLD = 100
