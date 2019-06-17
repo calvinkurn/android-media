@@ -88,6 +88,7 @@ open class PlayActivity : BaseSimpleActivity() {
         setFragment()
         TkpdVideoPlayer.Builder()
                 .transaction(R.id.playerView, supportFragmentManager)
+                .videoSource("https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm")
                 .repeatMode(RepeatMode.REPEAT_MODE_ALL)
                 .build()
     }
