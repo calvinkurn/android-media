@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
@@ -206,9 +207,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             dialog.setContentView(R.layout.dialog_score_verification)
 
             dialog.btn_submit_kyc.setOnClickListener {
-                RouteManager.route(context, String.format("%s?url=%s",
-                        ApplinkConst.WEBVIEW,
-                        URL_GAINS_SCORE_POINT))
+                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
             }
             dialog.btn_close_kyc.setOnClickListener {
                 dialog.hide()

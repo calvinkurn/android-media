@@ -9,8 +9,8 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.URL_LEARN_MORE_TNC
@@ -30,9 +30,7 @@ class PartialTncViewHolder private constructor(private val view: View, private v
 
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
-                RouteManager.route(view.context, String.format("%s?url=%s",
-                        ApplinkConst.WEBVIEW,
-                        URL_LEARN_MORE_TNC))
+                RouteManager.route(view.context, ApplinkConstInternalGlobal.WEBVIEW, URL_LEARN_MORE_TNC )
             }
 
             override fun updateDrawState(ds: TextPaint) {
