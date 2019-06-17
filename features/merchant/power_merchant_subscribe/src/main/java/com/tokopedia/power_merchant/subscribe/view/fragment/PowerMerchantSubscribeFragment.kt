@@ -113,7 +113,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                     }
                     val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE) }
                     startActivityForResult(intent, ACTIVATE_INTENT_CODE)
-                } else {t
+                } else {
                     if (shopScore < MINIMUM_SCORE_ACTIVATE_IDLE) {
                         setupDialogScore()?.show()
                         return@setOnClickListener
