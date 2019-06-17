@@ -30,7 +30,7 @@ class RoomDurationView : BaseCustomView {
                 TravelDateUtil.YYYY_MM_DD, TravelDateUtil.DEFAULT_VIEW_FORMAT)
 
         hotel_room_night_count.text = context.getString(R.string.hotel_room_night_count,
-                HotelUtils.countNightDifference(checkInDate, checkOutDate))
+                HotelUtils.countDayDifference(checkInDate, checkOutDate))
     }
 
     fun setRoomCheckTimes(checkInTime: String, checkOutTime: String) {

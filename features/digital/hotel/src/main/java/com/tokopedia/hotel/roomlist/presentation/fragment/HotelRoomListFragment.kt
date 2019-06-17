@@ -19,6 +19,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
@@ -56,9 +57,13 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     lateinit var roomListViewModel: HotelRoomListViewModel
 
     @Inject
+    lateinit var trackingHotelUtil: TrackingHotelUtil
+
+    @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
     var hotelRoomListPageModel = HotelRoomListPageModel()
+    var roomList: List<HotelRoom> = listOf()
 
     var firstTime = true
 
@@ -97,7 +102,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                         showFilterRecyclerView(it.data.size > 0)
                     } else showFilterRecyclerView(true)
                     clearAllData()
-                    renderList(it.data, false)
+                    trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId)
+                    roomList = it.data
+                    renderList(roomList, false)
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
@@ -269,6 +276,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onItemClicked(room: HotelRoom) {
+        trackingHotelUtil.hotelClickRoomDetails(hotelRoomListPageModel.propertyId, room.roomId, room.roomPrice.totalPrice)
         val objectId = System.currentTimeMillis().toString()
         SaveInstanceCacheManager(context!!, objectId).apply {
             val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
@@ -352,6 +360,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onClickBookListener(room: HotelRoom) {
         if (userSessionInterface.isLoggedIn) {
+            trackingHotelUtil.hotelChooseRoom(
+                    hotelRoomListPageModel.propertyId,
+                    room.roomId,
+                    room.roomPrice.priceAmount.toInt(),
+                    mapToHotelPromoProduct(roomList))
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
                     mapToAddCartParam(hotelRoomListPageModel, room))
         } else {
@@ -362,6 +375,13 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     fun goToLoginPage() {
         if (activity != null) {
             RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    private fun mapToHotelPromoProduct(data: List<HotelRoom>): List<TrackingHotelUtil.HotelPromoProduct> {
+        return data.mapIndexed { index, it ->
+            TrackingHotelUtil.HotelPromoProduct(
+                    it.roomInfo.name, it.roomId.toInt(), it.roomPrice.priceAmount.toInt(), index)
         }
     }
 
