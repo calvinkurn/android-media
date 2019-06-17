@@ -88,16 +88,15 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
     private fun initView() {
         setupToolbar()
         setFragment()
-        TkpdVideoPlayer.Builder()
-                .transaction(R.id.playerView, supportFragmentManager)
-                .videoSource("https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm")
-                .repeatMode(RepeatMode.REPEAT_MODE_ALL)
-                .build()
     }
 
     override fun onPlayFreeze(isFreeze: Boolean) {
         if (!isFreeze) {
-            playerView.show()
+            TkpdVideoPlayer.Builder()
+                    .transaction(R.id.playerView, supportFragmentManager)
+                    .videoSource("https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm")
+                    .repeatMode(RepeatMode.REPEAT_MODE_ALL)
+                    .build()
         }
     }
 
