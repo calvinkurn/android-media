@@ -452,7 +452,9 @@ final class ProductListPresenter
 
             @Override
             public void onCompleted() {
-                loadDataSubscriberOnCompleteIfViewAttached(searchParameter);
+                if (isFirstTimeLoad) { // TODO:: For testing only, remove this later
+                    loadDataSubscriberOnCompleteIfViewAttached(searchParameter);
+                }
             }
 
             @Override
@@ -462,7 +464,9 @@ final class ProductListPresenter
 
             @Override
             public void onNext(SearchProductModel searchProductModel) {
-                loadDataSubscriberOnNextIfViewAttached(searchProductModel, isFirstTimeLoad);
+                if(isFirstTimeLoad) { // TODO:: For testing only, remove this later
+                    loadDataSubscriberOnNextIfViewAttached(searchProductModel, isFirstTimeLoad);
+                }
             }
         };
     }
