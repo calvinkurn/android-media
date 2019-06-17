@@ -48,7 +48,11 @@ data class Property(
 
         @SerializedName("location")
         @Expose
-        val location: Location = Location()
+        val location: Location = Location(),
+
+        @SerializedName("isDirectPayment")
+        @Expose
+        val isDirectPayment: Boolean = false
 ): Visitable<PropertyAdapterTypeFactory> {
 
         override fun type(typeFactory: PropertyAdapterTypeFactory?): Int {

@@ -30,6 +30,7 @@ class SearchPropertyViewHolder(view: View): AbstractViewHolder<Property>(view) {
                         Integer.toString(element.roomAvailability))
             }
             price.text = element.roomPrice.firstOrNull()?.price ?: ""
+            container_pay_at_hotel.visibility = if (element.isDirectPayment) View.VISIBLE else View.GONE
         }
     }
 

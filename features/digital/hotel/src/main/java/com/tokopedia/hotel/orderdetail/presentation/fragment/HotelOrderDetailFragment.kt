@@ -320,7 +320,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         helpLabel.setTextColor(resources.getColor(R.color.light_primary))
         val text = Html.fromHtml(help.helpText)
         val spannableString = SpannableString(text)
-        val startIndexOfLink = help.helpText.toLowerCase().indexOf("disini")
+        val startIndexOfLink = help.helpText.toLowerCase().indexOf("<hyperlink>") + "<hyperlink>".length
+        val endIndexOfLink = help.helpText.toLowerCase().indexOf("</hyperlink>") - 1
         if (startIndexOfLink >= 0) {
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(view: View) {
@@ -336,7 +337,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     ds.isUnderlineText = false
                     ds.color = resources.getColor(R.color.green_250) // specific color for this link
                 }
-            }, startIndexOfLink, startIndexOfLink + "disini".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }, startIndexOfLink, startIndexOfLink + endIndexOfLink, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
             helpLabel.setHighlightColor(Color.TRANSPARENT)
             helpLabel.setMovementMethod(LinkMovementMethod.getInstance())
