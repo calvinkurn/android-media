@@ -83,7 +83,7 @@
     </LinearLayout>
 
     <com.tokopedia.design.component.TextViewCompat
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/pm_label_cost_1"

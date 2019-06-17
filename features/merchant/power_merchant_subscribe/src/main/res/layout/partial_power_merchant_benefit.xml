@@ -79,6 +79,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:src="@drawable/ic_market"
+            app:layout_constraintTop_toBottomOf="@+id/imageView6"
             app:layout_constraintStart_toStartOf="parent"
             tools:layout_editor_absoluteY="122dp" />
 

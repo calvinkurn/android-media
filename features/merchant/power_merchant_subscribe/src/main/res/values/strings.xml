@@ -54,10 +54,10 @@
     <string name="pm_period">Periode baru dimulai pada 1 Juli 2019 pukul 04.00</string>
     <string name="pm_label_cancellation_header">Pengajuan pembatalan berhasil</string>
     <string name="pm_label_cancellation_duration">Nantikan Power Merchant baru pada 1 Juli 2019.</string>
-    <string name="pm_label_cost_1">Keanggotaan Power Merchant akan dikenakan biaya layanan 1% dari setiap transaksi. </string>
+    <string name="pm_label_cost_1">Biaya layanan Power Merchant dikenakan 1% (satu persen) dari setiap harga produk terjual.</string>
     <string name="pm_label_cost_3">Pelajari Selengkapnya</string>
-    <string name="pm_label_kyc_verivication">Lakukan verifikasi informasi indentitas</string>
-    <string name="pm_label_score_point">Skor performa toko lebih dari 75 poin </string>
+    <string name="pm_label_kyc_verivication">Verifikasi data diri dengan upload KTP</string>
+    <string name="pm_label_score_point">Skor performa toko lebih dari 75 poin</string>
     <string name="pm_label_tnc_header">Syarat menjadi Power Merchant</string>
     <string name="pm_label_price_cashback">Sisa biaya langganan Power Merchant tokomu per 1 Juli 2019 akan dikembalikan ke Saldo Penghasilan.</string>
     <string name="pm_label_info">Tingkatkan penjualanmu dengan beragam promo dan fitur khusus Power Merchant.</string>
