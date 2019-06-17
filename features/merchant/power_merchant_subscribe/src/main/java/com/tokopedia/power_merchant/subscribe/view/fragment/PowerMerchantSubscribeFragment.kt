@@ -123,8 +123,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         ImageHandler.LoadImage(img_top_1, IMG_URL_PM_INTRO)
         renderDefaultTickerYellow()
         renderDefaultTickerBlue()
-        partialBenefitPmViewHolder.renderPartialBenefit()
         initializePartialPart(view)
+        partialBenefitPmViewHolder.renderPartialBenefit()
         partialTncViewHolder.renderPartialTnc()
     }
 
