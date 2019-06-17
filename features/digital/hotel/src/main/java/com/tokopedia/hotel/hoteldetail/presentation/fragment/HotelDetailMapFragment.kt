@@ -5,9 +5,11 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -104,12 +106,17 @@ class HotelDetailMapFragment : TkpdBaseV4Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun bitmapDescriptorFromVector(context: Context, @DrawableRes vectorDrawableResourceId: Int): BitmapDescriptor {
-        val vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId)
-        vectorDrawable!!.setBounds(0, 0, vectorDrawable.intrinsicWidth + 40, vectorDrawable.intrinsicHeight + 20)
-        val bitmap = Bitmap.createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+    private fun bitmapDescriptorFromVector(context: Context, @DrawableRes drawableId: Int): BitmapDescriptor {
+        var drawable = ContextCompat.getDrawable(context, drawableId)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = DrawableCompat.wrap(drawable!!).mutate()
+        }
+
+        val bitmap = Bitmap.createBitmap(drawable!!.intrinsicWidth,
+                drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        vectorDrawable.draw(canvas)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
