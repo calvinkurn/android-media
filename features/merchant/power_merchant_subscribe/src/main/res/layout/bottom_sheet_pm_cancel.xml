@@ -53,14 +53,21 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat3"
-            android:layout_width="250dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
-            android:minLines="2"
             android:text="@string/pm_exclusive_promo_desc"
             app:fontSize="micro"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat2"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat2" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:text="Tokopedia untuk merchant."
+            app:fontSize="micro"
+            app:layout_constraintStart_toStartOf="@+id/textViewCompat3"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCompat3" />
 
         <ImageView
             android:id="@+id/imageView7"
@@ -86,14 +93,21 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat5"
-            android:layout_width="250dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
-            android:minLines="2"
             android:text="@string/pm_label_market_insight_desc"
             app:fontSize="micro"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat4"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat4" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="pembeli."
+            app:fontSize="micro"
+            app:layout_constraintStart_toStartOf="@+id/textViewCompat5"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCompat5" />
 
         <ImageView
             android:id="@+id/imageView8"
@@ -119,14 +133,21 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat7"
-            android:layout_width="250dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
-            android:minLines="2"
             android:text="@string/pm_credit_desc"
             app:fontSize="micro"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat6"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat6" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="kredit Top-Ads."
+            app:fontSize="micro"
+            app:layout_constraintStart_toStartOf="@+id/textViewCompat7"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCompat7" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -2,11 +2,13 @@ package com.tokopedia.power_merchant.subscribe.view.viewholder
 
 import android.app.Activity
 import android.graphics.Typeface
+import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.applink.RouteManager
@@ -30,7 +32,7 @@ class PartialTncViewHolder private constructor(private val view: View, private v
 
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
-                RouteManager.route(view.context, ApplinkConstInternalGlobal.WEBVIEW, URL_LEARN_MORE_TNC )
+                RouteManager.route(view.context, ApplinkConstInternalGlobal.WEBVIEW, URL_LEARN_MORE_TNC)
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -40,7 +42,8 @@ class PartialTncViewHolder private constructor(private val view: View, private v
         }
 
         spanText.setSpan(clickableSpan, 0, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
+        spanText.setSpan(ForegroundColorSpan(ContextCompat.getColor(view.context, R.color.pm_green_link)),
+                0, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanText.setSpan(StyleSpan(Typeface.BOLD), 0, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         txtLearnMore.movementMethod = LinkMovementMethod.getInstance()
         txtLearnMore.text = spanText
