@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <ImageView
+        android:id="@+id/iv_bottomsheet"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@color/green_1000"
+        android:layout_marginTop="@dimen/dp_10"
+        />
+
+    <TextView
+        android:id="@+id/tv_title_bottomsheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/dp_10"
+        tools:text="Pencairan Dana Tidak Dapat Dilakukan Untuk Sementera"
+        app:layout_constraintTop_toBottomOf="@+id/iv_bottomsheet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/tv_details_bottomsheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/tv_title_bottomsheet"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_bottomsheet"
+        tools:text="Pencairan Dana Tidak Dapat Dilakukan Untuk Sementera Pencairan Dana Tidak Dapat Dilakukan Untuk Sementera Pencairan Dana Tidak Dapat Dilakukan Untuk Sementera "
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:padding="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/bg_button_green_enabled"
+        app:layout_constraintTop_toBottomOf="@+id/tv_details_bottomsheet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:text="Kembali Ke Helama"
+        />
+
+</android.support.constraint.ConstraintLayout>
