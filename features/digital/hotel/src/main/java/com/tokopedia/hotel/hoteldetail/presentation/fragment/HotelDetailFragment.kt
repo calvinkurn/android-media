@@ -114,7 +114,7 @@ class HotelDetailFragment : HotelBaseFragment() {
                     setupPriceButton(it.data)
                 }
                 is Fail -> {
-                    // TODO Fail get Room List
+                    showErrorState(it.throwable)
                 }
             }
         })
@@ -126,7 +126,7 @@ class HotelDetailFragment : HotelBaseFragment() {
                     hotelName = it.data.property.name
                 }
                 is Fail -> {
-                    // TODO Fail get Hotel Info
+                    showErrorState(it.throwable)
                 }
             }
         })
@@ -137,7 +137,7 @@ class HotelDetailFragment : HotelBaseFragment() {
                     setupReviewLayout(it.data)
                 }
                 is Fail -> {
-                    // TODO Fail get Hotel Review
+                    showErrorState(it.throwable)
                 }
             }
         })

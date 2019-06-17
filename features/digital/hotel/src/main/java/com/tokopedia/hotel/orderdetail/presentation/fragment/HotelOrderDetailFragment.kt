@@ -113,7 +113,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
 
     override fun onErrorRetryClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        getOrderDetailData()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -126,6 +126,11 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         }
 
         loadingState.visibility = View.VISIBLE
+
+        getOrderDetailData()
+    }
+
+    fun getOrderDetailData() {
         if (userSessionInterface.isLoggedIn) {
             orderDetailViewModel.getOrderDetail(
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
@@ -238,6 +243,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                 propertyDetail.checkInOut[0].checkInOut.date,
                 propertyDetail.checkInOut[1].checkInOut.date,
                 propertyDetail.stayLength.content)
+
+        see_hotel_detail_button.setOnClickListener { RouteManager.route(context, propertyDetail.applink) }
     }
 
     fun showCallButtonSheet(contactList: List<HotelTransportDetail.ContactInfo>) {
