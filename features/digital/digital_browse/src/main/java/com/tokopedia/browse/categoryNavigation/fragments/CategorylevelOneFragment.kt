@@ -7,7 +7,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,9 +37,21 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
 
     var selectedPosition = 0
 
+    var selectedItemIdentifier: String? = null
+
     companion object {
+        private val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
         @JvmStatic
-        fun newInstance() = CategorylevelOneFragment()
+        fun newInstance(categoryName: String?): Fragment {
+            val fragment = CategorylevelOneFragment()
+            if (categoryName != null) {
+                val bundle = Bundle()
+                bundle.putString(EXTRA_CATEGORY_NAME, categoryName)
+                fragment.arguments = bundle
+            }
+            return fragment
+        }
+
     }
 
     override fun getComponent(): CategoryNavigationComponent = DaggerCategoryNavigationComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
@@ -54,6 +65,9 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
         super.onViewCreated(view, savedInstanceState)
 
         component.inject(this)
+        if (arguments != null && arguments!!.containsKey(EXTRA_CATEGORY_NAME)) {
+            selectedItemIdentifier = arguments!!.getString(EXTRA_CATEGORY_NAME)
+        }
         initView()
         setUpObserver()
     }
@@ -78,9 +92,17 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
                 is Success -> {
                     categoryList.clear()
                     categoryList.addAll(it.data.categories as ArrayList<CategoriesItem>)
-                    categoryList[0].isSelected = true
+                    var selectedPosition = 0
+                    if (selectedItemIdentifier != null) {
+                        selectedPosition = getPositionFromIdentifier(categoryList)
+                        categoryList[selectedPosition].isSelected = true
+                    } else {
+                        categoryList[selectedPosition].isSelected = true
+                    }
                     master_list.adapter.notifyDataSetChanged()
-                    initiate()
+                    master_list.layoutManager.scrollToPosition(selectedPosition)
+
+                    initiateSlaveFragmentLoading(selectedPosition)
                 }
                 is Fail -> {
                     (activity as CategoryChangeListener).onError()
@@ -90,13 +112,25 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
         })
     }
 
+    private fun getPositionFromIdentifier(categoryList: ArrayList<CategoriesItem>): Int {
+        for (i in 0 until categoryList.size) {
+            if (categoryList[i].identifier!!.equals(selectedItemIdentifier)) {
+                selectedPosition = i
+                return i
+            }
+        }
+
+        return 0
+    }
+
+
     fun reloadData() {
         categoryBrowseViewModel.bound()
     }
 
-    private fun initiate() {
+    private fun initiateSlaveFragmentLoading(position: Int) {
         if (activity != null) {
-            (activity as CategoryChangeListener).onCategoryChanged(categoryList[0].id!!, categoryList[0].name!!, categoryList[0].applinks)
+            (activity as CategoryChangeListener).onCategoryChanged(categoryList[position].id!!, categoryList[position].name!!, categoryList[position].applinks)
         }
     }
 
