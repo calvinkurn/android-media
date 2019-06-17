@@ -9,7 +9,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.data.util.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.item_property_search_result.view.*
 
@@ -18,7 +20,13 @@ class SearchPropertyViewHolder(view: View): AbstractViewHolder<Property>(view) {
     override fun bind(element: Property) {
         with(itemView){
             image.loadImage(element.image.firstOrNull()?.urlMax300 ?: "")
-            rating_star.numStars = element.star
+            if(element.star < 1){
+                rating_star.hide()
+            }else{
+                rating_star.show()
+                rating_star.numStars = element.star
+                rating_star.rating = element.star.toFloat()
+            }
             title.text = element.name
             type.text = element.type
             location.text = element.location.description
@@ -30,6 +38,11 @@ class SearchPropertyViewHolder(view: View): AbstractViewHolder<Property>(view) {
                         Integer.toString(element.roomAvailability))
             }
             price.text = element.roomPrice.firstOrNull()?.price ?: ""
+            if(element.isDirectPayment) {
+                container_pay_at_hotel.show()
+            }else{
+                container_pay_at_hotel.hide()
+            }
         }
     }
 
