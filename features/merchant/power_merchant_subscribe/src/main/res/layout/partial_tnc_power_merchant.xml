@@ -18,7 +18,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:textColor="@color/black"
         android:textStyle="bold"
-        app:fontSize="small"
+        app:fontSize="title"
         android:text="@string/pm_label_tnc_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -44,7 +44,7 @@
             android:layout_width="@dimen/dp_200"
             android:layout_height="wrap_content"
             android:text="@string/pm_label_kyc_verivication"
-            app:fontSize="small"
+            app:fontSize="title"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:layout_marginLeft="@dimen/dp_10"
@@ -74,7 +74,7 @@
             android:layout_width="@dimen/dp_200"
             android:layout_height="wrap_content"
             android:text="@string/pm_label_score_point"
-            app:fontSize="small"
+            app:fontSize="title"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:layout_marginLeft="@dimen/dp_10"
@@ -87,7 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/pm_label_cost_1"
-        app:fontSize="micro"
+        app:fontSize="small"
         />
 
     <com.tokopedia.design.component.TextViewCompat
@@ -95,7 +95,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/pm_label_cost_3"
-        app:fontSize="micro"
+        app:fontSize="small"
         android:textColor="@color/tkpd_green_header"
         style="@style/TextView.Small"/>
 

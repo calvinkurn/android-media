@@ -30,7 +30,7 @@
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/txt_join_1"
-                android:layout_width="@dimen/dp_250"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/img_top_1"
                 android:layout_centerHorizontal="true"
@@ -39,7 +39,7 @@
                 android:text="@string/pm_label_join_header"
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                app:fontSize="titleBig" />
+                app:fontSize="subHeadline" />
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/txt_info"
@@ -52,7 +52,7 @@
                 android:layout_marginRight="@dimen/dp_18"
                 android:layout_marginBottom="@dimen/dp_22"
                 android:gravity="center"
-                app:fontSize="title"
+                app:fontSize="titleBig"
                 android:lineSpacingExtra="@dimen/sp_4"
                 android:text="@string/pm_label_info" />
 

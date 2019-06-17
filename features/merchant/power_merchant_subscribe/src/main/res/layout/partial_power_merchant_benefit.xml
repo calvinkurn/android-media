@@ -11,6 +11,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/dp_8"
         android:padding="@dimen/dp_10">
 
         <com.tokopedia.design.component.TextViewCompat
@@ -23,7 +24,7 @@
             android:text="@string/pm_label_benefit_header"
             android:textStyle="bold"
             android:textColor="@color/black"
-            app:fontSize="title"
+            app:fontSize="titleBig"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,7 +34,7 @@
             android:layout_height="@dimen/dp_64"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_20"
-            android:src="@drawable/ic_power_merchant"
+            android:src="@drawable/ic_power_merchant_subscribe"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -45,7 +46,7 @@
             android:text="@string/pm_exclusive_promo"
             android:textStyle="bold"
             android:textColor="@color/black"
-            app:fontSize="micro"
+            app:fontSize="title"
             app:layout_constraintStart_toEndOf="@+id/imageView6"
             app:layout_constraintTop_toTopOf="@+id/imageView6"
             android:layout_marginStart="@dimen/dp_10" />
@@ -78,6 +79,7 @@
             android:layout_height="@dimen/dp_64"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginTop="@dimen/dp_8"
             android:src="@drawable/ic_market"
             app:layout_constraintTop_toBottomOf="@+id/imageView6"
             app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +94,7 @@
             android:text="@string/pm_label_market_insight"
             android:textColor="@color/black"
             android:textStyle="bold"
-            app:fontSize="micro"
+            app:fontSize="title"
             app:layout_constraintStart_toEndOf="@+id/imageView7"
             app:layout_constraintTop_toTopOf="@+id/imageView7" />
 
@@ -102,7 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:text="@string/pm_label_market_insight_desc"
-            app:fontSize="micro"
+            app:fontSize="small"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat4"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat4" />
 
@@ -125,7 +127,7 @@
             android:layout_marginLeft="@dimen/dp_10"
             android:text="@string/pm_label_topads_credit"
             android:textStyle="bold"
-            app:fontSize="micro"
+            app:fontSize="title"
             android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/imageView8"
             app:layout_constraintTop_toTopOf="@+id/imageView8" />
@@ -135,7 +137,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
-            app:fontSize="micro"
+            app:fontSize="small"
             android:text="@string/pm_credit_desc"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat6"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat6" />
@@ -144,17 +146,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="kredit Top-Ads."
-            app:fontSize="micro"
+            app:fontSize="small"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat7"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat7" />
 
         <View
             android:id="@+id/view_line_pm"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@android:color/black"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@color/pm_line_color"
             app:layout_constraintTop_toBottomOf="@+id/imageView8"
-            tools:layout_editor_absoluteX="10dp"
             />
 
 
@@ -162,9 +164,8 @@
             android:id="@+id/textViewCompat5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:text="pembeli."
-            app:fontSize="micro"
+            app:fontSize="small"
             app:layout_constraintBottom_toBottomOf="@+id/imageView7"
             app:layout_constraintEnd_toStartOf=""
             app:layout_constraintStart_toStartOf="@+id/textViewCompat9"
@@ -174,27 +175,24 @@
             android:id="@+id/textViewCompat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_16"
             android:text="Fitur Khusus Power Merchant"
             android:textColor="@color/black"
             android:textStyle="bold"
-            app:fontSize="micro"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+            app:fontSize="small"
+            app:layout_constraintStart_toStartOf="@+id/imageView8"
+            app:layout_constraintTop_toTopOf="@+id/view_line_pm" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/txt_learn_more_benefit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:text="@string/pm_label_learn_more_benefit"
-            app:fontSize="micro"
+            app:fontSize="small"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textViewCompat"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat" />
 
     </android.support.constraint.ConstraintLayout>

@@ -15,14 +15,14 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/txt_kyc_header_1"
-            android:layout_width="@dimen/dp_220"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:text="@string/pm_label_kyc_verification_header"
             android:textColor="@color/black"
-            app:fontSize="titleBig"
+            app:fontSize="subHeadline"
             android:textStyle="bold"
             android:layout_marginBottom="@dimen/dp_16"
             />
@@ -37,7 +37,7 @@
             android:gravity="center"
             android:layout_marginBottom="@dimen/dp_16"
             android:text="@string/pm_label_kyc_verification_desc_1"
-            app:fontSize="small"
+            app:fontSize="title"
             app:textViewTheme="lightSecondary"
             />
 
