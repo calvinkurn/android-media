@@ -10,11 +10,15 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.list.decoration.SpaceItemDecoration
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.Filter
@@ -36,7 +40,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
 import javax.inject.Inject
 
-class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>() {
+class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(), BaseEmptyViewHolder.Callback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -177,6 +181,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     private fun initializeFilterClick(filter: Filter) {
         onFilterClick = View.OnClickListener {
+            searchResultviewModel.filter = filter
             context?.let {
                 val cacheManager = SaveInstanceCacheManager(it, true).apply {
                     put(CommonParam.ARG_FILTER, filter)
@@ -206,7 +211,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
     }
 
-    override fun getAdapterTypeFactory(): PropertyAdapterTypeFactory = PropertyAdapterTypeFactory()
+    override fun getAdapterTypeFactory(): PropertyAdapterTypeFactory = PropertyAdapterTypeFactory(this)
 
     override fun onItemClicked(t: Property) {
         with(searchResultviewModel.searchParam) {
@@ -227,6 +232,47 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                     it.name, it.id, it.roomPrice.firstOrNull()?.priceAmount?.toInt() ?: 0, index)
         }
         return TrackingHotelUtil.HotelPromotions(promoProduct)
+    }
+
+    override fun getEmptyDataViewModel(): Visitable<*> {
+        var emptyModel = EmptyModel()
+        emptyModel.iconRes = R.drawable.ic_empty_search_result
+        emptyModel.title = getString(R.string.hotel_search_empty_title)
+
+        if (!searchResultviewModel.isFilter) {
+            emptyModel.content = getString(R.string.hotel_search_empty_subtitle)
+            emptyModel.buttonTitle = getString(R.string.hotel_search_empty_button)
+        } else {
+            emptyModel.content = getString(R.string.hotel_search_filter_empty_subtitle)
+            emptyModel.buttonTitle = getString(R.string.hotel_search_filter_empty_button)
+        }
+
+        return emptyModel
+    }
+
+    override fun onEmptyContentItemTextClicked() {
+
+    }
+
+    override fun onEmptyButtonClicked() {
+        if (!searchResultviewModel.isFilter) activity!!.onBackPressed()
+        else {
+            context?.let {
+                val cacheManager = SaveInstanceCacheManager(it, true).apply {
+                    put(CommonParam.ARG_FILTER, searchResultviewModel.filter)
+                    put(CommonParam.ARG_SELECTED_FILTER, searchResultviewModel.selectedFilter)
+                }
+                startActivityForResult(HotelSearchFilterActivity.createIntent(it, cacheManager.id), REQUEST_FILTER)
+            }
+        }
+    }
+
+    override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
+        adapter.errorNetworkModel.iconDrawableRes = ErrorHandlerHotel.getErrorImage(throwable)
+        adapter.errorNetworkModel.errorMessage = ErrorHandlerHotel.getErrorTitle(context, throwable)
+        adapter.errorNetworkModel.subErrorMessage = ErrorHandlerHotel.getErrorMessage(context, throwable)
+        adapter.errorNetworkModel.onRetryListener = this
+        adapter.showErrorNetwork()
     }
 
     override fun getScreenName(): String? = null

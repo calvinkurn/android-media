@@ -18,6 +18,7 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
+import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
@@ -46,7 +47,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 22/04/19
  */
-class HotelDetailFragment : BaseDaggerFragment() {
+class HotelDetailFragment : HotelBaseFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -417,6 +418,15 @@ class HotelDetailFragment : BaseDaggerFragment() {
 
     private fun openImagePreview(index: Int) {
         startActivity(ImagePreviewSliderActivity.getCallingIntent(context!!, hotelName, imageList, thumbnailImageList, index))
+    }
+
+    override fun onErrorRetryClicked() {
+        detailViewModel.getHotelDetailData(
+                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
+                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                hotelHomepageModel.locId,
+                hotelHomepageModel)
     }
 
     companion object {

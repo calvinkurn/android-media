@@ -10,13 +10,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
+import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
@@ -31,6 +31,8 @@ import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
+import kotlinx.android.synthetic.main.item_network_error_view.*
+import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -38,7 +40,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 28/03/19
  */
-class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheets.HotelGuestListener {
+class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets.HotelGuestListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -88,9 +90,14 @@ class HotelHomepageFragment : BaseDaggerFragment(), HotelRoomAndGuestBottomSheet
                     }
                 }
                 is Fail -> {
+                    showErrorState(it.throwable)
                 }
             }
         })
+    }
+
+    override fun onErrorRetryClicked() {
+        loadPromoData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
