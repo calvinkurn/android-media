@@ -13,8 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.power_merchant.subscribe.IMG_URL_KYC_TRANSITION
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.URL_LEARN_MORE_TNC
@@ -37,26 +37,24 @@ class TransitionPeriodPmFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ImageHandler.LoadImage(img_kyc_verification,IMG_URL_KYC_TRANSITION)
+        ImageHandler.LoadImage(img_kyc_verification, IMG_URL_KYC_TRANSITION)
         renderTxtTnc()
 
     }
 
-    private fun renderTxtTnc(){
+    private fun renderTxtTnc() {
         val spanText = SpannableString(activity?.getString(R.string.pm_label_transition_period_learnmore))
 
-        spanText.setSpan(object : ClickableSpan(){
+        spanText.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
-                RouteManager.route(context, String.format("%s?url=%s",
-                        ApplinkConst.WEBVIEW,
-                        URL_LEARN_MORE_TNC))
+                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_LEARN_MORE_TNC)
             }
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
             }
-        },24 , spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }, 24, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanText.setSpan(StyleSpan(Typeface.BOLD),
                 24, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         txt_learnmore_transition_page.movementMethod = LinkMovementMethod.getInstance();
