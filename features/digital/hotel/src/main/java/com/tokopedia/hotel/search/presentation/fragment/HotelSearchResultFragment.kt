@@ -216,7 +216,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onItemClicked(t: Property) {
         with(searchResultviewModel.searchParam) {
             trackingHotelUtil.chooseHotel(
-                    t.id.toString(), HotelUtils.countCurrentDayDifference(checkIn).toInt(),
+                    t.id, HotelUtils.countCurrentDayDifference(checkIn).toInt(),
                     t.roomPrice.firstOrNull()?.priceAmount?.toInt() ?: 0,
                     listOf(mapToHotelPromotions(searchProperties)))
 

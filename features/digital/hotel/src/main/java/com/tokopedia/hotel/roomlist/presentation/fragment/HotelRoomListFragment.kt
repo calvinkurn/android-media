@@ -63,6 +63,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     lateinit var userSessionInterface: UserSessionInterface
 
     var hotelRoomListPageModel = HotelRoomListPageModel()
+    var roomList: List<HotelRoom> = listOf()
 
     var firstTime = true
 
@@ -102,7 +103,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                     } else showFilterRecyclerView(true)
                     clearAllData()
                     trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId)
-                    renderList(it.data, false)
+                    roomList = it.data
+                    renderList(roomList, false)
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
@@ -358,6 +360,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onClickBookListener(room: HotelRoom) {
         if (userSessionInterface.isLoggedIn) {
+            trackingHotelUtil.hotelChooseRoom(
+                    hotelRoomListPageModel.propertyId,
+                    room.roomId,
+                    room.roomPrice.priceAmount.toInt(),
+                    mapToHotelPromoProduct(roomList))
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
                     mapToAddCartParam(hotelRoomListPageModel, room))
         } else {
@@ -368,6 +375,13 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     fun goToLoginPage() {
         if (activity != null) {
             RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    private fun mapToHotelPromoProduct(data: List<HotelRoom>): List<TrackingHotelUtil.HotelPromoProduct> {
+        return data.mapIndexed { index, it ->
+            TrackingHotelUtil.HotelPromoProduct(
+                    it.roomInfo.name, it.roomId.toInt(), it.roomPrice.priceAmount.toInt(), index)
         }
     }
 

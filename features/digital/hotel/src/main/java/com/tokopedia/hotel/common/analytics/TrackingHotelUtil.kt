@@ -53,7 +53,7 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun chooseHotel(hotelId: String,
+    fun chooseHotel(hotelId: Int,
                     dayDiff: Int,
                     price: Int,
                     promotions: List<HotelPromotions>){
@@ -99,7 +99,7 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $hotelId")
     }
 
-    fun hotelChooseRoom(hotelId: String,
+    fun hotelChooseRoom(hotelId: Int,
                         roomId: String,
                         price: Int,
                         products: List<HotelPromoProduct>){
@@ -116,21 +116,21 @@ class TrackingHotelUtil {
     }
 
     fun hotelClickRoomListPhoto(hotelId: Int, roomId: String, price: String){
-        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, CLICK_HOTEL_PHOTO,
+        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, CLICK_ROOM_PHOTO_ON_ROOM_LIST,
                 "$HOTEL_LABEL - $hotelId - $roomId - $price")
     }
 
     fun hotelClickRoomDetails(hotelId: Int, roomId: String, price: String){
-        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, CLICK_HOTEL_PHOTO,
+        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, CLICK_ROOM_DETAILS,
                 "$HOTEL_LABEL - $hotelId - $roomId - $price")
     }
 
     fun hotelClickRoomDetailsPhoto(hotelId: Int, roomId: String, price: String){
-        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, CLICK_HOTEL_PHOTO,
+        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, CLICK_ROOM_PHOTO_ON_ROOM_PDP,
                 "$HOTEL_LABEL - $hotelId - $roomId - $price")
     }
 
-    fun hotelChooseRoomDetails(hotelId: String,
+    fun hotelChooseRoomDetails(hotelId: Int,
                         roomId: String,
                         price: Int,
                         products: List<HotelPromoProduct>){
