@@ -293,10 +293,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         if (isSuccessCancellationPm) {
             showToasterCancellationSuccess()
         }
-
-        //DELETE TESTING PURPOSE
-        showBottomSheetSuccess(shopStatusModel)
-
     }
 
     private fun renderViewNonTransitionPeriod() {

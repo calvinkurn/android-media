@@ -116,9 +116,9 @@
     <com.tokopedia.design.component.TextViewCompat
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:fontSize="small"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/pm_label_bs_cancel_desc_2"/>
+        android:text="@string/pm_label_bs_cancel_desc_2"
+        app:fontSize="small" />
 
     <FrameLayout
         android:id="@+id/ticker_yellow_cancellation_bs"
@@ -137,8 +137,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_margin="@dimen/dp_5"
+                android:orientation="vertical"
                 android:padding="@dimen/dp_10">
 
                 <com.tokopedia.design.component.TextViewCompat
@@ -164,5 +164,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
         android:text="@string/pm_label_bottom_sheet_cancel_button" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
 
 </LinearLayout>

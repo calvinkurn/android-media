@@ -2,11 +2,13 @@ package com.tokopedia.power_merchant.subscribe.view.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.power_merchant.subscribe.IMG_URL_KYC_TRANSITION
@@ -39,6 +42,9 @@ class TransitionPeriodPmFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ImageHandler.LoadImage(img_kyc_verification, IMG_URL_KYC_TRANSITION)
+        btn_kyc_verification_transition.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.KYC_SELLER_DASHBOARD)
+        }
         tv_label_transition_desc.text = MethodChecker.fromHtml( getString(R.string.pm_label_transition_period_desc))
         renderTxtTnc()
 
@@ -58,6 +64,8 @@ class TransitionPeriodPmFragment : BaseDaggerFragment() {
             }
         }, 24, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanText.setSpan(StyleSpan(Typeface.BOLD),
+                24, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanText.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.pm_green_link)),
                 24, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         txt_learnmore_transition_page.movementMethod = LinkMovementMethod.getInstance();
         txt_learnmore_transition_page.text = spanText

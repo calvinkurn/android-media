@@ -51,7 +51,7 @@
             app:fontSize="title" />
 
         <Button
-            android:id="@+id/btn_kyc_verification"
+            android:id="@+id/btn_kyc_verification_transition"
             style="@style/Button.Submit.Green.Full"
             android:layout_width="@dimen/dp_300"
             android:layout_height="wrap_content"
