@@ -48,6 +48,7 @@ import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPres
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.FORMAT_DATE
 import com.tokopedia.shop.settings.common.util.toReadableString
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_power_merchant.*
@@ -58,6 +59,9 @@ import javax.inject.Inject
 class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter.View {
     @Inject
     lateinit var shopSettingsInfoPresenter: ShopSettingsInfoPresenter
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var needReload: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
@@ -224,6 +228,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     override fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, ShopStatusModel?>) {
         val (shopBasicDataModel, shopStatusModel) = result
+        userSession.setIsGoldMerchant(!(shopStatusModel?.isRegularMerchant() ?: true))
         this.shopBasicDataModel = shopBasicDataModel
         hideLoading()
         shopBasicDataModel?.let {
@@ -330,8 +335,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tv_shop_status.visibility = View.GONE
         ticker_container.visibility = View.GONE
         tv_ticker_info.visibility = View.VISIBLE
-        setTextViewLearnMore(tv_ticker_info,getString(R.string.regular_merchant_learn_more),getString(R.string.learn_more)) {
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_LEARN_MORE_BENEFIT )
+        setTextViewLearnMore(tv_ticker_info, getString(R.string.regular_merchant_learn_more), getString(R.string.learn_more)) {
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_LEARN_MORE_BENEFIT)
         }
         if (shopStatusModel.isTransitionPeriod()) {
             button_activate.visibility = View.GONE
@@ -363,7 +368,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         } else {
             ticker_container.visibility = View.VISIBLE
             tv_ticker.setText(R.string.power_merchant_learn_more)
-            setTextViewLearnMore(tv_ticker,getString(R.string.power_merchant_learn_more),getString(R.string.learn_more)) {
+            setTextViewLearnMore(tv_ticker, getString(R.string.power_merchant_learn_more), getString(R.string.learn_more)) {
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
             }
         }
@@ -381,7 +386,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tv_ticker_info.visibility = View.GONE
     }
 
-    private fun setTextViewLearnMore (textView: TextView, allText:String, learnMoreString: String, onClickLearnMore:(()->(Unit))){
+    private fun setTextViewLearnMore(textView: TextView, allText: String, learnMoreString: String, onClickLearnMore: (() -> (Unit))) {
         val spannable = SpannableString(allText)
         val indexStart = allText.indexOf(learnMoreString)
         val indexEnd = indexStart + learnMoreString.length
@@ -402,22 +407,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         textView.movementMethod = LinkMovementMethod.getInstance()
         textView.text = spannable
-    }
-
-    private fun navigateToGMHome() {
-        if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_SUBSCRIBE_DASHBOARD)
-        } else {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_REDIRECT)
-        }
-    }
-
-    private fun navigateToAboutGM() {
-        if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_MEMBERSHIP)
-        } else {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_REDIRECT)
-        }
     }
 
     private fun navigateToPMSubscribe() {
