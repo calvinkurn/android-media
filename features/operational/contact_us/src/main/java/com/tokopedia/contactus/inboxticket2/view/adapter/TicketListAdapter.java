@@ -35,7 +35,6 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private boolean isFooterAdded;
     private static final int ITEM = 1;
     private static final int FOOTER = 2;
-    private boolean isOfficialStore = false;
 
     public TicketListAdapter(Context context, List<TicketsItem> data, InboxListContract.InboxListPresenter presenter) {
         mContext = context;
@@ -165,6 +164,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView tvTicketDate;
         @BindView(R2.id.tv_priority_label)
         TextView tvPrioritylabel;
+        private boolean isOfficialStore = false;
         private CloseableBottomSheetDialog servicePrioritiesBottomSheet;
 
 
@@ -205,6 +205,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 checkboxDelete.setVisibility(View.GONE);
 
             if (!TextUtils.isEmpty(item.getIsOfficialStore()) && item.getIsOfficialStore().equalsIgnoreCase("yes")) {
+                isOfficialStore = true;
                 tvPrioritylabel.setVisibility(View.VISIBLE);
                 tvPrioritylabel.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -214,6 +215,9 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         servicePrioritiesBottomSheet.show();
                     }
                 });
+            }else {
+                tvPrioritylabel.setVisibility(View.GONE);
+                isOfficialStore = false;
             }
         }
 
