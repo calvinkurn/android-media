@@ -1,7 +1,6 @@
 package com.tokopedia.topads.product.view.presenter;
 
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.topads.auto.data.AutoAdsUseCase;
 import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData;
 import com.tokopedia.topads.auto.internal.TopAdsWidgetStatus;

@@ -138,6 +138,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
         } else {
             presenter.refreshAd(startDate, endDate, adId);
         }
+        presenter.checkAutoAds();
     }
 
     @Override

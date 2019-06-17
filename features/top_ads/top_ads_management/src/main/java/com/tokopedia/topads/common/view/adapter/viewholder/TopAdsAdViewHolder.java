@@ -123,19 +123,20 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
         if(ad.isAutoAds()){
             totalSoldTxt.setVisibility(View.VISIBLE);
             profitTxt.setVisibility(View.VISIBLE);
-            totalSoldTxt.setText(String.format("Total Terjual : %s", ad.getStatTotalGrossProfit()));
-            profitTxt.setText(String.format("Pendapatan : %s", ad.getStatTotalSold()));
+            totalSoldTxt.setText(String.format(getString(R.string.label_total_gross_profit), ad.getStatTotalGrossProfit()));
+            profitTxt.setText(String.format(getString(R.string.label_total_sold), ad.getStatTotalSold()));
             groupNameView.setVisibility(View.GONE);
             promoPerClickContainer.setVisibility(View.GONE);
             promoPriceUsedContainer.setVisibility(View.GONE);
             statusActiveContainer.setVisibility(View.GONE);
-
+            progressBarLayout.setVisibility(View.GONE);
         } else {
             totalSoldTxt.setVisibility(View.GONE);
             profitTxt.setVisibility(View.GONE);
             promoPerClickContainer.setVisibility(View.VISIBLE);
             promoPriceUsedContainer.setVisibility(View.VISIBLE);
             statusActiveContainer.setVisibility(View.VISIBLE);
+            progressBarLayout.setVisibility(View.VISIBLE);
         }
     }
 
