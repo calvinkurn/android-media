@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.support.annotation.LayoutRes
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

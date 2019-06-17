@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.view.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GridProductItem2019ViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactory;
@@ -65,7 +67,22 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        setFullSpanForStaggeredGrid(holder, position);
+
         holder.bind(list.get(position));
+    }
+
+    private void setFullSpanForStaggeredGrid(AbstractViewHolder holder, int position) {
+        if(holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams layoutParams =
+                    (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+
+            layoutParams.setFullSpan(isStaggeredGridFullSpan(position));
+        }
+    }
+
+    private boolean isStaggeredGridFullSpan(int position) {
+        return getItemViewType(position) != GridProductItem2019ViewHolder.Companion.getLAYOUT();
     }
 
     @Override
