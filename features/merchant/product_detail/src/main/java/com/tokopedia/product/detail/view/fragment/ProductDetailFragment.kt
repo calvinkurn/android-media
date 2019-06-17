@@ -1322,6 +1322,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             partialVariantAndRateEstView.renderData(null, "", this::onVariantClicked)
             return
         }
+        // defaulting selecting variant
         if (userInputVariant == productId && data.defaultChild > 0) {
             userInputVariant = data.defaultChild.toString()
         }
