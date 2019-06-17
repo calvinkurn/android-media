@@ -74,7 +74,6 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
                 return BigGridProductItemViewHolder.LAYOUT;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
             default:
-//                return GridProductItemViewHolder.LAYOUT;
                 return GridProductItem2019ViewHolder.Companion.getLAYOUT();
         }
     }

@@ -121,6 +121,7 @@ public class ProductListFragment
 
     private EndlessRecyclerViewScrollListener linearLayoutLoadMoreTriggerListener;
     private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
+    private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
 
     private Config topAdsConfig;
     private ProductListAdapter adapter;
@@ -248,13 +249,13 @@ public class ProductListFragment
         recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
 
         gridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getGridLayoutManager());
-
         linearLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getLinearLayoutManager());
+        staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
 
-        recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
+        recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
     }
 
-    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(LinearLayoutManager linearLayoutManager) {
+    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(RecyclerView.LayoutManager linearLayoutManager) {
         return new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -402,7 +403,7 @@ public class ProductListFragment
                 break;
             case GRID_2: // Grid 2x2
             case GRID_3: // Grid 1x1
-                recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
+                recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
                 break;
         }
     }
@@ -794,7 +795,7 @@ public class ProductListFragment
 
     @Override
     public void onChangeDoubleGrid() {
-        recyclerView.setLayoutManager(getGridLayoutManager());
+        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
     }
 
     @Override
@@ -931,6 +932,7 @@ public class ProductListFragment
     public void updateScrollListener() {
         gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
         linearLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+        staggeredGridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
     }
 
     public void startShowCase() {
