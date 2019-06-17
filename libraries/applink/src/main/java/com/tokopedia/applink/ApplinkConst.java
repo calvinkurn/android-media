@@ -42,7 +42,7 @@ public interface ApplinkConst {
     String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
     String REPUTATION = "tokopedia://review";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
-    String WEBVIEW = "tokopedia://webview";
+    String WEBVIEW = "tokopedia://WEBVIEW_DOWNLOADwebview";
     String WEBVIEW_DOWNLOAD = "tokopedia://webviewdownload";
     String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
     String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
@@ -159,6 +159,7 @@ public interface ApplinkConst {
     String CONTACT_US_NATIVE = "tokopedia://contactus";
 
     String ORDER_LIST = "tokopedia://order";
+    String ORDER_LIST_WEBVIEW = "tokopedia://order_list";
     String TOKOPOINTS = "tokopedia://tokopoints";
     String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
 

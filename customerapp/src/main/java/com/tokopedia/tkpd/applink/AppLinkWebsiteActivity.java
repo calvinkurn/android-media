@@ -87,11 +87,9 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         if (TextUtils.isEmpty(webUrl)) {
             webUrl = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL;
         }
-        if (webUrl.contains(INSURANCE_TEXT)) {
-            return BaseDownloadAppLinkActivity.Companion.newIntent(context, webUrl, showToolbar, needLogin, INSURANCE_EXTENSIONS);
-        } else {
-            return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar, needLogin);
-        }
+
+        return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar, needLogin);
+
     }
 
     @SuppressWarnings("unused")

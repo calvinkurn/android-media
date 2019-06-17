@@ -39,6 +39,7 @@ public class OrderListActivity extends BaseSimpleActivity
     private OrderTabAdapter adapter;
     private OrderListComponent orderListComponent;
     private OrderListInitContract.Presenter presenter;
+   
 
     @DeepLink({ApplinkConst.DEALS_ORDER,
             ApplinkConst.DIGITAL_ORDER,

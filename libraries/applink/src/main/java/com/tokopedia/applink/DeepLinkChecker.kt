@@ -42,6 +42,7 @@ object DeepLinkChecker {
     const val PROFILE = 25
     const val CONTENT = 26
     const val SMCREFERRAL = 27
+    const val ORDER_LIST = 28
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 

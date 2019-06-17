@@ -63,6 +63,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
         private const val DEFAULT_TOOLBAR_VISIBILITY = true
 
+        @JvmStatic
         fun getStartIntent(
                 context: Context,
                 url: String,
