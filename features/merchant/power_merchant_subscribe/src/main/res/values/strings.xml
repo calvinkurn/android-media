@@ -7,18 +7,18 @@
     <string name="pm_label_power_merchant_badge">Badge Power Merchant</string>
     <string name="pm_label_special_promo">Pilihan Promo Spesial</string>
     <string name="pm_exclusive_promo">Promo Eksklusif Power Merchant</string>
-    <string name="pm_exclusive_promo_desc">Tingkatkan penjualan dengan Promo</string>
+    <string name="pm_exclusive_promo_desc">Tingkatkan penjualan dengan Promo Tokopedia untuk merchant.</string>
     <string name="pm_label_special_promo_big">Ikut Promo Besar Tokopedia</string>
     <string name="pm_label_topads_credit">Tambahan Credit TopAds</string>
     <string name="pm_label_market_insight">Jadi Toko Pilihan Pembeli</string>
-    <string name="pm_label_market_insight_desc">Tampil lebih menarik dan lebih dipercaya</string>
+    <string name="pm_label_market_insight_desc">Tampil lebih menarik dan lebih dipercaya pembeli.</string>
     <string name="pm_label_member">Terdaftar</string>
     <string name="pm_label_member_status">Status layanan</string>
 
     <string name="error_cancellation_tryagain">Coba Lagi</string>
 
     <string name="pm_label_kyc_verification_header">Semakin terpercaya dengan upload KTP di Power Merchant</string>
-    <string name="pm_label_kyc_verification_desc_1">Untuk menjadi Power Merchant kamu harus upload foto KTP dan selfie dengan KTP melalui aplikasi Tokopedia. </string>
+    <string name="pm_label_kyc_verification_desc_1">Toko dengan Power Merchant terbukti dapat tingkatkan penjualan dan lebih dipercaya calon pembeli.</string>
     <string name="pm_label_kyc_button_submit">Lebih Lanjut</string>
     <string name="pm_label_kyc_button_verification">Verifikasi Sekarang </string>
 
@@ -49,7 +49,7 @@
     <string name="pm_label_bottom_sheet_cancel_desc">Dengan membatalkan, kamu tidak dapat mengakses fitur-fitur Power Merchant berikut:</string>
 
     <string name="pm_label_button_activate">Upgrade Tokomu</string>
-    <string name="pm_label_member_cancel">Batalkan keanggotaan kapan saja</string>
+    <string name="pm_label_member_cancel">Batalkan kapan saja</string>
     <string name="pm_label_member_cancel_learnmore">Status keanggotaan aktif jika skor performa toko minimum 65 poin. Pelajari Selengkapnya</string>
     <string name="pm_period">Periode baru dimulai pada 1 Juli 2019 pukul 04.00</string>
     <string name="pm_label_cancellation_header">Pengajuan pembatalan berhasil</string>
@@ -66,7 +66,7 @@
     <string name="pm_terms_error_no_agreed">Kamu harus menyetujui Syarat dan Ketentuan.</string>
 
     <string name="pm_title_tnc">Syarat dan Ketentuan</string>
-    <string name="pm_credit_desc">Dapatkan bonus kredit 5% setiap top-up</string>
+    <string name="pm_credit_desc">Dapatkan bonus kredit 5% setiap top-up kredit Top-Ads.</string>
     <string name="pm_big_promo">Tingkatkan penjualan dengan berpartisipasi di kegiatan promosi tahunan.</string>
     <string name="pm_special_promo">Lebih banyak pilihan promo khusus Power Merchant.</string>
     <string name="pm_label_learn_more_benefit">Optimalkan penjualan dengan Flash Sale, Modal Toko dan fitur eksklusif lainnya. Pelajari Selengkapnya</string>
