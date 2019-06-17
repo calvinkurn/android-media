@@ -533,6 +533,9 @@ open class PlayViewStateImpl(
                 errorView.show()
                 setToolbarWhite()
                 showLoginButton(false)
+                listener.onVideoPlayActive(false)
+            } else {
+                listener.onVideoPlayActive(true)
             }
         }
 

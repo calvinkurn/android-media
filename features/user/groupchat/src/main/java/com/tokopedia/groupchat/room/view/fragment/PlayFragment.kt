@@ -509,12 +509,15 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun handleEvent(it: EventGroupChatViewModel) {
         when {
             it.isFreeze -> {
-                listener.onPlayFreeze(it.isFreeze)
                 viewState.onChannelFrozen(it.channelId)
                 onToolbarEnabled(false)
             }
             it.isBanned -> viewState.banUser(it.userId)
         }
+    }
+
+    override fun onVideoPlayActive(isActive: Boolean) {
+        listener.onPlayerActive(isActive)
     }
 
     override fun onFinish() {

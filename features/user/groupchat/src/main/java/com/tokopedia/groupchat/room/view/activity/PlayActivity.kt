@@ -90,8 +90,8 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
         setFragment()
     }
 
-    override fun onPlayFreeze(isFreeze: Boolean) {
-        if (!isFreeze) {
+    override fun onPlayerActive(isActive: Boolean) {
+        if (isActive) {
             TkpdVideoPlayer.Builder()
                     .transaction(R.id.playerView, supportFragmentManager)
                     .videoSource("https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm")

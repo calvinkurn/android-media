@@ -43,6 +43,8 @@ interface PlayContract {
         fun onToolbarEnabled(b: Boolean)
         fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel)
         fun onStickyComponentReceived(it: StickyComponentViewModel)
+
+        fun onVideoPlayActive(isActive: Boolean)
     }
 
     interface Presenter: CustomerPresenter<View> {
