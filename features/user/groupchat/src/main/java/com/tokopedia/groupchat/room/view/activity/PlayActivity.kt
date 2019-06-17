@@ -26,15 +26,17 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.videoplayer.utils.RepeatMode
 import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
+import kotlinx.android.synthetic.main.play_activity.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
  * @author : Steven 11/02/19
  */
-open class PlayActivity : BaseSimpleActivity() {
+open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
 
     lateinit var rootView: View
     lateinit var viewPager: NonSwipeableViewPager
@@ -91,6 +93,12 @@ open class PlayActivity : BaseSimpleActivity() {
                 .videoSource("https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm")
                 .repeatMode(RepeatMode.REPEAT_MODE_ALL)
                 .build()
+    }
+
+    override fun onPlayFreeze(isFreeze: Boolean) {
+        if (!isFreeze) {
+            playerView.show()
+        }
     }
 
     private fun setFragment() {

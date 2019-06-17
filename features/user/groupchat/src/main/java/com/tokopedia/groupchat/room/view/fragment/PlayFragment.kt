@@ -35,6 +35,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.activity.PlayActivity
+import com.tokopedia.groupchat.room.view.activity.PlayViewListener
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
@@ -110,6 +111,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private var timeStampAfterPause: Long = 0
     private var position = 0
     private var optionsMenuEnable = false
+
+    private lateinit var listener: PlayViewListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -506,6 +509,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun handleEvent(it: EventGroupChatViewModel) {
         when {
             it.isFreeze -> {
+                listener.onPlayFreeze(it.isFreeze)
                 viewState.onChannelFrozen(it.channelId)
                 onToolbarEnabled(false)
             }
@@ -749,6 +753,13 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
         presenter.detachView()
         super.onDestroy()
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (context is PlayViewListener) {
+            listener = context
+        }
     }
 
     override fun getRecyclerView(view: View): RecyclerView {
