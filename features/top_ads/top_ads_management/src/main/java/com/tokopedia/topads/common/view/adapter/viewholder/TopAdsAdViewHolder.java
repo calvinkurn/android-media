@@ -7,10 +7,12 @@ import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.design.image.ImageLoader;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
@@ -37,6 +39,7 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
     private TextView groupNameView;
     private View optionImageButton;
     private CheckBox checkBox;
+    private ImageView thumb;
 
     public TopAdsAdViewHolder(View view) {
         super(view);
@@ -52,6 +55,7 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
         groupNameView = (TextView) view.findViewById(R.id.group_name);
         optionImageButton = view.findViewById(R.id.image_button_option);
         checkBox = (CheckBox) view.findViewById(R.id.check_box_product);
+        thumb = (ImageView) view.findViewById(R.id.thumb);
 
         // programmatically styling for ProgressBar
         // http://stackoverflow.com/questions/16893209/how-to-customize-a-progress-bar-in-android
@@ -63,6 +67,7 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
     public void bind(final T ad) {
         titleProduct.setText(ad.getName());
         statusActive.setText(ad.getStatusDesc());
+        ImageLoader.LoadImage(thumb, ad.getProductImageUrl());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
                 statusActiveDot.setBackgroundResource(R.drawable.ic_status_green);

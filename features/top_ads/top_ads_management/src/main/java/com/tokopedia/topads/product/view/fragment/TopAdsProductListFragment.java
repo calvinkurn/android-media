@@ -16,8 +16,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
-import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory;
-import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.common.view.utils.TopAdsBottomSheetsSelectGroup;
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets;
@@ -183,6 +181,18 @@ public class TopAdsProductListFragment extends TopAdsBaseListFragment<ProductAd,
             bottomSheetsSelectGroup.resetDialog();
             bottomSheetsSelectGroup.setGroupAds(groupAds);
         }
+    }
+
+    @Override
+    public void onAutoAdsActive() {
+        setHasOptionsMenu(false);
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onAutoAdsInactive() {
+        setHasOptionsMenu(true);
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override

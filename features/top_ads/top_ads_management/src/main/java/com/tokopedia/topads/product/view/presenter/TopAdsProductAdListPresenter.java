@@ -149,6 +149,7 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
                         for (ProductAd ads : listPageDataResponse.getData()) {
                             ads.setAutoAds(topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE);
                         }
+                        listPageDataResponse.setAutoAds(topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE);
                         return listPageDataResponse;
                     }
                 })
@@ -173,6 +174,11 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
                         if (isViewAttached()) {
                             boolean hasNextData = listPageDataResponse.getPage().getPerPage() * page < listPageDataResponse.getPage().getTotal();
                             getView().onSearchLoaded(listPageDataResponse.getData(), hasNextData);
+                            if(listPageDataResponse.isAutoAds()) {
+                                getView().onAutoAdsActive();
+                            } else {
+                                getView().onAutoAdsInactive();
+                            }
                         }
                     }
                 });

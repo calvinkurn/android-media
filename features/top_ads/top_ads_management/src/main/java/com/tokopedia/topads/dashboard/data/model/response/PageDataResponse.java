@@ -12,6 +12,8 @@ import com.tokopedia.topads.dashboard.data.model.data.Page;
 
 public class PageDataResponse<T> extends DataResponse<T> {
 
+    @Expose(serialize = false, deserialize = false)
+    private boolean isAutoAds;
     @SerializedName("meta")
     @Expose
     private Meta meta;
@@ -33,6 +35,15 @@ public class PageDataResponse<T> extends DataResponse<T> {
 
     public void setPage(Page page) {
         this.page = page;
+    }
+
+    @Override
+    public boolean isAutoAds() {
+        return isAutoAds;
+    }
+
+    public void setAutoAds(boolean autoAds) {
+        isAutoAds = autoAds;
     }
 
 }

@@ -110,6 +110,18 @@ public class ProductAd implements Ad, Parcelable, Visitable<TopAdsListAdapterTyp
     @SerializedName("group_id")
     @Expose
     private long groupId;
+    @SerializedName("product_image_uri")
+    @Expose
+    private String productImageUrl;
+
+    @Override
+    public String getProductImageUrl() {
+        return productImageUrl;
+    }
+
+    public void setProductImageUrl(String productImageUrl) {
+        this.productImageUrl = productImageUrl;
+    }
 
     @Override
     public boolean isAutoAds() {
@@ -305,6 +317,7 @@ public class ProductAd implements Ad, Parcelable, Visitable<TopAdsListAdapterTyp
         dest.writeString(this.productUri);
         dest.writeInt(this.productActive);
         dest.writeString(this.groupName);
+        dest.writeString(this.productImageUrl);
         dest.writeLong(this.groupId);
         dest.writeByte((byte) (isAutoAds ? 1 : 0));
     }
@@ -339,6 +352,7 @@ public class ProductAd implements Ad, Parcelable, Visitable<TopAdsListAdapterTyp
         this.productUri = in.readString();
         this.productActive = in.readInt();
         this.groupName = in.readString();
+        this.productImageUrl = in.readString();
         this.groupId = in.readLong();
         this.isAutoAds = in.readByte() != 0;
     }

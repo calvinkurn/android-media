@@ -89,6 +89,9 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
     @SerializedName("group_name")
     @Expose
     private String name;
+    @SerializedName("product_image_uri")
+    @Expose
+    private String productImageUrl;
     @SerializedName("group_moderated")
     @Expose
     private int adModerated;
@@ -268,6 +271,15 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
         return name;
     }
 
+    @Override
+    public String getProductImageUrl() {
+        return productImageUrl;
+    }
+
+    public void setProductImageUrl(String productImageUrl) {
+        this.productImageUrl = productImageUrl;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -346,6 +358,7 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
         dest.writeString(this.labelPerClick);
         dest.writeString(this.labelOf);
         dest.writeString(this.name);
+        dest.writeString(this.productImageUrl);
         dest.writeInt(this.adModerated);
         dest.writeString(this.adModeratedReason);
         dest.writeInt(this.totalItem);
@@ -380,6 +393,7 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
         this.labelPerClick = in.readString();
         this.labelOf = in.readString();
         this.name = in.readString();
+        this.productImageUrl = in.readString();
         this.adModerated = in.readInt();
         this.adModeratedReason = in.readString();
         this.totalItem = in.readInt();

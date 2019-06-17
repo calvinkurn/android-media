@@ -223,6 +223,22 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     @Override
+    public void onAutoAdsActive() {
+        super.onAutoAdsActive();
+        status.setVisibility(View.GONE);
+        promoGroupLabelView.setVisibility(View.GONE);
+        priceAndSchedule.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onAutoAdsInactive() {
+        super.onAutoAdsInactive();
+        status.setVisibility(View.VISIBLE);
+        promoGroupLabelView.setVisibility(View.VISIBLE);
+        priceAndSchedule.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     protected void updateMainView(ProductAd ad) {
         super.updateMainView(ad);
         String groupName = ad.getGroupName();

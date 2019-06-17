@@ -89,12 +89,25 @@ public class ShopAd implements Ad, Parcelable {
     @Expose
     private String name;
 
+    @SerializedName("product_image_uri")
+    @Expose
+    private String productImageUrl;
+
     @SerializedName("shop_id")
     @Expose
     private long shopId;
     @SerializedName("shop_uri")
     @Expose
     private String shopUri;
+
+    @Override
+    public String getProductImageUrl() {
+        return productImageUrl;
+    }
+
+    public void setProductImageUrl(String productImageUrl) {
+        this.productImageUrl = productImageUrl;
+    }
 
     @Override
     public boolean isAutoAds() {
@@ -259,6 +272,7 @@ public class ShopAd implements Ad, Parcelable {
         dest.writeString(this.name);
         dest.writeLong(this.shopId);
         dest.writeString(this.shopUri);
+        dest.writeString(this.productImageUrl);
         dest.writeByte((byte) (isAutoAds ? 1 : 0));
     }
 
@@ -291,6 +305,7 @@ public class ShopAd implements Ad, Parcelable {
         this.name = in.readString();
         this.shopId = in.readLong();
         this.shopUri = in.readString();
+        this.productImageUrl = in.readString();
         this.isAutoAds = in.readByte() != 0;
     }
 
