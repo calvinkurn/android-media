@@ -5,5 +5,6 @@ package com.tokopedia.checkout.view.feature.cartlist.viewmodel
  */
 
 data class CartRecentViewHolderData(
+        var lastFocussPosition: Int = 0,
         var recentViewList: List<CartRecentViewItemHolderData> = arrayListOf()
 )

@@ -28,10 +28,12 @@ import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartWishlistViewH
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartEmptyHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecommendationItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartSectionHeaderHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
@@ -57,6 +59,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
     private CompositeSubscription compositeSubscription;
     private CartEmptyHolderData cartEmptyHolderData;
+    private CartWishlistAdapter cartWishlistAdapter;
+    private CartRecentViewAdapter cartRecentViewAdapter;
 
     @Inject
     public CartAdapter(ActionListener actionListener, PromoActionListener promoActionListener,
@@ -182,10 +186,12 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final CartRecentViewViewHolder holderView = (CartRecentViewViewHolder) holder;
             final CartRecentViewHolderData data = (CartRecentViewHolderData) cartDataList.get(position);
             holderView.bind(data);
+            cartRecentViewAdapter = holderView.getRecentViewAdapter();
         } else if (getItemViewType(position) == CartWishlistViewHolder.Companion.getLAYOUT()) {
             final CartWishlistViewHolder holderView = (CartWishlistViewHolder) holder;
             final CartWishlistHolderData data = (CartWishlistHolderData) cartDataList.get(position);
             holderView.bind(data);
+            cartWishlistAdapter = holderView.getWishlistAdapter();
         } else if (getItemViewType(position) == CartSectionHeaderViewHolder.Companion.getLAYOUT()) {
             final CartSectionHeaderViewHolder holderView = (CartSectionHeaderViewHolder) holder;
             final CartSectionHeaderHolderData data = (CartSectionHeaderHolderData) cartDataList.get(position);
@@ -625,4 +631,39 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         cartDataList.add(adsModel);
     }
 
+    public void notifyWishlist(String productId, boolean isWishlist) {
+        for (Object object : cartDataList) {
+            if (object instanceof CartWishlistHolderData) {
+                List<CartWishlistItemHolderData> wishlist = ((CartWishlistHolderData) object).getWishList();
+                for (CartWishlistItemHolderData data : wishlist) {
+                    if (data.getId().equals(productId)) {
+                        data.setWishlist(isWishlist);
+                        if (cartWishlistAdapter != null) {
+                            cartWishlistAdapter.notifyItemChanged(wishlist.indexOf(data));
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    public void notifyRecentView(String productId, boolean isWishlist) {
+        for (Object object : cartDataList) {
+            if (object instanceof CartRecentViewHolderData) {
+                List<CartRecentViewItemHolderData> recentViews = ((CartRecentViewHolderData) object).getRecentViewList();
+                for (CartRecentViewItemHolderData data : recentViews) {
+                    if (data.getId().equals(productId)) {
+                        data.setWishlist(isWishlist);
+                        if (cartRecentViewAdapter != null) {
+                            cartRecentViewAdapter.notifyItemChanged(recentViews.indexOf(data));
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+    }
 }

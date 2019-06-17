@@ -35,7 +35,6 @@ public class Wishlist implements Parcelable {
     String PriceFmt;
     @SerializedName("minimum_order")
     int MinimumOrder;
-
     @SerializedName("wholesale_price")
     List<WholesalePrice> Wholesale = new ArrayList<>();
     @SerializedName("shop")
@@ -48,6 +47,12 @@ public class Wishlist implements Parcelable {
     @SerializedName("labels")
     @Expose
     public List<Label> labels;
+    @SerializedName("rating")
+    @Expose
+    public int rating;
+    @SerializedName("review_count")
+    @Expose
+    public int reviewCount;
 
     public List<Label> getLabels() {
         return labels;
@@ -170,55 +175,77 @@ public class Wishlist implements Parcelable {
         this.isPreOrder = isPreOrder;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public int getRating() {
+        return rating;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.Id);
-        dest.writeString(this.Name);
-        dest.writeString(this.Url);
-        dest.writeString(this.ImageUrl);
-        dest.writeInt(this.Price);
-        dest.writeString(this.Condition);
-        dest.writeValue(this.isAvailable);
-        dest.writeString(this.Status);
-        dest.writeString(this.PriceFmt);
-        dest.writeInt(this.MinimumOrder);
-        dest.writeTypedList(this.Wholesale);
-        dest.writeParcelable(this.Shop, flags);
-        dest.writeValue(this.isPreOrder);
-        dest.writeTypedList(this.badges);
-        dest.writeTypedList(this.labels);
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public int getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(int reviewCount) {
+        this.reviewCount = reviewCount;
     }
 
     public Wishlist() {
     }
 
     protected Wishlist(Parcel in) {
-        this.Id = in.readString();
-        this.Name = in.readString();
-        this.Url = in.readString();
-        this.ImageUrl = in.readString();
-        this.Price = in.readInt();
-        this.Condition = in.readString();
-        this.isAvailable = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.Status = in.readString();
-        this.PriceFmt = in.readString();
-        this.MinimumOrder = in.readInt();
-        this.Wholesale = in.createTypedArrayList(WholesalePrice.CREATOR);
-        this.Shop = in.readParcelable(Shop.class.getClassLoader());
-        this.isPreOrder = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.badges = in.createTypedArrayList(Badge.CREATOR);
-        this.labels = in.createTypedArrayList(Label.CREATOR);
+        Id = in.readString();
+        Name = in.readString();
+        Url = in.readString();
+        ImageUrl = in.readString();
+        Price = in.readInt();
+        Condition = in.readString();
+        byte tmpIsAvailable = in.readByte();
+        isAvailable = tmpIsAvailable == 0 ? null : tmpIsAvailable == 1;
+        Status = in.readString();
+        PriceFmt = in.readString();
+        MinimumOrder = in.readInt();
+        Wholesale = in.createTypedArrayList(WholesalePrice.CREATOR);
+        Shop = in.readParcelable(com.tokopedia.wishlist.common.data.source.cloud.model.Shop.class.getClassLoader());
+        byte tmpIsPreOrder = in.readByte();
+        isPreOrder = tmpIsPreOrder == 0 ? null : tmpIsPreOrder == 1;
+        badges = in.createTypedArrayList(Badge.CREATOR);
+        labels = in.createTypedArrayList(Label.CREATOR);
+        rating = in.readInt();
+        reviewCount = in.readInt();
     }
 
-    public static final Parcelable.Creator<Wishlist> CREATOR = new Parcelable.Creator<Wishlist>() {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(Id);
+        dest.writeString(Name);
+        dest.writeString(Url);
+        dest.writeString(ImageUrl);
+        dest.writeInt(Price);
+        dest.writeString(Condition);
+        dest.writeByte((byte) (isAvailable == null ? 0 : isAvailable ? 1 : 2));
+        dest.writeString(Status);
+        dest.writeString(PriceFmt);
+        dest.writeInt(MinimumOrder);
+        dest.writeTypedList(Wholesale);
+        dest.writeParcelable(Shop, flags);
+        dest.writeByte((byte) (isPreOrder == null ? 0 : isPreOrder ? 1 : 2));
+        dest.writeTypedList(badges);
+        dest.writeTypedList(labels);
+        dest.writeInt(rating);
+        dest.writeInt(reviewCount);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Wishlist> CREATOR = new Creator<Wishlist>() {
         @Override
-        public Wishlist createFromParcel(Parcel source) {
-            return new Wishlist(source);
+        public Wishlist createFromParcel(Parcel in) {
+            return new Wishlist(in);
         }
 
         @Override
@@ -226,5 +253,4 @@ public class Wishlist implements Parcelable {
             return new Wishlist[size];
         }
     };
-
 }

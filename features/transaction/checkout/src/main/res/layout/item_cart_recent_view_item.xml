@@ -14,11 +14,25 @@
         app:cardCornerRadius="@dimen/dp_4"
         app:cardElevation="@dimen/dp_0">
 
-        <ImageView
-            android:id="@+id/img_product"
-            android:layout_width="@dimen/dp_120"
-            android:layout_height="@dimen/dp_120"
-            android:src="@color/grey_300" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/img_product"
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="@dimen/dp_120"
+                android:src="@color/grey_300" />
+
+            <ImageButton
+                android:id="@+id/img_wishlist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/bg_round_button_with_shadow"
+                android:src="@drawable/ic_wishlist_checkout_on" />
+
+        </FrameLayout>
 
     </android.support.v7.widget.CardView>
 

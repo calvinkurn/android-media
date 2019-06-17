@@ -1091,13 +1091,11 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processAddToWishlist(String productId, String userId, WishListActionListener listener) {
-        view.showProgressLoading();
         addWishListUseCase.createObservable(productId, userId, listener);
     }
 
     @Override
     public void processRemoveFromWishlist(String productId, String userId, WishListActionListener listener) {
-        view.showProgressLoading();
         removeWishListUseCase.createObservable(productId, userId, listener);
     }
 

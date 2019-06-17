@@ -8,5 +8,6 @@ data class CartWishlistItemHolderData(
         var id: String = "",
         var name: String = "",
         var price: String = "",
-        var imageUrl: String = ""
+        var imageUrl: String = "",
+        var isWishlist: Boolean = false
 )

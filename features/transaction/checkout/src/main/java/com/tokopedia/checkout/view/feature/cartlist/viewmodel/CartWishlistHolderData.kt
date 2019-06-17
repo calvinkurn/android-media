@@ -5,5 +5,6 @@ package com.tokopedia.checkout.view.feature.cartlist.viewmodel
  */
 
 data class CartWishlistHolderData(
+        var lastFocussPosition: Int = 0,
         var wishList: List<CartWishlistItemHolderData> = arrayListOf()
 )

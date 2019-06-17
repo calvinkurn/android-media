@@ -15,16 +15,21 @@ import kotlinx.android.synthetic.main.item_cart_recent_view.view.*
 
 class CartRecentViewViewHolder(val view: View, val listener: ActionListener) : RecyclerView.ViewHolder(view) {
 
+    var recentViewAdapter: CartRecentViewAdapter? = null
+
     companion object {
         val LAYOUT = R.layout.item_cart_recent_view
     }
 
     fun bind(element: CartRecentViewHolderData) {
-        val recentViewAdapter = CartRecentViewAdapter(listener)
-        recentViewAdapter.recentViewItemHoldeDataList = element.recentViewList
+        if (recentViewAdapter == null) {
+            recentViewAdapter = CartRecentViewAdapter(listener)
+        }
+        recentViewAdapter?.recentViewItemHoldeDataList = element.recentViewList
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         itemView.rv_recent_view.layoutManager = layoutManager
         itemView.rv_recent_view.adapter = recentViewAdapter
+        itemView.rv_recent_view.scrollToPosition(element.lastFocussPosition)
     }
 
 }

@@ -36,6 +36,9 @@ public class RecentView implements Parcelable {
     @SerializedName("product_price")
     @Expose
     private String productPrice;
+    @SerializedName("wishlist")
+    @Expose
+    private boolean wishlist;
 
     public RecentView() {
     }
@@ -49,6 +52,7 @@ public class RecentView implements Parcelable {
         productImage = in.readString();
         shopId = in.readString();
         productPrice = in.readString();
+        wishlist = in.readByte() != 0;
     }
 
     @Override
@@ -61,6 +65,7 @@ public class RecentView implements Parcelable {
         dest.writeString(productImage);
         dest.writeString(shopId);
         dest.writeString(productPrice);
+        dest.writeByte((byte) (wishlist ? 1 : 0));
     }
 
     @Override
@@ -142,5 +147,9 @@ public class RecentView implements Parcelable {
 
     public void setProductPrice(String productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public boolean isWishlist() {
+        return wishlist;
     }
 }

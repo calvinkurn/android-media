@@ -19,6 +19,12 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
     }
 
     fun bind(element: CartRecentViewItemHolderData) {
+        if (element.isWishlist) {
+            itemView.img_wishlist.setImageResource(R.drawable.ic_wishlist_checkout_on)
+        } else {
+            itemView.img_wishlist.setImageResource(R.drawable.ic_wishlist_checkout_off)
+        }
+
         itemView.tv_product_name.text = element.name
         itemView.tv_product_price.text = element.price
         ImageHandler.loadImage(itemView.context, itemView.img_product,
@@ -28,9 +34,12 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
         itemView.img_product.layoutParams.width = itemWidth
         itemView.img_product.requestLayout()
 
-        itemView.setOnClickListener { v ->
-//            actionListener.onItemRecentViewClicked(
-//                    recentViewViewModel.getRecentView(), adapterPosition + 1)
+        itemView.img_wishlist.setOnClickListener {
+            if (element.isWishlist) {
+                actionListener.onRemoveFromWishlist(element.id);
+            } else {
+                actionListener.onAddToWishlist(element.id);
+            }
         }
 
     }

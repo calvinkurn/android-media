@@ -12,7 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
@@ -619,6 +618,16 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onShowAllItem(@NotNull String appLink) {
         RouteManager.route(getActivity(), appLink);
+    }
+
+    @Override
+    public void onAddToWishlist(@NotNull String productId) {
+        dPresenter.processAddToWishlist(productId, userSession.getUserId(), this);
+    }
+
+    @Override
+    public void onRemoveFromWishlist(@NotNull String productId) {
+        dPresenter.processRemoveFromWishlist(productId, userSession.getUserId(), this);
     }
 
     @NonNull
@@ -1487,30 +1496,35 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onErrorAddWishList(String errorMessage, String productId) {
-        hideProgressLoading();
         showToastMessageRed(errorMessage);
         cartAdapter.notifyByProductId(productId, false);
+
+        cartAdapter.notifyWishlist(productId, false);
+        cartAdapter.notifyRecentView(productId, false);
     }
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        hideProgressLoading();
         showToastMessageGreen(getString(R.string.toast_message_add_wishlist_success));
         cartAdapter.notifyByProductId(productId, true);
+        cartAdapter.notifyWishlist(productId, true);
+        cartAdapter.notifyRecentView(productId, true);
     }
 
     @Override
     public void onErrorRemoveWishlist(String errorMessage, String productId) {
-        hideProgressLoading();
         showToastMessageRed(errorMessage);
         cartAdapter.notifyByProductId(productId, true);
+        cartAdapter.notifyWishlist(productId, true);
+        cartAdapter.notifyRecentView(productId, true);
     }
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        hideProgressLoading();
         showToastMessageGreen(getString(R.string.toast_message_remove_wishlist_success));
         cartAdapter.notifyByProductId(productId, false);
+        cartAdapter.notifyWishlist(productId, false);
+        cartAdapter.notifyRecentView(productId, false);
     }
 
     @Override
@@ -1851,7 +1865,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartRecentViewItemHolderData.setName(recentView.getProductName());
             cartRecentViewItemHolderData.setPrice(recentView.getProductPrice());
             cartRecentViewItemHolderData.setImageUrl(recentView.getProductImage());
-
+            cartRecentViewItemHolderData.setWishlist(recentView.isWishlist());
             cartRecentViewItemHolderDataList.add(cartRecentViewItemHolderData);
         }
 
@@ -1873,7 +1887,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartWishlistItemHolderData.setName(item.getName());
             cartWishlistItemHolderData.setPrice(item.getPriceFmt());
             cartWishlistItemHolderData.setImageUrl(item.getImageUrl());
-
+            cartWishlistItemHolderData.setWishlist(true);
             cartWishlistItemHolderDataList.add(cartWishlistItemHolderData);
         }
 

@@ -15,16 +15,21 @@ import kotlinx.android.synthetic.main.item_cart_wishlist.view.*
 
 class CartWishlistViewHolder(val view: View, val listener: ActionListener) : RecyclerView.ViewHolder(view) {
 
+    var wishlistAdapter: CartWishlistAdapter? = null
+
     companion object {
         val LAYOUT = R.layout.item_cart_wishlist
     }
 
     fun bind(element: CartWishlistHolderData) {
-        val wishlistAdapter = CartWishlistAdapter(listener)
-        wishlistAdapter.wishlistItemHoldeDataList = element.wishList
+        if (wishlistAdapter == null) {
+            wishlistAdapter = CartWishlistAdapter(listener)
+        }
+        wishlistAdapter?.wishlistItemHoldeDataList = element.wishList
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         itemView.rv_wishlist.layoutManager = layoutManager
         itemView.rv_wishlist.adapter = wishlistAdapter
+        itemView.rv_wishlist.scrollToPosition(element.lastFocussPosition)
     }
 
 }
