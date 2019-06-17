@@ -132,6 +132,40 @@
             app:layout_constraintStart_toStartOf="@+id/textViewCompat6"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat6" />
 
+        <View
+            android:id="@+id/view_line_pm"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@android:color/black"
+            app:layout_constraintTop_toBottomOf="@+id/imageView8"
+            tools:layout_editor_absoluteX="10dp"
+            />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/textViewCompat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="Fitur Khusus Power Merchant"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:fontSize="small"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="Optimalkan penjualan dengan Flash Sale, Modal Toko dan fitur eksklusif lainnya. Pelajari Selengkapnya"
+            app:fontSize="micro"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCompat" />
+
     </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>
