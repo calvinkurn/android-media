@@ -40,6 +40,7 @@ class ParentSettingPojo(
     }
 
     fun hasDescription(): Boolean = description.isNotEmpty()
+    fun hasChild(): Boolean = childSettings.isNotEmpty()
 
 }
 

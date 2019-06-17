@@ -8,10 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
+import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
+import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactoryImpl
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
 import javax.inject.Inject
@@ -44,8 +47,13 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>, BaseAdapter
         }
     }
 
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
+        val adapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>(adapterTypeFactory as SettingFieldTypeFactory, null)
+        return adapter as BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>
+    }
+
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return SettingFieldTypeFactory()
+        return SettingFieldTypeFactoryImpl()
     }
 
     override fun onItemClicked(item: Visitable<*>?) {

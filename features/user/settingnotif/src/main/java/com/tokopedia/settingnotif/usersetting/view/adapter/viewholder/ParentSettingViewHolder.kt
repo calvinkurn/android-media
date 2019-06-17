@@ -7,7 +7,10 @@ import android.widget.TextView
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSettingPojo
 
-class ParentSettingViewHolder(itemView: View?) : SettingViewHolder<ParentSettingPojo>(itemView) {
+class ParentSettingViewHolder(
+        itemView: View?,
+        settingListener: SettingListener
+) : SettingViewHolder<ParentSettingPojo>(itemView, settingListener) {
 
     private val switchTitle: TextView? = itemView?.findViewById(R.id.tv_sw_title)
     private val description: TextView? = itemView?.findViewById(R.id.tv_desc)
@@ -18,7 +21,7 @@ class ParentSettingViewHolder(itemView: View?) : SettingViewHolder<ParentSetting
 
     override fun bind(element: ParentSettingPojo?) {
         super.bind(element)
-        if(element == null) return
+        if (element == null) return
 
         setSettingTitle(element)
         setSettingDesc(element)
@@ -33,6 +36,26 @@ class ParentSettingViewHolder(itemView: View?) : SettingViewHolder<ParentSetting
             description?.visibility = View.VISIBLE
             description?.text = element.description
         }
+    }
+
+    override fun updateSiblingAndChild(element: ParentSettingPojo, checked: Boolean) {
+        if (!element.hasChild()) return
+
+        val childs = element.childSettings
+        val childPosition = arrayListOf<Int>()
+        for (index in 0 until childs.size) {
+            val child = childs[index]
+            if (child.status != checked) {
+                child.status = checked
+                childPosition.add(index)
+            }
+        }
+
+        if (childPosition.isEmpty()) return
+
+        val dataPosition = adapterPosition
+        val adapterChildPosition = childPosition.map { index -> dataPosition + 1 + index }
+        settingListener.updateSettingView(adapterChildPosition)
     }
 
     companion object {
