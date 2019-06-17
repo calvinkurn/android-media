@@ -18,7 +18,7 @@ class GridProductItem2019ViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.search_srp_item_grid
+        val LAYOUT = R.layout.search_srp_item_grid_2019
     }
 
     protected val context = itemView.context!!
