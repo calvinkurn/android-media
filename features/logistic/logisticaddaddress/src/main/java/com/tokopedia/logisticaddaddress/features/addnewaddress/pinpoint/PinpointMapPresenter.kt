@@ -1,10 +1,15 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.places.Places
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.locationmanager.LocationDetectorHelper
+import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.AutofillMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
@@ -17,6 +22,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.GetD
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -37,6 +43,7 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
     private var saveAddressDataModel = SaveAddressDataModel()
+    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     fun connectGoogleApi(mapFragment: PinpointMapFragment) {
         this.googleApiClient = GoogleApiClient.Builder(context)
@@ -130,5 +137,29 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
     fun getDistrictBoundary(districtId: Int, keroToken: String, keroUt: Int) {
         districtBoundaryUseCase.setParams(districtId, keroToken, keroUt)
         districtBoundaryUseCase.execute(RequestParams.create(), DistrictBoundarySubscriber(view, districtBoundaryMapper))
+    }
+
+    fun requestLocation(activity: Activity) {
+        val locationDetectorHelper = activity.let {
+            LocationDetectorHelper(
+                    permissionCheckerHelper,
+                    LocationServices.getFusedLocationProviderClient(it),
+                    it) }
+
+        this.let {
+            locationDetectorHelper.getLocation(onGetLocation(), activity,
+                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                    activity.getString(R.string.rationale_need_location))
+        }
+    }
+
+    private fun onGetLocation(): (DeviceLocation) -> Unit {
+        return {
+            view.showAutoComplete(it.latitude, it.longitude)
+        }
+    }
+
+    fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper) {
+        this.permissionCheckerHelper = permissionCheckerHelper
     }
 }

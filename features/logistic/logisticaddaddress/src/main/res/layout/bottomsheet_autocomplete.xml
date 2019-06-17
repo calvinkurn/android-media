@@ -63,6 +63,7 @@
             android:background="@color/separator_color" />
 
         <RelativeLayout
+            android:id="@+id/rl_current_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

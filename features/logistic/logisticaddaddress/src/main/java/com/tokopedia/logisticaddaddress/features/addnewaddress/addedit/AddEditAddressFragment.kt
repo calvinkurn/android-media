@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
@@ -357,7 +358,7 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         moveMap(PinpointMapUtils.generateLatLng(currentLat, currentLong))
     }
 
-    override fun moveMap(latLng: LatLng) {
+    private fun moveMap(latLng: LatLng) {
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
                 .zoom(15f)
@@ -422,10 +423,12 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     }
 
     private fun finishActivity(saveAddressDataModel: SaveAddressDataModel) {
-        val intent = activity?.intent
-        intent?.putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
+            })
+            finish()
+        }
     }
 
     override fun onGetDistrict(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel) {
@@ -501,5 +504,8 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         rv_kodepos_chips_mismatch.visibility = View.GONE
         et_kode_pos_mismatch.setText(zipCode)
         saveAddressDataModel?.postalCode = zipCode
+    }
+
+    override fun showAutoComplete(lat: Double, long: Double) {
     }
 }

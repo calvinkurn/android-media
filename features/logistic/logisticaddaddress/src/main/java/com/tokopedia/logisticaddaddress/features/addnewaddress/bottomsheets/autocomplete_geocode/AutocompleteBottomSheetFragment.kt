@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.RelativeLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
@@ -30,6 +31,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
     private var currentLong: Double? = 0.0
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
+    private lateinit var rlCurrentLocation: RelativeLayout
     private lateinit var rvPoiList: RecyclerView
     private lateinit var etSearch: EditText
     private lateinit var adapter: AutocompleteBottomSheetAdapter
@@ -41,6 +43,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
 
     interface ActionListener {
         fun onGetPlaceId(placeId: String)
+        fun useCurrentLocation(lat: Double?, long: Double?)
     }
 
     companion object {
@@ -81,6 +84,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
 
     override fun initView(view: View) {
         bottomSheetView = view
+        rlCurrentLocation = view.findViewById(R.id.rl_current_location)
         rvPoiList = view.findViewById(R.id.rv_poi_list)
         etSearch = view.findViewById(R.id.et_search)
         adapter = AutocompleteBottomSheetAdapter(this)
@@ -93,7 +97,16 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
         rvPoiList.layoutManager = linearLayoutManager
         rvPoiList.adapter = adapter
 
-        loadAutocompleteGeocode()
+        if (currentLat != 0.0 && currentLong != 0.0) {
+            loadAutocompleteGeocode()
+            rlCurrentLocation.setOnClickListener {
+                actionListener.useCurrentLocation(currentLat, currentLong)
+                dismiss()
+            }
+        } else {
+            hideListPointOfInterest()
+        }
+
         onAddressTyped()
     }
 

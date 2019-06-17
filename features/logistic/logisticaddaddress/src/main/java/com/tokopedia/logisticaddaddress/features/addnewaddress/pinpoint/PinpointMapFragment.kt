@@ -1,9 +1,12 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
@@ -19,9 +22,7 @@ import android.widget.TextView
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResultCallback
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsResult
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
@@ -59,7 +60,8 @@ import javax.inject.Inject
  */
 class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, ResultCallback<LocationSettingsResult>,
-        AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent> {
+        AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent>, LocationListener {
+
     private var googleMap: GoogleMap? = null
     private var currentLat: Double? = 0.0
     private var currentLong: Double? = 0.0
@@ -72,7 +74,6 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     private val FINISH_FLAG = 1212
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var permissionCheckerHelper = PermissionCheckerHelper()
     private var token: Token? = null
     private var isPolygon: Boolean? = null
     private var districtId: Int? = null
@@ -81,6 +82,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     private var zipCodes : MutableList<String>? = null
     private var saveAddressDataModel: SaveAddressDataModel? = null
     protected var addNewAddressComponent: AddNewAddressComponent? = null
+    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     @Inject
     lateinit var presenter: PinpointMapPresenter
@@ -97,6 +99,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
                     .build()
                     .inject(this@PinpointMapFragment)
             presenter.attachView(this@PinpointMapFragment)
+            presenter.setPermissionChecker(permissionCheckerHelper)
         }
     }
 
@@ -115,6 +118,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
                     putParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL))
                 }
+                permissionCheckerHelper = PermissionCheckerHelper()
             }
         }
     }
@@ -175,14 +179,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
             }
         }
 
-        // nanti cek permission location di sini!
-        if (isShowingAutocomplete == true) {
-            handler.postDelayed({
-                showAutocompleteGeocodeBottomSheet(latitude, longitude)
-            }, 1500)
-        }
-        //
-        // requestLocation()
+        presenter.requestLocation(activity!!)
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
@@ -203,30 +200,15 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         }
     }
 
-    /*private fun requestLocation() {
-        val locationDetectorHelper = activity?.applicationContext?.let {
-            LocationDetectorHelper(
-                    permissionCheckerHelper,
-                    LocationServices.getFusedLocationProviderClient(it),
-                    it) }
-
-        activity?.let {
-            locationDetectorHelper?.getLocation(onGetLocation(), it,
-                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                    it.getString(R.string.rationale_need_location))
+    override fun showAutoComplete(lat: Double, long: Double) {
+        if (isShowingAutocomplete == true) {
+            handler.postDelayed({
+                showAutocompleteGeocodeBottomSheet(lat, long)
+            }, 1000)
         }
     }
 
-    private fun onGetLocation(): Function1<DeviceLocation, Unit> {
-        return (deviceLocation) -> {
-            println("## lat = ${it.latitude}, long = ${it.longitude}")
-        }
-        *//*return { (latitude, longitude) ->
-            // getCampaign(latitude, longitude)
-        }*//*
-    }*/
-
-    override fun moveMap(latLng: LatLng) {
+    private fun moveMap(latLng: LatLng) {
         println("## masuk moveMap - lat = ${latLng.latitude}, long = ${latLng.longitude}")
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
@@ -379,11 +361,10 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
         intent.putExtra(AddressConstants.KERO_TOKEN, token)
         intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
         startActivityForResult(intent, FINISH_FLAG)
-        activity?.finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == FINISH_FLAG){
+        if(requestCode == FINISH_FLAG && resultCode == Activity.RESULT_OK){
             if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
                 val newAddress = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
                 finishActivity(newAddress)
@@ -392,14 +373,13 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     }
 
     private fun finishActivity(saveAddressDataModel: SaveAddressDataModel) {
-        val intent = activity?.intent
-        intent?.putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(EXTRA_ADDRESS_NEW, saveAddressDataModel)
+            })
+            finish()
+        }
     }
-
-    private fun checkPermissions() =
-            context?.let { ActivityCompat.checkSelfPermission(it, ACCESS_COARSE_LOCATION) } == PERMISSION_GRANTED
 
     override fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel) {
         this.googleMap?.addPolygon(PolygonOptions()
@@ -411,5 +391,26 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, GoogleApiC
     override fun getComponent(): AddNewAddressComponent? {
         if (addNewAddressComponent == null) initInjector()
         return addNewAddressComponent
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context?.let {
+                permissionCheckerHelper.onRequestPermissionsResult(it,
+                        requestCode, permissions,
+                        grantResults)
+            }
+        }
+    }
+
+    override fun useCurrentLocation(lat: Double?, long: Double?) {
+        currentLat = lat
+        currentLong = long
+        val latLng = PinpointMapUtils.generateLatLng(currentLat, currentLong)
+        moveMap(latLng)
+        presenter.clearCacheAutofill()
+        presenter.autofill(latLng.toString())
     }
 }
