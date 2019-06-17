@@ -1327,7 +1327,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                          List<ShopShipment> shopShipmentList,
                                          int cartPosition) {
         String isBlackbox = "0";
-        if (shipmentCartItemModel.getIsBlackbox()) isBlackbox = "1";
+        if (shipmentCartItemModel.isHidingCourier()) isBlackbox = "1";
         sendAnalyticsOnClickChooseShipmentDurationOnShipmentRecomendation(isBlackbox);
         showShippingDurationBottomsheet(shipmentCartItemModel, recipientAddressModel, shopShipmentList, cartPosition);
         if (isTradeIn()) {
@@ -1632,8 +1632,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
             switch (requestCode) {
                 case REQUEST_CODE_NORMAL_CHECKOUT:
-                    shipmentPresenter.processSaveShipmentState();
-                    shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());
+                    if (shipmentAdapter.getPromoGlobalStackData() != null &&
+                            shipmentAdapter.getPromoGlobalStackData().getState() == TickerPromoStackingCheckoutView.State.FAILED) {
+                        rvShipment.smoothScrollToPosition(0);
+                        showToastError(shipmentAdapter.getPromoGlobalStackData().getDescription());
+                    } else {
+                        shipmentPresenter.processSaveShipmentState();
+                        shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());
+                    }
                     break;
                 case REQUEST_CODE_COD:
                     shipmentPresenter.proceedCodCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId());

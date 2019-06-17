@@ -121,7 +121,7 @@ class OnboardingActivity : BaseActivity() {
 
             override fun onPageSelected(position: Int) {
                 setIndicator(position)
-                currentPosition = position + 1
+                currentPosition = position
                 analytics.sendScreen(position)
 
             }
@@ -138,7 +138,7 @@ class OnboardingActivity : BaseActivity() {
         }
 
         skipButton.setOnClickListener {
-            analytics.eventOnboardingSkip(applicationContext, viewPager.currentItem + 1)
+            analytics.eventOnboardingSkip(applicationContext, viewPager.currentItem)
             finishOnboarding()
             RouteManager.route(this, ApplinkConst.HOME)
         }
