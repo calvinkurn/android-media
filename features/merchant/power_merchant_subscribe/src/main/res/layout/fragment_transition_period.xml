@@ -1,67 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="16dp"
     android:orientation="vertical"
     tools:context=".view.fragment.TransitionPeriodPmFragment">
+
+    <ImageView
+        android:id="@+id/img_kyc_verification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        tools:src="@tools:sample/avatars" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/img_kyc_verification"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_200"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true" />
+        android:padding="@dimen/dp_16">
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/img_kyc_verification"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_8"
             android:gravity="center"
-            app:fontSize="titleBig"
+            android:lineSpacingExtra="@dimen/dp_2"
+            android:text="@string/pm_label_transition_period_header"
+            android:textAlignment="center"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:text="@string/pm_label_transition_period_header"
-            android:lineSpacingExtra="@dimen/dp_2"
-            android:textAlignment="center"
-            />
+            app:fontSize="titleBig" />
 
         <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/tv_label_static"
+            android:id="@+id/tv_label_transition_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_user_name"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_30"
             android:gravity="center"
             android:lineSpacingExtra="@dimen/dp_2"
-            android:padding="@dimen/dp_4"
+            android:padding="@dimen/dp_8"
             android:text="@string/pm_label_transition_period_desc"
             android:textAlignment="center"
-            app:fontSize="small"
-            android:layout_marginBottom="@dimen/dp_20"/>
+            app:fontSize="title" />
 
         <Button
             android:id="@+id/btn_kyc_verification"
             style="@style/Button.Submit.Green.Full"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/dp_300"
             android:layout_height="wrap_content"
-            android:text="@string/pm_label_transition_period_button"
-            android:layout_below="@id/tv_label_static"/>
+            android:layout_below="@id/tv_label_transition_desc"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="@string/pm_label_transition_period_button" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/txt_learnmore_transition_page"
@@ -69,14 +66,13 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/btn_kyc_verification"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_8"
             android:gravity="center"
             android:lineSpacingExtra="@dimen/dp_2"
             android:padding="@dimen/dp_4"
             android:text="@string/pm_label_transition_period_learnmore"
             android:textAlignment="center"
-            app:fontSize="small"
-            android:layout_marginBottom="@dimen/dp_20"/>
+            app:fontSize="title" />
 
     </RelativeLayout>
 

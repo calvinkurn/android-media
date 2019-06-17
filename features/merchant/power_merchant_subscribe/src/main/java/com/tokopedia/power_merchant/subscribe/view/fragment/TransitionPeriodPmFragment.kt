@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.power_merchant.subscribe.IMG_URL_KYC_TRANSITION
@@ -38,6 +39,7 @@ class TransitionPeriodPmFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ImageHandler.LoadImage(img_kyc_verification, IMG_URL_KYC_TRANSITION)
+        tv_label_transition_desc.text = MethodChecker.fromHtml( getString(R.string.pm_label_transition_period_desc))
         renderTxtTnc()
 
     }

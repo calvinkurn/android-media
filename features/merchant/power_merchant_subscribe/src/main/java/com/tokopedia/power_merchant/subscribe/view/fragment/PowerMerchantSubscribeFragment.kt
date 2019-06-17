@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -138,12 +139,13 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 it.finish()
             }
         }
+
+        showBottomSheetSuccess(shopStatusModel)
     }
 
     private fun renderInitialLayout() {
         ImageHandler.LoadImage(img_top_1, IMG_URL_PM_INTRO)
-        renderDefaultTickerYellow()
-        renderDefaultTickerBlue()
+        renderDefaultTicker()
         initializePartialPart(view)
         partialBenefitPmViewHolder.renderPartialBenefit()
         partialTncViewHolder.renderPartialTnc()
@@ -361,23 +363,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         root_view_pm.hideLoading()
     }
 
-    private fun renderDefaultTickerYellow() {
-        val spanText = SpannableString(getString(R.string.pm_label_cancellation_duration))
-
-        spanText.setSpan(StyleSpan(Typeface.BOLD),
-                10, 27, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spanText.setSpan(StyleSpan(Typeface.BOLD),
-                spanText.length - 13, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        txt_ticker_yellow.text = spanText
-    }
-
-    private fun renderDefaultTickerBlue() {
-        val spanText = SpannableString(getString(R.string.pm_label_price_cashback))
-        spanText.setSpan(StyleSpan(Typeface.BOLD),
-                48, 60, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spanText.setSpan(StyleSpan(Typeface.BOLD),
-                81, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        txt_blue_ticker.text = spanText
+    private fun renderDefaultTicker() {
+        txt_ticker_yellow.text = MethodChecker.fromHtml(getString(R.string.pm_label_cancellation_duration))
+        txt_ticker_yellow.text = MethodChecker.fromHtml(getString(R.string.pm_label_price_cashback))
     }
 
 

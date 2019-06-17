@@ -36,30 +36,30 @@
     <string name="pm_label_bs_success_button_transition">Pelajari Power Merchant</string>
     <string name="pm_label_bs_success_button">Mulai</string>
 
-    <string name="pm_label_transition_period_header">Jadikan tokomu semakin dipercaya pembeli</string>
-    <string name="pm_label_transition_period_desc">Sekarang Power Merchant bebas biaya bulanan. Nikmati layanan baru Power Merchant dengan upload KTP sebelum tanggal 1 Juli 2019.</string>
+    <string name="pm_label_transition_period_header">Upload KTP agar tokomu tetap jadi Power Merchant tepercaya</string>
+    <string name="pm_label_transition_period_desc">Sekarang Power Merchant bebas biaya bulanan. Nikmati layanan baru Power Merchant dengan upload KTP sebelum tanggal *1 Juli 2019.*</string>
     <string name="pm_label_transition_period_button">Upload KTP Sekarang</string>
     <string name="pm_label_transition_period_learnmore">Pelajari Power Merchant Selengkapnya.</string>
 
     <string name="expired_label">Pengajuan pembatalan Power Merchant berhasil. Layanan otomatis berhenti pada [%1$s, pukul 04.00 WIB].</string>
     <string name="pm_title_activity">Power Merchant</string>
 
-    <string name="pm_label_bottom_sheet_cancel_header">Yakin batalkan keanggotaan Power Merchant?</string>
-    <string name="pm_label_bottom_sheet_cancel_button">Batalkan Keanggotaan</string>
-    <string name="pm_label_bottom_sheet_cancel_desc">Dengan membatalkan, kamu tidak dapat mengakses fitur-fitur Power Merchant berikut:</string>
+    <string name="pm_label_bottom_sheet_cancel_header">Yakin mau batalkan keanggotaan \nPower Merchant?</string>
+    <string name="pm_label_bottom_sheet_cancel_button">Batalkan Sekarang</string>
+    <string name="pm_label_bottom_sheet_cancel_desc">Tokomu akan kehilangan akses fitur-fitur eksklusif Power Merchant berikut:</string>
 
     <string name="pm_label_button_activate">Upgrade Tokomu</string>
     <string name="pm_label_member_cancel">Batalkan kapan saja</string>
     <string name="pm_label_member_cancel_learnmore">Status keanggotaan aktif jika skor performa toko minimum 65 poin. Pelajari Selengkapnya</string>
     <string name="pm_period">Periode baru dimulai pada 1 Juli 2019 pukul 04.00</string>
     <string name="pm_label_cancellation_header">Pengajuan pembatalan berhasil</string>
-    <string name="pm_label_cancellation_duration">Nantikan Power Merchant baru pada 1 Juli 2019.</string>
+    <string name="pm_label_cancellation_duration">Nantikan Power Merchant baru pada *1 Juli 2019.*</string>
     <string name="pm_label_cost_1">Biaya layanan Power Merchant dikenakan 1% (satu persen) dari setiap harga produk terjual.</string>
     <string name="pm_label_cost_3">Pelajari Selengkapnya</string>
     <string name="pm_label_kyc_verivication">Verifikasi data diri dengan upload KTP</string>
     <string name="pm_label_score_point">Skor performa toko lebih dari 75 poin</string>
     <string name="pm_label_tnc_header">Syarat menjadi Power Merchant</string>
-    <string name="pm_label_price_cashback">Sisa biaya langganan Power Merchant tokomu per 1 Juli 2019 akan dikembalikan ke Saldo Penghasilan.</string>
+    <string name="pm_label_price_cashback">Sisa biaya langganan Power Merchant tokomu per *1 Juli 2019* akan dikembalikan ke *Saldo Penghasilan.*</string>
     <string name="pm_label_info">Tingkatkan penjualanmu dengan beragam promo dan fitur khusus Power Merchant.</string>
     <string name="pm_upgrade_shop">Upgrade Tokomu</string>
     <string name="pm_terms_agree">Dengan ini, saya menyetujui syarat dan ketentuan Power Merchant Tokopedia.</string>
@@ -70,4 +70,5 @@
     <string name="pm_big_promo">Tingkatkan penjualan dengan berpartisipasi di kegiatan promosi tahunan.</string>
     <string name="pm_special_promo">Lebih banyak pilihan promo khusus Power Merchant.</string>
     <string name="pm_label_learn_more_benefit">Optimalkan penjualan dengan Flash Sale, Modal Toko dan fitur eksklusif lainnya. Pelajari Selengkapnya</string>
+    <string name="pm_label_bs_cancel_desc_2">Toko dengan Power Merchant terbukti dapat tingkatkan penjualan dan lebih dipercaya calon pembeli.</string>
 </resources>

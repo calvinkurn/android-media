@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_24"
+        android:padding="@dimen/dp_28"
         android:background="@drawable/bg_rounded_chat_input">
 
         <com.tokopedia.design.component.TextViewCompat

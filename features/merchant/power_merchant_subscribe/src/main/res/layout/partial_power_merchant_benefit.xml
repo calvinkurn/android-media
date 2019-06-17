@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:text="@string/pm_exclusive_promo_desc"
-            app:fontSize="micro"
+            app:fontSize="title"
             app:layout_constraintBottom_toBottomOf="@+id/imageView6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat2"
@@ -73,7 +73,7 @@
             android:layout_height="@dimen/dp_64"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_16"
             android:src="@drawable/ic_market"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView6"
@@ -101,12 +101,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:text="@string/pm_label_market_insight_desc"
-            app:fontSize="small"
+            app:fontSize="title"
             app:layout_constraintBottom_toBottomOf="@+id/imageView7"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat4"
-            app:layout_constraintTop_toBottomOf="@+id/textViewCompat4"
-            tools:text="hahaha hahaha hahahha hgahaskldjklashjdlkjask. Lkasjkldj alsjd lkasd." />
+            app:layout_constraintTop_toBottomOf="@+id/textViewCompat4"/>
 
         <ImageView
             android:id="@+id/imageView8"
@@ -114,7 +113,7 @@
             android:layout_height="@dimen/dp_64"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/dp_16"
             android:src="@drawable/ic_topads_credit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView7" />
@@ -141,7 +140,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:text="@string/pm_credit_desc"
-            app:fontSize="small"
+            app:fontSize="title"
             app:layout_constraintBottom_toBottomOf="@id/imageView8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat6"
@@ -151,7 +150,7 @@
             android:id="@+id/view_line_pm"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_16"
             android:background="@color/pm_line_color"
             app:layout_constraintTop_toBottomOf="@+id/imageView8" />
 
@@ -163,7 +162,7 @@
             android:text="Fitur Khusus Power Merchant"
             android:textColor="@color/black"
             android:textStyle="bold"
-            app:fontSize="small"
+            app:fontSize="title"
             app:layout_constraintStart_toStartOf="@+id/imageView8"
             app:layout_constraintTop_toTopOf="@+id/view_line_pm" />
 
@@ -174,7 +173,8 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
             android:text="@string/pm_label_learn_more_benefit"
-            app:fontSize="small"
+            app:fontSize="title"
+            android:lineSpacingExtra="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textViewCompat"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat" />

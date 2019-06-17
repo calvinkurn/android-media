@@ -9,11 +9,11 @@
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/txt_success_header_bs"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pm_label_bs_success_header"
         android:textColor="@color/black"
-        app:fontSize="titleBig"
+        app:fontSize="subHeadline"
         android:textStyle="bold"
         android:gravity="center"
         android:layout_marginBottom="@dimen/dp_16"
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:text="@string/pm_label_bs_success_desc"
         android:gravity="center"
-        app:fontSize="small"
+        app:fontSize="title"
         android:layout_marginBottom="@dimen/dp_20"/>
 
     <Button
