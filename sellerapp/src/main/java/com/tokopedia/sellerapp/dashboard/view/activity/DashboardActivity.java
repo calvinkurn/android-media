@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.app.DrawerPresenterActivity;
@@ -58,7 +59,8 @@ public class DashboardActivity extends DrawerPresenterActivity
         }
         checkAppUpdate();
         String urlTest = "https://seller.tokopedia.com/edu/fitur-power-merchant";
-        RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, urlTest);
+        String url = UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, urlTest);
+        RouteManager.route(this, url);
     }
 
     private void checkAppUpdate() {

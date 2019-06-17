@@ -89,10 +89,7 @@ public interface Constants {
         String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
         String REPUTATION = "tokopedia://review";
         String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
-
-        //currently goes to AppLinkWebsiteActivity; need change to libraries webview
         String WEBVIEW = "tokopedia://webview";
-
         String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
         String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
         String DIGITAL = "tokopedia://digital";
