@@ -321,6 +321,7 @@ public class ProductListFragment
     }
 
     public void setProductList(List<Visitable> list) {
+        redirectionListener.onProductDataReady();
         adapter.clearDataBeforeSet();
 
         addProductList(list);
