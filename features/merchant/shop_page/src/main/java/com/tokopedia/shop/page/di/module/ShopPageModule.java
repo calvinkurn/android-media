@@ -21,7 +21,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @ShopPageScope
-@Module
+@Module(includes = ShopViewModelModule.class)
 public class ShopPageModule {
 
     @ShopPageScope

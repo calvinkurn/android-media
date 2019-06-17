@@ -40,6 +40,7 @@ import rx.Subscriber;
 /**
  * temporary implementation to handle request token first in district recommendation page
  * for the case this acticity is called without token beforehand
+ * Deeplink: DISTRICT_RECOMMENDATION_SHOP_SETTINGS
  */
 public class DistrictRecommendationShopSettingsActivity extends DistrictRecommendationActivity {
 

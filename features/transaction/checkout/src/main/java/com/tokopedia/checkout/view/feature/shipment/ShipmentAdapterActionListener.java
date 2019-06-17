@@ -60,11 +60,15 @@ public interface ShipmentAdapterActionListener {
 
     void onInsuranceChecked(int position);
 
+    void onPriorityChecked(int position);
+
     void onNeedUpdateViewItem(int position);
 
     void onSubTotalCartItemClicked(int position);
 
     void onInsuranceTncClicked();
+
+    void onPriorityTncClicker();
 
     void onNeedUpdateRequestData();
 

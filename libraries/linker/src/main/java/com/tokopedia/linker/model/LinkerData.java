@@ -229,6 +229,10 @@ public class LinkerData implements Parcelable {
         return campaign;
     }
 
+    public String getOriginalTextContent() {
+        return textContent;
+    }
+
     public String getTextContent() {
         if (getType() != null) {
             return (this.textContent != null) ? (this.textContent + "\n" + renderShareUri()) : renderShareUri();

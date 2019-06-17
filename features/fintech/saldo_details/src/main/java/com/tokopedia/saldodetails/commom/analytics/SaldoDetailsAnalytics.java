@@ -16,7 +16,7 @@ public class SaldoDetailsAnalytics {
     public void eventMCLImpression(String label) {
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SaldoDetailsConstants.Event.EVENT_VIEW_FINTECH_MICROSITE,
+                SaldoDetailsConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 SaldoDetailsConstants.Category.FIN_SALDO_PAGE,
                 SaldoDetailsConstants.Action.SALDO_MODAL_TOKO_IMP,
                 label

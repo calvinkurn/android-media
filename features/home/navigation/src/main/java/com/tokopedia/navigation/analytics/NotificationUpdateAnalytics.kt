@@ -61,12 +61,12 @@ class NotificationUpdateAnalytics @Inject constructor() {
         ))
     }
     // #NC5
-    fun trackMarkAllAsRead() {
+    fun trackMarkAllAsRead(markAllReadCounter: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_CLICK_NOTIF_CENTER,
                 EVENT_CATEGORY_NOTIF_CENTER,
                 EVENT_ACTION_MARK_ALL_AS_READ,
-                ""
+                markAllReadCounter
         ))
     }
 }

@@ -7,7 +7,6 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -21,11 +20,13 @@ import android.view.ViewGroup
 import android.webkit.URLUtil
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
@@ -35,7 +36,6 @@ import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
-//import com.tokopedia.shop.common.router.ShopSettingRouter
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
@@ -355,18 +355,21 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     private fun navigateToGMHome() {
-//        activity?.run {
-//            val router = application as? ShopSettingRouter
-//            router?.goToGMSubscribe(this)
-//        }
+        activity?.run {
+            if (GlobalConfig.isSellerApp()) {
+                RouteManager.route(this, ApplinkConstInternalMarketplace.GOLD_MERCHANT_SUBSCRIBE_DASHBOARD)
+            } else {
+                RouteManager.route(this, ApplinkConstInternalMarketplace.GOLD_MERCHANT_REDIRECT)
+            }
+        }
     }
 
     private fun navigateToAboutGM() {
-//        if (GlobalConfig.isSellerApp()) {
-//            (activity!!.application as ShopSettingRouter).goToGmSubscribeMembershipRedirect(activity!!)
-//        } else {
-//            (activity!!.application as ShopSettingRouter).goToMerchantRedirect(activity!!)
-//        }
+        if (GlobalConfig.isSellerApp()) {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_MEMBERSHIP)
+        } else {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_REDIRECT)
+        }
     }
 
     override fun onErrorGetShopBasicData(throwable: Throwable) {

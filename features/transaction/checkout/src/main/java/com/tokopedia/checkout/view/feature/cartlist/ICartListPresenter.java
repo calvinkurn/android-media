@@ -23,7 +23,7 @@ public interface ICartListPresenter {
 
     void detachView();
 
-    void processInitialGetCartData(boolean initialLoad);
+    void processInitialGetCartData(String cartId, boolean initialLoad);
 
     void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList);
 

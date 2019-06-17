@@ -88,6 +88,8 @@ public interface ICartListView extends IBaseView {
 
     void onSuccessClearPromoStackAfterClash();
 
+    String getCartId();
+
     void renderRecentView(List<RecentView> recentViewList);
 
     void renderWishlist(List<Wishlist> wishlist);

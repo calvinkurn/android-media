@@ -61,6 +61,8 @@
     <string name="label_shipment_fee">Total Ongkos Kirim</string>
     <string name="label_order_shipping_address_new">Alamat Pengiriman</string>
     <string name="label_shipment_insurance">Asuransi Pengiriman</string>
+    <string name="label_order_prioritas">Order Prioritas</string>
+    <string name="label_hardcoded_order_prioritas_info">Pesanan diproses dalam 1 jam</string>
     <string name="image_desc_button_insurance_info">Button insurance info</string>
     <string name="image_desc_button_dropshipper_info">Button dropshipper info</string>
     <string name="image_desc_button_partial_order_info">Button partial order info</string>
@@ -102,6 +104,7 @@
     <string name="label_delivery_price">Total Ongkos Kirim</string>
     <string name="label_additional_cost">Biaya Tambahan</string>
     <string name="label_seller_additional_cost">Biaya Tambahan Penjual</string>
+    <string name="label_order_priority_cost">Biaya Order Prioritas</string>
     <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>
     <string name="label_dialog_message_cancel_pickup_booth">Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan</string>
     <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
@@ -170,6 +173,7 @@
     <string name="label_showcase_multiple_address_message">Klik tombol untuk mengirim barang yang sama ke beda alamat.</string>
     <string name="label_delete_cart_item">Hapus</string>
     <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
+    <string name="label_hardcoded_prioritas_ticker">Hanya berlaku untuk pembelian pada pukul 09.00 – 21.00 WIB.</string>
     <string name="label_hardcoded_courier_blackbox_ticker">Pembelian diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
     <string name="cart_error_message" formatted="false">Terdapat %d Produk Bermasalah</string>
     <string name="cart_error_message_no_count" formatted="false">Terdapat Produk Bermasalah</string>
@@ -186,6 +190,7 @@
     <string name="label_selller_cashback">Potensi Cashback Penjual</string>
     <string name="label_donation">Donasi</string>
     <string name="label_emas">Pembulatan Emas</string>
+    <string name="order_prioritas_label">Biaya Order Prioritas</string>
     <string name="label_button_change_address">Pilih Alamat Lain</string>
     <string name="label_button_change_address_new">Ganti Alamat</string>
     <string name="label_button_send_to_multiple_address">Kirim ke Banyak Alamat</string>
@@ -247,7 +252,7 @@
     <string name="technical_problem_text">Ada masalah teknis, coba lagi</string>
     <string name="corner_error_stub">Penjual tidak melayani pengiriman dengan SiCepat</string>
     <string name="emas_checkout_title">Bulatkan Tagihan dengan Nabung Emas</string>
-    <string name="emas_checkout_desc" formatted="false"><![CDATA[%s <b>Rp %s</b>]]></string>
+    <string name="emas_checkout_desc" formatted="false"><![CDATA[%s <b>%s</b>]]></string>
     <string name="checkout_shipment_label_tradein" formatted="false">Kurir akan menelfon %s untuk tukar HP di tujuan pengiriman. Ganti nomor</string>
     <string name="label_promo">Promo</string>
     <string name="label_total_nilai_promo">Total Nilai Promo</string>

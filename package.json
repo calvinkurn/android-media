@@ -17,7 +17,7 @@
     },
     "homepage": "https://github.com/tokopedia/android-tokopedia-core#readme",
     "dependencies": {
-      "danger": "^2.1.3",
-      "react-native": "0.52.1"
+        "danger": "^2.1.3",
+        "react-native": "^0.59.8"
     }
 }

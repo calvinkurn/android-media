@@ -215,7 +215,11 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void addDataList(List<ShopGroupData> shopGroupDataList) {
         for (ShopGroupData shopGroupData : shopGroupDataList) {
             CartShopHolderData cartShopHolderData = new CartShopHolderData();
-            cartShopHolderData.setAllSelected(!shopGroupData.isError());
+            if (shopGroupData.isError()) {
+                cartShopHolderData.setAllSelected(false);
+            } else {
+                cartShopHolderData.setAllSelected(shopGroupData.isChecked());
+            }
             cartShopHolderData.setShopGroupData(shopGroupData);
             cartDataList.add(cartShopHolderData);
         }

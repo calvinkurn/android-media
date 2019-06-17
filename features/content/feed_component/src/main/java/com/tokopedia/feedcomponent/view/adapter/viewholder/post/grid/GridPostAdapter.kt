@@ -97,7 +97,7 @@ class GridPostAdapter(private val contentPosition: Int,
             itemView.text.text = item.price
 
             itemView.setOnClickListener {
-                listener.onGridItemClick(positionInFeed, contentPosition, item.redirectLink)
+                listener.onGridItemClick(positionInFeed, contentPosition, adapterPosition, item.redirectLink)
                 if (!item.trackingList.isEmpty()) {
                     listener.onAffiliateTrackClicked(item.trackingList)
                 }
@@ -120,6 +120,7 @@ class GridPostAdapter(private val contentPosition: Int,
                 listener.onGridItemClick(
                         positionInFeed,
                         contentPosition,
+                        adapterPosition,
                         if (!TextUtils.isEmpty(actionLink)) actionLink
                         else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString())
                 )
@@ -155,7 +156,8 @@ class GridPostAdapter(private val contentPosition: Int,
     }
 
     interface GridItemListener {
-        fun onGridItemClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
+        fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: Int,
+                            redirectLink: String)
 
         fun onAffiliateTrackClicked(trackList : MutableList<TrackingViewModel>)
     }

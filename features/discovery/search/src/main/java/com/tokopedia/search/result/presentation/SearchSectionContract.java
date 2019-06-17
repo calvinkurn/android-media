@@ -2,9 +2,11 @@ package com.tokopedia.search.result.presentation;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public interface SearchSectionContract {
 
@@ -28,11 +30,19 @@ public interface SearchSectionContract {
         String getScreenNameId();
 
         void setTotalSearchResultCount(String formattedResultCount);
+
+        BaseAppComponent getBaseAppComponent();
+
+        void logDebug(String tag, String message);
+
+        void launchLoginActivity(String shopId);
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T> {
         void initInjector(T view);
 
-        void requestDynamicFilter();
+        void requestDynamicFilter(Map<String, Object> searchParameter);
+
+        void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener);
     }
 }

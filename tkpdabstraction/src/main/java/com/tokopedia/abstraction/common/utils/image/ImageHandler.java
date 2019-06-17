@@ -56,6 +56,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class ImageHandler {
@@ -965,5 +966,18 @@ public class ImageHandler {
                         }
                     }
                 });
+    }
+
+
+    public static void cacheFromUrl(@NotNull Context context, @NotNull String url, @NotNull ArrayList<Drawable> cacheImageList) {
+        Glide.with(context)
+                .load(url)
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        cacheImageList.add(resource);
+                    }
+                });
+
     }
 }

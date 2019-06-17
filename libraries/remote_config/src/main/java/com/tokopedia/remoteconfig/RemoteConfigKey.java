@@ -74,6 +74,7 @@ public class RemoteConfigKey {
     public static final String APP_GLOBAL_NAV_NEW_DESIGN = "app_global_nav_new_design";
 
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
+    public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
 
@@ -100,6 +101,7 @@ public class RemoteConfigKey {
     public static final String OVO_ENABLE_FLAG = "app_enable_ovo_pay_by_qr";
     public static final String OVO_QR_MIN_AMOUNT = "app_ovo_min_balance";
     public static final String OVO_QR_MAX_AMOUNT = "app_ovo_max_balance";
+    public static final String APP_SHOW_CATEGORY_QUICK_FILTERS = "app_show_category_quick_filters";
 
     public static final String ENABLE_GLOBAL_NAV_WIDGET = "android_customer_enable_global_nav_widget";
 

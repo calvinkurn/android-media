@@ -46,6 +46,8 @@ public class ConsumerSplashScreen extends SplashScreen {
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
 
+    private boolean isApkTempered;
+
     @DeepLink(ApplinkConst.CONSUMER_SPLASH_SCREEN)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -58,10 +60,23 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        isApkTempered = false;
+        try {
+            getResources().getDrawable(R.drawable.launch_screen);
+        } catch (Exception e) {
+            isApkTempered = true;
+            setTheme(R.style.Theme_Tokopedia3_PlainGreen);
+        }
+
         startWarmStart();
         startSplashTrace();
 
         super.onCreate(savedInstanceState);
+
+        if (isApkTempered) {
+            startActivity(new Intent(this, FallbackActivity.class));
+            finish();
+        }
 
         renderDynamicImage();
 
@@ -75,6 +90,10 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void finishSplashScreen() {
+        if (isApkTempered) {
+            return;
+        }
+
         Intent homeIntent = MainParentActivity.start(this);
         startActivity(homeIntent);
         finishSplashTrace();

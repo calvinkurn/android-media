@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.applink.CheckoutAppLink;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 
 /**
@@ -17,10 +17,13 @@ import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 
 public class CartActivity extends BaseCheckoutActivity {
 
+    public static final String EXTRA_CART_ID = "cart_id";
+
     private Fragment cartFragment;
     private Fragment emptyCartFragment;
+    private String cartId;
 
-    @DeepLink(CheckoutAppLink.CART)
+    @DeepLink(ApplinkConst.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, CartActivity.class).putExtras(extras);
         intent.putExtras(extras);
@@ -46,6 +49,7 @@ public class CartActivity extends BaseCheckoutActivity {
 
     @Override
     protected void setupBundlePass(Bundle extras) {
+        cartId = extras.getString(EXTRA_CART_ID);
     }
 
     @Override
@@ -88,7 +92,9 @@ public class CartActivity extends BaseCheckoutActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        cartFragment = CartFragment.newInstance(null,"");
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_CART_ID, cartId);
+        cartFragment = CartFragment.newInstance(bundle,"");
         return cartFragment;
     }
 

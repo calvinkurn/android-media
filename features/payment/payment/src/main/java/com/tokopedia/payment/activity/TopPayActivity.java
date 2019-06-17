@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.SslErrorHandler;
+import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -434,7 +435,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                     if (isEndThanksPage()) callbackPaymentSucceed();
                     else callbackPaymentCanceled();
                     return true;
-                } else if (RouteManager.isSupportApplink(TopPayActivity.this, url)) {
+                } else if (RouteManager.isSupportApplink(TopPayActivity.this, url) && !URLUtil.isNetworkUrl(url)) {
                     //  RouteManager.route(TopPayActivity.this, url);
                     Intent intent = RouteManager.getIntent(TopPayActivity.this, url);
                     intent.setData(Uri.parse(url));

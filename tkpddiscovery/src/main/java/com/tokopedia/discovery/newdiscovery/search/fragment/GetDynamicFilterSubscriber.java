@@ -17,9 +17,9 @@ import rx.Subscriber;
 
 public class GetDynamicFilterSubscriber extends Subscriber<DynamicFilterModel> {
 
-    protected final SearchSectionFragmentView view;
+    protected final BrowseSectionFragmentView view;
 
-    public GetDynamicFilterSubscriber(SearchSectionFragmentView view) {
+    public GetDynamicFilterSubscriber(BrowseSectionFragmentView view) {
         this.view = view;
     }
 
