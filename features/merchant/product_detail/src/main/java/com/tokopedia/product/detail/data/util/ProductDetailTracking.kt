@@ -18,7 +18,7 @@ import java.util.*
 
 class ProductDetailTracking() {
 
-    val currencyLable = "INR"
+    val currencyLable = "IDR"
 
     fun sendScreen(shopID: String, shopType: String, productId: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(
