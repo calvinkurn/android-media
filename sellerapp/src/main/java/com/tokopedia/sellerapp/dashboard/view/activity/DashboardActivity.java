@@ -58,9 +58,6 @@ public class DashboardActivity extends DrawerPresenterActivity
                     .commit();
         }
         checkAppUpdate();
-        String urlTest = "https://seller.tokopedia.com/edu/fitur-power-merchant";
-        String url = UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, urlTest);
-        RouteManager.route(this, url);
     }
 
     private void checkAppUpdate() {

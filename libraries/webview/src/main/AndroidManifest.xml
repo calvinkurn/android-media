@@ -6,7 +6,8 @@
             android:name=".WebViewActivity"
             android:hardwareAccelerated="true"
             android:label="@string/tokopedia"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
