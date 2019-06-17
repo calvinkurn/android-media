@@ -488,12 +488,6 @@ public class DrawerSellerHelper extends DrawerHelper
             public void onClick(DialogInterface dialog, int which) {
                 if (selectedPosition != TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND) {
                     sendGMAnalyticDialogEvent(true);
-
-                    /*if (context.getApplication() instanceof SellerModuleRouter) {
-                        Intent gmIntent = ((SellerModuleRouter) context.getApplication()).getGMHomeIntent(context);
-                        gmIntent.putExtra(GMParamConstant.PARAM_KEY_FROM_FEATURE, true);
-                        context.startActivity(gmIntent);
-                    }*/
                     RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
                 }
             }

@@ -19,7 +19,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.TextView
-import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -29,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
@@ -37,9 +37,10 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.power_merchant.subscribe.URL_GAINS_SCORE_POINT
+import com.tokopedia.power_merchant.subscribe.URL_LEARN_MORE_BENEFIT
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
-import com.tokopedia.shop.common.router.ShopSettingRouter
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
@@ -328,15 +329,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tv_shop_membership_title.text = getString(R.string.label_regular_merchant)
         tv_shop_status.visibility = View.GONE
         ticker_container.visibility = View.GONE
+        tv_ticker_info.visibility = View.VISIBLE
+        setTextViewLearnMore(tv_ticker_info,getString(R.string.regular_merchant_learn_more),getString(R.string.learn_more)) {
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_LEARN_MORE_BENEFIT )
+        }
         if (shopStatusModel.isTransitionPeriod()) {
-            tv_ticker_info.visibility = View.GONE
             button_activate.visibility = View.GONE
         } else {
-            tv_ticker_info.visibility = View.VISIBLE
-            setTextViewLearnMore(tv_ticker_info,getString(R.string.regular_merchant_learn_more),getString(R.string.learn_more)) {
-                navigateToAboutGM()
-            }
-
             button_activate.visibility = View.VISIBLE
             button_activate.setOnClickListener {
                 navigateToPMSubscribe()
@@ -365,7 +364,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             ticker_container.visibility = View.VISIBLE
             tv_ticker.setText(R.string.power_merchant_learn_more)
             setTextViewLearnMore(tv_ticker,getString(R.string.power_merchant_learn_more),getString(R.string.learn_more)) {
-                RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
+                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
             }
         }
         tv_ticker_info.visibility = View.GONE

@@ -87,7 +87,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_weight="1"
-            android:text="@string/activate_power_merchant"
+            android:text="@string/pm_upgrade_shop"
             android:textSize="14sp"
             android:layout_marginTop="@dimen/dp_16"/>
 
