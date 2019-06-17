@@ -120,7 +120,7 @@ public class ProductListFragment
     UserSessionInterface userSession;
 
     private EndlessRecyclerViewScrollListener linearLayoutLoadMoreTriggerListener;
-    private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
+//    private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
     private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
 
     private Config topAdsConfig;
@@ -248,7 +248,7 @@ public class ProductListFragment
     private void setupListener() {
         recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
 
-        gridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getGridLayoutManager());
+//        gridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getGridLayoutManager());
         linearLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getLinearLayoutManager());
         staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
 
@@ -800,7 +800,7 @@ public class ProductListFragment
 
     @Override
     public void onChangeSingleGrid() {
-        recyclerView.setLayoutManager(getGridLayoutManager());
+        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
     }
 
     public SearchParameter getSearchParameter() {
@@ -930,7 +930,7 @@ public class ProductListFragment
 
     @Override
     public void updateScrollListener() {
-        gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+//        gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
         linearLayoutLoadMoreTriggerListener.updateStateAfterGetData();
         staggeredGridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
     }

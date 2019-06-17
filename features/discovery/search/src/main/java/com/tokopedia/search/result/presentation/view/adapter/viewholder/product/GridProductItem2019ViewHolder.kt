@@ -38,35 +38,21 @@ class GridProductItem2019ViewHolder(
 
     private fun initProductCardContainer(productItem: ProductItemViewModel) {
         itemView.productCardContainer.setOnLongClickListener {
-            callListenerWithAdapterPositionValidation { validatedAdapterPosition ->
-                productListener.onLongClick(productItem, validatedAdapterPosition)
-            }
-
+            productListener.onLongClick(productItem, adapterPosition)
             true
         }
 
         itemView.productCardContainer.setOnClickListener {
-            callListenerWithAdapterPositionValidation { validatedAdapterPosition ->
-                productListener.onItemClicked(productItem, validatedAdapterPosition)
-            }
+            productListener.onItemClicked(productItem, adapterPosition)
         }
     }
 
     private fun initProductImage(productItem: ProductItemViewModel) {
         itemView.productImage.setViewHintListener(productItem) {
-            callListenerWithAdapterPositionValidation { validatedAdapterPosition ->
-                productListener.onProductImpressed(productItem, validatedAdapterPosition)
-            }
+            productListener.onProductImpressed(productItem, adapterPosition)
         }
 
         ImageHandler.loadImageThumbs(context, itemView.productImage, productItem.imageUrl)
-    }
-
-    private fun callListenerWithAdapterPositionValidation(listenerCall: (validatedAdapterPosition: Int) -> Unit) {
-        val position = adapterPosition
-        if(position != RecyclerView.NO_POSITION) {
-            listenerCall(position)
-        }
     }
 
     private fun initWishlistButtonContainer(productItem: ProductItemViewModel) {
