@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
@@ -39,6 +40,9 @@ import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialBenefitPmViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHolder
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_PM_F1_ENABLED
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo
@@ -56,12 +60,17 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     lateinit var partialTncViewHolder: PartialTncViewHolder
     lateinit var shopStatusModel: ShopStatusModel
     lateinit var getApprovalStatusPojo: GetApprovalStatusPojo
-    var shopScore: Int = 0
-    var minScore: Int = 0
-    var isSuccessActivatedPm: Boolean = false
-    var isSuccessCancellationPm: Boolean = false
     lateinit var bottomSheetSuccess: PowerMerchantSuccessBottomSheet
     lateinit var bottomSheetCancel: PowerMerchantCancelBottomSheet
+
+    private var shopScore: Int = 0
+    private var minScore: Int = 0
+    private var isSuccessActivatedPm: Boolean = false
+    private var isSuccessCancellationPm: Boolean = false
+
+    private val remoteConfig: RemoteConfig by lazy {
+        FirebaseRemoteConfigImpl(context)
+    }
 
     override fun getScreenName(): String = ""
 
@@ -85,12 +94,12 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-
         return inflater.inflate(R.layout.fragment_power_merchant_subscribe, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         root_view_pm.showLoading()
         renderInitialLayout()
 
@@ -116,7 +125,18 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             }
         }
 
-        presenter.getPmStatusInfo(userSessionInterface.shopId)
+        if (remoteConfig.getBoolean(ANDROID_PM_F1_ENABLED, false)) {
+            presenter.getPmStatusInfo(userSessionInterface.shopId)
+        } else {
+            activity?.let {
+                if (userSessionInterface.isGoldMerchant) {
+                    RouteManager.route(it, ApplinkConstInternalMarketplace.GOLD_MERCHANT_MEMBERSHIP)
+                } else {
+                    RouteManager.route(it, ApplinkConstInternalMarketplace.GOLD_MERCHANT_SUBSCRIBE_DASHBOARD)
+                }
+                it.finish()
+            }
+        }
     }
 
     private fun renderInitialLayout() {

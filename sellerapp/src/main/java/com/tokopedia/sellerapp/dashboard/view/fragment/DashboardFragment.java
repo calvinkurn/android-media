@@ -67,6 +67,7 @@ import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycWidgetUtil;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
@@ -96,6 +97,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Inject
     public SellerDashboardPresenter sellerDashboardPresenter;
+
+    @Inject
+    public UserSessionInterface userSession;
 
     private TickerView tickerView;
     private LoadingStateView headerShopInfoLoadingStateView;
@@ -463,6 +467,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     private void updateShopInfo(ShopModel shopModel, ShopStatusModel shopStatusModel) {
+        userSession.setIsGoldMerchant(!shopStatusModel.isRegularMerchant());
+
         Info shopModelInfo = shopModel.info;
         String shopName = shopModelInfo.getShopName();
         if (!TextUtils.isEmpty(shopName)) {
