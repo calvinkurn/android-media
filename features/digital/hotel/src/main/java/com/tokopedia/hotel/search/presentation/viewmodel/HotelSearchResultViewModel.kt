@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.common.getSuccessData
+import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.PropertySearch
 import com.tokopedia.hotel.search.data.model.Sort
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
@@ -31,8 +32,11 @@ class HotelSearchResultViewModel @Inject constructor(
     var selectedSort: Sort = Sort()
     val selectedFilter: ParamFilter
         get() = searchParam.filter
+    var filter: Filter = Filter()
 
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
+
+    var isFilter = false
 
     fun initSearchParam(destinationID: Int, type: String, latitude: Float, longitude: Float,
                         checkIn: String, checkOut: String, totalRoom: Int, totalAdult: Int) {
@@ -49,6 +53,10 @@ class HotelSearchResultViewModel @Inject constructor(
         searchParam.checkOut = checkOut
         searchParam.room = totalRoom
         searchParam.guest.adult = totalAdult
+
+        //Default param
+        searchParam.sort.popularity = true
+        addSort(Sort("popularity"))
     }
 
     fun searchProperty(page: Int){
@@ -77,6 +85,7 @@ class HotelSearchResultViewModel @Inject constructor(
 
     fun addFilter(filter: ParamFilter){
         searchParam.filter = filter
+        isFilter = true
     }
 
     companion object {

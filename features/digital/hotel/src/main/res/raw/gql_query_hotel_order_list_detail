@@ -3,6 +3,10 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
     status {
       status
       statusText
+      iconUrl
+      textColor
+      backgroundColor
+      fontSize
     }
     title {
       label
@@ -12,6 +16,12 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
       invoiceRefNum
       invoiceUrl
     }
+    conditionalInfo{
+      title
+    }
+    conditionalInfoBottom{
+      title
+    }
     actionButtons {
       label
       buttonType
@@ -19,22 +29,39 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
       weight
       uriWeb
     }
+    payMethod {
+      label
+      value
+    }
+    pricing {
+      label
+      value
+      textColor
+      backgroundColor
+      imageUrl
+    }
+    paymentsData {
+      id
+      label
+      value
+      textColor
+      backgroundColor
+      imageUrl
+    }
     contactUs {
       helpText
       helpUrl
     }
     hotelTransportDetails{
-      conditionalInfoTop{
-        Title
-      }
-      conditionalInfoBottom{
-        Title
-      }
+      paymentType
+      isShowEVoucher
       guestDetail{
         title
         content
       }
       propertyDetail{
+        propertyCountry
+        appLink
         bookingKey{
           title
           content
@@ -52,6 +79,10 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
             date
             time
           }
+        }
+        stayLength{
+          title
+          content
         }
         propertyInfo{
           types
@@ -72,21 +103,20 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
         }
         extraInfo
       }
-      payment{
+      cancellationPolicies{
         title
-        detail{
-          title
-          content
+        content
+        isClickable
+        policies{
+            shortTitle
+            longTitle
+            shortDesc
+            longDesc
+            active
         }
-        fares{
-          title
-          content
-        }
-        summary{
-          title
-          content
-        }
-
+      }
+      contactInfo{
+        number
       }
     }
   }

@@ -26,7 +26,11 @@ data class HotelAddCartParam(
 
         @SerializedName("rooms")
         @Expose
-        val rooms: List<Room> = listOf()
+        val rooms: List<Room> = listOf(),
+
+        @SerializedName("adult")
+        @Expose
+        val adult: Int = 0
 ) {
     data class Room(
             @SerializedName("roomID")

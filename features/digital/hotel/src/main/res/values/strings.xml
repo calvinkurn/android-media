@@ -28,6 +28,11 @@
     <string name="hotel_item_list_include_pajak">Termasuk pajak • /kamar/malam</string>
     <string name="hotel_search_filter_feature_title">Fitur Unggulan</string>
     <string name="hotel_search_filter_only_show_pay_at_hotel">Hanya tampilkan Bayar di Hotel</string>
+    <string name="hotel_search_empty_title">Akomodasi yang kamu cari nggak ketemu</string>
+    <string name="hotel_search_empty_subtitle">Tenang, mungkin kamu cuma perlu ubah detail pencarian di awal</string>
+    <string name="hotel_search_empty_button">Ganti Pencarian</string>
+    <string name="hotel_search_filter_empty_subtitle">Coba ubah Filter dan cari sekali lagi, yuk!</string>
+    <string name="hotel_search_filter_empty_button">Ubah Filter</string>
 
     <string name="hotel_check_in_calendar_title">Check-in</string>
     <string name="hotel_check_out_calendar_title">Check-out</string>
@@ -80,7 +85,9 @@
     <string name="hotel_room_list_include_tax">Termasuk pajak</string>
     <string name="hotel_room_list_choose_room_button">Pilih Kamar</string>
     <string name="hotel_room_list_pay_in_hotel">Bayar di Hotel</string>
+    <string name="hotel_room_list_room_description">%1$s m² • %2$s</string>
     <string name="hotel_room_list_without_credit_card">Tanpa Jaminan Kartu Kredit</string>
+
 
     <string name="hotel_detail_more_image_counter">+%1$d</string>
     <string name="hotel_detail_check_from_to">%1$s - %2$s</string>
@@ -99,8 +106,9 @@
     <string name="hotel_review_indonesia_not_found_subtitle">Kamu bisa jadi yang pertama ngasih ulasan kalau nginep di sini. Pesan kamarnya, yuk!</string>
     <string name="hotel_review_total_review">%1$s Ulasan</string>
     <string name="hotel_review_filter_first_rank">Memuaskan (Rating 7+)</string>
-    <string name="hotel_review_filter_second_rank">Baik (Rating 5-7)</string>
-    <string name="hotel_review_filter_third_rank">Kurang (Rating 1-5)</string>
+    <string name="hotel_review_filter_second_rank">Baik (Rating 5&#8211;7)</string>
+    <string name="hotel_review_filter_third_rank">Kurang (Rating 1&#8211;5)</string>
+    <string name="hotel_review_country_date">%1$s • %2$s</string>
 
     <string name="hotel_room_detail_header_occupancy">Maksimum: %1$s</string>
     <string name="hotel_room_detail_header_room_size">%1$d • %2$s</string>
@@ -183,4 +191,9 @@
     <string name="hotel_share_add_email">Tambah E-mail</string>
     <string name="hotel_share_empty_email_error">E-mail harus diisi</string>
     <string name="hotel_share_format_email_error">Format e-mail salah</string>
+    
+    <string name="hotel_error_no_internet_connection_title">Nggak ada koneksi Internet</string>
+    <string name="hotel_error_no_internet_connection_subtitle">"Kamu bisa pindah tempat atau cek paket data / jaringan Wi-Fi."</string>
+    <string name="hotel_error_server_error_title">Ada gangguan di rumah Toped</string>
+    <string name="hotel_error_server_error_subtitle">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti.</string>
 </resources>

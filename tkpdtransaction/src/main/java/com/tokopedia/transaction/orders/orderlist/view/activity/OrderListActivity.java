@@ -45,7 +45,8 @@ public class OrderListActivity extends BaseSimpleActivity
             ApplinkConst.EVENTS_ORDER,
             ApplinkConst.GIFT_CARDS_ORDER,
             ApplinkConst.INSURANCE_ORDER,
-            ApplinkConst.MODAL_TOKO_ORDER})
+            ApplinkConst.MODAL_TOKO_ORDER,
+            ApplinkConst.HOTEL_ORDER})
     public static Intent getOrderListIntent(Context context, Bundle bundle) {
 
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();

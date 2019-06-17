@@ -31,7 +31,8 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8">
+                android:layout_marginTop="@dimen/dp_8"
+                app:cardElevation="@dimen/dp_2">
 
                 <LinearLayout
                     android:id="@+id/order_detail_footer_layout"

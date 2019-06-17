@@ -19,6 +19,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomdetail.presentation.fragment.HotelRoomDetailFragment
@@ -101,6 +102,16 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                 is Fail -> {
                     showGetListError(it.throwable)
                     showFilterRecyclerView(false)
+                }
+            }
+        })
+
+        roomListViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    startActivity(HotelBookingActivity.getCallingIntent(context!!,it.data.cartId))
+                }
+                is Fail -> {
                 }
             }
         })
@@ -269,7 +280,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {
         return HotelAddCartParam("", hotelRoomListPageModel.checkIn,
                 hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
-                listOf(HotelAddCartParam.Room(roomId = room.roomId, numOfRooms = room.roomQtyReqiured)))
+                listOf(HotelAddCartParam.Room(roomId = room.roomId, numOfRooms = room.roomQtyReqiured)),
+                hotelRoomListPageModel.adult)
     }
 
     override fun getScreenName(): String = ""
@@ -340,9 +352,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onClickBookListener(room: HotelRoom) {
         if (userSessionInterface.isLoggedIn) {
-//            roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
-//                    mapToAddCartParam(hotelRoomListPageModel, room))
-            startActivity(HotelBookingActivity.getCallingIntent(context!!,""))
+            roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
+                    mapToAddCartParam(hotelRoomListPageModel, room))
         } else {
             goToLoginPage()
         }
@@ -352,6 +363,14 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         if (activity != null) {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
+    }
+
+    override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
+        adapter.errorNetworkModel.iconDrawableRes = ErrorHandlerHotel.getErrorImage(throwable)
+        adapter.errorNetworkModel.errorMessage = ErrorHandlerHotel.getErrorTitle(context, throwable)
+        adapter.errorNetworkModel.subErrorMessage = ErrorHandlerHotel.getErrorMessage(context, throwable)
+        adapter.errorNetworkModel.onRetryListener = this
+        adapter.showErrorNetwork()
     }
 
     companion object {
