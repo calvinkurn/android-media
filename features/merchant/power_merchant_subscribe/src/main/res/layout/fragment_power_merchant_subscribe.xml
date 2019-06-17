@@ -102,7 +102,7 @@
                 android:id="@+id/base_partial_member"
                 layout="@layout/partial_member_power_merchant"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/ticker_yellow_container"
                 android:visibility="gone"
                 tools:visibility="visible" />
