@@ -189,7 +189,6 @@ public class SearchActivity extends BaseActivity
 
     protected void prepareView() {
         initToolbar();
-        showLoadingView(false);
 
         initViewPager();
         initBottomSheetListener();
@@ -337,6 +336,7 @@ public class SearchActivity extends BaseActivity
         if (isFromApplink) {
             performNewProductSearch(searchParameter.getSearchQuery());
         } else {
+            onSearchingStart();
             loadSection();
         }
         setToolbarTitle(searchParameter.getSearchQuery());
@@ -774,7 +774,9 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled) {
-        showBottomNavigation();
+        if (loadingView.getVisibility() != View.VISIBLE) {
+            showBottomNavigation();
+        }
 
         if (isSortEnabled) {
             buttonSort.setVisibility(View.VISIBLE);
