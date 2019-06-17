@@ -21,13 +21,9 @@ import com.tokopedia.mlp.merchantViewModel.MerchantLendingViewModel
 import kotlinx.android.synthetic.main.mlp_widget_container.*
 import javax.inject.Inject
 
-class MerchantLendingFragment : BaseDaggerFragment() {
+public class MerchantLendingFragment : BaseDaggerFragment() {
 
     lateinit var drawable: Drawable
-
-
-    lateinit var boxItem: BodyItem
-    lateinit var linearLayout: LinearLayout
 
     lateinit var merchantLendingComponent: MerchantLendingComponent
 
@@ -36,10 +32,6 @@ class MerchantLendingFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var merchantLendingViewModel: MerchantLendingViewModel
-
-    lateinit var dataLewidget: LeWidgetData
-
-    private var list/*: List<BoxesItem?>?*/ = ArrayList<BoxesItem>()
 
     private var widgetList = ArrayList<WidgetsItem>()
 
