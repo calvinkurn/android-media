@@ -55,3 +55,4 @@ data class ShopStatusModel(
         return powerMerchant.autoExtend.status == STATUS_ON
     }
 }
+

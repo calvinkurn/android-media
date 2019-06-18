@@ -80,7 +80,7 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
 
     override fun onLoadFinished() {
         super.onLoadFinished()
-        footer.visible()
+        footer?.visible()
     }
 
     override fun showLoading() {

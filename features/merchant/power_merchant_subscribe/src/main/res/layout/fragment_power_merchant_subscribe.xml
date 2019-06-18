@@ -133,9 +133,10 @@
                     android:id="@+id/pm_ticker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardPreventCornerOverlap="true"
                     app:cardBackgroundColor="@color/ticker_blue"
-                    app:cardCornerRadius="@dimen/dp_8">
+                    app:cardCornerRadius="@dimen/dp_8"
+                    app:cardElevation="0dp"
+                    app:cardPreventCornerOverlap="true">
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:id="@+id/txt_blue_ticker"

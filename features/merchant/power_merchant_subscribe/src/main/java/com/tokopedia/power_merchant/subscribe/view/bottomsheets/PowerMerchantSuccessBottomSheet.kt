@@ -1,10 +1,11 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheets
 
-import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -58,7 +59,20 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
         buttonSubmit.setOnClickListener {
             listener?.onButtonClicked()
         }
-        updateHeight()
+
+        view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val viewTreeObserver = view.viewTreeObserver
+                updateHeight(view.height)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+                } else {
+                    @Suppress("DEPRECATION")
+                    viewTreeObserver.removeGlobalOnLayoutListener(this)
+                }
+            }
+        })
+
     }
 
     private fun initVar() {
@@ -70,18 +84,8 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
         return ""
     }
 
-    override fun onCloseButtonClick() {
-        super.onCloseButtonClick()
-        dismiss()
-    }
-
     interface BottomSheetListener {
         fun onButtonClicked()
-    }
-
-    override fun setupDialog(dialog: Dialog?, style: Int) {
-        super.setupDialog(dialog, style)
-        updateHeight()
     }
 
     data class BottomSheetModel(
