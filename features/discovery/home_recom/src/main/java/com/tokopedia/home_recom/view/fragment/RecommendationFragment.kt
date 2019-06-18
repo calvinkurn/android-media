@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.home_recom.R
+import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
@@ -22,12 +23,20 @@ import com.tokopedia.recommendation_widget_common.presentation.RecommendationCar
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationCardView.TrackingListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     private lateinit var productId: String
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
@@ -134,12 +143,68 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         return list
     }
 
-    override fun onImpressionTopAds(item: RecommendationItem) {}
+    override fun onImpressionTopAds(item: RecommendationItem) {
+        if(userSessionInterface.isLoggedIn){
+            RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString())
+        } else {
+            RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString())
+        }
+    }
 
-    override fun onImpressionOrganic(item: RecommendationItem) {}
+    override fun onImpressionOrganic(item: RecommendationItem) {
+        if(userSessionInterface.isLoggedIn){
+            RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString())
+        } else {
+            RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString())
+        }
+    }
 
-    override fun onClickTopAds(item: RecommendationItem) {}
+    override fun onClickTopAds(item: RecommendationItem) {
+        if(userSessionInterface.isLoggedIn){
+            RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString())
+        }else{
+            RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString())
+        }
+    }
 
-    override fun onClickOrganic(item: RecommendationItem) {}
+    override fun onClickOrganic(item: RecommendationItem) {
+        if(userSessionInterface.isLoggedIn){
+            RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString())
+        }else{
+            RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString())
+        }
+    }
 
+    override fun onClickAddWishlist(item: RecommendationItem) {
+        if(userSessionInterface.isLoggedIn){
+            RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(true)
+        }else{
+            RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
+        }
+    }
+
+    override fun onClickRemoveWishlist(item: RecommendationItem) {
+        if(userSessionInterface.isLoggedIn){
+            RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(false)
+        }else{
+            RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
+        }
+    }
+
+    private fun getHeaderName(item: RecommendationItem): String{
+        var header = ""
+        val data = adapter.data
+        val itemFoundAtStaggeredGridLayoutManager = data.any { it is RecommendationItemDataModel && it.productItem.productId == item.productId }
+        if(itemFoundAtStaggeredGridLayoutManager){
+            data.find { it is TitleDataModel }?.let {
+                header = (it as TitleDataModel).title
+            }
+        }else{
+            data.find { it is RecommendationCarouselDataModel
+                    && it.products.any { product -> product.productId == item.productId }}?.let {
+                header = (it as RecommendationCarouselDataModel).title
+            }
+        }
+        return header
+    }
 }

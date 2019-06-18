@@ -18,5 +18,5 @@ class RecommendationItem(val productId: Int,
                          val countReview: Int,
                          val stock: Int,
                          val recommendationType: String,
-                         val isTopAds: Boolean) : ImpressHolder() {
-}
+                         val isTopAds: Boolean,
+                         val position: Int) : ImpressHolder()

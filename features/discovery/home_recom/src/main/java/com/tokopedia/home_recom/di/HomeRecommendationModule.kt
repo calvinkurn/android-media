@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -45,4 +46,8 @@ class HomeRecommendationModule {
     fun provideGetRecommendationUseCase(@ApplicationContext context: Context,
                                         graphqlUseCase: GraphqlUseCase,
                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase = GetRecommendationUseCase(context, graphqlUseCase, userSessionInterface)
+
+    @Provides
+    @HomeRecommendationScope
+    fun provideTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
 }
