@@ -610,6 +610,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 activity!!.setResult(Activity.RESULT_OK, resultIntent)
             }
         }
+        if (!isOwner && footerOthers.isVisible) showFooterOthers()
     }
 
     override fun onErrorFollowKol(errorMessage: String) = showError(errorMessage)
@@ -937,17 +938,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy <= -10) {
-                    if (!isOwner && !footerOthers.isVisible) {
-                        showFooterOthers()
-                    }
-                } else if (dy > 10) {
-                    hideFootersOthers()
-                }
-            }
-
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
@@ -1035,10 +1025,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 toolbar.let {
                     if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
                         it.visibility = View.VISIBLE
-                        if (!isOwner) showFooterOthers()
+                        if (!isOwner && !footerOthers.isVisible) showFooterOthers()
                     } else {
                         it.visibility = View.GONE
-                        if (!isOwner) hideFootersOthers()
+                        if (!isOwner && footerOthers.isVisible) hideFootersOthers()
                     }
                 }
             } catch (e: IllegalStateException) {
