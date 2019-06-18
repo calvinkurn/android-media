@@ -36,6 +36,9 @@ class GridProductItem2019ViewHolder(
         initLocationTextView(productItem)
         initRatingAndReview(productItem)
         initTopAdsIcon(productItem)
+
+        // TODO:: For testing only
+        itemView.bottomLabel.setLabelDesign(context.getString(R.string.product_card_light_blue))
     }
 
     private fun initProductCardContainer(productItem: ProductItemViewModel) {
