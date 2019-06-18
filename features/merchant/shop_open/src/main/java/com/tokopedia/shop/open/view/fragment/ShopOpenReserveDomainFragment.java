@@ -26,6 +26,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -73,6 +75,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     public static final int MIN_SHOP_DOMAIN_LENGTH = 3;
     public static final int REQUEST_CODE__EDIT_ADDRESS = 1235;
     public static final int REQUEST_CODE_POSTAL_CODE = 1515;
+    public static final int REQUEST_PHONE_VERIFICATION = 123;
     public static final String VALIDATE_DOMAIN_NAME_SHOP = "validate_domain_name_shop";
     public static final String VALIDATE_DOMAIN_SUGGESTION_SHOP = "shop_domain_suggestion";
     public static final String URL_TNC = "https://www.tokopedia.com/terms.pl";
@@ -296,12 +299,12 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             buttonSubmit.setEnabled(false);
             return;
         }
-        showSubmitLoading();
-        String shopName = editTextInputShopName.getText().toString().trim();
-        String shopDomain = editTextInputDomainName.getTextWithoutPrefix().trim();
-        Integer districtId = openShopAddressViewHolder.getDistrictId();
-        Integer postalCodeId = Integer.valueOf(postalCode);
-        shopOpenDomainPresenter.onSubmitCreateShop(shopName, shopDomain, districtId, postalCodeId);
+
+        if (userSession.isMsisdnVerified()){
+            submitCreatingShop();
+        } else {
+            startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.PHONE_VERIFICATION), REQUEST_PHONE_VERIFICATION);
+        }
     }
 
     @Override
@@ -498,7 +501,21 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                         );
                     }
                 }
+            case REQUEST_PHONE_VERIFICATION:
+                if (resultCode == Activity.RESULT_OK){
+                    userSession.setIsMSISDNVerified(true);
+                    submitCreatingShop();
+                }
         }
+    }
+
+    private void submitCreatingShop() {
+        showSubmitLoading();
+        String shopName = editTextInputShopName.getText().toString().trim();
+        String shopDomain = editTextInputDomainName.getTextWithoutPrefix().trim();
+        Integer districtId = openShopAddressViewHolder.getDistrictId();
+        Integer postalCodeId = Integer.valueOf(postalCode);
+        shopOpenDomainPresenter.onSubmitCreateShop(shopName, shopDomain, districtId, postalCodeId);
     }
 
     public void clearFocus() {
