@@ -312,6 +312,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             if (isAutoExtend()) {
                 hideButtonActivatedPm()
             } else {
+                showButtonActivatedPm()
                 if (isSuccessCancellationPm) {
                     showExpiredDateTickerYellow()
                 }
@@ -345,6 +346,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     private fun hideButtonActivatedPm() {
         ll_footer_submit.visibility = View.GONE
     }
+
+    private fun showButtonActivatedPm() {
+        ll_footer_submit.visibility = View.VISIBLE
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

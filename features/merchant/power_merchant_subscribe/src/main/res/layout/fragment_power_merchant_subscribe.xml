@@ -65,13 +65,13 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_12"
-                android:background="@color/transparent"
                 android:visibility="gone"
                 tools:visibility="visible">
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/ticker_yellow_cancellation"
                     android:layout_width="match_parent"
+                    app:cardPreventCornerOverlap="true"
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@color/ticker_yellow"
                     app:cardCornerRadius="@dimen/dp_8">
@@ -133,6 +133,7 @@
                     android:id="@+id/pm_ticker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:cardPreventCornerOverlap="true"
                     app:cardBackgroundColor="@color/ticker_blue"
                     app:cardCornerRadius="@dimen/dp_8">
 

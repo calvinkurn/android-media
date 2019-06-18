@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheets
 
+import android.app.Dialog
 import android.view.View
 import android.widget.Button
 import com.tokopedia.design.component.BottomSheets
@@ -31,7 +32,10 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
         buttonCancel.setOnClickListener {
             listener?.onclickButton()
         }
-        updateHeight()
     }
 
+    override fun setupDialog(dialog: Dialog?, style: Int) {
+        super.setupDialog(dialog, style)
+        updateHeight()
+    }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheets
 
+import android.app.Dialog
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
@@ -76,6 +77,11 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
 
     interface BottomSheetListener {
         fun onButtonClicked()
+    }
+
+    override fun setupDialog(dialog: Dialog?, style: Int) {
+        super.setupDialog(dialog, style)
+        updateHeight()
     }
 
     data class BottomSheetModel(
