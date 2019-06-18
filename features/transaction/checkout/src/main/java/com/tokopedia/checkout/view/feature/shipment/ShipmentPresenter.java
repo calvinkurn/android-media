@@ -427,9 +427,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         RecipientAddressModel newAddress = getView().getShipmentDataConverter()
                 .getRecipientAddressModel(cartShipmentAddressFormData);
         if (!cartShipmentAddressFormData.isMultiple()) {
-            if (!checkHaveSameCurrentCodAddress(newAddress.getCornerId())) {
-                setRecipientAddressModel(newAddress);
-            }
+            setRecipientAddressModel(newAddress);
         } else {
             setRecipientAddressModel(null);
         }
