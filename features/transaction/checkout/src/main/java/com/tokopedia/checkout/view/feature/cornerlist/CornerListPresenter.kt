@@ -28,7 +28,7 @@ class CornerListPresenter @Inject constructor(val usecase: GetCornerList) : Corn
                 .doOnTerminate { mView?.setLoadingState(false) }
                 .subscribe(
                         {
-                            if (it.listAddress.size > 0) mView?.showData(it.listAddress)
+                            if (it.listAddress.isNotEmpty()) mView?.showData(it.listAddress)
                             else mView?.showEmptyView()
                             currentQuery = EMPTY_QUERY
                         },
@@ -51,7 +51,7 @@ class CornerListPresenter @Inject constructor(val usecase: GetCornerList) : Corn
                 .doOnTerminate { mView?.setLoadingState(false) }
                 .subscribe(
                         {
-                            if (it.listAddress.size > 0) mView?.showData(it.listAddress)
+                            if (it.listAddress.isNotEmpty()) mView?.showData(it.listAddress)
                             else mView?.showEmptyView()
                             currentQuery = query
                         },
