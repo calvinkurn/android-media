@@ -466,12 +466,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
     }
 
-    private boolean checkHaveSameCurrentCodAddress(String cornerId) {
-        RecipientAddressModel curr = getRecipientAddressModel();
-        if (curr == null) return false;
-        return (curr.isCornerAddress()) && (curr.getCornerId().equals(cornerId));
-    }
-
     @Override
     public void processReloadCheckoutPageFromMultipleAddress(PromoStackingData oldPromoData,
                                                              CartPromoSuggestion oldCartPromoSuggestion,
