@@ -35,7 +35,7 @@ class CornerAdapter(
         notifyDataSetChanged()
     }
 
-    fun addAddress(list: List<RecipientAddressModel>) {
+    fun appendAddress(list: List<RecipientAddressModel>) {
         mData.addAll(list)
         notifyDataSetChanged()
     }

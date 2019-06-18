@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel
 import com.tokopedia.checkout.view.di.component.CartComponent
-import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule
 import com.tokopedia.design.text.SearchInputView
@@ -80,7 +79,7 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
         mRvCorner.addItemDecoration(DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL))
         mScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                mPresenter.loadMore(page)
+                mPresenter.loadMore(page + 1)
             }
         }
         mRvCorner.addOnScrollListener(mScrollListener)
@@ -105,15 +104,19 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
         mListener.onCornerChosen(corner)
     }
 
-    override fun showData(data: List<RecipientAddressModel>?) {
-        mAdapter.setAddress(data!!)
+    override fun showData(data: List<RecipientAddressModel>) {
+        mAdapter.setAddress(data)
         mScrollListener?.resetState()
         mEmptyView.visibility = View.GONE
     }
 
-    override fun appendData(data: List<RecipientAddressModel>?) {
-        mAdapter.addAddress(data!!)
+    override fun appendData(data: List<RecipientAddressModel>) {
+        mAdapter.appendAddress(data)
         mScrollListener?.updateStateAfterGetData()
+    }
+
+    override fun notifyHasNotNextPage() {
+        mScrollListener?.setHasNextPage(false)
     }
 
     override fun setLoadingState(active: Boolean) {

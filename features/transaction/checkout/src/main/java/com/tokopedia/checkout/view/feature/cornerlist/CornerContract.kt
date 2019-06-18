@@ -9,8 +9,9 @@ interface CornerContract {
 
     interface View {
         fun showEmptyView()
-        fun showData(data: List<RecipientAddressModel>?)
-        fun appendData(data: List<RecipientAddressModel>?)
+        fun showData(data: List<RecipientAddressModel>)
+        fun appendData(data: List<RecipientAddressModel>)
+        fun notifyHasNotNextPage()
         fun setLoadingState(active: Boolean)
         fun showError(e: Throwable)
     }

@@ -40,7 +40,10 @@ class CornerListPresenter @Inject constructor(val usecase: GetCornerList) : Corn
                 .doOnSubscribe { mView?.setLoadingState(true) }
                 .doOnTerminate { mView?.setLoadingState(false) }
                 .subscribe(
-                        { mView?.appendData(it.listAddress) },
+                        {
+                            if (it.listAddress.isNotEmpty()) mView?.appendData(it.listAddress)
+                            else mView?.notifyHasNotNextPage()
+                        },
                         { e -> mView?.showError(e) }, {}
                 )
     }
