@@ -101,10 +101,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         root_view_pm.showLoading()
         renderInitialLayout()
-
         button_activate_root.setOnClickListener {
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 1) {
                 if (shopStatusModel.isPowerMerchantInactive()) {
@@ -284,7 +282,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             renderViewNonTransitionPeriod()
         }
         partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
-        root_view_pm.hideLoading()
 
         if (isSuccessActivatedPm) {
             showBottomSheetSuccess(shopStatusModel)
@@ -293,6 +290,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         if (isSuccessCancellationPm) {
             showToasterCancellationSuccess()
         }
+        root_view_pm.hideLoading()
+
     }
 
     private fun renderViewNonTransitionPeriod() {
@@ -301,7 +300,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             if (isAutoExtend()) {
                 hideButtonActivatedPm()
             } else {
-                showExpiredDateTickerYellow()
+                if (isSuccessCancellationPm) {
+                    showExpiredDateTickerYellow()
+                }
             }
         }
     }
