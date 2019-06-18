@@ -24,13 +24,20 @@ class TickerInfoUseCase @Inject constructor(
     companion object {
         const val PAGE_KEY: String = "page"
         const val LOGIN_PAGE: String = "login"
+        const val REGISTER_PAGE: String = "register"
+
+        @JvmStatic fun createRequestParam(page: String): RequestParams {
+            val param = RequestParams.create()
+            param.putString(PAGE_KEY, page)
+            return param
+        }
     }
 
-    override fun createObservable(requestParams: RequestParams?): Observable<List<TickerInfoPojo>> {
+    override fun createObservable(requestParams: RequestParams): Observable<List<TickerInfoPojo>> {
         val graphqlRequest = GraphqlRequest(
             GraphqlHelper.loadRawString(resources, R.raw.query_ticker_login_register),
             TickerInfoData::class.java,
-            getRequestParam()
+            requestParams.parameters
         )
 
         graphqlUseCase.clearRequest()
@@ -39,11 +46,5 @@ class TickerInfoUseCase @Inject constructor(
             return@map it.getData<TickerInfoData>(TickerInfoData::class.java)
                     .tickersInfoPojo.listTickerInfoPojo
         }
-    }
-
-    fun getRequestParam(): Map<String, Any> {
-        val params = HashMap<String, Any>()
-        params[PAGE_KEY] = LOGIN_PAGE
-        return params
     }
 }

@@ -22,7 +22,7 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.loginthirdparty.subscriber.LoginThirdPartySubscriber
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo
 import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
-import com.tokopedia.loginregister.ticker.subscriber.TickerInfoSubscriber
+import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.domain.usecase.LoginEmailUseCase
 import com.tokopedia.usecase.RequestParams
@@ -257,7 +257,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     }
 
     override fun getTickerInfo(){
-        tickerInfoUseCase.execute(TickerInfoSubscriber(viewEmailPhone))
+        tickerInfoUseCase.execute(TickerInfoUseCase.createRequestParam(TickerInfoUseCase.LOGIN_PAGE),
+                TickerInfoLoginSubscriber(viewEmailPhone))
     }
 
 }

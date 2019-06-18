@@ -992,8 +992,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
         if(listTickerInfo.isNotEmpty()){
             listTickerInfo.first().apply {
-                textViewTicker.setText(this.message)
-                textViewTicker.setBackgroundColor(Color.parseColor(this.color))
+//                textViewTicker.setText(this.message)
+//                textViewTicker.setBackgroundColor(Color.parseColor(this.color))
             }
         }else{
             onErrorGetTickerInfo("Empty")

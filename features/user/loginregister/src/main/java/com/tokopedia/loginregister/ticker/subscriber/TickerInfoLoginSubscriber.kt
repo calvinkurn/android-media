@@ -8,7 +8,7 @@ import rx.Subscriber
 /**
  * @author by ade on 8/5/2019
  */
-open class TickerInfoSubscriber(val view: LoginEmailPhoneContract.View): Subscriber<List<TickerInfoPojo>>(){
+open class TickerInfoLoginSubscriber(val view: LoginEmailPhoneContract.View): Subscriber<List<TickerInfoPojo>>(){
     override fun onNext(t: List<TickerInfoPojo>?) {
         if(t != null)
           view.onSuccessGetTickerInfo(t)

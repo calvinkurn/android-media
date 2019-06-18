@@ -62,6 +62,7 @@ import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialCompo
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView;
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract;
 import com.tokopedia.loginregister.registerinitial.view.presenter.RegisterInitialPresenter;
+import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo;
 import com.tokopedia.loginregister.welcomepage.WelcomePageActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
@@ -76,6 +77,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -961,6 +963,16 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         //use masked phone number form backend when needed
         //we need unmasked phone number (without dash) to be provided to backend
         this.phoneNumber = partialRegisterInputView.getTextValue();
+    }
+
+    @Override
+    public void onSuccessGetTickerInfo(List<TickerInfoPojo> listTickerInfo) {
+
+    }
+
+    @Override
+    public void onErrorGetTickerInfo(String error) {
+
     }
 
     @Override
