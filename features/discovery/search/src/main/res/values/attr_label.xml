@@ -2,16 +2,16 @@
 <resources>
     <declare-styleable name="Label">
         <attr name="labelDesign" format="string">
-            <enum name="lightGrey" value="lightGrey" />
-            <enum name="darkGrey" value="darkGrey" />
-            <enum name="lightRed" value="lightRed" />
-            <enum name="darkRed" value="darkRed" />
-            <enum name="lightGreen" value="lightGreen" />
-            <enum name="darkGreen" value="darkGreen" />
-            <enum name="lightBlue" value="lightBlue" />
-            <enum name="darkBlue" value="darkBlue" />
-            <enum name="lightOrange" value="lightOrange" />
-            <enum name="darkOrange" value="darkOrange" />
+            <string name="lightGrey">lightGrey</string>
+            <string name="lightBlue">lightBlue</string>
+            <string name="lightGreen">lightGreen</string>
+            <string name="lightRed">lightRed</string>
+            <string name="lightOrange">lightOrange</string>
+            <string name="darkGrey">darkGrey</string>
+            <string name="darkBlue">darkBlue</string>
+            <string name="darkGreen">darkGreen</string>
+            <string name="darkRed">darkRed</string>
+            <string name="darkOrange">darkOrange</string>
         </attr>
     </declare-styleable>
 </resources>
