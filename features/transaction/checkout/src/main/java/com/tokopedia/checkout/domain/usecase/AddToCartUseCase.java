@@ -32,6 +32,9 @@ public class AddToCartUseCase extends UseCase<AddToCartDataResponse> {
 
     @Override
     public Observable<AddToCartDataResponse> createObservable(RequestParams requestParams) {
+
+        // TODO: 17/6/19 use new insuretech addToCart gql
+
         AddToCartRequest addToCartRequest = (AddToCartRequest) requestParams.getObject(PARAM_ADD_TO_CART);
         TKPDMapParam<String, String> paramRequest = new TKPDMapParam<>();
         String addToCartRequestString = gson.toJson(addToCartRequest);

@@ -1789,6 +1789,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment) {
+
+        // TODO: 17/6/19 add new addToCartProduct method with insuretech products and gql
+
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
         if (isOneClickShipment) {

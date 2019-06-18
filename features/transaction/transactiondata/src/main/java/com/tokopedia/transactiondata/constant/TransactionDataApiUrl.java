@@ -12,6 +12,7 @@ public class TransactionDataApiUrl {
         public static final String VERSION_2 = "v2";
         static final String BASE_PATH = "cart/";
 
+        // TODO: 17/6/19 remove this api
         public static final String PATH_ADD_TO_CART = BASE_PATH + VERSION_2 + "/add_product_cart";
         public static final String PATH_ADD_TO_CART_ONE_CLICK_SHIPMENT = PATH_ADD_TO_CART + "/one_click_shipment";
         public static final String PATH_CART_LIST = BASE_PATH + VERSION_2 + "/cart_list";

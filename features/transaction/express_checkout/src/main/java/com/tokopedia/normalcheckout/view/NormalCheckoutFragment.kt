@@ -716,6 +716,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             quantity,
             selectedProductInfo?.basic?.name ?: "",
             selectedProductInfo?.category?.name ?: "")
+
+        // todo check for insuretech products to be added
+
         router.addToCartProduct(AddToCartRequest.Builder()
             .productId(if (selectedVariant != null && selectedVariant.toInt() > 0) {
                 selectedVariant.toInt()

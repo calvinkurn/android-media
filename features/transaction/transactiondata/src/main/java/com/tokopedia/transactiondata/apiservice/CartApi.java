@@ -20,6 +20,7 @@ import rx.Observable;
 
 public interface CartApi {
 
+    // TODO: 17/6/19 remove this API
     @FormUrlEncoded
     @POST(TransactionDataApiUrl.Cart.PATH_ADD_TO_CART)
     Observable<Response<CartResponse>> postAddToCart(@FieldMap Map<String, String> params);

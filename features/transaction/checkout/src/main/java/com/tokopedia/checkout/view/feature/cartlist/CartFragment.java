@@ -477,6 +477,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @NonNull
     private View.OnClickListener getOnClickButtonToShipmentListener(String message) {
+
+        // TODO: 18/6/19 check if insurance products modified? also check if only insurance products are being bought?
+
         return view -> {
             if (message == null || message.equals("")) {
                 dPresenter.processToUpdateCartData(getSelectedCartDataList());
@@ -939,6 +942,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
             // TODO: 17/6/19 get insurance products
 
+            // TODO: 18/6/19 check if cartdata list is not empty and accordingly get insurance cart
+
+            dPresenter.getInsuranceTechCart();
+
             boolean flagAutoApplyStack = false;
             PromoStackingData.Builder builderGlobal = new PromoStackingData.Builder();
             if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()
@@ -1106,6 +1113,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList) {
 
+        // TODO: 18/6/19 check if any related insurance product present
     }
 
     @Override

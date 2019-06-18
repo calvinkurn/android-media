@@ -33,6 +33,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.network.utils.AuthUtil;
@@ -54,6 +55,8 @@ import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapDa
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartGqlResponse;
+import com.tokopedia.transactiondata.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -118,6 +121,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final CheckPromoStackingCodeMapper checkPromoStackingCodeMapper;
     private final TopAdsGqlUseCase topAdsUseCase;
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
+    private final GetInsuranceCartUseCase getInsuranceCartUseCase;
     private final UserSessionInterface userSessionInterface;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
@@ -140,7 +144,8 @@ public class CartListPresenter implements ICartListPresenter {
                              UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
                              UserSessionInterface userSessionInterface,
                              TopAdsGqlUseCase topAdsUseCase,
-                             ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
+                             ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
+                             GetInsuranceCartUseCase getInsuranceCartUseCase) {
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartUseCase = deleteCartUseCase;
@@ -158,6 +163,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.userSessionInterface = userSessionInterface;
         this.topAdsUseCase = topAdsUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
+        this.getInsuranceCartUseCase = getInsuranceCartUseCase;
     }
 
     @Override
@@ -279,6 +285,11 @@ public class CartListPresenter implements ICartListPresenter {
                         .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberDeleteCart(cartItemData, addWishList))
         );
+    }
+
+    @Override
+    public void getInsuranceTechCart() {
+        getInsuranceCartUseCase.execute(getSubscriberInsuranceCart());
     }
 
     @Override
@@ -481,7 +492,7 @@ public class CartListPresenter implements ICartListPresenter {
                         errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
                     }
                     view.showToastMessageRed(errorMessage);
-                    processInitialGetCartData(view.getCartId(),cartListData == null);
+                    processInitialGetCartData(view.getCartId(), cartListData == null);
                 }
             }
 
@@ -822,6 +833,38 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
+    private Subscriber<GraphqlResponse> getSubscriberInsuranceCart() {
+        return new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+
+                if (graphqlResponse != null &&
+                        graphqlResponse.getData(InsuranceCartGqlResponse.class) != null) {
+
+                    InsuranceCartGqlResponse insuranceCartGqlResponse =
+                            graphqlResponse.getData(InsuranceCartGqlResponse.class);
+
+                    view.showToastMessageGreen("Cart Success");
+
+                } else {
+
+                    view.showToastMessageRed("Cart Fail");
+                }
+            }
+        };
+    }
+
+    @NonNull
     private Subscriber<DeleteCartData> getSubscriberDeleteCart(final CartItemData cartItemData, final boolean addWishList) {
         return new Subscriber<DeleteCartData>() {
             @Override
@@ -877,7 +920,7 @@ public class CartListPresenter implements ICartListPresenter {
                         }
                         view.showToastMessageRed(errorMessage);
                     } else {
-                        processInitialGetCartData(view.getCartId(),cartListData == null);
+                        processInitialGetCartData(view.getCartId(), cartListData == null);
                     }
                 }
             }
@@ -891,7 +934,7 @@ public class CartListPresenter implements ICartListPresenter {
                         if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
                                 && deleteAndRefreshCartListData.getCartListData() != null) {
                             if (deleteAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
-                                processInitialGetCartData(view.getCartId(),cartListData == null);
+                                processInitialGetCartData(view.getCartId(), cartListData == null);
                             } else {
                                 CartListPresenter.this.cartListData = deleteAndRefreshCartListData.getCartListData();
                                 view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
@@ -903,7 +946,7 @@ public class CartListPresenter implements ICartListPresenter {
                             );
                         }
                     } else {
-                        processInitialGetCartData(view.getCartId(),cartListData == null);
+                        processInitialGetCartData(view.getCartId(), cartListData == null);
                     }
                 }
             }
@@ -928,7 +971,7 @@ public class CartListPresenter implements ICartListPresenter {
                         errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
                     }
                     view.showToastMessageRed(errorMessage);
-                    processInitialGetCartData(view.getCartId(),cartListData == null);
+                    processInitialGetCartData(view.getCartId(), cartListData == null);
                 }
             }
 
