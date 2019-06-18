@@ -3,6 +3,7 @@ package com.tokopedia.topads.auto.view.activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -38,7 +39,7 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auto_ads_route)
         component.inject(this)
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         run {
             adsInfoViewModel = ViewModelProviders.of(this, factory).get(TopAdsInfoViewModel::class.java)
             adsInfoViewModel.getShopAdsInfo(userSession.shopId.toInt())
