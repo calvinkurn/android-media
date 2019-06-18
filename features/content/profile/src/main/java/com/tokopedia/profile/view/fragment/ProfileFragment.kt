@@ -985,17 +985,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showFooterOthers() {
-        profileHeader?.let {
-            if (!it.isFollowed) {
-                footerOthers.show()
-                footerOthersText.text = getString(R.string.sticky_footer_follow)
-                footerOthersFollow.show()
-                footerOthersFollow.setOnClickListener { _ ->
-                    followUnfollowUser(it.userId, !it.isFollowed, FOLLOW_FOOTER)
-                }
-            } else {
-                footerOthers.hide()
+        footerOthers.show()
+        if (profileHeader?.isFollowed == true){
+            footerOthersText.text = getString(R.string.sticky_footer_following)
+            footerOthersFollow.hide()
+            footerOthersShareText.show()
+        } else {
+            footerOthersText.text = getString(R.string.sticky_footer_follow)
+            footerOthersFollow.show()
+            footerOthersFollow.setOnClickListener { _ ->
+                profileHeader?.let { followUnfollowUser(it.userId, !it.isFollowed, FOLLOW_FOOTER) }
             }
+            footerOthersShareText.hide()
         }
     }
 
@@ -1034,8 +1035,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 toolbar.let {
                     if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
                         it.visibility = View.VISIBLE
+                        if (isOwner) showFooterOthers()
                     } else {
                         it.visibility = View.GONE
+                        if (isOwner) hideFootersOthers()
                     }
                 }
             } catch (e: IllegalStateException) {
@@ -1048,7 +1051,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         lateinit var action: View.OnClickListener
         action = if (!selfProfile) {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
-            iv_action.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
+            iv_action.gone()
             View.OnClickListener {
                 val linkerData = constructShareData(
                         element.name,
