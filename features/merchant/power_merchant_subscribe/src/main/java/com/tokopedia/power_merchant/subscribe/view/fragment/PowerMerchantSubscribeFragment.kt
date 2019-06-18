@@ -275,8 +275,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
         shopStatusModel = powerMerchantStatus.shopStatusModel
         getApprovalStatusPojo = powerMerchantStatus.getApprovalStatusPojo
-        shopScore = powerMerchantStatus.shopScore.data.value ?: 0
-        minScore = powerMerchantStatus.shopScore.badgeScore ?: 0
+        shopScore = powerMerchantStatus.shopScore.data.value
+        minScore = powerMerchantStatus.shopScore.badgeScore
         var isTransitionPeriod = shopStatusModel.isTransitionPeriod()
         if (isTransitionPeriod) {
             renderViewTransitionPeriod()
@@ -363,7 +363,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     private fun renderDefaultTicker() {
         txt_ticker_yellow.text = MethodChecker.fromHtml(getString(R.string.pm_label_cancellation_duration))
-        txt_ticker_yellow.text = MethodChecker.fromHtml(getString(R.string.pm_label_price_cashback))
+        txt_blue_ticker.text = MethodChecker.fromHtml(getString(R.string.pm_label_price_cashback))
     }
 
 

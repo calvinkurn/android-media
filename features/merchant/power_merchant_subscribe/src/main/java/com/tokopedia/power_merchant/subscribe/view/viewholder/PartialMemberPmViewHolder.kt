@@ -15,9 +15,8 @@ class PartialMemberPmViewHolder private constructor(private val view: View,
     }
 
     fun renderPartialMember(shopStatusModel: ShopStatusModel, isAutoExtend: Boolean) {
-        if (shopStatusModel.isPowerMerchantActive() or shopStatusModel.isPowerMerchantPending()) {
+        if (shopStatusModel.isPowerMerchantActive() or shopStatusModel.isPowerMerchantPending() or shopStatusModel.isPowerMerchantIdle()) {
             showCancellationButton(isAutoExtend)
-            view.show()
         } else if (shopStatusModel.isPowerMerchantInactive()){
             view.hide()
         }
@@ -25,10 +24,12 @@ class PartialMemberPmViewHolder private constructor(private val view: View,
 
     }
 
-    fun showCancellationButton(isAutoExtend: Boolean){
+    private fun showCancellationButton(isAutoExtend: Boolean){
         if (isAutoExtend) {
             view.member_cancellation_button.visibility = View.VISIBLE
+            view.hide()
         } else {
+            view.show()
             view.member_cancellation_button.visibility = View.GONE
 
         }
