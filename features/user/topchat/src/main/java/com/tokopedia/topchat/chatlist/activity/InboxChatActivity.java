@@ -60,14 +60,10 @@ public class InboxChatActivity extends BaseSimpleActivity
     }
 
     @DeepLink(ApplinkConst.GROUPCHAT_LIST)
-    public static TaskStackBuilder getCallingTaskStack(Context context) {
-        Intent homeIntent = ((TopChatRouter) context.getApplicationContext()).getHomeIntent(context);
+    public static Intent getCallingTaskStack(Context context) {
         Intent channelListIntent = InboxChatActivity.getChannelCallingIntent(context);
         channelListIntent.putExtra("title", "Play");
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(channelListIntent);
-        return taskStackBuilder;
+        return channelListIntent;
     }
 
     public static Intent getCallingIntent(Context context) {

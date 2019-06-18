@@ -1,14 +1,17 @@
 package com.tokopedia.groupchat.room.view.activity
 
 import android.app.Activity
+import android.app.PictureInPictureParams
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.util.DisplayMetrics
+import android.util.Rational
 import android.view.View
 import android.view.WindowManager
 import android.widget.RelativeLayout
@@ -30,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.videoplayer.utils.RepeatMode
 import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
 import kotlinx.android.synthetic.main.play_activity.*
+import kotlinx.android.synthetic.main.play_fragment.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -44,6 +48,13 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
 
     @Inject
     lateinit var analytics: GroupChatAnalytics
+
+    private val mPictureInPictureParamsBuilder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        PictureInPictureParams.Builder()
+    } else {
+        null
+    }
+
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -217,6 +228,32 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
         }
 
         invalidateOptionsMenu()
+    }
+
+    fun setSwipeable(swipeable: Boolean) {
+        if (!swipeable) {
+        } else {
+        }
+    }
+
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        minimize()
+    }
+
+    private fun minimize() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            enterPictureInPictureMode(mPictureInPictureParamsBuilder?.build())
+        }
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        if(isInPictureInPictureMode) {
+            viewPager.visibility = View.GONE
+        } else {
+            viewPager.visibility = View.VISIBLE
+        }
     }
 
     companion object {
