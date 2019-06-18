@@ -148,7 +148,6 @@
             android:layout_below="@id/ratingReviewContainer">
 
             <ImageView
-                android:id="@+id/topAdsIcon"
                 android:layout_width="@dimen/dp_13"
                 android:layout_height="@dimen/dp_10"
                 android:src="@drawable/search_ic_top_ads"

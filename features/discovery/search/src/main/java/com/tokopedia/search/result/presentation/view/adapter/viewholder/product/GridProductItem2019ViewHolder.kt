@@ -165,10 +165,10 @@ class GridProductItem2019ViewHolder(
 
     private fun initTopAdsIcon(productItem: ProductItemViewModel) {
         if(productItem.isTopAds) {
-            itemView.topAdsIcon?.visibility = View.VISIBLE
+            itemView.topAdsIconContainer?.visibility = View.VISIBLE
         }
         else {
-            itemView.topAdsIcon?.visibility = View.GONE
+            itemView.topAdsIconContainer?.visibility = View.GONE
         }
     }
 }
