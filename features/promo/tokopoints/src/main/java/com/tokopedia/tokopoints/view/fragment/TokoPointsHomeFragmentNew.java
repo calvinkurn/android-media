@@ -391,6 +391,8 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         coordinatorLayout = view.findViewById(R.id.container);
         mContainerMain = view.findViewById(R.id.container_main);
         mTextMembershipValue = view.findViewById(R.id.text_membership_value);
+        mTextMembershipValue.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_arrow_right_grey), null);
         mTextMembershipLabel = view.findViewById(R.id.text_membership_label);
         mTextPoints = view.findViewById(R.id.text_my_points_value);
         mTextLoyalty = view.findViewById(R.id.text_loyalty_value);
