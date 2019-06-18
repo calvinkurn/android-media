@@ -24,6 +24,7 @@ import com.tokopedia.checkout.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
+import com.tokopedia.checkout.view.feature.cartlist.subscriber.AddToCartSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.CheckPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplySubscriber;
@@ -51,7 +52,6 @@ import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapDa
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
-import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -1219,38 +1219,7 @@ public class CartListPresenter implements ICartListPresenter {
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<AddToCartDataResponse>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                            if (view != null) {
-                                view.hideProgressLoading();
-                                String errorMessage = e.getMessage();
-                                if (!(e instanceof CartResponseErrorException)) {
-                                    errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
-                                }
-                                view.showToastMessageRed(errorMessage);
-                            }
-                        }
-
-                        @Override
-                        public void onNext(AddToCartDataResponse addToCartDataResponse) {
-                            if (view != null) {
-                                view.hideProgressLoading();
-                                if (addToCartDataResponse.getSuccess() == 1) {
-                                    processInitialGetCartData("0", false);
-                                    view.showToastMessageGreen(addToCartDataResponse.getMessage().get(0));
-                                } else {
-                                    view.showToastMessageRed(addToCartDataResponse.getMessage().get(0));
-                                }
-                            }
-                        }
-                    });
+                    .subscribe(new AddToCartSubscriber(view, this));
         } catch (NumberFormatException e) {
             e.printStackTrace();
             view.hideProgressLoading();
