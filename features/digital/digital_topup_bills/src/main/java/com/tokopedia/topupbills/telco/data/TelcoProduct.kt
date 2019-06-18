@@ -19,8 +19,7 @@ class TelcoProduct(
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),
-            parcel.readParcelable(TelcoAttributesProduct::class.java.classLoader)) {
-    }
+            parcel.readParcelable(TelcoAttributesProduct::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)

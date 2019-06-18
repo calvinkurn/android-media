@@ -13,9 +13,7 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
-import com.tokopedia.topupbills.telco.data.TelcoCustomData
-import com.tokopedia.topupbills.telco.data.TelcoRecommendation
+import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
@@ -23,7 +21,6 @@ import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
-import com.tokopedia.topupbills.telco.view.model.DigitalOrderClientNumber
 import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
@@ -40,6 +37,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var buyWidget: DigitalTelcoBuyWidget
     private lateinit var sharedModel: SharedProductTelcoViewModel
     private lateinit var layoutProgressBar: RelativeLayout
+    private lateinit var favNumberList: List<TelcoFavNumber>
     private var operatorData: TelcoCustomComponentData =
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
 
@@ -178,8 +176,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onClientNumberHasFocus(clientNumber: String) {
-                startActivityForResult(activity?.let { DigitalSearchNumberActivity.newInstance(it, DigitalFavNumber(), "") },
-                        REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
+                if (::favNumberList.isInitialized) {
+                    startActivityForResult(activity?.let { DigitalSearchNumberActivity.newInstance(it, DigitalFavNumber(), "", favNumberList) },
+                            REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
+                }
             }
         })
     }
@@ -210,7 +210,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         return mapParam
     }
 
-    override fun handleCallbackSearchNumber(orderClientNumber: DigitalOrderClientNumber) {
+    override fun handleCallbackSearchNumber(orderClientNumber: TelcoFavNumber) {
         telcoClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
         telcoClientNumberWidget.clearFocus()
     }
@@ -221,6 +221,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation) {
         Toast.makeText(activity, telcoRecommendation.clientNumber, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun setFavNumbers(data: TelcoRechargeFavNumberData) {
+        this.favNumberList = data.favNumber.favNumberList
     }
 
     override fun onDestroy() {

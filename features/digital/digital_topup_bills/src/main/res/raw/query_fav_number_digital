@@ -1,8 +1,0 @@
-mutation favNumber($categoryId: String){
-  recharge_favorite_number(categoryID: $categoryId) {
-    list {
-      client_number
-      label
-    }
-  }
-}

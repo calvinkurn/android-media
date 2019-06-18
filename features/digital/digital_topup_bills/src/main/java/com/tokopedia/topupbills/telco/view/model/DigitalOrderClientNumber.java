@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+@Deprecated
 public class DigitalOrderClientNumber implements Parcelable {
     private String clientNumber;
     private String name;

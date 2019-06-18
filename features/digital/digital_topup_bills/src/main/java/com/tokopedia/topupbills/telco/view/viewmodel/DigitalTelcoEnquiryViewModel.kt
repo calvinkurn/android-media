@@ -6,11 +6,10 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
 import com.tokopedia.topupbills.telco.data.TelcoEnquiryData
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -21,8 +20,8 @@ class DigitalTelcoEnquiryViewModel @Inject constructor(private val graphqlReposi
     : BaseViewModel(dispatcher) {
 
     fun getEnquiry(rawQuery: String, mapParam: Map<String, kotlin.Any>,
-                      onSuccess: (TelcoEnquiryData) -> Unit,
-                      onError: (Throwable) -> Unit) {
+                   onSuccess: (TelcoEnquiryData) -> Unit,
+                   onError: (Throwable) -> Unit) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoEnquiryData::class.java, mapParam)

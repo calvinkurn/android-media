@@ -19,10 +19,10 @@ import android.widget.EditText
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.telco.data.TelcoFavNumber
 import com.tokopedia.topupbills.telco.data.constant.TelcoFavNumberType
 import com.tokopedia.topupbills.telco.view.adapter.NumberListAdapter
 import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
-import com.tokopedia.topupbills.telco.view.model.DigitalOrderClientNumber
 import java.util.*
 
 /**
@@ -37,7 +37,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
 
     private lateinit var numberListAdapter: NumberListAdapter
 
-    private lateinit var clientNumbers: List<DigitalOrderClientNumber>
+    private lateinit var clientNumbers: List<TelcoFavNumber>
 
     private lateinit var clientNumber: DigitalFavNumber
     private var number: String? = null
@@ -60,8 +60,8 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         arguments?.run {
             clientNumber = arguments.getParcelable(ARG_PARAM_EXTRA_CLIENT_NUMBER)
             number = arguments.getString(ARG_PARAM_EXTRA_NUMBER)
+            clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST)
         }
-        clientNumbers = ArrayList()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -90,10 +90,8 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
 
         btnClearNumber.setOnClickListener { editTextSearchNumber.setText("") }
 
-        clientNumber?.run {
-            editTextSearchNumber.setText(number)
-            editTextSearchNumber.setSelection(number!!.length)
-        }
+        editTextSearchNumber.setText(number)
+        editTextSearchNumber.setSelection(number!!.length)
 
         numberListAdapter = NumberListAdapter(this, clientNumbers)
         rvNumberList.layoutManager = LinearLayoutManager(activity)
@@ -101,14 +99,12 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     }
 
     private fun setClientNumberInputType() {
-        clientNumber?.run {
-            if (clientNumber.type.equals(TelcoFavNumberType.TYPE_INPUT_TEL, ignoreCase = true) ||
-                    clientNumber.type.equals(TelcoFavNumberType.TYPE_INPUT_NUMERIC, ignoreCase = true)) {
-                editTextSearchNumber.inputType = InputType.TYPE_CLASS_NUMBER
-                editTextSearchNumber.keyListener = DigitsKeyListener.getInstance("0123456789")
-            } else {
-                editTextSearchNumber.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-            }
+        if (clientNumber.type.equals(TelcoFavNumberType.TYPE_INPUT_TEL, ignoreCase = true) ||
+                clientNumber.type.equals(TelcoFavNumberType.TYPE_INPUT_NUMERIC, ignoreCase = true)) {
+            editTextSearchNumber.inputType = InputType.TYPE_CLASS_NUMBER
+            editTextSearchNumber.keyListener = DigitsKeyListener.getInstance("0123456789")
+        } else {
+            editTextSearchNumber.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
         }
     }
 
@@ -136,25 +132,24 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
             if (i == EditorInfo.IME_ACTION_DONE) {
                 val orderClientNumber = findNumber(textView.text.toString(),
                         numberListAdapter.clientNumbers)
-                if (orderClientNumber != null) {
-                    callback.onClientNumberClicked(orderClientNumber)
-                } else {
-                    callback.onClientNumberClicked(DigitalOrderClientNumber.Builder()
-                            .clientNumber(textView.text.toString())
-                            .build())
+                orderClientNumber?.let {
+                    if (it != null) {
+                        callback.onClientNumberClicked(orderClientNumber)
+                    } else {
+                        it.clientNumber = textView.text.toString()
+                        callback.onClientNumberClicked(it)
+                    }
+                    return@OnEditorActionListener true
                 }
-                return@OnEditorActionListener true
             }
             false
         })
     }
 
     private fun filterData(query: String) {
-        val searchClientNumbers = ArrayList<DigitalOrderClientNumber>()
+        val searchClientNumbers = ArrayList<TelcoFavNumber>()
         if (!TextUtils.isEmpty(query) and !isContain(query, clientNumbers)) {
-            searchClientNumbers.add(DigitalOrderClientNumber.Builder()
-                    .clientNumber(query)
-                    .build())
+            searchClientNumbers.add(TelcoFavNumber(query))
         }
         for (orderClientNumber in clientNumbers) {
             if (orderClientNumber.clientNumber.contains(query)) {
@@ -165,7 +160,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         numberListAdapter.notifyDataSetChanged()
     }
 
-    private fun isContain(number: String, clientNumbers: List<DigitalOrderClientNumber>): Boolean {
+    private fun isContain(number: String, clientNumbers: List<TelcoFavNumber>): Boolean {
         var found = false
         for (orderClientNumber in clientNumbers) {
             if (orderClientNumber.clientNumber.equals(number, ignoreCase = true)) {
@@ -176,8 +171,8 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         return found
     }
 
-    private fun findNumber(number: String, clientNumbers: List<DigitalOrderClientNumber>): DigitalOrderClientNumber? {
-        var foundClientNumber: DigitalOrderClientNumber? = null
+    private fun findNumber(number: String, clientNumbers: List<TelcoFavNumber>): TelcoFavNumber? {
+        var foundClientNumber: TelcoFavNumber? = null
         for (orderClientNumber in clientNumbers) {
             if (orderClientNumber.clientNumber.equals(number, ignoreCase = true)) {
                 foundClientNumber = orderClientNumber
@@ -187,7 +182,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         return foundClientNumber
     }
 
-    override fun onClientNumberClicked(orderClientNumber: DigitalOrderClientNumber) {
+    override fun onClientNumberClicked(orderClientNumber: TelcoFavNumber) {
         callback.onClientNumberClicked(orderClientNumber)
     }
 
@@ -208,6 +203,6 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     }
 
     interface OnClientNumberClickListener {
-        fun onClientNumberClicked(orderClientNumber: DigitalOrderClientNumber?)
+        fun onClientNumberClicked(orderClientNumber: TelcoFavNumber)
     }
 }

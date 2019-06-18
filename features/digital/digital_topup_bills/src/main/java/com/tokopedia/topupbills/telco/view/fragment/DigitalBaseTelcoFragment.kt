@@ -22,7 +22,6 @@ import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
-import com.tokopedia.topupbills.telco.view.model.DigitalOrderClientNumber
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.TelcoCatalogMenuDetailViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
@@ -98,6 +97,9 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         catalogMenuDetailViewModel.getCatalogMenuDetail(GraphqlHelper.loadRawString(resources,
                 R.raw.query_telco_catalog_menu_detail), getMapCatalogMenuDetail(),
                 this::onLoadingMenuDetail, this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
+        catalogMenuDetailViewModel.getFavNumbers(GraphqlHelper.loadRawString(resources,
+                R.raw.temp_query_fav_number_digital),
+                this::onLoadingMenuDetail, this::onSuccessFavNumbers, this::onErrorFavNumbers)
     }
 
     fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
@@ -109,6 +111,16 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     fun onErrorCatalogMenuDetail(error: Throwable) {
         Toast.makeText(activity, "catalog menu detail " + error.message, Toast.LENGTH_SHORT).show()
     }
+
+    fun onSuccessFavNumbers(data: TelcoRechargeFavNumberData) {
+        setFavNumbers(data)
+    }
+
+    fun onErrorFavNumbers(error: Throwable) {
+        Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
+    }
+
+    abstract fun setFavNumbers(data: TelcoRechargeFavNumberData)
 
     fun renderTicker(tickers: List<TelcoTicker>) {
         if (tickers.isNotEmpty()) {
@@ -179,7 +191,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                 } else if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
                     if (data != null) {
                         val orderClientNumber = data.getParcelableExtra<Parcelable>(DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
-                        handleCallbackSearchNumber(orderClientNumber as DigitalOrderClientNumber)
+                        handleCallbackSearchNumber(orderClientNumber as TelcoFavNumber)
                     } else {
                         handleCallbackSearchNumberCancel()
                     }
@@ -188,7 +200,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         }
     }
 
-    protected abstract fun handleCallbackSearchNumber(orderClientNumber: DigitalOrderClientNumber)
+    protected abstract fun handleCallbackSearchNumber(orderClientNumber: TelcoFavNumber)
 
     protected abstract fun handleCallbackSearchNumberCancel()
 

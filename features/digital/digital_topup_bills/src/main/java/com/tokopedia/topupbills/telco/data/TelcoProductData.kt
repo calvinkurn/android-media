@@ -15,8 +15,7 @@ class TelcoProductData(
         : Parcelable {
 
     constructor(parcel: Parcel) : this(
-            parcel.createTypedArrayList(TelcoProductDataCollection.CREATOR)) {
-    }
+            parcel.createTypedArrayList(TelcoProductDataCollection.CREATOR))
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeTypedList(this.productDataCollections)

@@ -1,0 +1,8 @@
+mutation {
+  recharge_favorite_number(categoryID: 1) {
+    list {
+      client_number
+      label
+    }
+  }
+}

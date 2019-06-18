@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.topupbills.R;
-import com.tokopedia.topupbills.telco.view.model.DigitalOrderClientNumber;
+import com.tokopedia.topupbills.telco.data.TelcoFavNumber;
 
 import java.util.List;
 
@@ -17,15 +17,15 @@ import java.util.List;
 
 public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.ItemHolder> {
 
-    private List<DigitalOrderClientNumber> clientNumbers;
+    private List<TelcoFavNumber> clientNumbers;
 
     private OnClientNumberClickListener callback;
 
     public interface OnClientNumberClickListener {
-        void onClientNumberClicked(DigitalOrderClientNumber orderClientNumber);
+        void onClientNumberClicked(TelcoFavNumber orderClientNumber);
     }
 
-    public NumberListAdapter(OnClientNumberClickListener callback, List<DigitalOrderClientNumber> clientNumbers) {
+    public NumberListAdapter(OnClientNumberClickListener callback, List<TelcoFavNumber> clientNumbers) {
         this.callback = callback;
         this.clientNumbers = clientNumbers;
     }
@@ -47,11 +47,11 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
         return clientNumbers.size();
     }
 
-    public void setNumbers(List<DigitalOrderClientNumber> clientNumbers) {
+    public void setNumbers(List<TelcoFavNumber> clientNumbers) {
         this.clientNumbers = clientNumbers;
     }
 
-    public List<DigitalOrderClientNumber> getClientNumbers() {
+    public List<TelcoFavNumber> getClientNumbers() {
         return clientNumbers;
     }
 
@@ -59,7 +59,7 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
         private TextView number;
         private TextView name;
 
-        private DigitalOrderClientNumber orderClientNumber;
+        private TelcoFavNumber orderClientNumber;
 
         ItemHolder(View itemView) {
             super(itemView);
@@ -68,11 +68,11 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
             itemView.setOnClickListener(this);
         }
 
-        public void bind(DigitalOrderClientNumber orderClientNumber) {
+        public void bind(TelcoFavNumber orderClientNumber) {
             this.orderClientNumber = orderClientNumber;
             number.setText(orderClientNumber.getClientNumber());
-            if (orderClientNumber.getName() != null) {
-                name.setText(orderClientNumber.getName());
+            if (orderClientNumber.getLabel() != null) {
+                name.setText(orderClientNumber.getLabel());
                 name.setVisibility(View.VISIBLE);
             } else {
                 name.setVisibility(View.GONE);

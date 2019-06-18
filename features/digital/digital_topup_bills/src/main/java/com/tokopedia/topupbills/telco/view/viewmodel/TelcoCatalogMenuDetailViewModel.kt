@@ -7,9 +7,10 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.topupbills.telco.data.TelcoCatalogMenuDetailData
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.withContext
+import com.tokopedia.topupbills.telco.data.TelcoRechargeFavNumberData
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -38,6 +39,29 @@ class TelcoCatalogMenuDetailViewModel @Inject constructor(private val graphqlRep
             }
         }) {
             onLoading(false)
+            onError(it)
+        }
+    }
+
+    fun getFavNumbers(rawQuery: String,
+                      onLoading: (Boolean) -> Unit,
+                      onSuccess: (TelcoRechargeFavNumberData) -> Unit,
+                      onError: (Throwable) -> Unit) {
+//        onLoading(true)
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, TelcoRechargeFavNumberData::class.java)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TelcoRechargeFavNumberData>()
+
+//            onLoading(false)
+            if (data.favNumber.favNumberList.isNotEmpty()) {
+                onSuccess(data)
+            } else {
+                onError(ResponseErrorException())
+            }
+        }) {
+//            onLoading(false)
             onError(it)
         }
     }
