@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.design.component.BottomSheets
@@ -33,6 +34,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
     private val defaultLong: Double by lazy { 106.826457 }
     private lateinit var rlCurrentLocation: RelativeLayout
     private lateinit var rvPoiList: RecyclerView
+    private lateinit var llPoi: LinearLayout
     private lateinit var etSearch: EditText
     private lateinit var adapter: AutocompleteBottomSheetAdapter
     private lateinit var actionListener: ActionListener
@@ -86,6 +88,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
         bottomSheetView = view
         rlCurrentLocation = view.findViewById(R.id.rl_current_location)
         rvPoiList = view.findViewById(R.id.rv_poi_list)
+        llPoi = view.findViewById(R.id.ll_poi)
         etSearch = view.findViewById(R.id.et_search)
         adapter = AutocompleteBottomSheetAdapter(this)
         if (activity != null) {
@@ -135,7 +138,8 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
     }
 
     override fun hideListPointOfInterest() {
-        rvPoiList.visibility = View.GONE
+        llPoi.visibility = View.GONE
+        // rvPoiList.visibility = View.GONE
     }
 
     private fun loadAutocompleteGeocode() {
@@ -159,7 +163,8 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
 
     override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
         if (dataUiModel.listPredictions.isNotEmpty()){
-            rvPoiList.visibility = View.VISIBLE
+            llPoi.visibility = View.VISIBLE
+            // rvPoiList.visibility = View.VISIBLE
             adapter.isAutocompleteGeocode = false
             adapter.dataAutocomplete = dataUiModel.listPredictions.toMutableList()
             adapter.notifyDataSetChanged()

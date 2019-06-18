@@ -203,7 +203,6 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
         if (isShowingAutocomplete == true) {
             handler.postDelayed({
                 showAutocompleteGeocodeBottomSheet(lat, long)
-                isShowingAutocomplete = false
             }, 1000)
         }
     }
@@ -249,6 +248,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
                 AutocompleteBottomSheetFragment.newInstance(lat, long)
         autocompleteGeocodeBottomSheetFragment.setActionListener(this)
         autocompleteGeocodeBottomSheetFragment.show(fragmentManager, "")
+        isShowingAutocomplete = false
     }
 
     override fun onGetPlaceId(placeId: String) {
