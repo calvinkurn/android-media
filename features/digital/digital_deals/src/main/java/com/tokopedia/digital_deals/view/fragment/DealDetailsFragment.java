@@ -650,7 +650,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             fragmentCallbacks.replaceFragment(mPresenter.getAllOutlets(), 0);
         } else if (Id == R.id.ll_buynow) {
             dealsAnalytics.sendBuyNowClickEvent(dealDetail, DealsAnalytics.EVENT_CLICK_BELI);
-            sendEvent(DealsAnalytics.EVENT_CLICK_BELI);
             fragmentCallbacks.replaceFragment(dealDetail, 1);
         } else if (Id == R.id.tv_view_map) {
             Utils.getSingletonInstance().openGoogleMapsActivity(getContext(), latLng);

@@ -136,7 +136,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
             return;
         }
         searchText = text;
-        mPresenter.sendEventClick(DealsAnalytics.EVENT_CLICK_SEARCH_BRAND, searchText);
         mPresenter.searchSubmitted(searchText);
     }
 

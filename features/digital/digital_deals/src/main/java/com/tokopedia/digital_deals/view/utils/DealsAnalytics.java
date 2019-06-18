@@ -466,6 +466,32 @@ public class DealsAnalytics {
         }
     }
 
+
+    public void sendBrandImpressionEvent(int id, int position, String creative, String event, String action, String name) {
+        try {
+            HashMap<String, Object> bannerMap = new HashMap<>();
+            bannerMap.put(ID, id);
+            bannerMap.put(NAME, name);
+            bannerMap.put(POSITION, position);
+            bannerMap.put(CREATIVE, creative);
+            HashMap<String, Object> promotions = new HashMap<>();
+            HashMap<String, Object> ecommerce = new HashMap<>();
+            promotions.put(KEY_PROMOTIONS, Collections.singletonList(bannerMap));
+
+            if (event.equalsIgnoreCase(EVENT_PROMO_CLICK)) {
+                ecommerce.put(EVENT_CLICK_PROMO, promotions);
+            } else {
+                ecommerce.put(KEY_PROMOVIEW, promotions);
+            }
+            sendEventEcommerce(event, action,
+                    String.format("%s - %s", creative
+                            , position).toLowerCase(), ecommerce);
+
+        } catch (Exception e) {
+
+        }
+    }
+
     public void sendPromoClickEvent(ProductItem productItem, int position, String creative, String event, String action, String name) {
         try {
             HashMap<String, Object> bannerMap = new HashMap<>();
