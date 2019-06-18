@@ -12,6 +12,7 @@ import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsInfoSheet
+import com.tokopedia.topads.common.constant.TopAdsReasonOption
 
 /**
  * Author errysuprayogi on 09,May,2019
@@ -57,7 +58,12 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
                 settingConfirmationSheet.show()
             }
             budgetViewModel.autoAdsData.observe(this, Observer {
-                activity!!.finish()
+                when(it!!.adsInfo.reason){
+                    TopAdsReasonOption.INSUFFICIENT_CREDIT -> insufficientCredit(it!!.adsInfo.message)
+                    TopAdsReasonOption.ELIGIBLE -> eligible()
+                    TopAdsReasonOption.NOT_ELIGIBLE -> notEligible()
+                    else -> activity!!.finish()
+                }
             })
         }
         switchBudget.setOnCheckedChangeListener { buttonView, isChecked ->

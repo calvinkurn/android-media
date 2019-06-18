@@ -179,6 +179,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
             topAdsDashboardPresenter.clearStatisticsCache()
             topAdsDashboardPresenter.clearTotalAdCache()
             loadData()
+            loadAutoAds()
         })
         initTicker()
         initShopInfoComponent()

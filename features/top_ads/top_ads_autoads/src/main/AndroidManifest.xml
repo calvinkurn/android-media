@@ -8,8 +8,7 @@
         <activity
             android:name=".view.activity.AutoAdsRouteActivity"
             android:label=""
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Transparent" />
+            android:theme="@style/Theme.AutoAds.Transparent"  />
         <activity
             android:name=".view.activity.StartAutoAdsActivity"
             android:label="@string/autoads_topads"

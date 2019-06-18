@@ -9,6 +9,7 @@ interface TopAdsAutoRouter {
     fun getTopAdsAddingPromoOptionIntent(context: Context): Intent
     fun getTopAdsGroupNewPromoIntent(context: Context): Intent
     fun goToAddProduct(activity: Activity)
+    fun openRedirectUrl(activity: Activity, url: String)
     fun openTopAdsDashboardApplink(context: Context)
     fun getTopAdsGroupAdListIntent(context: Context): Intent
     fun getTopAdsKeywordNewChooseGroupIntent(context: Context, isPositive: Boolean, groupId: String?): Intent

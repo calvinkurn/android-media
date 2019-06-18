@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter
+import java.net.URL
 
 /**
  * Author errysuprayogi on 09,May,2019
@@ -16,7 +17,10 @@ class InsufficientBalanceFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.layout_autoads_insufficient_budget, container, false)
-        view.findViewById<View>(R.id.add_fund).setOnClickListener { (activity!!.application as TopAdsAutoRouter).goToAddProduct(activity!!) }
+        view.findViewById<View>(R.id.add_fund).setOnClickListener {
+            (activity!!.application as TopAdsAutoRouter).openRedirectUrl(activity!!, arguments!!.getString(KEY_URL))
+            activity!!.finish()
+        }
         return view
     }
 
@@ -30,11 +34,14 @@ class InsufficientBalanceFragment : BaseDaggerFragment() {
 
     companion object {
 
-        fun newInstance(): InsufficientBalanceFragment {
+        private const val KEY_URL = "URL"
+
+        fun newInstance(url: String): InsufficientBalanceFragment {
 
             val args = Bundle()
 
             val fragment = InsufficientBalanceFragment()
+            args.putString(KEY_URL, url)
             fragment.arguments = args
             return fragment
         }
