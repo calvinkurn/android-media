@@ -1,11 +1,81 @@
-package com.tokopedia.ovop2p
+package com.tokopedia.ovop2p.view.activity
 
+import android.app.ProgressDialog
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
 import android.support.v4.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import android.widget.ProgressBar
 
-class OvoP2PFormActivity : BaseSimpleActivity() {
+import com.airbnb.deeplinkdispatch.DeepLink
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.ovop2p.Constants
+import com.tokopedia.ovop2p.Constants.AppLinks.OVOP2PTRANSFER
+import com.tokopedia.ovop2p.OvoFormFragment
+import com.tokopedia.ovop2p.R
+import com.tokopedia.ovop2p.di.DaggerOvoP2pTransferComponent
+import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
+import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
+
+class OvoP2PFormActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComponent>, LoaderUiListener {
+
+    private lateinit var ovoP2pTransferComponent: OvoP2pTransferComponent
+    private lateinit var loading: ProgressDialog
+
+
     override fun getNewFragment(): Fragment {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return OvoFormFragment.newInstance()
+    }
+
+    object DeeplinkIntents {
+        @DeepLink(OVOP2PTRANSFER)
+        @JvmStatic
+        fun getCallingStartUpgradeToOvo(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            return Intent(context, OvoP2PFormActivity::class.java)
+                    .setData(uri.build())
+                    .putExtras(extras)
+        }
+    }
+
+    override fun getComponent(): OvoP2pTransferComponent {
+
+        if (!::ovoP2pTransferComponent.isInitialized) {
+            initInjector()
+        }
+        return ovoP2pTransferComponent
+    }
+
+    private fun initInjector() {
+        ovoP2pTransferComponent = DaggerOvoP2pTransferComponent.builder().baseAppComponent(
+                (applicationContext as BaseMainApplication).baseAppComponent).build()
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Constants.Keys.RESULT_CODE_CONTACTS_SELECTION) {
+            val userName = data!!.getStringExtra(Constants.Keys.USER_NAME)
+            val userNumber = data.getStringExtra(Constants.Keys.USER_NUMBER)
+            val searchViewStr = "$userNumber-$userName"
+//            searchView.setQuery(searchViewStr, false)
+        }
+    }
+
+    override fun showProgressDialog() {
+        if (loading == null) loading = ProgressDialog(this)
+        loading.setCancelable(false)
+        loading.setMessage(getString(R.string.title_loading))
+        loading.show()
+    }
+
+    override fun hideProgressDialog() {
+        if (loading != null)
+            loading.dismiss()
     }
 
 }

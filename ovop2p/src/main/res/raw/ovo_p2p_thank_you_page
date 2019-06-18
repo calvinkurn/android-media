@@ -1,0 +1,24 @@
+mutation goalP2PThanks($transfer_id: String!){
+      goalP2PThanks(transfer_id: $transfer) {
+          transfer_id
+          transaction_id
+          status
+          amount
+          source_of_fund
+          transfer_date
+          source {
+              name
+              phone
+          }
+          source {
+              name
+              phone
+          }
+          message
+          reference_number
+          errors {
+              title
+              message
+          }
+      }
+  }

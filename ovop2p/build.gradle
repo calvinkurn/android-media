@@ -14,7 +14,7 @@ buildscript {
 }
 
 project.ext {
-    artifactId = 'kyc'
+    artifactId = 'ovop2p'
     groupId = 'com.tokopedia.ovop2p'
     versionName = "${tkpdOvoP2PTransfer}"
     artifactName = "ovop2p-release"
@@ -24,6 +24,10 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.applink)
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 }

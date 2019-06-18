@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:id="@+id/user_image"
+        android:layout_width="40dp"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        android:foreground="@drawable/circle_crop"
+        android:background="#6b767e"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="40dp" />
+    <TextView
+        android:id="@+id/user_name"
+        app:layout_constraintStart_toEndOf="@+id/user_image"
+        app:layout_constraintTop_toTopOf="@+id/user_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_marginLeft="16dp"
+        android:textColor="#2d263b"
+        android:text="Baxie Smith" />
+    <TextView
+        android:id="@+id/user_num"
+        app:layout_constraintTop_toBottomOf="@+id/user_name"
+        app:layout_constraintStart_toStartOf="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#6b767e"
+        android:text="081340002680" />
+
+    <View
+        android:id="@+id/divider_view"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#dee0e2"
+        app:layout_constraintTop_toBottomOf="@+id/user_num"
+        android:layout_marginTop="17dp"/>
+
+</android.support.constraint.ConstraintLayout>

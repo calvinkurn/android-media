@@ -94,6 +94,8 @@ import com.tokopedia.officialstore.applink.OfficialStoreApplinkModule;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModuleLoader;
 import com.tokopedia.ovo.OvoPayWithQrApplinkModule;
 import com.tokopedia.ovo.OvoPayWithQrApplinkModuleLoader;
+import com.tokopedia.ovop2p.deeplink.OvoPeerToPeerTransferDeeplinkModule;
+import com.tokopedia.ovop2p.deeplink.OvoPeerToPeerTransferDeeplinkModuleLoader;
 import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModule;
 import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
@@ -170,6 +172,7 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
         OvoUpgradeDeeplinkModule.class,
+        OvoPeerToPeerTransferDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         DealsDeepLinkModule.class,
         ShopAppLinkModule.class,
@@ -222,6 +225,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ReferralDeeplinkModuleLoader(),
                     new ShopOpenApplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
+                    new OvoPeerToPeerTransferDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
                     new DigitalApplinkModuleLoader(),

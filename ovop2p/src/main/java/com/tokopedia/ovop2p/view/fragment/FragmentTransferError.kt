@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.ovop2p.R
-import kotlinx.android.synthetic.main.partial_empty_page_error.*
 
 class FragmentTransferError : BaseDaggerFragment(), View.OnClickListener {
     private lateinit var errorMsg: TextView
