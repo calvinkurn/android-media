@@ -241,7 +241,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         updateTitle(getString(R.string.button_choose_corner));
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_up, R.anim.stay_still)
-                .replace(R.id.parent_view, CornerListFragment.newInstance(), TAG_CORNER_FRAGMENT)
+                .replace(R.id.parent_view, CornerListFragment.Companion.newInstance(), TAG_CORNER_FRAGMENT)
                 .addToBackStack(null)
                 .commit();
     }
@@ -270,6 +270,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     public void onBackPressed() {
         if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
+            updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
             ((ShipmentAddressListFragment) getCurrentFragment())
                     .checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat();
         }

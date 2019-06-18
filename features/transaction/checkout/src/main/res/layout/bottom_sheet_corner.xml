@@ -89,22 +89,6 @@
             android:textSize="14sp"
             android:textStyle="normal" />
 
-        <Button
-            android:id="@+id/bt_change_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/bg_button_green_enabled"
-            android:fontFamily="sans-serif-medium"
-            android:lineSpacingExtra="0sp"
-            android:paddingLeft="27dp"
-            android:paddingRight="27dp"
-            android:text="@string/label_button_change_search"
-            android:textAllCaps="false"
-            android:textColor="#ffffff"
-            android:textSize="14sp"
-            android:textStyle="normal" />
-
     </LinearLayout>
 
 
