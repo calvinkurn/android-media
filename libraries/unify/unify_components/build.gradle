@@ -58,5 +58,5 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
-    implementation 'com.tokopedia.unify:principles:0.0.1-SNAPSHOT@aar'
+    implementation project(rootProject.ext.libraries.unifyPrinciples)
 }

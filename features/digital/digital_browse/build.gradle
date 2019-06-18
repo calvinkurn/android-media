@@ -29,7 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
-    implementation 'com.tokopedia.unify:icon:0.0.1-SNAPSHOT@aar'
+    implementation project(rootProject.ext.libraries.unifyIcon)
 
     implementation rootProject.ext.miscDependencies.multiDex
 

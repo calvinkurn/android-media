@@ -25,7 +25,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation 'com.tokopedia.unify:principles:0.0.1-SNAPSHOT@aar'
+    implementation project(rootProject.ext.libraries.unifyPrinciples)
 
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.affiliateCommon)

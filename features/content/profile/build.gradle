@@ -38,7 +38,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
-    implementation 'com.tokopedia.unify:principles:0.0.1-SNAPSHOT@aar'
+    implementation project(rootProject.ext.libraries.unifyPrinciples)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.remoteConfig)
 
