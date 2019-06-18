@@ -7,7 +7,7 @@ publishing {
         aar(MavenPublication) {
             groupId project.groupId
             artifactId project.artifactId
-            version project.versionName + "-SNAPSHOT"
+            version project.versionName
             artifact("$buildDir/outputs/aar/"+project.artifactName+".aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -30,7 +30,7 @@ artifactory {
     contextUrl = rootProject.ext.artifactoryUrl
     publish {
         repository {
-            repoKey = 'libs-snapshot-local'
+            repoKey = 'libs-release-local'
 
             username = artifactory_username
             password = artifactory_password
