@@ -483,7 +483,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                         isPostalCodeChoosen = true;
                         openShopAddressViewHolder.updatePostalCodeView(postalCode);
                     }
-                }
+                } break;
             case REQUEST_CODE__EDIT_ADDRESS:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     Address address = data.getParcelableExtra(DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS);
@@ -500,12 +500,12 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                                 address.getDistrictName()
                         );
                     }
-                }
+                } break;
             case REQUEST_PHONE_VERIFICATION:
                 if (resultCode == Activity.RESULT_OK){
                     userSession.setIsMSISDNVerified(true);
                     submitCreatingShop();
-                }
+                } break;
         }
     }
 
