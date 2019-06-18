@@ -60,10 +60,14 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
 
         itemView.img_wishlist.setOnClickListener {
             if (element.isWishlist) {
-                actionListener.onRemoveFromWishlist(element.id);
+                actionListener.onRemoveFromWishlist(element.id)
             } else {
-                actionListener.onAddToWishlist(element.id);
+                actionListener.onAddToWishlist(element.id)
             }
+        }
+
+        itemView.tv_atc.setOnClickListener {
+            actionListener.onButtonAddToCartClicked(element.id, element.shopId, element.minOrder)
         }
 
         itemView.setOnClickListener {

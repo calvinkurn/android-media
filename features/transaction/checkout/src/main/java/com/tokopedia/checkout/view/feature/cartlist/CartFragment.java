@@ -161,8 +161,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Inject
     ICheckoutModuleRouter checkoutModuleRouter;
     @Inject
-    Context context;
-    @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
 
     private RefreshHandler refreshHandler;
@@ -634,6 +632,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void onProductClicked(@NotNull String productId) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
         startActivity(intent);
+    }
+
+    @Override
+    public void onButtonAddToCartClicked(@NotNull String productId, @NotNull String shopId, @NotNull int minOrder) {
+        dPresenter.processAddToCart(productId, shopId, minOrder);
     }
 
     @NonNull
@@ -1884,6 +1887,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartRecentViewItemHolderData.setRating(recentView.getProductRating());
             cartRecentViewItemHolderData.setReviewCount(recentView.getProductReviewCount());
             cartRecentViewItemHolderData.setShopLocation(recentView.getShopLocation());
+            cartRecentViewItemHolderData.setShopId(recentView.getShopId());
+            cartRecentViewItemHolderData.setMinOrder(1);
             if (recentView.getBadges().size() > 0) {
                 cartRecentViewItemHolderData.setBadgeUrl(recentView.getBadges().get(0).getImageUrl());
             }
