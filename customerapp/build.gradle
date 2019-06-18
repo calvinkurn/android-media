@@ -567,6 +567,8 @@ dependencies {
     implementation project(rootProject.ext.features.referral)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.features.kyc)
+
+//    implementation project(':react-native-code-push')
 }
 
 
@@ -576,5 +578,6 @@ project.ext.sentryCli = [
 ]
 
 apply from: "../buildconfig/reactnative/react.gradle"
-apply from: "../buildconfig/reactnative/codepush.gradle"
+//apply from: "../buildconfig/reactnative/codepush.gradle"
+//apply from: "../node_modules/react-native-code-push/android/codepush.gradle"
 apply from: "../buildconfig/reactnative/sentry.gradle"
