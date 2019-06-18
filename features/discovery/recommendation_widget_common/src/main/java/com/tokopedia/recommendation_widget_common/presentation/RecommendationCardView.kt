@@ -58,14 +58,6 @@ class RecommendationCardView : ProductCardView {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
             }
         }
-
-        wishlistButton.setOnClickListener {
-            if(it.isActivated){
-                trackingListener.onClickRemoveWishlist(item)
-            }else{
-                trackingListener.onClickAddWishlist(item)
-            }
-        }
     }
 
     interface TrackingListener {
@@ -73,7 +65,5 @@ class RecommendationCardView : ProductCardView {
         fun onImpressionOrganic(item: RecommendationItem)
         fun onClickTopAds(item: RecommendationItem)
         fun onClickOrganic(item: RecommendationItem)
-        fun onClickAddWishlist(item: RecommendationItem)
-        fun onClickRemoveWishlist(item: RecommendationItem)
     }
 }
