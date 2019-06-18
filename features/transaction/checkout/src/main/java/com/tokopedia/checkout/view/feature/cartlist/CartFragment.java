@@ -844,11 +844,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onCheckoutValidationResult(boolean result, Object shipmentData, int position, int requestCode) {
-
-    }
-
-    @Override
     public void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position) {
         dPresenter.processUpdateCartDataPromoStacking(getSelectedCartDataList(), dataGlobal, GO_TO_DETAIL);
     }
@@ -1247,12 +1242,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (!hidden) {
             refreshHandler.setRefreshing(true);
             if (dPresenter.getCartListData() == null) {
-                dPresenter.processInitialGetCartData(true);
+                dPresenter.processInitialGetCartData(getCartId(), true);
             } else {
                 if (dPresenter.dataHasChanged()) {
                     dPresenter.processToUpdateAndReloadCartData();
                 } else {
-                    dPresenter.processInitialGetCartData(false);
+                    dPresenter.processInitialGetCartData(getCartId(),false);
                 }
             }
         }

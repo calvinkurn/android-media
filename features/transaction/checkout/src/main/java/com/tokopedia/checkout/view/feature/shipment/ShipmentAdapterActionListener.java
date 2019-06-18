@@ -26,7 +26,7 @@ public interface ShipmentAdapterActionListener {
 
     void onCartDataDisableToCheckout(String message);
 
-    void onDropshipperValidationResult(boolean result, Object shipmentData, int position, int requestCode);
+    void onCheckoutValidationResult(boolean result, Object shipmentData, int position, int requestCode);
 
     void onChangeAddress();
 
