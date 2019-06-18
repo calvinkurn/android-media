@@ -784,7 +784,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     fun hideLoadingDialog() {
-        loadingProgressDialog?.dismiss()
+        loadingProgressDialog?.run{
+            if(isShowing)
+                dismiss()
+        }
     }
 
     override fun onAttach(context: Context?) {
