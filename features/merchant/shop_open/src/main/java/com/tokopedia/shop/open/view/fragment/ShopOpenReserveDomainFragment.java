@@ -488,6 +488,8 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                         isDistrictChoosen = true;
                         clearFocus();
                         openShopAddressViewHolder.setDistrictId(address.getDistrictId());
+                        isPostalCodeChoosen = false;
+                        openShopAddressViewHolder.updatePostalCodeView(null);
                         openShopAddressViewHolder.initPostalCode(address.getZipCodes());
                         openShopAddressViewHolder.updateLocationView(
                                 address.getProvinceName(),
