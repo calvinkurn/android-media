@@ -110,10 +110,10 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
 
     companion object {
 
-        fun newInstance(): InitialBudgetFragment {
+        fun newInstance(budget: Int): InitialBudgetFragment {
 
             val args = Bundle()
-
+            args.putInt(KEY_DAILY_BUDGET, budget)
             val fragment = InitialBudgetFragment()
             fragment.arguments = args
             return fragment

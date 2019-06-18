@@ -83,9 +83,10 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
         budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source)
         budgetViewModel.budgetInfoData.observe(this@DailyBudgetFragment, Observer {
             val data = it!!.get(0)
-            estimateImpression(data, Preferences.getDailyBudget(context!!))
+            val budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
+            estimateImpression(data, budget)
             seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
-            seekBar.value = data.minDailyBudget
+            seekBar.value = budget
             seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                     estimateImpression(data, progress)
@@ -159,7 +160,6 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
 
     fun activatedAds() {
         val budget = priceEditText.textWithoutPrefix.replace(",", "").toInt()
-        Preferences.setDailyBudget(context!!, budget)
         budgetViewModel.postAutoAdsStatus(AutoAdsParam(AutoAdsParam.Input(
                 "toggle_on",
                 "topchat",
@@ -197,6 +197,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        val KEY_DAILY_BUDGET = "BUDGET"
         val REQUEST_CODE_AD_OPTION = 3
         val SELECTED_OPTION = "selected_option"
     }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
+import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
 import com.tokopedia.topads.auto.view.fragment.InitialBudgetFragment
 
 /**
@@ -13,7 +14,7 @@ import com.tokopedia.topads.auto.view.fragment.InitialBudgetFragment
 class DailyBudgetActivity : AutoAdsBaseActivity() {
 
     override fun getNewFragment(): Fragment {
-        return InitialBudgetFragment.newInstance()
+        return InitialBudgetFragment.newInstance(intent.getIntExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, 0))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

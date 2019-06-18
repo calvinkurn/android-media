@@ -40,6 +40,23 @@ class DailyBudgetViewModel @Inject constructor(
     val budgetInfoData = MutableLiveData<List<BidInfoData>>()
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
 
+    fun getAutoAdsStatus(shopId: Int) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.IO) {
+                val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_GET_AUTO_ADS],
+                        TopAdsAutoAds.Response::class.java, mapOf("shopId" to shopId))
+                val cacheStrategy = GraphqlCacheStrategy
+                        .Builder(CacheType.ALWAYS_CLOUD).build()
+                repository.getReseponse(listOf(request), cacheStrategy)
+            }
+            data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data.let {
+                autoAdsData.postValue(it)
+            }
+        }) {
+            it.printStackTrace()
+        }
+    }
+
     fun getBudgetInfo(shopId: Int, requestType: String, source: String) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO){

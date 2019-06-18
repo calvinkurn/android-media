@@ -10,6 +10,8 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.design.component.ToasterError
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
@@ -20,6 +22,7 @@ import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
 import com.tokopedia.topads.auto.view.viewmodel.TopAdsInfoViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
+import kotlinx.android.synthetic.main.activity_auto_ads_route.*
 import javax.inject.Inject
 
 @DeepLink(AutoAdsLinkConstant.AUTOADS_ROUTE_LINK)
@@ -45,7 +48,7 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
         }
         run {
             adsInfoViewModel = ViewModelProviders.of(this, factory).get(TopAdsInfoViewModel::class.java)
-            adsInfoViewModel.getShopAdsInfo(userSession.shopId.toInt())
+            adsInfoViewModel.getShopAdsInfo(userSession.shopId.toInt(), this::onFailShopInfo)
             adsInfoViewModel.shopInfoData.observe(this, Observer {
                 when(it!!.category){
                     1 -> noProduct()
@@ -56,6 +59,13 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
                 }
                 finish()
             })
+        }
+    }
+
+    private fun onFailShopInfo(t: Throwable) {
+        let {
+            ToasterError.showClose(this, ErrorHandler.getErrorMessage(it, t))
+            finish()
         }
     }
 
