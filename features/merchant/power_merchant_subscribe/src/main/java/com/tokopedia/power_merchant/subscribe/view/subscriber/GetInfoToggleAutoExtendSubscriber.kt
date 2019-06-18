@@ -8,7 +8,7 @@ import rx.Subscriber
 class GetInfoToggleAutoExtendSubscriber(private val view: PmSubscribeContract.View): Subscriber<PowerMerchantActivationResult>() {
 
     override fun onNext(t: PowerMerchantActivationResult) {
-        view.refreshData()
+        view.onSuccessCancelMembership()
     }
 
     override fun onCompleted() {
