@@ -4,6 +4,7 @@ package com.tokopedia.browse.categoryNavigation.fragments
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
@@ -106,10 +107,16 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         if (categoryApplink != null) {
 
             label_lihat_semua.setOnClickListener {
-                RouteManager.route(activity, categoryApplink)
-                CategoryAnalytics.createInstance().eventClickLihatSemua(label_lihat_semua.text.toString())
+                routeToCategoryLevelTwo(activity!!, categoryApplink!!)
+            }
+            category_name.setOnClickListener {
+                routeToCategoryLevelTwo(activity!!, categoryApplink!!)
             }
         }
+    }
+    private fun routeToCategoryLevelTwo(context: Context, categoryApplink: String) {
+        RouteManager.route(context, categoryApplink)
+        CategoryAnalytics.createInstance().eventClickLihatSemua(label_lihat_semua.text.toString())
 
     }
 

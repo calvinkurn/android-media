@@ -39,9 +39,12 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
             CategoryAnalytics.createInstance().eventCategoryLevelOneClick(categoryList[position], position)
         }
         if (categoryList[position].isSelected) {
-            holder.parent_layout.setBackgroundColor(context.resources.getColor(R.color.white))
+         //   holder.parent_layout.setBackgroundColor(context.resources.getColor(R.color.white))
+            holder.unselected_overlay.visibility = View.GONE
         } else {
-            holder.parent_layout.setBackgroundColor(context.resources.getColor(R.color.unselected_background))
+          //  holder.parent_layout.setBackgroundColor(context.resources.getColor(R.color.unselected_background))
+            holder.unselected_overlay.visibility = View.VISIBLE
+
         }
 
     }
@@ -61,6 +64,7 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
         val parent_layout = view.parent_layout
         val categoryImage = view.category_imageview
         val categoryName = view.category_name
+        val unselected_overlay = view.unselected_overlay
 
     }
 }

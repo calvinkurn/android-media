@@ -8,20 +8,29 @@
     tools:context=".categoryNavigation.view.CategoryBrowseActivity">
 
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_top"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/toolbar_parent"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:elevation="@dimen/dp_4"
-        android:theme="?toolbarTheme"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:elevation="@dimen/dp_4"
+        android:background="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_top"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:elevation="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_6"
+            android:theme="?toolbarTheme"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:subtitleTextAppearance="?subtitleTextAppearance"
+            app:titleTextAppearance="@style/toolbarStyle" />
+
+
+    </android.support.design.widget.AppBarLayout>
 
 
     <FrameLayout
@@ -33,7 +42,7 @@
         app:layout_constraintEnd_toStartOf="@+id/slave_view"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_top" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_parent" />
 
     <FrameLayout
         android:id="@+id/slave_view"
@@ -44,7 +53,7 @@
         app:layout_constraintHorizontal_weight="3"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toEndOf="@+id/master_view"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_top" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_parent" />
 
 
     <include
@@ -57,7 +66,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_parent" />
 
 
 </android.support.constraint.ConstraintLayout>

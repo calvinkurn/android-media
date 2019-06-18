@@ -10,6 +10,7 @@ import android.text.SpannableStringBuilder
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
@@ -93,8 +94,9 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
         supportActionBar!!.setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_action_back))
 
         val titleStr = SpannableStringBuilder(toolbarTitle)
-         titleStr.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                 0, toolbarTitle.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        titleStr.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                0, toolbarTitle.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
         supportActionBar!!.title = titleStr
     }
 
@@ -122,8 +124,6 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
         supportFragmentManager.beginTransaction()
                 .replace(R.id.master_view, masterFragment, tagFragment)
                 .commit()
-
-
     }
 
     override fun getLayoutRes(): Int {
@@ -132,8 +132,6 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun onCategoryChanged(id: String, categoryName: String, applink: String?) {
         empty_view.visibility = View.GONE
-
-
         (slaveFragment as Listener).refreshView(id, categoryName, applink)
     }
 
@@ -141,7 +139,6 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
         (slaveFragment as CategoryLevelTwoFragment).startShimmer(false)
         empty_view.visibility = View.VISIBLE
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_search, menu)
@@ -163,6 +160,13 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     private fun onSearchClicked() {
         RouteManager.route(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_SHOPPING_NAV_SOURCE, autocompleteParam)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        val menuItem = menu.findItem(R.id.action_search)
+        menuItem.setIcon(R.drawable.ic_browse_search)
+
+        return super.onPrepareOptionsMenu(menu)
     }
 
 }

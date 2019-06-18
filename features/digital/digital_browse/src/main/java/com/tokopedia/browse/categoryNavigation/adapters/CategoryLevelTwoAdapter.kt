@@ -73,6 +73,8 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
             val gridLayoutManager = GridLayoutManager(holder.itemView.context, 3, LinearLayoutManager.VERTICAL, false)
 
             holder.item_child_recycler.visibility = View.VISIBLE
+            holder.item_child_recycler_divider.visibility = View.VISIBLE
+
             holder.item_child_recycler.apply {
                 layoutManager = gridLayoutManager
                 adapter = LevelTwoChildAdapter(childList)
@@ -82,17 +84,22 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
         if (item.child == null && !(item.child!!.size > 0)) {
             holder.carrot.visibility = View.GONE
             holder.item_child_recycler.visibility = View.GONE
+            holder.item_child_recycler_divider.visibility = View.GONE
 
         } else if (item.isExpanded) {
             childList?.clear()
             childList?.addAll(item.child)
             holder.item_child_recycler.visibility = View.VISIBLE
-            holder.carrot.setImageResource(R.drawable.carrot_down)
+            holder.item_child_recycler_divider.visibility = View.VISIBLE
+
+            holder.carrot.setImageResource(R.drawable.carrot_up)
             holder.item_child_recycler.adapter.notifyDataSetChanged()
 
         } else {
-            holder.carrot.setImageResource(R.drawable.carrot_up)
+            holder.carrot.setImageResource(R.drawable.carrot_down)
             holder.item_child_recycler.visibility = View.GONE
+            holder.item_child_recycler_divider.visibility = View.GONE
+
         }
 
 
@@ -167,6 +174,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
         val item_image = view.item_icon
         val item_name = view.item_name
         val item_child_recycler = view.child_recycler
+        val item_child_recycler_divider = view.child_divider
         val parent_layout = view.parent_layout
         val carrot = view.carrot
 

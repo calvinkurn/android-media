@@ -10,6 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_14"
         android:textColor="@color/color_text"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
@@ -20,7 +21,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_14"
         android:text="Lihat Semua"
         android:textColor="@color/green_text"
         android:textSize="@dimen/sp_14"
@@ -30,6 +30,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_14"
         android:background="@color/border_color"
         android:paddingLeft="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_18" />
@@ -117,14 +118,39 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
+                <include
+                    layout="@layout/item_level_two_shimmer_list_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <include
+                    layout="@layout/item_level_two_shimmer_list_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <include
+                    layout="@layout/item_level_two_shimmer_list_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <include
+                    layout="@layout/item_level_two_shimmer_list_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <include
+                    layout="@layout/item_level_two_shimmer_list_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/shimmer_layout_default"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <include
                     layout="@layout/item_level_two_exclusive_shimmer_list"

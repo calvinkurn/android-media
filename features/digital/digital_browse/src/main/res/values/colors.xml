@@ -7,6 +7,6 @@
     <color name="color_text">#f531353b</color>
     <color name="green_text">#03ac0e</color>
     <color name="text_light_grey">#7031353b</color>
-
+    <color name="toolbar_title">#f531353b</color>
 
 </resources>

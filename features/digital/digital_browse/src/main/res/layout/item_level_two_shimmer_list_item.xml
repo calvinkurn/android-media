@@ -3,12 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_24">
+    android:paddingTop="@dimen/dp_12"
+    android:paddingBottom="@dimen/dp_12"
+    android:paddingLeft="@dimen/dp_24">
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/img"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         app:corners="16"
         app:layout_constraintEnd_toStartOf="@+id/txt"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,17 +21,24 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/sp_12"
+        android:paddingTop="@dimen/sp_15"
         app:corners="16"
+        android:textSize="@dimen/sp_10"
+        android:layout_marginRight="@dimen/dp_50"
+        android:layout_marginLeft="@dimen/dp_12"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/border_view"
         app:layout_constraintStart_toEndOf="@+id/img"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
+        android:id="@+id/border_view"
         android:layout_width="0dp"
         android:layout_height="2dp"
         android:background="@color/grey_100"
-        android:paddingTop="@dimen/dp_6"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@+id/txt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/txt" />
 
