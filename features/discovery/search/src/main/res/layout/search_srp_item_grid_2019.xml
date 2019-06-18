@@ -145,6 +145,7 @@
             android:layout_below="@id/ratingReviewContainer"
             android:textSize="@dimen/sp_10"
             android:padding="@dimen/dp_4"
+            app:labelDesign="lightGreen"
             android:text="Test Label" />
 
         <RelativeLayout

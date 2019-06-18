@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="Label">
-        <attr name="labelType" format="enum">
+        <attr name="labelDesign" format="string">
             <enum name="lightGrey" value="lightGrey" />
             <enum name="darkGrey" value="darkGrey" />
             <enum name="lightRed" value="lightRed" />

@@ -15,5 +15,24 @@
     <color name="product_card_grey">#ae31353b</color>
     <color name="product_card_topads_icon_backgroundcolor">#F3F4F5</color>
 
-
+    <color name="product_card_label_light_grey_background">#F3F4F5</color>
+    <color name="product_card_label_light_grey_text">#9FA6B0</color>
+    <color name="product_card_label_light_blue_background">#CCEBFF</color>
+    <color name="product_card_label_light_blue_text">#009BFF</color>
+    <color name="product_card_label_light_green_background">#d6ffde</color>
+    <color name="product_card_label_light_green_text">#03ac0e</color>
+    <color name="product_card_label_light_red_background">#ffeaef</color>
+    <color name="product_card_label_light_red_text">#ff5c84</color>
+    <color name="product_card_label_light_orange_background">#fff0b3</color>
+    <color name="product_card_label_light_orange_text">#fa591d</color>
+    <color name="product_card_label_dark_grey_background">#b5bbc5</color>
+    <color name="product_card_label_dark_grey_text">#ffffff</color>
+    <color name="product_card_label_dark_green_background">#4fd15a</color>
+    <color name="product_card_label_dark_green_text">#ffffff</color>
+    <color name="product_card_label_dark_blue_background">#32afff</color>
+    <color name="product_card_label_dark_blue_text">#ffffff</color>
+    <color name="product_card_label_dark_red_background">#ff5c84</color>
+    <color name="product_card_label_dark_red_text">#ffffff</color>
+    <color name="product_card_label_dark_orange_background">#ff8b00</color>
+    <color name="product_card_label_dark_orange_text">#ffffff</color>
 </resources>
