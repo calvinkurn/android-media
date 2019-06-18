@@ -44,7 +44,7 @@ class BasicDeviceData(private val mContext: Context, private val mLocationManage
             }
 
             try {
-                basicInfoMap[LONGITUDE] = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).latitude.toString()
+                basicInfoMap[LONGITUDE] = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).longitude.toString()
             } catch (e: Exception) {
                 basicInfoMap[LONGITUDE] = "0.0"
             }

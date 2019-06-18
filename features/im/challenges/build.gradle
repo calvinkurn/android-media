@@ -35,8 +35,6 @@ dependencies {
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 

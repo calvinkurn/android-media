@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.deeplink;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -36,8 +35,6 @@ import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
@@ -305,23 +302,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             //map applink to internal if any
             String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
             if (!TextUtils.isEmpty(mappedDeeplink)) {
-                RouteManager.route(this, mappedDeeplink);
+                routeApplink(deepLinkDelegate, mappedDeeplink);
             } else {
-                if (deepLinkDelegate.supportsUri(mappedDeeplink)) {
-                    routeFromApplink(applink);
-                } else {
-                    Intent intent = RouteManager.getIntentNoFallback(this, applinkString);
-                    if (intent == null) {
-                        Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
-                        homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
-                        if (getIntent() != null && getIntent().getExtras() != null)
-                            homeIntent.putExtras(getIntent().getExtras());
-                        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(homeIntent);
-                    } else {
-                        startActivity(intent);
-                    }
-                }
+                routeApplink(deepLinkDelegate, applinkString);
             }
 
             if (getIntent().getExtras() != null) {
@@ -352,6 +335,24 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             }
         }
         finish();
+    }
+
+    private void routeApplink(ApplinkDelegate deepLinkDelegate, String applinkString) {
+        if (deepLinkDelegate.supportsUri(applinkString)) {
+            routeFromApplink(Uri.parse(applinkString));
+        } else {
+            Intent intent = RouteManager.getIntent(this, applinkString);
+            startActivity(intent);
+        }
+    }
+
+    private void goToHome() {
+        Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
+        homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
+        if (getIntent() != null && getIntent().getExtras() != null)
+            homeIntent.putExtras(getIntent().getExtras());
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(homeIntent);
     }
 
     public void eventPersonalizedClicked(String label) {

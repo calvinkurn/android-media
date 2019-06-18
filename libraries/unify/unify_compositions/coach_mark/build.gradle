@@ -45,5 +45,5 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.appCompactV7
 
-    implementation project(rootProject.ext.libraries.unifyPrinciples)
+    implementation rootProject.ext.libraries.unifyPrinciples
 }
