@@ -11,7 +11,7 @@ class GetPmStatusInfoSubscriber(private val view: PmSubscribeContract.View) : Su
     }
 
     override fun onCompleted() {
-        view.hideLoading()
+
     }
 
     override fun onError(e: Throwable) {

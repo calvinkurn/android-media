@@ -69,6 +69,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     private var minScore: Int = 0
     private var isSuccessActivatedPm: Boolean = false
     private var isSuccessCancellationPm: Boolean = false
+    private var isTransitionKycPage: Boolean = false
 
     private val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
@@ -290,9 +291,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         if (isSuccessCancellationPm) {
             showToasterCancellationSuccess()
         }
+
+        if (isTransitionKycPage) {
+            return
+        } else {
+            hideLoading()
+        }
     }
 
-    override fun hideLoading(){
+    override fun hideLoading() {
         root_view_pm.hideLoading()
     }
 
@@ -315,6 +322,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         if (isPowerMerchant) {
             var isKyc = getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status != KYCConstant.STATUS_VERIFIED
             if (isKyc) {
+                isTransitionKycPage = true
                 val intent = context?.let { TransitionPeriodPmActivity.newInstance(it) }
                 startActivity(intent)
                 activity?.finish()
