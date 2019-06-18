@@ -506,6 +506,6 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         saveAddressDataModel?.postalCode = zipCode
     }
 
-    override fun showAutoComplete(lat: Double, long: Double) {
-    }
+    /*override fun loadPoiList(lat: Double, long: Double) {
+    }*/
 }

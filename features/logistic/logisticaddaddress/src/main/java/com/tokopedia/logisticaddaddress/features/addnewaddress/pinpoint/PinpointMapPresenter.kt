@@ -139,7 +139,7 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
         districtBoundaryUseCase.execute(RequestParams.create(), DistrictBoundarySubscriber(view, districtBoundaryMapper))
     }
 
-    fun requestLocation(activity: Activity) {
+    /*fun requestLocation(activity: Activity) {
         val locationDetectorHelper = activity.let {
             LocationDetectorHelper(
                     permissionCheckerHelper,
@@ -155,11 +155,11 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
 
     private fun onGetLocation(): (DeviceLocation) -> Unit {
         return {
-            view.showAutoComplete(it.latitude, it.longitude)
+            view.loadPoiList(it.latitude, it.longitude)
         }
     }
 
     fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper) {
         this.permissionCheckerHelper = permissionCheckerHelper
-    }
+    }*/
 }

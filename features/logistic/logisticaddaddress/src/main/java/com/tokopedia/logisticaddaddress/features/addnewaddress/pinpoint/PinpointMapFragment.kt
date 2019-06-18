@@ -81,7 +81,8 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
     private var zipCodes : MutableList<String>? = null
     private var saveAddressDataModel: SaveAddressDataModel? = null
     protected var addNewAddressComponent: AddNewAddressComponent? = null
-    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    // private lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    private lateinit var autocompleteGeocodeBottomSheetFragment: AutocompleteBottomSheetFragment
 
     @Inject
     lateinit var presenter: PinpointMapPresenter
@@ -98,7 +99,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
                     .build()
                     .inject(this@PinpointMapFragment)
             presenter.attachView(this@PinpointMapFragment)
-            presenter.setPermissionChecker(permissionCheckerHelper)
+            // presenter.setPermissionChecker(permissionCheckerHelper)
         }
     }
 
@@ -117,7 +118,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
                     putParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL))
                 }
-                permissionCheckerHelper = PermissionCheckerHelper()
+                // permissionCheckerHelper = PermissionCheckerHelper()
             }
         }
     }
@@ -178,7 +179,8 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
             }
         }
 
-        presenter.requestLocation(activity!!)
+        showAutoComplete()
+        // presenter.requestLocation(activity!!)
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
@@ -199,10 +201,14 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
         }
     }
 
-    override fun showAutoComplete(lat: Double, long: Double) {
+    /*override fun loadPoiList(lat: Double, long: Double) {
+        autocompleteGeocodeBottomSheetFragment.loadAutocompleteGeocode(lat, long)
+    }*/
+
+    fun showAutoComplete() {
         if (isShowingAutocomplete == true) {
             handler.postDelayed({
-                showAutocompleteGeocodeBottomSheet(lat, long)
+                showAutocompleteGeocodeBottomSheet()
             }, 1000)
         }
     }
@@ -243,9 +249,9 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
         map_view?.onLowMemory()
     }
 
-    private fun showAutocompleteGeocodeBottomSheet(lat: Double, long: Double) {
-        val autocompleteGeocodeBottomSheetFragment =
-                AutocompleteBottomSheetFragment.newInstance(lat, long)
+    private fun showAutocompleteGeocodeBottomSheet() {
+        autocompleteGeocodeBottomSheetFragment =
+                AutocompleteBottomSheetFragment.newInstance(currentLat, currentLong)
         autocompleteGeocodeBottomSheetFragment.setActionListener(this)
         autocompleteGeocodeBottomSheetFragment.show(fragmentManager, "")
         isShowingAutocomplete = false
@@ -389,7 +395,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
         return addNewAddressComponent
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    /*override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -399,7 +405,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
                         grantResults)
             }
         }
-    }
+    }*/
 
     override fun useCurrentLocation(lat: Double?, long: Double?) {
         currentLat = lat

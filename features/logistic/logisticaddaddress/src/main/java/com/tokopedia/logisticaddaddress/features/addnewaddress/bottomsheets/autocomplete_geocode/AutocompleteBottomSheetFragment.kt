@@ -1,6 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_autocomplete.*
 import javax.inject.Inject
 
@@ -38,6 +40,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
     private lateinit var etSearch: EditText
     private lateinit var adapter: AutocompleteBottomSheetAdapter
     private lateinit var actionListener: ActionListener
+    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     val handler = Handler()
 
     @Inject
@@ -53,11 +56,11 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
         private const val CURRENT_LONG = "CURRENT_LONG"
 
         @JvmStatic
-        fun newInstance(currentLat: Double, currentLong: Double): AutocompleteBottomSheetFragment {
+        fun newInstance(currentLat: Double?, currentLong: Double?): AutocompleteBottomSheetFragment {
             return AutocompleteBottomSheetFragment().apply {
                 arguments = Bundle().apply {
-                    putDouble(CURRENT_LAT, currentLat)
-                    putDouble(CURRENT_LONG, currentLong)
+                    currentLat?.let { putDouble(CURRENT_LAT, it) }
+                    currentLong?.let { putDouble(CURRENT_LONG, it) }
                 }
             }
         }
@@ -70,6 +73,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        permissionCheckerHelper = PermissionCheckerHelper()
         if (arguments != null) {
             currentLat = arguments?.getDouble("CURRENT_LAT")
             currentLong = arguments?.getDouble("CURRENT_LONG")
@@ -101,7 +105,8 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
         rvPoiList.adapter = adapter
 
         if (currentLat != 0.0 && currentLong != 0.0) {
-            loadAutocompleteGeocode()
+            presenter.clearCacheAutocompleteGeocode()
+            presenter.getAutocompleteGeocode(currentLat, currentLong)
             rlCurrentLocation.setOnClickListener {
                 actionListener.useCurrentLocation(currentLat, currentLong)
                 dismiss()
@@ -130,6 +135,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
                     .build()
                     .inject(this@AutocompleteBottomSheetFragment)
             presenter.attachView(this@AutocompleteBottomSheetFragment)
+            presenter.setPermissionChecker(permissionCheckerHelper)
         }
     }
 
@@ -140,11 +146,6 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
     override fun hideListPointOfInterest() {
         llPoi.visibility = View.GONE
         // rvPoiList.visibility = View.GONE
-    }
-
-    private fun loadAutocompleteGeocode() {
-        presenter.clearCacheAutocompleteGeocode()
-        presenter.getAutocompleteGeocode(currentLat, currentLong)
     }
 
     private fun loadAutocomplete(input: String) {
@@ -222,5 +223,17 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
     private fun hideKeyboard() {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);
         (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context?.let {
+                permissionCheckerHelper.onRequestPermissionsResult(it,
+                        requestCode, permissions,
+                        grantResults)
+            }
+        }
     }
 }
