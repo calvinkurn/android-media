@@ -1035,10 +1035,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 toolbar.let {
                     if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
                         it.visibility = View.VISIBLE
-                        if (isOwner) showFooterOthers()
+                        if (!isOwner) showFooterOthers()
                     } else {
                         it.visibility = View.GONE
-                        if (isOwner) hideFootersOthers()
+                        if (!isOwner) hideFootersOthers()
                     }
                 }
             } catch (e: IllegalStateException) {
