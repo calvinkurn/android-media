@@ -28,8 +28,9 @@ class ARHomeViewModel : BaseViewModel(), CoroutineScope {
         repository?.let {
             if (!it.getUserLoginState()?.isLoggedIn)
                 askUserLogin.value = 1
-            else
+            else {
                 fetchUserDOB()
+            }
         }
     }
 

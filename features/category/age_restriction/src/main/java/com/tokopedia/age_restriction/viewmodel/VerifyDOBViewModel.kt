@@ -48,11 +48,6 @@ class VerifyDOBViewModel : BaseViewModel(), CoroutineScope {
                 userIsAdult.value = true
             else
                 userNotAdult.value = true
-        } else if (userDOBUpdateResponse.userDobUpdateData.isSuccess > 0) {
-            if (userDOBUpdateResponse.userDobUpdateData.age > 18)
-                userIsAdult.value = true
-            else
-                userNotAdult.value = true
         }
     }
 }
