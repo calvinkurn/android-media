@@ -40,9 +40,6 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auto_ads_route)
         component.inject(this)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-        }
         run {
             adsInfoViewModel = ViewModelProviders.of(this, factory).get(TopAdsInfoViewModel::class.java)
             adsInfoViewModel.getShopAdsInfo(userSession.shopId.toInt())
