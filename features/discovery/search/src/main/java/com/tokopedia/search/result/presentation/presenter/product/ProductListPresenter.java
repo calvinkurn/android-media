@@ -551,12 +551,9 @@ final class ProductListPresenter
 
         getView().setAdditionalParams(productViewModel.getAdditionalParams());
         getView().removeLoading();
-
-        if(isFirstTimeLoad) { // TODO:: For testing, remove this later
-            getView().setProductList(list);
-            getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
-            getView().addLoading();
-        }
+        getView().setProductList(list);
+        getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
+        getView().addLoading();
 
         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         getView().stopTracePerformanceMonitoring();
