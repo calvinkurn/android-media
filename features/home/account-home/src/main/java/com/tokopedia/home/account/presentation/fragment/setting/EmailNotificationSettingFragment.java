@@ -24,8 +24,8 @@ import com.tokopedia.home.account.data.model.SettingEditResponse;
 import com.tokopedia.home.account.di.component.EmailNotificationSettingComponent;
 import com.tokopedia.home.account.presentation.activity.EmailNotificationSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.setting.EmailNotifAdapter;
-import com.tokopedia.home.account.presentation.presenter.EmailNotificationPresenter;
 import com.tokopedia.home.account.presentation.listener.EmailNotificationView;
+import com.tokopedia.home.account.presentation.presenter.EmailNotificationPresenter;
 import com.tokopedia.home.account.presentation.viewmodel.EmailNotifViewModel;
 
 import java.util.ArrayList;
@@ -33,7 +33,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CHAT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DISCUSSION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.NEWS_LETTER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.REVIEW;
+import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPEDIA;
 
 public class EmailNotificationSettingFragment extends BaseDaggerFragment implements
         EmailNotificationView, EmailNotifAdapter.OnItemChangeListener,
@@ -144,17 +149,18 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
     }
 
     @Override
-    public void onItemChange(String key) {
-        if (key.equals(getString(R.string.label_review))) {
+    public void onItemChange(String key, boolean newValue) {
+        if (SettingType.FLAG_REVIEW.equals(key)) {
             accountAnalytics.eventClickEmailSetting(String.format("%s %s", REVIEW, NOTIFICATION));
-        } else if (key.equals(getString(R.string.label_talk))) {
+        } else if (SettingType.FLAG_TALK.equals(key)) {
             accountAnalytics.eventClickEmailSetting(String.format("%s %s", DISCUSSION, NOTIFICATION));
-        } else if (key.equals(getString(R.string.label_chat))) {
+        } else if (SettingType.FLAG_MESSAGE.equals(key)) {
             accountAnalytics.eventClickEmailSetting(String.format("%s %s", CHAT, NOTIFICATION));
-        } else if (key.equals(getString(R.string.label_chat_admin))) {
+        } else if (SettingType.FLAG_ADMIN_MESSAGE.equals(key)) {
             accountAnalytics.eventClickEmailSetting(String.format("%s %s %s", CHAT, TOKOPEDIA, NOTIFICATION));
-        } else if (key.equals(getString(R.string.label_bulletin))) {
+        }  else if (SettingType.FLAG_NEWSLETTER.equals(key)) {
             accountAnalytics.eventClickEmailSetting(String.format("%s %s", NEWS_LETTER, NOTIFICATION));
+            accountAnalytics.setNewsletterEmailPref(!newValue);
         }
         isChanged = true;
     }

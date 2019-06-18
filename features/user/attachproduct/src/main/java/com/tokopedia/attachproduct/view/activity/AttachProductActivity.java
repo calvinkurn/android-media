@@ -6,7 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.attachproduct.AttachProductRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.attachproduct.R;
 import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.attachproduct.view.fragment.AttachProductFragment;
@@ -150,8 +151,8 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
 
     @Override
     public void goToAddProduct(String shopId) {
-        if (isSeller && getApplicationContext() instanceof AttachProductRouter) {
-            ((AttachProductRouter) getApplicationContext()).goToAddProduct(this);
+        if (isSeller) {
+            RouteManager.route(this, ApplinkConst.PRODUCT_ADD);
         }
     }
 }

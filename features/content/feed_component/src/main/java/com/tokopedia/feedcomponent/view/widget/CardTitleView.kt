@@ -42,7 +42,7 @@ class CardTitleView : BaseCustomView {
     }
 
     fun bind(title: Title, template: TemplateTitle) {
-        titleLayout.shouldShowWithAction(shouldShowTitle(template)) {
+        titleLayout.shouldShowWithAction(shouldShowTitle(title, template)) {
             text.shouldShowWithAction(template.text) {
                 text.text = title.text
                 text.setOnClickListener { onTextClick(title.action) }
@@ -61,8 +61,8 @@ class CardTitleView : BaseCustomView {
         }
     }
 
-    private fun shouldShowTitle(template: TemplateTitle): Boolean {
-        return template.text || template.textBadge || template.ctaLink
+    private fun shouldShowTitle(title: Title, template: TemplateTitle): Boolean {
+        return (template.text || template.textBadge || template.ctaLink) && (title.text.isNotEmpty())
     }
 
     private fun onTextClick(action: Action) {

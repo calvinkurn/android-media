@@ -335,7 +335,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     @Override
     public void onReturnInfoClicked() {
-        flightAnalytics.eventDetailClick(getView().getCurrentCartPassData().getDepartureTrip());
+        flightAnalytics.eventDetailClick(getView().getCurrentCartPassData().getReturnTrip());
         getView().navigateToDetailTrip(getView().getCurrentCartPassData().getReturnTrip());
     }
 

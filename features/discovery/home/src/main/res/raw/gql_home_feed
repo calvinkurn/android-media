@@ -15,6 +15,7 @@ query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
           tracker_image_url
           price
           price_int
+          discount_percentage
           slashed_price
           slashed_price_int
           rating

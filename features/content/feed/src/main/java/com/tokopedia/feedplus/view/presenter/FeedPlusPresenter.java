@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.feedplus.R;
@@ -27,7 +28,6 @@ import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase;
-import com.tokopedia.profile.domain.usecase.TrackAffiliateClickUseCase;
 import com.tokopedia.profile.view.subscriber.TrackPostClickSubscriber;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -439,16 +439,14 @@ public class FeedPlusPresenter
 
                         getView().hideAdapterLoading();
 
-                        if (model.getPostList().size() == 0) {
-                            getView().unsetEndlessScroll();
-                        } else {
+                        if (model.getPostList().size() != 0) {
                             getView().onSuccessGetFeed(new ArrayList<>(model.getPostList()));
+                        }
 
-                            if (model.getHasNext()) {
-                                getView().updateCursor(model.getCursor());
-                            } else {
-                                getView().unsetEndlessScroll();
-                            }
+                        if (model.getHasNext()) {
+                            getView().updateCursor(model.getCursor());
+                        } else {
+                            getView().unsetEndlessScroll();
                         }
                     }
                 }

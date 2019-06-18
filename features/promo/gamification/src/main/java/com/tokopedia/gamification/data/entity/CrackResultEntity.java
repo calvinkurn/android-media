@@ -1,10 +1,15 @@
 package com.tokopedia.gamification.data.entity;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.graphics.Bitmap;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.gamification.data.entity.CrackButtonEntity;
 
 import java.util.List;
 
@@ -12,55 +17,112 @@ import java.util.List;
  * Created by nabillasabbaha on 3/28/18.
  */
 
+@Entity
 public class CrackResultEntity {
-    
+    public CrackResultEntity() {
+    }
+
+
+    @PrimaryKey(autoGenerate = true)
+    public int id;
+
+    @ColumnInfo(name = "campaignId")
+    @Expose(serialize = false, deserialize = false)
+    public long campaignId;
+
+    @ColumnInfo(name = "imageUrl")
+    @SerializedName("imageUrl")
+    @Expose
+    public String imageUrl;
+
+    @SerializedName("benefits")
+    @Expose
+    public List<CrackBenefitEntity> benefits;
+
+    @Ignore
     @SerializedName("resultStatus")
     @Expose
     private ResultStatusEntity resultStatus;
 
-    @SerializedName("imageUrl")
-    @Expose
-    private String imageUrl;
-
+    @Ignore
     @SerializedName("benefitType")
     @Expose
     private String benefitType;
 
-    @SerializedName("benefits")
-    @Expose
-    private List<CrackBenefitEntity> benefits;
-
+    @Ignore
     @SerializedName("ctaButton")
     @Expose
     private CrackButtonEntity ctaButton;
 
+    @Ignore
     @SerializedName("returnButton")
     @Expose
     private CrackButtonEntity returnButton;
 
-    @Expose(serialize =false, deserialize = false)
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
     private String benefitLabel;
-    @Expose(serialize =false, deserialize = false)
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
     private Bitmap imageBitmap;
-    @Expose(serialize =false, deserialize = false)
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
     public static final String TYPE_BTN_INVISIBLE = "invisible";
-    @Expose(serialize =false, deserialize = false)
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
     public static final String TYPE_BTN_DISMISS = "dismiss";
-    @Expose(serialize =false, deserialize = false)
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
     public static final String TYPE_BTN_REDIRECT = "redirect";
-    @Expose(serialize =false, deserialize = false)
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
     public static final String STATUS_CODE_SERVER_ERROR = "500";
-    @Expose(serialize =false, deserialize = false)
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
     public static final String STATUS_CODE_TOKEN_HAS_BEEN_CRACKED = "42501";
-    @Expose(serialize =false, deserialize = false)
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
     private static final String STATUS_CODE_SUCCESS = "200";
-    @Expose(serialize =false, deserialize = false)
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
     private static final String STATUS_CODE_TOKEN_USER_INVALID = "42502";
-    @Expose(serialize =false, deserialize = false)
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
     private static final String STATUS_CODE_TOKEN_EXPIRED = "42503";
-    @Expose(serialize =false, deserialize = false)
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
     private static final String STATUS_CODE_CAMPAIGN_EXPIRED = "42504";
 
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
+    private static final String STATUS_CODE_NO_SESSION_AVAILABLE_TAP_TAP = "42505";
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
+    private static final String STATUS_CODE_GRACE_PERIOD_TAP_TAP = "42508";
+
+    @Ignore
+    @Expose(serialize = false, deserialize = false)
+    private static final String STATUS_CODE_MAX_QUOTA_REACHED_TAP_TAP = "47004";
+
+
+    public long getCampaignId() {
+        return campaignId;
+    }
+
+    public void setCampaignId(long campaignId) {
+        this.campaignId = campaignId;
+    }
 
     public void setResultStatus(ResultStatusEntity resultStatus) {
         this.resultStatus = resultStatus;
@@ -157,5 +219,11 @@ public class CrackResultEntity {
 
     public boolean isCrackButtonRedirect(CrackButtonEntity crackButton) {
         return crackButton.getType().equals(TYPE_BTN_REDIRECT);
+    }
+
+    public boolean isCrackButtonErrorTapTap() {
+        return STATUS_CODE_GRACE_PERIOD_TAP_TAP.equals(resultStatus.getCode())
+                || STATUS_CODE_MAX_QUOTA_REACHED_TAP_TAP.equals(resultStatus.getCode())
+                || STATUS_CODE_NO_SESSION_AVAILABLE_TAP_TAP.equals(resultStatus.getCode());
     }
 }

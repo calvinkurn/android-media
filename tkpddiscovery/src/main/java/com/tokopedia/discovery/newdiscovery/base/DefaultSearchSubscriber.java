@@ -3,8 +3,7 @@ package com.tokopedia.discovery.newdiscovery.base;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 import rx.Subscriber;
 

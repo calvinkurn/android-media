@@ -24,7 +24,7 @@
     <string name="template_review">%1$d Ulasan</string>
     <string name="template_success_rate">%1$s%% (%2$s produk)</string>
     <string name="template_talk">%1$d Diskusi</string>
-    <string name="template_preorder_time">%1$d Hari</string>
+    <string name="template_preorder_time">%1$d %2$s</string>
     <string name="template_min_order">%1$d Buah</string>
     <string name="buy_now">Beli Sekarang</string>
     <string name="add_product_to_cart">Tambah ke Keranjang</string>
@@ -34,7 +34,9 @@
     <string name="no_stock">Stok Kosong</string>
     <string name="action_preorder">PREORDER</string>
     <string name="product_from">Produk dari</string>
-    <string name="from_official_store_label">Brand Resmi</string>
+    <string name="from_official_store_label">Official Store</string>
+    <string name="from_power_badge_label">Power Badge</string>
+
     <string name="label_cart">Keranjang</string>
     <string name="label_move_to_warehouse">Gudangkan</string>
     <string name="label_move_to_etalase">Ke Etalase</string>
@@ -93,8 +95,10 @@
     <string name="success_move_etalase">Produk berhasil dipindahkan ke etalase</string>
     <string name="choose">Pilih</string>
     <string name="and">dan</string>
-    <string name="button_affiliate">Kurasi Produk Ini</string>
+    <string name="button_affiliate">Buat Post</string>
+    <string name="affiliate_get_commission">Raih Komisi</string>
     <string name="priority_order_label">Order Prioritas</string>
+    <string name="purchase_protection_label">Proteksi Gadget</string>
     <string name="title_cod">Bayar di Tempat</string>
     <string name="cod_content">Bayar ke kurir saat pesanan diterima. Tersedia di beberapa kota tertentu</string>
     <string name="installment_template">Bunga %1$s%% mulai dari %2$s</string>
@@ -103,8 +107,11 @@
     <string name="template_installment">Min. Pembelanjaan %1$s</string>
     <string name="label_bb_info_desc">Durasi dihitung sejak barang diserahkan kekurir</string>
     <string name="template_rates_estimate_start_price">Ongkos Kirim mulai dari %1$s</string>
-    <string name="from">dari %1$s</string>
-    <string name="to">ke %1$s</string>
+    <string name="from_x">dari %1$s</string>
+    <string name="to_x">ke %1$s</string>
     <string name="open_shop">Buka Toko GRATIS</string>
     <string name="min_buy_x">Minimum Pembelian %1$d</string>
+    <string name="product_is_at_status_x">Product berada dalam status %1$s</string>
+    <string name="service_by_tokopedia">Dilayani oleh Tokopedia</string>
+    <string name="multiorigin_desc">Barang dikirim dari lokasi penyimpanan terdekat.</string>
 </resources>

@@ -37,6 +37,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.track)
+    
 
     implementation rootProject.ext.networkDependencies.glide
 

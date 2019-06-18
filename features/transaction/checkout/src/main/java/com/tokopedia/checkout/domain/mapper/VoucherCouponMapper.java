@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.checkout.domain.datamodel.voucher.CouponListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
+import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.Data;
+import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.ResponseFirstStep;
 import com.tokopedia.transaction.common.sharedata.CouponListResult;
 import com.tokopedia.transactiondata.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
@@ -84,6 +86,14 @@ public class VoucherCouponMapper implements IVoucherCouponMapper {
             promoCodeCartListData.setDataVoucher(dataVoucher);
         }
         return promoCodeCartListData;
+    }
+
+    @Override
+    public ResponseFirstStep convertPromoStackingCodeCartListData(Data data) {
+        ResponseFirstStep responseFirstStep = new ResponseFirstStep();
+        responseFirstStep.setData(data);
+
+        return responseFirstStep;
     }
 
     @Override

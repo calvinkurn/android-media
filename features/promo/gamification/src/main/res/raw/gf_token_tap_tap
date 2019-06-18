@@ -1,0 +1,50 @@
+query {
+   gamiTapEggHome {
+    backButton{
+      isShow
+      imageURL
+      title
+      text
+      yesText
+      cancelText
+    }
+    tokensUser{
+        state
+        tokenUserID
+        campaignID
+        title
+    }
+    timeRemaining {
+        isShow
+        unixFetch
+        seconds
+        backgroundColor
+        fontColor
+        borderColor
+    }
+    actionButton {
+        text
+        type
+        url
+        applink
+        isDisable
+        backgroundColor
+    }
+    tokenAsset {
+        backgroundImgURL
+        seamlessImgURL
+        imageURL
+        glowShadowImgURL
+        glowImgURL
+        imageV2URLs
+    }
+    rewardButton {
+        text
+        type
+        url
+        applink
+        isDisable
+        backgroundColor
+  }
+ }
+}

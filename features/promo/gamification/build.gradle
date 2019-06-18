@@ -40,9 +40,19 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
+    // Room components
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+
+    
+    implementation project(rootProject.ext.libraries.track)
+
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.webview)
+    implementation project(rootProject.ext.libraries.applink)
 }
 
 apply from: '../../../publish_local.gradle'

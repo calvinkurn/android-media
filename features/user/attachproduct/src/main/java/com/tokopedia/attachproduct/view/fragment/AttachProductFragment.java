@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -29,6 +28,7 @@ import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
 import com.tokopedia.attachproduct.view.presenter.AttachProductPresenter;
 import com.tokopedia.attachproduct.view.viewholder.CheckableInteractionListenerWithPreCheckedAction;
 import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -326,19 +326,15 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     private void trackAction(String source, int productId) {
 
-        if ((getActivity().getApplicationContext() instanceof AbstractionRouter)) {
-            AbstractionRouter abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
-            if(source.equals(AttachProductActivity.SOURCE_TALK)){
-                abstractionRouter.getAnalyticTracker().sendEventTracking(
+        if(source.equals(AttachProductActivity.SOURCE_TALK)){
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                         AttachProductAnalytics.getEventCheckProductTalk(productId).getEvent()
                 );
             }else{
-                abstractionRouter.getAnalyticTracker().sendEventTracking(
+                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                         AttachProductAnalytics.getEventCheckProduct().getEvent()
                 );
             }
-
-        }
     }
 
     @Override

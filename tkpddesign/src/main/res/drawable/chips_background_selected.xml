@@ -3,8 +3,8 @@
     android:shape="rectangle">
     <solid android:color="@color/green_variant_choosed" />
     <stroke
-        android:width="@dimen/dp_2"
-        android:color="@color/green_nob" />
+        android:width="@dimen/dp_1"
+        android:color="@color/snackbar_border_normal" />
     <corners android:radius="@dimen/dp_20" />
 
 </shape>

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
@@ -20,6 +21,29 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class CommonNetwork {
+
+    /**
+     method to create retrofit object for general purpose
+     */
+    public static Retrofit createRetrofit(Context context, String baseUrl, NetworkRouter networkRouter, UserSession userSession, CharacterPerMinuteInterface characterPerMinuteInterface) {
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .setPrettyPrinting()
+                .serializeNulls()
+                .create();
+
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
+        tkpdOkHttpBuilder.addInterceptor(new TkpdAuthInterceptor(context, networkRouter, userSession));
+        tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession, characterPerMinuteInterface));
+
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(CoroutineCallAdapterFactory.create())
+                .client(tkpdOkHttpBuilder.build()).build();
+    }
 
     /**
     method to create retrofit object for general purpose

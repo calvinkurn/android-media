@@ -10,27 +10,28 @@
     <string name="profile_edit">Edit Profil</string>
     <string name="profile_following">Following</string>
     <string name="profile_rec_qutoa" formatted="false">Sisa jatah kurasi: %s</string>
-    <string name="profile_add_rec">Tambah Kurasi</string>
+    <string name="profile_add_rec">Tambah Post</string>
     <string name="profile_see_by_me_prouct">Lihat Produk By Me</string>
     <string name="profile_share_profile">Bagikan Profil</string>
     <string name="profile_share_this_profile">Bagikan Profile Ini</string>
-    <string name="profile_share_title">Bagikan Kurasimu untuk raih Komisi!</string>
+    <string name="profile_share_title">Bagikan Postmu untuk raih Komisi!</string>
     <string name="profile_share_text">Lihat profil ini, deh! Ada produk pilihan buatmu, lho: %s</string>
-    <string name="profile_add_recommendation">Mulai Kurasi Produk Kesukaanmu dan Raih Komisinya!</string>
+    <string name="profile_add_recommendation">Mulai Post Produk Kesukaanmu dan Raih
+        Komisinya!</string>
     <string name="profile_showcase_title">Bagikan Profilmu, Yuk!</string>
     <string name="profile_showcase_description">Raih Komisi tiap produk pilihanmu dibeli!</string>
-    <string name="profile_no_content">Oops, Belum Ada Kurasi di Profil Ini</string>
-    <string name="profile_see_others"> Lihat Kurasi Lain</string>
+    <string name="profile_no_content">Oops, Belum Ada Post di Profil Ini</string>
+    <string name="profile_see_others"> Lihat Post Lain</string>
     <string name="profile_recommend_to_friends">Kamu Suka Produk Apa? Bagikan Lewat By Me, Yuk!</string>
     <string name="profile_find_out">Coba By Me</string>
     <string name="follow_success_toast">Cek Feeds mu sekarang untuk melihat update TopProfile ini</string>
     <string name="follow_success_check_now">Cek Sekarang</string>
-    <string name="profile_recommend_success">Kurasi berhasil ditambahkan</string>
-    <string name="profile_edit_success">Kurasi berhasil diperbarui</string>
+    <string name="profile_recommend_success">Post berhasil ditambahkan</string>
+    <string name="profile_edit_success">Post berhasil diperbarui</string>
     <string name="profile_add_more">Tambah Lagi</string>
-    <string name="profile_delete_post">Hapus Kurasi</string>
+    <string name="profile_delete_post">Hapus Post</string>
     <string name="profile_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari kurasi ini</string>
-    <string name="profile_post_deleted">Kurasi berhasil dihapus</string>
+    <string name="profile_post_deleted">Post berhasil dihapus</string>
     <string name="profile_recommend_get_commission">Bagikan Produk kesukaanmu, Sekarang Bisa Dapat Komisi!</string>
     <string name="profile_tokopedia_app">Segera coba fiturnya di aplikasi Tokopedia versi terbaru.</string>
     <string name="profile_try_now">Coba Sekarang</string>
@@ -48,4 +49,23 @@
     <string name="profile_feed_report">Laporkan</string>
     <string name="profile_feed_delete">Hapus</string>
     <string name="profile_feed_cancel">Batal</string>
+
+    <!--ONBOARDING-->
+    <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
+    <string name="title_af_username">Perbarui Link Profil</string>
+    <string name="af_make_by_me_profile">Bagikan untuk dapat Komisi</string>
+    <string name="af_type_username">Ketik Username:</string>
+    <string name="af_agree_terms">Dengan melanjutkan, saya setuju dengan</string>
+    <string name="af_terms_and_condition">Syarat &amp; Ketentuan By Me</string>
+    <string name="af_save">Bagikan Sekarang</string>
+    <string name="af_by_me_domain">tokopedia.by/</string>
+    <string name="af_minimal_character">Minimum %d karakter</string>
+    <string name="af_recommend_this_product">Lanjutkan Post dengan Produk Ini?</string>
+    <string name="af_recommend">Rekomendasikan</string>
+    <string name="af_continue">Lanjutkan</string>
+    <string name="af_see_other_product">Lihat Produk Lainnya</string>
+
+    <string name="profile_empty_title">Share barang kesukaanmu\n biar dapet komisi</string>
+    <string name="profile_empty_subtitle">Pilih dulu yuk barangnya</string>
+    <string name="profile_empty_button">Lihat Barang Lainnya</string>
 </resources>

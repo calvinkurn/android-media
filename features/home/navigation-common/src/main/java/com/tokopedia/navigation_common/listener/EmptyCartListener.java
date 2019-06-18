@@ -10,7 +10,7 @@ public interface EmptyCartListener {
 
     String ARG_CART_LIST_DATA = "ARG_CART_LIST_DATA";
 
-    void onCartEmpty(String autoApplyMessage, String state, String titleDesc);
+    void onCartEmpty(String autoApplyMessage, String state, String titleDesc, String promoCode);
 
     void onCartNotEmpty(Bundle bundle);
 

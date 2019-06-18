@@ -11,9 +11,9 @@ class EmptySearchProfileModel : Visitable<ProfileListTypeFactoryImpl> {
 
     @DrawableRes
     var imageRes: Int = 0
-    var title: String? = null
-    var content: String? = null
-    var buttonText: String? = null
+    var title: String? = ""
+    var content: String? = ""
+    var buttonText: String? = ""
 
     override fun type(typeFactory: ProfileListTypeFactoryImpl): Int {
         return typeFactory.type(this)

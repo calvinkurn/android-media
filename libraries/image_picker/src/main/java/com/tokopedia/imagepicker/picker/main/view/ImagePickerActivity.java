@@ -154,7 +154,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
-    private void onDoneClicked() {
+    protected void onDoneClicked() {
         if (selectedImagePaths.size() > 0) {
             if (imagePickerBuilder.isContinueToEditAfterPick()) {
                 startEditorActivity(selectedImagePaths);
@@ -649,6 +649,5 @@ public class ImagePickerActivity extends BaseSimpleActivity
         outState.putStringArrayList(SAVED_SELECTED_IMAGES, selectedImagePaths);
         outState.putStringArrayList(SAVED_IMAGE_DESCRIPTION, imageDescriptionList);
     }
-
 
 }

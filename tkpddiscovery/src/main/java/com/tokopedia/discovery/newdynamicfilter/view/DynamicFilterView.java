@@ -15,15 +15,17 @@ public interface DynamicFilterView {
     Boolean loadLastCheckedState(Option option);
     void saveCheckedState(Option option, Boolean isChecked);
 
-    void removeSavedTextInput(String key);
-    void saveTextInput(String key, String textInput);
+    void removeSavedTextInput(String uniqueId);
+    void saveTextInput(String uniqueId, String textInput);
 
     List<Option> getSelectedOptions(Filter filter);
     void removeSelectedOption(Option option);
 
-    void updateLastRangeValue(int minValue, int maxValue);
     void onPriceSliderRelease(int minValue, int maxValue);
     void onPriceSliderPressed(int minValue, int maxValue);
 
     void onPriceEditedFromTextInput(int minValue, int maxValue);
+
+    String getFilterValue(String key);
+    boolean getFilterViewState(String uniqueId);
 }

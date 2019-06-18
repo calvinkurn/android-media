@@ -10,7 +10,8 @@
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
         android:label="@string/app_name"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        tools:replace="android:icon,label">
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer" />

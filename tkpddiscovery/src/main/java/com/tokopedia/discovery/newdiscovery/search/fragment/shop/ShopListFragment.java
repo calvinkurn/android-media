@@ -3,24 +3,26 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.shop;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
@@ -32,8 +34,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.listene
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.typefactory.ShopListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.FavoriteActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameterBuilder;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -50,8 +51,8 @@ public class ShopListFragment extends SearchSectionFragment
         implements ShopListFragmentView,
         FavoriteActionListener, SearchSectionGeneralAdapter.OnItemChangeView, ShopListener {
 
+    public static final String SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab";
     private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
-    private static final String EXTRA_QUERY = "EXTRA_QUERY";
     private static final int REQUEST_CODE_GOTO_SHOP_DETAIL = 125;
     private static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_ACTIVITY_SORT_SHOP = 1235;
@@ -60,7 +61,6 @@ public class ShopListFragment extends SearchSectionFragment
 
     private RecyclerView recyclerView;
     private ShopListAdapter adapter;
-    private String query;
 
     @Inject
     ShopListPresenter presenter;
@@ -74,32 +74,32 @@ public class ShopListFragment extends SearchSectionFragment
     private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
     private PerformanceMonitoring performanceMonitoring;
 
-    public static ShopListFragment newInstance(String query) {
+    public static ShopListFragment newInstance(SearchParameter searchParameter) {
         Bundle args = new Bundle();
-        args.putString(EXTRA_QUERY, query);
-        ShopListFragment ShopListFragment = new ShopListFragment();
-        ShopListFragment.setArguments(args);
-        return ShopListFragment;
+
+        args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
+
+        ShopListFragment shopListFragment = new ShopListFragment();
+        shopListFragment.setArguments(args);
+        return shopListFragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            loadDataFromSavedState(savedInstanceState);
+            loadDataFromBundle(savedInstanceState);
         } else {
-            loadDataFromArguments();
+            loadDataFromBundle(getArguments());
         }
         userSession = new UserSession(getContext());
         gcmHandler = new GCMHandler(getContext());
     }
 
-    private void loadDataFromSavedState(Bundle savedInstanceState) {
-        query = savedInstanceState.getString(EXTRA_QUERY);
-    }
-
-    private void loadDataFromArguments() {
-        query = getArguments().getString(EXTRA_QUERY);
+    private void loadDataFromBundle(Bundle bundle) {
+        if (bundle != null) {
+            copySearchParameter(bundle.getParcelable(EXTRA_SEARCH_PARAMETER));
+        }
     }
 
     @Override
@@ -112,14 +112,14 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this, this);
         return inflater.inflate(R.layout.fragment_shop_list_search, null);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initListener();
         bindView(view);
@@ -129,7 +129,7 @@ public class ShopListFragment extends SearchSectionFragment
 
         adapter = new ShopListAdapter(this, new ShopListTypeFactoryImpl(this));
 
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
+        recyclerView = rootView.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.addItemDecoration(
                 new ShopListItemDecoration(
@@ -194,66 +194,73 @@ public class ShopListFragment extends SearchSectionFragment
 
     private void loadShopFirstTime() {
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE);
+
         loadMoreShop(START_ROW_FIRST_TIME_LOAD);
     }
 
     private void loadMoreShop(final int startRow) {
-        SearchParameter searchParameter
-                = generateLoadMoreParameter(startRow, query);
+        if(getSearchParameter() == null) return;
+
+        generateLoadMoreParameter(startRow);
 
         isLoadingData = true;
-        presenter.loadShop(searchParameter, new ShopListPresenterImpl.LoadMoreListener() {
+        presenter.loadShop(getSearchParameter(), new ShopListPresenterImpl.LoadMoreListener() {
             @Override
             public void onSuccess(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage) {
-                if (shopItemList.isEmpty()) {
-                    handleEmptySearchResult();
-                } else {
-                    if (performanceMonitoring != null) {
-                        performanceMonitoring.stopTrace();
-                    }
-                    handleSearchResult(shopItemList, isHasNextPage, startRow);
-                }
-                isLoadingData = false;
-                hideRefreshLayout();
+                handleOnSuccessLoadMoreShop(shopItemList, isHasNextPage, startRow);
             }
 
             @Override
             public void onFailed() {
-                adapter.removeLoading();
-
-                if (adapter.isListEmpty()) {
-                    NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            loadMoreShop(startRow);
-                        }
-                    });
-                } else {
-                    NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            loadMoreShop(startRow);
-                        }
-                    }).showRetrySnackbar();
-                }
-
-                isLoadingData = false;
-                hideRefreshLayout();
+                handleOnFailedLoadMoreShop(startRow);
             }
         });
     }
 
-    private SearchParameter generateLoadMoreParameter(int startRow, String query) {
-        SearchParameterBuilder builder = SearchParameterBuilder.createInstance();
-        builder.setUniqueID(generateUniqueId());
-        builder.setUserID(generateUserId());
-        builder.setQueryKey(query);
-        builder.setStartRow(startRow);
-        return builder.build();
+    private void handleOnSuccessLoadMoreShop(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage, int startRow) {
+        if (shopItemList.isEmpty()) {
+            handleEmptySearchResult();
+        } else {
+            if (performanceMonitoring != null) {
+                performanceMonitoring.stopTrace();
+            }
+            handleSearchResult(shopItemList, isHasNextPage, startRow);
+        }
+
+        stopLoadingAndHideRefreshLayout();
+    }
+
+    private void handleOnFailedLoadMoreShop(int startRow) {
+        if(adapter == null) return;
+
+        adapter.removeLoading();
+
+        NetworkErrorHelper.RetryClickedListener retryClickedListener = () -> loadMoreShop(startRow);
+
+        if (adapter.isListEmpty()) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), retryClickedListener).showRetrySnackbar();
+        }
+
+        stopLoadingAndHideRefreshLayout();
+    }
+
+    private void stopLoadingAndHideRefreshLayout() {
+        isLoadingData = false;
+        hideRefreshLayout();
+    }
+
+    private void generateLoadMoreParameter(int startRow) {
+        if(getSearchParameter() == null) return;
+
+        getSearchParameter().set(SearchApiConst.UNIQUE_ID, generateUniqueId());
+        getSearchParameter().set(SearchApiConst.USER_ID, generateUserId());
+        getSearchParameter().set(SearchApiConst.START, String.valueOf(startRow));
     }
 
     private String generateUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : null;
+        return userSession.isLoggedIn() ? userSession.getUserId() : "0";
     }
 
     private String generateUniqueId() {
@@ -263,6 +270,8 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private void handleSearchResult(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage, int startRow) {
+        isListEmpty = false;
+
         enrichPositionData(shopItemList, startRow);
         isNextPageAvailable = isHasNextPage;
         adapter.removeLoading();
@@ -287,14 +296,22 @@ public class ShopListFragment extends SearchSectionFragment
         isNextPageAvailable = false;
         adapter.removeLoading();
         if (adapter.isListEmpty()) {
-            adapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper(), getString(R.string.shop_tab_title).toLowerCase());
-            SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
+            isListEmpty = true;
+            adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), null, getString(R.string.shop_tab_title).toLowerCase());
+            SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
+        }
+    }
+
+    @Override
+    protected void refreshAdapterForEmptySearch() {
+        if (adapter != null && getSearchParameter() != null) {
+            adapter.showEmptyState(getActivity(), getSearchParameter().getSearchQuery(), isFilterActive(), null, getString(R.string.shop_tab_title).toLowerCase());
         }
     }
 
     @Override
     public String getScreenNameId() {
-        return AppScreen.SCREEN_SEARCH_PAGE_SHOP_TAB;
+        return SCREEN_SEARCH_PAGE_SHOP_TAB;
     }
 
     @Override
@@ -311,9 +328,11 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Override
     public void onItemClicked(ShopViewModel.ShopItem shopItem, int adapterPosition) {
+        if(getActivity() == null) return;
+
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopItem.getShopId());
         lastSelectedItemPosition = adapterPosition;
-        SearchTracking.eventSearchResultShopItemClick(getActivity(), query, shopItem.getShopName(),
+        SearchTracking.eventSearchResultShopItemClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
     }
@@ -321,7 +340,7 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void onFavoriteButtonClicked(ShopViewModel.ShopItem shopItem,
                                         int adapterPosition) {
-        SearchTracking.eventSearchResultFavoriteShopClick(getActivity(), query, shopItem.getShopName(),
+        SearchTracking.eventSearchResultFavoriteShopClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         presenter.handleFavoriteButtonClicked(shopItem, adapterPosition);
     }
@@ -338,7 +357,13 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Override
     public void onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
+    }
+
+    @Override
+    public List<Option> getSelectedFilterAsOptionList() {
+        return getOptionListFromFilterController();
     }
 
     @Override
@@ -400,7 +425,9 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Override
     public String getQueryKey() {
-        return query;
+        if(getSearchParameter() == null) return "";
+
+        return getSearchParameter().getSearchQuery();
     }
 
     @Override
@@ -460,7 +487,8 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void reloadData() {
         adapter.clearData();
-        loadShopFirstTime();
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE);
+        loadMoreShop(START_ROW_FIRST_TIME_LOAD);
     }
 
     @Override
@@ -482,7 +510,6 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(EXTRA_QUERY, query);
     }
 
     @Override
@@ -505,6 +532,11 @@ public class ShopListFragment extends SearchSectionFragment
         if (recyclerView != null) {
             recyclerView.smoothScrollToPosition(0);
         }
+    }
+
+    @Override
+    public SearchParameter getSearchParameter() {
+        return this.searchParameter;
     }
 
     @Override

@@ -62,7 +62,7 @@ public interface OrderListDetailContract {
 
         void setActionButtonsVisibility(int topBtnVisibility, int bottomBtnVisibility);
 
-        void setItems(List<Items> items);
+        void setItems(List<Items> items, boolean isTradeIn);
 
         Context getAppContext();
 

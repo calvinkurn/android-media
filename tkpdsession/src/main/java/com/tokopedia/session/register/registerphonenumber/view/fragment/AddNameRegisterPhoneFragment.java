@@ -31,6 +31,7 @@ import com.tokopedia.session.register.registerphonenumber.view.listener.AddNameL
 import com.tokopedia.session.register.registerphonenumber.view.presenter.AddNamePresenter;
 import com.tokopedia.session.register.registerphonenumber.view.viewmodel.LoginRegisterPhoneNumberModel;
 import com.tokopedia.session.register.view.util.ViewUtil;
+import com.tokopedia.track.TrackApp;
 
 import javax.inject.Inject;
 
@@ -197,9 +198,9 @@ public class AddNameRegisterPhoneFragment extends BaseDaggerFragment implements 
     public void onSuccessRegister(LoginRegisterPhoneNumberModel model) {
         dismissLoading();
         if(model.getMakeLoginDomain() != null) {
-            if(getContext().getApplicationContext() instanceof SessionRouter) {
-                ((SessionRouter) getContext().getApplicationContext()).sendAFCompleteRegistrationEvent(model.getMakeLoginDomain().getUserId(), LoginAnalytics.Label.PHONE_NUMBER);
-            }
+            TrackApp.getInstance().getAppsFlyer().sendAppsflyerRegisterEvent(
+                    String.valueOf(model.getMakeLoginDomain().getUserId()),
+                    LoginAnalytics.Label.PHONE_NUMBER);
         }
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();

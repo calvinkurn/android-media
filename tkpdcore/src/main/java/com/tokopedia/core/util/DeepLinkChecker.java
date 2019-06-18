@@ -9,9 +9,8 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -20,7 +19,6 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 
@@ -59,6 +57,9 @@ public class DeepLinkChecker {
     public static final int SALE = 22;
     public static final int WALLET_OVO = 23;
     public static final int PLAY = 24;
+    public static final int PROFILE = 25;
+    public static final int CONTENT = 26;
+    public static final int SMCREFERRAL = 27;
 
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
@@ -133,6 +134,12 @@ public class DeepLinkChecker {
                 return TOKOPOINT;
             else if (isWalletOvo(linkSegment))
                 return WALLET_OVO;
+            else if (isProfile(linkSegment))
+                return PROFILE;
+            else if (isContent(linkSegment))
+                return CONTENT;
+            else if (isSMCReferral(linkSegment))
+                return SMCREFERRAL;
             else return OTHER;
         } catch (Exception e) {
             e.printStackTrace();
@@ -244,7 +251,9 @@ public class DeepLinkChecker {
                 && !isEGold(linkSegment)
                 && !isMutualFund(linkSegment)
                 && !isWalletOvo(linkSegment)
-                && !isKycTerms(linkSegment);
+                && !isKycTerms(linkSegment)
+                && !isProfile(linkSegment)
+                && !isSMCReferral(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -259,7 +268,8 @@ public class DeepLinkChecker {
                 && !isEGold(linkSegment)
                 && !isMutualFund(linkSegment)
                 && !isMyBills(linkSegment)
-                && !linkSegment.get(0).equals("contact-us");
+                && !linkSegment.get(0).equals("contact-us")
+                && !isSMCReferral(linkSegment);
     }
 
     private static boolean isSearch(String url) {
@@ -280,6 +290,14 @@ public class DeepLinkChecker {
 
     private static boolean isWalletOvo(List<String> linkSegment) {
         return (linkSegment.get(0).equals("ovo"));
+    }
+
+    private static boolean isProfile(List<String> linkSegment) {
+        return (linkSegment.size() >= 2 && linkSegment.get(0).equals("people"));
+    }
+
+    private static boolean isSMCReferral(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("kupon-thr"));
     }
 
     private static boolean isKycTerms(List<String> linkSegment) {
@@ -357,18 +375,8 @@ public class DeepLinkChecker {
     }
 
     public static void openProduct(String url, Context context) {
-
         if (context != null) {
-            Bundle bundle = new Bundle();
-            if (getLinkSegment(url).size() > 1) {
-                bundle.putString("shop_domain", getLinkSegment(url).get(0));
-                bundle.putString("product_key", getLinkSegment(url).get(1));
-            }
-            bundle.putString("url", url);
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-            intent.putExtras(bundle);
-            intent.setData(Uri.parse(url));
-            context.startActivity(intent);
+            RouteManager.route(context, url);
         }
     }
 
@@ -398,6 +406,20 @@ public class DeepLinkChecker {
     public static void openTokoPoint(Context context, String url) {
         if (context.getApplicationContext() instanceof ILoyaltyRouter) {
             ((ILoyaltyRouter) context.getApplicationContext()).openTokoPoint(context, url);
+        }
+    }
+
+    public static void openProfile(Context context, String url) {
+        if (getLinkSegment(url).size() >= 2) {
+            String userId = getLinkSegment(url).get(1);
+            RouteManager.route(context, ApplinkConst.PROFILE.replace("{user_id}", userId));
+        }
+    }
+
+    public static void openContent(Context context, String url) {
+        if (getLinkSegment(url).size() >= 2) {
+            String contentId = getLinkSegment(url).get(1);
+            RouteManager.route(context, ApplinkConst.PROFILE, contentId);
         }
     }
 

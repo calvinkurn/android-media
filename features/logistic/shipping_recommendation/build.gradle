@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 project.ext {
@@ -34,7 +34,9 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.merchantVoucher)
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.debugToolsDependencies.chuck

@@ -30,6 +30,12 @@ public class CheckoutRequest implements Parcelable {
     @SerializedName("tokopedia_corner_data")
     @Expose
     public TokopediaCornerData cornerData;
+    @SerializedName("has_promo_stacking")
+    @Expose
+    public boolean hasPromoStacking;
+    @SerializedName("promo_codes")
+    @Expose
+    public ArrayList<String> promoCodes;
 
     public CheckoutRequest() {
     }
@@ -40,6 +46,8 @@ public class CheckoutRequest implements Parcelable {
         egoldData = in.readParcelable(EgoldData.class.getClassLoader());
         data = in.createTypedArrayList(DataCheckoutRequest.CREATOR);
         cornerData = in.readParcelable(TokopediaCornerData.class.getClassLoader());
+        hasPromoStacking = in.readByte() != 0;
+        promoCodes = in.createStringArrayList();
     }
 
     @Override
@@ -49,6 +57,8 @@ public class CheckoutRequest implements Parcelable {
         dest.writeParcelable(egoldData, flags);
         dest.writeTypedList(data);
         dest.writeParcelable(cornerData, flags);
+        dest.writeByte((byte) (hasPromoStacking ? 1 : 0));
+        dest.writeStringList(promoCodes);
     }
 
     @Override
@@ -87,6 +97,8 @@ public class CheckoutRequest implements Parcelable {
         data = builder.data;
         egoldData = builder.egoldData;
         cornerData = builder.cornerData;
+        hasPromoStacking = builder.hasPromoStacking;
+        promoCodes = builder.promoCodes;
     }
 
 
@@ -96,6 +108,8 @@ public class CheckoutRequest implements Parcelable {
         private EgoldData egoldData;
         private List<DataCheckoutRequest> data;
         private TokopediaCornerData cornerData;
+        private boolean hasPromoStacking;
+        private ArrayList<String> promoCodes;
 
         public Builder() {
         }
@@ -122,6 +136,16 @@ public class CheckoutRequest implements Parcelable {
 
         public Builder egoldData(EgoldData val) {
             egoldData = val;
+            return this;
+        }
+
+        public Builder hasPromoStacking(boolean val) {
+            hasPromoStacking = val;
+            return this;
+        }
+
+        public Builder promoCodes(ArrayList<String> val){
+            promoCodes = val;
             return this;
         }
 

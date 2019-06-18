@@ -74,4 +74,5 @@
     <string name="label_shop_status">Status Toko:</string>
     <string name="label_shop_inactive">Sudah Tidak Aktif</string>
     <string name="label_shop_close">Tutup</string>
+    <string name="search_autocomplete_hint">Cari di Tokopedia</string>
 </resources>

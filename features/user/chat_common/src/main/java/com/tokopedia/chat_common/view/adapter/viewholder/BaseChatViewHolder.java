@@ -101,6 +101,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         }
     }
 
+    @Override
     public void onViewRecycled() {
 
     }

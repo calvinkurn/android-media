@@ -14,10 +14,6 @@ public interface ITransactionOrderDetailRouter {
 
     Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload);
 
-    void sendEventTrackingOrderDetail(Map<String, Object> eventTracking);
-
-    void sendEventTracking(String event, String category, String action, String label);
-
     Intent getCartIntent(Activity activity);
 
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);

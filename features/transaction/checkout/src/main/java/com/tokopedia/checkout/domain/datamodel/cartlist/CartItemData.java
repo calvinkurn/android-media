@@ -22,6 +22,7 @@ public class CartItemData implements Parcelable {
     private String warningMessageDescription;
     private String errorMessageTitle;
     private String errorMessageDescription;
+    private boolean isDisableAllProducts;
 
     public boolean isSingleChild() {
         return singleChild;
@@ -111,6 +112,14 @@ public class CartItemData implements Parcelable {
         this.parentHasErrorOrWarning = parentHasError;
     }
 
+    public boolean isDisableAllProducts() {
+        return isDisableAllProducts;
+    }
+
+    public void setDisableAllProducts(boolean disableAllProducts) {
+        isDisableAllProducts = disableAllProducts;
+    }
+
     public static class OriginData implements Parcelable {
         public static final int CURRENCY_IDR = 1;
         public static final int CURRENCY_USD = 2;
@@ -159,6 +168,7 @@ public class CartItemData implements Parcelable {
         private String goldMerchantLogoUrl;
         private String officialStoreLogoUrl;
         private String preOrderInfo;
+        private String cartString;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -488,6 +498,14 @@ public class CartItemData implements Parcelable {
             isCod = cod;
         }
 
+        public String getCartString() {
+            return cartString;
+        }
+
+        public void setCartString(String cartString) {
+            this.cartString = cartString;
+        }
+
         public OriginData() {
         }
 
@@ -538,6 +556,7 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.goldMerchantLogoUrl);
             dest.writeString(this.officialStoreLogoUrl);
             dest.writeString(this.preOrderInfo);
+            dest.writeString(this.cartString);
         }
 
         protected OriginData(Parcel in) {
@@ -581,6 +600,7 @@ public class CartItemData implements Parcelable {
             this.goldMerchantLogoUrl = in.readString();
             this.officialStoreLogoUrl = in.readString();
             this.preOrderInfo = in.readString();
+            this.cartString = in.readString();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {
@@ -820,6 +840,7 @@ public class CartItemData implements Parcelable {
         dest.writeByte(this.parentHasErrorOrWarning ? (byte) 1 : (byte) 0);
         dest.writeString(this.warningMessageTitle);
         dest.writeString(this.errorMessageTitle);
+        dest.writeByte(this.isDisableAllProducts ? (byte) 1 : (byte) 0);
     }
 
     protected CartItemData(Parcel in) {
@@ -832,6 +853,7 @@ public class CartItemData implements Parcelable {
         this.parentHasErrorOrWarning = in.readByte() != 0;
         this.warningMessageTitle = in.readString();
         this.errorMessageTitle = in.readString();
+        this.isDisableAllProducts = in.readByte() != 0;
     }
 
     public static final Creator<CartItemData> CREATOR = new Creator<CartItemData>() {

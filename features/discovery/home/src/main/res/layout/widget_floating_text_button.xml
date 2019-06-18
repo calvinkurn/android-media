@@ -27,6 +27,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             android:visibility="gone"
+            android:layout_marginLeft="6dp"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <TextView

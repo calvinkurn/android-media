@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.navigation.presentation.adapter.viewholder.BaseViewHolder;
+
 import java.util.ArrayList;
 import java.util.List;
 

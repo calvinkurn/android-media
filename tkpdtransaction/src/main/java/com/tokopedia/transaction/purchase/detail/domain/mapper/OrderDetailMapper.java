@@ -115,6 +115,7 @@ public class OrderDetailMapper {
         viewData.setTotalPayment(responseData.getSummary().getTotalPrice());
         viewData.setTotalProtectionItem(responseData.getSummary().getTotalProtectionItem());
         viewData.setTotalProtectionFee(responseData.getSummary().getTotalProtectionFee());
+        viewData.setFulfillment(responseData.getSummary().getFulfillBy() == 1);
 
         if (responseData.getDetail().getInsurance() != null) {
             viewData.setShowInsuranceNotification(

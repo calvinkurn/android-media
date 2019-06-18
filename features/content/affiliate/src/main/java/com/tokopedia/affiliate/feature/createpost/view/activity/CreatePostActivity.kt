@@ -68,6 +68,12 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        this.intent = intent
+        inflateFragment()
+    }
+
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         if (intent.extras != null) {

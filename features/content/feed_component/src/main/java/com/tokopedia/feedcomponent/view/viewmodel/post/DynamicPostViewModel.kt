@@ -1,10 +1,7 @@
 package com.tokopedia.feedcomponent.view.viewmodel.post
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Caption
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Footer
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Header
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Title
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.data.pojo.template.Template
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 
@@ -15,6 +12,7 @@ data class DynamicPostViewModel(
         val id: Int = 0,
         val title: Title = Title(),
         val header: Header = Header(),
+        val postTag: PostTag = PostTag(),
         val footer: Footer = Footer(),
         val caption: Caption = Caption(),
         var contentList: MutableList<BasePostViewModel> = ArrayList(),

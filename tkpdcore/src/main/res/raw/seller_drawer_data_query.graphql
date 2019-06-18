@@ -34,10 +34,10 @@ query SellerDrawerData($userID: Int!) {
     profile_picture
     completion
   }
-   balance {
-      buyer_usable
-      seller_usable
-   }
+  balance {
+    buyer_usable
+    seller_usable
+  }
   notifications {
     total_cart
     total_notif

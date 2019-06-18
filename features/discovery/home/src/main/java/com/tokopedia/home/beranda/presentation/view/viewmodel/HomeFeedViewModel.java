@@ -25,6 +25,10 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
     private String recommendationType;
     private String imageUrl;
     private String price;
+    private String slashedPrice;
+    private int discountPercentage;
+    private final int rating;
+    private final int countReview;
     private String clickUrl;
     private String trackerImageUrl;
     private int priceNumber;
@@ -36,8 +40,12 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
                              String recommendationType,
                              String imageUrl,
                              String price,
+                             int rating,
+                             int countReview,
                              String clickUrl,
                              String trackerImageUrl,
+                             String slashedPrice,
+                             int discountPercentage,
                              int priceNumber,
                              boolean isTopAds,
                              int position) {
@@ -47,8 +55,12 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
         this.recommendationType = recommendationType;
         this.imageUrl = imageUrl;
         this.price = price;
+        this.rating = rating;
+        this.countReview = countReview;
         this.clickUrl = clickUrl;
         this.trackerImageUrl = trackerImageUrl;
+        this.slashedPrice = slashedPrice;
+        this.discountPercentage = discountPercentage;
         this.priceNumber = priceNumber;
         this.isTopAds = isTopAds;
         this.position = position;
@@ -108,6 +120,22 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
 
     public boolean isTopAds() {
         return isTopAds;
+    }
+
+    public String getSlashedPrice() {
+        return slashedPrice;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public int getCountReview() {
+        return countReview;
     }
 
     @Override

@@ -1,15 +1,18 @@
 package com.tokopedia.product.manage.item.main.base.view.activity
 
+import android.content.Context
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
+import com.tokopedia.core.analytics.nishikino.model.EventTracking
 import com.tokopedia.core.app.TkpdCoreRouter
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter
+import com.tokopedia.track.TrackApp
 
 abstract class BaseProductAddEditActivity : BaseSimpleActivity(), HasComponent<ProductComponent> {
 
@@ -32,7 +35,7 @@ abstract class BaseProductAddEditActivity : BaseSimpleActivity(), HasComponent<P
             alertDialogBuilder.setNeutralButton(getString(R.string.product_draft_save_as_draft), object : DialogInterface.OnClickListener {
                 override fun onClick(dialog: DialogInterface, which: Int) {
                     val doSave = saveProductToDraft()
-                    UnifyTracking.eventClickAddProduct(this@BaseProductAddEditActivity, AppEventTracking.Category.ADD_PRODUCT,
+                    eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
                             AppEventTracking.EventLabel.SAVE_DRAFT)
                     if (!doSave) {
                         backPressedHandleTaskRoot()
@@ -44,6 +47,15 @@ abstract class BaseProductAddEditActivity : BaseSimpleActivity(), HasComponent<P
         } else {
             backPressedHandleTaskRoot()
         }
+    }
+
+    fun eventClickAddProduct(eventCategory: String, eventLabel: String) {
+        TrackApp.getInstance()!!.gtm.sendGeneralEvent(EventTracking(
+            AppEventTracking.Event.CLICK_ADD_PRODUCT,
+            eventCategory,
+            AppEventTracking.Action.CLICK,
+            eventLabel
+        ).event)
     }
 
     private fun showDialogSaveDraftOnBack(): Boolean {

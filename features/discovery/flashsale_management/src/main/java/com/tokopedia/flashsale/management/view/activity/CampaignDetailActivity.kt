@@ -41,7 +41,7 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
-        flashSaleTracking = FlashSaleTracking(application as AbstractionRouter)
+        flashSaleTracking = FlashSaleTracking()
         loadSellerStatus()
         campaignName?.let {
             title = it

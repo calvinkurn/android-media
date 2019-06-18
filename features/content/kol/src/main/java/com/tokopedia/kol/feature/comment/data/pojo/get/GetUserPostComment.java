@@ -4,22 +4,26 @@ package com.tokopedia.kol.feature.comment.data.pojo.get;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GetUserPostComment {
 
     @SerializedName("postKol")
     @Expose
-    private PostKol postKol;
+    private PostKol postKol = new PostKol();
     @SerializedName("comments")
     @Expose
-    private List<Comment> comments = null;
+    private List<Comment> comments = new ArrayList<>();
     @SerializedName("lastCursor")
     @Expose
-    private String lastCursor;
+    private String lastCursor = "";
     @SerializedName("error")
     @Expose
-    private String error;
+    private String error = "";
+
+    public GetUserPostComment() {
+    }
 
     public GetUserPostComment(PostKol postKol, List<Comment> comments, String lastCursor, String
             error) {

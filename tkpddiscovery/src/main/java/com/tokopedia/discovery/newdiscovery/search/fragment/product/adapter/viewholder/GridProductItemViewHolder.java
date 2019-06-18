@@ -21,7 +21,6 @@ import com.tokopedia.tkpdpdp.customview.RatingView;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.Category;
 import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
@@ -47,7 +46,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     private ImageView rating;
     private TextView reviewCount;
     private LinearLayout ratingReviewContainer;
-    private ProductListener itemClickListener;
+    private ProductListener productListener;
     protected Context context;
     private TextView topLabel;
     private TextView bottomLabel;
@@ -55,7 +54,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     private String searchQuery;
     private RelativeLayout topadsIcon;
 
-    public GridProductItemViewHolder(View itemView, ProductListener itemClickListener, String searchQuery) {
+    public GridProductItemViewHolder(View itemView, ProductListener productListener, String searchQuery) {
         super(itemView);
         this.searchQuery = searchQuery;
         productImage = itemView.findViewById(R.id.product_image);
@@ -74,7 +73,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         newLabel = itemView.findViewById(R.id.new_label);
         topadsIcon = itemView.findViewById(R.id.topads_icon);
         context = itemView.getContext();
-        this.itemClickListener = itemClickListener;
+        this.productListener = productListener;
     }
 
     @Override
@@ -115,15 +114,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         productImage.setViewHintListener(productItem, new ImpressedImageView.ViewHintListener() {
             @Override
             public void onViewHint() {
-                if (productItem.isTopAds()) {
-                    new ImpresionTask().execute(productItem.getTopadsImpressionUrl());
-                    Product product = new Product();
-                    product.setId(productItem.getProductID());
-                    product.setName(productItem.getProductName());
-                    product.setPriceFormat(productItem.getPrice());
-                    product.setCategory(new Category(productItem.getCategoryID()));
-                    TopAdsGtmTracker.eventSearchResultProductView(context, searchQuery, product, getAdapterPosition());
-                }
+                productListener.onProductImpressed(productItem, getAdapterPosition());
             }
         });
         wishlistButtonContainer.setVisibility(View.VISIBLE);
@@ -141,7 +132,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             @Override
             public void onClick(View v) {
                 if (productItem.isWishlistButtonEnabled()) {
-                    itemClickListener.onWishlistButtonClicked(productItem);
+                    productListener.onWishlistButtonClicked(productItem);
                 }
             }
         });
@@ -149,7 +140,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         container.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                itemClickListener.onLongClick(productItem, getAdapterPosition());
+                productListener.onLongClick(productItem, getAdapterPosition());
                 return true;
             }
         });
@@ -157,7 +148,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClickListener.onItemClicked(productItem, getAdapterPosition());
+                productListener.onItemClicked(productItem, getAdapterPosition());
             }
         });
 

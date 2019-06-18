@@ -1,40 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="2dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:layout_marginLeft="@dimen/dp_8"
+    android:layout_marginRight="@dimen/dp_8"
+    android:paddingTop="@dimen/dp_4"
+    android:paddingBottom="@dimen/dp_4"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_simple_item"
-        style="@style/TextView.Small.BlackPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingStart="@dimen/dp_16"
-        tools:text="Durian Soup + Ice Cream for 2 persons on Weekdays…" />
+    <android.support.v7.widget.CardView
+        android:id="@+id/iv_product"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_72"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_4"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardElevation="@dimen/dp_0"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_brand"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/bg_shimmer_home_bg"
+            android:scaleType="centerCrop" />
+
+    </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/tv_brand_name"
-        style="@style/TextView.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
         android:lineSpacingExtra="2sp"
         android:paddingEnd="@dimen/dp_16"
-        android:paddingStart="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_4"
+        android:paddingLeft="@dimen/dp_4"
         android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/iv_product"
         tools:text="Hong Tang" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:background="@color/divider_color" />
+    <TextView
+        android:id="@+id/tv_simple_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/clr_f531353b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/iv_product"
+        app:layout_constraintTop_toBottomOf="@+id/tv_brand_name"
+        tools:text="Durian Soupyfyufjvgvjkuvgfuyyyyyyyy" />
 
-</LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_sales_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/clr_f531353b"
+        tools:text="Rp25.000"
+        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_marginBottom="@dimen/dp_8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/iv_product"
+        app:layout_constraintTop_toBottomOf="@+id/tv_simple_item"
+        />
+
+    <TextView
+        android:id="@+id/mrp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/clr_ae31353b"
+        tools:text=" Rp50.000"
+        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/dp_8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/tv_sales_price"
+        app:layout_constraintTop_toBottomOf="@+id/tv_simple_item"
+        />
+
+    <TextView
+        android:id="@+id/tv_off"
+        style="@style/TextView.Micro11.Bold.Red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:background="@drawable/background_lightgreen_oval"
+        android:gravity="center"
+        android:paddingBottom="@dimen/dp_2"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_2"
+        android:textColor="@color/colorRed"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_simple_item"
+        tools:text="20% OFF" />
+
+</android.support.constraint.ConstraintLayout>

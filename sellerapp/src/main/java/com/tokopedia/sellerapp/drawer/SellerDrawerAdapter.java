@@ -113,7 +113,7 @@ public class SellerDrawerAdapter extends DrawerAdapter {
                 if (items.get(i).id == TkpdState.DrawerPosition.SELLER_TOP_ADS &&
                         items.get(i + 1).id != TkpdState.DrawerPosition.SELLER_FLASH_SALE) {
                     items.add(i + 1, new DrawerItem(context.getString(R.string.drawer_title_flash_sale),
-                            R.drawable.ic_flash_sale,
+                            R.drawable.ic_flash_sale_grey,
                             TkpdState.DrawerPosition.SELLER_FLASH_SALE,
                             true));
                     break;

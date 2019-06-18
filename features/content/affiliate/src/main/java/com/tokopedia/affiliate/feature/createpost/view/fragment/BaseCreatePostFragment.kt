@@ -3,7 +3,6 @@ package com.tokopedia.affiliate.feature.createpost.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.TaskStackBuilder
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -24,20 +23,20 @@ import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity
+import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostVideoPickerActivity
 import com.tokopedia.affiliate.feature.createpost.view.activity.MediaPreviewActivity
 import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
 import com.tokopedia.affiliate.feature.createpost.view.service.SubmitPostService
-import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
-import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
-import com.tokopedia.affiliate.feature.createpost.view.viewmodel.RelatedProductItem
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videorecorder.main.VideoPickerActivity.Companion.VIDEOS_RESULT
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -67,6 +66,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val PARAM_USER_ID = "{user_id}"
         private const val PRODUCT_ID_QUERY_PARAM = "?product_id="
         private const val REQUEST_IMAGE_PICKER = 1234
+        private const val REQUEST_VIDEO_PICKER = 1235
         private const val REQUEST_PREVIEW = 13
         private const val REQUEST_LOGIN = 83
         private const val MAX_CHAR = 2000
@@ -85,7 +85,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun onStart() {
         super.onStart()
-        affiliateAnalytics.analyticTracker.sendScreen(activity, screenName)
+        affiliateAnalytics.analyticTracker.sendScreenAuthenticated(screenName)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -123,14 +123,31 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         when (requestCode) {
             REQUEST_IMAGE_PICKER -> if (resultCode == Activity.RESULT_OK) {
                 val imageList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS) ?: arrayListOf()
+                val images = imageList.map { MediaModel(it, MediaType.IMAGE) }
+
                 viewModel.fileImageList.clear()
-                viewModel.fileImageList.addAll(imageList)
+                viewModel.fileImageList.addAll(images)
 
                 if (imageList.isNotEmpty()) {
                     viewModel.urlImageList.clear()
                 }
 
                 updateThumbnail()
+                updateButton()
+            }
+            REQUEST_VIDEO_PICKER -> if (resultCode == Activity.RESULT_OK) {
+                val videoList = data?.getStringArrayListExtra(VIDEOS_RESULT) ?: arrayListOf()
+                val videos = videoList.map { MediaModel(it, MediaType.VIDEO) }
+
+                viewModel.fileImageList.clear()
+                viewModel.fileImageList.addAll(videos)
+
+                if (videoList.isNotEmpty()) {
+                    viewModel.urlImageList.clear()
+                }
+
+                updateThumbnail()
+                updateButton()
             }
             REQUEST_PREVIEW -> if (resultCode == Activity.RESULT_OK) {
                 val resultViewModel = data?.getParcelableExtra<CreatePostViewModel>(
@@ -170,7 +187,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         if (feedContentForm.media.media.isNotEmpty() && viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.clear()
             feedContentForm.media.media.forEach {
-                viewModel.urlImageList.add(it.mediaUrl)
+                viewModel.urlImageList.add(MediaModel(it.mediaUrl, MediaType.IMAGE))
             }
         }
 
@@ -191,6 +208,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
         updateMedia()
         updateThumbnail()
+        updateAddTagText()
+        updateButton()
         updateHeader(feedContentForm.authors)
     }
 
@@ -200,31 +219,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onErrorNotAffiliate() {
-        activity?.let {
-            val taskStackBuilder = TaskStackBuilder.create(it)
-
-            val onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING + PRODUCT_ID_QUERY_PARAM + viewModel.productIdList.firstOrNull()
-            val onboardingIntent = RouteManager.getIntent(it, onboardingApplink)
-            onboardingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            taskStackBuilder.addNextIntent(onboardingIntent)
-
-            val educationIntent = RouteManager.getIntent(
-                    it,
-                    ApplinkConst.AFFILIATE_EDUCATION)
-            taskStackBuilder.addNextIntent(educationIntent)
-
-            taskStackBuilder.startActivities()
-            it.finish()
-        }
-    }
-
     override fun onErrorNoQuota() {
         activity?.let {
             Toast.makeText(it, R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
                     .show()
             it.finish()
-            affiliateAnalytics.onJatahRekomendasiHabisPdp()
+            affiliateAnalytics.onJatahRekomendasiHabisDialogShow()
         }
     }
 
@@ -233,21 +233,32 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     override fun onItemDeleted(position: Int) {
-        val relatedProductItem = viewModel.relatedProducts[position]
+        val relatedProductItem = viewModel.relatedProducts.getOrNull(position) ?: return
 
         viewModel.relatedProducts.removeAt(position)
         adapter.notifyItemRemoved(position)
 
-        if (isTypeAffiliate()) {
-            viewModel.adIdList.removeAll { it == relatedProductItem.id }
+        if (viewModel.urlImageList.getOrNull(position)?.path == relatedProductItem.image) {
+            viewModel.urlImageList.removeAt(position)
         } else {
-            viewModel.productIdList.removeAll { it == relatedProductItem.id }
+            viewModel.urlImageList.removeFirst { it.path == relatedProductItem.image }
         }
 
-        viewModel.urlImageList.removeAll { it == relatedProductItem.image }
+        val idPosition = if (isTypeAffiliate()) {
+            viewModel.adIdList.indexOf(relatedProductItem.id)
+        } else {
+            viewModel.productIdList.indexOf(relatedProductItem.id)
+        }
+        if (idPosition != -1 && viewModel.adIdList.size > idPosition) {
+            viewModel.adIdList.removeAt(idPosition)
+        }
+        if (idPosition != -1 && viewModel.productIdList.size > idPosition) {
+            viewModel.productIdList.removeAt(idPosition)
+        }
 
         updateThumbnail()
         updateAddTagText()
+        updateButton()
     }
 
     abstract fun fetchContentForm()
@@ -281,8 +292,15 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 .toMutableList()
                 .apply { removeAll { it.trim() == "" } }
 
-        viewModel.productIdList.addAll(productIds)
-        viewModel.adIdList.addAll(adIds)
+        if (!isDuplicateFound(productIds, adIds)) {
+            viewModel.productIdList.addAll(productIds)
+            viewModel.adIdList.addAll(adIds)
+        } else {
+            view?.showErrorToaster(
+                    getString(R.string.af_duplicate_product),
+                    getString(R.string.af_title_ok)
+            ) { }
+        }
 
         updateAddTagText()
     }
@@ -292,7 +310,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             val numberOfProducts = if (isTypeAffiliate()) viewModel.adIdList.size else
                 viewModel.productIdList.size
             if (numberOfProducts < viewModel.maxProduct) {
-                relatedAddBtn.setOnClickListener { onRelatedAddProductClick() }
+                relatedAddBtn.setOnClickListener {
+                    onRelatedAddProductClick()
+                    affiliateAnalytics.onTambahTagButtonClicked()
+                }
                 relatedAddBtn.setTextColor(MethodChecker.getColor(it, R.color.medium_green))
             } else {
                 relatedAddBtn.setOnClickListener { }
@@ -332,13 +353,21 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         relatedProductRv.setHasFixedSize(true)
         doneBtn.setOnClickListener {
             saveDraftAndSubmit()
+            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList)
         }
         addImageBtn.setOnClickListener {
             goToImagePicker()
+            affiliateAnalytics.onTambahGambarButtonClicked()
+        }
+        addVideoBtn.setOnClickListener {
+            affiliateAnalytics.onTambahVideoButtonClicked()
         }
         caption.afterTextChanged {
             viewModel.caption = it
             updateMaxCharacter()
+        }
+        addVideoBtn.setOnClickListener {
+            goToVideoPicker()
         }
         caption.setOnTouchListener { v, event ->
             if (v.id == R.id.caption) {
@@ -359,8 +388,23 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateAddTagText()
     }
 
+    private fun updateMaxCharacter() {
+        maxCharacter.text = String.format(Locale.GERMAN, "%,d/%,d",
+                viewModel.caption.length,
+                MAX_CHAR
+        )
+    }
+
+    private fun goToVideoPicker() {
+        activity?.let {
+            startActivityForResult(
+                    CreatePostVideoPickerActivity.getInstance(it,
+                            viewModel.fileImageList.isNotEmpty()),
+                    REQUEST_VIDEO_PICKER)
+        }
+    }
+
     private fun goToImagePicker() {
-        affiliateAnalytics.onTambahGambarButtonClicked(viewModel.productIdList.firstOrNull())
         activity?.let {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
@@ -400,31 +444,19 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-
-    private fun saveDraftAndSubmit() {
-        affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList.firstOrNull())
-
-        if (isFormInvalid()) {
-            return
-        }
-
-        activity?.let {
-            showLoading()
-
-            val cacheManager = PersistentCacheManager(it, true)
-            cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
-
-            SubmitPostService.startService(it, cacheManager.id!!)
-
-            hideLoading()
-
-            if (isTypeAffiliate()) {
-                goToProfile()
-            } else {
-                goToFeed()
+    private fun isDuplicateFound(productIds: MutableList<String>,
+                                 adIds: MutableList<String>): Boolean {
+        viewModel.productIdList.forEach { productId ->
+            if (productIds.any { productId == it }) {
+                return true
             }
-            it.finish()
         }
+        viewModel.adIdList.forEach { adId ->
+            if (adIds.any { adId == it }) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun isFormInvalid(): Boolean {
@@ -448,41 +480,58 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         return isFormInvalid
     }
 
+    private fun saveDraftAndSubmit() {
+        if (isFormInvalid()) {
+            return
+        }
+
+        activity?.let {
+            showLoading()
+
+            val cacheManager = PersistentCacheManager(it, true)
+            cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
+
+            SubmitPostService.startService(it, cacheManager.id!!)
+
+            hideLoading()
+
+            if (isTypeAffiliate()) {
+                goToProfile()
+            } else {
+                goToFeed()
+            }
+            it.finish()
+        }
+    }
+
     private fun updateMedia() {
-        val shouldShowVideo = viewModel.allowVideo && false
         addImageBtn.showWithCondition(viewModel.allowImage)
-        addVideoBtn.showWithCondition(shouldShowVideo)
-        separatorMedia.showWithCondition(viewModel.allowImage || shouldShowVideo)
+        addVideoBtn.showWithCondition(viewModel.allowVideo)
+        separatorMedia.showWithCondition(viewModel.allowImage || viewModel.allowVideo)
     }
 
     private fun updateThumbnail() {
         if (viewModel.completeImageList.isNotEmpty()) {
-            thumbnail.loadImageRounded(viewModel.completeImageList.first(), 25f)
+            thumbnail.loadImageRounded(viewModel.completeImageList.first().path, 25f)
+            btnPlay.showWithCondition(viewModel.completeImageList.first().type == MediaType.VIDEO)
             edit.show()
-            thumbnail.setOnClickListener {
-                goToMediaPreview()
-            }
             carouselIcon.setOnClickListener {
                 goToMediaPreview()
             }
             edit.setOnClickListener {
                 goToMediaPreview()
             }
+            thumbnail.setOnClickListener {
+                goToMediaPreview()
+            }
         } else {
-            thumbnail.loadDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
+            thumbnail.loadImageDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
             edit.hide()
             thumbnail.setOnClickListener { }
             carouselIcon.setOnClickListener { }
             edit.setOnClickListener { }
         }
         carouselIcon.showWithCondition(viewModel.completeImageList.size > 1)
-    }
-
-    private fun updateMaxCharacter() {
-        maxCharacter.text = String.format(Locale.GERMAN, "%,d/%,d",
-                viewModel.caption.length,
-                MAX_CHAR
-        )
     }
 
     private fun updateHeader(authors: List<Author>) {
@@ -494,6 +543,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
             ))
         }
+    }
+
+    private fun updateButton() {
+        val isButtonEnabled = viewModel.completeImageList.isNotEmpty()
+                && viewModel.relatedProducts.isNotEmpty()
+                && (viewModel.adIdList.isNotEmpty() || viewModel.productIdList.isNotEmpty())
+        doneBtn.isEnabled = isButtonEnabled
     }
 
     private fun updateRelatedProduct() {

@@ -17,6 +17,7 @@ public class CheckoutDigitalData implements Parcelable, TopPayBaseModel {
     private String redirectUrl;
     private String transactionId;
     private String stringQuery;
+    private String thanksUrl;
 
     public String getSuccessCallbackUrl() {
         return successCallbackUrl;
@@ -58,6 +59,9 @@ public class CheckoutDigitalData implements Parcelable, TopPayBaseModel {
         this.stringQuery = stringQuery;
     }
 
+    public void setThanksUrl(String thanksUrl) {
+        this.thanksUrl = thanksUrl;
+    }
 
     @Override
     public int describeContents() {
@@ -71,6 +75,7 @@ public class CheckoutDigitalData implements Parcelable, TopPayBaseModel {
         dest.writeString(this.redirectUrl);
         dest.writeString(this.transactionId);
         dest.writeString(this.stringQuery);
+        dest.writeString(this.thanksUrl);
     }
 
     public CheckoutDigitalData() {
@@ -82,6 +87,7 @@ public class CheckoutDigitalData implements Parcelable, TopPayBaseModel {
         this.redirectUrl = in.readString();
         this.transactionId = in.readString();
         this.stringQuery = in.readString();
+        this.thanksUrl = in.readString();
     }
 
     public static final Parcelable.Creator<CheckoutDigitalData> CREATOR =
@@ -120,5 +126,9 @@ public class CheckoutDigitalData implements Parcelable, TopPayBaseModel {
     @Override
     public String getTransactionIdToPass() {
         return transactionId;
+    }
+
+    public String getThanksUrl() {
+        return thanksUrl;
     }
 }

@@ -38,6 +38,10 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by m.normansyah on 11/12/2015.
@@ -111,7 +115,7 @@ public class DialogLogoutFragment extends DialogFragment {
                                         // clear etalase
                                         Router.clearEtalase(getActivity());
                                         DbManagerImpl.getInstance().removeAllEtalase();
-                                        TrackingUtils.eventMoEngageLogoutUser(getActivity());
+                                        TrackApp.getInstance().getMoEngage().logoutEvent();
                                         SessionHandler.clearUserData(activity);
                                         NotificationModHandler notif = new NotificationModHandler(activity);
                                         notif.dismissAllActivedNotifications();

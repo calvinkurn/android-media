@@ -412,6 +412,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
+                view.sendTrackingOnCheckDigitalVoucherError(e.getMessage());
                 if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
                     couponData.setErrorMessage(e.getMessage());
                     view.couponError();
@@ -423,6 +424,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             @Override
             public void onNext(CouponViewModel couponViewModel) {
                 view.receiveDigitalResult(couponViewModel);
+                view.sendTrackingOnCheckDigitalVoucherSuccess(couponViewModel.getCode());
                 view.hideProgressLoading();
             }
         };

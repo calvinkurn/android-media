@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.createpost.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import com.google.gson.Gson
@@ -55,7 +56,8 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
         localCacheHandler.applyEditor()
         isAddingProduct = true
 
-        RouteManager.route(context, ApplinkConst.AFFILIATE_EXPLORE)
+        val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_EXPLORE)
+        startActivity(intent)
     }
 
     override fun initVar(savedInstanceState: Bundle?) {

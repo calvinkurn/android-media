@@ -98,7 +98,7 @@ public class AddNameRegisterPhoneActivity extends BasePresenterActivity implemen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        analytics = RegisterAnalytics.initAnalytics(this);
+        analytics = RegisterAnalytics.initAnalytics();
     }
 
     @Override

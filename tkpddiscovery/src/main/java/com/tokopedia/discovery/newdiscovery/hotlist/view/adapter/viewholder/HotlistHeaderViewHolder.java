@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -29,6 +30,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.track.TrackApp;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -131,12 +133,12 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         hotlistPromoView.renderData(hotlistPromo, new HotlistPromoView.CallbackListener() {
             @Override
             public void onTncButtonClick(String titlePromo, String voucherCode) {
-                TrackingUtils.clickTnCButtonHotlistPromo(hotlistPromoView.getContext(),hotlistTitle, titlePromo, voucherCode);
+                HotlistPageTracking.clickTnCButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
             }
 
             @Override
             public void onCopyButtonClick(String titlePromo, String voucherCode) {
-                TrackingUtils.clickCopyButtonHotlistPromo(hotlistPromoView.getContext(),hotlistTitle, titlePromo, voucherCode);
+                HotlistPageTracking.clickCopyButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
             }
         });
         HotlistPageTracking.eventHotlistPromoImpression(hotlistPromoView.getContext(), hotlistTitle, hotlistPromo.getTitle(), hotlistPromo.getVoucherCode());

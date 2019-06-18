@@ -32,8 +32,8 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
-    LoginRegisterAnalytics provideLoginAnalytics(@ApplicationContext Context context) {
-        return new LoginRegisterAnalytics(((AbstractionRouter) context).getAnalyticTracker());
+    LoginRegisterAnalytics provideLoginAnalytics() {
+        return new LoginRegisterAnalytics();
     }
 
     @LoginRegisterScope

@@ -23,10 +23,6 @@ class SendTrackQueueService : Service(), CoroutineScope {
         TrackingRepository(this)
     }
 
-    private val trackingOptimizerRouter: TrackingOptimizerRouter? by lazy {
-        this.application as? TrackingOptimizerRouter
-    }
-
     val handler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, ex ->
             decreaseCounter()
@@ -65,7 +61,7 @@ class SendTrackQueueService : Service(), CoroutineScope {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        sendTrack(this, trackingRepository, trackingOptimizerRouter) {
+        sendTrack(this, trackingRepository) {
             stopSelf()
         }
         return Service.START_NOT_STICKY

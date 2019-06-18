@@ -103,19 +103,6 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
     }
 
     @Override
-    public void onSuggestionSuccess(GetSuggestionResponse s) {
-//        setSuggestionBidText(s);
-//        detailAd.setSuggestionBidValue(suggestionBidValue);
-//        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED);
-//        defaultSuggestionBidButtonStatus = TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED;
-    }
-
-    @Override
-    public void onSuggestionError(@Nullable Throwable t) {
-        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.NO_SUGGESTION);
-    }
-
-    @Override
     public void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo) {
         setSuggestionBidText(bidInfo.getData().get(0));
         detailAd.setSuggestionBidValue(suggestionBidValue);

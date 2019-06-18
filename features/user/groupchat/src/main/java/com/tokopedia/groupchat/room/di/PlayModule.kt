@@ -2,8 +2,6 @@ package com.tokopedia.groupchat.room.di
 
 import android.content.Context
 import com.readystatesoftware.chuck.ChuckInterceptor
-import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
@@ -30,12 +28,6 @@ import retrofit2.Retrofit
 @PlayScope
 @Module
 class PlayModule {
-
-    @PlayScope
-    @Provides
-    fun provideAnalyticTracker(@ApplicationContext context : Context): AnalyticTracker {
-        return (context as AbstractionRouter).analyticTracker
-    }
 
     @PlayScope
     @Provides

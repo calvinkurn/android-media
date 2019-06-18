@@ -99,13 +99,13 @@ public class DashboardFragment
 
     @Override
     protected String getScreenName() {
-        return AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE;
+        return AffiliateEventTracking.Screen.BYME_EXPLORE;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+        affiliateAnalytics.getAnalyticTracker().sendScreenAuthenticated(getScreenName());
     }
 
     @Nullable

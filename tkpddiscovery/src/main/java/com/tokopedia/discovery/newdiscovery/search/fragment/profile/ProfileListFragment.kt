@@ -10,20 +10,22 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.core.discovery.model.Option
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener
 import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.EmptySearchProfileModel
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.adapter.ProfileListTypeFactoryImpl
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.listener.FollowActionListener
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.listener.ProfileListListener
+import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.EmptySearchProfileModel
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.ProfileListViewModel
-
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.ProfileViewModel
 import com.tokopedia.discovery.newdiscovery.search.fragment.profile.viewmodel.TotalSearchCountViewModel
 import com.tokopedia.profile.di.DaggerProfileListComponent
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import java.text.DecimalFormat
 import javax.inject.Inject
@@ -45,6 +47,8 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     lateinit var redirectionListener: RedirectionListener
 
+    lateinit var trackingQueue: TrackingQueue
+
     var totalProfileCount : Int = Integer.MAX_VALUE
 
     var isHasNextPage : Boolean = isLoadMoreEnabledByDefault
@@ -55,9 +59,6 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (savedInstanceState == null) {
-            onSwipeRefresh()
-        }
         if (userVisibleHint && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
         }
@@ -65,6 +66,9 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
+        if(isVisibleToUser) {
+            onSwipeRefresh()
+        }
         if (isVisibleToUser && view != null && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
         }
@@ -72,10 +76,13 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.run {
+            trackingQueue = TrackingQueue(activity!!)
+        }
         if (savedInstanceState != null) {
             loadDataFromSavedState(savedInstanceState)
-        } else {
-            loadDataFromArguments()
+        } else if (arguments != null) {
+            loadDataFromSavedState(arguments!!)
         }
     }
 
@@ -83,13 +90,22 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         return inflater.inflate(R.layout.fragment_profile_list, container, false)
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (::trackingQueue.isInitialized) {
+            trackingQueue.sendAll()
+        }
+    }
+
     override fun onSuccessGetProfileListData(profileListViewModel : ProfileListViewModel) {
         if (profileListViewModel.getListTrackingObject().isNotEmpty()) {
-            SearchTracking.eventUserImpressionProfileResultInTabProfile(
-                    context,
-                    profileListViewModel.getListTrackingObject(),
-                    query
-            )
+            if (::trackingQueue.isInitialized) {
+                SearchTracking.eventUserImpressionProfileResultInTabProfile(
+                        trackingQueue,
+                        profileListViewModel.getListTrackingObject(),
+                        query
+                )
+            }
         }
 
         totalProfileCount = profileListViewModel.totalSearchCount
@@ -137,7 +153,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun getScreenName(): String {
-        return "name"
+        return SCREEN_SEARCH_PAGE_PROFILE_TAB
     }
 
     override fun initInjector() {
@@ -162,7 +178,9 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun onErrorToggleFollow(adapterPosition: Int, errorMessage: String) {
-        NetworkErrorHelper.showSnackbar(activity)
+        activity?.run {
+            NetworkErrorHelper.showSnackbar(activity)
+        }
     }
 
     override fun attachNavigationListener(searchNavigationListener: SearchNavigationListener) {
@@ -198,6 +216,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
 
     companion object {
         private val EXTRA_QUERY = "EXTRA_QUERY"
+        private const val SCREEN_SEARCH_PAGE_PROFILE_TAB = "Search result - Profile tab"
 
         fun newInstance(query: String,
                         searchhNavigationListener: SearchNavigationListener,
@@ -213,7 +232,7 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     private fun loadDataFromArguments() {
-        query = arguments!!.getString(EXTRA_QUERY)?:""
+        query = arguments!!.getString(EXTRA_QUERY) ?: ""
     }
 
     private fun loadDataFromSavedState(savedInstanceState: Bundle) {
@@ -226,11 +245,17 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
-        return createProfileEmptySearchModel(
-                context!!,
-                query,
-                getString(R.string.title_profile)
-        )
+        SearchTracking.eventSearchNoResult(activity, query, screenName, mapOf())
+
+        activity?.run {
+            return createProfileEmptySearchModel(
+                    activity!!,
+                    query,
+                    getString(R.string.title_profile)
+            )
+        }
+
+        return EmptySearchProfileModel()
     }
 
     private fun createProfileEmptySearchModel(context: Context, query: String, sectionTitle: String): EmptySearchProfileModel {
@@ -251,21 +276,30 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         hideLoading()
 
         if (!adapter.isContainData) {
-            NetworkErrorHelper.showEmptyState(activity, view) { loadData(nextPage) }
+            activity?.run {
+                NetworkErrorHelper.showEmptyState(activity, view) { loadData(nextPage) }
+            }
         } else {
-            NetworkErrorHelper.createSnackbarWithAction(activity) { loadData(nextPage) }.showRetrySnackbar()
+            activity?.run {
+                NetworkErrorHelper.createSnackbarWithAction(activity) { loadData(nextPage) }.showRetrySnackbar()
+            }
         }
     }
 
     override fun onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(context, screenName)
         redirectionListener.showSearchInputView()
+    }
+
+    override fun getSelectedFilterAsOptionList(): MutableList<Option>? {
+        return null
     }
 
     override fun onBannerAdsClicked(appLink: String?) {
 
     }
 
-    override fun onSelectedFilterRemoved(uniqueId: String?) {
+    override fun onSelectedFilterRemoved(uniqueId: String) {
 
     }
 
@@ -281,19 +315,43 @@ class ProfileListFragment : BaseListFragment<ProfileViewModel, ProfileListTypeFa
         RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
-    override fun launchProfilePage(userId : String) {
-        val applink : String = ApplinkConst.PROFILE.replace(PARAM_USER_ID, userId)
-        RouteManager.route(context, applink)
-    }
-
     override fun onHandleProfileClick(profileModel: ProfileViewModel) {
         SearchTracking.eventUserClickProfileResultInTabProfile(
-                context,
-                listOf(profileModel.getTrackingObject()),
-                query
-                )
+                profileModel.getTrackingObject(),
+                query)
 
         launchProfilePage(profileModel.id)
+    }
+
+    override fun launchProfilePage(userId : String) {
+        val applink : String = ApplinkConst.PROFILE.replace(PARAM_USER_ID, userId)
+
+        if(isActivityAnApplinkRouter()) {
+            handleItemClickedIfActivityAnApplinkRouter(applink, false)
+        }
+    }
+
+    private fun isActivityAnApplinkRouter(): Boolean {
+        return activity != null && activity!!.applicationContext is ApplinkRouter
+    }
+
+    private fun handleItemClickedIfActivityAnApplinkRouter(applink: String, shouldFinishActivity: Boolean) {
+        activity?.run {
+            val router = activity!!.applicationContext as ApplinkRouter
+            if (router.isSupportApplink(applink)) {
+                handleRouterSupportApplink(router, applink, shouldFinishActivity)
+            }
+        }
+    }
+
+    private fun handleRouterSupportApplink(router: ApplinkRouter, applink: String, shouldFinishActivity: Boolean) {
+        finishActivityIfRequired(shouldFinishActivity)
+        router.goToApplinkActivity(activity, applink)
+    }
+
+    private fun finishActivityIfRequired(shouldFinishActivity: Boolean) {
+        if (shouldFinishActivity)
+            activity?.finish()
     }
 
     override fun callInitialLoadAutomatically(): Boolean {

@@ -34,6 +34,7 @@ interface PlayContract {
         fun closeOverlayDialog()
         fun addIncomingMessage(it: Visitable<*>)
         fun onDynamicIconClicked(it: DynamicButtonsViewModel.Button)
+        fun onFloatingIconClicked(it: DynamicButtonsViewModel.Button, applink: String)
         fun updateDynamicButton(it: DynamicButtonsViewModel)
         fun onBackgroundUpdated(it: BackgroundViewModel)
         fun openRedirectUrl(generateLink: String)
@@ -54,7 +55,8 @@ interface PlayContract {
         )
 
         fun getPlayInfo(channelId: String?, onSuccessGetInfo: (ChannelInfoViewModel) -> Unit,
-                        onErrorGetInfo: (String) -> Unit)
+                        onErrorGetInfo: (String) -> Unit,
+                        onNoInternetConnection: () -> Unit)
         fun getDynamicButtons(channelId: String?, onSuccessGetDynamicButtons:
         (DynamicButtonsViewModel) -> Unit, onErrorGetDynamicButtons: (String) -> Unit)
 

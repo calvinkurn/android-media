@@ -156,13 +156,11 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     @Override
     public void showMainLoadingPage() {
         loadingScreen.setVisibility(View.VISIBLE);
-        rootView.setVisibility(View.GONE);
     }
 
     @Override
     public void closeMainLoadingPage() {
         loadingScreen.setVisibility(View.GONE);
-        rootView.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -4,14 +4,14 @@ import android.content.Context;
 
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * Created by fajarnuha on 03/12/18.
  */
 public interface AddAddressContract {
 
     interface View {
-
-        Context context();
 
         boolean isEdit();
 
@@ -24,8 +24,6 @@ public interface AddAddressContract {
         void finishActivity();
 
         void showErrorSnackbar(String errorMessage);
-
-        String getPassword();
 
         boolean isValidAddress();
 
@@ -40,6 +38,8 @@ public interface AddAddressContract {
         void setPinpointAddress(String address);
 
         void stopPerformaceMonitoring();
+
+        CompositeSubscription getCompositeSubscription();
     }
 
     interface Presenter {

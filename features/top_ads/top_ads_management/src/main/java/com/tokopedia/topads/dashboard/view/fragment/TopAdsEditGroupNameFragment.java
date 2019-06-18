@@ -182,16 +182,6 @@ public class TopAdsEditGroupNameFragment extends BasePresenterFragment implement
     }
 
     @Override
-    public void onSuggestionSuccess(GetSuggestionResponse s) {
-        /* just deal with abstraction */
-    }
-
-    @Override
-    public void onSuggestionError(@Nullable Throwable t) {
-        /* just deal with abstraction */
-    }
-
-    @Override
     public void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo) {
 
     }

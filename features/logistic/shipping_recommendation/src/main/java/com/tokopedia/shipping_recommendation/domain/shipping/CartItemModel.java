@@ -53,6 +53,11 @@ public class CartItemModel implements Parcelable {
     private boolean protectionOptIn;
     private String preOrderInfo;
 
+    // Trade in
+    private boolean isValidTradeIn;
+    private int newDevicePrice;
+    private int oldDevicePrice;
+
     public String getPreOrderInfo() {
         return preOrderInfo;
     }
@@ -327,6 +332,30 @@ public class CartItemModel implements Parcelable {
         this.protectionTitle = protectionTitle;
     }
 
+    public boolean isValidTradeIn() {
+        return isValidTradeIn;
+    }
+
+    public void setValidTradeIn(boolean validTradeIn) {
+        isValidTradeIn = validTradeIn;
+    }
+
+    public int getNewDevicePrice() {
+        return newDevicePrice;
+    }
+
+    public void setNewDevicePrice(int newDevicePrice) {
+        this.newDevicePrice = newDevicePrice;
+    }
+
+    public int getOldDevicePrice() {
+        return oldDevicePrice;
+    }
+
+    public void setOldDevicePrice(int oldDevicePrice) {
+        this.oldDevicePrice = oldDevicePrice;
+    }
+
     public CartItemModel() {
     }
 
@@ -431,6 +460,9 @@ public class CartItemModel implements Parcelable {
         dest.writeParcelable(this.analyticsProductCheckoutData, flags);
         dest.writeInt(this.preOrderDurationDay);
         dest.writeString(this.preOrderInfo);
+        dest.writeByte(this.isValidTradeIn ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.newDevicePrice);
+        dest.writeInt(this.oldDevicePrice);
     }
 
     protected CartItemModel(Parcel in) {
@@ -460,6 +492,9 @@ public class CartItemModel implements Parcelable {
         this.analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
         this.preOrderDurationDay = in.readInt();
         this.preOrderInfo = in.readString();
+        this.isValidTradeIn = in.readByte() != 0;
+        this.newDevicePrice = in.readInt();
+        this.oldDevicePrice = in.readInt();
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {

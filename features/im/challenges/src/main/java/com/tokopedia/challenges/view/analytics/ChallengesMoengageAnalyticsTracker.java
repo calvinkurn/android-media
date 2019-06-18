@@ -1,11 +1,8 @@
 package com.tokopedia.challenges.view.analytics;
 
 import android.app.Activity;
-import android.content.Context;
-import android.util.Log;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.challenges.ChallengesModuleRouter;
+import com.tokopedia.track.TrackApp;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -91,6 +88,6 @@ public class ChallengesMoengageAnalyticsTracker {
 
 
     public static void sendEvent(Activity activity, String name, Map<String, Object> values) {
-        ((ChallengesModuleRouter) (activity.getApplication())).sendMoengageEvents(name, values);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(name, values);
     }
 }

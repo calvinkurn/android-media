@@ -5,6 +5,8 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
+import com.tokopedia.product.detail.common.data.model.variant.Variant.Companion.COLOR
+import com.tokopedia.product.detail.common.data.model.variant.Variant.Companion.SIZE
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -15,6 +17,7 @@ data class TypeVariantViewModel(
         var variantName: String,
         var variantSelectedValue: String,
         var variantGuideline: String,
+        var variantIdentifier: String,
         var variantOptions: ArrayList<OptionVariantViewModel>
 ) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
@@ -26,7 +29,8 @@ data class TypeVariantViewModel(
             parcel?.readInt() ?: 0,
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
-            parcel?.readString() ?: "",
+        parcel?.readString() ?: "",
+        parcel?.readString() ?: "",
             arrayListOf<OptionVariantViewModel>().apply {
                 parcel?.readList(this, OptionVariantViewModel::class.java.classLoader)
             }
@@ -41,6 +45,7 @@ data class TypeVariantViewModel(
         parcel.writeString(variantName)
         parcel.writeString(variantSelectedValue)
         parcel.writeString(variantGuideline)
+        parcel.writeString(variantIdentifier)
         parcel.writeList(variantOptions)
     }
 
@@ -48,14 +53,22 @@ data class TypeVariantViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<TypeVariantViewModel> {
-        override fun createFromParcel(parcel: Parcel): TypeVariantViewModel {
-            return TypeVariantViewModel(parcel)
-        }
+    companion object {
+        @JvmField
+        val CREATOR = object : Parcelable.Creator<TypeVariantViewModel> {
+            override fun createFromParcel(parcel: Parcel): TypeVariantViewModel {
+                return TypeVariantViewModel(parcel)
+            }
 
-        override fun newArray(size: Int): Array<TypeVariantViewModel?> {
-            return arrayOfNulls(size)
+            override fun newArray(size: Int): Array<TypeVariantViewModel?> {
+                return arrayOfNulls(size)
+            }
         }
     }
+
+    val isSizeIdentifier: Boolean
+        get() = SIZE.equals(variantIdentifier, false)
+    val isColorIdentifier: Boolean
+        get() = COLOR.equals(variantIdentifier, false)
 
 }

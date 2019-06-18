@@ -140,8 +140,8 @@ public class DigitalSearchNumberFragment extends BaseDaggerFragment
     }
 
     private void setClientNumberInputType() {
-        if (clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_TEL)
-                || clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_NUMERIC)) {
+        if (clientNumber != null && (clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_TEL)
+                || clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_NUMERIC))) {
             editTextSearchNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
             editTextSearchNumber.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
         } else {

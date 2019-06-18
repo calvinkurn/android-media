@@ -7,8 +7,10 @@ import android.text.util.Linkify
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import com.tokopedia.core.analytics.AppEventTracking
 
 import com.tokopedia.core.analytics.UnifyTracking
+import com.tokopedia.core.analytics.nishikino.model.EventTracking
 import com.tokopedia.core.product.customview.BaseView
 import com.tokopedia.core.product.model.goldmerchant.VideoData
 import com.tokopedia.core.product.model.productdetail.ProductDetailData
@@ -20,6 +22,7 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView
 import com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.tkpdpdp.DescriptionActivityNew
+import com.tokopedia.track.TrackApp
 import kotlinx.android.synthetic.main.youtube_video_list_place_holder.view.*
 
 /**
@@ -124,9 +127,17 @@ class VideoDescriptionLayout : BaseCustomView {
             }
 
             listener?.onDescriptionClicked(intent)
-            UnifyTracking.eventPDPExpandDescription(
+            eventPDPExpandDescription(
                     this@VideoDescriptionLayout.context)
         }
+    }
+
+    fun eventPDPExpandDescription(context: Context) {
+        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
+            AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
+            AppEventTracking.Category.PRODUCT_DETAIL,
+            AppEventTracking.Action.CLICK,
+            AppEventTracking.EventLabel.PRODUCT_DESCRIPTION)
     }
 
     companion object {

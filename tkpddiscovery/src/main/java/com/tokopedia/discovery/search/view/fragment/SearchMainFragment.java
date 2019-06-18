@@ -14,26 +14,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteAdapter;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteFactory;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteTypeFactory;
-import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteViewModel;
-import com.tokopedia.discovery.autocomplete.di.DaggerAutoCompleteComponent;
 import com.tokopedia.discovery.autocomplete.di.AutoCompleteComponent;
+import com.tokopedia.discovery.autocomplete.di.DaggerAutoCompleteComponent;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -48,8 +46,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     public static final String FRAGMENT_TAG = "SearchHistoryFragment";
     public static final String INIT_QUERY = "INIT_QUERY";
-    private static final String SEARCH_INIT_KEY = "SEARCH_INIT_KEY";
-    private static final String SEARCH_IS_OFFICIAL = "SEARCH_IS_OFFICIAL";
+    private static final String SEARCH_PARAMETER = "SEARCH_PARAMETER";
 
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
@@ -58,15 +55,15 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     SearchPresenter presenter;
 
     private HostAutoCompleteAdapter adapter;
-    private String mSearch = "";
-    private boolean mIsOfficial = false;
     private String networkErrorMessage;
     private boolean onTabShop;
 
+    private SearchParameter searchParameter;
+
     public static SearchMainFragment newInstance() {
-        
+
         Bundle args = new Bundle();
-        
+
         SearchMainFragment fragment = new SearchMainFragment();
         fragment.setArguments(args);
         return fragment;
@@ -176,24 +173,23 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if(savedInstanceState!=null) {
-            mSearch = savedInstanceState.getString(SEARCH_INIT_KEY);
-            mIsOfficial = savedInstanceState.getBoolean(SEARCH_IS_OFFICIAL);
-            presenter.search(mSearch, mIsOfficial);
+
+        if(savedInstanceState != null) {
+            searchParameter = savedInstanceState.getParcelable(SEARCH_PARAMETER);
+            if(searchParameter != null) {
+                presenter.search(searchParameter);
+            }
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(SEARCH_INIT_KEY, mSearch);
-        outState.putBoolean(SEARCH_IS_OFFICIAL, mIsOfficial);
+        outState.putParcelable(SEARCH_PARAMETER, searchParameter);
     }
 
-    public void search(String query, boolean isOfficial){
-        this.mSearch = query;
-        this.mIsOfficial = isOfficial;
-        presenter.search(mSearch, mIsOfficial);
+    public void search(SearchParameter searchParameter){
+        presenter.search(searchParameter);
     }
 
     public void deleteAllRecentSearch(){
@@ -212,22 +208,43 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     @Override
     public void onItemClicked(String applink, String webUrl) {
+        onItemClicked(applink, webUrl, true);
+    }
+
+    @Override
+    public void onItemClicked(String applink, String webUrl, boolean shouldFinishActivity) {
         dropKeyBoard();
 
-        if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof ApplinkRouter) {
-            ApplinkRouter router = ((ApplinkRouter) getActivity().getApplicationContext());
-            if (router.isSupportApplink(applink)) {
-                getActivity().finish();
-                router.goToApplinkActivity(getActivity(), applink);
-            } else {
-                openWebViewURL(webUrl, getActivity());
-                getActivity().finish();
-            }
+        if (isActivityAnApplinkRouter()) {
+            handleItemClickedIfActivityAnApplinkRouter(applink, webUrl, shouldFinishActivity);
         } else {
             openWebViewURL(webUrl, getActivity());
-            getActivity().finish();
+            finishActivityIfRequired(shouldFinishActivity);
         }
+    }
+
+    private boolean isActivityAnApplinkRouter() {
+        return getActivity() != null && getActivity().getApplicationContext() instanceof ApplinkRouter;
+    }
+
+    private void handleItemClickedIfActivityAnApplinkRouter(String applink, String webUrl, boolean shouldFinishActivity) {
+        ApplinkRouter router = ((ApplinkRouter) getActivity().getApplicationContext());
+        if (router.isSupportApplink(applink)) {
+            handleRouterSupportApplink(router, applink, shouldFinishActivity);
+        } else {
+            openWebViewURL(webUrl, getActivity());
+            finishActivityIfRequired(shouldFinishActivity);
+        }
+    }
+
+    private void handleRouterSupportApplink(ApplinkRouter router, String applink, boolean shouldFinishActivity) {
+        finishActivityIfRequired(shouldFinishActivity);
+        router.goToApplinkActivity(getActivity(), applink);
+    }
+
+    private void finishActivityIfRequired(boolean shouldFinishActivity) {
+        if(shouldFinishActivity)
+            getActivity().finish();
     }
 
     public void openWebViewURL(String url, Context context) {
@@ -239,12 +256,14 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     }
 
     @Override
-    public void onItemSearchClicked(String keyword, String categoryId, boolean isOfficial) {
+    public void onItemSearchClicked(String applink) {
         dropKeyBoard();
-        if (!TextUtils.isEmpty(categoryId)) {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, categoryId, isOfficial);
-        } else {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, isOfficial);
+
+        SearchParameter searchParameter = new SearchParameter(applink);
+        DiscoveryActivity discoveryActivity = (DiscoveryActivity)getActivity();
+
+        if(discoveryActivity != null) {
+            discoveryActivity.onSuggestionProductClick(searchParameter);
         }
     }
 
@@ -270,5 +289,9 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     public boolean isOnTabShop() {
         return onTabShop;
+    }
+
+    public void setSearchParameter(SearchParameter searchParameter) {
+        this.searchParameter = searchParameter;
     }
 }

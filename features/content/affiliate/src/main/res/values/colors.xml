@@ -8,7 +8,6 @@
     <color name="medium_green_two">#399c3f</color>
     <color name="filter_background_inactive">#51000000</color>
     <color name="filter_background_active">#900a8f08</color>
-    <color name="af_commission_blue">#009eed</color>
     <color name="af_add_disabled">#E5E7E9</color>
 </resources>
 

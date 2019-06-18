@@ -4,11 +4,9 @@ import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.otp.common.network.AccountsAuthorizationInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
@@ -27,8 +25,6 @@ public interface OtpComponent {
     @ApplicationContext
     Context getApplicationContext();
 
-    AnalyticTracker provideAnalyticTracker();
-
     Retrofit.Builder retrofitBuilder();
 
     OkHttpClient provideOkHttpClient();
@@ -42,8 +38,6 @@ public interface OtpComponent {
     AbstractionRouter provideAbstractionRouter();
 
     TkpdAuthInterceptor tkpdAuthInterceptor();
-
-    AccountsAuthorizationInterceptor provideAccountsAuthorizationInterceptor();
 
     @MethodListQualifier
     OkHttpClient provideMethodListOkHttpClient();

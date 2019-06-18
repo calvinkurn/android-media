@@ -14,7 +14,9 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.GlobalConfig;
@@ -31,6 +33,7 @@ import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAd
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEditActivity;
 import com.tokopedia.product.manage.item.utils.ErrorHandlerAddProduct;
 import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter;
+import com.tokopedia.track.TrackApp;
 
 import java.util.HashMap;
 
@@ -118,7 +121,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         Notification notification = buildFailedNotification(errorMessage, productSubmitNotificationListener.getId(), productSubmitNotificationListener.getSubmitStatus());
         notificationManager.notify(TAG, productSubmitNotificationListener.getId(), notification);
         removeNotificationFromList(productSubmitNotificationListener.getId());
-        UnifyTracking.eventAddProductErrorServer(getApplicationContext(), errorMessage);
+        eventAddProductErrorServer(errorMessage);
         Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
         Bundle bundle = new Bundle();
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
@@ -128,6 +131,14 @@ public class UploadProductService extends BaseService implements AddProductServi
 
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         lbm.sendBroadcast(new Intent(ACTION_DRAFT_CHANGED));
+    }
+
+    public void eventAddProductErrorServer( String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_ERROR_SERVER,
+                label);
     }
 
     private void removeNotificationFromList(int notificationId) {

@@ -3,8 +3,6 @@ package com.tokopedia.product.detail.estimasiongkir.view.viewmodel
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.data.util.getSuccessData
@@ -28,9 +26,9 @@ class RatesEstimationDetailViewModel @Inject constructor(
 
     val rateEstResp =  MutableLiveData<Result<RatesEstimationModel>>()
 
-    fun getCostEstimation(productWeight: Float, shopDomain: String = ""){
+    fun getCostEstimation(productWeight: Float, shopDomain: String = "", origin: String?){
         val params = mapOf(PARAM_PRODUCT_WEIGHT to productWeight,
-                PARAM_SHOP_DOMAIN to shopDomain)
+                PARAM_SHOP_DOMAIN to shopDomain, "origin" to origin)
         val request = GraphqlRequest(rawQuery, RatesEstimationModel.Response::class.java, params)
 
         launchCatchError(block = {

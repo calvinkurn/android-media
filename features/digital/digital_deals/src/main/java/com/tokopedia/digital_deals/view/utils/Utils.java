@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.DisplayMetrics;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 
@@ -58,6 +61,8 @@ public class Utils {
     public static String BRAND_QUERY_PARAM_BRAND = "brand";
     public static String QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
     public static String QUERY_PARAM_CITY_ID = "cities";
+    public static String LOCATION_NAME = "jakarta";
+    public static int LOCATION_ID = 318;
     public static final String NEXT_URL = "nexturl";
     private static final float MAX_RADIUS = 25.0f;
     private static final float MIN_RADIUS = 0.0f;
@@ -116,63 +121,57 @@ public class Utils {
 
     }
 
-    public ArrayList<CategoryItem> convertIntoCategoryListViewModel(DealsResponse dealsResponse) {
+    public ArrayList<CategoryItem> convertIntoCategoryListViewModel(List<CategoryItem> dealsResponse) {
 
         ArrayList<CategoryItem> categoryRespons = new ArrayList<>();
-        if (dealsResponse.getHome() != null && dealsResponse.getCategoryItems() != null) {
-            for (CategoryItem categoryItem : dealsResponse.getCategoryItems()) {
+        if (dealsResponse != null && dealsResponse.size() > 0) {
+            for (CategoryItem categoryItem : dealsResponse) {
+                    CategoryItem category = new CategoryItem();
+                    category.setTitle(categoryItem.getTitle());
+                    category.setCategoryId(categoryItem.getCategoryId());
+                    category.setCount(categoryItem.getCount());
+                    category.setName(categoryItem.getName());
+                    category.setMediaUrl(categoryItem.getMediaUrl());
+                    category.setCategoryUrl(categoryItem.getCategoryUrl());
+                    category.setUrl(categoryItem.getUrl());
+                    category.setItems(categoryItem.getItems());
+                    category.setIsCard(categoryItem.getIsCard());
+                    category.setPriority(categoryItem.getPriority());
 
-                CategoryItem category = new CategoryItem();
-                category.setTitle(categoryItem.getTitle());
-                category.setCategoryId(categoryItem.getCategoryId());
-                category.setCount(categoryItem.getCount());
-                category.setName(categoryItem.getName());
-                category.setMediaUrl(categoryItem.getMediaUrl());
-                category.setCategoryUrl(categoryItem.getCategoryUrl());
-                category.setUrl(categoryItem.getUrl());
-                category.setItems(categoryItem.getItems());
-
-                switch (categoryItem.getName().toLowerCase()) {
-                    case "top":
-                        categoryRespons.add(0, category);
-                        break;
-                    case "carousel":
-                        categoryRespons.add(0, category);
-                        break;
-                    default:
-                        categoryRespons.add(category);
-                        break;
-                }
+                    switch (categoryItem.getName().toLowerCase()) {
+                        case "top":
+                            categoryRespons.add(0, category);
+                            break;
+                        case "carousel":
+                            categoryRespons.add(0, category);
+                            break;
+                        default:
+                            categoryRespons.add(category);
+                            break;
+                    }
             }
 
-            applyFilterOnCategories(categoryRespons, dealsResponse.getFilters());
+            applyFilterOnCategories(categoryRespons);
 
 
         }
         return categoryRespons;
     }
 
-    private void applyFilterOnCategories(ArrayList<CategoryItem> categoryRespons, List<FilterItem> filters) {
+    public void applyFilterOnCategories(ArrayList<CategoryItem> categoryRespons) {
         Map<Integer, Integer> sortOrder = new HashMap<>();
-        if (filters != null) {
-            if (categoryRespons.get(0).getCategoryId() == categoryRespons.get(1).getCategoryId()) {
-                categoryRespons.get(1).setCategoryId(-1);            //Since carousel and top have same id's
-            }
-            sortOrder.put(categoryRespons.get(0).getCategoryId(), -1);   //dummy for top or carousel
-            sortOrder.put(categoryRespons.get(1).getCategoryId(), -2);   //dummy for top or carousel
-            for (FilterItem filter : filters) {
-                if (filter.getAttributeName().equals("child_category_ids")) {
-                    if (filter.getValues() != null) {
-                        for (ValuesItem value : filter.getValues()) {
-                            sortOrder.put(value.getId(), value.getPriority());
-                        }
-                    }
-                    if (sortOrder.size() == categoryRespons.size()) {
-                        Collections.sort(categoryRespons, new CategoryItemComparator(sortOrder));
-                    }
+            for (CategoryItem categoryItem : categoryRespons) {
+                if (categoryItem.getName().equalsIgnoreCase("carousel")) {
+                    sortOrder.put(categoryItem.getCategoryId(), Integer.MAX_VALUE);
+                } else if (categoryItem.getName().equalsIgnoreCase("top")) {
+                    sortOrder.put(categoryItem.getCategoryId(), Integer.MAX_VALUE);
+                } else {
+                    sortOrder.put(categoryItem.getCategoryId(), categoryItem.getPriority());
+                }
+                if (sortOrder.size() == categoryRespons.size()) {
+                    Collections.sort(categoryRespons, new CategoryItemComparator(sortOrder));
                 }
             }
-        }
     }
 
     public void sortOutletsWithLocation(List<Outlet> outlets, Location location) {
@@ -219,7 +218,7 @@ public class Utils {
                 throw new IllegalArgumentException("Bad id encountered: " +
                         i2.getCategoryId());
             }
-            return id1.compareTo(id2);
+            return id2.compareTo(id1);
         }
     }
 
@@ -267,7 +266,17 @@ public class Utils {
                 location = gson.fromJson(locationjson, Location.class);
             }
         }
+        if(location == null) {
+            location = new Location();
+            location.setName(LOCATION_NAME);
+            location.setId(LOCATION_ID);
+            updateLocation(context, location);
+        }
         return location;
+    }
+
+    public static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
     public void updateLocation(Context context, Location locatn) {
@@ -302,9 +311,9 @@ public class Utils {
         View snackView = inflater.inflate(R.layout.custom_location_change_snackbar, null);
         TextView tvmsg = snackView.findViewById(R.id.tv_msg);
         if (locationToast) {
-            String str=context.getResources().getString(R.string.location_changed_to);
-            str+=text.toUpperCase();
-            tvmsg.setText(getLocationText(str,context.getResources().getColor(R.color.black_40)));
+            String str = context.getResources().getString(R.string.location_changed_to);
+            str += text.toUpperCase();
+            tvmsg.setText(getLocationText(str, context.getResources().getColor(R.color.black_40)));
         } else {
             snackView.findViewById(R.id.main_content).setBackgroundColor(context.getResources().getColor(R.color.red_50));
             snackView.findViewById(R.id.divider).setBackgroundColor(context.getResources().getColor(R.color.red_error));
@@ -330,6 +339,7 @@ public class Utils {
         spannableString.setSpan(new ForegroundColorSpan(color), startIndexOfLink, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableString;
     }
+
     public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl, String desktopUrl) {
         String uri = DealsUrl.AppLink.DIGITAL_DEALS + "/" + deeplinkSlug;
         ((DealsModuleRouter) ((Activity) context).getApplication()).shareDeal(context, uri, name, imageUrl, desktopUrl);
@@ -358,6 +368,17 @@ public class Utils {
 
     public static String fetchOrderId(String url) {
         return url.substring(url.lastIndexOf('/') + 1);
+    }
+
+    public static Uri replaceUriParameter(Uri uri, String key, String newValue) {
+        final Set<String> params = uri.getQueryParameterNames();
+        final Uri.Builder newUri = uri.buildUpon().clearQuery();
+        for (String param : params) {
+            newUri.appendQueryParameter(param,
+                    param.equals(key) ? newValue : uri.getQueryParameter(param));
+        }
+
+        return newUri.build();
     }
 
 }

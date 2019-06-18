@@ -58,6 +58,21 @@
 
             <include layout="@layout/order_detail_description" />
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingTop="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_12"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16">
+
+                <include
+                    android:id="@+id/layout_fulfillment"
+                    layout="@layout/partial_fulfillment_label"/>
+
+            </FrameLayout>
+
             <RelativeLayout
                 android:id="@+id/upload_awb_layout"
                 android:layout_width="match_parent"

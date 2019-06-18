@@ -14,6 +14,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
@@ -22,6 +24,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.track.TrackApp;
 
 import java.util.List;
 
@@ -100,11 +103,19 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
             @Override
             public void onClick(View view) {
                 if(position < data.size()) {
-                    UnifyTracking.eventFeedRecent(view.getContext(), data.get(position).getName());
+                    eventFeedRecent(data.get(position).getName());
                     RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, data.get(position).getId());
                 }
             }
         };
+    }
+
+    private void eventFeedRecent(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.FEED,
+                AppEventTracking.Action.VIEW_RECENT,
+                label);
     }
 
     @Override

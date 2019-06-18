@@ -53,7 +53,7 @@ class Banner : BannerView {
         }
     }
 
-    override fun getBannerPagerAdapter(): BannerPagerAdapter {
+    override fun getBannerAdapter(): BannerPagerAdapter {
         return BannerAdapter(promoImageUrls, onPromoClickListener)
     }
 

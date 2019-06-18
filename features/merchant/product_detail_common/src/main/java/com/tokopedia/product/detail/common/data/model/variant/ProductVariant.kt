@@ -13,11 +13,11 @@ data class ProductVariant(
 
         @SerializedName("parentID")
         @Expose
-        var parentId: Int? = null,
+        var parentId: Int = 0,
 
         @SerializedName("defaultChild")
         @Expose
-        var defaultChild: Int? = null,
+        var defaultChild: Int = 0,
 
         @SerializedName("sizeChart")
         @Expose

@@ -18,6 +18,12 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videouploader.data.UploadVideoApi
+import com.tokopedia.videouploader.di.VideoUploaderModule
+import com.tokopedia.videouploader.di.VideoUploaderQualifier
+import com.tokopedia.videouploader.domain.pojo.DefaultUploadVideoResponse
+import com.tokopedia.videouploader.domain.usecase.GenerateVideoTokenUseCase
+import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
 
 import dagger.Module
 import dagger.Provides
@@ -25,7 +31,7 @@ import dagger.Provides
 /**
  * @author by milhamj on 9/26/18.
  */
-@Module(includes = [ImageUploaderModule::class])
+@Module(includes = [ImageUploaderModule::class, VideoUploaderModule::class])
 class CreatePostModule(private val context: Context) {
 
     @Provides
@@ -75,5 +81,15 @@ class CreatePostModule(private val context: Context) {
     @CreatePostScope
     fun provideNotificationManager(@ApplicationContext context: Context): NotificationManager {
         return context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
+
+    @Provides
+    @CreatePostScope
+    fun provideUploadVideoUseCase(
+            @VideoUploaderQualifier uploadVideoApi: UploadVideoApi,
+            @VideoUploaderQualifier gson: Gson,
+            generateVideoTokenUseCase: GenerateVideoTokenUseCase):
+            UploadVideoUseCase<DefaultUploadVideoResponse> {
+        return UploadVideoUseCase(uploadVideoApi, gson, DefaultUploadVideoResponse::class.java, generateVideoTokenUseCase)
     }
 }

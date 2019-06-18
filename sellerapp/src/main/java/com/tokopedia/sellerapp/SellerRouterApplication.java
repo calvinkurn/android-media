@@ -21,7 +21,6 @@ import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
@@ -44,9 +43,7 @@ import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -82,6 +79,8 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
+import com.tokopedia.cpm.CharacterPerMinuteInterface;
+import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
@@ -92,7 +91,6 @@ import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.gm.subscribe.GmSubscribeModuleRouter;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
@@ -112,6 +110,9 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
+import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
+import com.tokopedia.logisticaddaddress.router.IAddressRouter;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticgeolocation.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
@@ -154,7 +155,6 @@ import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
-import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
@@ -206,9 +206,7 @@ import com.tokopedia.topads.auto.router.TopAdsAutoRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardInternalRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
-import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
-import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCheckProductPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -216,10 +214,11 @@ import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachP
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
-import com.tokopedia.trackingoptimizer.TrackingOptimizerRouter;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -269,70 +268,26 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         ChatbotRouter,
         SaldoDetailsRouter,
-        TrackingOptimizerRouter,
         FlashSaleRouter,
         LinkerRouter,
-        ResolutionRouter {
+        CharacterPerMinuteInterface,
+        ResolutionRouter,
+        IAddressRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
     private ProductComponent productComponent;
     private DaggerGMComponent.Builder daggerGMBuilder;
     private GMComponent gmComponent;
-    private DaggerTopAdsComponent.Builder daggerTopAdsBuilder;
     private TopAdsComponent topAdsComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
-    private AnalyticTracker analyticTracker;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        analyticTracker = initializeAnalyticTracker();
         initializeDagger();
         initializeRemoteConfig();
-
-        //TODO if using Trackapp, remove TrackingUtils from MainApplication
-    }
-
-    private AnalyticTracker initializeAnalyticTracker() {
-        return new AnalyticTracker() {
-            @Override
-            public void sendEventTracking(Map<String, Object> events) {
-                UnifyTracking.eventClearEnhanceEcommerce(SellerRouterApplication.this);
-                UnifyTracking.sendGTMEvent(SellerRouterApplication.this, events);
-            }
-
-            @Override
-            public void sendEventTracking(String event, String category, String action, String label) {
-                UnifyTracking.sendGTMEvent(SellerRouterApplication.this, new EventTracking(
-                        event,
-                        category,
-                        action,
-                        label
-                ).getEvent());
-            }
-
-            @Override
-            public void sendScreen(Activity activity, final String screenName) {
-                if (activity != null && !TextUtils.isEmpty(screenName)) {
-                    ScreenTracking.sendScreen(activity, () -> screenName);
-                }
-            }
-
-            @Override
-            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
-                if (activity != null && !TextUtils.isEmpty(screenName)) {
-                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
-                            shopType, pageType, productId);
-                }
-            }
-
-            @Override
-            public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
-                TrackingUtils.eventTrackingEnhancedEcommerce(SellerRouterApplication.this, trackingData);
-            }
-        };
     }
 
     private void initializeRemoteConfig() {
@@ -342,7 +297,6 @@ public abstract class SellerRouterApplication extends MainApplication
     private void initializeDagger() {
         daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
-        daggerTopAdsBuilder = DaggerTopAdsComponent.builder().topAdsModule(new TopAdsModule());
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
     }
 
@@ -433,6 +387,20 @@ public abstract class SellerRouterApplication extends MainApplication
 
     public Intent getMitraToppersActivityIntent(Context context) {
         return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
+    }
+
+    @Override
+    public void shareFeed(Activity activity, String detailId, String url, String title, String
+            imageUrl, String description) {
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setId(detailId)
+                .setName(title)
+                .setDescription(description)
+                .setImgUri(imageUrl)
+                .setUri(url)
+                .setType(LinkerData.FEED_TYPE)
+                .build();
+        new DefaultShare(activity, shareData).show();
     }
 
     @Override
@@ -597,13 +565,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendEventTracking(Map<String, Object> eventTracking) {
-        UnifyTracking.eventClearEnhanceEcommerce(this);
-        UnifyTracking.sendGTMEvent(getAppContext(), eventTracking);
-        CommonUtils.dumper(eventTracking.toString());
-    }
-
-    @Override
     public void sendEventTrackingGmSubscribe(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(getAppContext(), eventTracking);
         CommonUtils.dumper(eventTracking.toString());
@@ -720,7 +681,7 @@ public abstract class SellerRouterApplication extends MainApplication
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
         return TopChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
-                 customMessage, source, avatar);
+                customMessage, source, avatar);
     }
 
 
@@ -747,12 +708,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAskUserIntent(Context context, String userId, String userName, String
             source, String avatar) {
         return TopChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
-    }
-
-    @Override
-    public Observable<GMFeaturedProductDomainModel> getFeaturedProduct() {
-        GMFeaturedProductGetListUseCase gmFeaturedProductGetListUseCase = getGMComponent().getFeaturedProductGetListUseCase();
-        return gmFeaturedProductGetListUseCase.getExecuteObservableAsync(RequestParams.EMPTY);
     }
 
     @Override
@@ -980,30 +935,6 @@ public abstract class SellerRouterApplication extends MainApplication
                 requestCode);
     }
 
-    @Deprecated
-    @Override
-    public void sendEventTracking(String event, String category, String action, String label) {
-        UnifyTracking.sendGTMEvent(getAppContext(), new EventTracking(event, category, action, label).getEvent());
-    }
-
-    @Override
-    public void sendMoEngageOpenShopEventTracking(String screenName) {
-        TrackingUtils.sendMoEngageCreateShopEvent(getAppContext(), screenName);
-    }
-
-    /**
-     * Temporary Solution to send custom dimension for shop
-     * should not pass the param, after tkpd common com in
-     */
-    @Override
-    public void sendEventTrackingWithShopInfo(String event, String category, String action, String label,
-                                              String shopId, boolean isGoldMerchant, boolean isOfficialStore) {
-        UnifyTracking.sendGTMEvent(getAppContext(), new EventTracking(event, category, action, label)
-                .setUserId(getSession().getUserId())
-                .setShopId(shopId)
-                .setShopType(isGoldMerchant, isOfficialStore).getEvent());
-    }
-
     @Override
     public void goToCreateTopadsPromo(Context activity, String productId, String shopId, String source) {
         Intent intent = TopAdsCheckProductPromoActivity.createIntent(activity, shopId, productId, source);
@@ -1062,61 +993,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return new UserSession(this);
     }
 
-    /**
-     * use TrackApp.getGtm() instead
-     * @return
-     */
-    @Deprecated
-    @Override
-    public AnalyticTracker getAnalyticTracker() {
-        initAnalyticTracker();
-        return analyticTracker;
-    }
-
-    private void initAnalyticTracker() {
-        if (analyticTracker == null) {
-            analyticTracker = new AnalyticTracker() {
-                @Override
-                public void sendEventTracking(Map<String, Object> events) {
-                    SellerRouterApplication.this.sendEventTracking(events);
-                }
-
-                @Override
-                public void sendEventTracking(String event, String category, String action, String label) {
-                    UnifyTracking.sendGTMEvent(SellerRouterApplication.this, new EventTracking(
-                            event,
-                            category,
-                            action,
-                            label
-                    ).getEvent());
-                }
-
-                @Override
-                public void sendScreen(Activity activity, final String screenName) {
-                    ScreenTracking.sendScreen(SellerRouterApplication.this, screenName);
-                }
-
-                @Override
-                public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
-                    if (activity != null && !TextUtils.isEmpty(screenName)) {
-                        ScreenTracking.eventCustomScreen(activity, screenName, shopID,
-                                shopType, pageType, productId);
-                    }
-                }
-
-                @Override
-                public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
-                    SellerRouterApplication.this.sendEnhanceECommerceTracking(trackingData);
-                }
-            };
-        }
-    }
-
-    @Override
-    public void sendEnhanceECommerceTracking(@NotNull Map<String, Object> events) {
-        TrackingUtils.eventTrackingEnhancedEcommerce(this, events);
-    }
-
     @Override
     public void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
@@ -1150,7 +1026,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
         if (getSession().isLoggedIn()) {
-            UnifyTracking.eventShopSendChat(context);
+            UnifyTracking.eventShopSendChat();
             Intent intent = getAskSellerIntent(this, shopId, shopName, TkpdInboxRouter.SHOP, avatar);
             context.startActivity(intent);
         } else {
@@ -1241,10 +1117,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendTrackingGroupChatLeftNavigation() {
-    }
-
-    @Override
     public String getDesktopLinkGroupChat() {
         return "";
     }
@@ -1254,10 +1126,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return BuildConfig.FLAVOR;
     }
 
-    @Override
-    public void gotoTopAdsDashboard(Context context) {
-        context.startActivity(TopAdsDashboardActivity.Companion.getCallingIntent(context));
-    }
 
     @Override
     public void goToApplinkActivity(Context context, String applink) {
@@ -1397,7 +1265,9 @@ public abstract class SellerRouterApplication extends MainApplication
             new GlobalCacheManager().deleteAll();
             Router.clearEtalase(activity);
             DbManagerImpl.getInstance().removeAllEtalase();
-            TrackingUtils.eventMoEngageLogoutUser(activity);
+            try {
+                TrackApp.getInstance().getMoEngage().logoutEvent();
+            } catch (Exception ignored) {}
             SessionHandler.clearUserData(activity);
             NotificationModHandler notif = new NotificationModHandler(activity);
             notif.dismissAllActivedNotifications();
@@ -1546,7 +1416,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @NonNull
     @Override
     public Intent getBroadcastMessageListIntent(@NonNull Context context) {
-        sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                 BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                 BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_BM_CLICK, "");
         return BroadcastMessageInternalRouter.INSTANCE.getBroadcastMessageListIntent(context);
@@ -1624,6 +1494,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent getManageAdressIntent(Context context) {
+        return new Intent(context, ManagePeopleAddressActivity.class);
+    }
+
+    @Override
     public void onAppsFlyerInit() {
 
     }
@@ -1634,51 +1509,16 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
-
-    }
-
-    @Override
-    public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
-        TrackingUtils.sendMoEngageFavoriteEvent(getAppContext(), shopName, shopID, shopDomain, shopLocation, isShopOfficaial, isFollowed);
-    }
-
-    @Override
     public void setTrackingUserId(String userId, Context applicationContext) {
         onAppsFlyerInit();
-        TrackingUtils.eventPushUserID(applicationContext, userId);
+        TrackApp.getInstance().getGTM()
+                .pushUserId(userId);
         if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
             Crashlytics.setUserIdentifier(userId);
         UserData userData = new UserData();
         userData.setUserId(userId);
         LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
                 userId));
-
-    }
-
-    @Override
-    public void setMoEUserAttributesLogin(String userId, String name, String email, String phoneNumber, boolean isGoldMerchant, String shopName, String shopId, boolean hasShop, String loginMethod) {
-        TrackingUtils.setMoEUserAttributesLogin(getAppContext(),
-                userId,
-                name,
-                email,
-                phoneNumber,
-                isGoldMerchant,
-                shopName,
-                shopId,
-                hasShop,
-                loginMethod
-        );
-    }
-
-    @Override
-    public void eventMoRegistrationStart(String label) {
-        UnifyTracking.eventMoRegistrationStart(getAppContext(), label);
-    }
-
-    @Override
-    public void eventMoRegister(String name, String phone) {
-        UnifyTracking.eventMoRegister(getAppContext(), name, phone);
 
     }
 
@@ -1745,51 +1585,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void eventTopAdsProductClickProductDashboard() {
-        UnifyTracking.eventTopAdsProductClickKeywordDashboard(getAppContext());
-    }
-
-    @Override
-    public void eventTopAdsProductClickGroupDashboard() {
-        UnifyTracking.eventTopAdsProductClickGroupDashboard(getAppContext());
-    }
-
-    @Override
-    public void eventTopAdsProductAddBalance() {
-        UnifyTracking.eventTopAdsProductAddBalance(getAppContext());
-    }
-
-    @Override
-    public void eventTopAdsShopChooseDateCustom() {
-        UnifyTracking.eventTopAdsShopChooseDateCustom(getAppContext());
-    }
-
-    @Override
-    public void eventTopAdsShopDatePeriod(@NonNull String label) {
-        UnifyTracking.eventTopAdsShopDatePeriod(getAppContext(), label);
-    }
-
-    @Override
-    public void eventTopAdsProductStatisticBar(@NonNull String label) {
-        UnifyTracking.eventTopAdsProductStatisticBar(getAppContext(), label);
-    }
-
-    @Override
-    public void eventTopAdsShopStatisticBar(@NonNull String label) {
-        UnifyTracking.eventTopAdsShopStatisticBar(getAppContext(), label);
-    }
-
-    @Override
-    public void eventTopAdsProductClickKeywordDashboard() {
-        UnifyTracking.eventTopAdsProductClickKeywordDashboard(getAppContext());
-    }
-
-    @Override
-    public void eventOpenTopadsPushNotification(@NonNull String label) {
-        UnifyTracking.eventOpenTopadsPushNotification(getAppContext(), label);
-    }
-
-    @Override
     public void showAdvancedAppRatingDialog(Activity activity, DialogInterface.OnDismissListener dismissListener) {
 
     }
@@ -1842,11 +1637,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getSaldoDepositIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Intent getMaintenancePageIntent() {
         return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
@@ -1865,8 +1655,24 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getCheckoutIntent(Context context) {
+    public Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest) {
         return null;
+    }
+
+    @Override
+    public Intent getCheckoutIntent(Context context, String deviceid) {
+        return null;
+    }
+
+    @Override
+    public boolean isMerchantCreditLineEnabled() {
+        return false;
+    }
+
+    @NotNull
+    @Override
+    public String getDeviceId(@NotNull Context context) {
+        return "";
     }
 
     @Override
@@ -1895,11 +1701,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return null;
     }
 
-    @Override
-    public void openImagePreviewFromChat(@NotNull Context context, @NotNull ArrayList<String> listImage, @NotNull ArrayList<String> imageDesc, @NotNull String title, @NotNull String date) {
-
-    }
-
     public String getContactUsBaseURL() {
         return TkpdBaseURL.ContactUs.URL_HELP;
     }
@@ -1920,11 +1721,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void shareFeed(@NotNull Activity activity, @NotNull String detailId, @NotNull String url, @NotNull String title, @NotNull String imageUrl, @NotNull String description) {
-
-    }
-
-    @Override
     public Intent getInboxTicketCallingIntent(Context context) {
         return new Intent(context, InboxListActivity.class);
     }
@@ -1941,5 +1737,33 @@ public abstract class SellerRouterApplication extends MainApplication
                 .setTrackerListName(trackerListName)
                 .build();
         context.startActivity(ProductInfoActivity.createInstance(context, productPass));
+    }
+
+    @Override
+    public void saveCPM(@NonNull String cpm) {}
+
+    @Override
+    public String getCPM() {
+        return "";
+    }
+
+    @Override
+    public boolean isEnable() {
+        return false;
+    }
+
+    @Override
+    public Intent getDistrictRecommendationIntent(Activity activity,
+                                                  com.tokopedia.logisticdata.data.entity.address.Token token,
+                                                  boolean isFromMarketplaceCart) {
+        if (isFromMarketplaceCart)
+            return DistrictRecommendationActivity.createInstanceFromMarketplaceCart(activity, new TokenMapper().convertTokenModel(token));
+        else
+            return DistrictRecommendationActivity.createInstanceIntent(activity, new TokenMapper().convertTokenModel(token));
+    }
+
+    @Override
+    public Intent getGeoLocationActivityIntent(Context context, LocationPass locationMap, boolean isFromMarketplaceCart) {
+        return GeolocationActivity.createInstance(context, locationMap, isFromMarketplaceCart);
     }
 }

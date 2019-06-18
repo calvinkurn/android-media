@@ -9,6 +9,7 @@
     app:tabGravity="fill"
     app:tabIndicatorColor="@color/tkpd_main_green"
     app:tabIndicatorHeight="4dp"
+    android:elevation="@dimen/dp_4"
     app:tabTextColor="@color/black_54"
     app:tabSelectedTextColor="@color/tkpd_main_green"
     app:tabTextAppearance="@style/Tabs.Main"

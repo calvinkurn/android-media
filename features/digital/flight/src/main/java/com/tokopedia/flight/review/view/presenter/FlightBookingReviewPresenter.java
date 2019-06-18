@@ -91,8 +91,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         } else {
             getView().hideVoucherContainer();
         }
-
-        fetchTickerData();
     }
 
     @Override

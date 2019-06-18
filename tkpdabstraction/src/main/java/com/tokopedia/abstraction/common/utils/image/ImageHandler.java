@@ -13,6 +13,7 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
@@ -31,12 +32,15 @@ import android.util.TypedValue;
 import android.util.Base64;
 import android.view.View;
 import android.view.Window;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -774,6 +778,85 @@ public class ImageHandler {
         }
     }
 
+    public static void loadImageBlurWithViewTarget(final Context context,
+                                     String imageUrl,
+                                     SimpleTarget<Bitmap> simpleTarget) {
+        if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .asBitmap()
+                    .centerCrop()
+                    .into(simpleTarget);
+        } else if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .asBitmap()
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .transform(new CenterCrop(context), blurTransformation(context))
+                    .into(simpleTarget);
+        }
+    }
+
+    private static BitmapTransformation blurTransformation(Context context) {
+        return new BitmapTransformation(context) {
+            @Override
+            protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+                return blurStrong(context, toTransform);
+            }
+
+            @Override
+            public String getId() {
+                return getClass().getName();
+            }
+        };
+    }
+
+    private static RenderScript rs;
+    private static ScriptIntrinsicBlur theIntrinsic;
+    private static RenderScript getRs(Context context){
+        if (rs == null) {
+            synchronized (RenderScript.class) {
+                if (rs == null) {
+                    rs = RenderScript.create(context);
+                }
+            }
+        }
+        return rs;
+    }
+
+    private static ScriptIntrinsicBlur getIntrinsic(Context context){
+        if (theIntrinsic == null) {
+            synchronized (ScriptIntrinsicBlur.class) {
+                if (theIntrinsic == null) {
+                    theIntrinsic = ScriptIntrinsicBlur.create(getRs(context),
+                            Element.U8_4(getRs(context)));
+                }
+            }
+        }
+        return theIntrinsic;
+    }
+
+    public static Bitmap blurStrong(Context context, Bitmap image) {
+        final float BITMAP_SCALE = 0.04f;
+        final float BLUR_RADIUS = 7.5f;
+
+        int width = Math.round(image.getWidth() * BITMAP_SCALE);
+        int height = Math.round(image.getHeight() * BITMAP_SCALE);
+
+        Bitmap inputBitmap = Bitmap.createScaledBitmap(image, width, height, false);
+        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
+
+        Allocation tmpIn = Allocation.createFromBitmap(getRs(context), inputBitmap);
+        Allocation tmpOut = Allocation.createFromBitmap(getRs(context), outputBitmap);
+        getIntrinsic(context).setRadius(BLUR_RADIUS);
+        getIntrinsic(context).setInput(tmpIn);
+        getIntrinsic(context).forEach(tmpOut);
+        tmpOut.copyTo(outputBitmap);
+
+        return outputBitmap;
+    }
+
     public static Bitmap blur(Context context, Bitmap image) {
         final float BITMAP_SCALE = 0.4f;
         final float BLUR_RADIUS = 7.5f;
@@ -864,5 +947,23 @@ public class ImageHandler {
                 }
             });
         }
+    }
+
+    public static void loadBackgroundImage(View view, String url) {
+        if (view == null || !URLUtil.isValidUrl(url)) {
+            return;
+        }
+
+        Glide.with(view.getContext())
+                .load(url)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        if (resource.getWidth() > 1) {
+                            view.setBackground(new BitmapDrawable(view.getResources(), resource));
+                        }
+                    }
+                });
     }
 }

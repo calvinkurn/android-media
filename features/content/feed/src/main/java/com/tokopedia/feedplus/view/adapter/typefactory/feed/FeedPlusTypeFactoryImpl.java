@@ -11,6 +11,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHold
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
         .FeedRecommendationViewHolder;
@@ -71,6 +72,7 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -96,9 +98,12 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final YoutubeViewHolder.YoutubePostListener youtubePostListener;
     private final PollAdapter.PollOptionListener pollOptionListener;
     private final GridPostAdapter.GridItemListener gridItemListener;
+    private final VideoViewHolder.VideoViewListener videoViewListener;
     private final FeedAnalytics analytics;
+    private final UserSessionInterface userSession;
 
-    public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics) {
+    public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics,
+                                   UserSessionInterface userSession) {
         this.viewListener = context;
         this.topAdsItemClickListener = context;
         this.topAdsInfoClickListener = context;
@@ -114,7 +119,9 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.youtubePostListener = context;
         this.pollOptionListener = context;
         this.gridItemListener = context;
+        this.videoViewListener = context;
         this.analytics = analytics;
+        this.userSession = userSession;
     }
 
     @Override
@@ -305,7 +312,9 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
                     imagePostListener,
                     youtubePostListener,
                     pollOptionListener,
-                    gridItemListener
+                    gridItemListener,
+                    videoViewListener,
+                    userSession
             );
         }
         else if (type == FeedRecommendationViewHolder.Companion.getLAYOUT()) {

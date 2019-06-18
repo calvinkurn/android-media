@@ -1,6 +1,5 @@
 package com.tokopedia.di;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.SessionHandler;
@@ -27,8 +26,6 @@ public interface UserComponent {
     OkHttpClient provideOkHttpClient();
 
     Retrofit.Builder retrofitBuilder();
-
-    AnalyticTracker provideAnalyticTracker();
 
     @Named(BEARER_SERVICE)
     AccountsService provideBearerAccountService();

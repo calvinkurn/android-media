@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.deeplink;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -31,7 +32,9 @@ import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
@@ -135,6 +138,7 @@ import com.tokopedia.tokopoints.TokopointApplinkModule;
 import com.tokopedia.tokopoints.TokopointApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.train.applink.TrainApplinkModule;
@@ -292,7 +296,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
             Intent intent = getIntent();
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri applink = Uri.parse(intent.getData().toString().replaceAll("%", "%25"));
             presenter.processUTM(this, applink);
             if (deepLinkDelegate.supportsUri(applink.toString())) {
@@ -302,13 +305,14 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
                 if (getIntent() != null && getIntent().getExtras() != null)
                     homeIntent.putExtras(getIntent().getExtras());
+                homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(homeIntent);
             }
 
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
                 if (bundle.getBoolean(Constants.EXTRA_PUSH_PERSONALIZATION, false)) {
-                    UnifyTracking.eventPersonalizedClicked(this, bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+                    eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
                 } else if (bundle.getBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, false)) {
                     int notificationType = bundle.getInt(Constant.EXTRA_NOTIFICATION_TYPE, 0);
                     int notificationId = bundle.getInt(Constant.EXTRA_NOTIFICATION_ID, 0);
@@ -335,20 +339,34 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         finish();
     }
 
+    public void eventPersonalizedClicked(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.OPEN,
+                label);
+    }
+
     private void routeFromApplink(Uri applink) {
         if (applink != null) {
             try {
-                TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
-                if (getApplicationContext() instanceof TkpdCoreRouter) {
-                    taskStackBuilder.addNextIntent(
-                            HomeRouter.getHomeActivityInterfaceRouter(this)
-                    );
-                }
                 Intent nextIntent = ((ApplinkRouter) getApplicationContext()).applinkDelegate().getIntent(this, applink.toString());
                 if (getIntent() != null && getIntent().getExtras() != null)
                     nextIntent.putExtras(getIntent().getExtras());
-                taskStackBuilder.addNextIntent(nextIntent);
-                taskStackBuilder.startActivities();
+
+                if (isTaskRoot()) {
+                    TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+                    if (getApplicationContext() instanceof TkpdCoreRouter) {
+                        taskStackBuilder.addNextIntent(
+                                HomeRouter.getHomeActivityInterfaceRouter(this)
+                        );
+                        getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    }
+                    taskStackBuilder.addNextIntent(nextIntent);
+                    taskStackBuilder.startActivities();
+                } else {
+                    startActivity(nextIntent);
+                }
                 return;
             } catch (Exception ignored) {
             }

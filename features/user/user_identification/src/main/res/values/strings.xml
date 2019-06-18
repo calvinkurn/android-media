@@ -35,7 +35,8 @@
         berikan adalah benar dan telah menyetujui Syarat &amp; Ketentuan.</string>
     <string name="terms_and_condition">Syarat &amp; Ketentuan</string>
     <string name="upload_button">Unggah</string>
-    
+    <string name="upload_button_tradein">Unggah dan Beli Sekarang</string>
+
     <string name="title_kyc_info">Dokumen Data Diri</string>
 
     <string name="error_text_image_file_too_big">Foto melebihi ukuran maksimum 10 MB</string>

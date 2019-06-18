@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base_variant"
@@ -10,7 +9,6 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/dp_16"
     android:paddingStart="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_22"
     android:background="@drawable/bg_bottom_shadow_top_line"
     tools:ignore="RtlSymmetry">
@@ -23,6 +21,7 @@
         android:text="@string/label_product_variant"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
         app:fontSize="small"
         android:visibility="gone"
         tools:visibility="visible"
@@ -63,6 +62,53 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_choose_variant"/>
 
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/title_multiorigin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:drawablePadding="@dimen/dp_4"
+        android:visibility="gone"
+        android:text="@string/service_by_tokopedia"
+        app:drawableRightCompat="@drawable/ic_logistic_logistic_fulfillment_normal_16"
+        app:fontSize="micro"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/variant_divider"
+        tools:visibility="visible" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/subtitle_multiorigin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:background="@color/grey_background"
+        android:visibility="gone"
+        android:text="@string/multiorigin_desc"
+        tools:visibility="visible"
+        app:fontSize="micro"
+        app:textViewTheme="lightSecondary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_multiorigin"/>
+
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/txt_rate_estimation_start"
         android:layout_width="0dp"
@@ -75,12 +121,11 @@
         tools:visibility="visible"
         tools:text="Ongkir mulai dari Rp 12.000"
         app:fontSize="small"
-        app:layout_goneMarginTop="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/variant_divider"/>
+        app:layout_constraintTop_toBottomOf="@+id/subtitle_multiorigin"/>
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/icon_shop_location"
@@ -146,6 +191,69 @@
         app:layout_constraintTop_toTopOf="@+id/icon_courier_est"
         app:layout_constraintBottom_toBottomOf="@+id/icon_courier_est"/>
 
+    <View
+        android:id="@+id/purchase_protection_divider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_half"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/grey_300"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/icon_courier_est"
+        tools:visibility="visible" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/icon_purchase_protection"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_16"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/purchase_protection_divider"
+        app:layout_goneMarginTop="0dp"
+        app:srcCompat="@drawable/ic_pdp_purchase_protection"
+        tools:visibility="visible" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_purchase_protection_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:text="@string/purchase_protection_label"
+        android:visibility="gone"
+        app:fontSize="small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/icon_purchase_protection"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/icon_purchase_protection"
+        app:layout_constraintTop_toTopOf="@+id/icon_purchase_protection"
+        app:weight="medium"
+        tools:visibility="visible" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_purchase_protection_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:fontSize="micro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/txt_purchase_protection_title"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/txt_purchase_protection_title"
+        app:layout_constraintRight_toRightOf="@+id/txt_purchase_protection_title"
+        app:layout_constraintStart_toStartOf="@+id/txt_purchase_protection_title"
+        app:layout_constraintTop_toBottomOf="@+id/txt_purchase_protection_title"
+        app:layout_constraintVertical_bias="0.053"
+        tools:text="dari Kota Depok"
+        tools:visibility="visible" />
+
     <View android:id="@+id/priority_order_divider"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_half"
@@ -157,7 +265,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/icon_courier_est"/>
+        app:layout_constraintTop_toBottomOf="@+id/txt_purchase_protection_message"/>
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/icon_priority_order"
@@ -167,6 +275,7 @@
         app:srcCompat="@drawable/ic_pdp_order_prioritas"
         android:visibility="gone"
         tools:visibility="visible"
+        app:layout_goneMarginTop="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/priority_order_divider"/>

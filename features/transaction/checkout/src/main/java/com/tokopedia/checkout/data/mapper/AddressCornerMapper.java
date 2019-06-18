@@ -83,13 +83,25 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
     }
 
     public static RecipientAddressModel converToCartModel(CornerAddressModel cornerModel, String defaultId) {
-        return new RecipientAddressModel(
-                defaultId, String.valueOf(cornerModel.getCornerId()),
-                ADDRESS_NAME_SAMPAI,
-                cornerModel.getDistrictName(), cornerModel.getCornerBranchName(),
-                cornerModel.getRecipientFullName(), cornerModel.getCornerName(), "",
-                cornerModel.getCityName(), cornerModel.getCityId(), cornerModel.getDistrictId(), cornerModel.getProvinceId(), cornerModel.getPostalCode(),
-                cornerModel.getLatitude(), cornerModel.getLongitude(), cornerModel.getUserCornerId()
-        );
+        return new RecipientAddressModel.Builder()
+                .id(defaultId)
+                .cornerId(String.valueOf(cornerModel.getCornerId()))
+                .addressName(ADDRESS_NAME_SAMPAI)
+                .cityName(cornerModel.getDistrictName())
+                .street(cornerModel.getCornerBranchName())
+                .recipientName(cornerModel.getRecipientFullName())
+                .destinationDistrictName(cornerModel.getCornerName())
+                .recipientPhoneNumber("")
+                .provinceName(cornerModel.getCityName())
+                .cityId(cornerModel.getCityId())
+                .destinationDistrictId(cornerModel.getDistrictId())
+                .provinceId(cornerModel.getProvinceId())
+                .postalCode(cornerModel.getPostalCode())
+                .latitude(cornerModel.getLatitude())
+                .longitude(cornerModel.getLongitude())
+                .userCornerId(cornerModel.getUserCornerId())
+                .isCornerAddress(true)
+                .isDisableMultipleAddress(true)
+                .build();
     }
 }

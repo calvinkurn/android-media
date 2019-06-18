@@ -93,8 +93,6 @@ public interface FlightDetailOrderContract {
 
         void setTransactionDate(String transactionDate);
 
-        void showLessThan6HoursDialog();
-
         void showRefundableCancelDialog(String id, List<FlightCancellationJourney> items);
 
         void showNonRefundableCancelDialog(String id, List<FlightCancellationJourney> items);
@@ -118,8 +116,6 @@ public interface FlightDetailOrderContract {
         void onSendEticketButtonClicked();
 
         void onGetProfileData();
-
-        void checkIfFlightCancellable(String invoiceId, List<FlightCancellationJourney> items);
 
         List<FlightCancellationJourney> transformOrderToCancellation(List<FlightOrderJourney> flightOrderJourneyList);
 

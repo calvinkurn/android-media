@@ -14,7 +14,7 @@ public class GqlInfoListResponse implements Parcelable {
     @SerializedName("value")
     private String value;
 
-    protected GqlInfoListResponse(Parcel in) {
+    public GqlInfoListResponse(Parcel in) {
         this.label = in.readString();
         this.value = in.readString();
     }

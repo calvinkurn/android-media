@@ -11,6 +11,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -28,6 +29,7 @@ import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.affiliatecommon.data.network.TopAdsConstantKt;
 import com.tokopedia.analytics.Analytics;
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
@@ -40,10 +42,13 @@ import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.common.category.CategoryDbFlow;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.cpm.CharacterPerMinuteActivityLifecycleCallbacks;
+import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.newcart.data.DigitalDealsUrl;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
@@ -76,8 +81,8 @@ import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
+import com.tokopedia.product.detail.data.util.ProductDetailConstant;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
-import com.tokopedia.profile.data.network.TopAdsConstantKt;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.recentview.data.api.RecentViewUrl;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
@@ -86,7 +91,6 @@ import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
-import com.tokopedia.product.detail.data.util.ProductDetailConstant;
 import com.tokopedia.talk.common.data.TalkUrl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -119,7 +123,9 @@ import java.security.cert.X509Certificate;
 
 public class ConsumerMainApplication extends ConsumerRouterApplication implements
         MoEPushCallBacks.OnMoEPushNavigationAction,
-        InAppManager.InAppMessageListener {
+        InAppManager.InAppMessageListener,
+        CharacterPerMinuteInterface
+{
 
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
@@ -136,6 +142,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
+        com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
@@ -147,6 +154,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.PREINSTALL_NAME = BuildConfig.PREINSTALL_NAME;
         com.tokopedia.config.GlobalConfig.PREINSTALL_DESC = BuildConfig.PREINSTALL_DESC;
         com.tokopedia.config.GlobalConfig.PREINSTALL_SITE = BuildConfig.PREINSTALL_SITE;
+        com.tokopedia.config.GlobalConfig.APPLICATION_ID = BuildConfig.APPLICATION_ID;
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
 
@@ -176,13 +184,29 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!GlobalConfig.DEBUG) {
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
         }
+
+        cacheManager = new GlobalCacheManager();
+        cacheManager.setCacheDuration(600);
+        if(callback == null) {
+            callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
+        }
+        registerActivityLifecycleCallbacks(callback);
     }
+
+    CharacterPerMinuteActivityLifecycleCallbacks callback;
 
     @Override
     public void onTerminate() {
         super.onTerminate();
         TrackApp.getInstance().delete();
         TrackApp.deleteInstance();
+        unregisterActivityLifecycleCallbacks(callback);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        unregisterActivityLifecycleCallbacks(callback);
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -345,6 +369,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.network.constant.TkpdBaseURL.ACCOUNTS_DOMAIN =
                 ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         CMNotificationUrls.CM_TOKEN_UPDATE = ConsumerAppBaseUrl.CM_TOKEN_UPDATE;
+        tradein_common.Constants.LAKU6_BASEURL = ConsumerAppBaseUrl.LAKU6_BASE_URL;
+        com.tokopedia.inbox.common.ResolutionUrl.HOSTNAME=ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
+        com.tokopedia.network.constant.TkpdBaseURL.JS_DOMAIN=ConsumerAppBaseUrl.BASE_JS_DOMAIN;
 
     }
 
@@ -534,4 +561,23 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
     }
+
+    GlobalCacheManager cacheManager;
+
+    @Override
+    public void saveCPM(@NonNull String cpm) {
+        cacheManager.save(CharacterPerMinuteInterface.KEY, cpm, 60);
+    }
+
+    @Override
+    public String getCPM() {
+        return cacheManager.get(CharacterPerMinuteInterface.KEY);
+    }
+
+    @Override
+    public boolean isEnable() {
+        return getBooleanRemoteConfig("android_customer_typing_tracker_enabled", false);
+    }
+
+
 }

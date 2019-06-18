@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.subscriber;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.R;
@@ -36,6 +37,9 @@ public class GetAccountSettingConfigSubscriber extends BaseAccountSubscriber<Gra
 
     @Override
     protected void showErrorMessage(Throwable e) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            e.printStackTrace();
+        }
         String errorMessage = ErrorHandler.getErrorMessage(context, e);
 
         if (e instanceof UnknownHostException

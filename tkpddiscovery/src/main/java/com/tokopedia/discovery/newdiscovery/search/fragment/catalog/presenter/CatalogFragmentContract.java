@@ -7,6 +7,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +59,8 @@ public interface CatalogFragmentContract {
         void unSetTopAdsEndlessListener();
 
         void backToTop();
+
+        SearchParameter getSearchParameter();
     }
 
     interface Presenter extends SearchSectionFragmentPresenter<View> {

@@ -1,3 +1,5 @@
 <resources>
+    <style name="TokopediaTransparentStatus" parent="Theme.Tokopedia3">
 
+    </style>
 </resources>

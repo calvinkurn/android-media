@@ -147,7 +147,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
         userSession = new UserSession(getActivity());
         if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
-            digitalAnalytics = new DigitalAnalytics(((AbstractionRouter) getActivity().getApplicationContext()).getAnalyticTracker(), getActivity());
+            digitalAnalytics = new DigitalAnalytics();
         }
         if (getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
             digitalModuleRouter = (DigitalModuleRouter) getActivity().getApplicationContext();

@@ -30,7 +30,7 @@ fun ImageView.loadImageWithoutPlaceholder(url: String) {
     ImageHandler.loadImageWithoutPlaceholderAndError( this, url)
 }
 
-fun ImageView.loadDrawable(@DrawableRes drawableId: Int) {
+fun ImageView.loadImageDrawable(@DrawableRes drawableId: Int) {
     this.setImageDrawable(MethodChecker.getDrawable(context, drawableId))
 }
 

@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
@@ -15,13 +17,11 @@ import com.tokopedia.abstraction.common.network.exception.ResponseDataNullExcept
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
-import com.tokopedia.feedplus.data.pojo.TopAd;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
@@ -44,6 +44,7 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
@@ -552,11 +553,27 @@ public class WishListImpl implements WishList {
             for (int i = 0; i < dataWishlist.size(); i++) {
                 if (dataWishlist.get(i) != null) {
                     if (productId.equals(dataWishlist.get(i).getId())) {
-                        TrackingUtils.sendMoEngageRemoveWishlist(context, dataWishlist.get(i));
+                        sendMoEngageRemoveWishlist(context, dataWishlist.get(i));
                         break;
                     }
                 }
             }
+        }
+    }
+
+    public void sendMoEngageRemoveWishlist(Context context, Wishlist data) {
+        if (data != null) {
+            Map<String, Object> value = DataLayer.mapOf(
+                    AppEventTracking.MOENGAGE.PRODUCT_NAME, data.getName(),
+                    AppEventTracking.MOENGAGE.PRODUCT_ID, data.getId(),
+                    AppEventTracking.MOENGAGE.PRODUCT_URL, data.getUrl(),
+                    AppEventTracking.MOENGAGE.PRODUCT_IMAGE_URL, data.getImageUrl(),
+                    AppEventTracking.MOENGAGE.PRODUCT_PRICE, data.getPrice()
+            );
+            if (data.getShop() != null) {
+                value.put(AppEventTracking.MOENGAGE.SHOP_ID, data.getShop().getId());
+            }
+            TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.PRODUCT_REMOVED_FROM_WISHLIST);
         }
     }
 

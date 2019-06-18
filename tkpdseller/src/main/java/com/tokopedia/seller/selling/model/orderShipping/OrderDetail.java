@@ -100,6 +100,12 @@ public class OrderDetail {
     @SerializedName("detail_cancel_request")
     @Expose
     DetailCancelRequest detailCancelRequest;
+    @SerializedName("warehouse_id")
+    @Expose
+    Integer warehouseId;
+    @SerializedName("fulfill_by")
+    @Expose
+    Integer fulfillBy;
 
     /**
      *
@@ -621,4 +627,19 @@ public class OrderDetail {
         this.detailOrderStatus = detailOrderStatus;
     }
 
+    public Integer getWarehouseId() {
+        return warehouseId;
+    }
+
+    public void setWarehouseId(Integer warehouseId) {
+        this.warehouseId = warehouseId;
+    }
+
+    public Integer getFulfillBy() {
+        return fulfillBy;
+    }
+
+    public void setFulfillBy(Integer fulfillBy) {
+        this.fulfillBy = fulfillBy;
+    }
 }

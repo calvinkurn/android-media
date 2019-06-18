@@ -16,7 +16,6 @@ import android.view.*
 import android.widget.AdapterView
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.component.ToasterError
@@ -24,6 +23,7 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.report.model.reportType.ReportType
 import com.tokopedia.product.report.view.adapter.ReportTypeAdapter
 import com.tokopedia.product.report.view.tracking.ProductReportTracking
@@ -40,7 +40,7 @@ class ReportDialogFragment : DialogFragment() {
     var reportTypeList: List<ReportType> = listOf()
 
     private val productReportTracking: ProductReportTracking by lazy {
-        ProductReportTracking((context?.applicationContext as? AbstractionRouter)?.analyticTracker)
+        ProductReportTracking()
     }
 
     companion object {
@@ -182,7 +182,7 @@ class ReportDialogFragment : DialogFragment() {
     private fun onErrorGetReportType(throwable: Throwable) {
         activity?.run {
             ToasterError.make(findViewById(android.R.id.content),
-                    ErrorHandler.getErrorMessage(context, throwable),
+                ProductDetailErrorHandler.getErrorMessage(this, throwable),
                     ToasterError.LENGTH_LONG)
                     .show()
         }
@@ -205,7 +205,7 @@ class ReportDialogFragment : DialogFragment() {
     private fun onErrorReportProduct(throwable: Throwable) {
         activity?.run {
             ToasterError.make(findViewById(android.R.id.content),
-                    ErrorHandler.getErrorMessage(context, throwable),
+                ProductDetailErrorHandler.getErrorMessage(this, throwable),
                     ToasterError.LENGTH_LONG)
                     .show()
         }

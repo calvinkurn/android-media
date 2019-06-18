@@ -73,6 +73,7 @@ import com.tokopedia.sessioncommon.data.model.SecurityPojo;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -832,20 +833,19 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     public void onSuccessLoginEmail() {
         dismissLoadingLogin();
         analytics.eventSuccessLoginEmail();
-        if (getActivity() != null) {
-            ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
-                    (userSession.getUserId(),
-                            userSession.getName(),
-                            userSession.getEmail(),
-                            userSession.getPhoneNumber(),
-                            userSession.isGoldMerchant(),
-                            userSession.getShopName(),
-                            userSession.getShopId(),
-                            userSession.hasShop(),
-                            LoginRegisterAnalytics.LABEL_EMAIL
-                    );
+        if (TrackApp.getInstance()!= null) {
+            TrackApp.getInstance().getMoEngage().setMoEUserAttributesLogin(
+                    userSession.getUserId(),
+                    userSession.getName(),
+                    userSession.getEmail(),
+                    userSession.getPhoneNumber(),
+                    userSession.isGoldMerchant(),
+                    userSession.getShopName(),
+                    userSession.getShopId(),
+                    userSession.hasShop(),
+                    LoginRegisterAnalytics.LABEL_EMAIL
+            );
         }
-
         onSuccessLogin();
     }
 
@@ -871,18 +871,18 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
         dismissLoadingLogin();
 
         analytics.trackEventSuccessLoginSosmed(loginMethod);
-        if (getActivity() != null) {
-            ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
-                    (userSession.getUserId(),
-                            userSession.getName(),
-                            userSession.getEmail(),
-                            userSession.getPhoneNumber(),
-                            userSession.isGoldMerchant(),
-                            userSession.getShopName(),
-                            userSession.getShopId(),
-                            userSession.hasShop(),
-                            LoginRegisterAnalytics.LABEL_EMAIL
-                    );
+        if (TrackApp.getInstance()!= null) {
+            TrackApp.getInstance().getMoEngage().setMoEUserAttributesLogin(
+                    userSession.getUserId(),
+                    userSession.getName(),
+                    userSession.getEmail(),
+                    userSession.getPhoneNumber(),
+                    userSession.isGoldMerchant(),
+                    userSession.getShopName(),
+                    userSession.getShopId(),
+                    userSession.hasShop(),
+                    LoginRegisterAnalytics.LABEL_EMAIL
+            );
         }
         onSuccessLogin();
     }

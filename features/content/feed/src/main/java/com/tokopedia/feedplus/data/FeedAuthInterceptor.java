@@ -42,7 +42,8 @@ public class FeedAuthInterceptor extends TkpdAuthInterceptor {
                 authKey,
                 contentTypeHeader,
                 userSession.getUserId(),
-                userSession.getDeviceId());
+                userSession.getDeviceId(),
+                userSession);
         headerMap.put(HEADER_TKPD_USER_ID, userSession.getUserId());
         headerMap.put(HEADER_ACC_AUTH, BEARER + userSession.getAccessToken());
         headerMap.put(HEADER_OS_VERSION, String.valueOf(Build.VERSION.SDK_INT));

@@ -2,81 +2,69 @@ package com.tokopedia.navigation.presentation.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.design.label.LabelView;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.navigation.R;
 
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 
+import java.util.List;
+
 
 /**
  * Created by meta on 15/07/18.
  */
-public class InboxAdapter extends BaseListAdapter<Inbox, InboxAdapter.InboxViewHolder> {
+public class InboxAdapter extends BaseAdapter<InboxAdapterTypeFactory> {
 
-    public InboxAdapter(Context context) {
-        super(context);
+    private InboxAdapterTypeFactory typeFactory;
+
+    public InboxAdapter(InboxAdapterTypeFactory adapterTypeFactory, List<Visitable> visitables) {
+        super(adapterTypeFactory, visitables);
+        this.typeFactory = adapterTypeFactory;
     }
 
     public void updateValue(NotificationsModel entity) {
-        if (items != null && items.size() > 0) {
-            items.get(InboxFragment.CHAT_MENU)
-                    .setTotalBadge(entity.getChat().getUnreads());
-
-            items.get(InboxFragment.DISCUSSION_MENU)
-                    .setTotalBadge(entity.getInbox().getTalk());
-
-            items.get(InboxFragment.REVIEW_MENU)
-                    .setTotalBadge(entity.getInbox().getReview());
-
-            items.get(InboxFragment.HELP_MENU)
-                    .setTotalBadge(entity.getInbox().getTicket());
+        if(visitables !=null && visitables.size() > 0){
+            if(visitables.get(InboxFragment.CHAT_MENU) instanceof Inbox){
+                ((Inbox) visitables.get(InboxFragment.CHAT_MENU))
+                        .setTotalBadge(entity.getChat().getUnreads());
+            }
+            if(visitables.get(InboxFragment.DISCUSSION_MENU) instanceof Inbox){
+                ((Inbox) visitables.get(InboxFragment.DISCUSSION_MENU))
+                        .setTotalBadge(entity.getInbox().getTalk());
+            }
+            if(visitables.get(InboxFragment.REVIEW_MENU) instanceof Inbox){
+                ((Inbox) visitables.get(InboxFragment.REVIEW_MENU))
+                        .setTotalBadge(entity.getInbox().getReview());
+            }
+            if(visitables.get(InboxFragment.HELP_MENU) instanceof Inbox){
+                ((Inbox) visitables.get(InboxFragment.HELP_MENU))
+                        .setTotalBadge(entity.getInbox().getTicket());
+            }
         }
         notifyDataSetChanged();
     }
 
-    @NonNull
     @Override
-    public InboxViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new InboxViewHolder(getView(parent, viewType), onItemClickListener);
+    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        return typeFactory.createViewHolder(view, viewType);
     }
 
     @Override
-    protected int getItemResourceLayout(int viewType) {
-        return R.layout.item_single_notification;
+    public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        holder.bind(visitables.get(position));
     }
 
-    class InboxViewHolder extends BaseViewHolder<Inbox> {
-
-        private LabelView labelView;
-
-        InboxViewHolder(View itemView, OnItemClickListener onItemClickListener) {
-            super(itemView, onItemClickListener);
-            labelView = itemView.findViewById(R.id.labelview);
-        }
-
-
-        @Override
-        public void bind(Inbox item) {
-            labelView.setImageResource(item.getIcon());
-            labelView.setTitle(context.getString(item.getTitle()));
-            labelView.setSubTitle(context.getString(item.getSubtitle()));
-            if (item.getTotalBadge() != null
-                    && !item.getTotalBadge().isEmpty()
-                    && !item.getTotalBadge().equalsIgnoreCase("0")) {
-                try {
-                    labelView.setBadgeCounter(Integer.parseInt(item.getTotalBadge()));
-                } catch (NumberFormatException e) {
-                    //ignore
-                }
-            } else {
-                labelView.setBadgeCounter(0);
-            }
-            labelView.showRightArrow(false);
-        }
+    @Override
+    public int getItemViewType(int position) {
+        return visitables.get(position).type(typeFactory);
     }
 }

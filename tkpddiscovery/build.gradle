@@ -92,10 +92,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.apacheLang
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.miscDependencies.chips
+    
+    implementation project(rootProject.ext.libraries.track)
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

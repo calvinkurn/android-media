@@ -4,6 +4,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 
 /**
  * Created by milhamj on 18/01/18.
@@ -39,7 +40,6 @@ public abstract class EndlessScrollRecycleListener extends RecyclerView.OnScroll
         RecyclerView.LayoutManager layoutManager = view.getLayoutManager();
         int lastVisibleItemPosition = 0;
         int totalItemCount = layoutManager.getItemCount();
-
         if (layoutManager instanceof StaggeredGridLayoutManager) {
             int[] lastVisibleItemPositions
                     = ((StaggeredGridLayoutManager) layoutManager)
@@ -56,26 +56,24 @@ public abstract class EndlessScrollRecycleListener extends RecyclerView.OnScroll
                     = linearLayoutManager.findLastVisibleItemPosition();
         }
 
-        if (totalItemCount < previousTotalItemCount) {
-            this.currentPage = this.startingPageIndex;
-            this.previousTotalItemCount = totalItemCount;
-            if (totalItemCount == 0) {
-                this.loading = true;
-            }
-        }
-
-        if (loading && (totalItemCount > previousTotalItemCount)) {
-            loading = false;
-            previousTotalItemCount = totalItemCount;
-        }
-
-        if (!loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
-            currentPage++;
+        int visibleItemCount = view.getChildCount();
+        // If it isn’t currently loading, we check to see if we have breached
+        // the visibleThreshold and need to reload more data.
+        // If we do need to reload some more data, we execute onLoadMore to fetch the data.
+        if (isOnScrollDown(dy) && (totalItemCount - visibleItemCount) <= (lastVisibleItemPosition + visibleThreshold)) {
             onLoadMore(currentPage, totalItemCount);
-            loading = true;
         }
 
         onScroll(lastVisibleItemPosition);
+    }
+
+    /**
+     *
+     * @param dy The amount of vertical scroll
+     * @return dy > 0
+     */
+    public boolean isOnScrollDown(int dy) {
+        return dy > 0;
     }
 
     public void resetState() {

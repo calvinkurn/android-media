@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -826,50 +827,5 @@ public class BadgeView extends View implements Badge {
     public PointF getDragCenter() {
         if (mDraggable && mDragging) return mDragCenter;
         return null;
-    }
-
-    private class BadgeContainer extends ViewGroup {
-
-        @Override
-        protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
-            if(!(getParent() instanceof RelativeLayout)){
-                super.dispatchRestoreInstanceState(container);
-            }
-        }
-
-        public BadgeContainer(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onLayout(boolean changed, int l, int t, int r, int b) {
-            for (int i = 0; i < getChildCount(); i++) {
-                View child = getChildAt(i);
-                child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
-            }
-        }
-
-        @Override
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            View targetView = null, badgeView = null;
-            for (int i = 0; i < getChildCount(); i++) {
-                View child = getChildAt(i);
-                if (!(child instanceof BadgeView)) {
-                    targetView = child;
-                } else {
-                    badgeView = child;
-                }
-            }
-            if (targetView == null) {
-                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            } else {
-                targetView.measure(widthMeasureSpec, heightMeasureSpec);
-                if (badgeView != null) {
-                    badgeView.measure(MeasureSpec.makeMeasureSpec(targetView.getMeasuredWidth(), MeasureSpec.EXACTLY),
-                            MeasureSpec.makeMeasureSpec(targetView.getMeasuredHeight(), MeasureSpec.EXACTLY));
-                }
-                setMeasuredDimension(targetView.getMeasuredWidth(), targetView.getMeasuredHeight());
-            }
-        }
     }
 }

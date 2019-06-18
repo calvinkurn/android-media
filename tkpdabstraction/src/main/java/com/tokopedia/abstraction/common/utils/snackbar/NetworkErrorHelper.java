@@ -182,6 +182,10 @@ public class NetworkErrorHelper {
     }
 
     public static void showEmptyState(Context context, final View rootview, final RetryClickedListener listener) {
+        if (context == null) {
+            return;
+        }
+
         try {
             rootview.findViewById(R.id.main_retry).setVisibility(View.VISIBLE);
         } catch (NullPointerException e) {

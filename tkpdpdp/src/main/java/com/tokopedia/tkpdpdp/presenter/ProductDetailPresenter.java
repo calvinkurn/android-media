@@ -59,6 +59,8 @@ public interface ProductDetailPresenter {
 
     void processToCart(@NonNull Activity context, @NonNull ProductCartPass data);
 
+    void processToShippingTradeIn(Activity context, Intent shippingIntent, ProductCartPass data);
+
     void sendAnalytics(@NonNull ProductDetailData successResult);
 
     void processToPicturePreview(@NonNull Context context, @NonNull Bundle bundle);

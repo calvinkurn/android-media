@@ -79,6 +79,12 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         return visitables.get(position).type(adapterTypeFactory);
     }
 
+    @Override
+    public void onViewRecycled(@NonNull AbstractViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.onViewRecycled();
+    }
+
     public List<Visitable> getList() {
         return visitables;
     }

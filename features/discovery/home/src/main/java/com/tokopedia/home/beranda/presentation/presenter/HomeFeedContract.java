@@ -10,6 +10,6 @@ public class HomeFeedContract {
     }
 
     public interface View extends BaseListViewListener<HomeFeedViewModel> {
-
+        void onProductImpression(HomeFeedViewModel homeFeedViewModel, int position);
     }
 }

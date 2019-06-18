@@ -2,10 +2,10 @@ package com.tokopedia.profile.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.affiliatecommon.data.network.TOPADS_BASE_URL
+import com.tokopedia.affiliatecommon.data.network.TopAdsApi
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.profile.data.network.TOPADS_BASE_URL
-import com.tokopedia.profile.data.network.TopAdsApi
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides

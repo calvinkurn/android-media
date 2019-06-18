@@ -40,8 +40,12 @@ data class Variant(
         @Expose
         val options: List<Option> = listOf()
 ) {
-    val isSizeIdentifier: Boolean
-        get() = "size".equals(identifier, false)
+        companion object {
+                const val SIZE = "size" // this is from api
+                const val COLOR = "colour" // this is from api
+        }
+        val isSizeIdentifier: Boolean
+                get() = SIZE.equals(identifier, false)
 }
 
 data class Option(

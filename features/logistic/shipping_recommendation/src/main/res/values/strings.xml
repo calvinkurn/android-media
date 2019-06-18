@@ -10,5 +10,9 @@
     <string name="label_no_courier_bottomsheet_message">Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda.</string>
     <string name="label_text_promo_potency">Potensi Promo</string>
     <string name="message_cannot_apply_courier_promo" formatted="false">Promo ini hanya berlaku untuk pembelian dengan kurir %s</string>
+    <string name="tkpd_promo_brand">Tokopedia Promo</string>
+    <string name="shiprecc_next">Lanjutkan</string>
+    <string name="shiprecc_cancel">Batalkan</string>
+    <string name="logistic_promo_serviceid_mismatch_message">Tidak tersedia kurir untuk promo tersebut</string>
 
 </resources>

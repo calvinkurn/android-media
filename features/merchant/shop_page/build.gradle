@@ -38,6 +38,7 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.flexBoxLayout){
         exclude group: 'com.android.support'
     }
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.shopEtalasePicker)
@@ -67,6 +68,8 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    
+    implementation project(rootProject.ext.libraries.track)
 }
 
 apply from: '../../../publish_local.gradle'

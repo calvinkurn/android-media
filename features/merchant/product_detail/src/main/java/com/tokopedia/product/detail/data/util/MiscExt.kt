@@ -1,10 +1,10 @@
 package com.tokopedia.product.detail.data.util
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.common.data.model.constant.TimeUnitTypeDef
+import com.tokopedia.product.detail.common.data.model.product.PreOrder
+import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 
 inline fun <reified T> GraphqlResponse.getSuccessData(): T {
     val error = getError(T::class.java)
@@ -15,11 +15,15 @@ inline fun <reified T> GraphqlResponse.getSuccessData(): T {
     }
 }
 
-fun Context?.getIntentUrl(url: String): Intent{
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            .addCategory(Intent.CATEGORY_DEFAULT)
-            .addCategory(Intent.CATEGORY_BROWSABLE)
+val WarehouseInfo.origin: String?
+    get() {
+        return if (districtId.isNotBlank() && (postalCode.isNotBlank() || geoLocation.isNotBlank())){
+            arrayOf(districtId, postalCode, geoLocation).joinToString("|")
+        } else null
+    }
 
-    this?.let { intent.`package` = it.packageName }
-    return intent
-}
+val PreOrder.timeUnitValue: String
+    get() = if (timeUnit.toLowerCase() == TimeUnitTypeDef.DAY.toLowerCase()) "Hari"
+            else if ((timeUnit.toLowerCase() == TimeUnitTypeDef.WEEK.toLowerCase())) "Minggu"
+            else if ((timeUnit.toLowerCase() == TimeUnitTypeDef.MONTH.toLowerCase())) "Bulan"
+            else ""

@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
@@ -214,7 +213,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        viewState.removeMessageOnReplyBox()
         viewState.removeDummyIfExist(visitable)
         viewState.onReceiveMessageEvent(visitable)
     }

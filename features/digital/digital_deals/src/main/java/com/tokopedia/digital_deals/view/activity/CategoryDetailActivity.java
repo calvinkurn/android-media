@@ -17,15 +17,18 @@ import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
 import com.tokopedia.digital_deals.view.utils.CategoryDetailCallbacks;
+import com.tokopedia.digital_deals.view.utils.Utils;
 
 public class CategoryDetailActivity extends DealsBaseActivity implements CategoryDetailCallbacks {
 
     private final String BRAND_FRAGMENT = "BRAND_FRAGMENT";
     public static final String CATEGORY_NAME = "CATEGORY_NAME";
     public static final String CATEGORIES_DATA = "CATEGORIES_DATA";
+    public static final String FROM_HOME = "FROM_HOME";
     private String categoryName;
 
     @Override
@@ -44,12 +47,14 @@ public class CategoryDetailActivity extends DealsBaseActivity implements Categor
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(new Intent(context, DealsHomeActivity.class));
 
+        Location location = Utils.getSingletonInstance().getLocation(context);
         Uri.Builder uri = Uri.parse(deepLink).buildUpon();
         String searchName = extras.getString("search_name");
         CategoriesModel categoriesModel = new CategoriesModel();
         categoriesModel.setCategoryId(Integer.parseInt(extras.getString("category_id")));
         categoriesModel.setTitle(extras.getString("name"));
-        categoriesModel.setCategoryUrl(DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_CATEGORY + searchName);
+        String categoryUrl = searchName + "?"+ Utils.QUERY_PARAM_CITY_ID + "=" + location.getId();
+        categoriesModel.setCategoryUrl(DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_CATEGORY + categoryUrl);
 
         if (TextUtils.isEmpty(categoriesModel.getTitle())) {
             if (!TextUtils.isEmpty(searchName)) {
@@ -84,7 +89,9 @@ public class CategoryDetailActivity extends DealsBaseActivity implements Categor
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (getIntent() != null && getIntent().getBooleanExtra(CategoryDetailActivity.FROM_HOME, false)) {
+            overridePendingTransition(R.anim.slide_in_left_brands, R.anim.slide_out_right_brands);
+        }
     }
 
     @Override

@@ -17,6 +17,7 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.adapter.ImagePickerThumbnailAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hendry on 24/05/18.
@@ -82,8 +83,8 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
         this.onImagePickerThumbnailListWidgetListener = onImagePickerThumbnailListWidgetListener;
     }
 
-    public void setData(ArrayList<String> imagePathList, @StringRes int primaryImageStringRes,
-                        ArrayList<Integer> placeholderDrawableList) {
+    public void setData(List<String> imagePathList, @StringRes int primaryImageStringRes,
+                        List<Integer> placeholderDrawableList) {
         imagePickerThumbnailAdapter.setData(imagePathList, primaryImageStringRes, placeholderDrawableList);
     }
 
@@ -100,7 +101,7 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
     }
 
     public void reorderPosition(int fromPosition, int toPosition) {
-        ArrayList<String> imagePathList = this.imagePickerThumbnailAdapter.getImagePathList();
+        List<String> imagePathList = this.imagePickerThumbnailAdapter.getImagePathList();
         if (fromPosition > -1) {
             String imagePathFrom = imagePathList.get(fromPosition);
             imagePathList.remove(fromPosition);

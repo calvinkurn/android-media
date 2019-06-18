@@ -1,0 +1,9 @@
+query getProductPurchaseProtection($param: PPItemDetailRequest!){
+    ppGetItemDetailPage(params: $param) {
+        protectionAvailable
+        title
+        subTitle
+        titlePDP
+        subTitlePDP
+    }
+}

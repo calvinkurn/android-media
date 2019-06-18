@@ -101,6 +101,9 @@ class CampaignModule {
                 setTypeClass(SellerStatus.Response::class.java)
             }
 
+    @CampaignScope
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context) : UserSessionInterface = UserSession(context)
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
 }

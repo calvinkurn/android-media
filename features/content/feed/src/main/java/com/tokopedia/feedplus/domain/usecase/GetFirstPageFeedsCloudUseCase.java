@@ -10,6 +10,8 @@ import com.tokopedia.kolcommon.data.pojo.WhitelistQuery;
 import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -101,6 +103,9 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
             domain.setImage(query.getWhitelist().getImageUrl() != null ?
                     query.getWhitelist().getImageUrl() :
                     "");
+            domain.setAuthors(query.getWhitelist().getAuthors() != null ?
+                    query.getWhitelist().getAuthors() :
+                    new ArrayList<>());
             return domain;
         }
     }

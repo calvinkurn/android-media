@@ -23,6 +23,7 @@ import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
@@ -41,6 +42,7 @@ import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +110,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                                     // go to empty state if all data has been deleted
                                     resetPageAndSearch();
                                 }
-                                UnifyTracking.eventDraftProductClicked(ProductDraftListFragment.this.getActivity(), AppEventTracking.EventLabel.DELETE_DRAFT);
+                                eventDraftProductClicked(AppEventTracking.EventLabel.DELETE_DRAFT);
                             }
                         }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
@@ -202,7 +204,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
         } else {
             intent = ProductDraftAddActivity.Companion.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
         }
-        UnifyTracking.eventDraftProductClicked(getActivity(), AppEventTracking.EventLabel.EDIT_DRAFT);
+        eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
         startActivity(intent);
     }
 
@@ -311,8 +313,16 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onEmptyButtonClicked() {
-        UnifyTracking.eventDraftProductClicked(getActivity(), AppEventTracking.EventLabel.ADD_PRODUCT);
+        eventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
         startActivity(new Intent(getActivity(), ProductAddNameCategoryActivity.class));
+    }
+
+    public void eventDraftProductClicked(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CLICK_DRAFT_PRODUCT,
+                AppEventTracking.Category.DRAFT_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                label);
     }
 
     @Override

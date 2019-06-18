@@ -24,6 +24,39 @@ public class TokoPointStatusTierEntity {
     @SerializedName("nameDesc")
     private String nameDesc;
 
+    @SerializedName("eggImageHomepageURL")
+    private String eggImageHomepageURL;
+
+    @SerializedName("backgroundImgURL")
+    private String backgroundImgURL;
+
+    @SerializedName("backgroundImgURLMobile")
+    private String backgroundImgURLMobile;
+
+    public String getEggImageHomepageURL() {
+        return eggImageHomepageURL;
+    }
+
+    public void setEggImageHomepageURL(String eggImageHomepageURL) {
+        this.eggImageHomepageURL = eggImageHomepageURL;
+    }
+
+    public String getBackgroundImgURL() {
+        return backgroundImgURL;
+    }
+
+    public void setBackgroundImgURL(String backgroundImgURL) {
+        this.backgroundImgURL = backgroundImgURL;
+    }
+
+    public String getBackgroundImgURLMobile() {
+        return backgroundImgURLMobile;
+    }
+
+    public void setBackgroundImgURLMobile(String backgroundImgURLMobile) {
+        this.backgroundImgURLMobile = backgroundImgURLMobile;
+    }
+
     public int getId() {
         return id;
     }

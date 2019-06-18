@@ -48,7 +48,7 @@ import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant;
-import com.tokopedia.product.detail.common.data.model.ProductInfo;
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.referral.view.activity.ReferralActivity;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
@@ -61,6 +61,7 @@ import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
+import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
@@ -319,6 +320,18 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openFlight();
                     screenName = "";
                     break;
+                case DeepLinkChecker.PROFILE:
+                    openProfile(linkSegment);
+                    screenName = "";
+                    break;
+                case DeepLinkChecker.CONTENT:
+                    openContent(linkSegment);
+                    screenName = "";
+                    break;
+                case DeepLinkChecker.SMCREFERRAL:
+                    openSmcReferralPage(linkSegment, uriData);
+                    screenName = AppScreen.SCREEN_WEBVIEW;
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -406,6 +419,33 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         viewListener.goToPage(intent);
     }
 
+    private void openProfile(List<String> linkSegment) {
+        if (linkSegment.size() >= 2) {
+            String userId = linkSegment.get(1);
+            Intent intent = RouteManager.getIntent(
+                    context,
+                    ApplinkConst.PROFILE.replace("{user_id}", userId)
+            );
+            viewListener.goToPage(intent);
+        }
+    }
+
+    private void openContent(List<String> linkSegment) {
+        if (linkSegment.size() >= 2) {
+            String contentId = linkSegment.get(1);
+            Intent intent = RouteManager.getIntent(context, ApplinkConst.CONTENT_DETAIL, contentId);
+            viewListener.goToPage(intent);
+        }
+    }
+
+    private void openSmcReferralPage(List<String> linkSegment, Uri uriData) {
+        if (linkSegment != null && linkSegment.size() > 0) {
+            String url=ApplinkConst.SMC_REFERRAL+"?url="+uriData.toString();
+            Intent intent=RouteManager.getIntent(context, url);
+            viewListener.goToPage(intent);
+        }
+    }
+    
     private void login(Uri uriData) {
         interactor.handleAccounts(parseUriData(uriData), new SignInInteractor.SignInListener() {
             @Override
@@ -557,30 +597,38 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openProduct(final List<String> linkSegment, final Uri uriData) {
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, linkSegment.get(1));
-        parameters.put(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, linkSegment.get(0));
-        getProductUseCase.setRequestParams(parameters);
-        viewListener.showLoading();
-        getProductUseCase.execute(response -> {
-            viewListener.finishLoading();
-            if (response != null && response.getData() != null && response.getData().getBasic().getId() > 0) {
-                try {
-                    context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                            String.valueOf(response.getData().getBasic().getId())));
-                } catch (Exception e) {
+        RequestParams params = RequestParams.create();
+        params.putString("shop_domain", linkSegment.get(0));
+        getShopInfoUseCase.execute(params, new Subscriber<ShopModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                viewListener.finishLoading();
+                Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
+                context.startActivity(intent);
+                context.finish();
+            }
+
+            @Override
+            public void onNext(ShopModel shopModel) {
+                viewListener.finishLoading();
+                if (shopModel != null && shopModel.info != null) {
+                    context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
+                            linkSegment.get(0), linkSegment.get(1)));
+                } else {
+                    if (!GlobalConfig.DEBUG) {
+                        Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
+                        Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
+                    }
                     Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
                     context.startActivity(intent);
                 }
                 context.finish();
             }
-            return null;
-        }, throwable -> {
-            viewListener.finishLoading();
-            Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
-            context.startActivity(intent);
-            context.finish();
-            return null;
         });
     }
 
@@ -785,7 +833,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     @Override
     public void sendAuthenticatedEvent(Uri uriData, String screenName) {
         try {
-            URL obtainedURL = new URL(uriData.getScheme(), uriData.getHost(), uriData.getPath());
+            URL obtainedURL = new URL(uriData.toString());
             if (obtainedURL != null)
                 ScreenTracking.sendScreen(context, screenName, obtainedURL.toString());
         } catch (MalformedURLException e) {

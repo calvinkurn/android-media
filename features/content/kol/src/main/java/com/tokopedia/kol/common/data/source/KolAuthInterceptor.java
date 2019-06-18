@@ -39,7 +39,8 @@ public class KolAuthInterceptor extends TkpdAuthInterceptor {
                 authKey,
                 contentTypeHeader,
                 userSession.getUserId(),
-                userSession.getDeviceId());
+                userSession.getDeviceId(),
+                userSession);
         headerMap.put(HEADER_TKPD_USER_ID, userSession.getUserId());
         headerMap.put(HEADER_OS_VERSION, String.valueOf(Build.VERSION.SDK_INT));
         return headerMap;

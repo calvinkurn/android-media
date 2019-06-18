@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -184,7 +185,7 @@ public interface FeedPlus {
 
         int getAdapterListSize();
 
-        void onWhitelistClicked();
+        void onWhitelistClicked(WhitelistViewModel element);
 
         void onSuccessToggleFavoriteShop(int rowNumber, int adapterPosition);
 

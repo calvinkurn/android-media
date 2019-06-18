@@ -26,7 +26,6 @@ import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage
-import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity.PAUSE_RESUME_TRESHOLD_TIME
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
@@ -273,6 +272,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
+    private fun onNoInternetConnection(): () -> Unit {
+        return {
+            performanceMonitoring.stopTrace()
+            viewState.onNoInternetConnection()
+            onToolbarEnabled(false)
+        }
+    }
+
     override fun onToolbarEnabled(isEnabled: Boolean) {
         optionsMenuEnable = isEnabled
 
@@ -287,7 +294,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onRetryGetInfo() {
-        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo())
+        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo(), onNoInternetConnection())
     }
 
     private fun setExitDialog(exitMessage: ExitMessage?) {
@@ -313,7 +320,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
                     activity?.let {
                         if (it.isTaskRoot) {
-                            (activity as PlayActivity).startActivity(getInboxChannelsIntent())
+                            getInboxChannelsIntent()?.let {startActivity(it)}
                         }
                     }
                     activity?.finish()
@@ -434,7 +441,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun getInboxChannelsIntent(): Intent? {
-        return (context as GroupChatModuleRouter).getInboxChannelsIntent(activity)
+        return (activity?.applicationContext as GroupChatModuleRouter).getInboxChannelsIntent(activity)
     }
 
     override fun onOpenWebSocket() {
@@ -473,7 +480,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun backToChannelList() {
         activity?.let {
             if (it.isTaskRoot) {
-                startActivity((it.applicationContext as GroupChatModuleRouter).getInboxChannelsIntent(context))
+                startActivity(getInboxChannelsIntent())
             }
             it.finish()
             it.onBackPressed()
@@ -540,7 +547,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun setSnackBarRetryConnectingWebSocket() {
         if (userSession.isLoggedIn && !viewState.errorViewShown()) {
-            snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.sendbird_error_retry))
+            snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.error_websocket_play))
             snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
                 it.setAction(getString(R.string.retry)) {
@@ -566,7 +573,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun loadFirstTime() {
-        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo())
+        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo(), onNoInternetConnection())
     }
 
     override fun addIncomingMessage(it: Visitable<*>) {
@@ -616,6 +623,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
+    override fun onFloatingIconClicked(it: DynamicButtonsViewModel.Button, applink: String) {
+        when (it.contentType) {
+            DynamicButtonsViewModel.TYPE_REDIRECT_EXTERNAL -> openRedirectUrl(applink)
+            DynamicButtonsViewModel.TYPE_OVERLAY_CTA -> viewState.onShowOverlayCTAFromDynamicButton(it)
+            DynamicButtonsViewModel.TYPE_OVERLAY_WEBVIEW -> viewState.onShowOverlayWebviewFromDynamicButton(it)
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         timeStampAfterPause = System.currentTimeMillis()
@@ -642,6 +657,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
             viewState.getChannelInfo()?.let {
                 presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
             }
+
+            viewState.autoPlayVideo()
 
             if (notifReceiver == null) {
                 notifReceiver = object : BroadcastReceiver() {
@@ -671,14 +688,17 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun canResume(): Boolean {
-        return timeStampAfterResume == 0L || timeStampAfterResume > 0
-                && System.currentTimeMillis() - timeStampAfterResume > PAUSE_RESUME_TRESHOLD_TIME
+//        return timeStampAfterResume == 0L || timeStampAfterResume > 0
+//                && System.currentTimeMillis() - timeStampAfterResume > PAUSE_RESUME_TRESHOLD_TIME
+        return true
     }
 
     private fun canPause(): Boolean {
-        return (timeStampAfterPause == 0L || (timeStampAfterPause > 0
-                && System.currentTimeMillis() - timeStampAfterPause > PAUSE_RESUME_TRESHOLD_TIME
-                && canResume()))
+//        return (timeStampAfterPause == 0L || (timeStampAfterPause > 0
+//                && System.currentTimeMillis() - timeStampAfterPause > PAUSE_RESUME_TRESHOLD_TIME
+//                && canResume()))
+
+        return true
     }
 
     private fun kickIfIdleForTooLong() {
@@ -723,7 +743,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onDestroy() {
-        viewState.destroy()
+        viewState?.destroy()
         presenter.detachView()
         super.onDestroy()
     }

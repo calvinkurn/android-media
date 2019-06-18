@@ -4,7 +4,6 @@ import android.content.Context
 import com.google.gson.Gson
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
@@ -59,12 +58,6 @@ class ChatModule {
     private val NET_WRITE_TIMEOUT = 60
     private val NET_CONNECT_TIMEOUT = 60
     private val NET_RETRY = 1
-
-    @ChatScope
-    @Provides
-    fun provideAnalyticTracker(@ApplicationContext context: Context): AnalyticTracker {
-        return (context as AbstractionRouter).analyticTracker
-    }
 
     @ChatScope
     @Provides

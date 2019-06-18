@@ -65,22 +65,6 @@ public class TkpdWebView extends WebView {
         }
     }
 
-    /**
-     * use loadAuthUrl(String url, String userId, String accessToken) instead.
-     */
-    @Deprecated
-    public void loadAuthUrl(String url, String userId) {
-        if (TextUtils.isEmpty(userId)) {
-            loadUrl(url);
-        } else {
-            loadUrl(url, AuthUtil.generateHeaders(
-                    Uri.parse(url).getPath(),
-                    getQuery(Uri.parse(url).getQuery()),
-                    GET,
-                    AuthUtil.KEY.KEY_WSV4, userId));
-        }
-    }
-
     public void loadAuthUrl(String url, String userId, String accessToken) {
         if (TextUtils.isEmpty(userId)) {
             loadUrl(url);

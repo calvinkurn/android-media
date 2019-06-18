@@ -6,7 +6,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 import java.util.List;
 

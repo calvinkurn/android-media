@@ -48,7 +48,7 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        return inflater.inflate(R.layout.fragment_profile_empty, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,11 +65,13 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
-        GraphqlClient.init(context!!)
-        DaggerProfileComponent.builder()
-                .kolComponent(KolComponentInstance.getKolComponent(activity!!.application))
-                .build()
-                .inject(this)
+        activity?.let {
+            GraphqlClient.init(it)
+            DaggerProfileComponent.builder()
+                    .kolComponent(KolComponentInstance.getKolComponent(it.application))
+                    .build()
+                    .inject(this)
+        }
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -78,7 +80,7 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     override fun loadData(page: Int) = presenter.getProfileHeader(userId)
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return ProfileEmptyTypeFactoryImpl()
+        return ProfileEmptyTypeFactoryImpl(this)
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
@@ -103,7 +105,6 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
 
     override fun followUnfollowUser(userId: Int, follow: Boolean) {
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

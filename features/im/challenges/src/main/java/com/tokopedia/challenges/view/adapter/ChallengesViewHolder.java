@@ -38,7 +38,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         tvTimeRemaining = view.findViewById(R.id.tv_time_remaining);
         tvStatus = view.findViewById(R.id.tv_status);
         imgShare = view.findViewById(R.id.img_share);
-        analytics = new ChallengesGaAnalyticsTracker(context);
+        analytics = new ChallengesGaAnalyticsTracker();
     }
 
     void bind(Result challengesResult, boolean isPastChallenge) {

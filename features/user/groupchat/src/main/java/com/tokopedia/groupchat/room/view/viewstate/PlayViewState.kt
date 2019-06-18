@@ -55,4 +55,6 @@ interface PlayViewState {
     fun autoAddSprintSale()
     fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel)
     fun onShowOverlayFromVoteComponent(voteUrl: String)
+    fun autoPlayVideo()
+    fun onNoInternetConnection()
 }

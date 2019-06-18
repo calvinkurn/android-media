@@ -29,11 +29,17 @@ import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 
 import java.io.File;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 
@@ -104,7 +110,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         if (getArguments() != null) {
             viewMode = getArguments().getInt(ARG_VIEW_MODE, 1);
         }
-        analytics = UserIdentificationAnalytics.createInstance(getActivity().getApplicationContext());
+        analytics = UserIdentificationAnalytics.createInstance(getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
     }
 
     @Nullable

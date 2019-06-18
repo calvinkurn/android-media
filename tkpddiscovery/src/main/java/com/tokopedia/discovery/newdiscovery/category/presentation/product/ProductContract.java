@@ -7,7 +7,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.List;

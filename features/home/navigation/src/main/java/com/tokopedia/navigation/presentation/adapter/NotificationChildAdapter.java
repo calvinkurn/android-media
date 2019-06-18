@@ -4,12 +4,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
+import com.tokopedia.navigation.presentation.adapter.viewholder.BaseViewHolder;
 
 /**
  * Created by meta on 03/07/18.

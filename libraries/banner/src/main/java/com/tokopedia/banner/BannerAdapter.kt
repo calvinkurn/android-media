@@ -1,9 +1,14 @@
 package com.tokopedia.banner
 
+import android.content.Context
+import android.graphics.Point
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import com.tokopedia.design.banner.BannerPagerAdapter
 import com.tokopedia.design.banner.BannerView
+import kotlinx.android.synthetic.main.banner_item_layout.view.*
 
 /**
  * Created by meta on 28/02/19.

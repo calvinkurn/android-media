@@ -2,47 +2,32 @@ package com.tokopedia.searchbar;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-
 import java.util.HashMap;
 import java.util.Map;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 /**
  * Created by meta on 04/08/18.
  */
 public class SearchBarAnalytics {
 
-    private AnalyticTracker analyticTracker;
-
     SearchBarAnalytics(Context context) {
-        if (context == null)
-            return;
 
-        if (context.getApplicationContext() instanceof AbstractionRouter) {
-            this.analyticTracker = ((SearchBarRouter) context.getApplicationContext())
-                    .getAnalyticTracker();
-        }
     }
 
     public void eventTrackingSqanQr() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchBarConstant.CLICK_HOME_PAGE,
                 SearchBarConstant.TOP_NAV,
                 String.format("%s %s", SearchBarConstant.CLICK,
                         SearchBarConstant.SCAN_QR),
                 ""
-        );
+        ));
     }
 
     public void eventTrackingWishlist(String item, String screenName) {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getDataEvent(screenName,
                         SearchBarConstant.CLICK_TOP_NAV,
                         SearchBarConstant.TOP_NAV,
@@ -50,12 +35,9 @@ public class SearchBarAnalytics {
     }
 
     public void eventTrackingNotification(String screenName) {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getDataEvent(screenName,
-                        SearchBarConstant.CLICK_HOME_PAGE,
+                        SearchBarConstant.CLICK_TOP_NAV,
                         SearchBarConstant.TOP_NAV,
                         String.format("%s %s", SearchBarConstant.CLICK,
                                 SearchBarConstant.NOTIFICATION)));
@@ -73,14 +55,11 @@ public class SearchBarAnalytics {
     }
 
     public void eventTrackingSearchBar() {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchBarConstant.CLICK_TOP_NAV,
                 SearchBarConstant.TOP_NAV,
                 SearchBarConstant.CLICK_SEARCH_BOX,
                 ""
-        );
+        ));
     }
 }

@@ -1,47 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    app:cardCornerRadius="@dimen/dp_4"
-    app:cardElevation="@dimen/dp_2">
+    android:background="@color/white"
+    android:foreground="?selectableItemBackground"
+    android:paddingLeft="@dimen/dp_9"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_16">
 
-    <LinearLayout
-        android:id="@+id/ll_container"
-        android:layout_width="match_parent"
+    <CheckBox
+        android:id="@+id/cb_donation"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:foreground="?selectableItemBackground"
-        android:paddingBottom="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_9"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16">
+        android:layout_marginTop="-5dp"
+        android:layout_marginBottom="-5dp"
+        android:theme="@style/TransactionCheckbox" />
 
-        <CheckBox
-            android:id="@+id/cb_donation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="-5dp"
-            android:layout_marginTop="-5dp"
-            android:theme="@style/TransactionCheckbox" />
+    <TextView
+        android:id="@+id/tv_donation_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        tools:text="TopDonasi100" />
 
-        <TextView
-            android:id="@+id/tv_donation_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            tools:text="TopDonasi100" />
+    <ImageView
+        android:id="@+id/img_donation_info"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:src="@drawable/info_icon" />
 
-        <ImageView
-            android:id="@+id/img_donation_info"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:src="@drawable/info_icon" />
-
-    </LinearLayout>
-
-</android.support.v7.widget.CardView>
+</LinearLayout>

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
@@ -30,6 +31,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     public static final int RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS = 102;
     public static final int RESULT_CODE_ACTION_SELECT_ADDRESS = 100;
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 101;
+    public static final int RESULT_CODE_ACTION_EDIT_ADDRESS = 103;
 
     private static final String EXTRA_TYPE_REQUEST = "EXTRA_TYPE_REQUEST";
     public static final String EXTRA_CURRENT_ADDRESS = "CURRENT_ADDRESS";
@@ -43,6 +45,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT = 3;
     public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS = 2;
     public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST = 0;
+    public static final int TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN = 4;
 
     private int typeRequest;
     private Token token;
@@ -76,6 +79,19 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                                         int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
+        if (currentAddress != null) {
+            intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
+        }
+        return intent;
+    }
+
+    public static Intent createInstance(Activity activity,
+                                        RecipientAddressModel currentAddress,
+                                        Token token,
+                                        int typeRequest) {
+        Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
+        intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
+        intent.putExtra(EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
         if (currentAddress != null) {
             intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
         }
@@ -122,13 +138,23 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
     @Override
     protected void initView() {
+        Intent intent;
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                Intent intent = AddAddressActivity
+                intent = AddAddressActivity
                         .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
                                 this, token);
                 startActivityForResult(intent,
                         LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                break;
+            case TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
+                RecipientAddressModel currentAddress = getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
+                AddressModelMapper mapper = new AddressModelMapper();
+                intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
+                        this, mapper.transform(currentAddress), token
+                );
+                startActivityForResult(intent,
+                        LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
                 break;
             default:
         }
@@ -154,6 +180,9 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE) {
             if (resultCode == Activity.RESULT_OK) setResult(RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS);
+            finish();
+        } else if (requestCode == LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT) {
+            setResult(RESULT_CODE_ACTION_EDIT_ADDRESS);
             finish();
         }
     }

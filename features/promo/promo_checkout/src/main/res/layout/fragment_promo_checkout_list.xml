@@ -25,7 +25,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
                 app:cardCornerRadius="@dimen/dp_4"
-                app:cardElevation="@dimen/dp_3">
+                app:cardElevation="@dimen/dp_3"
+                app:cardBackgroundColor="@color/white">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -33,7 +34,8 @@
                     android:layout_marginBottom="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16">
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@color/white">
 
                     <com.tokopedia.design.text.TkpdHintTextInputLayout
                         android:id="@+id/textInputLayoutCoupon"
@@ -50,8 +52,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/promo_label_input_promo_code"
-                            android:inputType="text"
-                            android:textColor="@color/tkpd_main_orange" />
+                            android:textColor="#ae31353b"
+                            android:inputType="text" />
 
                     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 

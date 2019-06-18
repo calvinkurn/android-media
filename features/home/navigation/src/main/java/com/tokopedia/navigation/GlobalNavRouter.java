@@ -20,9 +20,9 @@ public interface GlobalNavRouter {
 
     Fragment getCartFragment(Bundle bundle);
 
-    Fragment getOfficialStoreFragment(Bundle bundle);
+    Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc, String promoCode);
 
-    Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc);
+    Fragment getOfficialStoreFragment(Bundle bundle);
 
     Intent getInboxTalkCallingIntent(Context context);
 

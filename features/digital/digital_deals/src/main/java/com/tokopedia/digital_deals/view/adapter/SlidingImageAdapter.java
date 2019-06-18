@@ -60,7 +60,7 @@ public class SlidingImageAdapter extends PagerAdapter {
             public void onClick(View view) {
                 mPresenter.sendEventEcommerce(productItems.get(position).getId(), position, productItems.get(position).getDisplayName(), DealsAnalytics.EVENT_PROMO_CLICK
                         , DealsAnalytics.EVENT_CLICK_PROMO_BANNER, DealsAnalytics.LIST_DEALS_TOP_BANNER);
-                mPresenter.onClickBanner();
+//                mPresenter.onClickBanner();
             }
         });
         return imageLayout;

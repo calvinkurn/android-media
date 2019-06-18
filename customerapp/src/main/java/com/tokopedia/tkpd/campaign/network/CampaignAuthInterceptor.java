@@ -42,9 +42,8 @@ public class CampaignAuthInterceptor extends TkpdAuthInterceptor {
             throwChainProcessCauseHttpError(response);
         }
 
-        String bodyResponse = response.body().string();
-        checkResponse(bodyResponse, response);
+        checkResponse(response);
 
-        return createNewResponse(response, bodyResponse);
+        return response;
     }
 }

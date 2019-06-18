@@ -178,7 +178,7 @@ class CommentTalkViewHolder(val v: View,
         }
     }
 
-    fun onViewRecycled() {
+    override fun onViewRecycled() {
         ImageHandler.clearImage(profileAvatar)
     }
 

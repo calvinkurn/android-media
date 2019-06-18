@@ -60,6 +60,7 @@ public interface ApplinkConst {
     String DISCOVERY_CATEGORY_DETAIL = "tokopedia://category/{DEPARTMENT_ID}";
     String DISCOVERY_SEARCH = "tokopedia://search";
     String DISCOVERY_SEARCH_AUTOCOMPLETE = "tokopedia://search-autocomplete";
+    String DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE = "tokopedia://search-autocomplete?navsource={source}";
     String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
     String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
@@ -129,7 +130,8 @@ public interface ApplinkConst {
     String MARKETPLACE_DELIVERED = "tokopedia://order/marketplace/filter/14";
 
 
-    String BUYER_INFO = "tokopedia://buyerinfo";
+    String BUYER_INFO = "tokopedia://notif-center";
+    String BUYER_INFO_WITH_ID = "tokopedia://notif-center/{notif_id}";
     String SELLER_INFO = "tokopedia://sellerinfo";
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
@@ -218,6 +220,7 @@ public interface ApplinkConst {
     String INBOX = "tokopedia://inbox";
 
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
+    String SMC_REFERRAL = "tokopedia://smc-referral";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";

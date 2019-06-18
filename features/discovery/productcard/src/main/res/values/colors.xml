@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="charcoal_grey_88">#e131353b</color>
+    <color name="charcoal_grey_40">#6631353b</color>
     <color name="icon_product_card_background_color">#f3f4f5</color>
     <color name="product_card_price_text_color">#fa591d</color>
+    <color name="discountTextColor">#ef144a</color>
 </resources>

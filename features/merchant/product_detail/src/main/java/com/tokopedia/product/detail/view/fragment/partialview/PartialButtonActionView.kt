@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.PreOrder
+import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
 class PartialButtonActionView private constructor(private val view: View,
@@ -31,6 +31,7 @@ class PartialButtonActionView private constructor(private val view: View,
     var isExpressCheckout = false
     var isWarehouseProduct: Boolean = false
     var hasShopAuthority: Boolean = false
+    var isSpecialPrize: Boolean = false
     var preOrder: PreOrder? = PreOrder()
 
     companion object {
@@ -58,7 +59,7 @@ class PartialButtonActionView private constructor(private val view: View,
         renderButton()
     }
 
-    fun renderButton(){
+    private fun renderButton(){
         if (isWarehouseProduct) {
             showNoStockButton()
         } else if (hasShopAuthority) {
@@ -72,7 +73,6 @@ class PartialButtonActionView private constructor(private val view: View,
         with(view) {
             btn_buy.visibility = View.GONE
             btn_promote_topads.visibility = View.GONE
-            btn_byme.visibility = View.GONE
             btn_topchat.visibility = View.VISIBLE
             tv_buy_now.text = context.getString(
                 if (preOrder?.isPreOrderActive() == true) {
@@ -85,7 +85,8 @@ class PartialButtonActionView private constructor(private val view: View,
                     }
                 })
             btn_buy_now.visibility = View.VISIBLE
-            btn_add_to_cart.visibility = View.VISIBLE
+            if (isSpecialPrize) btn_add_to_cart.gone()
+            else btn_add_to_cart.visible()
 
             btn_buy_now.setOnClickListener {
                 if (hasComponentLoading) return@setOnClickListener

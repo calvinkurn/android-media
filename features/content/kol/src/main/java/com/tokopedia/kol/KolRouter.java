@@ -3,6 +3,7 @@ package com.tokopedia.kol;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 
 import okhttp3.Interceptor;
 
@@ -20,4 +21,7 @@ public interface KolRouter {
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getLoginIntent(Context context);
+
+    void shareFeed(Activity activity, String valueOf, String url, String title, String imageUrl,
+                   String description);
 }

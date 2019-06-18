@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
 import com.tokopedia.core.network.entity.discovery.GuidedSearchResponse;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
@@ -17,6 +18,8 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.La
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
+import com.tokopedia.topads.sdk.domain.model.Badge;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +64,6 @@ public class ProductViewModelHelper {
         productViewModel.setAdsModel(gqlResponse.getTopAdsModel());
         productViewModel.setQuery(searchProductResponse.getQuery());
         productViewModel.setShareUrl(searchProductResponse.getShareUrl());
-        productViewModel.setHasCatalog(ListHelper.isContainItems(searchProductResponse.getCatalogs()));
         productViewModel.setSuggestionModel(createSuggestionModel(searchProductResponse));
         productViewModel.setTotalData(searchProductResponse.getCount());
         if (gqlResponse.getDynamicFilterModel() != null) {
@@ -317,4 +319,62 @@ public class ProductViewModelHelper {
         return labelItem;
     }
 
+    public static List<Visitable> convertToListOfVisitable(ProductViewModel productViewModel) {
+        List<Visitable> list = new ArrayList<>(productViewModel.getProductList());
+        int j = 0;
+        for (int i = 0; i < productViewModel.getTotalItem(); i++) {
+            try {
+                if (productViewModel.getAdsModel().getTemplates().get(i).isIsAd()) {
+                    Data topAds = productViewModel.getAdsModel().getData().get(j);
+                    ProductItem item = new ProductItem();
+                    item.setProductID(topAds.getProduct().getId());
+                    item.setTopAds(true);
+                    item.setTopadsImpressionUrl(topAds.getProduct().getImage().getS_url());
+                    item.setTopadsClickUrl(topAds.getProductClickUrl());
+                    item.setTopadsWishlistUrl(topAds.getProductWishlistUrl());
+                    item.setProductName(topAds.getProduct().getName());
+                    if(!topAds.getProduct().getTopLabels().isEmpty()) {
+                        item.setTopLabel(topAds.getProduct().getTopLabels().get(0));
+                    }
+                    if(!topAds.getProduct().getBottomLabels().isEmpty()) {
+                        item.setBottomLabel(topAds.getProduct().getBottomLabels().get(0));
+                    }
+                    item.setPrice(topAds.getProduct().getPriceFormat());
+                    item.setShopCity(topAds.getShop().getLocation());
+                    item.setImageUrl(topAds.getProduct().getImage().getS_ecs());
+                    item.setImageUrl700(topAds.getProduct().getImage().getM_ecs());
+                    item.setWishlisted(topAds.getProduct().isWishlist());
+                    item.setRating(topAds.getProduct().getProductRating());
+                    item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
+                    item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
+                    item.setNew(topAds.getProduct().isProductNewLabel());
+                    list.add(i, item);
+                    j++;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
+    private static int convertCountReviewFormatToInt(String countReviewFormat) {
+        String countReviewString = countReviewFormat.replaceAll("[^\\d]", "");
+
+        try {
+            return Integer.parseInt(countReviewString);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    private static List<BadgeItem> mapBadges(List<Badge> badges) {
+        List<BadgeItem> items = new ArrayList<>();
+        for (Badge b:badges) {
+            items.add(new BadgeItem(b.getImageUrl(), b.getTitle(), b.isShow()));
+        }
+        return items;
+    }
 }

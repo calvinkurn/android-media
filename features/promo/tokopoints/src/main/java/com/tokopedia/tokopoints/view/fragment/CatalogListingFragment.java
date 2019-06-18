@@ -465,9 +465,9 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         bottomViewMembership = view.findViewById(R.id.bottom_view_membership);
         mContainerPointDetail = view.findViewById(R.id.container_point_detail);
         containerEgg = view.findViewById(R.id.container_fab_egg_token);
-        mTextMembershipValueBottom = view.findViewById(R.id.text_membership_value_bottom);
+        mTextMembershipValueBottom = view.findViewById(R.id.text_loyalty_value_bottom);
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom);
-        mImgEggBottom = view.findViewById(R.id.img_egg_bottom);
+        mImgEggBottom = view.findViewById(R.id.img_loyalty_stack_bottom);
         mAppBarHeader = view.findViewById(R.id.app_bar_header);
         if (getArguments() != null && getArguments().getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
             view.findViewById(R.id.text_my_coupon).setVisibility(View.GONE);

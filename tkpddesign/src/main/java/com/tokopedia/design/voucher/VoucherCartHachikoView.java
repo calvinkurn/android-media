@@ -98,7 +98,7 @@ public class VoucherCartHachikoView extends BaseCustomView {
     }
 
     public void setVoucher(String voucherCode, String voucherMessage) {
-        actionListener.trackingSuccessVoucher(voucherCode);
+        actionListener.trackingSuccessVoucher("", voucherCode);
 
         layoutInputPromo.setVisibility(GONE);
 
@@ -111,7 +111,7 @@ public class VoucherCartHachikoView extends BaseCustomView {
     }
 
     public void setCoupon(String couponTitle, String couponMessage, String couponCode) {
-        actionListener.trackingSuccessVoucher(couponTitle);
+        actionListener.trackingSuccessVoucher(couponTitle, couponCode);
 
         layoutInputPromo.setVisibility(GONE);
 
@@ -141,7 +141,7 @@ public class VoucherCartHachikoView extends BaseCustomView {
 
         void disableVoucherDiscount();
 
-        void trackingSuccessVoucher(String voucherName);
+        void trackingSuccessVoucher(String title, String voucherName);
 
         void trackingCancelledVoucher();
     }

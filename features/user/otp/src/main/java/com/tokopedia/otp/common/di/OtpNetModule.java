@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.otp.common.network.AccountsAuthorizationInterceptor;
 import com.tokopedia.otp.common.network.AuthorizationBearerInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorResponse;
@@ -33,13 +32,6 @@ public class OtpNetModule {
     @Provides
     public OtpErrorInterceptor provideStreamErrorInterceptor() {
         return new OtpErrorInterceptor(OtpErrorResponse.class);
-    }
-
-    @OtpScope
-    @Provides
-    public AccountsAuthorizationInterceptor provideAccountsAuthorizationInterceptor(UserSessionInterface
-                                                                                            userSession) {
-        return new AccountsAuthorizationInterceptor(userSession);
     }
 
     @OtpScope

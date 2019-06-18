@@ -4,26 +4,30 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.discovery.autocomplete.adapter.HotlistViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.AutoCompleteViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.CategoryViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.DigitalViewHolder;
+import com.tokopedia.discovery.autocomplete.adapter.HotlistViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.InCategoryViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.PopularViewHolder;
+import com.tokopedia.discovery.autocomplete.adapter.ProfileViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.RecentViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.RecentViewViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.ShopViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.TitleViewHolder;
+import com.tokopedia.discovery.autocomplete.adapter.TopProfileViewHolder;
 import com.tokopedia.discovery.autocomplete.viewmodel.AutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.CategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.DigitalSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.HotlistSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.ProfileSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentViewSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.TopProfileSearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 
 /**
@@ -97,6 +101,16 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
     }
 
     @Override
+    public int type(ProfileSearch viewModel) {
+        return ProfileViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
+    public int type(TopProfileSearch viewModel) {
+        return TopProfileViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder viewHolder;
         if(type == DigitalViewHolder.LAYOUT) {
@@ -119,6 +133,10 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
             viewHolder = new RecentViewViewHolder(parent, clickListener);
         } else if(type == HotlistViewHolder.Companion.getLAYOUT()) {
             viewHolder = new HotlistViewHolder(parent, clickListener);
+        } else if(type == ProfileViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new ProfileViewHolder(parent, clickListener);
+        } else if(type == TopProfileViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new TopProfileViewHolder(parent, clickListener);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }

@@ -65,16 +65,6 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
     }
 
     @Override
-    public void onSuggestionSuccess(GetSuggestionResponse s) {
-        /* remain empty*/
-    }
-
-    @Override
-    public void onSuggestionError(@Nullable Throwable t) {
-
-    }
-
-    @Override
     public void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo) {
 
     }

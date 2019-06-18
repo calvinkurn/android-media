@@ -5,13 +5,11 @@ import android.view.View;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.BottomSheetExpandableItemViewHolder;
-import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterExpandableItemViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterItemPriceViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterItemToggleViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterNoViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.adapter.viewholder.DynamicFilterViewHolder;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
-import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
 public class BottomSheetDynamicFilterTypeFactoryImpl implements DynamicFilterTypeFactory {
 

@@ -185,8 +185,6 @@ public interface TkpdCoreRouter {
 
     Intent getInboxMessageIntent(Context context);
 
-    void sendTrackingGroupChatLeftNavigation();
-
     String getDesktopLinkGroupChat();
 
     String getStringRemoteConfig(String key);
@@ -195,6 +193,8 @@ public interface TkpdCoreRouter {
     Intent getSettingBankIntent(Context context);
 
     Intent getInboxTalkCallingIntent(Context context);
+
+    Intent getManageAdressIntent(Context context);
 
     Intent getAutomaticResetPasswordIntent(Context context, String email);
 

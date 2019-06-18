@@ -11,7 +11,7 @@ import java.util.List;
  * Created by Irfan Khoirul on 08/08/18.
  */
 
-public class ShippingDurationViewModel implements Parcelable {
+public class ShippingDurationViewModel implements Parcelable, RatesViewModelType {
 
     private ServiceData serviceData;
     private List<ShippingCourierViewModel> shippingCourierViewModelList;

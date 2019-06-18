@@ -71,7 +71,7 @@ class TopadsShopViewHolder(v: View,
         topadsShopListener.onAddFavorite(adapterPosition, position, data)
     }
 
-    fun onViewRecycled() {
+    override fun onViewRecycled() {
         itemView.topadsShop.onViewRecycled()
     }
 

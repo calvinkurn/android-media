@@ -1,12 +1,14 @@
 package com.tokopedia.tkpdreactnative.react;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.Arguments;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableMap;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.utils.AuthUtil;
 
@@ -33,12 +35,15 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.example.akamai_bot_lib.UtilsKt.getSensorData;
 
 /**
  * @author ricoharisin .
@@ -266,42 +271,36 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         }
     }
 
-
-
-
+     interface Convert<E extends Map,F>{
+        F convert(E value, String key);
+     }
 
     @ReactMethod
     public void request(ReadableMap readableMap, final Promise promise) {
         try {
             HashMap<String, Object> maps = readableMap.toHashMap();
             ReactNetworkingConfiguration.Builder builder = new ReactNetworkingConfiguration.Builder();
-            for (Map.Entry<String, Object> map : maps.entrySet()) {
-                switch (map.getKey()) {
-                    case ReactConst.Networking.URL:
-                        builder.setUrl(String.valueOf(map.getValue()));
-                        break;
-                    case ReactConst.Networking.METHOD:
-                        builder.setMethod(String.valueOf(map.getValue()));
-                        break;
-                    case ReactConst.Networking.ENCODING:
-                        builder.setEncoding(String.valueOf(map.getValue()));
-                        break;
-                    case ReactConst.Networking.AUTHORIZATIONMODE:
-                        builder.setAuthorizationMode(String.valueOf(map.getValue()));
-                        break;
-                    case ReactConst.Networking.HEADERS:
-                        if (map.getValue() instanceof HashMap) {
-                            builder.setHeaders((HashMap<String, Object>) map.getValue());
-                        }
-                        break;
-                    case ReactConst.Networking.PARAMS:
-                        if (map.getValue() instanceof HashMap) {
-                            builder.setParams((HashMap<String, Object>) map.getValue());
-                        }
-                        break;
 
-                }
+            Convert<Map, String> fun = (value, key) -> TextUtils.isEmpty(String.valueOf(value.get(key)))?
+                    "":String.valueOf(maps.get(key));
+            Convert<Map, HashMap<String, Object>> getHashMap = (value, key) -> {
+                return (value.get(key) instanceof HashMap) ? (HashMap<String, Object>) value.get(key) : new HashMap<>();
+            };
+
+            String url = null;
+            builder.setUrl(url = fun.convert(maps,ReactConst.Networking.URL ));
+            builder.setMethod(fun.convert(maps,ReactConst.Networking.METHOD));
+            builder.setEncoding(fun.convert(maps,ReactConst.Networking.ENCODING));
+            builder.setAuthorizationMode(fun.convert(maps,ReactConst.Networking.AUTHORIZATIONMODE));
+
+            HashMap<String, Object> headers = getHashMap.convert(maps, ReactConst.Networking.HEADERS);
+            if(url.contains("/hoth/discovery/api/page/flash-sale")){
+                if(!TextUtils.isEmpty(getSensorData()))
+                headers.put("X-acf-sensor-data", getSensorData());
             }
+            headers.put("User-Agent", getUserAgent());
+            builder.setHeaders(headers);
+            builder.setParams(getHashMap.convert(maps, ReactConst.Networking.PARAMS));
             ReactNetworkingConfiguration configuration = builder.build();
 
             compositeSubscription.add(unifyReactNetworkRepository.request(configuration)
@@ -330,5 +329,10 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             promise.reject(e);
         }
+    }
+
+    private static final String userAgentFormat = "TkpdConsumer/%s (%s;)";
+    public static String getUserAgent(){
+        return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android "+ Build.VERSION.RELEASE);
     }
 }

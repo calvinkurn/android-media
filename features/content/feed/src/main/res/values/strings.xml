@@ -79,4 +79,7 @@
     <string name="feed_cancel">Batal</string>
     <string name="feed_non_login_title">Mau tahu update terbaru Toko dan Konten kesayanganmu?</string>
     <string name="feed_after_post">Post sedang diunggah. Cek proses unggah di notifikasi.</string>
+    <string name="post_personal">Post Pribadi</string>
+    <string name="post_shop">Post Toko</string>
+    <string name="create_post_as">Buat Sebagai</string>
 </resources>

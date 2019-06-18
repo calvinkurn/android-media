@@ -121,7 +121,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
     override fun onCreate(savedInstanceState: Bundle?) {
         voucherShopId = arguments!!.getString(MerchantVoucherListActivity.SHOP_ID)
         activity?.run {
-            merchantVoucherTracking = MerchantVoucherTracking(application as AbstractionRouter)
+            merchantVoucherTracking = MerchantVoucherTracking()
         }
         super.onCreate(savedInstanceState)
     }

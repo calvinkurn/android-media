@@ -1,9 +1,13 @@
 package com.tokopedia.imagepicker.picker.album;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -13,6 +17,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader;
 import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
@@ -73,8 +78,16 @@ public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderMan
     @Override
     public void onResume() {
         super.onResume();
-        showLoading();
-        getSupportLoaderManager().initLoader(ALBUM_LOADER_ID, null, this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+            if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
+                showLoading();
+                getSupportLoaderManager().initLoader(ALBUM_LOADER_ID, null, this);
+            }
+        } else {
+            showLoading();
+            getSupportLoaderManager().initLoader(ALBUM_LOADER_ID, null, this);
+        }
     }
 
     @Override

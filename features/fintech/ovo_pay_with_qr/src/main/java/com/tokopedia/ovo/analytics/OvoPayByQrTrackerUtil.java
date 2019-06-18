@@ -1,9 +1,9 @@
 package com.tokopedia.ovo.analytics;
 
 import android.content.Context;
+import com.tokopedia.track.TrackApp;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 public class OvoPayByQrTrackerUtil {
     public interface EVENT {
@@ -31,16 +31,6 @@ public class OvoPayByQrTrackerUtil {
         String defaultLabel = "";
     }
     public static void sendEvent(Context context, String event, String category, String action, String label) {
-        if (context == null) {
-            return;
-        }
-
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        if (tracker == null) {
-            return;
-        }
-
-        tracker.sendEventTracking(event, category, action, label);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(event, category, action, label);
     }
 }

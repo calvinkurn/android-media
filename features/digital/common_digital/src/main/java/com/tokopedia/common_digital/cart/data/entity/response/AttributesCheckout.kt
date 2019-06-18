@@ -23,4 +23,7 @@ class AttributesCheckout {
     @SerializedName("parameter")
     @Expose
     var parameter: Parameter? = null
+    @SerializedName("thanks_url")
+    @Expose
+    var thanksUrl: String? = null
 }

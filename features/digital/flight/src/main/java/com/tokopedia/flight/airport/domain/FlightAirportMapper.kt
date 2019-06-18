@@ -48,25 +48,12 @@ class FlightAirportMapper @Inject constructor() {
             flightAirportinOneCountry.clear()
 
             var index = 0
-            itemSuggestion.airports?.map {
+            itemSuggestion.airports.map {
                 airportArray.add(it.id)
                 index++
             }
 
-            itemSuggestion.airports?.map {
-                flightAirportinOneCountry.add(
-                        FlightAirport(
-                                itemSuggestion.countryId,
-                                itemSuggestion.countryName[0].value,
-                                itemSuggestion.code,
-                                it.id,
-                                itemSuggestion.code,
-                                itemSuggestion.cityName[0].value,
-                                it.name[0].value,
-                                airportArray)
-                )
-            }
-            if (itemSuggestion.airports!!.isEmpty()) {
+            if (itemSuggestion.airports.isEmpty()) {
                 flightAirportinOneCountry.add(
                         FlightAirport(
                                 itemSuggestion.countryId,
@@ -76,6 +63,31 @@ class FlightAirportMapper @Inject constructor() {
                                 itemSuggestion.code,
                                 itemSuggestion.cityName[0].value,
                                 itemSuggestion.name[0].value)
+                )
+            } else {
+                flightAirportinOneCountry.add(
+                        FlightAirport(
+                                itemSuggestion.countryId,
+                                itemSuggestion.countryName[0].value,
+                                itemSuggestion.code,
+                                "",
+                                itemSuggestion.code,
+                                itemSuggestion.cityName[0].value,
+                                itemSuggestion.name[0].value,
+                                airportArray)
+                )
+            }
+
+            itemSuggestion.airports.map {
+                flightAirportinOneCountry.add(
+                        FlightAirport(
+                                itemSuggestion.countryId,
+                                itemSuggestion.countryName[0].value,
+                                itemSuggestion.code,
+                                it.id,
+                                itemSuggestion.code,
+                                itemSuggestion.cityName[0].value,
+                                it.name[0].value)
                 )
             }
 
