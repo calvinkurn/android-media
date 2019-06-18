@@ -1247,7 +1247,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 if (dPresenter.dataHasChanged()) {
                     dPresenter.processToUpdateAndReloadCartData();
                 } else {
-                    dPresenter.processInitialGetCartData(getCartId(),false);
+                    dPresenter.processInitialGetCartData(getCartId(), false);
                 }
             }
         }
@@ -1881,6 +1881,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartRecentViewItemHolderData.setPrice(recentView.getProductPrice());
             cartRecentViewItemHolderData.setImageUrl(recentView.getProductImage());
             cartRecentViewItemHolderData.setWishlist(recentView.isWishlist());
+            cartRecentViewItemHolderData.setRating(recentView.getProductRating());
+            cartRecentViewItemHolderData.setReviewCount(recentView.getProductReviewCount());
+            cartRecentViewItemHolderData.setShopLocation(recentView.getShopLocation());
+            if (recentView.getBadges().size() > 0) {
+                cartRecentViewItemHolderData.setBadgeUrl(recentView.getBadges().get(0).getImageUrl());
+            }
             cartRecentViewItemHolderDataList.add(cartRecentViewItemHolderData);
         }
 
@@ -1903,6 +1909,14 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartWishlistItemHolderData.setPrice(item.getPriceFmt());
             cartWishlistItemHolderData.setImageUrl(item.getImageUrl());
             cartWishlistItemHolderData.setWishlist(true);
+            cartWishlistItemHolderData.setRating(item.rating);
+            cartWishlistItemHolderData.setReviewCount(item.reviewCount);
+            if (item.getShop() != null) {
+                cartWishlistItemHolderData.setShopLocation(item.getShop().getLocation());
+            }
+            if (item.getBadges().size() > 0) {
+                cartWishlistItemHolderData.setBadgeUrl(item.getBadges().get(0).getImageUrl());
+            }
             cartWishlistItemHolderDataList.add(cartWishlistItemHolderData);
         }
 

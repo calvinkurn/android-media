@@ -9,5 +9,9 @@ data class CartWishlistItemHolderData(
         var name: String = "",
         var price: String = "",
         var imageUrl: String = "",
-        var isWishlist: Boolean = false
+        var isWishlist: Boolean = false,
+        var rating: Int = 0,
+        var reviewCount: Int = 0,
+        var badgeUrl: String = "",
+        var shopLocation: String = ""
 )

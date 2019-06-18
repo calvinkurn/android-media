@@ -9,6 +9,11 @@ query recent_view($userID: Int){
       product_review_count,
       product_image,
       shop_id,
+      shop_location,
+      badges {
+        title
+        image_url
+      }
       wishlist
     }
   }
