@@ -69,6 +69,11 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
         return ""
     }
 
+    override fun onCloseButtonClick() {
+        super.onCloseButtonClick()
+        dismiss()
+    }
+
     interface BottomSheetListener {
         fun onButtonClicked()
     }

@@ -49,6 +49,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo
 import kotlinx.android.synthetic.main.dialog_kyc_verification.*
+import kotlinx.android.synthetic.main.dialog_score_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import javax.inject.Inject
 
@@ -201,6 +202,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             val dialog = Dialog(it)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(false)
+            dialog.setCanceledOnTouchOutside(true);
             dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.setContentView(R.layout.dialog_kyc_verification)
 
@@ -211,6 +213,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             dialog.btn_close_kyc.setOnClickListener {
                 dialog.hide()
             }
+
             return dialog
         }
         return null
@@ -221,13 +224,14 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             val dialog = Dialog(it)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(false)
+            dialog.setCanceledOnTouchOutside(true);
             dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.setContentView(R.layout.dialog_score_verification)
 
-            dialog.btn_submit_kyc.setOnClickListener {
+            dialog.btn_submit_score.setOnClickListener {
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
             }
-            dialog.btn_close_kyc.setOnClickListener {
+            dialog.btn_close_score.setOnClickListener {
                 dialog.hide()
             }
             return dialog

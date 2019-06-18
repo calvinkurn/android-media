@@ -27,7 +27,7 @@ class PartialTncViewHolder private constructor(private val view: View, private v
 
     fun renderPartialTnc() {
         txtLearnMore = view.findViewById(R.id.txt_learn_more)
-        val string = activity?.getString(R.string.pm_label_cost_3)
+        val string = activity?.getString(R.string.pm_label_cost_1)
         val spanText = SpannableString(string)
 
         val clickableSpan = object : ClickableSpan() {
@@ -41,10 +41,10 @@ class PartialTncViewHolder private constructor(private val view: View, private v
             }
         }
 
-        spanText.setSpan(clickableSpan, 0, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanText.setSpan(clickableSpan, spanText.length-22, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanText.setSpan(ForegroundColorSpan(ContextCompat.getColor(view.context, R.color.pm_green_link)),
-                0, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spanText.setSpan(StyleSpan(Typeface.BOLD), 0, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spanText.length-22, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanText.setSpan(StyleSpan(Typeface.BOLD), spanText.length-22, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         txtLearnMore.movementMethod = LinkMovementMethod.getInstance()
         txtLearnMore.text = spanText
 

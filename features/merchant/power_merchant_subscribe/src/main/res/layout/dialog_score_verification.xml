@@ -40,7 +40,7 @@
             android:layout_marginBottom="@dimen/dp_16" />
 
         <Button
-            android:id="@+id/btn_submit"
+            android:id="@+id/btn_submit_score"
             style="@style/Button.Submit.Green.Full"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,11 +50,11 @@
             android:text="@string/pm_label_button_score_submit" />
 
         <Button
-            android:id="@+id/btn_product_list"
+            android:id="@+id/btn_close_score"
             style="@style/Button.Submit.White.Border.Full"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btn_submit"
+            android:layout_below="@id/btn_submit_score"
             android:textStyle="bold"
             android:text="@string/pm_label_button_close" />
 
