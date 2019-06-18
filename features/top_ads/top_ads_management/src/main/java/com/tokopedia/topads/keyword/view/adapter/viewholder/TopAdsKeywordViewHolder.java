@@ -117,19 +117,14 @@ public class TopAdsKeywordViewHolder extends BaseMultipleCheckViewHolder<Keyword
     }
 
     @Override
-    public void showCheckButton(boolean isInActionMode) {
+    public void showCheckButton(boolean isInActionMode, boolean isAutoAds) {
         if (isInActionMode) {
-            checkBox.setVisibility(View.VISIBLE);
+            checkBox.setVisibility(isAutoAds ? View.GONE : View.VISIBLE);
             optionImageButton.setVisibility(View.GONE);
         } else {
             checkBox.setVisibility(View.GONE);
-            optionImageButton.setVisibility(View.VISIBLE);
+            optionImageButton.setVisibility(isAutoAds ? View.GONE : View.VISIBLE);
         }
-    }
-
-    @Override
-    public void showOptionButton(boolean enable) {
-        optionImageButton.setVisibility(enable ? View.VISIBLE : View.GONE);
     }
 
     public void setBackground(boolean isChecked) {
