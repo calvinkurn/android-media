@@ -7,54 +7,37 @@ import java.util.*
 /**
  * @author anggaprasetiyo on 5/8/17.
  */
-class DigitalFavNumber : Parcelable {
+class DigitalFavNumber() : Parcelable {
 
     var name: String? = null
     var type: String? = null
     var text: String? = null
     var placeholder: String? = null
     var _default: String? = null
-    var validation: List<DigitalValidation> = ArrayList()
-    var additionalButton: DigitalAdditionalButton? = null
 
-    constructor(name: String, type: String, text: String, placeholder: String, _default: String,
-                validation: List<DigitalValidation>) {
-        this.name = name
-        this.type = type
-        this.text = text
-        this.placeholder = placeholder
-        this._default = _default
-        this.validation = validation
+    constructor(parcel: Parcel) : this() {
+        name = parcel.readString()
+        type = parcel.readString()
+        text = parcel.readString()
+        placeholder = parcel.readString()
+        _default = parcel.readString()
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(name)
+        parcel.writeString(type)
+        parcel.writeString(text)
+        parcel.writeString(placeholder)
+        parcel.writeString(_default)
     }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(this.name)
-        dest.writeString(this.type)
-        dest.writeString(this.text)
-        dest.writeString(this.placeholder)
-        dest.writeString(this._default)
-        dest.writeList(this.validation)
-    }
-
-    constructor() {}
-
-    protected constructor(`in`: Parcel) {
-        this.name = `in`.readString()
-        this.type = `in`.readString()
-        this.text = `in`.readString()
-        this.placeholder = `in`.readString()
-        this._default = `in`.readString()
-        this.validation = ArrayList()
-        `in`.readList(this.validation, DigitalValidation::class.java.classLoader)
-    }
-
     companion object CREATOR : Parcelable.Creator<DigitalFavNumber> {
-        override fun createFromParcel(source: Parcel): DigitalFavNumber {
-            return DigitalFavNumber(source)
+        override fun createFromParcel(parcel: Parcel): DigitalFavNumber {
+            return DigitalFavNumber(parcel)
         }
 
         override fun newArray(size: Int): Array<DigitalFavNumber?> {

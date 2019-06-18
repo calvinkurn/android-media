@@ -5,8 +5,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 /**
  * Created by nabillasabbaha on 07/05/19.
