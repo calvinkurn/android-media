@@ -189,7 +189,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
                              @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
         presenter.initInjector(this);
-        presenter.setRequestDynamicFilterListener(this);
         return inflater.inflate(R.layout.search_fragment_base_discovery, container, false);
     }
 
@@ -246,11 +245,7 @@ public class CatalogListFragment extends SearchSectionFragment implements
     }
 
     protected void onLoadMoreCatalog() {
-        if (getDepartmentId() != null && !getDepartmentId().isEmpty()) {
-            presenter.requestCatalogLoadMore(getDepartmentId());
-        } else {
-            presenter.requestCatalogLoadMore();
-        }
+        presenter.requestCatalogLoadMore();
     }
 
     @Override
@@ -374,12 +369,7 @@ public class CatalogListFragment extends SearchSectionFragment implements
 
     private void requestCatalogList() {
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_CATALOG_TRACE);
-
-        if(!TextUtils.isEmpty(getDepartmentId())) {
-            presenter.requestCatalogList(getDepartmentId());
-        } else {
-            presenter.requestCatalogList();
-        }
+        presenter.requestCatalogList();
     }
 
     @Override
@@ -487,23 +477,17 @@ public class CatalogListFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public void initTopAdsParamsByQuery(RequestParams requestParams) {
+    public void initTopAdsParams(RequestParams requestParams) {
         TopAdsParams adsParams = new TopAdsParams();
-        adsParams.getParam().put(TopAdsParams.KEY_SRC, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
-        adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
+        if(!TextUtils.isEmpty(getDepartmentId())) {
+            adsParams.getParam().put(TopAdsParams.KEY_SRC, SearchApiConst.DEFAULT_VALUE_SOURCE_DIRECTORY);
+            adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getDepartmentId());
+        } else {
+            adsParams.getParam().put(TopAdsParams.KEY_SRC, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
+            adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
+        }
         adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
-        enrichWithFilterAndSortParams(adsParams);
-        topAdsConfig.setTopAdsParams(adsParams);
-        topAdsRecyclerAdapter.setConfig(topAdsConfig);
-    }
-
-    @Override
-    public void initTopAdsParamsByCategory(RequestParams requestParams) {
-        TopAdsParams adsParams = new TopAdsParams();
-        adsParams.getParam().put(TopAdsParams.KEY_SRC, SearchApiConst.DEFAULT_VALUE_SOURCE_DIRECTORY);
-        adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getDepartmentId());
-        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
-        enrichWithFilterAndSortParams(adsParams);
+        adsParams.getParam().putAll(requestParams.getParamsAllValueInString());
         topAdsConfig.setTopAdsParams(adsParams);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
     }
@@ -604,10 +588,5 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     public Map<String, Object> getSearchParameterMap() {
         return searchParameter.getSearchParameterMap();
-    }
-
-    @Override
-    public boolean shouldSaveToLocalDynamicFilterDb() {
-        return true;
     }
 }

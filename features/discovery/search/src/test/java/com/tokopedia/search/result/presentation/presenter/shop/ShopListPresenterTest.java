@@ -1,16 +1,15 @@
 package com.tokopedia.search.result.presentation.presenter.shop;
 
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.search.result.domain.model.SearchShopModel;
+import com.tokopedia.search.result.domain.usecase.TestErrorUseCase;
+import com.tokopedia.search.result.domain.usecase.TestUseCase;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
-import com.tokopedia.search.result.presentation.presenter.subscriber.RequestDynamicFilterSubscriber;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
-import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.search.result.presentation.mapper.ShopViewModelMapper;
+import com.tokopedia.search.result.presentation.model.ShopViewModel;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -26,57 +25,69 @@ public class ShopListPresenterTest {
     private static abstract class MockDynamicFilterModelUseCase extends UseCase<DynamicFilterModel> { }
 
     private ShopListSectionContract.View shopListView = mock(ShopListSectionContract.View.class);
-
-    private RequestDynamicFilterListener requestDynamicFilterListener = mock(RequestDynamicFilterListener.class);
     private UseCase<DynamicFilterModel> dynamicFilterModelUseCase = mock(MockDynamicFilterModelUseCase.class);
     private UserSessionInterface userSession = mock(UserSessionInterface.class);
+    private SearchShopModel searchShopModel = new SearchShopModel();
+    private ShopViewModel shopViewModel = new ShopViewModel();
+    private ShopViewModelMapper testShopViewModelMapper = mock(ShopViewModelMapper.class);
 
-    private ShopListPresenter shopListPresenter;
+    private ShopListPresenter shopListPresenter = new ShopListPresenter();
 
-    @Before
-    public void setUp() {
-        shopListPresenter = new ShopListPresenter();
-    }
-
-    @Test(expected = BaseDaggerPresenter.CustomerViewNotAttachedException.class)
-    public void requestDynamicFilter_ViewNotAttached_ShouldThrowException() {
-        shopListPresenter.requestDynamicFilter();
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void requestDynamicFilter_NoListener_ShouldThrowException() {
+    private void shopListPresenterInjectDependencies(UseCase<SearchShopModel> searchShopUseCase) {
         shopListPresenter.attachView(shopListView);
+        shopListPresenter.searchShopUseCase = searchShopUseCase;
         shopListPresenter.getDynamicFilterUseCase = dynamicFilterModelUseCase;
-
-        shopListPresenter.requestDynamicFilter();
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void requestDynamicFilter_NotInjectedUseCase_ShouldThrowException() {
-        shopListPresenter.attachView(shopListView);
-        shopListPresenter.setRequestDynamicFilterListener(requestDynamicFilterListener);
-
-        shopListPresenter.requestDynamicFilter();
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void requestDynamicFilter_NotInjectedUserSession_ShouldThrowException() {
-        shopListPresenter.attachView(shopListView);
-        shopListPresenter.setRequestDynamicFilterListener(requestDynamicFilterListener);
-        shopListPresenter.getDynamicFilterUseCase = dynamicFilterModelUseCase;
-
-        shopListPresenter.requestDynamicFilter();
+        shopListPresenter.shopViewModelMapper = testShopViewModelMapper;
+        shopListPresenter.userSession = userSession;
     }
 
     @Test
-    public void requestDynamicFilter_GivenAnySearchParameter_ShouldExecuteUseCase() {
-        shopListPresenter.attachView(shopListView);
-        shopListPresenter.setRequestDynamicFilterListener(requestDynamicFilterListener);
-        shopListPresenter.getDynamicFilterUseCase = dynamicFilterModelUseCase;
-        shopListPresenter.userSession = userSession;
+    public void loadShopSuccessWithData_RenderViewOnSuccess() {
+        UseCase<SearchShopModel> testSuccessSearchShopUseCase = new TestUseCase<>(searchShopModel);
+        shopListPresenterInjectDependencies(testSuccessSearchShopUseCase);
+        when(testShopViewModelMapper.convertToShopViewModel(searchShopModel)).thenReturn(shopViewModel);
 
-        shopListPresenter.requestDynamicFilter();
+        shopListPresenter.loadShop(new HashMap<>());
 
-        verify(dynamicFilterModelUseCase).execute(any(RequestParams.class), any(RequestDynamicFilterSubscriber.class));
+        verify(dynamicFilterModelUseCase).unsubscribe();
+        verify(shopListView).onSearchShopSuccess(shopViewModel.getShopItemList(), false);
+        verify(dynamicFilterModelUseCase).execute(any(), any());
+    }
+
+    @Test
+    public void loadShopSuccessWithNull_RenderViewOnFailed() {
+        UseCase<SearchShopModel> testNullSearchShopUseCase = new TestUseCase<>(null);
+        shopListPresenterInjectDependencies(testNullSearchShopUseCase);
+
+        shopListPresenter.loadShop(new HashMap<>());
+
+        verify(dynamicFilterModelUseCase).unsubscribe();
+        verify(shopListView).onSearchShopFailed();
+        verify(dynamicFilterModelUseCase, never()).execute(any(), any());
+    }
+
+    @Test
+    public void loadShopError_RenderViewOnFailed() {
+        Exception error = new Exception("Mock exception, should be handled in Subscriber onError");
+        UseCase<SearchShopModel> testErrorSearchShopUseCase = new TestErrorUseCase<>(error);
+        shopListPresenterInjectDependencies(testErrorSearchShopUseCase);
+
+        shopListPresenter.loadShop(new HashMap<>());
+
+        verify(dynamicFilterModelUseCase).unsubscribe();
+        verify(shopListView).onSearchShopFailed();
+        verify(dynamicFilterModelUseCase, never()).execute(any(), any());
+    }
+
+    @Test
+    public void loadShopErrorWithNulls_RenderViewOnFailed() {
+        UseCase<SearchShopModel> testNullErrorSearchShopUseCase = new TestErrorUseCase<>(null);
+        shopListPresenterInjectDependencies(testNullErrorSearchShopUseCase);
+
+        shopListPresenter.loadShop(new HashMap<>());
+
+        verify(dynamicFilterModelUseCase).unsubscribe();
+        verify(shopListView).onSearchShopFailed();
+        verify(dynamicFilterModelUseCase, never()).execute(any(), any());
     }
 }

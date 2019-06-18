@@ -35,12 +35,9 @@ import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
-import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
@@ -50,8 +47,11 @@ import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.search.result.presentation.view.fragment.CatalogListFragment;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
+import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment;
 import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragment;
 import com.tokopedia.search.result.presentation.view.fragment.ShopListFragment;
+import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -124,7 +124,7 @@ public class SearchActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.search_activity_search);
         initActivityOnCreate();
 
         proceed();
@@ -320,35 +320,6 @@ public class SearchActivity extends BaseActivity
     private void initPresenter() {
         searchPresenter.attachView(this);
         searchPresenter.initInjector(this);
-        searchPresenter.setInitiateSearchListener(getInitiateSearchListener());
-    }
-
-    private InitiateSearchListener getInitiateSearchListener() {
-        return new InitiateSearchListener() {
-            @Override
-            public void onHandleResponseSearch(boolean isHasCatalog) {
-                stopPerformanceMonitoring();
-                moveToSearchActivity(isHasCatalog);
-            }
-
-            @Override
-            public void onHandleApplink(@NonNull String applink) {
-                moveWithApplink(applink);
-            }
-
-            @Override
-            public void onHandleResponseError() {
-                NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
-                    if(searchParameter == null) return;
-                    SearchActivity.this.performProductSearch("");
-                });
-            }
-
-            @Override
-            public void onHandleResponseUnknown() {
-                throw new RuntimeException("Not yet handle unknown response");
-            }
-        };
     }
 
     protected void stopPerformanceMonitoring() {
@@ -708,6 +679,30 @@ public class SearchActivity extends BaseActivity
 
     private void showContainer(boolean visible) {
         container.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void initiateSearchHandleResponseSearch(boolean isHasCatalog) {
+        stopPerformanceMonitoring();
+        moveToSearchActivity(isHasCatalog);
+    }
+
+    @Override
+    public void initiateSearchHandleApplink(@NonNull String applink) {
+        moveWithApplink(applink);
+    }
+
+    @Override
+    public void initiateSearchHandleResponseError() {
+        NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
+            if(searchParameter == null) return;
+            SearchActivity.this.performProductSearch("");
+        });
+    }
+
+    @Override
+    public void initiateSearchHandleResponseUnknown() {
+        throw new RuntimeException("Not yet handle unknown response");
     }
 
     @Override

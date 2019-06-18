@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,8 +31,6 @@ import com.tokopedia.search.result.presentation.view.adapter.ShopListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
-import com.tokopedia.search.result.presentation.view.listener.FavoriteActionListener;
-import com.tokopedia.search.result.presentation.view.listener.SearchShopListener;
 import com.tokopedia.search.result.presentation.view.listener.ShopListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactoryImpl;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -46,12 +43,10 @@ public class ShopListFragment
         extends SearchSectionFragment
         implements
         ShopListSectionContract.View,
-        FavoriteActionListener,
         SearchSectionGeneralAdapter.OnItemChangeView,
         ShopListener,
         EmptyStateListener,
-        BannerAdsListener,
-        SearchShopListener {
+        BannerAdsListener {
 
     public static final String SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab";
     private static final String SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE";
@@ -118,9 +113,6 @@ public class ShopListFragment
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
         presenter.initInjector(this);
-        presenter.setFavoriteActionListener(this);
-        presenter.setRequestDynamicFilterListener(this);
-        presenter.setSearchShopListener(this);
 
         return inflater.inflate(R.layout.fragment_shop_list_search, null);
     }
@@ -226,6 +218,7 @@ public class ShopListFragment
         } else {
             if (performanceMonitoring != null) {
                 performanceMonitoring.stopTrace();
+                performanceMonitoring = null;
             }
             handleSearchResult(shopItemList, isHasNextPage, loadShopRow);
         }
@@ -431,8 +424,7 @@ public class ShopListFragment
         adapter.setFavoriteButtonEnabled(adapterPosition, true);
     }
 
-    @Override
-    public String getQueryKey() {
+    private String getQueryKey() {
         if(getSearchParameter() == null) return "";
 
         return getSearchParameter().getSearchQuery();
@@ -568,7 +560,18 @@ public class ShopListFragment
     }
 
     @Override
-    public boolean shouldSaveToLocalDynamicFilterDb() {
-        return true;
+    public void launchLoginActivity(String shopId) {
+        Bundle extras = new Bundle();
+        extras.putString("shop_id", shopId);
+
+        if (getActivity() == null) return;
+
+        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
+
+        if (router != null) {
+            Intent intent = router.getLoginIntent(getActivity());
+            intent.putExtras(extras);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN);
+        }
     }
 }

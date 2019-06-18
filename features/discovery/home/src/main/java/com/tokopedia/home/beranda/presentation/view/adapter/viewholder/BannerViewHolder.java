@@ -98,13 +98,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void onPromoLoaded() {
-        if (listener.isHomeFragment() && slidesList != null && slidesList.size() > 0) {
-            List<Promotion> promotionList = new ArrayList<>();
-            for (int i = 0, sizei = slidesList.size(); i < sizei; i++) {
-                promotionList.add(getPromotion(i));
-            }
-            HomePageTracking.eventPromoImpression(context, promotionList);
-        }
+
     }
 
     @Override

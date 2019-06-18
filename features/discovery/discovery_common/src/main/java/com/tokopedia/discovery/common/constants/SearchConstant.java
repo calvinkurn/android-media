@@ -99,4 +99,8 @@ public interface SearchConstant {
     interface SearchCatalog {
         String SEARCH_CATALOG_USE_CASE = "search_catalog_use_case";
     }
+
+    interface SearchProfile {
+        String SEARCH_PROFILE_USE_CASE = "search_profile_use_case";
+    }
 }

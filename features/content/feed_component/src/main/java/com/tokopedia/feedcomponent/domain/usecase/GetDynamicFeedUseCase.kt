@@ -21,7 +21,7 @@ import javax.inject.Inject
  * @author by milhamj on 18/12/18.
  */
 class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val context: Context,
-                                                private val graphqlUseCase: GraphqlUseCase,
+                                                val graphqlUseCase: GraphqlUseCase,
                                                 private val dynamicPostMapper: DynamicFeedMapper)
     : UseCase<DynamicFeedDomainModel>() {
 

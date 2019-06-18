@@ -58,6 +58,8 @@ public interface RegisterInitialContract {
         void onSuccessRegisterSosmed(String methodName);
 
         LoginSuccessRouter getLoginRouter();
+
+        void onBackPressed();
     }
 
     interface Presenter extends CustomerPresenter<View> {

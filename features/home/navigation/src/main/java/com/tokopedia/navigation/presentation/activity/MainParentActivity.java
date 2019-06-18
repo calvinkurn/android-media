@@ -48,6 +48,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
@@ -66,6 +67,7 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -86,7 +88,7 @@ import javax.inject.Inject;
  */
 public class MainParentActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
-        MainParentView, ShowCaseListener, CartNotifyListener, EmptyCartListener {
+        MainParentView, ShowCaseListener, CartNotifyListener, EmptyCartListener, RefreshNotificationListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -133,6 +135,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private Handler handler = new Handler();
     private CoordinatorLayout fragmentContainer;
+    private boolean isFirstNavigationImpression = false;
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -198,8 +201,9 @@ public class MainParentActivity extends BaseActivity implements
         super.onStart();
         if (presenter.isFirstTimeUser()) {
             setDefaultShakeEnable();
-            startActivity(((GlobalNavRouter) getApplicationContext())
-                    .getOnBoardingIntent(this));
+            Intent intent = RouteManager.getIntent(this,
+                    ApplinkConstInternalMarketplace.ONBOARDING);
+            startActivity(intent);
             finish();
         }
     }
@@ -236,6 +240,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void createView(Bundle savedInstanceState) {
+        isFirstNavigationImpression = true;
         GraphqlClient.init(this);
         setContentView(R.layout.activity_main_parent);
 
@@ -338,7 +343,10 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int position = getPositionFragmentByMenu(item);
-        globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
+        if (!isFirstNavigationImpression) {
+            globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
+        }
+        isFirstNavigationImpression = false;
 
         if (position == OS_MENU && !isNewOfficialStoreEnabled()) {
             startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
@@ -921,5 +929,10 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         return remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED, false);
+    }
+
+    @Override
+    public void onRefreshNotification() {
+        presenter.getNotificationData();
     }
 }

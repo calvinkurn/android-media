@@ -1,0 +1,19 @@
+query getShopSatisfaction($shopId: Int!){
+    ShopSatisfactionQuery(shopId: $shopId){
+        recentOneYear{
+          good
+          neutral
+          bad
+        }
+        recentSixMonth{
+          good
+          neutral
+          bad
+        }
+        recentOneMonth{
+          good
+          neutral
+          bad
+        }
+      }
+}

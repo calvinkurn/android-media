@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -29,6 +30,7 @@ import com.tokopedia.tkpd.R;
 public class AppLinkWebsiteActivity extends BasePresenterActivity
         implements FragmentGeneralWebView.OnFragmentInteractionListener {
     private static final String EXTRA_URL = "EXTRA_URL";
+    private static final String EXTRA_REFRESH_FLAG = "EXTRA_REFRESH_FLAG";
     private static final String EXTRA_TITLEBAR = "EXTRA_TITLEBAR";
     private static final String EXTRA_NEED_LOGIN = "EXTRA_NEED_LOGIN";
     private static final String EXTRA_PARENT_APP_LINK = "EXTRA_PARENT_APP_LINK";
@@ -49,6 +51,11 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
                 .putExtra(EXTRA_TITLEBAR, true)
                 .putExtra(EXTRA_NEED_LOGIN, false);
 
+    }
+
+    public static Intent refreshIntent(Context context, boolean refreshPage) {
+        return new Intent(context, AppLinkWebsiteActivity.class)
+                .putExtra(EXTRA_REFRESH_FLAG, refreshPage);
     }
 
     public static Intent newInstance(Context context, String url, boolean showToolbar,
@@ -224,5 +231,16 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         }
 
         return super.getContentId();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(PersistentCacheManager.instance.get("reload_webview", int.class, 0) == 1) {
+            PersistentCacheManager.instance.put("reload_webview", 0);
+            if (fragmentGeneralWebView != null) {
+                fragmentGeneralWebView.reloadPage();
+            }
+        }
     }
 }
