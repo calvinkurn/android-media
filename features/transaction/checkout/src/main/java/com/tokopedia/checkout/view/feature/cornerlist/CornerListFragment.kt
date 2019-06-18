@@ -120,7 +120,7 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
     }
 
     override fun setLoadingState(active: Boolean) {
-        mProgressBar.visibility = if (active) View.VISIBLE else View.GONE
+        mProgressBar.visibility = if (active) View.VISIBLE else View.INVISIBLE
     }
 
     override fun showError(e: Throwable) {
