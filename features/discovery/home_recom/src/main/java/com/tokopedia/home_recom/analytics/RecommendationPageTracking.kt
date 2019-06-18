@@ -55,13 +55,13 @@ class RecommendationPageTracking {
         private const val EVENT_CLICK_RECOMMENDATION = "clickRecommendation"
 
         private const val EVENT_CATEGORY_PRODUCT_DETAIL_PAGE = "product detail page"
-        private const val EVENT_CATEGORY_RECOMMENDATION_PAGE = "productDetailData page"
+        private const val EVENT_CATEGORY_RECOMMENDATION_PAGE = "recommendation page"
 
         private const val EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_LOGIN = "click - product productDetailData"
         private const val EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_NON_LOGIN = "click - product productDetailData - non login"
         private const val EVENT_CLICK_PRODUCT_ON_HEADER_LOGIN = "click product productDetailData on %s"
         private const val EVENT_CLICK_PRODUCT_ON_HEADER_NON_LOGIN = "click product productDetailData on %s - non login"
-        private const val EVENT_ACTION_IMPRESSION_PRODUCT_ON_HEADER = "impression product productDetailData on %s - non login"
+        private const val EVENT_ACTION_IMPRESSION_PRODUCT_ON_HEADER = "impression product recommendation on %s - non login"
         private const val EVENT_ACTION_IMPRESSION_PRODUCT_ON_HEADER_LOGIN = "impression product productDetailData on %s"
 
         private const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN = "impression - product productDetailData"
@@ -86,7 +86,7 @@ class RecommendationPageTracking {
 
         fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem,
                                                             list: String,
-                                                            position: String): Map<String, Any>  {
+                                                            position: String): Any  {
             return DataLayer.mapOf(
                     FIELD_PRODUCT_NAME, item.name,
                     FIELD_PRODUCT_ID, item.productId,
@@ -101,7 +101,7 @@ class RecommendationPageTracking {
 
         fun convertRecommendationItemToDataClickObject(item: RecommendationItem,
                                                        list: String,
-                                                       position: String): Map<String, Any>  {
+                                                       position: String): Any  {
             return DataLayer.mapOf(
                     FIELD_ACTION_FIELD, DataLayer.mapOf(
                     FIELD_PRODUCT_LIST, list
@@ -120,7 +120,7 @@ class RecommendationPageTracking {
 
         fun convertPrimaryProductToDataImpressionObject(item: RecommendationItem,
                                                         list: String,
-                                                        position: String): Map<String, Any> {
+                                                        position: String): Any {
             return DataLayer.mapOf(
                     FIELD_PRODUCT_NAME, item.name,
                     FIELD_PRODUCT_ID, item.productId,
@@ -135,7 +135,7 @@ class RecommendationPageTracking {
 
         fun convertPrimaryProductToDataClickObject(item: RecommendationItem,
                                                    list: String,
-                                                   position: String): Map<String, Any>  {
+                                                   position: String): Any {
             return DataLayer.mapOf(
                     FIELD_ACTION_FIELD, DataLayer.mapOf(
                     FIELD_PRODUCT_LIST, list
@@ -173,7 +173,7 @@ class RecommendationPageTracking {
 
         // TODO: COMPLETE THIS WITH OBJECT, ACTUALLY DATA FROM API ISN'T READY
         fun convertProductToDataClickAddToCart(item: RecommendationItem,
-                                               list: String): Map<String, Any> {
+                                               list: String): Any {
             return DataLayer.mapOf(
                     FIELD_ACTION_FIELD, DataLayer.mapOf(
                     FIELD_PRODUCT_LIST, list
@@ -343,17 +343,17 @@ class RecommendationPageTracking {
                     EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_NON_LOGIN,
                     EVENT_LABEL, VALUE_EMPTY,
                     ECOMMERCE, DataLayer.mapOf(
-                    ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
-                    ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
-                    convertRecommendationItemToDataImpressionObject(
-                            recommendationItem,
-                            String.format(
-                                    VALUE_LIST_TOPADS_PRODUCT_RECOMMENDATION_NON_LOGIN,
-                                    recommendationItem.recommendationType
-                            ),
-                            position)
-            )
-            )
+                        ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                        ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
+                            convertRecommendationItemToDataImpressionObject(
+                                recommendationItem,
+                                String.format(
+                                        VALUE_LIST_TOPADS_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                                        recommendationItem.recommendationType
+                                ),
+                                position)
+                        )
+                    )
             )
 
             trackingQueue.putEETracking(data as HashMap<String, Any>)
@@ -593,7 +593,7 @@ class RecommendationPageTracking {
                     if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK,
                     headerName,
                     recommendationItem.recommendationType
-            ), position.toString())
+            ), position)
             )
             )
             tracker.sendEnhanceEcommerceEvent(data)
@@ -662,15 +662,15 @@ class RecommendationPageTracking {
                     EVENT_ACTION, String.format(EVENT_ACTION_IMPRESSION_PRODUCT_ON_HEADER, headerName),
                     EVENT_LABEL, VALUE_EMPTY,
                     ECOMMERCE, DataLayer.mapOf(
-                    ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
-                    ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
-                    convertRecommendationItemToDataImpressionObject(recommendationItem,
-                            String.format(
-                                    if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS_NON_LOGIN else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_NON_LOGIN,
-                                    headerName, recommendationItem.recommendationType
-                            ), position)
-            )
-            )
+                        ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                        ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
+                        convertRecommendationItemToDataImpressionObject(recommendationItem,
+                                String.format(
+                                        if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS_NON_LOGIN else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_NON_LOGIN,
+                                        headerName, recommendationItem.recommendationType
+                                ), position)
+                        )
+                    )
             )
             trackingQueue.putEETracking(data as HashMap<String, Any>)
         }
