@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
 import com.tokopedia.checkout.view.di.component.CartComponent;
@@ -22,7 +23,6 @@ import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent;
-import com.tokopedia.topads.sdk.utils.EndlessRecyclerViewScrollListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,6 +45,7 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
     private View mEmptyView;
     private SearchInputView mSearchView;
     private RecyclerView mRvCorner;
+    private EndlessRecyclerViewScrollListener mScrollListener;
 
     @Inject CornerListPresenter mPresenter;
     private ProgressBar mProgressBar;
@@ -104,12 +105,13 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRvCorner.setLayoutManager(layoutManager);
         mRvCorner.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        mRvCorner.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+        mScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 mPresenter.loadMore(page);
             }
-        });
+        };
+        mRvCorner.addOnScrollListener(mScrollListener);
         mRvCorner.setAdapter(mAdapter);
 
         mSearchView.setSearchHint(getActivity().getString(R.string.hint_search_corner));
@@ -139,12 +141,14 @@ public class CornerListFragment extends BaseDaggerFragment implements CornerCont
     @Override
     public void showData(List<? extends RecipientAddressModel> data) {
         mAdapter.setAddress(data);
+        mScrollListener.resetState();
         mEmptyView.setVisibility(View.GONE);
     }
 
     @Override
     public void appendData(List<? extends RecipientAddressModel> data) {
         mAdapter.addAddress(data);
+        mScrollListener.updateStateAfterGetData();
     }
 
     @Override
