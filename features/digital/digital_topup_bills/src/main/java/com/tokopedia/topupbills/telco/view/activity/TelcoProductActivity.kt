@@ -25,17 +25,20 @@ class TelcoProductActivity : BaseSimpleActivity() {
         supportActionBar!!.elevation = 0f
     }
 
-    companion object {
+    object DeeplinkIntents{
 
         @JvmStatic
         @DeepLink(ApplinkConst.DIGITAL + ApplinkConst.DigitalProduct.TELCO)
-        fun getCallingApplinkIntent(context: Context, extras: Bundle): Intent {
+        fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            val intent = newInstance(context)
+            val intent = TelcoProductActivity.newInstance(context)
             return intent
                     .setData(uri.build())
                     .putExtras(extras)
         }
+    }
+
+    companion object {
 
         fun newInstance(context: Context): Intent {
             val intent = Intent(context, TelcoProductActivity::class.java)
