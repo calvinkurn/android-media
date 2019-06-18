@@ -205,7 +205,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
         autocompleteGeocodeBottomSheetFragment.loadAutocompleteGeocode(lat, long)
     }*/
 
-    fun showAutoComplete() {
+    private fun showAutoComplete() {
         if (isShowingAutocomplete == true) {
             handler.postDelayed({
                 showAutocompleteGeocodeBottomSheet()
@@ -250,8 +250,8 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
     }
 
     private fun showAutocompleteGeocodeBottomSheet() {
-        autocompleteGeocodeBottomSheetFragment =
-                AutocompleteBottomSheetFragment.newInstance(currentLat, currentLong)
+        val autocompleteGeocodeBottomSheetFragment =
+                AutocompleteBottomSheetFragment.newInstance()
         autocompleteGeocodeBottomSheetFragment.setActionListener(this)
         autocompleteGeocodeBottomSheetFragment.show(fragmentManager, "")
         isShowingAutocomplete = false

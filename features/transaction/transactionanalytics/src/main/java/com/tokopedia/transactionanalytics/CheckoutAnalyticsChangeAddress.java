@@ -366,4 +366,114 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
         );
     }
 
+    // ADD NEW ADDRESS
+    public void eventClickButtonOkOnAllowLocation() {
+        sendEventCategoryAction(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_BUTTON_OK_ON_ALLOW_LOCATION
+        );
+    }
+
+    public void eventClickButtonDoNotAllowOnAllowLocation() {
+        sendEventCategoryAction(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_BUTTON_DO_NOT_ALLOW_ON_ALLOW_LOCATION
+        );
+    }
+
+    public void eventClickButtonAktifkanLayananLokasiOnBlockGps() {
+        sendEventCategoryAction(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_BUTTON_AKTIFKAN_LAYANAN_LOKASI_ON_BLOCK_GPS
+        );
+    }
+
+    public void eventViewErrorAlamatTidakValid() {
+        sendEventCategoryAction(
+                EventName.VIEW_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.VIEW_ERROR_ALAMAT_TIDAK_VALID
+        );
+    }
+
+    public void eventClickBackArrowOnInputAddress() {
+        sendEventCategoryAction(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_BACK_ARROW_ON_INPUT_ADDRESS
+        );
+    }
+
+    public void eventClickButtonPilihLokasiIniSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_BUTTON_PILIH_LOKASI_INI,
+                EventLabel.SUCCESS
+        );
+    }
+
+    public void eventClickButtonPilihLokasiIniNotSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_BUTTON_PILIH_LOKASI_INI,
+                EventLabel.NOT_SUCCESS
+        );
+    }
+
+    public void eventClickButtonPilihLokasiIni() {
+        sendEventCategoryAction(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_BUTTON_PILIH_LOKASI_INI
+        );
+    }
+
+    public void eventClickSimpanSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_BUTTON_SIMPAN,
+                EventLabel.POSITIVE_SUCCESS
+        );
+    }
+
+    public void eventClickSimpanNotSuccess(String errorField) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_BUTTON_SIMPAN,
+                EventLabel.POSITIVE_NOT_SUCCESS + " - " + errorField
+        );
+    }
+
+    public void eventClickBackArrowOnNegativePage() {
+        sendEventCategoryAction(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS_NEGATIVE,
+                EventAction.CLICK_BACK_ARROW_ON_NEGATIVE_PAGE
+        );
+    }
+
+    public void eventClickButtonSimpanNegativeSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS_NEGATIVE,
+                EventAction.CLICK_BUTTON_SIMPAN,
+                EventLabel.NEGATIVE_SUCCESS
+        );
+    }
+
+    public void eventClickButtonSimpanNegativeNotSuccess(String errorField) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS_NEGATIVE,
+                EventAction.CLICK_BUTTON_SIMPAN,
+                EventLabel.NEGATIVE_NOT_SUCCESS + " - " + errorField
+        );
+    }
 }

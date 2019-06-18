@@ -73,6 +73,7 @@ class AutocompleteBottomSheetPresenter @Inject constructor(private val autocompl
         return {
             clearCacheAutocompleteGeocode()
             getAutocompleteGeocode(it.latitude, it.longitude)
+            view.setCurrentLatLong(it.latitude, it.longitude)
         }
     }
 

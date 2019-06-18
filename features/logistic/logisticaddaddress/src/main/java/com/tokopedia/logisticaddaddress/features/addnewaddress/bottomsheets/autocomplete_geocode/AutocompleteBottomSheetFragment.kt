@@ -95,16 +95,25 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
         llPoi = view.findViewById(R.id.ll_poi)
         etSearch = view.findViewById(R.id.et_search)
         adapter = AutocompleteBottomSheetAdapter(this)
+
+        // set presenter
         if (activity != null) {
             initInjector()
         }
+        presenter.setPermissionChecker(permissionCheckerHelper)
+        activity?.let { presenter.requestLocation(it) }
 
         val linearLayoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false)
         rvPoiList.layoutManager = linearLayoutManager
         rvPoiList.adapter = adapter
 
-        if (currentLat != 0.0 && currentLong != 0.0) {
+        rlCurrentLocation.setOnClickListener {
+            actionListener.useCurrentLocation(currentLat, currentLong)
+            dismiss()
+        }
+
+        /*if (currentLat != 0.0 && currentLong != 0.0) {
             presenter.clearCacheAutocompleteGeocode()
             presenter.getAutocompleteGeocode(currentLat, currentLong)
             rlCurrentLocation.setOnClickListener {
@@ -116,7 +125,7 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
             rlCurrentLocation.setOnClickListener {
                 // show undetected bottomsheet
             }
-        }
+        }*/
 
         onAddressTyped()
     }
@@ -135,7 +144,6 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
                     .build()
                     .inject(this@AutocompleteBottomSheetFragment)
             presenter.attachView(this@AutocompleteBottomSheetFragment)
-            presenter.setPermissionChecker(permissionCheckerHelper)
         }
     }
 
@@ -235,5 +243,10 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
                         grantResults)
             }
         }
+    }
+
+    override fun setCurrentLatLong(lat: Double, long: Double) {
+        currentLat = lat
+        currentLong = long
     }
 }

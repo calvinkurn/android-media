@@ -42,6 +42,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_REGISTER = "viewRegister";
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
         String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
+        String VIEW_ADDRESS = "viewAddress";
     }
 
     interface EventCategory {
@@ -49,6 +50,7 @@ public interface ConstantTransactionAnalytics {
         String COURIER_SELECTION = "courier selection";
         String ADD_TO_CART = "add to cart";
         String CART_CHANGE_ADDRESS = "cart change address";
+        String CART_CHANGE_ADDRESS_NEGATIVE = "cart change address negative";
         String CART_MULTIPLE_ADDRESS = "cart multiple address";
         String ORDER_TRACKING = "order tracking";
         String PRODUCT_DETAIL_PAGE = "product detail page";
@@ -260,6 +262,16 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PROMO_LOGISTIC_TICKER = "click promo logistic ticker";
         String CLICK_LANJUTKAN_TERAPKAN_PROMO = "click lanjutkan di pop up terapkan promo";
         String CLICK_BATAL_TERAPKAN_PROMO = "click batal di pop up terapkan promo";
+
+        //ADD NEW ADDRESS
+        String CLICK_BUTTON_OK_ON_ALLOW_LOCATION = "click button ok on allow location";
+        String CLICK_BUTTON_DO_NOT_ALLOW_ON_ALLOW_LOCATION = "click button do not allow on allow location";
+        String CLICK_BUTTON_AKTIFKAN_LAYANAN_LOKASI_ON_BLOCK_GPS = "click button aktifkan layanan lokasi on block gps";
+        String VIEW_ERROR_ALAMAT_TIDAK_VALID = "view error alamat tidak valid";
+        String CLICK_BACK_ARROW_ON_INPUT_ADDRESS = "click back arrow on input address";
+        String CLICK_BUTTON_PILIH_LOKASI_INI = "click button pilih lokasi ini";
+        String VIEW_FAILED_PINPOINT_NOTIFICATION = "view failed pin point notification";
+        String CLICK_BACK_ARROW_ON_NEGATIVE_PAGE = "click back arrow on negative page";
     }
 
     interface EventLabel {
@@ -298,6 +310,11 @@ public interface ConstantTransactionAnalytics {
 
         String SUCCESS_DEFAULT = "success - default";
         String SUCCESS_NOT_DEFAULT = "success - not default";
+
+        String POSITIVE_SUCCESS = "positive success";
+        String POSITIVE_NOT_SUCCESS = "positive not success";
+        String NEGATIVE_SUCCESS = "negative success";
+        String NEGATIVE_NOT_SUCCESS = "negative not success";
     }
 
     interface ScreenName {
