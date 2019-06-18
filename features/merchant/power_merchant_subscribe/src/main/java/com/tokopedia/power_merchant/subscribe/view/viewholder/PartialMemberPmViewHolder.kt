@@ -26,9 +26,9 @@ class PartialMemberPmViewHolder private constructor(private val view: View,
 
     private fun showCancellationButton(isAutoExtend: Boolean) {
         if (isAutoExtend) {
-            view.hide()
-        } else {
             view.show()
+        } else {
+            view.hide()
         }
     }
 }

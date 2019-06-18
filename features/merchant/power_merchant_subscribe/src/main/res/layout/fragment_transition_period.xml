@@ -5,21 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
+    android:layout_gravity="center"
     tools:context=".view.fragment.TransitionPeriodPmFragment">
-
-    <ImageView
-        android:id="@+id/img_kyc_verification"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        tools:src="@tools:sample/avatars" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:padding="@dimen/dp_16">
+
+        <ImageView
+            android:id="@+id/img_kyc_verification"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_centerHorizontal="true"
+            tools:src="@tools:sample/avatars" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_user_name"
@@ -31,6 +34,7 @@
             android:lineSpacingExtra="@dimen/dp_2"
             android:text="@string/pm_label_transition_period_header"
             android:textAlignment="center"
+            android:layout_below="@id/img_kyc_verification"
             android:textColor="@color/black"
             android:textStyle="bold"
             app:fontSize="titleBig" />

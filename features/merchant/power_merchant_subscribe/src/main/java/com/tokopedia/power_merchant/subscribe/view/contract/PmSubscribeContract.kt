@@ -12,6 +12,7 @@ interface PmSubscribeContract {
         fun cancelMembership()
         fun onSuccessCancelMembership()
         fun onErrorCancelMembership(throwable: Throwable)
+        fun hideLoading()
 
     }
 

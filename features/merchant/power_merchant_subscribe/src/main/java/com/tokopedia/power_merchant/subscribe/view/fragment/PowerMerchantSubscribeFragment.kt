@@ -172,7 +172,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     override fun onErrorCancelMembership(throwable: Throwable) {
-        root_view_pm.hideLoading()
+        hideLoading()
         showToasterError(throwable)
     }
 
@@ -290,8 +290,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         if (isSuccessCancellationPm) {
             showToasterCancellationSuccess()
         }
-        root_view_pm.hideLoading()
+    }
 
+    override fun hideLoading(){
+        root_view_pm.hideLoading()
     }
 
     private fun renderViewNonTransitionPeriod() {
@@ -359,7 +361,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun showEmptyState(throwable: Throwable) {
         root_view_pm.showEmptyState(ErrorHandler.getErrorMessage(context, throwable), ::refreshData)
-        root_view_pm.hideLoading()
+        hideLoading()
     }
 
     private fun renderDefaultTicker() {
