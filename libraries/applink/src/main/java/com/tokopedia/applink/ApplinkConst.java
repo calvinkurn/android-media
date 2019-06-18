@@ -296,8 +296,4 @@ public interface ApplinkConst {
     interface Profile {
         String PARAM_USER_ID = "{user_id}";
     }
-
-    interface DigitalProduct {
-        String TELCO = "/telco";
-    }
 }

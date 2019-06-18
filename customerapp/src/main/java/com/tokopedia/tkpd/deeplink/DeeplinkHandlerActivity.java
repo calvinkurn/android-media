@@ -136,7 +136,6 @@ import com.tokopedia.tokopoints.TokopointApplinkModule;
 import com.tokopedia.tokopoints.TokopointApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
-import com.tokopedia.topupbills.applink.TopupBillsApplinkModule;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
@@ -167,7 +166,6 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         FlightApplinkModule.class,
         TrainApplinkModule.class,
         DigitalBrowseApplinkModule.class,
-        TopupBillsApplinkModule.class,
         ReputationApplinkModule.class,
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
