@@ -24,7 +24,6 @@ import com.tokopedia.checkout.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
-import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.CheckPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplySubscriber;
@@ -33,7 +32,6 @@ import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetRecommendation
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetWishlistSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
@@ -44,10 +42,7 @@ import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMa
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
-import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
-import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
@@ -72,11 +67,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -227,54 +219,11 @@ public class CartListPresenter implements ICartListPresenter {
         requestParams.putString(GetCartListUseCase.PARAM_SELECTED_CART_ID, cartId);
 
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
-//                .flatMap(new Func1<CartListData, Observable<CartListData>>() {
-//                    @Override
-//                    public Observable<CartListData> call(CartListData cartListData) {
-//                        RequestParams adsParam = RequestParams.create();
-//                        adsParam.putString("params", generateTopAdsParam(cartListData));
-//                        return Observable.zip(Observable.just(cartListData),
-//                                topAdsUseCase.createObservable(adsParam),
-//                                new Func2<CartListData, TopAdsModel, CartListData>() {
-//                                    @Override
-//                                    public CartListData call(CartListData cartListData, TopAdsModel adsModel) {
-//                                        cartListData.setAdsModel(adsModel);
-//                                        return cartListData;
-//                                    }
-//                                });
-//                    }
-//                })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberInitialCartListData())
         );
-    }
-
-    private String generateTopAdsParam(CartListData cartListData) {
-        XcartParam model = new XcartParam();
-        List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
-        for (int i = 0; i < shopGroupDataList.size(); i++) {
-            for (int j = 0; j < shopGroupDataList.get(i).getCartItemDataList().size(); j++) {
-                CartItemData data = shopGroupDataList.get(i).getCartItemDataList().get(j).getCartItemData();
-                XcartParam.Products p = new XcartParam.Products();
-                p.setProductId(Integer.parseInt(data.getOriginData().getProductId()));
-                p.setSourceShopId(Integer.parseInt(data.getOriginData().getShopId()));
-                model.getProducts().add(p);
-            }
-        }
-        Map<String, String> adsParam = new HashMap<>();
-        adsParam.put(TopAdsParams.KEY_PAGE, "1");
-        adsParam.put(TopAdsParams.KEY_ITEM, ITEM_REQUEST);
-        adsParam.put(TopAdsParams.KEY_DEVICE, TopAdsParams.DEFAULT_KEY_DEVICE);
-        adsParam.put(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
-        adsParam.put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(model));
-        adsParam.put(TopAdsParams.KEY_USER_ID, userSessionInterface.getUserId());
-        adsParam.put(TopAdsParams.KEY_SRC, CART_SRC);
-        List<String> paramList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : adsParam.entrySet()) {
-            paramList.add(entry.getKey() + "=" + entry.getValue().replace(" ", "+"));
-        }
-        return TextUtils.join("&", paramList);
     }
 
     @Override
@@ -321,23 +270,6 @@ public class CartListPresenter implements ICartListPresenter {
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, appliedPromoOnDeletedProductList);
 
         compositeSubscription.add(deleteCartGetCartListUseCase.createObservable(requestParams)
-//                .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
-//                    @Override
-//                    public Observable<DeleteAndRefreshCartListData> call(DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
-//                        RequestParams adsParam = RequestParams.create();
-//                        adsParam.putString("params", generateTopAdsParam(cartListData));
-//                        return Observable.zip(Observable.just(deleteAndRefreshCartListData),
-//                                topAdsUseCase.createObservable(adsParam),
-//                                new Func2<DeleteAndRefreshCartListData, TopAdsModel, DeleteAndRefreshCartListData>() {
-//                                    @Override
-//                                    public DeleteAndRefreshCartListData call(DeleteAndRefreshCartListData deleteAndRefreshCartListData,
-//                                                                             TopAdsModel adsModel) {
-//                                        deleteAndRefreshCartListData.getCartListData().setAdsModel(adsModel);
-//                                        return deleteAndRefreshCartListData;
-//                                    }
-//                                });
-//                    }
-//                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
