@@ -270,9 +270,10 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     public void onBackPressed() {
         if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
-            updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
             ((ShipmentAddressListFragment) getCurrentFragment())
                     .checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat();
+        } else if (getCurrentFragment() instanceof CornerListFragment) {
+            updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
         }
         super.onBackPressed();
     }
