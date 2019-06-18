@@ -175,7 +175,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         }
     }
 
-    override fun onClickAddWishlist(item: RecommendationItem) {
+    fun onClickAddWishlist(item: RecommendationItem) {
         if(userSessionInterface.isLoggedIn){
             RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(true)
         }else{
@@ -183,7 +183,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         }
     }
 
-    override fun onClickRemoveWishlist(item: RecommendationItem) {
+    fun onClickRemoveWishlist(item: RecommendationItem) {
         if(userSessionInterface.isLoggedIn){
             RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(false)
         }else{
