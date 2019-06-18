@@ -27,6 +27,7 @@ class TelcoProductActivity : BaseSimpleActivity() {
 
     companion object {
 
+        @JvmStatic
         @DeepLink(ApplinkConst.DIGITAL + ApplinkConst.DigitalProduct.TELCO)
         fun getCallingApplinkIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
