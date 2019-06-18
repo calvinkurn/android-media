@@ -152,7 +152,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
             view.context.startActivity(ProductYoutubePlayerActivity.createIntent(view.context, videos.map { it.url }, index))
         } else {
             view.context.startActivity(Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://www.youtube.com/watch?v=" + videos[index].url)));
+                    Uri.parse("https://www.youtube.com/watch?v=" + videos[index].url)));
         }
     }
 }
