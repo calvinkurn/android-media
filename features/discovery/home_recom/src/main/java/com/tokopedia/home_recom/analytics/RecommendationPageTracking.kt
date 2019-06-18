@@ -86,8 +86,8 @@ class RecommendationPageTracking {
 
         fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem,
                                                             list: String,
-                                                            position: String) {
-            DataLayer.mapOf(
+                                                            position: String): Map<String, Any>  {
+            return DataLayer.mapOf(
                     FIELD_PRODUCT_NAME, item.name,
                     FIELD_PRODUCT_ID, item.productId,
                     FIELD_PRODUCT_PRICE, item.priceInt,
@@ -101,8 +101,8 @@ class RecommendationPageTracking {
 
         fun convertRecommendationItemToDataClickObject(item: RecommendationItem,
                                                        list: String,
-                                                       position: String) {
-            DataLayer.mapOf(
+                                                       position: String): Map<String, Any>  {
+            return DataLayer.mapOf(
                     FIELD_ACTION_FIELD, DataLayer.mapOf(
                     FIELD_PRODUCT_LIST, list
             ),
@@ -120,8 +120,8 @@ class RecommendationPageTracking {
 
         fun convertPrimaryProductToDataImpressionObject(item: RecommendationItem,
                                                         list: String,
-                                                        position: String) {
-            DataLayer.mapOf(
+                                                        position: String): Map<String, Any> {
+            return DataLayer.mapOf(
                     FIELD_PRODUCT_NAME, item.name,
                     FIELD_PRODUCT_ID, item.productId,
                     FIELD_PRODUCT_PRICE, item.priceInt,
@@ -135,8 +135,8 @@ class RecommendationPageTracking {
 
         fun convertPrimaryProductToDataClickObject(item: RecommendationItem,
                                                    list: String,
-                                                   position: String) {
-            DataLayer.mapOf(
+                                                   position: String): Map<String, Any>  {
+            return DataLayer.mapOf(
                     FIELD_ACTION_FIELD, DataLayer.mapOf(
                     FIELD_PRODUCT_LIST, list
             ),
@@ -173,8 +173,8 @@ class RecommendationPageTracking {
 
         // TODO: COMPLETE THIS WITH OBJECT, ACTUALLY DATA FROM API ISN'T READY
         fun convertProductToDataClickAddToCart(item: RecommendationItem,
-                                               list: String) {
-            DataLayer.mapOf(
+                                               list: String): Map<String, Any> {
+            return DataLayer.mapOf(
                     FIELD_ACTION_FIELD, DataLayer.mapOf(
                     FIELD_PRODUCT_LIST, list
             ),
