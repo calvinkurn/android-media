@@ -62,6 +62,7 @@ object SettingHelper {
 
     fun createDummyResponse(): UserSettingPojo {
         val transactionSettings = listOf(
+                ParentSettingPojo("Transaksi Penjualan", "", "1", true, "", emptyList()),
                 ParentSettingPojo("Transaksi Pembelian", "", "1", true, "", emptyList())
         )
 

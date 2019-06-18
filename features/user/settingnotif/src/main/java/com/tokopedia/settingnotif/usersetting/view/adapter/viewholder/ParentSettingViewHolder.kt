@@ -35,6 +35,8 @@ class ParentSettingViewHolder(
         if (element.hasDescription()) {
             description?.visibility = View.VISIBLE
             description?.text = element.description
+        } else {
+            description?.visibility = View.GONE
         }
     }
 

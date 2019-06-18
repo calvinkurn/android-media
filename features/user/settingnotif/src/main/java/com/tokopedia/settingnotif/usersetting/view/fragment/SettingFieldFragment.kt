@@ -12,11 +12,14 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactoryImpl
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.widget.NotifSettingBigDividerDecoration
+import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecoration
 import javax.inject.Inject
 
 abstract class SettingFieldFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), SettingFieldContract.View {
@@ -38,12 +41,22 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>, BaseAdapter
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return super.onCreateView(inflater, container, savedInstanceState).also {
             setupToolbar()
+            setupRecyclerView(it)
         }
     }
 
     private fun setupToolbar() {
         if (activity is AppCompatActivity) {
             (activity as AppCompatActivity).supportActionBar?.title = screenName
+        }
+    }
+
+    private fun setupRecyclerView(view: View?) {
+        val recyclerView = getRecyclerView(view)
+        if (recyclerView is VerticalRecyclerView) {
+            recyclerView.clearItemDecoration()
+            recyclerView.addItemDecoration(NotifSettingDividerDecoration(context))
+            recyclerView.addItemDecoration(NotifSettingBigDividerDecoration(context))
         }
     }
 
