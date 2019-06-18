@@ -58,7 +58,6 @@
             android:ellipsize="end"
             android:lineSpacingExtra="@dimen/sp_5"
             android:maxLines="2"
-            android:minHeight="@dimen/product_item_title_min_height"
             android:textColor="@color/product_card_title_black"
             android:textSize="@dimen/sp_14"
             android:textStyle="normal"
