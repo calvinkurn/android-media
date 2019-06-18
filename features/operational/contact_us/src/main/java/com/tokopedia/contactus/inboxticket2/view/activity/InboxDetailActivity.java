@@ -310,8 +310,9 @@ public class InboxDetailActivity extends InboxBaseActivity
                 image.setFileLoc(imagePath);
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).onImageSelect(image);
             }
+        }else if(resultCode == Activity.RESULT_OK){
+            mPresenter.refreshLayout();
         }
-
     }
 
     @OnClick(R2.id.iv_upload_img)
