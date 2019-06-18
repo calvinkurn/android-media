@@ -10,6 +10,7 @@ import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlinx.android.synthetic.main.search_srp_item_grid_2019.view.*
+import java.lang.StringBuilder
 
 class GridProductItem2019ViewHolder(
     itemView: View,
@@ -33,31 +34,35 @@ class GridProductItem2019ViewHolder(
         initTitleTextView(productItem)
         initPriceTextView(productItem)
         initLocationTextView(productItem)
+        initRatingAndReview(productItem)
+        initTopAdsIcon(productItem)
     }
 
     private fun initProductCardContainer(productItem: ProductItemViewModel) {
-        itemView.productCardContainer.setOnLongClickListener {
+        itemView.productCardContainer?.setOnLongClickListener {
             productListener.onLongClick(productItem, adapterPosition)
             true
         }
 
-        itemView.productCardContainer.setOnClickListener {
+        itemView.productCardContainer?.setOnClickListener {
             productListener.onItemClicked(productItem, adapterPosition)
         }
     }
 
     private fun initProductImage(productItem: ProductItemViewModel) {
-        itemView.productImage.setViewHintListener(productItem) {
+        itemView.productImage?.setViewHintListener(productItem) {
             productListener.onProductImpressed(productItem, adapterPosition)
         }
 
-        ImageHandler.loadImageThumbs(context, itemView.productImage, productItem.imageUrl)
+        if(itemView.productImage != null) {
+            ImageHandler.loadImageThumbs(context, itemView.productImage, productItem.imageUrl)
+        }
     }
 
     private fun initWishlistButtonContainer(productItem: ProductItemViewModel) {
-        itemView.wishlistButtonContainer.isEnabled = productItem.isWishlistButtonEnabled
+        itemView.wishlistButtonContainer?.isEnabled = productItem.isWishlistButtonEnabled
 
-        itemView.wishlistButtonContainer.setOnClickListener {
+        itemView.wishlistButtonContainer?.setOnClickListener {
             if(productItem.isWishlistButtonEnabled) {
                 productListener.onWishlistButtonClicked(productItem)
             }
@@ -66,19 +71,19 @@ class GridProductItem2019ViewHolder(
 
     private fun initWishlistButton(productItem: ProductItemViewModel) {
         if(productItem.isWishlisted) {
-            itemView.wishlistButton.setBackgroundResource(R.drawable.search_ic_wishlist_red)
+            itemView.wishlistButton?.setBackgroundResource(R.drawable.search_ic_wishlist_red)
         }
         else {
-            itemView.wishlistButton.setBackgroundResource(R.drawable.search_ic_wishlist)
+            itemView.wishlistButton?.setBackgroundResource(R.drawable.search_ic_wishlist)
         }
     }
 
     private fun initTitleTextView(productItem: ProductItemViewModel) {
-        itemView.titleTextView.text = MethodChecker.fromHtml(productItem.productName)
+        itemView.titleTextView?.text = MethodChecker.fromHtml(productItem.productName)
     }
 
     private fun initPriceTextView(productItem: ProductItemViewModel) {
-        itemView.priceTextView.text = getPriceText(productItem)
+        itemView.priceTextView?.text = getPriceText(productItem)
     }
 
     private fun getPriceText(productItem: ProductItemViewModel) : CharSequence {
@@ -88,11 +93,82 @@ class GridProductItem2019ViewHolder(
 
     private fun initLocationTextView(productItem: ProductItemViewModel) {
         if(!TextUtils.isEmpty(productItem.shopCity)) {
-            itemView.locationTextView.text = MethodChecker.fromHtml(productItem.shopCity)
-            itemView.locationTextView.visibility = View.VISIBLE
+            itemView.locationTextView?.text = MethodChecker.fromHtml(productItem.shopCity)
+            itemView.locationTextView?.visibility = View.VISIBLE
         }
         else {
-            itemView.locationTextView.visibility = View.GONE
+            itemView.locationTextView?.visibility = View.GONE
+        }
+    }
+
+    private fun initRatingAndReview(productItem: ProductItemViewModel) {
+        initRatingView(productItem)
+        initReviewCount(productItem)
+        initRatingAndReviewContainer(productItem)
+    }
+
+    private fun initRatingView(productItem: ProductItemViewModel) {
+        if (productItem.rating != 0) {
+            itemView.ratingImage?.visibility = View.VISIBLE
+            itemView.ratingImage?.setImageResource(getRatingDrawable(getStarCount(productItem)))
+        } else {
+            itemView.ratingImage?.visibility = View.GONE
+        }
+    }
+
+    private fun getRatingDrawable(param: Int): Int {
+        return when (param) {
+            0 -> R.drawable.ic_star_none
+            1 -> R.drawable.ic_star_one
+            2 -> R.drawable.ic_star_two
+            3 -> R.drawable.ic_star_three
+            4 -> R.drawable.ic_star_four
+            5 -> R.drawable.ic_star_five
+            else -> R.drawable.ic_star_none
+        }
+    }
+
+    private fun getStarCount(productItem: ProductItemViewModel): Int {
+        return if (productItem.isTopAds)
+            Math.round(productItem.rating / 20f)
+        else
+            Math.round(productItem.rating.toFloat())
+    }
+
+    private fun initReviewCount(productItem: ProductItemViewModel) {
+        if (productItem.countReview != 0) {
+            itemView.reviewCountTextView?.visibility = View.VISIBLE
+            itemView.reviewCountTextView?.text = getReviewCountFormattedAsText(productItem.countReview)
+        } else {
+            itemView.reviewCountTextView?.visibility = View.GONE
+        }
+    }
+
+    private fun getReviewCountFormattedAsText(countReview: Int): String {
+        val reviewCountStringBuilder = StringBuilder()
+
+        reviewCountStringBuilder.append("(")
+        reviewCountStringBuilder.append(countReview)
+        reviewCountStringBuilder.append(")")
+
+        return reviewCountStringBuilder.toString()
+    }
+
+    private fun initRatingAndReviewContainer(productItem: ProductItemViewModel) {
+        if(productItem.rating != 0 || productItem.countReview != 0) {
+            itemView.ratingReviewContainer?.visibility = View.VISIBLE
+        }
+        else {
+            itemView.ratingReviewContainer?.visibility = View.GONE
+        }
+    }
+
+    private fun initTopAdsIcon(productItem: ProductItemViewModel) {
+        if(productItem.isTopAds) {
+            itemView.topAdsIcon?.visibility = View.VISIBLE
+        }
+        else {
+            itemView.topAdsIcon?.visibility = View.GONE
         }
     }
 }
