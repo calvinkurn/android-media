@@ -506,7 +506,7 @@ class RecommendationPageTracking {
                     EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRIMARY_PRODUCT,
                     EVENT_LABEL, VALUE_EMPTY,
                     ECOMMERCE, DataLayer.mapOf(
-                    ECOMMERCE_IMPRESSIONS, DataLayer.mapOf(
+                    ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                     convertPrimaryProductToDataImpressionObject(
                             recommendationItem,
                             VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION,
