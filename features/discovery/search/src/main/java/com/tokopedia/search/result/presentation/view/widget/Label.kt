@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.widget
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.drawable.GradientDrawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
@@ -52,8 +53,19 @@ class Label : AppCompatTextView {
     }
 
     private fun setBackgroundAndTextColor(backgroundColorResourceId: Int, textColorResourceId: Int) {
-        setBackgroundColor(ContextCompat.getColor(context, backgroundColorResourceId))
+        setBackgroundColorWithExistingBackground(ContextCompat.getColor(context, backgroundColorResourceId))
         setTextColor(ContextCompat.getColor(context, textColorResourceId))
+    }
+
+    private fun setBackgroundColorWithExistingBackground(backgroundColorResourceId: Int) {
+        val gradientDrawable = background
+
+        if(gradientDrawable != null && gradientDrawable is GradientDrawable) {
+            gradientDrawable.setColor(backgroundColorResourceId)
+        }
+        else {
+            setBackgroundColor(backgroundColorResourceId)
+        }
     }
 
     companion object {
