@@ -13,4 +13,5 @@
     <color name="product_card_title_black">#f531353b</color>
     <color name="product_card_price_orange">#fa591d</color>
     <color name="product_card_grey">#ae31353b</color>
+    <color name="product_card_topads_icon_backgroundcolor">#F3F4F5</color>
 </resources>

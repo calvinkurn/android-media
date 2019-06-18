@@ -133,8 +133,8 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/topAdsIcon"
+        <RelativeLayout
+            android:id="@+id/topAdsIconContainer"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_4"
@@ -142,10 +142,20 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:layout_below="@id/ratingReviewContainer"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/search_ic_top_ads"/>
+            android:background="@drawable/search_rounded_corner_topads"
+            android:layout_below="@id/ratingReviewContainer">
+
+            <ImageView
+                android:id="@+id/topAdsIcon"
+                android:layout_width="@dimen/dp_13"
+                android:layout_height="@dimen/dp_10"
+                android:src="@drawable/search_ic_top_ads"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/image_description" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
