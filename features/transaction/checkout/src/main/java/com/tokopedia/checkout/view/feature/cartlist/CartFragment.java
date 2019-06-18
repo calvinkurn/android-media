@@ -1941,8 +1941,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void renderRecommendation(List<RecommendationItem> recommendationItems) {
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
+        int previousItemCount = cartAdapter.getItemCount();
         for (RecommendationItem recommendationItem : recommendationItems) {
-            CartRecommendationItemHolderData cartRecommendationItemHolderData = new CartRecommendationItemHolderData(recommendationItem);
+            boolean rightPosition = ++previousItemCount % 2 == 0;
+            CartRecommendationItemHolderData cartRecommendationItemHolderData =
+                    new CartRecommendationItemHolderData(recommendationItem, rightPosition);
             cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
         }
 
