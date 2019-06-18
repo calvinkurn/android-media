@@ -145,7 +145,7 @@
             android:layout_below="@id/ratingReviewContainer"
             android:textSize="@dimen/sp_10"
             android:padding="@dimen/dp_4"
-            app:labelDesign="@string/product_card_light_green"
+            android:background="@drawable/search_rounded_corner_label"
             android:text="Test Label" />
 
         <RelativeLayout
