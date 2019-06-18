@@ -35,7 +35,6 @@ import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.power_merchant.subscribe.*
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
-import com.tokopedia.power_merchant.subscribe.view.activity.TransitionPeriodPmActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantSuccessBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
@@ -326,10 +325,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         if (isPowerMerchant) {
             var isKyc = getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status != KYCConstant.STATUS_VERIFIED
             if (isKyc) {
-                isTransitionKycPage = true
-                val intent = context?.let { TransitionPeriodPmActivity.newInstance(it) }
-                startActivity(intent)
-                activity?.finish()
+                button_activate_root.text = getString(R.string.pm_label_button_kyc_upload)
             } else {
                 if (isAutoExtend()) {
                     hideButtonActivatedPm()

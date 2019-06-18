@@ -49,6 +49,7 @@
     <string name="pm_label_bottom_sheet_cancel_desc">Tokomu akan kehilangan akses fitur-fitur eksklusif Power Merchant berikut:</string>
 
     <string name="pm_label_button_activate">Upgrade Tokomu</string>
+    <string name="pm_label_button_kyc_upload">Upload KTP</string>
     <string name="pm_label_member_cancel">Batalkan kapan saja</string>
     <string name="pm_label_member_cancel_learnmore">Status keanggotaan aktif jika skor performa toko minimum 65 poin. Pelajari Selengkapnya</string>
     <string name="pm_period">Periode baru dimulai pada 1 Juli 2019 pukul 04.00</string>
