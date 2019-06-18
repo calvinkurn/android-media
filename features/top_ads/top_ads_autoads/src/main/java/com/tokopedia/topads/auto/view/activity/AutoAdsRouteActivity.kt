@@ -52,6 +52,7 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
                     2 -> noAds()
                     3 -> manualAds()
                     4 -> autoAds()
+                    else -> finish()
                 }
                 finish()
             })
