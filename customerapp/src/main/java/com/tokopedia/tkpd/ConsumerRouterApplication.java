@@ -2541,8 +2541,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent gotoQrScannerPage(boolean needResult) {
-        return TelcoProductActivity.Companion.newInstance(this);
-//        return QrScannerActivity.newInstance(this, needResult);
+        return QrScannerActivity.newInstance(this, needResult);
     }
 
 
