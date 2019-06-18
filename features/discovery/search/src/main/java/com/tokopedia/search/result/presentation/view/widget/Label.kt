@@ -30,9 +30,9 @@ class Label : AppCompatTextView {
     }
 
     private fun configLabelDesign(attributeArray: TypedArray) {
-        val labelType = attributeArray.getString(R.styleable.Label_labelType)
+        val labelType = attributeArray.getString(R.styleable.Label_labelDesign)
 
-        setLabelDesign(labelType)
+        setLabelDesign(labelType ?: "")
     }
 
     fun setLabelDesign(labelDesign: String) {
@@ -47,6 +47,7 @@ class Label : AppCompatTextView {
             darkGreen -> setBackgroundAndTextColor(R.color.product_card_label_dark_green_background, R.color.product_card_label_dark_green_text)
             darkRed -> setBackgroundAndTextColor(R.color.product_card_label_dark_red_background, R.color.product_card_label_dark_red_text)
             darkOrange -> setBackgroundAndTextColor(R.color.product_card_label_dark_orange_background, R.color.product_card_label_dark_orange_text)
+            else -> setBackgroundAndTextColor(R.color.product_card_label_light_grey_background, R.color.product_card_label_light_grey_text)
         }
     }
 

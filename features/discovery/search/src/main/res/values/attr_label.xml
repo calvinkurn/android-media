@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="Label">
-        <attr name="labelDesign" format="string">
-            <string name="lightGrey">lightGrey</string>
-            <string name="lightBlue">lightBlue</string>
-            <string name="lightGreen">lightGreen</string>
-            <string name="lightRed">lightRed</string>
-            <string name="lightOrange">lightOrange</string>
-            <string name="darkGrey">darkGrey</string>
-            <string name="darkBlue">darkBlue</string>
-            <string name="darkGreen">darkGreen</string>
-            <string name="darkRed">darkRed</string>
-            <string name="darkOrange">darkOrange</string>
-        </attr>
+        <attr name="labelDesign" format="string" />
     </declare-styleable>
 </resources>
