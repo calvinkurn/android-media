@@ -963,6 +963,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
         if (cartListData != null) {
+            endlessRecyclerViewScrollListener.resetState();
             sendAnalyticsScreenName(getScreenName());
             if (refreshHandler != null) {
                 refreshHandler.finishRefresh();
@@ -1916,7 +1917,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartWishlistItemHolderData.setWishlist(true);
             cartWishlistItemHolderData.setRating(item.rating);
             cartWishlistItemHolderData.setReviewCount(item.reviewCount);
+            cartWishlistItemHolderData.setMinOrder(item.getMinimumOrder());
             if (item.getShop() != null) {
+                cartWishlistItemHolderData.setShopId(item.getShop().getId());
                 cartWishlistItemHolderData.setShopLocation(item.getShop().getLocation());
             }
             if (item.getBadges().size() > 0) {

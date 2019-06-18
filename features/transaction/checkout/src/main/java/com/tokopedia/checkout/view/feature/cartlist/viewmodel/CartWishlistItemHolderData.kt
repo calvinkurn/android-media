@@ -13,5 +13,7 @@ data class CartWishlistItemHolderData(
         var rating: Int = 0,
         var reviewCount: Int = 0,
         var badgeUrl: String = "",
-        var shopLocation: String = ""
+        var shopLocation: String = "",
+        var shopId: String = "",
+        var minOrder: Int = 1
 )

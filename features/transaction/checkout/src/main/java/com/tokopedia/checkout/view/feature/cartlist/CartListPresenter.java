@@ -209,6 +209,8 @@ public class CartListPresenter implements ICartListPresenter {
     public void processInitialGetCartData(String cartId, boolean initialLoad) {
         if (initialLoad) {
             view.renderLoadGetCartData();
+        } else {
+            view.showProgressLoading();
         }
 
         RequestParams requestParams = RequestParams.create();
@@ -219,10 +221,10 @@ public class CartListPresenter implements ICartListPresenter {
         requestParams.putString(GetCartListUseCase.PARAM_SELECTED_CART_ID, cartId);
 
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberInitialCartListData())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(getSubscriberInitialCartListData(initialLoad))
         );
     }
 
@@ -708,7 +710,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<CartListData> getSubscriberInitialCartListData() {
+    private Subscriber<CartListData> getSubscriberInitialCartListData(boolean initialLoad) {
         return new Subscriber<CartListData>() {
             @Override
             public void onCompleted() {
@@ -718,6 +720,9 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (view != null) {
+                    if (!initialLoad) {
+                        view.hideProgressLoading();
+                    }
                     view.renderLoadGetCartDataFinish();
                     String errorMessage = e.getMessage();
                     if (!(e instanceof CartResponseErrorException)) {
@@ -731,6 +736,9 @@ public class CartListPresenter implements ICartListPresenter {
             @Override
             public void onNext(CartListData cartListData) {
                 if (view != null) {
+                    if (!initialLoad) {
+                        view.hideProgressLoading();
+                    }
                     CartListPresenter.this.cartListData = cartListData;
                     view.renderLoadGetCartDataFinish();
                     view.renderInitialGetCartListDataSuccess(cartListData);
@@ -1196,6 +1204,7 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processAddToCart(String productId, String shopId, int minOrder) {
         try {
+            view.showProgressLoading();
             AddToCartRequest addToCartRequest = new AddToCartRequest.Builder()
                     .productId(Integer.parseInt(productId))
                     .notes("")
@@ -1231,16 +1240,20 @@ public class CartListPresenter implements ICartListPresenter {
 
                         @Override
                         public void onNext(AddToCartDataResponse addToCartDataResponse) {
-                            if (addToCartDataResponse.getSuccess() == 1) {
-                                view.showToastMessageGreen(addToCartDataResponse.getMessage().get(0));
-                                processInitialGetCartData("0", false);
-                            } else {
-                                view.showToastMessageRed(addToCartDataResponse.getMessage().get(0));
+                            if (view != null) {
+                                view.hideProgressLoading();
+                                if (addToCartDataResponse.getSuccess() == 1) {
+                                    processInitialGetCartData("0", false);
+                                    view.showToastMessageGreen(addToCartDataResponse.getMessage().get(0));
+                                } else {
+                                    view.showToastMessageRed(addToCartDataResponse.getMessage().get(0));
+                                }
                             }
                         }
                     });
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            view.hideProgressLoading();
         }
     }
 }

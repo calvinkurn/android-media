@@ -66,6 +66,10 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
             }
         }
 
+        itemView.tv_atc.setOnClickListener {
+            actionListener.onButtonAddToCartClicked(element.id, element.shopId, element.minOrder)
+        }
+
         itemView.setOnClickListener {
             actionListener.onProductClicked(element.id)
         }
