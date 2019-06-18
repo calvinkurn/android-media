@@ -145,7 +145,8 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_below="@id/ratingReviewContainer"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/search_ic_top_ads"/>
 
     </RelativeLayout>
 
