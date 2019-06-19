@@ -45,4 +45,8 @@
         android:layout_marginBottom="@dimen/dp_20"
         android:text="@string/pm_label_bs_success_button"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_30"/>
+
 </LinearLayout>

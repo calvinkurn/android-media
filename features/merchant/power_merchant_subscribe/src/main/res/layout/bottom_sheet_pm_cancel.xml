@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16"
-    >
+    android:padding="@dimen/dp_16">
 
     <com.tokopedia.design.component.TextViewCompat
         android:layout_width="wrap_content"
@@ -167,4 +166,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/pm_label_bottom_sheet_cancel_button" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_30" />
 </LinearLayout>

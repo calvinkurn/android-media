@@ -259,7 +259,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 refreshData()
             }
         })
-        bottomSheetSuccess.show(fragmentManager, "power_merchant_success")
+        bottomSheetSuccess.show(childFragmentManager, "power_merchant_success")
     }
 
     fun showBottomSheetCancel() {
@@ -269,7 +269,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 cancelMembership()
             }
         })
-        bottomSheetCancel.show(fragmentManager, "power_merchant_cancel")
+        bottomSheetCancel.show(childFragmentManager, "power_merchant_cancel")
     }
 
     override fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {

@@ -14,7 +14,7 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
     lateinit var buttonCancel: Button
     lateinit var txtExpiredDate: TextViewCompat
     private var listener: BottomSheetCancelListener? = null
-    private var isTransitionPeriod : Boolean = false
+    private var isTransitionPeriod: Boolean = false
     private var expiredDate: String = ""
 
     companion object {
@@ -37,7 +37,7 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
         expiredDate = arguments?.getString(ARGUMENT_DATA_DATE) ?: ""
     }
 
-    interface BottomSheetCancelListener{
+    interface BottomSheetCancelListener {
         fun onclickButton()
     }
 
@@ -59,7 +59,7 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
         txtExpiredDate = view.findViewById(R.id.txt_ticker_yellow_bs)
         buttonCancel = view.findViewById(R.id.button_cancel_bs)
 
-        if (!isTransitionPeriod){
+        if (!isTransitionPeriod) {
             showExpiredDateTickerYellow()
         } else {
             txtExpiredDate.visibility = View.VISIBLE
@@ -68,7 +68,7 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
         buttonCancel.setOnClickListener {
             listener?.onclickButton()
         }
-        view.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+        view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 val viewTreeObserver = view.viewTreeObserver
                 updateHeight(view.height)
@@ -83,6 +83,6 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
     }
 
     private fun showExpiredDateTickerYellow() {
-        MethodChecker.fromHtml(getString(R.string.expired_label_bs,expiredDate))
+        MethodChecker.fromHtml(getString(R.string.expired_label_bs, expiredDate))
     }
 }

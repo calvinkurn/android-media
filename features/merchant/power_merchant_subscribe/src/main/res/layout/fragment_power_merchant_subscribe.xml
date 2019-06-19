@@ -148,6 +148,7 @@
                         android:lineSpacingExtra="@dimen/sp_6"
                         android:padding="@dimen/dp_8"
                         app:fontSize="small"
+                        android:text="@string/pm_label_price_cashback"
                         tools:text="@string/pm_label_price_cashback" />
 
                     <ImageView
