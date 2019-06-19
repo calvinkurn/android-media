@@ -579,7 +579,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 doLoadOtherProduct(product.data.productInfo)
             } else null
 
-            val topAdsProductDef = if (GlobalConfig.isCustomerApp() && isUserSessionActive() &&
+            val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
                     (loadTopAdsProduct.value as? Loaded)?.data as? Success == null){
                 loadTopAdsProduct.value = Loading
                 doLoadTopAdsProduct(product.data.productInfo)
