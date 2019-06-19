@@ -481,6 +481,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (countHasSaveState == 0) {
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(EnhancedECommerceActionField.STEP_2);
+            shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(EnhancedECommerceActionField.STEP_3);
         }
 
     }
