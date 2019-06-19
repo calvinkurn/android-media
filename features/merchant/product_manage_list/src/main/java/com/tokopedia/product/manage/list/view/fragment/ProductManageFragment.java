@@ -8,18 +8,31 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
@@ -29,6 +42,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
@@ -96,6 +110,7 @@ import kotlin.Unit;
 
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
+import static com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment.URL_TIPS_TRICK;
 
 /**
  * Created by zulfikarrahman on 9/22/17.
@@ -125,6 +140,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private boolean isOfficialStore;
     private String shopDomain;
     private UserSessionInterface userSession;
+    private Button btnSubmit;
+    private Button btnGoToPdp;
+    private TextView txtTipsTrick;
+    private Dialog dialog;
 
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
@@ -135,6 +154,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        productManagePresenter.getPopupsInfo();
                         resetPageAndRefresh();
                     }
                 });
@@ -142,6 +162,52 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             }
         }
     };
+
+    private Dialog initPopUpDialog(){
+        dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setContentView(R.layout.dialog_product_add);
+
+        btnSubmit = (Button) dialog.findViewById(R.id.btn_submit);
+        btnGoToPdp = (Button) dialog.findViewById(R.id.btn_product_list);
+        txtTipsTrick = (TextView) dialog.findViewById(R.id.txt_tips_trick);
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.route(getContext(),ApplinkConst.SELLER_SHIPPING_EDITOR);
+                getActivity().finish();
+            }
+        });
+
+        btnGoToPdp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                goToPDP(productManageViewModel.getProductId());
+            }
+        });
+        int backgroundColor = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
+
+        SpannableString spanText = new SpannableString(getString(R.string.popup_tips_trick_clickable));
+        spanText.setSpan(new StyleSpan(Typeface.BOLD),
+                5, spanText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spanText.setSpan(new ForegroundColorSpan(backgroundColor),
+                5, spanText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        ClickableSpan cs = new ClickableSpan() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK));
+                getActivity().finish();
+            }
+        };
+        spanText.setSpan(cs, 5, spanText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        txtTipsTrick.setMovementMethod(LinkMovementMethod.getInstance());
+        txtTipsTrick.setText(spanText);
+        return dialog;
+    }
 
     @Override
     protected void initInjector() {
@@ -278,6 +344,19 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             getActivity().startActionMode(getCallbackActionMode());
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSuccessGetPopUp(boolean isShowPopup) {
+        if (isShowPopup) {
+            initPopUpDialog().show();
+            resetPageAndRefresh();
+        }
+    }
+
+    @Override
+    public void onErrorGetPopUp(Throwable e) {
+        onSuccessGetPopUp(false);
     }
 
     @NonNull

@@ -499,6 +499,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                                 address.getCityName(),
                                 address.getDistrictName()
                         );
+                        openShopAddressViewHolder.updatePostalCodeView("");
                     }
                 } break;
             case REQUEST_PHONE_VERIFICATION:
