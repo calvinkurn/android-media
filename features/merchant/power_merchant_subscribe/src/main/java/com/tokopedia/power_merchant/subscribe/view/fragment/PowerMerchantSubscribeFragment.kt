@@ -28,9 +28,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
-import com.tokopedia.kotlin.extensions.view.hideLoading
-import com.tokopedia.kotlin.extensions.view.showEmptyState
-import com.tokopedia.kotlin.extensions.view.showLoading
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.*
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
@@ -310,10 +308,14 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         if (isPowerMerchant) {
             if (isAutoExtend()) {
                 hideButtonActivatedPm()
+                ticker_yellow_container.gone()
             } else {
                 showButtonActivatePm()
                 showExpiredDateTickerYellow()
             }
+        } else {
+            showButtonActivatePm()
+            ticker_yellow_container.gone()
         }
     }
 
@@ -334,22 +336,28 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             } else {
                 if (isAutoExtend()) {
                     ticker_blue_container.visibility = View.VISIBLE
+                    ticker_yellow_container.visibility = View.VISIBLE
+                    txt_ticker_yellow.text = getString(R.string.pm_label_cancellation_duration)
                     hideButtonActivatedPm()
                 } else {
                     ticker_yellow_container.visibility = View.GONE
+                    ticker_blue_container.visibility = View.GONE
                     showButtonActivatePm()
                 }
-                txt_ticker_yellow.text = getString(R.string.pm_label_cancellation_duration)
             }
         } else if (isPending) {
             if (isAutoExtend()){
                 hideButtonActivatedPm()
                 ticker_yellow_container.visibility = View.VISIBLE
+            } else {
+                ticker_yellow_container.visibility = View.GONE
+                showButtonActivatePm()
             }
-            showButtonActivatePm()
-        } else {
+            ticker_blue_container.visibility = View.GONE
+        } else { //regular merchant
             showButtonActivatePm()
             ticker_yellow_container.visibility = View.GONE
+            ticker_blue_container.visibility = View.GONE
             // if inactive do nothing
             // default state: button activate is visible
         }
