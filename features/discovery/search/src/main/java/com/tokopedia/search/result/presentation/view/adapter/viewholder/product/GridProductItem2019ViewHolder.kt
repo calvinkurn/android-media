@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
+import android.graphics.Paint
 import android.support.annotation.LayoutRes
 import android.text.TextUtils
 import android.view.View
@@ -11,6 +12,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlinx.android.synthetic.main.search_srp_item_grid_2019.view.*
 import java.lang.StringBuilder
+import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 
 class GridProductItem2019ViewHolder(
     itemView: View,
@@ -33,6 +35,7 @@ class GridProductItem2019ViewHolder(
         initWishlistButton(productItem)
         initPromoLabel(productItem)
         initTitleTextView(productItem)
+        initSlashPrice(productItem)
         initPriceTextView(productItem)
         initLocationTextView(productItem)
         initRatingAndReview(productItem)
@@ -85,10 +88,19 @@ class GridProductItem2019ViewHolder(
     private fun initPromoLabel(productItem: ProductItemViewModel) {
         itemView.promoLabel?.setLabelDesign(context.resources.getString(R.string.product_card_light_green))
         itemView.promoLabel?.visibility = View.VISIBLE
+        itemView.promoLabel?.text = "Cashback 100%"
     }
 
     private fun initTitleTextView(productItem: ProductItemViewModel) {
         itemView.titleTextView?.text = MethodChecker.fromHtml(productItem.productName)
+    }
+
+    // TODO:: Dummy method, set Slash Price from productItem instead
+    private fun initSlashPrice(productItem: ProductItemViewModel) {
+        itemView.slashPriceContainer?.visibility = View.VISIBLE
+        itemView.slashPriceLabel?.text = "20%"
+        itemView.slashPriceTextView?.text = "Rp 10.000.000"
+        itemView.slashPriceTextView?.paintFlags = itemView.slashPriceTextView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 
     private fun initPriceTextView(productItem: ProductItemViewModel) {
@@ -182,6 +194,7 @@ class GridProductItem2019ViewHolder(
             if(true) { // Check product has credibility label
                 itemView.credibilityLabel?.setLabelDesign(context.resources.getString(R.string.product_card_light_blue))
                 itemView.credibilityLabel?.visibility = View.VISIBLE
+                itemView.credibilityLabel?.text = "Terbaroe"
                 return
             }
         }
@@ -193,6 +206,7 @@ class GridProductItem2019ViewHolder(
     private fun initOffersLabel(productItem: ProductItemViewModel) {
         itemView.offersLabel?.setLabelDesign(context.resources.getString(R.string.product_card_dark_grey))
         itemView.offersLabel?.visibility = View.VISIBLE
+        itemView.offersLabel?.text = "Tukar tambah"
     }
 
     private fun initTopAdsIcon(productItem: ProductItemViewModel) {
