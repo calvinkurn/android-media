@@ -46,6 +46,15 @@
 
         </RelativeLayout>
 
+        <com.tokopedia.search.result.presentation.view.widget.Label
+            android:id="@+id/promoLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignBottom="@id/productImage"
+            tools:text="Promo Label" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/titleTextView"
             android:layout_width="match_parent"
@@ -57,15 +66,12 @@
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:ellipsize="end"
-            android:lineSpacingExtra="@dimen/sp_5"
             android:maxLines="2"
             android:textColor="@color/product_card_title_black"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="normal"
             app:typographyType="heading_5"
             tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/priceTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,15 +82,12 @@
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center_vertical"
-            android:lineSpacingExtra="@dimen/sp_5"
-            android:textColor="@color/orange_red"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="normal"
+            android:textColor="@color/product_card_price_orange"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:text="Rp 3.121.500" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/locationTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -95,19 +98,15 @@
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:gravity="center_vertical"
             android:maxLines="1"
-            android:singleLine="true"
             android:textColor="@color/product_card_grey"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
+            app:typographyType="body_3"
             tools:text="Town Location"/>
 
         <LinearLayout
             android:id="@+id/ratingReviewContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_20"
             android:layout_below="@id/locationTextView"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
@@ -120,21 +119,35 @@
             <ImageView
                 android:id="@+id/ratingImage"
                 android:layout_width="@dimen/dp_51"
-                android:layout_height="@dimen/dp_10" />
+                android:layout_height="@dimen/dp_10"
+                tools:src="@drawable/search_ic_star_five"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/reviewCountTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_4"
                 android:layout_marginStart="@dimen/dp_4"
                 android:textColor="@color/product_card_grey"
-                android:textSize="@dimen/sp_12" />
+                app:typographyType="body_3"
+                tools:text="(1000)"/>
 
         </LinearLayout>
 
         <com.tokopedia.search.result.presentation.view.widget.Label
-            android:id="@+id/bottomLabel"
+            android:id="@+id/credibilityLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_below="@id/locationTextView"
+            tools:text="Credibility Label" />
+
+        <com.tokopedia.search.result.presentation.view.widget.Label
+            android:id="@+id/offersLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -143,10 +156,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_below="@id/ratingReviewContainer"
-            android:textSize="@dimen/sp_10"
-            android:padding="@dimen/dp_4"
-            android:background="@drawable/search_rounded_corner_label"
-            android:text="Test Label" />
+            tools:text="Offers Label" />
 
         <RelativeLayout
             android:id="@+id/topAdsIconContainer"
@@ -159,7 +169,7 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:background="@drawable/search_rounded_corner_topads"
+            android:background="@drawable/search_ic_top_ads_background"
             android:layout_below="@id/ratingReviewContainer">
 
             <ImageView

@@ -31,14 +31,14 @@ class GridProductItem2019ViewHolder(
         initProductImage(productItem)
         initWishlistButtonContainer(productItem)
         initWishlistButton(productItem)
+        initPromoLabel(productItem)
         initTitleTextView(productItem)
         initPriceTextView(productItem)
         initLocationTextView(productItem)
         initRatingAndReview(productItem)
+        initCredibilityLabel(productItem)
+        initOffersLabel(productItem)
         initTopAdsIcon(productItem)
-
-        // TODO:: For testing only
-        itemView.bottomLabel.setLabelDesign(context.getString(R.string.product_card_light_blue))
     }
 
     private fun initProductCardContainer(productItem: ProductItemViewModel) {
@@ -79,6 +79,12 @@ class GridProductItem2019ViewHolder(
         else {
             itemView.wishlistButton?.setBackgroundResource(R.drawable.search_ic_wishlist)
         }
+    }
+
+    // TODO:: Dummy method, set Label from productItem instead
+    private fun initPromoLabel(productItem: ProductItemViewModel) {
+        itemView.promoLabel?.setLabelDesign(context.resources.getString(R.string.product_card_light_green))
+        itemView.promoLabel?.visibility = View.VISIBLE
     }
 
     private fun initTitleTextView(productItem: ProductItemViewModel) {
@@ -158,12 +164,35 @@ class GridProductItem2019ViewHolder(
     }
 
     private fun initRatingAndReviewContainer(productItem: ProductItemViewModel) {
-        if(productItem.rating != 0 || productItem.countReview != 0) {
+        if(isRatingAndReviewContainerVisible(productItem)) {
             itemView.ratingReviewContainer?.visibility = View.VISIBLE
         }
         else {
             itemView.ratingReviewContainer?.visibility = View.GONE
         }
+    }
+
+    private fun isRatingAndReviewContainerVisible(productItem: ProductItemViewModel): Boolean {
+        return productItem.rating != 0 || productItem.countReview != 0
+    }
+
+    // TODO:: Dummy method, set Label from productItem instead
+    private fun initCredibilityLabel(productItem: ProductItemViewModel) {
+        if(!isRatingAndReviewContainerVisible(productItem)) {
+            if(true) { // Check product has credibility label
+                itemView.credibilityLabel?.setLabelDesign(context.resources.getString(R.string.product_card_light_blue))
+                itemView.credibilityLabel?.visibility = View.VISIBLE
+                return
+            }
+        }
+
+        itemView.credibilityLabel?.visibility = View.GONE
+    }
+
+    // TODO:: Dummy method, set Label from productItem instead
+    private fun initOffersLabel(productItem: ProductItemViewModel) {
+        itemView.offersLabel?.setLabelDesign(context.resources.getString(R.string.product_card_dark_grey))
+        itemView.offersLabel?.visibility = View.VISIBLE
     }
 
     private fun initTopAdsIcon(productItem: ProductItemViewModel) {
