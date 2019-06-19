@@ -147,13 +147,55 @@
             app:layout_constraintStart_toStartOf="@+id/textViewCompat6"
             app:layout_constraintTop_toBottomOf="@+id/textViewCompat6" />
 
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_64"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:src="@drawable/ic_cost_management"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textViewCompat5" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/textViewCompat5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:fontSize="title"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="Biaya Layanan Hanya 1%"
+            app:layout_constraintBottom_toTopOf="@+id/txt8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView9"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCompat7" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/txt8"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="@dimen/dp_5"
+            android:text="Biaya layanan Power Merchant hanya 1%, dibayarkan setiap produk terjual."
+            app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:fontSize="title"
+            app:layout_constraintStart_toEndOf="@+id/imageView9"
+            app:layout_constraintTop_toBottomOf="@+id/textViewCompat5"
+            app:layout_constraintVertical_chainStyle="packed" />
+
         <View
             android:id="@+id/view_line_pm"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="@dimen/dp_16"
             android:background="@color/pm_line_color"
-            app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+            app:layout_constraintTop_toBottomOf="@+id/txt8"
+            android:layout_marginTop="@dimen/dp_16"/>
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat"
