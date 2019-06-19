@@ -64,14 +64,12 @@ import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
@@ -98,6 +96,7 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
@@ -372,14 +371,12 @@ class ProductDetailFragment : BaseDaggerFragment() {
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
             if (it) {
-                trackTradeIn(it)
-
                 if (tv_trade_in_promo != null) {
                     tv_trade_in_promo.visible()
                     tv_available_at?.visible()
                 }
-            } else
-                trackTradeIn(it)
+            }
+            trackTradeIn(it)
 
         }
         context?.let {
@@ -1075,19 +1072,15 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
             productDetailTracking.sendScreen(shopInfo.shopCore.shopID, shopInfo.goldOS.shopTypeString,
                     productId ?: "")
-            val isHandPhone = data.category.detail.any { it.name == "Handphone" }
 
-            if (!isHandPhone)
-                productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, data,
-                        shopInfo, trackerAttribution, false, false,
-                        p2ShopData.nearestWarehouse.warehouseInfo.isFulfillment)
+            if (delegateTradeInTracking) {
+                trackTradeIn(tradeInParams.isEligible == 1)
+                delegateTradeInTracking = false
+            }
 
             productDetailTracking.sendMoEngageOpenProduct(data,
                     shopInfo.goldOS.isOfficial == 1, shopInfo.shopCore.name)
             productDetailTracking.eventAppsFylerOpenProduct(data)
-
-            trackTradeIn(tradeInParams.isEligible == 1)
-            delegateTradeInTracking = false
         }
         shopCod = p2ShopData.shopCod
         partialVariantAndRateEstView.renderFulfillment(p2ShopData.nearestWarehouse.warehouseInfo.isFulfillment)
