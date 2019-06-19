@@ -22,7 +22,7 @@
         android:paddingLeft="@dimen/dp_24"
         android:text="Nomor ponsel yang Anda pilih atau masukkan bukan pengguna OVO."/>
     <Button
-        android:id="@+id/proceed"
+        android:id="@+id/proceed_dlg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -38,6 +38,7 @@
         android:textSize="@dimen/sp_14" />
 
     <TextView
+        android:id="@+id/close"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"

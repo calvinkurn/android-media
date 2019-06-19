@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
+import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 
 class FragmentTransactionDetails : BaseDaggerFragment(), View.OnClickListener {
     private lateinit var sucsMsg: TextureView
@@ -21,7 +23,6 @@ class FragmentTransactionDetails : BaseDaggerFragment(), View.OnClickListener {
     private lateinit var txtMsgTxn: TextView
     private lateinit var srcFunds: TextView
     private lateinit var amt: TextView
-    private lateinit var icFwd: ImageView
     private lateinit var txnNo: TextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,19 +37,19 @@ class FragmentTransactionDetails : BaseDaggerFragment(), View.OnClickListener {
         srcFunds = view.findViewById(R.id.txt_src_fnd)
         amt = view.findViewById(R.id.txt_amt)
         txnNo = view.findViewById(R.id.txt_ref_no)
-        icFwd = view.findViewById(R.id.fwd)
-        icFwd.setOnClickListener(this)
         return view
     }
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Constants.ScreenName.TXN_DTL_FRAGMENT
     }
 
     override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        getComponent<OvoP2pTransferComponent>(OvoP2pTransferComponent::class.java).inject(this)
     }
 
     override fun onClick(v: View?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var id: Int = v?.id ?: -1
+        if(id != -1){
+        }
     }
 }

@@ -235,39 +235,6 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_src_fnd"
         android:background="#eef0f3"/>
 
-    <ImageView
-        android:id="@+id/ic_msg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:src="@drawable/ic_call"
-        android:layout_marginLeft="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@+id/vw_dvdr"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <TextView
-        android:id="@+id/need_hlp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/ic_msg"
-        app:layout_constraintTop_toTopOf="@+id/ic_msg"
-        app:layout_constraintBottom_toBottomOf="@+id/ic_msg"
-        android:textSize="14sp"
-        android:textColor="#6b767e"
-        android:paddingLeft="@dimen/dp_12"
-        android:text="Butuh Bantuan ?" />
-
-    <ImageView
-        android:id="@+id/fwd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_dropdown"
-        android:rotation="90"
-        android:layout_marginRight="@dimen/dp_16"
-        app:layout_constraintTop_toTopOf="@+id/ic_msg"
-        app:layout_constraintBottom_toBottomOf="@+id/ic_msg"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <include
         android:id="@+id/branding_lauout"
         layout="@layout/branding_layout"

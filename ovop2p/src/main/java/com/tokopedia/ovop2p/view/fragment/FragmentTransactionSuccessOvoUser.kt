@@ -10,7 +10,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.ovop2p.R
 
-class FragmentSuccessNonOvoUser: BaseDaggerFragment(), View.OnClickListener {
+class FragmentTransactionSuccessOvoUser: BaseDaggerFragment(), View.OnClickListener {
 
     private lateinit var date:TextView
     private lateinit var trnsfrAmt:TextView

@@ -17,7 +17,7 @@ class OvoP2pTransferConfirm {
     lateinit var pinUrl: String
 
     @SerializedName("receiver_link")
-    lateinit var rcvrLink: String
+    var rcvrLink: Boolean = false
 
     @SerializedName("errors")
     lateinit var errors: Errors

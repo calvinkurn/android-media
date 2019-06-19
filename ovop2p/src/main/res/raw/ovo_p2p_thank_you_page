@@ -1,4 +1,4 @@
-mutation goalP2PThanks($transfer_id: String!){
+query goalP2PThanks($transfer_id: String!){
       goalP2PThanks(transfer_id: $transfer) {
           transfer_id
           transaction_id

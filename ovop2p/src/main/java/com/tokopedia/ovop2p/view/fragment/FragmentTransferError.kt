@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
+import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 
 class FragmentTransferError : BaseDaggerFragment(), View.OnClickListener {
     private lateinit var errorMsg: TextView
@@ -24,14 +26,24 @@ class FragmentTransferError : BaseDaggerFragment(), View.OnClickListener {
     }
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Constants.ScreenName.ERROR_FRAGMENT
     }
 
     override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        getComponent<OvoP2pTransferComponent>(OvoP2pTransferComponent::class.java).inject(this)
     }
 
     override fun onClick(v: View?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var id: Int = v?.id ?: -1
+        if (id != -1) {
+            when (id) {
+                R.id.try_agn -> {
+                    activity?.supportFragmentManager?.popBackStack()
+                }
+                R.id.back_to_app -> {
+                    activity?.finish()
+                }
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.ovop2p
 
+import android.app.AlertDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
@@ -9,16 +10,22 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
+import com.tokopedia.ovop2p.model.OvoP2pTransferConfirmBase
+import com.tokopedia.ovop2p.model.OvoP2pTransferRequestBase
 import com.tokopedia.ovop2p.model.WalletDataBase
+import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.activity.AllContactsActivity
 import com.tokopedia.ovop2p.view.adapters.ContactsCursorAdapter
 import com.tokopedia.ovop2p.viewmodel.GetWalletBalanceViewModel
+import com.tokopedia.ovop2p.viewmodel.OvoP2pTransferRequestViewModel
+import com.tokopedia.ovop2p.viewmodel.OvoP2pTrxnConfirmVM
 import kotlinx.android.synthetic.main.ovo_p2p_transfer_form.*
 
 class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocusChangeListener, SearchView.OnQueryTextListener {
@@ -31,6 +38,10 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     lateinit var contactsImageView: ImageView
     lateinit var searchNoHeader: TextView
     lateinit var walletBalanceViewModel: GetWalletBalanceViewModel
+    lateinit var alertDialog: AlertDialog
+    lateinit var ovoP2pTransferRequestViewModel: OvoP2pTransferRequestViewModel
+    lateinit var ovoP2pTransferConfirmViewModel: OvoP2pTrxnConfirmVM
+    lateinit var trnsfrReqDataMap: HashMap<String, Any>
 
     override fun onClick(v: View?) {
         var id: Int = v?.id ?: -1
@@ -38,13 +49,28 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
             when(id){
                 R.id.proceed -> {
                     //make request call
+                    context?.let { ovoP2pTransferRequestViewModel.makeTransferRequestCall(it, trnsfrReqDataMap) }
                 }
                 R.id.iv_contact -> {
                     val intent = Intent(activity, AllContactsActivity::class.java)
                     startActivityForResult(intent, Constants.Keys.RESULT_CODE_CONTACTS_SELECTION)
                 }
+                R.id.cancel or R.id.close-> {
+                    alertDialog.dismiss()
+                }
+                R.id.proceed_dlg -> {
+                    //make transfer request
+                    context?.let { ovoP2pTransferConfirmViewModel.makeTransferConfirmCall(it, trnsfrReqDataMap) }
+                }
             }
         }
+    }
+
+    fun createOvoP2pTransferReqMap(key: String, value: Any){
+        if(!::trnsfrReqDataMap.isInitialized){
+            trnsfrReqDataMap = HashMap()
+        }
+        trnsfrReqDataMap.put(key, value)
     }
 
     override fun initInjector() {
@@ -52,7 +78,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     }
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Constants.ScreenName.FORM_FRAGMENT
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -68,16 +94,66 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
         contactsImageView = view.findViewById(R.id.iv_contact)
         contactsImageView.setOnClickListener(this)
         searchNoHeader = view.findViewById(R.id.search_no_header)
+        createAndSusbcribeToWalletBalVM()
+        createAndSubscribeTransferRequestVM()
+        createAndSubscribeTransferConfirmVM()
         return view
     }
 
     fun createAndSusbcribeToWalletBalVM(){
         if(!::walletBalanceViewModel.isInitialized){
-            if(this.activity != null) {
+            if(activity != null) {
                 walletBalanceViewModel = ViewModelProviders.of(this.activity!!).get(GetWalletBalanceViewModel::class.java)
                 walletBalanceViewModel.walletLiveData?.observe(this.activity!!, Observer <WalletDataBase>{
                     if(it != null){
                         saldoTextView.text = it.wallet?.balance ?: ""
+                    }
+                })
+            }
+        }
+    }
+
+    fun createAndSubscribeTransferRequestVM(){
+        if(!::ovoP2pTransferRequestViewModel.isInitialized){
+            if(activity != null){
+                ovoP2pTransferRequestViewModel = ViewModelProviders.of(this.activity!!).get(OvoP2pTransferRequestViewModel::class.java)
+                ovoP2pTransferRequestViewModel.ovoP2pTransferRequestBaseMutableLiveData?.observe(this.activity!!, Observer <OvoP2pTransferRequestBase>{
+                    if(it != null){
+                        if(!TextUtils.isEmpty(it.ovoP2pTransferRequest.dstAccName)){
+                            //show non ovo user confirmation dialog
+                            showNonOvoUserConfirmDialog()
+                        }
+                        else{
+                            //show ovo user confirmation dialog
+                            showOvoUserConfirmationDialog()
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+    fun createAndSubscribeTransferConfirmVM(){
+        if(!::ovoP2pTransferConfirmViewModel.isInitialized){
+            if(activity != null){
+                ovoP2pTransferConfirmViewModel = ViewModelProviders.of(this.activity!!).get(OvoP2pTrxnConfirmVM::class.java)
+                ovoP2pTransferConfirmViewModel.txnConfirmMutableLiveData?.observe(this.activity!!, Observer <OvoP2pTransferConfirmBase>{
+                    if(it != null){
+                        if(it.ovoP2pTransferConfirm.errors != null){
+                            //show error page
+                        }
+                        else if(!it.ovoP2pTransferConfirm.rcvrLink){
+                            //show now ovo success page
+                        }
+                        else if(it.ovoP2pTransferConfirm.rcvrLink){
+                            if(!TextUtils.isEmpty(it.ovoP2pTransferConfirm.pinUrl)) {
+                                //launch web view
+                            }
+                            else{
+                                it.ovoP2pTransferConfirm.transferId
+                                // go to thankyou activity
+                            }
+                        }
                     }
                 })
             }
@@ -133,6 +209,16 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     override fun onDestroy() {
         super.onDestroy()
         this.activity?.let { walletBalanceViewModel.walletLiveData?.removeObservers(it) }
+    }
+
+    private fun showOvoUserConfirmationDialog() {
+        alertDialog = OvoP2pUtil.getOvoUserTransferConfirmSubmitAlertDialog(activity, this, trnsfrReqDataMap).create()
+        alertDialog.show()
+    }
+
+    private fun showNonOvoUserConfirmDialog(){
+        alertDialog = OvoP2pUtil.getNonOvoUserConfirmationDailog(activity, this).create()
+        alertDialog.show()
     }
 
 }
