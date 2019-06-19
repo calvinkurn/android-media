@@ -533,9 +533,6 @@ open class PlayViewStateImpl(
                 errorView.show()
                 setToolbarWhite()
                 showLoginButton(false)
-                listener.onVideoPlayActive(false)
-            } else {
-                listener.onVideoPlayActive(true)
             }
         }
 
@@ -848,7 +845,10 @@ open class PlayViewStateImpl(
         showVideoToggle.hide()
         setChatListHasSpaceOnTop(true)
         videoId.let {
-            if (it.isEmpty()) return
+            if (it.isEmpty()) {
+                listener.onVerticalVideoActive(true)
+                return
+            }
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
                 videoContainer.show()

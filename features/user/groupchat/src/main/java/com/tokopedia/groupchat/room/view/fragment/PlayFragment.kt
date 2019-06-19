@@ -516,7 +516,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    override fun onVideoPlayActive(isActive: Boolean) {
+    override fun onVerticalVideoActive(isActive: Boolean) {
         listener.onPlayerActive(isActive)
     }
 
