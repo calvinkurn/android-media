@@ -240,7 +240,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
             @Override
             public void onError(Throwable e) {
-                isNeedGetPopup = true
+                isNeedGetPopup = true;
                 if (!isViewAttached()) {
                     return;
                 }
