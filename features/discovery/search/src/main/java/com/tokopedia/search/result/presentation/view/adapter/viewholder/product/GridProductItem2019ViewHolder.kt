@@ -102,7 +102,7 @@ class GridProductItem2019ViewHolder(
     private fun initShopName(productItem: ProductItemViewModel) {
         if (isShopNameShown(productItem)) {
             itemView.shopNameTextView?.visibility = View.VISIBLE
-            itemView.shopNameTextView?.text = productItem.shopName
+            itemView.shopNameTextView?.text = if(!TextUtils.isEmpty(productItem.shopName)) productItem.shopName else "dummy name"
         }
         else {
             itemView.shopNameTextView?.visibility = View.GONE
@@ -132,24 +132,26 @@ class GridProductItem2019ViewHolder(
     }
 
     private fun initTitleTextView(productItem: ProductItemViewModel) {
-        setTitlePaddingTopIfShopNameNotShown(productItem)
+        setTitlePaddingTop(productItem)
 
         itemView.titleTextView?.text = MethodChecker.fromHtml(productItem.productName)
     }
 
-    private fun setTitlePaddingTopIfShopNameNotShown(productItem: ProductItemViewModel) {
+    private fun setTitlePaddingTop(productItem: ProductItemViewModel) {
+        var paddingTopPixel = 0
+
         if(!isShopNameShown(productItem)) {
             val paddingTopDp = 8
             val scale = context.resources.displayMetrics.density
-            val paddingTopPixel = (paddingTopDp * scale + 0.5f).toInt()
-
-            itemView.titleTextView?.setPadding(
-                itemView.titleTextView.paddingLeft,
-                paddingTopPixel,
-                itemView.titleTextView.paddingRight,
-                itemView.titleTextView.paddingBottom
-            )
+            paddingTopPixel = (paddingTopDp * scale + 0.5f).toInt()
         }
+
+        itemView.titleTextView?.setPadding(
+            itemView.titleTextView.paddingLeft,
+            paddingTopPixel,
+            itemView.titleTextView.paddingRight,
+            itemView.titleTextView.paddingBottom
+        )
     }
 
     // TODO:: Dummy method, set Slash Price from productItem instead
