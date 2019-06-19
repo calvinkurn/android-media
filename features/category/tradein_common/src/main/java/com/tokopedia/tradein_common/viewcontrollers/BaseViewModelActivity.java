@@ -77,7 +77,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         bVM.getWarningMessage().observe(this, (message) -> {
             if (!TextUtils.isEmpty(message)) {
                 try {
-                    Toaster.INSTANCE.showRed(findViewById(android.R.id.content),
+                    Toaster.Companion.showError(this,
                             message,
                             Snackbar.LENGTH_LONG);
                 } catch (Exception e) {

@@ -31,7 +31,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.unifyComponents)
+    implementation rootProject.ext.libraries.unifyComponents
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
 
 

@@ -398,7 +398,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             layoutParams.behavior = FlingBehavior(nested_scroll)
         }
 
-        appbar.addOnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0) }
+        appbar.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0)})
         refreshLayout?.setOnRefreshListener { loadProductData(true) }
 
         if (isAffiliate) {
@@ -952,7 +952,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 //Todo something here
                 } else if (resultCode == 980) {
                     val message = data!!.getStringExtra("VERIFICATION_SUCCESS")
-                    Toaster.showGreenWithAction(activity!!.findViewById<View>(android.R.id.content),
+                    Toaster.showNormalWithAction(activity!!,
                             message,
                             Snackbar.LENGTH_INDEFINITE,
                             getString(R.string.general_label_ok), View.OnClickListener { v -> })

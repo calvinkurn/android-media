@@ -370,7 +370,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void checkAgeVerificationExtra(Intent intent) {
         if (intent.hasExtra("VERIFICATION_SUCCESS")) {
-            Toaster.INSTANCE.showRedWithAction(findViewById(android.R.id.content),
+            Toaster.Companion.showErrorWithAction(this,
                     intent.getStringExtra("VERIFICATION_SUCCESS"),
                     Snackbar.LENGTH_INDEFINITE,
                     getString(R.string.general_label_ok), (v) -> {

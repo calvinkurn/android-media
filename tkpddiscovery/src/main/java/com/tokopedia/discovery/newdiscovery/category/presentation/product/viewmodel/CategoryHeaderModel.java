@@ -85,7 +85,7 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
     }
 
     public int getIsAdult() {
-        return 1;
+        return isAdult;
     }
 
     public void setIsAdult(int isAdult) {

@@ -158,7 +158,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         })
 
         arHomeViewModel.userAdult.observe(this, Observer {
-            Toaster.showGreenWithAction(findViewById(android.R.id.content),
+            Toaster.showNormalWithAction(this,
                     getString(R.string.ar_text_verification_success),
                     Snackbar.LENGTH_INDEFINITE,
                     getString(R.string.general_label_ok), View.OnClickListener { })
@@ -202,7 +202,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
             }
             VERIFICATION_REQUEST -> if (resultCode == RESULT_IS_ADULT) {
                 setResult(RESULT_IS_ADULT, Intent().putExtra("VERIFICATION_SUCCESS", getString(R.string.ar_text_verification_success)))
-                Toaster.showGreenWithAction(findViewById(android.R.id.content),
+                Toaster.showNormalWithAction(this,
                         getString(R.string.ar_text_verification_success),
                         Snackbar.LENGTH_INDEFINITE,
                         getString(R.string.general_label_ok), View.OnClickListener { })

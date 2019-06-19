@@ -306,7 +306,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             } else if (resultCode == 980) {
                 //User DOb verfied succesfully
                 String message = data.getStringExtra("VERIFICATION_SUCCESS");
-                Toaster.INSTANCE.showGreenWithAction(findViewById(android.R.id.content),
+                Toaster.Companion.showNormalWithAction(this,
                         message,
                         Snackbar.LENGTH_INDEFINITE,
                         getString(R.string.general_label_ok), (v) -> {
