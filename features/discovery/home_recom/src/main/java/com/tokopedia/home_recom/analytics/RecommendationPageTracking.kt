@@ -110,7 +110,7 @@ class RecommendationPageTracking {
                     DataLayer.mapOf(
                             FIELD_PRODUCT_NAME, item.name,
                             FIELD_PRODUCT_ID, item.productId,
-                            FIELD_PRODUCT_PRICE, item.priceInt,
+                            FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
                             FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                             FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                             FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
