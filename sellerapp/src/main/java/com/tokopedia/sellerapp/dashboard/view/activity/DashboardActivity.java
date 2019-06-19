@@ -45,7 +45,7 @@ public class DashboardActivity extends DrawerPresenterActivity
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
     @Inject
-    private SellerDashboardDrawerPresenter presenter;
+    public SellerDashboardDrawerPresenter presenter;
 
     public static Intent createInstance(Context context) {
         return new Intent(context, DashboardActivity.class);
