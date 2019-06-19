@@ -13,7 +13,7 @@ import rx.Subscriber
 
 class OvoP2pTrxnConfirmVM(application: Application) : AndroidViewModel(application) {
 
-    var txnConfirmMutableLiveData: MutableLiveData<OvoP2pTransferConfirmBase>? = null
+    var txnConfirmMutableLiveData = MutableLiveData<OvoP2pTransferConfirmBase>()
     private var transferConfirmSubscriber: Subscriber<GraphqlResponse>? = null
 
 

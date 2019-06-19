@@ -12,7 +12,7 @@ import rx.Subscriber
 
 class OvoP2pTxnThankYouOvoUsrVM(application: Application) : AndroidViewModel(application) {
 
-    var ovoP2pTransferThankyouBaseMutableLiveData: MutableLiveData<OvoP2pTransferThankyouBase>? = null
+    var ovoP2pTransferThankyouBaseMutableLiveData = MutableLiveData<OvoP2pTransferThankyouBase>()
     private var transferThankyouSubscriber: Subscriber<GraphqlResponse>? = null
 
     override fun onCleared() {

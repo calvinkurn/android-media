@@ -65,10 +65,12 @@ class OvoP2PFormActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComp
     }
 
     override fun showProgressDialog() {
-        if (loading == null) loading = ProgressDialog(this)
-        loading.setCancelable(false)
-        loading.setMessage(getString(R.string.title_loading))
-        loading.show()
+        if (!::loading.isInitialized) loading = ProgressDialog(this)
+        with(loading) {
+            setCancelable(false)
+            setMessage(getString(R.string.title_loading))
+            show()
+        }
     }
 
     override fun hideProgressDialog() {

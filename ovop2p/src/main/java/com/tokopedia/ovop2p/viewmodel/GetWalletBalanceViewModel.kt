@@ -15,14 +15,21 @@ import com.tokopedia.ovop2p.util.OvoP2pUtil
 import rx.Subscriber
 
 class GetWalletBalanceViewModel(application: Application) : AndroidViewModel(application) {
-    var walletLiveData: MutableLiveData<WalletDataBase>? = null
-
+    var walletLiveData: MutableLiveData<WalletDataBase> = MutableLiveData()
+    var walletBalanceSubscriber: Subscriber<GraphqlResponse>? = null
     fun fetchWalletDetails(context: Context) {
         OvoP2pUtil.executeOvoGetWalletData(context, getWalletDataSubscriber())
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        if (walletBalanceSubscriber != null) {
+            walletBalanceSubscriber!!.unsubscribe()
+        }
+    }
+
     private fun getWalletDataSubscriber(): Subscriber<GraphqlResponse>{
-        return (object : Subscriber<GraphqlResponse>() {
+        walletBalanceSubscriber =  (object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
 
             }
@@ -39,5 +46,6 @@ class GetWalletBalanceViewModel(application: Application) : AndroidViewModel(app
 
             }
         })
+        return walletBalanceSubscriber as Subscriber<GraphqlResponse>
     }
 }

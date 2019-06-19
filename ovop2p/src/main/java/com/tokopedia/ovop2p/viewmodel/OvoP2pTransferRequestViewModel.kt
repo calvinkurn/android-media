@@ -15,7 +15,7 @@ import rx.Subscriber
 
 class OvoP2pTransferRequestViewModel(application: Application) : AndroidViewModel(application) {
 
-    var ovoP2pTransferRequestBaseMutableLiveData: MutableLiveData<OvoP2pTransferRequestBase>? = null
+    var ovoP2pTransferRequestBaseMutableLiveData = MutableLiveData<OvoP2pTransferRequestBase>()
     private var transferRequestSubscriber: Subscriber<GraphqlResponse>? = null
 
     fun makeTransferRequestCall(context: Context, transferReqMap: HashMap<String, Any>) {
