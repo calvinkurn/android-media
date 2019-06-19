@@ -27,7 +27,8 @@ class RecommendationCardView : ProductCardView {
         setPrice(item.price)
         setImageUrl(item.imageUrl)
         setTopAdsVisible(item.isTopAds)
-        setWishlistButtonVisible(TextUtils.isEmpty(item.wishlistUrl))
+        setWishlistButtonVisible(false)
+//        setWishlistButtonVisible(TextUtils.isEmpty(item.wishlistUrl))
         setRatingReviewCount(item.rating, item.countReview)
 
         imageView.addOnImpressionListener(item,
