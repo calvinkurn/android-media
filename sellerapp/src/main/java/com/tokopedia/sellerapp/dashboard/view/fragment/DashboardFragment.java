@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
@@ -116,6 +117,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private TextView shopNameTextView;
 
     private ShopScorePMWidget shopScoreWidget;
+    private LinearLayout headerLabelLayout;
 
     private TextView reputationPointTextView;
     private ShopReputationView shopReputationView;
@@ -197,6 +199,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         discussionLabelView = (LabelView) view.findViewById(R.id.label_view_discussion);
         reviewLabelView = (LabelView) view.findViewById(R.id.label_view_review);
         shopScoreWidget = view.findViewById(R.id.shop_score_widget);
+        headerLabelLayout = view.findViewById(R.id.label_layout_header);
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -406,17 +409,12 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             }
             ArrayList<ShowCaseObject> showcases = new ArrayList<>();
             showcases.add(new ShowCaseObject(
-                    shopScoreWidget,
-                    getString(R.string.showcase_title_power_merchant),
-                    getString(R.string.showcase_desc_1_power_merchant))
-                    .withCustomTarget(new int[]{
-                            shopScoreWidget.getLeft(),
-                            shopScoreWidgetTop,
-                            shopScoreWidget.getRight(),
-                            shopScoreWidgetBottom}));
+                    headerLabelLayout,
+                    getString(R.string.showcase_title_1_power_merchant),
+                    getString(R.string.showcase_desc_1_power_merchant));
             showcases.add(new ShowCaseObject(
                     shopScoreWidget,
-                    getString(R.string.showcase_title_power_merchant),
+                    getString(R.string.showcase_title_2_power_merchant),
                     getString(R.string.showcase_desc_2_power_merchant))
                     .withCustomTarget(new int[]{
                             shopScoreWidget.getLeft(),
@@ -811,7 +809,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             if (shopStatusModel.isPowerMerchantActive()
                     && !popUpManager.isActivePowerMerchantShown(shopId)) {
                 popUpManager.setActivePowerMerchantShown(shopId, true);
-                popUpManager.setIdlePowerMerchantShown(shopId, true);
                 model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
                         getString(R.string.pm_popup_active_title),
                         getString(R.string.pm_popup_active_desc),
