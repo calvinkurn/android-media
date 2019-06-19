@@ -408,9 +408,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void triggerSendEnhancedEcommerceCheckoutAnalytics(String step) {
+        List<DataCheckoutRequest> dataCheckoutRequests = dataCheckoutRequestList;
+        if (dataCheckoutRequests == null) {
+            dataCheckoutRequests = getView().generateNewCheckoutRequest(getShipmentCartItemModelList(), true);
+        }
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(getView().generateCheckPromoFirstStepParam());
-        CheckoutRequest checkoutRequest = generateCheckoutRequest(checkPromoParam,
+        CheckoutRequest checkoutRequest = generateCheckoutRequest(dataCheckoutRequests, checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
         Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step);
@@ -744,7 +748,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId) {
         removeErrorShopProduct();
-        CheckoutRequest checkoutRequest = generateCheckoutRequest(checkPromoParam,
+        CheckoutRequest checkoutRequest = generateCheckoutRequest(null, checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
 
@@ -828,7 +832,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 newShipmentCartItemModelList.remove(indexShopError);
             }
 
-            dataCheckoutRequestList = getView().generateNewCheckoutRequest(newShipmentCartItemModelList);
+            dataCheckoutRequestList = getView().generateNewCheckoutRequest(newShipmentCartItemModelList, false);
             partialCheckout = true;
             return true;
         }
@@ -1195,8 +1199,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 });
     }
 
-    private CheckoutRequest generateCheckoutRequest(CheckPromoParam checkPromoParam, int isDonation) {
-        if (dataCheckoutRequestList == null) {
+    private CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, CheckPromoParam checkPromoParam, int isDonation) {
+        if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
             return null;
         }
@@ -1218,7 +1222,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         CheckoutRequest.Builder builder = new CheckoutRequest.Builder()
                 .isDonation(isDonation)
-                .data(dataCheckoutRequestList)
+                .data(analyticsDataCheckoutRequests != null ? analyticsDataCheckoutRequests : dataCheckoutRequestList)
                 .egoldData(egoldData);
 
         if (cornerData != null) {
@@ -1827,7 +1831,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId) {
-        CheckoutRequest checkoutRequest = generateCheckoutRequest(checkPromoParam,
+        CheckoutRequest checkoutRequest = generateCheckoutRequest(null, checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
         getView().showLoading();

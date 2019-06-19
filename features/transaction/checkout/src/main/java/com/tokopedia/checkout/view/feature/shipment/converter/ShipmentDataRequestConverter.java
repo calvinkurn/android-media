@@ -31,8 +31,9 @@ public class ShipmentDataRequestConverter {
 
     }
 
-    public ShipmentAdapter.RequestData generateRequestData(
-            List<ShipmentCartItemModel> shipmentCartItemModels, RecipientAddressModel recipientAddress) {
+    public ShipmentAdapter.RequestData generateRequestData(List<ShipmentCartItemModel> shipmentCartItemModels,
+                                                           RecipientAddressModel recipientAddress,
+                                                           boolean isAnalyticsPurpose) {
         ShipmentAdapter.RequestData requestData = new ShipmentAdapter.RequestData();
         if (shipmentCartItemModels != null && shipmentCartItemModels.size() > 0) {
             List<ShopProductCheckoutRequest> shopProductCheckoutRequestList = new ArrayList<>();
@@ -40,7 +41,11 @@ public class ShipmentDataRequestConverter {
             if (recipientAddress != null) {
                 List<DataChangeAddressRequest> changeAddressRequestData = new ArrayList<>();
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
-                    shopProductCheckoutRequestList.add(getProductCheckoutRequest(shipmentCartItemModel));
+                    if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                        shopProductCheckoutRequestList.add(getProductCheckoutRequest(shipmentCartItemModel));
+                    } else if (isAnalyticsPurpose) {
+                        shopProductCheckoutRequestList.add(getProductCheckoutRequestForAnalytics(shipmentCartItemModel));
+                    }
                     shopProductPromoRequest.add(getShopProductPromoRequest(shipmentCartItemModel));
                     createChangeAddressRequestData(changeAddressRequestData, shipmentCartItemModel, recipientAddress);
                 }
@@ -98,6 +103,38 @@ public class ShipmentDataRequestConverter {
             dataChangeAddressRequest.setCartId(cartItemModel.getCartId());
             changeAddressRequestData.add(dataChangeAddressRequest);
         }
+    }
+
+    private ShopProductCheckoutRequest getProductCheckoutRequestForAnalytics(ShipmentCartItemModel shipmentCartItemModel) {
+        // Create shop product model for shipment
+        ShopProductCheckoutRequest.Builder shopProductCheckoutBuilder = new ShopProductCheckoutRequest.Builder()
+                .shippingInfo(new ShippingInfoCheckoutRequest.Builder()
+                        .shippingId(0)
+                        .spId(0)
+                        .ratesId("")
+                        .checksum("")
+                        .ut("")
+                        .analyticsDataShippingCourierPrice("")
+                        .build())
+                .fcancelPartial(0)
+                .finsurance(0)
+                .isOrderPriority(0)
+                .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
+                .shopId(shipmentCartItemModel.getShopId())
+                .warehouseId(shipmentCartItemModel.getFulfillmentId())
+                .cartString(shipmentCartItemModel.getCartString())
+                .productData(convertToProductDataCheckout(shipmentCartItemModel.getCartItemModels()));
+
+        ArrayList<String> promoCodes = new ArrayList<>();
+        if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
+            promoCodes.add(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
+        }
+
+        if (promoCodes.size() > 0) {
+            shopProductCheckoutBuilder.promoCodes(promoCodes);
+        }
+
+        return shopProductCheckoutBuilder.build();
     }
 
     private ShopProductCheckoutRequest getProductCheckoutRequest(ShipmentCartItemModel shipmentCartItemModel) {

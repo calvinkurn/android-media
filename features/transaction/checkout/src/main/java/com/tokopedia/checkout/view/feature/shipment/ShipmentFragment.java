@@ -1122,8 +1122,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public List<DataCheckoutRequest> generateNewCheckoutRequest
-            (List<ShipmentCartItemModel> shipmentCartItemModelList) {
-        ShipmentAdapter.RequestData requestData = shipmentAdapter.getRequestData(null, shipmentCartItemModelList);
+            (List<ShipmentCartItemModel> shipmentCartItemModelList, boolean isAnalyticsPurpose) {
+        ShipmentAdapter.RequestData requestData = shipmentAdapter.getRequestData(null, shipmentCartItemModelList, isAnalyticsPurpose);
         return requestData.getCheckoutRequestData();
     }
 
@@ -1272,7 +1272,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         if (isOneClickShipment() || (shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod())) {
                             newAddress.setDisableMultipleAddress(true);
                         }
-                        shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData(newAddress, null).getChangeAddressRequestData());
+                        shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData(newAddress, null, false).getChangeAddressRequestData());
                         shipmentPresenter.changeShippingAddress(newAddress, isOneClickShipment());
                     }
                 }

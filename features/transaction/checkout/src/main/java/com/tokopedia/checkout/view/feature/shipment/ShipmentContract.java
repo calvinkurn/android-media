@@ -111,7 +111,7 @@ public interface ShipmentContract {
 
         void navigateToSetPinpoint(String message, LocationPass locationPass);
 
-        List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
+        List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList, boolean isAnalyticsPurpose);
 
         ShipmentDataConverter getShipmentDataConverter();
 
