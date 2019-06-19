@@ -79,6 +79,7 @@ import javax.inject.Inject
 class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     internal var isShowAutoAddPromo = false
     internal var isAutoTopUpActive = false
+    internal var isAutoAds = false
 
     val shopInfoLayout: View?
         get() = view_group_deposit
@@ -652,12 +653,14 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     private fun onActiveAutoAds() {
+        isAutoAds = true
         label_view_group_summary.visibility = View.GONE
         label_view_keyword.visibility = View.GONE
         button_topads_add_promo.visibility = View.GONE
     }
 
     private fun onDeactiveAutoAds() {
+        isAutoAds = false
         label_view_group_summary.visibility = View.VISIBLE
         label_view_keyword.visibility = View.VISIBLE
         button_topads_add_promo.visibility = View.VISIBLE
@@ -711,8 +714,8 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         checkedBottomSheetMenu.show(activity!!.supportFragmentManager, javaClass.simpleName)
     }
 
-    fun startShowCase() {
-        callback?.startShowCase()
+    fun startShowCase(isAutoAds: Boolean) {
+        callback?.startShowCase(isAutoAds)
     }
 
     private fun onCostSelected() {
@@ -793,7 +796,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                 when (pos) {
                     0 -> {
                         scroll_view.scrollTo(0, 0)
-                        startShowCase()
+                        startShowCase(isAutoAds)
                         menus.dismiss()
                     }
                     1 -> {
@@ -810,7 +813,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     interface Callback {
-        fun startShowCase()
+        fun startShowCase(isAutoAds : Boolean)
     }
 
     companion object {

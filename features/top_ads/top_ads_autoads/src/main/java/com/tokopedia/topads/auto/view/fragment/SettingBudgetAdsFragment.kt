@@ -51,8 +51,8 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
                     }
 
                     override fun activeAutoAds() {
-                        startActivity(Intent(activity, DailyBudgetActivity::class.java))
-                        activity!!.finish()
+                        settingConfirmationSheet.dismissDialog()
+                        switchBudget.isChecked = true
                     }
                 })
                 settingConfirmationSheet.show()

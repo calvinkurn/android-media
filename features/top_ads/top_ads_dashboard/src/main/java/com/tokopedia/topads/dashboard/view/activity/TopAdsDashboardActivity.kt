@@ -89,7 +89,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
         return TAG
     }
 
-    override fun startShowCase() {
+    override fun startShowCase(isAutoAds : Boolean) {
         val showCaseTag = TopAdsDashboardActivity::class.java.name
 
         val fragment = supportFragmentManager.findFragmentByTag(TAG) as TopAdsDashboardFragment
@@ -120,14 +120,14 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                             R.color.white, fragment.scrollView))
                 }
 
-                if (fragment.groupSummaryLabelView != null) {
+                if (fragment.groupSummaryLabelView != null && !isAutoAds) {
                     showCaseList.add(ShowCaseObject(fragment.groupSummaryLabelView,
                             getString(R.string.topads_showcase_home_title_8),
                             getString(R.string.topads_showcase_home_desc_8),
                             ShowCaseContentPosition.UNDEFINED,
                             R.color.white, fragment.scrollView))
                 }
-                if (fragment.viewGroupPromo != null) {
+                if (fragment.viewGroupPromo != null && !isAutoAds) {
                     showCaseList.add(ShowCaseObject(fragment.viewGroupPromo,
                             getString(R.string.topads_showcase_home_title_1),
                             getString(R.string.topads_showcase_home_desc_1),
@@ -136,7 +136,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                 }
             }
 
-            if (fragment.buttonAddPromo != null) {
+            if (fragment.buttonAddPromo != null && !isAutoAds) {
                 showCaseList.add(ShowCaseObject(fragment.buttonAddPromo,
                         getString(R.string.topads_showcase_home_title_6),
                         getString(R.string.topads_showcase_home_desc_6),
@@ -157,7 +157,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
         } else {
             toolbar.viewTreeObserver.addOnGlobalLayoutListener(OneUseGlobalLayoutListener(
                     toolbar,
-                    OneUseGlobalLayoutListener.OnGlobalLayoutListener { startShowCase() }
+                    OneUseGlobalLayoutListener.OnGlobalLayoutListener { startShowCase(isAutoAds) }
             ))
         }
 
