@@ -159,6 +159,10 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 it.shop != null && it.shopClickUrl != null
             } as MutableList
 
+            feed.content.cardRecommendation.items.forEachIndexed { index, item ->
+                topadsShopList.get(index).isFavorit = item.header.followCta.isFollow
+            }
+
             posts.add(
                     TopadsShopViewModel(
                             feed.content.cardRecommendation.title,
