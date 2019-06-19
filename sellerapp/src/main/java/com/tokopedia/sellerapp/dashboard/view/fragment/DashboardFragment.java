@@ -489,7 +489,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             tvShopMembershipTitle.setText(R.string.label_regular_merchant);
             tvShopMembershipStatus.setVisibility(View.GONE);
             buttonActivatePowerMerchant.setVisibility(View.VISIBLE);
-            tickerContainer.setVisibility(View.GONE);
+            tickerContainer.setVisibility(View.VISIBLE);
+            ((TextView)tickerContainer.findViewById(R.id.tv_ticker)).setText(
+                    MethodChecker.fromHtml(getString(R.string.regular_merchant_ticker)));
         } else if (shopStatusModel.isOfficialStore()) {
             ivShopMembershipLogo.setVisibility(View.VISIBLE);
             ivShopMembershipLogo.setImageResource(R.drawable.ic_badge_shop_official);
@@ -519,15 +521,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT);
                     }
                 };
-                if (shopStatusModel.isPowerMerchantActive()) {
-                    String tickerString = getString(R.string.power_merchant_active_ticker_with_tip);
-                    tvTicker.setText(tickerString);
-                    setTextViewClickSpan(tvTicker, tickerString, getString(R.string.tip_increase_score), onClickListener);
-                } else {
-                    String tickerString = getString(R.string.power_merchant_inactive_ticker_with_tip);
-                    tvTicker.setText(tickerString);
-                    setTextViewClickSpan(tvTicker, tickerString, getString(R.string.tip_increase_score), onClickListener);
-                }
+                String tickerString = getString(R.string.power_merchant_ticker_with_tip);
+                tvTicker.setText(MethodChecker.fromHtml(tickerString));
+                setTextViewClickSpan(tvTicker, tickerString, getString(R.string.tip_increase_score), onClickListener);
             }
         }
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
