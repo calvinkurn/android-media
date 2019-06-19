@@ -382,20 +382,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 if (dataResult.getAutoApplyStackData() != null) {
                                     if (!TextUtils.isEmpty(dataResult.getAutoApplyStackData().getCode())) {
                                         promoCodes.append(dataResult.getAutoApplyStackData().getCode());
-                                        int amount = 0;
-                                        int type = 0;
-                                        if (shipmentAddressFormDataResponse.getAutoapplyStack().getDiscountAmount() > 0) {
-                                            amount = shipmentAddressFormDataResponse.getAutoapplyStack().getDiscountAmount();
-                                            type = PromoStackingData.CREATOR.getTYPE_COUPON();
-                                        } else if (shipmentAddressFormDataResponse.getAutoapplyStack().getCashbackWalletAmount() > 0) {
-                                            amount = shipmentAddressFormDataResponse.getAutoapplyStack().getCashbackWalletAmount();
-                                            type = PromoStackingData.CREATOR.getTYPE_VOUCHER();
-                                        }
-                                        promoDetails.append(type)
-                                                .append(":")
-                                                .append(amount)
-                                                .append(":")
-                                                .append(shipmentAddressFormDataResponse.getAutoapplyStack().getMessage().getState());
+                                        promoDetails.append(shipmentAddressFormDataResponse.getAutoapplyStack().getMessage().getState());
                                     }
                                     if (dataResult.getAutoApplyStackData().getVoucherOrders() != null) {
                                         for (VoucherOrdersItemData voucherOrdersItemData : dataResult.getAutoApplyStackData().getVoucherOrders()) {
@@ -404,24 +391,10 @@ public class ShipmentMapper implements IShipmentMapper {
                                                     promoCodes.append("|");
                                                 }
                                                 promoCodes.append(voucherOrdersItemData.getCode());
-                                                int amount = 0;
-                                                int type = 0;
-                                                if (voucherOrdersItemData.getDiscountAmount() > 0) {
-                                                    amount = voucherOrdersItemData.getDiscountAmount();
-                                                    type = PromoStackingData.CREATOR.getTYPE_COUPON();
-                                                } else if (voucherOrdersItemData.getCashbackWalletAmount() > 0) {
-                                                    amount = voucherOrdersItemData.getCashbackWalletAmount();
-                                                    type = PromoStackingData.CREATOR.getTYPE_VOUCHER();
-                                                }
-
                                                 if (!TextUtils.isEmpty(promoDetails)) {
                                                     promoDetails.append("|");
                                                 }
-                                                promoDetails.append(type)
-                                                        .append(":")
-                                                        .append(amount)
-                                                        .append(":")
-                                                        .append(voucherOrdersItemData.getMessageData().getState());
+                                                promoDetails.append(voucherOrdersItemData.getMessageData().getState());
                                                 break;
                                             }
                                         }
@@ -429,7 +402,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 }
 
                                 if (!TextUtils.isEmpty(promoCodes)) {
-                                    analyticsProductCheckoutData.setPromoCode1(promoCodes.toString());
+                                    analyticsProductCheckoutData.setPromoCode(promoCodes.toString());
                                 }
                                 if (!TextUtils.isEmpty(promoDetails)) {
                                     analyticsProductCheckoutData.setPromoDetails(promoDetails.toString());

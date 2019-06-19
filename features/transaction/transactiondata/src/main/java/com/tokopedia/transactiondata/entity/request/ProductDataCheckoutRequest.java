@@ -37,7 +37,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
     private long cartId;
     private String warehouseId;
     private String productWeight;
-    private String promoCode1;
+    private String promoCode;
     private String promoDetails;
     private String buyerAddressId;
     private String shippingDuration;
@@ -69,7 +69,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         productNotes = builder.productNotes;
         warehouseId = builder.warehouseId;
         productWeight = builder.productWeight;
-        promoCode1 = builder.promoCode1;
+        promoCode = builder.promoCode;
         promoDetails = builder.promoDetails;
         buyerAddressId = builder.buyerAddressId;
         shippingDuration = builder.shippingDuration;
@@ -99,7 +99,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         cartId = in.readLong();
         warehouseId = in.readString();
         productWeight = in.readString();
-        promoCode1 = in.readString();
+        promoCode = in.readString();
         promoDetails = in.readString();
         buyerAddressId = in.readString();
         shippingDuration = in.readString();
@@ -130,7 +130,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         dest.writeLong(cartId);
         dest.writeString(warehouseId);
         dest.writeString(productWeight);
-        dest.writeString(promoCode1);
+        dest.writeString(promoCode);
         dest.writeString(promoDetails);
         dest.writeString(buyerAddressId);
         dest.writeString(shippingDuration);
@@ -226,8 +226,8 @@ public class ProductDataCheckoutRequest implements Parcelable {
         return productWeight;
     }
 
-    public String getPromoCode1() {
-        return promoCode1;
+    public String getPromoCode() {
+        return promoCode;
     }
 
     public String getPromoDetails() {
@@ -262,8 +262,8 @@ public class ProductDataCheckoutRequest implements Parcelable {
         return isFulfillment;
     }
 
-    public void setPromoCode1(String promoCode1) {
-        this.promoCode1 = promoCode1;
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
 
     public void setPromoDetails(String promoDetails) {
@@ -309,7 +309,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         private String productNotes;
         private String warehouseId;
         private String productWeight;
-        private String promoCode1;
+        private String promoCode;
         private String promoDetails;
         private String buyerAddressId;
         private String shippingDuration;
@@ -412,8 +412,8 @@ public class ProductDataCheckoutRequest implements Parcelable {
             return this;
         }
 
-        public Builder promoCode1(String val) {
-            promoCode1 = val;
+        public Builder promoCode(String val) {
+            promoCode = val;
             return this;
         }
 

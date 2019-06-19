@@ -1321,11 +1321,7 @@ public class CartListPresenter implements ICartListPresenter {
         PromoStackingData promoStackingGlobalData = view.getPromoStackingGlobalData();
         if (promoStackingGlobalData != null && !TextUtils.isEmpty(promoStackingGlobalData.getPromoCode())) {
             promoCodes.append(promoStackingGlobalData.getPromoCode());
-            promoDetails.append(promoStackingGlobalData.getTypePromo())
-                    .append(":")
-                    .append(promoStackingGlobalData.getAmount())
-                    .append(":")
-                    .append(TickerCheckoutUtilKt.revertMapToStatePromoStackingCheckout(promoStackingGlobalData.getState()));
+            promoDetails.append(TickerCheckoutUtilKt.revertMapToStatePromoStackingCheckout(promoStackingGlobalData.getState()));
         }
         if (cartShopHolderData != null && cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null &&
                 !TextUtils.isEmpty(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode()) &&
@@ -1334,26 +1330,13 @@ public class CartListPresenter implements ICartListPresenter {
                 promoCodes.append("|");
             }
             promoCodes.append(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode());
-            int amount = 0;
-            int type = 0;
-            if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getDiscountAmount() > 0) {
-                amount = cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getDiscountAmount();
-                type = PromoStackingData.CREATOR.getTYPE_COUPON();
-            } else if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCashbackWalletAmount() > 0) {
-                amount = cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCashbackWalletAmount();
-                type = PromoStackingData.CREATOR.getTYPE_VOUCHER();
-            }
             if (!TextUtils.isEmpty(promoDetails)) {
                 promoDetails.append("|");
             }
-            promoDetails.append(type)
-                    .append(":")
-                    .append(amount)
-                    .append(":")
-                    .append(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getMessageData().getState());
+            promoDetails.append(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getMessageData().getState());
         }
         if (!TextUtils.isEmpty(promoCodes)) {
-            enhancedECommerceProductCartMapData.setPromoCode1(promoCodes.toString());
+            enhancedECommerceProductCartMapData.setPromoCode(promoCodes.toString());
         }
         if (!TextUtils.isEmpty(promoDetails)) {
             enhancedECommerceProductCartMapData.setPromoDetails(promoDetails.toString());

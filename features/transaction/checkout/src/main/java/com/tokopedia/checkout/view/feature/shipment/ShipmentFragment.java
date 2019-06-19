@@ -2390,8 +2390,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange() {
-        shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
-        shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(EnhancedECommerceActionField.STEP_3);
+        List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
+        shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(dataCheckoutRequests, EnhancedECommerceActionField.STEP_3);
     }
 
     @Override

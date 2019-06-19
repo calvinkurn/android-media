@@ -26,7 +26,7 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_SHOP_TYPE = "shop_type";
     private static final String KEY_SHOP_NAME = "shop_name";
     private static final String KEY_CATEGORY_ID = "category_id";
-    private static final String KEY_CART_ID = "cart_id";
+    private static final String KEY_CART_ID = "dimension45";
     private static final String KEY_POS = "position";
     private static final String KEY_LIST = "list";
     private static final String KEY_DIMENSION_38 = "dimension38";
@@ -36,17 +36,17 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_DIMENSION_80 = "dimension80";
     private static final String KEY_DIMENSION_12 = "dimension12";
     private static final String KEY_ATTRIBUTION = "attribution";
-    private static final String KEY_WAREHOUSE_ID = "warehouse_id";
-    private static final String KEY_PRODUCT_WEIGHT = "product weight";
-    private static final String KEY_PROMO_CODE_1 = "promo code 1";
-    private static final String KEY_PROMO_DETAILS = "promo_details";
-    private static final String KEY_BUYER_ADDRESS_ID = "buyer address id";
-    private static final String KEY_SHIPPING_DURATION = "shipping duration";
-    private static final String KEY_COURIER = "courier";
-    private static final String KEY_SHIPPING_PRICE = "shipping price";
-    private static final String KEY_COD_FLAG = "cod_flag";
-    private static final String KEY_TOKOPEDIA_CORNER_FLAG = "tokopedia corner flag";
-    private static final String KEY_IS_FULFILLMENT = "is fulfillment";
+    private static final String KEY_WAREHOUSE_ID = "dimension56";
+    private static final String KEY_PRODUCT_WEIGHT = "dimension48";
+    private static final String KEY_PROMO_CODE = "dimension49";
+    private static final String KEY_PROMO_DETAILS = "dimension59";
+    private static final String KEY_BUYER_ADDRESS_ID = "dimension11";
+    private static final String KEY_SHIPPING_DURATION = "dimension16";
+    private static final String KEY_COURIER = "dimension14";
+    private static final String KEY_SHIPPING_PRICE = "dimension12";
+    private static final String KEY_COD_FLAG = "dimension10";
+    private static final String KEY_TOKOPEDIA_CORNER_FLAG = "dimension57";
+    private static final String KEY_IS_FULFILLMENT = "dimension58";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
@@ -152,8 +152,8 @@ public class EnhancedECommerceProductCartMapData {
         Product.put(KEY_PRODUCT_WEIGHT, !TextUtils.isEmpty(productWeight) ? productWeight : DEFAULT_VALUE_NONE_OTHER);
     }
 
-    public void setPromoCode1(String promoCodes) {
-        Product.put(KEY_PROMO_CODE_1, !TextUtils.isEmpty(promoCodes) ? promoCodes : "");
+    public void setPromoCode(String promoCodes) {
+        Product.put(KEY_PROMO_CODE, !TextUtils.isEmpty(promoCodes) ? promoCodes : "");
     }
 
     public void setPromoDetails(String promoDetails) {

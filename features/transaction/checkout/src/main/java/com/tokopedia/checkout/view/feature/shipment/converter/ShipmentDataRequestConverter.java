@@ -251,7 +251,7 @@ public class ShipmentDataRequestConverter {
                 .cartId(cartItem.getCartId())
                 .warehouseId(cartItem.getAnalyticsProductCheckoutData().getWarehouseId())
                 .productWeight(cartItem.getAnalyticsProductCheckoutData().getProductWeight())
-                .promoCode1(cartItem.getAnalyticsProductCheckoutData().getPromoCode1())
+                .promoCode(cartItem.getAnalyticsProductCheckoutData().getPromoCode())
                 .promoDetails(cartItem.getAnalyticsProductCheckoutData().getPromoDetails())
                 .buyerAddressId(cartItem.getAnalyticsProductCheckoutData().getBuyerAddressId())
                 .shippingDuration(cartItem.getAnalyticsProductCheckoutData().getShippingDuration())

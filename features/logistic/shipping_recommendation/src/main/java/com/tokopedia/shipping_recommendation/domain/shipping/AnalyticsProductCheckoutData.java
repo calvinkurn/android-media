@@ -23,7 +23,7 @@ public class AnalyticsProductCheckoutData implements Parcelable {
     private String productAttribution;
     private String warehouseId;
     private String productWeight;
-    private String promoCode1;
+    private String promoCode;
     private String promoDetails;
     private String buyerAddressId;
     private String shippingDuration;
@@ -153,12 +153,12 @@ public class AnalyticsProductCheckoutData implements Parcelable {
         this.productWeight = productWeight;
     }
 
-    public String getPromoCode1() {
-        return promoCode1;
+    public String getPromoCode() {
+        return promoCode;
     }
 
-    public void setPromoCode1(String promoCode1) {
-        this.promoCode1 = promoCode1;
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
 
     public String getPromoDetails() {
@@ -244,7 +244,7 @@ public class AnalyticsProductCheckoutData implements Parcelable {
         productAttribution = in.readString();
         warehouseId = in.readString();
         productWeight = in.readString();
-        promoCode1 = in.readString();
+        promoCode = in.readString();
         promoDetails = in.readString();
         buyerAddressId = in.readString();
         shippingDuration = in.readString();
@@ -272,7 +272,7 @@ public class AnalyticsProductCheckoutData implements Parcelable {
         dest.writeString(productAttribution);
         dest.writeString(warehouseId);
         dest.writeString(productWeight);
-        dest.writeString(promoCode1);
+        dest.writeString(promoCode);
         dest.writeString(promoDetails);
         dest.writeString(buyerAddressId);
         dest.writeString(shippingDuration);
