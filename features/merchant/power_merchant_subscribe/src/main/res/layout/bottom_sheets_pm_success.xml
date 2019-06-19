@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/dp_20"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:layout_marginBottom="@dimen/dp_10">
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/txt_success_header_bs"
@@ -41,11 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Button.Submit.Green.Full"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_20"
         android:text="@string/pm_label_bs_success_button"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="30dp"/>
 
 </LinearLayout>

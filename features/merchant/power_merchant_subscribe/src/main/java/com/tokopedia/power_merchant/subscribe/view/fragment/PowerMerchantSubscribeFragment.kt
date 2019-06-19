@@ -189,7 +189,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     private fun showToasterCancellationSuccess() {
-        isSuccessCancellationPm = false
         activity?.let {
             ToasterNormal.showClose(it,
                     getString(R.string.pm_cancellation_success))
@@ -265,6 +264,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     fun showBottomSheetCancel() {
+        isSuccessCancellationPm = false
         bottomSheetCancel = PowerMerchantCancelBottomSheet()
         bottomSheetCancel.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
             override fun onclickButton() {
@@ -313,6 +313,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 hideButtonActivatedPm()
             } else {
                 showButtonActivatedPm()
+                //todo
                 if (isSuccessCancellationPm) {
                     showExpiredDateTickerYellow()
                 }
@@ -379,8 +380,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     private fun renderDefaultTicker() {
-        txt_ticker_yellow.text = MethodChecker.fromHtml(getString(R.string.pm_label_cancellation_duration))
-        txt_blue_ticker.text = MethodChecker.fromHtml(getString(R.string.pm_label_price_cashback))
+        txt_ticker_yellow.text = MethodChecker.fromHtml(String.format(getString(R.string.pm_label_cancellation_duration)))
+        txt_blue_ticker.text = MethodChecker.fromHtml(String.format(getString(R.string.pm_label_price_cashback)))
     }
 
 
