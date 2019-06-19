@@ -19,6 +19,6 @@
     "dependencies": {
         "danger": "^2.1.3",
         "react-native": "0.59.5",
-        "react-native-code-push": "git+https://github.com/yogieputra8/react-native-code-push.git#0adbbfa1063e552c0a52743c1fd31f26f05d9091"
+        "react-native-code-push": "git+https://github.com/okasurya/react-native-code-push.git#d448022b1dec5bbe3da2467d8048af4f31f837f4"
     }
 }
