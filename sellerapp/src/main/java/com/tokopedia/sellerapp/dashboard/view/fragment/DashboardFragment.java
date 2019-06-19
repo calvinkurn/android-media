@@ -381,8 +381,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 .textColorRes(R.color.grey_400)
                 .textSizeRes(R.dimen.sp_12)
                 .titleTextSizeRes(R.dimen.sp_16)
-                .nextStringRes(R.string.next)
-                .prevStringRes(R.string.previous)
+                .nextStringRes(R.string.showcase_btn_next)
+                .prevStringRes(R.string.showcase_btn_prev)
+                .finishStringRes(R.string.showcase_btn_finish)
                 .useCircleIndicator(true)
                 .clickable(true)
                 .useArrow(true)
@@ -797,15 +798,22 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             );
         }
 
-        //show pop up only after transition period
-        if (shopStatusModel.isTransitionPeriod()) {
-            return;
-        }
-
         PowerMerchantSuccessBottomSheet.BottomSheetModel model = null;
         String redirectUrl = "";
 
-        if (popUpManager.isEverPowerMerchant(shopId)) {
+        if (shopStatusModel.isPowerMerchantInactive()
+                && !popUpManager.isRegularMerchantShown(shopId)) {
+            popUpManager.setRegularMerchantShown(shopId, true);
+            model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
+                    getString(R.string.pm_popup_regular_title),
+                    getString(R.string.pm_popup_regular_desc),
+                    IMG_URL_RM_ILLUSTRATION,
+                    getString(R.string.pm_popup_regular_btn)
+            );
+            redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
+        }
+
+        if (!shopStatusModel.isTransitionPeriod() && popUpManager.isEverPowerMerchant(shopId)) {
             if (shopStatusModel.isPowerMerchantActive()
                     && !popUpManager.isActivePowerMerchantShown(shopId)) {
                 popUpManager.setActivePowerMerchantShown(shopId, true);
@@ -836,18 +844,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         getString(R.string.pm_popup_deactivated_desc),
                         IMG_URL_PM_IDLE,
                         getString(R.string.pm_popup_deactivated_btn)
-                );
-                redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
-            }
-        } else {
-            if (shopStatusModel.isPowerMerchantInactive()
-                    && !popUpManager.isRegularMerchantShown(shopId)) {
-                popUpManager.setRegularMerchantShown(shopId, true);
-                model = new PowerMerchantSuccessBottomSheet.BottomSheetModel(
-                        getString(R.string.pm_popup_regular_title),
-                        getString(R.string.pm_popup_regular_desc),
-                        IMG_URL_RM_ILLUSTRATION,
-                        getString(R.string.pm_popup_regular_btn)
                 );
                 redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
             }

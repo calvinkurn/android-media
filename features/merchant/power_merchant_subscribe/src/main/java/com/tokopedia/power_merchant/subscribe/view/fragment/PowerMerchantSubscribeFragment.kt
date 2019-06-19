@@ -28,7 +28,10 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hideLoading
+import com.tokopedia.kotlin.extensions.view.showEmptyState
+import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.power_merchant.subscribe.*
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
@@ -307,6 +310,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         ticker_blue_container.visibility = View.GONE
         if (isPowerMerchant) {
             if (isAutoExtend()) {
+                ticker_yellow_container.visibility = View.GONE
                 hideButtonActivatedPm()
                 ticker_yellow_container.gone()
             } else {
@@ -357,7 +361,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         } else { //regular merchant
             showButtonActivatePm()
             ticker_yellow_container.visibility = View.GONE
-            ticker_blue_container.visibility = View.GONE
             // if inactive do nothing
             // default state: button activate is visible
         }

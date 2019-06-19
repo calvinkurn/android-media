@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="true"
-            android:text="@string/pm_upgrade_shop"
+            android:text="@string/pm_i_agree"
             app:buttonCompatSize="big"
             app:buttonCompatType="primary" />
     </LinearLayout>
