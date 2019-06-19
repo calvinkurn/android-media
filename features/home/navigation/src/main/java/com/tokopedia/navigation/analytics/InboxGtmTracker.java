@@ -77,12 +77,12 @@ public class InboxGtmTracker {
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField",
                                     DataLayer.mapOf("list", "/inbox - rekomendasi untuk anda - "+recommendationItem.getRecommendationType()),
-                                    "product", DataLayer.listOf(DataLayer.mapOf(
+                                    "products", DataLayer.listOf(DataLayer.mapOf(
                                             "name", recommendationItem.getName(),
                                             "id", recommendationItem.getProductId(),
                                             "price", recommendationItem.getPrice().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
-                                            "category", recommendationItem.getDepartmentId(),
+                                            "category", recommendationItem.getCategoryBreadcrumbs(),
                                             "varian", "none/other",
                                             "position", String.valueOf(position)))))
             );
