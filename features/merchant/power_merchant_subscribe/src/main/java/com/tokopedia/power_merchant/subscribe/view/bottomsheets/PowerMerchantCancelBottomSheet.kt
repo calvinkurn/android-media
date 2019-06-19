@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheets
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -7,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.power_merchant.subscribe.R
+import kotlinx.android.synthetic.main.bottom_sheet_pm_cancel.*
 
 class PowerMerchantCancelBottomSheet : BottomSheets() {
     lateinit var buttonCancel: Button
@@ -54,13 +56,13 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
 
     override fun initView(view: View) {
         initVar()
-//        txtExpiredDate = view.findViewById(R.id.txt_ticker_yellow_bs)
+        txtExpiredDate = view.findViewById(R.id.txt_ticker_yellow_bs)
         buttonCancel = view.findViewById(R.id.button_cancel_bs)
 
         if (!isTransitionPeriod) {
-            showExpiredDateTickerYellow()
+            ticker_yellow_cancellation_bs.visibility = View.GONE
         } else {
-            txtExpiredDate.visibility = View.VISIBLE
+            showExpiredDateTickerYellow()
         }
 
         buttonCancel.setOnClickListener {
@@ -69,6 +71,11 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
     }
 
     private fun showExpiredDateTickerYellow() {
-        MethodChecker.fromHtml(getString(R.string.expired_label_bs, expiredDate))
+        txtExpiredDate.text = MethodChecker.fromHtml(getString(R.string.expired_label_bs, expiredDate))
+    }
+
+    override fun setupDialog(dialog: Dialog?, style: Int) {
+        super.setupDialog(dialog, style)
+        updateHeight()
     }
 }
