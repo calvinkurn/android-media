@@ -61,7 +61,6 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
             showExpiredDateTickerYellow()
         } else {
             txtExpiredDate.visibility = View.VISIBLE
-            updateHeight()
         }
 
         buttonCancel.setOnClickListener {
