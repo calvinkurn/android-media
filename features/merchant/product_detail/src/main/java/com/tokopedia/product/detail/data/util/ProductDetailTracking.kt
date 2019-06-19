@@ -561,7 +561,7 @@ class ProductDetailTracking() {
         return try {
             priceFormatted.replace("[^\\d]".toRegex(), "")
         } catch (t: Throwable){
-            priceFormatted
+            "0"
         }
     }
 
