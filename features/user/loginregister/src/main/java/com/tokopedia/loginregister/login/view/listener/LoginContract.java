@@ -8,6 +8,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
 import com.tokopedia.sessioncommon.data.LoginTokenPojo;
@@ -20,7 +21,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function2;
 
 /**
  * @author by nisie on 10/2/18.
@@ -68,8 +71,6 @@ public interface LoginContract {
 
         boolean isFromRegister();
 
-        LoginSuccessRouter getLoginRouter();
-
         void setSmartLock();
 
         void onErrorLoginSosmed(String loginMethodName, String errorCodeMessage);
@@ -85,10 +86,6 @@ public interface LoginContract {
 
         @NotNull
         Function1<Throwable, Unit> onErrorLoginEmail(String email);
-
-        void onSuccessGetUserInfo(ProfilePojo pojo);
-
-        void onErrorGetUserInfo(@Nullable Throwable e);
 
         @NotNull
         Function1<LoginTokenPojo, Unit> onSuccessReloginAfterSQ();
@@ -107,6 +104,33 @@ public interface LoginContract {
 
         @NotNull
         Function1<Throwable, Unit> onErrorLoginGoogle(@Nullable String email);
+
+        @NotNull
+        Function1<ProfilePojo, Unit> onSuccessGetUserInfo();
+
+        @NotNull
+        Function1<Throwable, Unit> onErrorGetUserInfo();
+
+        @NotNull
+        Function2<String, String, Unit> onGoToCreatePassword();
+
+        @NotNull
+        Function0<Unit> onGoToPhoneVerification();
+
+        @NotNull
+        Function1<MessageErrorException, Unit> onGoToActivationPage(String email);
+
+        @NotNull
+        Function0<Unit> onGoToSecurityQuestion(String email);
+
+        @NotNull
+        Function1<MessageErrorException, Unit> onGoToActivationPageAfterRelogin();
+
+        @NotNull
+        Function0<Unit> onGoToSecurityQuestionAfterRelogin();
+
+        void onGoToForbiddenPage();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

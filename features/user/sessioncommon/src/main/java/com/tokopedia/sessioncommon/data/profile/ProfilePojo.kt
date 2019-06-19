@@ -9,8 +9,11 @@ import com.google.gson.annotations.SerializedName
 data class ProfilePojo(
         @SerializedName("profile")
         @Expose
-        var profileInfo: ProfileInfo = ProfileInfo()
-){}
+        var profileInfo: ProfileInfo = ProfileInfo(),
+        @SerializedName("shopBasicData")
+        @Expose
+        var shopInfo: ShopBasicData = ShopBasicData()
+) {}
 
 data class ProfileInfo(
         @SerializedName("user_id")
@@ -43,4 +46,40 @@ data class ProfileInfo(
         @SerializedName("isLoggedIn")
         @Expose
         var isLoggedIn: Boolean = false
-        ){}
+) {}
+
+
+data class ShopBasicData(
+        @SerializedName("result")
+        @Expose
+        var shopData: ShopData = ShopData(),
+        @SerializedName("error")
+        @Expose
+        var error: ArrayList<ErrorShop> = arrayListOf()
+) {}
+
+
+data class ErrorShop(
+        @SerializedName("message")
+        @Expose
+        var message: String = ""
+) {}
+
+
+data class ShopData(
+        @SerializedName("shopID")
+        @Expose
+        var shopId: String = "",
+        @SerializedName("domain")
+        @Expose
+        var domain: String = "",
+        @SerializedName("name")
+        @Expose
+        var shopName: String = "",
+        @SerializedName("logo")
+        @Expose
+        var shopAvatar: String = "",
+        @SerializedName("level")
+        @Expose
+        var shopLevel: Int = 0
+        ) {}

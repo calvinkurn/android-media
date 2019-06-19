@@ -583,7 +583,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     public void goToAutomaticLogin() {
-        Intent intentLogin = LoginActivity.getAutomaticLogin(
+        Intent intentLogin = LoginActivity.DeepLinkIntents.getAutomaticLogin(
                 getActivity(),
                 email.getText().toString(),
                 registerPassword.getText().toString()

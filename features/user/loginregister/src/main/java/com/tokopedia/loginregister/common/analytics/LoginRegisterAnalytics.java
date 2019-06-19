@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.common.analytics;
 import android.app.Activity;
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.analytics.firebase.FirebaseParams;
@@ -12,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author by nisie on 10/2/18.
@@ -590,4 +593,12 @@ public class LoginRegisterAnalytics {
         ));
     }
 
+    public void logUnknownError(@NotNull Throwable message) {
+        try {
+            Crashlytics.logException(message);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

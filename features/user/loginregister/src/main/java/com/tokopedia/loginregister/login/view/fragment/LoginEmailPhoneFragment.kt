@@ -19,7 +19,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.crashlytics.android.Crashlytics
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -29,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -62,13 +62,11 @@ import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
-import com.tokopedia.sessioncommon.data.model.GetUserInfoData
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.network.TokenErrorException
-import com.tokopedia.sessioncommon.view.LoginSuccessRouter
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
@@ -101,19 +99,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private val REQUEST_WELCOME_PAGE = 115
     private val REQUEST_LOGIN_GOOGLE = 116
 
-    val IS_AUTO_LOGIN = "auto_login"
-    val AUTO_LOGIN_METHOD = "method"
-
-    val AUTO_LOGIN_EMAIL = "email"
-    val AUTO_LOGIN_PASS = "pw"
-
-    val IS_AUTO_FILL = "auto_fill"
-    val AUTO_FILL_EMAIL = "email"
-    val IS_FROM_REGISTER = "is_from_register"
-
-    val FACEBOOK = "facebook"
-    val GPLUS = "gplus"
-    val PHONE_NUMBER = "tokocash"
 
     private val LOGIN_LOAD_TRACE = "gb_login_trace"
     private val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
@@ -148,6 +133,21 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private lateinit var passwordEditText: TextInputEditText
 
     companion object {
+
+        val IS_AUTO_LOGIN = "auto_login"
+        val AUTO_LOGIN_METHOD = "method"
+
+        val AUTO_LOGIN_EMAIL = "email"
+        val AUTO_LOGIN_PASS = "pw"
+
+        val IS_AUTO_FILL = "auto_fill"
+        val AUTO_FILL_EMAIL = "email"
+        val IS_FROM_REGISTER = "is_from_register"
+
+        val FACEBOOK = "facebook"
+        val GPLUS = "gplus"
+        val PHONE_NUMBER = "tokocash"
+
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()
             fragment.arguments = bundle
@@ -208,7 +208,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         if (activity != null) {
             drawable = TextDrawable(activity!!)
             drawable.text = resources.getString(R.string.register)
-            drawable.setTextColor(resources.getColor(R.color.tkpd_main_green))
+            drawable.setTextColor(MethodChecker.getColor(context, R.color.tkpd_main_green))
         }
         return drawable
     }
@@ -563,57 +563,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }.showRetrySnackbar()
     }
 
-    override fun getLoginRouter(): LoginSuccessRouter {
-        return object : LoginSuccessRouter {
-            override fun onGoToActivationPage(email: String) {
-                val intent = ActivationActivity.getCallingIntent(activity,
-                        email, passwordEditText.text.toString())
-                startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT)
-            }
-
-            override fun onForbidden() {
-                ForbiddenActivity.startActivity(activity)
-            }
-
-            override fun onErrorLogin(errorMessage: String) {
-                dismissLoadingLogin()
-                NetworkErrorHelper.showSnackbar(activity, errorMessage)
-            }
-
-            override fun onGoToCreatePasswordPage(info: GetUserInfoData) {
-                if (activity != null) {
-                    val intent = (activity!!.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.CREATE_PASSWORD)
-                    intent.putExtra("name", info.fullName)
-                    intent.putExtra("user_id", info.userId.toString())
-                    startActivityForResult(intent, REQUESTS_CREATE_PASSWORD)
-                }
-            }
-
-            override fun onGoToPhoneVerification() {
-                if (activity != null) {
-                    val intent = (activity!!.applicationContext as ApplinkRouter)
-                            .getApplinkIntent(activity, ApplinkConst.PHONE_VERIFICATION)
-                    startActivityForResult(intent, REQUEST_VERIFY_PHONE)
-                }
-            }
-
-            override fun onGoToSecurityQuestion(email: String, phone: String) {
-                val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                        activity, RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email)
-                startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
-            }
-
-            override fun logUnknownError(message: Throwable) {
-                try {
-                    Crashlytics.logException(message)
-                } catch (e: IllegalStateException) {
-                    e.printStackTrace()
-                }
-
-            }
-        }
-    }
-
     override fun onSuccessLogin() {
         if (activity != null) {
             activity!!.setResult(Activity.RESULT_OK)
@@ -672,7 +621,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 actionLoginMethod
         )
 
-        if(emailPhoneEditText.text.isNotBlank())
+        if (emailPhoneEditText.text.isNotBlank())
             userSession.autofillUserData = emailPhoneEditText.text.toString()
 
         onSuccessLogin()
@@ -825,7 +774,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 LoginRegisterAnalytics.LABEL_EMAIL
         )
 
-        if(emailPhoneEditText.text.isNotBlank())
+        if (emailPhoneEditText.text.isNotBlank())
             userSession.autofillUserData = emailPhoneEditText.text.toString()
 
         onSuccessLogin()
@@ -833,13 +782,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onSuccessLoginToken(email: String): (LoginTokenPojo) -> Unit {
         return {
-            if (it.loginToken.sqCheck) {
-                loginRouter.onGoToSecurityQuestion(email, "")
-            } else {
-                presenter.getUserInfo()
-            }
+            presenter.getUserInfo()
         }
-
     }
 
     override fun onErrorLoginEmail(email: String): (Throwable) -> Unit {
@@ -849,13 +793,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             enableArrow()
 
             if (isEmailNotActive(it, email)) {
-                loginRouter.onGoToActivationPage(email)
+                onGoToActivationPage(email)
             } else if (it is TokenErrorException && !it.errorDescription.isEmpty()) {
-                loginRouter.onErrorLogin(it.errorDescription)
+                onErrorLogin(it.errorDescription)
             } else {
                 ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
                     override fun onForbidden() {
-                        loginRouter.onForbidden()
+                        onGoToForbiddenPage()
                     }
 
                     override fun onError(errorMessage: String) {
@@ -865,7 +809,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                             if (!TextUtils.isEmpty(it.message)
                                     && errorMessage.contains(this.getString(R.string
                                             .default_request_error_unknown))) {
-                                loginRouter.logUnknownError(it)
+                                analytics.logUnknownError(it)
                             }
                         }
 
@@ -875,35 +819,91 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    override fun onSuccessGetUserInfo(pojo: ProfilePojo) {
-        //TODO check analytics
-
-        val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
-
-        if (pojo.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
-            goToAddName()
-        } else {
-            dismissLoadingLogin()
-            analytics.eventSuccessLoginEmail()
-            analytics.trackClickOnLoginButtonSuccess()
-            TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-                    userSession.userId,
-                    userSession.name,
-                    userSession.email,
-                    userSession.phoneNumber,
-                    userSession.isGoldMerchant,
-                    userSession.shopName,
-                    userSession.shopId,
-                    userSession.hasShop(),
-                    LoginRegisterAnalytics.LABEL_EMAIL
-            )
-            onSuccessLogin()
-        }
-
+    override public fun onGoToForbiddenPage() {
+        ForbiddenActivity.startActivity(activity)
     }
 
-    override fun onErrorGetUserInfo(e: Throwable?) {
-        onErrorLogin(ErrorHandlerSession.getErrorMessage(e, context, true))
+    override fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
+        return {
+            //TODO check analytics
+
+            val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
+
+            if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
+                onGoToChangeName()
+            } else {
+                dismissLoadingLogin()
+                analytics.eventSuccessLoginEmail()
+                analytics.trackClickOnLoginButtonSuccess()
+                TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
+                        userSession.userId,
+                        userSession.name,
+                        userSession.email,
+                        userSession.phoneNumber,
+                        userSession.isGoldMerchant,
+                        userSession.shopName,
+                        userSession.shopId,
+                        userSession.hasShop(),
+                        LoginRegisterAnalytics.LABEL_EMAIL
+                )
+                onSuccessLogin()
+            }
+        }
+    }
+
+    override fun onErrorGetUserInfo(): (Throwable) -> Unit {
+        return {
+            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+
+        }
+    }
+
+    override fun onGoToCreatePassword(): (String, String) -> Unit {
+        return { fullName: String, userId: String ->
+            val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_PASSWORD)
+            intent.putExtra("name", fullName)
+            intent.putExtra("user_id", userId)
+            startActivityForResult(intent, REQUESTS_CREATE_PASSWORD)
+        }
+    }
+
+    override fun onGoToPhoneVerification(): () -> Unit {
+        return {
+            val intent = RouteManager.getIntent(context, ApplinkConst.PHONE_VERIFICATION)
+            startActivityForResult(intent, REQUEST_VERIFY_PHONE)
+        }
+    }
+
+    override fun onGoToActivationPage(email: String): (MessageErrorException) -> Unit {
+        return {
+            val intent = ActivationActivity.getCallingIntent(activity,
+                    email, passwordEditText.text.toString())
+            startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT)
+        }
+    }
+
+    override fun onGoToSecurityQuestion(email: String): () -> Unit {
+        return {
+            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                    activity, RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, "", email)
+            startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
+        }
+    }
+
+    //Flow should not be possible
+    override fun onGoToActivationPageAfterRelogin(): (MessageErrorException) -> Unit {
+        return {
+            dismissLoadingLogin()
+            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, false))
+        }
+    }
+
+    //Flow should not be possible
+    override fun onGoToSecurityQuestionAfterRelogin(): () -> Unit {
+        return {
+            dismissLoadingLogin()
+            onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context))
+        }
     }
 
     override fun onSuccessReloginAfterSQ(): (LoginTokenPojo) -> Unit {
@@ -924,11 +924,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onSuccessLoginFacebook(email: String): (LoginTokenPojo) -> Unit {
         return {
-            if (it.loginToken.sqCheck) {
-                loginRouter.onGoToSecurityQuestion(email, "")
-            } else {
-                presenter.getUserInfo()
-            }
+            presenter.getUserInfo()
         }
     }
 
@@ -941,11 +937,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onSuccessLoginGoogle(email: String?): (LoginTokenPojo) -> Unit {
         return {
-            if (it.loginToken.sqCheck) {
-                loginRouter.onGoToSecurityQuestion(email, "")
-            } else {
-                presenter.getUserInfo()
-            }
+            presenter.getUserInfo()
         }
     }
 
@@ -1021,8 +1013,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_VERIFY_PHONE) {
                 onSuccessLogin()
-            } else if (requestCode == REQUEST_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                goToAddName()
+            } else if (requestCode == REQUEST_REGISTER_PHONE
+                    && resultCode == Activity.RESULT_OK && data != null
+                    && data.extras != null) {
+                val uuid = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                val msisdn = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                goToAddNameFromRegisterPhone(uuid, msisdn)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 startActivityForResult(WelcomePageActivity.newInstance(activity),
                         REQUEST_WELCOME_PAGE)
@@ -1055,6 +1051,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
+    private fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
+            val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER
+            val intent = RouteManager.getIntent(context, applink)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, msisdn)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
+            startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE)
+    }
+
     /**
      * Please refer to the
      * [class reference for][com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes]
@@ -1062,13 +1066,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun handleGoogleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            if(account!= null && account.idToken != null) {
+            if (account != null && account.idToken != null) {
                 val accessToken: String = account.idToken!!
                 val email = account.email
                 presenter.loginGoogle(accessToken, email)
-            }else{
+            } else {
                 onErrorLoginSosmed(LoginRegisterAnalytics.GOOGLE,
-                       ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, context))
+                        ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, context))
             }
         } catch (e: ApiException) {
             onErrorLoginSosmed(LoginRegisterAnalytics.GOOGLE,
@@ -1081,16 +1085,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun goToProfileCompletionPage() {
         if (activity != null) {
-            (activity!!.applicationContext as ApplinkRouter).goToApplinkActivity(activity, ApplinkConst.PROFILE_COMPLETION)
+            RouteManager.route(context, ApplinkConst.PROFILE_COMPLETION)
         }
     }
 
-    private fun goToAddName() {
+    private fun onGoToChangeName() {
         if (activity != null) {
-            var applink = ApplinkConst.ADD_NAME_REGISTER
-            applink = applink.replace("{phone}", emailPhoneEditText.text.toString())
-            val intent = (activity!!.applicationContext as ApplinkRouter).getApplinkIntent(activity, applink)
-            startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE)
+
+            val intent = RouteManager.getIntent(context, ApplinkConst.ADD_NAME_PROFILE)
+            startActivityForResult(intent, REQUEST_ADD_NAME)
         }
     }
 

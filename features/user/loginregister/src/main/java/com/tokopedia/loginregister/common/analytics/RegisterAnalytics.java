@@ -11,6 +11,8 @@ import com.tokopedia.track.TrackAppUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 /**
  * @author by ade on 12/04/18
  * https://docs.google.com/spreadsheets/d/1CBXovkdWu7NMkxrHIOJihMyfuRWNZvxgJd36KxLS25I/edit#gid=471355800
@@ -70,6 +72,7 @@ public class RegisterAnalytics {
     public static final String GOOGLE = "google";
     public static final String FACEBOOK = "facebook";
 
+    @Inject
     public RegisterAnalytics(){ }
 
     //#R1

@@ -7,14 +7,13 @@ import android.text.TextUtils
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.view.listener.LoginContract
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
-import com.tokopedia.loginregister.login.view.subscriber.LoginTokenSubscriber
+import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.loginregister.loginthirdparty.domain.LoginWebviewUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
@@ -22,8 +21,8 @@ import com.tokopedia.loginregister.loginthirdparty.subscriber.LoginThirdPartySub
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo
 import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
+import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.RequestParams
@@ -33,7 +32,6 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
-Ø
 /**
  * @author by nisie on 18/01/19.
  */
@@ -72,7 +70,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                 view.dismissLoadingDiscover()
                 ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
                     override fun onForbidden() {
-                        view.getLoginRouter().onForbidden()
+                        view.onGoToForbiddenPage()
                     }
 
                     override fun onError(errorMessage: String) {
@@ -144,22 +142,46 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                 GetFacebookCredentialSubscriber(view.facebookCredentialListener))
     }
 
+    /**
+     * Login Facebook :
+     * Step 1 : Get token from facebook credential
+     * Step 2 : Login Token
+     * Step 3 : If Success, proceed to step 3. If need SQ, go to SQ
+     * Step 3.1 : After SQ, take validation_token and login_token again
+     * Step 4 : Get profile data
+     * Step 5 : If name contains blocked word, go to add name
+     * Step 6 : Proceed to home
+     */
     override fun loginFacebook(context: Context, accessToken: AccessToken, email: String) {
         view.showLoadingLogin()
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
                 accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
                 LoginTokenSubscriber(userSession,
                         view.onSuccessLoginFacebook(email),
-                        view.onErrorLoginFacebook(email)))
+                        view.onErrorLoginFacebook(email),
+                        view.onGoToActivationPage(email),
+                        view.onGoToSecurityQuestion(email)))
     }
 
+    /**
+     * Login Facebook :
+     * Step 1 : Get token from google api
+     * Step 2 : Login Token
+     * Step 3 : If Success, proceed to step 3. If need SQ, go to SQ
+     * Step 3.1 : After SQ, take validation_token and login_token again
+     * Step 4 : Get profile data
+     * Step 5 : If name contains blocked word, go to add name
+     * Step 6 : Proceed to home
+     */
     override fun loginGoogle(accessToken: String, email: String?) {
         view.showLoadingLogin()
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
                 accessToken, LoginTokenUseCase.SOCIAL_TYPE_GOOGLE),
                 LoginTokenSubscriber(userSession,
                         view.onSuccessLoginGoogle(email),
-                        view.onErrorLoginGoogle(email)))
+                        view.onErrorLoginGoogle(email),
+                        view.onGoToActivationPage(email),
+                        view.onGoToSecurityQuestion(email)))
     }
 
 
@@ -185,7 +207,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                 view.showLoadingLogin()
                 loginWebviewUseCase.execute(LoginWebviewUseCase.getParamWebview(bundle.getString(CODE, ""), (HTTPS + bundle.getString(SERVER) + bundle.getString(PATH))),
                         LoginThirdPartySubscriber(view.context,
-                                view.loginRouter,
                                 "", view, LoginRegisterAnalytics.WEBVIEW))
             } else if (bundle.getString(PATH, "").contains(ACTIVATION_SOCIAL)) {
                 view.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
@@ -205,7 +226,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
      * Step 2 : If Success, proceed to step 3. If need SQ, go to SQ
      * Step 2.1 : After SQ, take validation_token and login_token again
      * Step 3 : Get profile data
-     * Step 4 : Proceed to home
+     * Step 4 : If name contains blocked word, go to add name
+     * Step 5 : Proceed to home
      */
     override fun loginEmail(email: String, password: String) {
         view.resetError()
@@ -215,7 +237,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
             loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
                     email, password), LoginTokenSubscriber(userSession,
                     view.onSuccessLoginToken(email),
-                    view.onErrorLoginEmail(email)))
+                    view.onErrorLoginEmail(email),
+                    view.onGoToActivationPage(email),
+                    view.onGoToSecurityQuestion(email)))
         } else {
             viewEmailPhone.stopTrace()
         }
@@ -225,7 +249,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
                 userSession, validateToken), LoginTokenSubscriber(userSession,
                 view.onSuccessReloginAfterSQ(),
-                view.onErrorReloginAfterSQ(validateToken)))
+                view.onErrorReloginAfterSQ(validateToken),
+                view.onGoToActivationPageAfterRelogin(),
+                view.onGoToSecurityQuestionAfterRelogin()))
     }
 
     private fun isValid(email: String, password: String): Boolean {
@@ -251,41 +277,11 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     }
 
     override fun getUserInfo() {
-        getProfileUseCase.execute(object : Subscriber<GraphqlResponse>() {
-            override fun onNext(response: GraphqlResponse) {
-                val pojo: ProfilePojo = response.getData<ProfilePojo>(ProfilePojo::class.java)
-                //TODO Validate Data
-                setUserData(pojo)
-                view.onSuccessGetUserInfo(pojo)
-            }
-
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable?) {
-                view.onErrorGetUserInfo(e)
-            }
-
-        })
-    }
-
-    private fun setUserData(pojo: ProfilePojo) {
-        userSession.setHasPassword(pojo.profileInfo.isCreatedPassword)
-        userSession.profilePicture = pojo.profileInfo.profilePicture
-        userSession.setIsMSISDNVerified(pojo.profileInfo.isPhoneVerified)
-
-        //TODO
-        userSession.setLoginSession(true,
-                pojo.profileInfo.userId,
-                pojo.profileInfo.fullName,
-                "",
-                pojo.profileInfo.isPhoneVerified,
-                "",
-                pojo.profileInfo.email,
-                false,
-                pojo.profileInfo.phone)
-        userSession.shopAvatar = ""
+        getProfileUseCase.execute(GetProfileSubscriber(userSession,
+                view.onSuccessGetUserInfo(),
+                view.onErrorGetUserInfo(),
+                view.onGoToCreatePassword(),
+                view.onGoToPhoneVerification()))
     }
 
     override fun detachView() {

@@ -1,0 +1,16 @@
+mutation login_email($grant_type: String!, $username: String!, $password: String!,  $code: String!, $password_type: String!) {
+  login_token(input: {grant_type: $grant_type, username: $username, password: $password, code: $code,   password_type: $password_type  }) {
+    acc_sid
+    access_token
+    expires_in
+    refresh_token
+    sid
+    token_type
+    sq_check
+    errors {
+      name
+      message
+    }
+    event_code
+  }
+}

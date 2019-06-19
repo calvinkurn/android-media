@@ -140,7 +140,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     private void moveToLoginPage(int requestCode) {
-        startActivityForResult(LoginActivity.getCallingIntent(getApplicationContext()), requestCode);
+        startActivityForResult(LoginActivity.DeepLinkIntents.getCallingIntent(getApplicationContext()), requestCode);
     }
 
     @NeedsPermission({Manifest.permission.CAMERA})
@@ -322,7 +322,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     public void interruptToLoginPage() {
-        startActivityForResult(LoginActivity.getCallingIntent(getApplicationContext()), REQUEST_CODE_LOGIN);
+        startActivityForResult(LoginActivity.DeepLinkIntents.getCallingIntent(getApplicationContext()), REQUEST_CODE_LOGIN);
     }
 
     @Override

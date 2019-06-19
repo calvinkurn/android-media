@@ -6,22 +6,22 @@ import com.tokopedia.loginregister.login.view.listener.LoginContract;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
 import com.tokopedia.sessioncommon.data.model.LoginEmailDomain;
 import com.tokopedia.sessioncommon.view.LoginCommonSubscriber;
-import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 
 /**
  * @author by nisie on 10/19/18.
+ * TODO DELETE
  */
+@Deprecated
 public class LoginThirdPartySubscriber extends LoginCommonSubscriber<LoginEmailDomain> {
     private static final String CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED";
     private final LoginContract.View view;
     private final String loginMethodName;
 
     public LoginThirdPartySubscriber(Context context,
-                                     LoginSuccessRouter router,
                                      String email,
                                      LoginContract.View view,
                                      String loginMethodName) {
-        super(context, router, email);
+        super(context, null ,email);
         this.view = view;
         this.loginMethodName = loginMethodName;
     }
@@ -43,7 +43,8 @@ public class LoginThirdPartySubscriber extends LoginCommonSubscriber<LoginEmailD
                 view.dismissLoadingLogin();
                 view.onErrorLoginSosmed(loginMethodName, ErrorHandlerSession.getDefaultErrorCodeMessage
                         (ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, view.getContext()));
-                router.logUnknownError(new Throwable("Login Result is null"));
+                //TODO
+//                router.logUnknownError(new Throwable("Login Result is null"));
             }
 
         }

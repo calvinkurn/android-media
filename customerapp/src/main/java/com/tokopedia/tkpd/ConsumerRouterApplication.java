@@ -1053,7 +1053,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoginIntent(Context context) {
-        Intent intent = LoginActivity.getCallingIntent(context);
+        Intent intent = LoginActivity.DeepLinkIntents.getCallingIntent(context);
         return intent;
     }
 
@@ -1181,18 +1181,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoginGoogleIntent(Context context) {
-        return LoginActivity.getAutoLoginGoogle(context);
+        return LoginActivity.DeepLinkIntents.getAutoLoginGoogle(context);
     }
 
     @Override
     public Intent getLoginFacebookIntent(Context context) {
-        return LoginActivity.getAutoLoginFacebook(context);
+        return LoginActivity.DeepLinkIntents.getAutoLoginFacebook(context);
 
     }
 
     @Override
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
-        return LoginActivity.getAutoLoginWebview(context, name, url);
+        return LoginActivity.DeepLinkIntents.getAutoLoginWebview(context, name, url);
     }
 
     @Override
@@ -1575,7 +1575,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoginIntent() {
-        Intent intent = LoginActivity.getCallingIntent(this);
+        Intent intent = LoginActivity.DeepLinkIntents.getCallingIntent(this);
         return intent;
     }
 

@@ -39,7 +39,12 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
     Subscriber<GraphqlResponse>) {
         userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
         execute(requestParams, subscriber, R.raw.mutation_login_social_media)
+    }
 
+    fun executeLoginPhoneNumber(requestParams: Map<String, Any>, subscriber:
+    Subscriber<GraphqlResponse>) {
+        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
+        execute(requestParams, subscriber, R.raw.mutation_login_phone)
     }
 
     fun execute(requestParams: Map<String, Any>, subscriber:
@@ -65,10 +70,13 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
         private val PARAM_ACCESS_TOKEN: String = "access_token"
         private val PARAM_REFRESH_TOKEN: String = "refresh_token"
         private val PARAM_VALIDATE_TOKEN: String = "validate_token"
+        private val PARAM_CODE: String = "code"
+
 
         private val TYPE_PASSWORD:String = "password"
         private val TYPE_EXTENSION:String = "extension"
         private val TYPE_OTP:String = "otp"
+        private val TYPE_LPN:String = "lpn"
 
         val SOCIAL_TYPE_FACEBOOK:String = "1"
         val SOCIAL_TYPE_GOOGLE:String = "7"
@@ -104,9 +112,23 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
 
             return requestParams
         }
+
+        fun generateParamLoginPhone(key: String, email: String, phoneNumber: String): Map<String, Any> {
+            val requestParams = HashMap<String, Any>()
+
+            requestParams[PARAM_USERNAME] = TokenGenerator().encode(email)
+            requestParams[PARAM_PASSWORD] = TokenGenerator().encode(key)
+            requestParams[PARAM_CODE] = phoneNumber
+            requestParams[PARAM_GRANT_TYPE] = TokenGenerator().encode(TYPE_PASSWORD)
+            requestParams[PARAM_PASSWORD_TYPE] = TYPE_LPN
+
+            return requestParams
+        }
     }
 
     fun unsubscribe() {
         graphqlUseCase.unsubscribe()
     }
+
+
 }

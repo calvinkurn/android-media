@@ -17,11 +17,10 @@ public class RegisterThirdPartySubscriber extends LoginCommonSubscriber<LoginEma
     private final String methodName;
 
     public RegisterThirdPartySubscriber(Context context,
-                                        LoginSuccessRouter router,
                                         String email,
                                         RegisterInitialContract.View view,
                                         String methodName) {
-        super(context, router, email);
+        super(context, null, email);
         this.view = view;
         this.methodName = methodName;
     }
@@ -30,6 +29,7 @@ public class RegisterThirdPartySubscriber extends LoginCommonSubscriber<LoginEma
     public void onNext(LoginEmailDomain loginEmailDomain) {
         super.onNext(loginEmailDomain);
 
+        //TODO DELETE
         if (!isGoToSecurityQuestion(loginEmailDomain.getLoginResult())
                 && !isGoToCreatePassword(loginEmailDomain)
                 && !isGoToPhoneVerification(loginEmailDomain)) {
@@ -40,9 +40,9 @@ public class RegisterThirdPartySubscriber extends LoginCommonSubscriber<LoginEma
                     && !isGoToSecurityQuestion(loginEmailDomain.getLoginResult())) {
                 view.onSuccessRegisterSosmed(methodName);
             } else {
-                view.onErrorRegisterSosmed(methodName, ErrorHandlerSession.getDefaultErrorCodeMessage
-                        (ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, view.getContext()));
-                router.logUnknownError(new Throwable("Login Result is null"));
+//                view.onErrorRegisterSosmed(methodName, ErrorHandlerSession.getDefaultErrorCodeMessage
+//                        (ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, view.getContext()));
+               // router.logUnknownError(new Throwable("Login Result is null"));
             }
         }
 

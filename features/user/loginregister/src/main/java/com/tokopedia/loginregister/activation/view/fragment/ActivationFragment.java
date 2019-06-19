@@ -321,7 +321,7 @@ public class ActivationFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessActivateWithUnicode(TokenViewModel pojo) {
-        Intent autoLoginIntent = LoginActivity.getAutomaticLogin(
+        Intent autoLoginIntent = LoginActivity.DeepLinkIntents.getAutomaticLogin(
                 getActivity(),
                 email,
                 password);
