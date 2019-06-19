@@ -263,7 +263,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     fun showBottomSheetCancel() {
-        bottomSheetCancel = PowerMerchantCancelBottomSheet()
+        bottomSheetCancel = PowerMerchantCancelBottomSheet.newInstance(shopStatusModel.isAutoExtend(),shopStatusModel.powerMerchant.expiredTime)
         bottomSheetCancel.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
             override fun onclickButton() {
                 cancelMembership()
@@ -311,7 +311,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             if (isAutoExtend()) {
                 hideButtonActivatedPm()
             } else {
-                showButtonActivatedPm()
+                showButtonActivatePm()
                 showExpiredDateTickerYellow()
             }
         }
@@ -321,20 +321,28 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         var isPowerMerchant = shopStatusModel.isPowerMerchantActive() or shopStatusModel.isPowerMerchantIdle()
         var isPending = shopStatusModel.isPowerMerchantPending()
         if (isPowerMerchant) {
-            var isKyc = getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status != KYCConstant.STATUS_VERIFIED
-            if (isKyc) {
+            var isNotKyc = getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status != KYCConstant.STATUS_VERIFIED
+            if (isNotKyc) {
                 button_activate_root.text = getString(R.string.pm_label_button_kyc_upload)
             } else {
                 if (isAutoExtend()) {
                     hideButtonActivatedPm()
+                    ticker_yellow_container.visibility = View.GONE
                 }
+                showButtonActivatePm()
                 ticker_blue_container.visibility = View.VISIBLE
+                txt_ticker_yellow.text = getString(R.string.pm_label_cancellation_duration)
                 ticker_yellow_container.visibility = View.VISIBLE
             }
         } else if (isPending) {
-            ticker_yellow_container.visibility = View.VISIBLE
-            hideButtonActivatedPm()
+            if (isAutoExtend()){
+                hideButtonActivatedPm()
+                ticker_yellow_container.visibility = View.VISIBLE
+            }
+            showButtonActivatePm()
         } else {
+            showButtonActivatePm()
+            ticker_yellow_container.visibility = View.GONE
             // if inactive do nothing
             // default state: button activate is visible
         }
@@ -344,10 +352,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         ll_footer_submit.visibility = View.GONE
     }
 
-    private fun showButtonActivatedPm() {
+    private fun showButtonActivatePm() {
         ll_footer_submit.visibility = View.VISIBLE
     }
-
 
     override fun onDestroy() {
         super.onDestroy()

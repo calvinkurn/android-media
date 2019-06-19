@@ -36,9 +36,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="8dp"
             android:src="@drawable/ic_power_merchant_subscribe"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat2"
@@ -125,7 +126,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
         android:background="@color/transparent"
         android:visibility="visible">
 
@@ -159,9 +160,9 @@
         </android.support.v7.widget.CardView>
     </FrameLayout>
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/button_cancel_bs"
-        style="@style/Button.Submit.White.Border.Green"
+        style="@style/Button.Submit.White.Border"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_20"
