@@ -1,14 +1,22 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.DrawableRes
+import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -16,6 +24,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailMapActivity
 import kotlinx.android.synthetic.main.fragment_hotel_detail_map.*
+
 
 /**
  * @author by furqan on 29/04/19
@@ -77,8 +86,7 @@ class HotelDetailMapFragment : TkpdBaseV4Fragment(), OnMapReadyCallback {
             googleMap.uiSettings.isRotateGesturesEnabled = true
             googleMap.uiSettings.isScrollGesturesEnabled = true
 
-            googleMap.addMarker(MarkerOptions().position(latLng).icon(
-                    BitmapDescriptorFactory.fromResource(R.drawable.ic_hotel_pin_location))
+            googleMap.addMarker(MarkerOptions().position(latLng).icon(bitmapDescriptorFromVector(context!!, R.drawable.ic_hotel_pin_location))
                     .title(getString(R.string.hotel_detail_map_marker_title, propertyName))
                     .snippet(getString(R.string.hotel_detail_map_marker_snippet, address))
                     .draggable(false))
@@ -96,6 +104,20 @@ class HotelDetailMapFragment : TkpdBaseV4Fragment(), OnMapReadyCallback {
                 data = Uri.parse(getString(R.string.hotel_google_map_intent_link, latitude, longitude, propertyName))
             })
         }
+    }
+
+    private fun bitmapDescriptorFromVector(context: Context, @DrawableRes drawableId: Int): BitmapDescriptor {
+        var drawable = ContextCompat.getDrawable(context, drawableId)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = DrawableCompat.wrap(drawable!!).mutate()
+        }
+
+        val bitmap = Bitmap.createBitmap(drawable!!.intrinsicWidth,
+                drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
     companion object {
