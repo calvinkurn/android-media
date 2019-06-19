@@ -171,58 +171,6 @@ public class ProductManageSellerFragment extends ProductManageFragment implement
         tvDraftProductInfo.setVisibility(View.GONE);
     }
 
-    private Dialog initPopUpDialog(){
-        Dialog dialog = new Dialog(getActivity());
-        Button btnSubmit = dialog.findViewById(R.id.btn_submit);
-        Button btnGoToPdp = dialog.findViewById(R.id.btn_product_list);
-        TextView txtTipsTrick = dialog.findViewById(R.id.txt_tips_trick);
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(false);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setContentView(R.layout.dialog_product_add);
-        btnSubmit.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        btnGoToPdp.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        int backgroundColor = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
-
-        SpannableString spanText = new SpannableString(getString(R.string.popup_tips_trick_clickable));
-        spanText.setSpan(new StyleSpan(Typeface.BOLD),
-                5, spanText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spanText.setSpan(new ForegroundColorSpan(backgroundColor),
-                5, spanText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        ClickableSpan cs = new ClickableSpan() {
-            @Override
-            public void onClick(View v) {
-                RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK));
-                getActivity().finish();
-            }
-        };
-        spanText.setSpan(cs, 5, spanText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        txtTipsTrick.setMovementMethod(LinkMovementMethod.getInstance());
-        txtTipsTrick.setText(spanText);
-        return dialog;
-    }
-
-
-    @Override
-    public void onSuccessGetPopUp(boolean isShowPopup) {
-        if (isShowPopup) {
-            initPopUpDialog().show();
-        }
-    }
-
     @Override
     public void onErrorGetPopUp(Throwable e) {
         onSuccessGetPopUp(false);

@@ -348,10 +348,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onSuccessGetPopUp(boolean isShowPopup) {
-        if (isShowPopup) {
+ //       if (isShowPopup) {
             initPopUpDialog().show();
             resetPageAndRefresh();
-        }
+//        }
     }
 
     @Override
