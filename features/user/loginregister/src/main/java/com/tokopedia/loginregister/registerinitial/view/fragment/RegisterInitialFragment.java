@@ -991,13 +991,13 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 TickerInfoPojo tickerInfo = listTickerInfo.get(0);
                 int type = getTickerType(tickerInfo.getColor());
                 tickerAnnouncement.setTickerTitle(tickerInfo.getTitle());
-                tickerAnnouncement.setHtmlDescription(tickerInfo.getMessage());
+                tickerAnnouncement.setTextDescription(tickerInfo.getMessage());
                 tickerAnnouncement.setTickerType(type);
             }
             tickerAnnouncement.setOnClickListener(v ->
-                    Toast.makeText(getContext(),"click ticker", Toast.LENGTH_SHORT).show());
+                    analytics.eventClickTicker());
             tickerAnnouncement.setDescriptionClickEvent(charSequence ->
-                    Toast.makeText(getContext(),"click ticker link - " + charSequence, Toast.LENGTH_SHORT).show());
+                    analytics.eventClickLinkTicker(charSequence.toString()));
         }
     }
 

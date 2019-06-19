@@ -1001,9 +1001,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 }
             }
             tickerAnnouncement.setOnClickListener { v ->
-                Toast.makeText(context, "click ticker", Toast.LENGTH_SHORT).show() }
+                registerAnalytics.trackClickTicker() }
             tickerAnnouncement.setDescriptionClickEvent { charSequence ->
-                Toast.makeText(context, "click ticker link - $charSequence", Toast.LENGTH_SHORT).show() }
+                registerAnalytics.trackClickLinkTicker(charSequence.toString()) }
         }
     }
 
