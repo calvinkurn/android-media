@@ -4,12 +4,12 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
+import android.support.v7.widget.AppCompatImageButton
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils
@@ -74,6 +74,7 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData;
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 
@@ -298,13 +299,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             showSmartLock()
         }
 
-        val mockData = arrayListOf<TickerData>()
-        mockData.add(TickerData("This is the First Page", "Slider with [Here]{https://www.google.com/ncr} a short description.", Ticker.TYPE_WARNING))
-        mockData.add(TickerData("This is the Second Page", "Slider with a long description, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on", Ticker.TYPE_ANNOUNCEMENT))
-        mockData.add(TickerData("This is supposed to be description with embedded link inside. The text inside here is long and the link is supposed to be appear at the end of the text view. [Here]{https://www.google.com/ncr} is the link", Ticker.TYPE_WARNING))
-        mockData.add(TickerData("Slider with a long description, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on, and on", Ticker.TYPE_ANNOUNCEMENT))
-        tickerAnnouncement.addPagerView( TickerPagerAdapter(activity!!, mockData), mockData)
-        //presenter.getTickerInfo()
+        presenter.getTickerInfo()
     }
 
     private fun showSmartLock() {
@@ -991,17 +986,41 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
         if(listTickerInfo.isNotEmpty()){
-            listTickerInfo.first().apply {
-//                textViewTicker.setText(this.message)
-//                textViewTicker.setBackgroundColor(Color.parseColor(this.color))
+            tickerAnnouncement.visibility = View.VISIBLE
+            if(listTickerInfo.size > 1){
+                val mockData = arrayListOf<TickerData>()
+                listTickerInfo.forEach {
+                    mockData.add(TickerData(it.title, it.message, getTickerType(it.color)))
+                }
+                tickerAnnouncement.addPagerView( TickerPagerAdapter(activity!!, mockData), mockData)
+            }else {
+                listTickerInfo.first().let {
+                    tickerAnnouncement.tickerTitle = it.title
+                    tickerAnnouncement.setTextDescription(it.message)
+                    tickerAnnouncement.tickerShape = getTickerType(it.color)
+                }
             }
-        }else{
-            onErrorGetTickerInfo("Empty")
+            tickerAnnouncement.setOnClickListener { v ->
+                Toast.makeText(context, "click ticker", Toast.LENGTH_SHORT).show() }
+            tickerAnnouncement.setDescriptionClickEvent { charSequence ->
+                Toast.makeText(context, "click ticker link - $charSequence", Toast.LENGTH_SHORT).show() }
         }
     }
 
-    override fun onErrorGetTickerInfo(error: String) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    override fun onErrorGetTickerInfo(error: String) {}
+
+    private fun getTickerType(hexColor: String): Int {
+        return when (hexColor) {
+            "#cde4c3" -> {
+                Ticker.TYPE_ANNOUNCEMENT
+            }
+            "#ecdb77" -> {
+                Ticker.TYPE_WARNING
+            }
+            else -> {
+                Ticker.TYPE_ANNOUNCEMENT
+            }
+        }
     }
 
 }
