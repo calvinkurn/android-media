@@ -309,6 +309,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         ticker_blue_container.visibility = View.GONE
         if (isPowerMerchant) {
             if (isAutoExtend()) {
+                ticker_yellow_container.visibility = View.GONE
                 hideButtonActivatedPm()
             } else {
                 showButtonActivatePm()
@@ -345,8 +346,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             if (isAutoExtend()){
                 hideButtonActivatedPm()
                 ticker_yellow_container.visibility = View.VISIBLE
+            } else {
+                showButtonActivatePm()
+                ticker_yellow_container.visibility = View.GONE
             }
-            showButtonActivatePm()
         } else {
             showButtonActivatePm()
             ticker_yellow_container.visibility = View.GONE

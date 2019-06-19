@@ -335,9 +335,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tv_shop_status.visibility = View.GONE
         ticker_container.visibility = View.GONE
         tv_ticker_info.visibility = View.VISIBLE
-        setTextViewLearnMore(tv_ticker_info, getString(R.string.regular_merchant_learn_more), getString(R.string.learn_more)) {
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_LEARN_MORE_BENEFIT)
-        }
+        tv_ticker_info.text = getString(R.string.regular_merchant_learn_more)
         button_activate.visibility = View.VISIBLE
         button_activate.setOnClickListener {
             navigateToPMSubscribe()
