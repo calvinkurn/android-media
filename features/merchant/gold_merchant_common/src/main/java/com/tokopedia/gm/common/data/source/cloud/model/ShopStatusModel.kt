@@ -39,8 +39,13 @@ data class ShopStatusModel(
         return powerMerchant.status == STATUS_INACTIVE
     }
 
+    @Deprecated("prefer use isRegularMerchantOrPending")
     fun isRegularMerchant(): Boolean {
         return powerMerchant.status == STATUS_INACTIVE && officialStore.status == STATUS_INACTIVE
+    }
+
+    fun isRegularMerchantOrPending(): Boolean {
+        return isRegularMerchant() || isPowerMerchantPending()
     }
 
     fun isOfficialStore(): Boolean {

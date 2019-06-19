@@ -228,7 +228,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     override fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, ShopStatusModel?>) {
         val (shopBasicDataModel, shopStatusModel) = result
-        userSession.setIsGoldMerchant(!(shopStatusModel?.isRegularMerchant() ?: true))
+        userSession.setIsGoldMerchant(!(shopStatusModel?.isRegularMerchantOrPending() ?: true))
         this.shopBasicDataModel = shopBasicDataModel
         hideLoading()
         shopBasicDataModel?.let {
@@ -319,7 +319,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     private fun setUIMembership(shopStatusModel: ShopStatusModel) {
-        if (shopStatusModel.isRegularMerchant()) {
+        if (shopStatusModel.isRegularMerchantOrPending()) {
             showRegularMerchantMembership(shopStatusModel)
         } else if (shopStatusModel.isOfficialStore()) {
             showOfficialStore()

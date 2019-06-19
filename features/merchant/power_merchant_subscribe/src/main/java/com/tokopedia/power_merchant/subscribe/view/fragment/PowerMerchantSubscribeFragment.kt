@@ -341,7 +341,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                     hideButtonActivatedPm()
                 } else {
                     ticker_yellow_container.visibility = View.GONE
-                    ticker_blue_container.visibility = View.GONE
+                    ticker_blue_container.visibility = View.VISIBLE
                     showButtonActivatePm()
                 }
             }

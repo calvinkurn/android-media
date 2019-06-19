@@ -474,7 +474,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     private void updateShopInfo(ShopModel shopModel, ShopStatusModel shopStatusModel) {
-        userSession.setIsGoldMerchant(!shopStatusModel.isRegularMerchant());
+        userSession.setIsGoldMerchant(!shopStatusModel.isRegularMerchantOrPending());
 
         Info shopModelInfo = shopModel.info;
         String shopName = shopModelInfo.getShopName();
@@ -482,7 +482,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             shopName = MethodChecker.fromHtml(shopName).toString();
         }
         shopNameTextView.setText(shopName);
-        if (shopStatusModel.isRegularMerchant()) {
+        if (shopStatusModel.isRegularMerchantOrPending()) {
             ivShopMembershipLogo.setVisibility(View.GONE);
             tvShopMembershipTitle.setText(R.string.label_regular_merchant);
             tvShopMembershipStatus.setVisibility(View.GONE);

@@ -14,19 +14,26 @@ import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
 import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
 import com.tokopedia.sellerapp.drawer.SellerDrawerAdapter;
 import com.tokopedia.sellerapp.fcm.appupdate.FirebaseRemoteAppUpdate;
+
+import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
+
+import javax.inject.Inject;
 
 /**
  * Created by nathan on 9/5/17.
@@ -36,6 +43,8 @@ public class DashboardActivity extends DrawerPresenterActivity
         implements GCMHandlerListener, SellerDashboardDrawerPresenter.SellerDashboardView {
 
     public static final String TAG = DashboardActivity.class.getSimpleName();
+
+    @Inject
     private SellerDashboardDrawerPresenter presenter;
 
     public static Intent createInstance(Context context) {
@@ -45,12 +54,13 @@ public class DashboardActivity extends DrawerPresenterActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GetShopInfoUseCase getShopInfoUseCase = null;
-        if (getApplicationContext() instanceof SellerModuleRouter) {
-            SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) getApplicationContext();
-            getShopInfoUseCase = sellerModuleRouter.getShopInfo();
-        }
-        presenter = new SellerDashboardDrawerPresenter(this, getShopInfoUseCase);
+        SellerDashboardComponent sellerDashboardComponent =
+                DaggerSellerDashboardComponent.builder().appComponent(
+                        ((MainApplication)getActivity().getApplication()).getApplicationComponent()).build();
+        sellerDashboardComponent.inject(this);
+
+        presenter.attachView(this);
+
         inflateView(R.layout.activity_simple_fragment);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -99,6 +109,7 @@ public class DashboardActivity extends DrawerPresenterActivity
     @Override
     protected void onResume() {
         super.onResume();
+        presenter.attachView(this);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         NotificationModHandler.showDialogNotificationIfNotShowing(this,
                 ManageGeneral.getCallingIntent(this, ManageGeneral.TAB_POSITION_MANAGE_APP)
@@ -112,7 +123,7 @@ public class DashboardActivity extends DrawerPresenterActivity
             setDataDrawer();
 
             getDrawerSellerAttrUseCase(sessionHandler);
-            presenter.getFlashsaleSellerStatus(sessionHandler.getShopID());
+            presenter.getFlashsaleSellerStatus();
             presenter.isGoldMerchantAsync();
         }
     }
@@ -138,10 +149,11 @@ public class DashboardActivity extends DrawerPresenterActivity
     }
 
     @Override
-    public void onSuccessGetShopInfo(ShopModel shopModel) {
+    public void onSuccessGetShopInfo(ShopStatusModel shopStatusModel) {
         SellerDrawerAdapter sellerDrawerAdapter = ((SellerDrawerAdapter) drawerHelper.getAdapter());
-        sellerDrawerAdapter.setGoldMerchant(shopModel.info.isGoldMerchant());
-        sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
+        boolean isGoldMerchant = shopStatusModel.isRegularMerchantOrPending();
+        sellerDrawerAdapter.setGoldMerchant(isGoldMerchant);
+        sessionHandler.setGoldMerchant(isGoldMerchant);
     }
 
     @Override

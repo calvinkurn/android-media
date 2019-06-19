@@ -647,9 +647,13 @@ public class SessionHandler {
     }
 
     public void setGoldMerchant(int goldMerchant) {
+        setGoldMerchant(goldMerchant!= -1 && goldMerchant!= 0);
+    }
+
+    public void setGoldMerchant(boolean isGoldMerchant) {
         SharedPreferences sharedPrefs = this.context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor edit = sharedPrefs.edit();
-        edit.putBoolean(IS_GOLD_MERCHANT, goldMerchant!= -1 && goldMerchant!= 0);
+        edit.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
         edit.apply();
     }
 
