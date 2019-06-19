@@ -12,7 +12,6 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlinx.android.synthetic.main.search_srp_item_grid_2019.view.*
 import java.lang.StringBuilder
-import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 
 class GridProductItem2019ViewHolder(
     itemView: View,
@@ -99,6 +98,7 @@ class GridProductItem2019ViewHolder(
     private fun initSlashPrice(productItem: ProductItemViewModel) {
         itemView.slashPriceContainer?.visibility = View.VISIBLE
         itemView.slashPriceLabel?.text = "20%"
+        itemView.slashPriceLabel?.setLabelDesign(context.resources.getString(R.string.product_card_light_red))
         itemView.slashPriceTextView?.text = "Rp 10.000.000"
         itemView.slashPriceTextView?.paintFlags = itemView.slashPriceTextView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
