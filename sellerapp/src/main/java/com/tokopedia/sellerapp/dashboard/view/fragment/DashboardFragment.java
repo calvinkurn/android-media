@@ -357,7 +357,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                                              ShopStatusModel shopStatusModel,
                                              ShopScoreResult shopScoreResult) {
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
-        updateShopInfo(shopModel, shopStatusModel);
+        updateShopInfo(shopModel, shopStatusModel, shopScoreResult.getData().getValue());
         updateReputation(shopModel);
         updateTransaction(shopModel);
         updateViewShopOpen(shopModel);
@@ -475,7 +475,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         }
     }
 
-    private void updateShopInfo(ShopModel shopModel, ShopStatusModel shopStatusModel) {
+    private void updateShopInfo(ShopModel shopModel, ShopStatusModel shopStatusModel, int shopScore) {
         userSession.setIsGoldMerchant(!shopStatusModel.isRegularMerchant());
 
         Info shopModelInfo = shopModel.info;
@@ -495,7 +495,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 tickerContainer.setVisibility(View.VISIBLE);
                 buttonActivatePowerMerchant.setVisibility(View.VISIBLE);
                 ((TextView)tickerContainer.findViewById(R.id.tv_ticker)).setText(R.string.regular_merchant_ticker);
-                ((ImageView)tickerContainer.findViewById(R.id.iv_ticker_logo)).setImageResource(0);
             }
         } else if (shopStatusModel.isOfficialStore()) {
             ivShopMembershipLogo.setVisibility(View.VISIBLE);
@@ -519,7 +518,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 tickerContainer.setVisibility(View.GONE);
             } else {
                 tickerContainer.setVisibility(View.VISIBLE);
-                ((ImageView)tickerContainer.findViewById(R.id.iv_ticker_logo)).setImageResource(R.drawable.ic_ticker_announcement_cropped);
                 TextView tvTicker = tickerContainer.findViewById(R.id.tv_ticker);
                 View.OnClickListener onClickListener = new View.OnClickListener(){
                     @Override
@@ -527,15 +525,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT);
                     }
                 };
-                if (shopStatusModel.isPowerMerchantActive()) {
-                    String tickerString = getString(R.string.power_merchant_active_ticker_with_tip);
-                    tvTicker.setText(tickerString);
-                    setTextViewClickSpan(tvTicker, tickerString, getString(R.string.tip_increase_score), onClickListener);
-                } else {
-                    String tickerString = getString(R.string.power_merchant_inactive_ticker_with_tip);
-                    tvTicker.setText(tickerString);
-                    setTextViewClickSpan(tvTicker, tickerString, getString(R.string.tip_increase_score), onClickListener);
-                }
+                String tickerString = getString(R.string.power_merchant_ticker_with_tip);
+                tvTicker.setText(tickerString);
+                setTextViewClickSpan(tvTicker, tickerString, getString(R.string.tip_increase_score), onClickListener);
             }
         }
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
