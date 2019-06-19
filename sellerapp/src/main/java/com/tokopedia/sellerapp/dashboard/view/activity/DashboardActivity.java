@@ -108,8 +108,8 @@ public class DashboardActivity extends DrawerPresenterActivity
 
     @Override
     protected void onResume() {
-        super.onResume();
         presenter.attachView(this);
+        super.onResume();
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         NotificationModHandler.showDialogNotificationIfNotShowing(this,
                 ManageGeneral.getCallingIntent(this, ManageGeneral.TAB_POSITION_MANAGE_APP)
