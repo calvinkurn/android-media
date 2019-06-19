@@ -1,17 +1,23 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
+import android.graphics.Bitmap
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.support.annotation.LayoutRes
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
+import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.search.R
+import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlinx.android.synthetic.main.search_srp_item_grid_2019.view.*
-import java.lang.StringBuilder
 
 class GridProductItem2019ViewHolder(
     itemView: View,
@@ -33,9 +39,12 @@ class GridProductItem2019ViewHolder(
         initWishlistButtonContainer(productItem)
         initWishlistButton(productItem)
         initPromoLabel(productItem)
+        initShopName(productItem)
+        initShopImage(productItem)
         initTitleTextView(productItem)
         initSlashPrice(productItem)
         initPriceTextView(productItem)
+        initShopBadge(productItem)
         initLocationTextView(productItem)
         initRatingAndReview(productItem)
         initCredibilityLabel(productItem)
@@ -90,8 +99,57 @@ class GridProductItem2019ViewHolder(
         itemView.promoLabel?.text = "Cashback 100%"
     }
 
+    private fun initShopName(productItem: ProductItemViewModel) {
+        if (isShopNameShown(productItem)) {
+            itemView.shopNameTextView?.visibility = View.VISIBLE
+            itemView.shopNameTextView?.text = productItem.shopName
+        }
+        else {
+            itemView.shopNameTextView?.visibility = View.GONE
+        }
+    }
+
+    // TODO:: Dummy method, set Shop Name from productItem instead
+    private fun isShopNameShown(productItem: ProductItemViewModel): Boolean {
+        return adapterPosition % 2 == 0
+    }
+
+    private fun initShopImage(productItem: ProductItemViewModel) {
+        if(isShopImageShown(productItem)) {
+            itemView.shopImage?.visibility = View.VISIBLE
+
+            if (itemView.shopImage != null) {
+                ImageHandler.loadImageCircle2(context, itemView.shopImage, productItem.imageUrl700)
+            }
+        }
+        else {
+            itemView.shopImage?.visibility = View.GONE
+        }
+    }
+
+    private fun isShopImageShown(productItem: ProductItemViewModel): Boolean {
+        return adapterPosition % 2 == 0
+    }
+
     private fun initTitleTextView(productItem: ProductItemViewModel) {
+        setTitlePaddingTopIfShopNameNotShown(productItem)
+
         itemView.titleTextView?.text = MethodChecker.fromHtml(productItem.productName)
+    }
+
+    private fun setTitlePaddingTopIfShopNameNotShown(productItem: ProductItemViewModel) {
+        if(!isShopNameShown(productItem)) {
+            val paddingTopDp = 8
+            val scale = context.resources.displayMetrics.density
+            val paddingTopPixel = (paddingTopDp * scale + 0.5f).toInt()
+
+            itemView.titleTextView?.setPadding(
+                itemView.titleTextView.paddingLeft,
+                paddingTopPixel,
+                itemView.titleTextView.paddingRight,
+                itemView.titleTextView.paddingBottom
+            )
+        }
     }
 
     // TODO:: Dummy method, set Slash Price from productItem instead
@@ -110,6 +168,54 @@ class GridProductItem2019ViewHolder(
     private fun getPriceText(productItem: ProductItemViewModel) : CharSequence {
         return if(!TextUtils.isEmpty(productItem.priceRange)) productItem.priceRange
         else productItem.price
+    }
+
+    private fun initShopBadge(productItem: ProductItemViewModel) {
+        if(itemView.shopBadgesContainer != null) {
+            itemView.shopBadgesContainer.removeAllViews()
+            loopBadgesListToLoadShopBadgeIcon(productItem.badgesList)
+        }
+    }
+
+    private fun loopBadgesListToLoadShopBadgeIcon(badgesList: List<BadgeItemViewModel>) {
+        for (badgeItem in badgesList) {
+            if (badgeItem.isShown) {
+                loadShopBadgesIcon(badgeItem.imageUrl ?: "")
+            }
+        }
+    }
+
+    private fun loadShopBadgesIcon(url: String) {
+        if(!TextUtils.isEmpty(url)) {
+            val view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null)
+
+            ImageHandler.loadImageBitmap2(context, url, object : SimpleTarget<Bitmap>() {
+                override fun onResourceReady(bitmap: Bitmap, glideAnimation: GlideAnimation<in Bitmap>) {
+                    loadShopBadgeReady(view, bitmap)
+                }
+
+                override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
+                    super.onLoadFailed(e, errorDrawable)
+                    loadShopBadgeFailed(view)
+                }
+            })
+        }
+    }
+
+    private fun loadShopBadgeReady(view: View, bitmap: Bitmap) {
+        val image = view.findViewById<ImageView>(R.id.badge)
+
+        if (bitmap.height <= 1 && bitmap.width <= 1) {
+            view.visibility = View.GONE
+        } else {
+            image.setImageBitmap(bitmap)
+            view.visibility = View.VISIBLE
+            itemView.shopBadgesContainer?.addView(view)
+        }
+    }
+
+    private fun loadShopBadgeFailed(view: View) {
+        view.visibility = View.GONE
     }
 
     private fun initLocationTextView(productItem: ProductItemViewModel) {
@@ -190,16 +296,17 @@ class GridProductItem2019ViewHolder(
 
     // TODO:: Dummy method, set Label from productItem instead
     private fun initCredibilityLabel(productItem: ProductItemViewModel) {
-        if(!isRatingAndReviewContainerVisible(productItem)) {
-            if(true) { // Check product has credibility label
+        if (!isRatingAndReviewContainerVisible(productItem)) {
+            if (true) { // Check product has credibility label
                 itemView.credibilityLabel?.setLabelDesign(context.resources.getString(R.string.product_card_light_blue))
                 itemView.credibilityLabel?.visibility = View.VISIBLE
                 itemView.credibilityLabel?.text = "Terbaroe"
-                return
+            } else {
+                itemView.credibilityLabel?.visibility = View.GONE
             }
+        } else {
+            itemView.credibilityLabel?.visibility = View.GONE
         }
-
-        itemView.credibilityLabel?.visibility = View.GONE
     }
 
     // TODO:: Dummy method, set Label from productItem instead

@@ -56,11 +56,46 @@
             tools:text="Promo Label" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shopNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_16"
+            android:layout_below="@id/productImage"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:gravity="center_vertical"
+            android:ellipsize="end"
+            android:textColor="@color/product_card_title_black"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Shop Name"/>
+
+        <View
+            android:id="@+id/dummyViewForShopImagePosition"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            android:layout_alignBottom="@id/productImage"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/shopImage"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_alignTop="@id/dummyViewForShopImagePosition"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:contentDescription="@string/image_description"/>
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/productImage"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_below="@id/shopNameTextView"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
@@ -117,21 +152,35 @@
             app:typographyWeight="bold"
             tools:text="Rp 3.121.500" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/locationTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:id="@+id/shopBadgesContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_16"
             android:layout_below="@id/priceTextView"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
+            android:orientation="horizontal" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/locationTextView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_16"
+            android:layout_toRightOf="@id/shopBadgesContainer"
+            android:layout_toEndOf="@id/shopBadgesContainer"
+            android:layout_below="@id/priceTextView"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/product_card_grey"
             app:typographyType="body_3"
-            tools:text="Town Location"/>
+            tools:text="Town Location" />
 
         <LinearLayout
             android:id="@+id/ratingReviewContainer"
