@@ -1237,7 +1237,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
 
         tradeInParams = TradeInParams()
-        tradeInParams.categoryId = productInfoP1.productInfo.category.detail[0].id.toInt()
+        tradeInParams.categoryId = productInfoP1.productInfo.category.id.toInt()
         tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
         val userSession = UserSession(activity)
         tradeInParams.userId = if (userSession.userId.isNotEmpty())
