@@ -212,7 +212,7 @@ class ProductDetailTracking() {
                         DataLayer.mapOf(ACTION_FIELD, DataLayer.mapOf(LIST, listValue),
                                 PRODUCTS, DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
-                                        ID, product.productId.toString(), PRICE, product.price,
+                                        ID, product.productId.toString(), PRICE, removeCurrencyPrice(product.price),
                                         BRAND, DEFAULT_VALUE,
                                         VARIANT, DEFAULT_VALUE,
                                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
@@ -234,7 +234,7 @@ class ProductDetailTracking() {
                         KEY_ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR", "impression",
                         DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
-                                        ID, product.productId.toString(), PRICE, product.price,
+                                        ID, product.productId.toString(), PRICE, removeCurrencyPrice(product.price),
                                         BRAND, DEFAULT_VALUE,
                                         VARIANT, DEFAULT_VALUE,
                                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
@@ -555,6 +555,14 @@ class ProductDetailTracking() {
     private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when(isMultiOrigin) {
         true -> "tokopedia"
         else -> "regular"
+    }
+
+    private fun removeCurrencyPrice(priceFormatted: String): String{
+        return try {
+            priceFormatted.replace("[^\\d]".toRegex(), "")
+        } catch (t: Throwable){
+            priceFormatted
+        }
     }
 
 }
