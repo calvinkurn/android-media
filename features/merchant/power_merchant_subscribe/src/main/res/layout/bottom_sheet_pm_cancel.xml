@@ -1,179 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="550dp"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    android:orientation="vertical"
+    android:padding="@dimen/dp_16">
 
-    <LinearLayout
+    <com.tokopedia.design.component.TextViewCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/pm_label_bottom_sheet_cancel_header"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:fontSize="subHeadline" />
+
+    <com.tokopedia.design.component.TextViewCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:text="@string/pm_label_bottom_sheet_cancel_desc"
+        app:fontSize="title" />
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/corner_radius_pm"
         android:padding="@dimen/dp_16">
 
-        <com.tokopedia.design.component.TextViewCompat
+        <ImageView
+            android:id="@+id/imageView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:lineSpacingExtra="@dimen/sp_6"
-            android:text="@string/pm_label_bottom_sheet_cancel_header"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:src="@drawable/ic_power_merchant_subscribe"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/textViewCompat2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:text="@string/pm_exclusive_promo"
             android:textColor="@color/black"
             android:textStyle="bold"
-            app:fontSize="subHeadline" />
+            app:fontSize="title"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView6"
+            app:layout_constraintTop_toTopOf="@+id/imageView6"
+            app:layout_constraintVertical_chainStyle="packed" />
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lineSpacingExtra="@dimen/sp_4"
-            android:text="@string/pm_label_bottom_sheet_cancel_desc"
-            app:fontSize="title" />
-
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
-            android:background="@drawable/corner_radius_pm"
-            android:padding="@dimen/dp_16">
-
-            <ImageView
-                android:id="@+id/imageView6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:src="@drawable/ic_power_merchant_subscribe"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/textViewCompat2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:text="@string/pm_exclusive_promo"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                app:fontSize="title"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView6"
-                app:layout_constraintTop_toTopOf="@+id/imageView6"
-                app:layout_constraintVertical_chainStyle="packed" />
-
-            <ImageView
-                android:id="@+id/imageView7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="@dimen/dp_16"
-                android:src="@drawable/ic_market"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView6" />
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/textViewCompat4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:text="@string/pm_label_market_insight"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                app:fontSize="title"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView7"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView7"
-                app:layout_constraintTop_toTopOf="@+id/imageView7"
-                app:layout_constraintVertical_chainStyle="packed" />
-
-            <ImageView
-                android:id="@+id/imageView8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_16"
-                android:src="@drawable/ic_topads_credit"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView7" />
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/textViewCompat6"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_marginBottom="8dp"
-                android:text="@string/pm_label_topads_credit"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                app:fontSize="title"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView8"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView8"
-                app:layout_constraintTop_toTopOf="@+id/imageView8"
-                app:layout_constraintVertical_chainStyle="packed" />
-
-        </android.support.constraint.ConstraintLayout>
-
-        <com.tokopedia.design.component.TextViewCompat
+        <ImageView
+            android:id="@+id/imageView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="@dimen/dp_16"
-            android:text="@string/pm_label_bs_cancel_desc_2"
-            app:fontSize="small" />
+            android:src="@drawable/ic_market"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 
-        <FrameLayout
-            android:id="@+id/ticker_yellow_cancellation_bs"
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/textViewCompat4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="@string/pm_label_market_insight"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:fontSize="title"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView7"
+            app:layout_constraintTop_toTopOf="@+id/imageView7"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_16"
+            android:src="@drawable/ic_topads_credit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/textViewCompat6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginBottom="8dp"
+            android:text="@string/pm_label_topads_credit"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:fontSize="title"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView8"
+            app:layout_constraintTop_toTopOf="@+id/imageView8"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/pm_label_bs_cancel_desc_2"
+        app:fontSize="small" />
+
+    <FrameLayout
+        android:id="@+id/ticker_yellow_cancellation_bs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:background="@color/transparent"
+        android:visibility="visible">
+
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:background="@color/transparent"
-            android:visibility="visible">
+            app:cardBackgroundColor="@color/ticker_yellow"
+            app:cardCornerRadius="@dimen/dp_8"
+            app:cardElevation="0dp"
+            app:cardPreventCornerOverlap="true">
 
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/ticker_yellow"
-                app:cardCornerRadius="@dimen/dp_8"
-                app:cardElevation="0dp"
-                app:cardPreventCornerOverlap="true">
+                android:layout_margin="@dimen/dp_5"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_10">
 
-                <LinearLayout
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/txt_ticker_yellow_bs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_5"
-                    android:orientation="vertical"
-                    android:padding="@dimen/dp_10">
+                    android:text="@string/pm_label_cancellation_duration"
+                    app:fontSize="small" />
+            </LinearLayout>
 
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/txt_ticker_yellow_bs"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/pm_label_cancellation_duration"
-                        app:fontSize="small" />
-                </LinearLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_ticker_warning_cropped" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_ticker_warning_cropped" />
+        </android.support.v7.widget.CardView>
+    </FrameLayout>
 
-            </android.support.v7.widget.CardView>
-        </FrameLayout>
+    <Button
+        android:id="@+id/button_cancel_bs"
+        style="@style/Button.Submit.Green.Full"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_50"
 
-        <Button
-            android:id="@+id/button_cancel_bs"
-            style="@style/Button.Submit.Green.Full"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/pm_label_bottom_sheet_cancel_button" />
-    </LinearLayout>
+        android:text="@string/pm_label_bottom_sheet_cancel_button" />
 
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>

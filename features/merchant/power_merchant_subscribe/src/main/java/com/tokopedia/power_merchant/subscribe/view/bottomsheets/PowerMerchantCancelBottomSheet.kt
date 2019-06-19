@@ -1,9 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheets
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.Button
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.BottomSheets
@@ -63,23 +61,12 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
             showExpiredDateTickerYellow()
         } else {
             txtExpiredDate.visibility = View.VISIBLE
+            updateHeight()
         }
 
         buttonCancel.setOnClickListener {
             listener?.onclickButton()
         }
-        view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                val viewTreeObserver = view.viewTreeObserver
-                updateHeight(view.height)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    viewTreeObserver.removeOnGlobalLayoutListener(this)
-                } else {
-                    @Suppress("DEPRECATION")
-                    viewTreeObserver.removeGlobalOnLayoutListener(this)
-                }
-            }
-        })
     }
 
     private fun showExpiredDateTickerYellow() {
