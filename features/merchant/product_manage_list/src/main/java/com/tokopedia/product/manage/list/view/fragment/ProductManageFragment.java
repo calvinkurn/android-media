@@ -45,7 +45,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
@@ -154,7 +153,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        productManagePresenter.getPopupsInfo();
+                        productManagePresenter.needGetPopupsInfo();
                         resetPageAndRefresh();
                     }
                 });
@@ -163,31 +162,23 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         }
     };
 
-    private Dialog initPopUpDialog(){
+    private Dialog initPopUpDialog(String productId){
         dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setContentView(R.layout.dialog_product_add);
 
-        btnSubmit = (Button) dialog.findViewById(R.id.btn_submit);
-        btnGoToPdp = (Button) dialog.findViewById(R.id.btn_product_list);
-        txtTipsTrick = (TextView) dialog.findViewById(R.id.txt_tips_trick);
+        btnSubmit = dialog.findViewById(R.id.btn_submit);
+        btnGoToPdp = dialog.findViewById(R.id.btn_product_list);
+        txtTipsTrick = dialog.findViewById(R.id.txt_tips_trick);
 
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RouteManager.route(getContext(),ApplinkConst.SELLER_SHIPPING_EDITOR);
-                getActivity().finish();
-            }
+        btnSubmit.setOnClickListener(v -> {
+            RouteManager.route(getContext(),ApplinkConst.SELLER_SHIPPING_EDITOR);
+            getActivity().finish();
         });
 
-        btnGoToPdp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                goToPDP(productManageViewModel.getProductId());
-            }
-        });
+        btnGoToPdp.setOnClickListener(v -> goToPDP(productId));
         int backgroundColor = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
 
         SpannableString spanText = new SpannableString(getString(R.string.popup_tips_trick_clickable));
@@ -347,16 +338,15 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onSuccessGetPopUp(boolean isShowPopup) {
+    public void onSuccessGetPopUp(boolean isShowPopup, String productId) {
  //       if (isShowPopup) {
-            initPopUpDialog().show();
-            resetPageAndRefresh();
+            initPopUpDialog(productId).show();
 //        }
     }
 
     @Override
     public void onErrorGetPopUp(Throwable e) {
-        onSuccessGetPopUp(false);
+        onSuccessGetPopUp(false, null);
     }
 
     @NonNull

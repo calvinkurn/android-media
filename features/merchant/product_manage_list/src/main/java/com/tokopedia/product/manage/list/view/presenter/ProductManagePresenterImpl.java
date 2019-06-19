@@ -53,6 +53,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     private final UserSessionInterface userSession;
     private final PopupManagerAddProductUseCase popupManagerAddProductUseCase;
     public static final String GQL_POPUP_NAME = "gql_popup";
+    private boolean isNeedGetPopup = false;
 
 
     public ProductManagePresenterImpl(GetShopInfoUseCase getShopInfoUseCase,
@@ -219,13 +220,18 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     }
 
     @Override
-    public void getPopupsInfo() {
-        int shopId = convertStringToInterger();
-        popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.createRequestParams(shopId),
-                getPopupsInfoSubscriber());
+    public void needGetPopupsInfo(){
+        isNeedGetPopup = true;
     }
 
-    private Subscriber<Boolean> getPopupsInfoSubscriber() {
+    @Override
+    public void getPopupsInfo(String productId) {
+        int shopId = convertStringToInterger();
+        popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.createRequestParams(shopId),
+                getPopupsInfoSubscriber(productId));
+    }
+
+    private Subscriber<Boolean> getPopupsInfoSubscriber(String productId) {
         return new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -234,6 +240,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
             @Override
             public void onError(Throwable e) {
+                isNeedGetPopup = true
                 if (!isViewAttached()) {
                     return;
                 }
@@ -242,7 +249,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
             @Override
             public void onNext(Boolean aBoolean) {
-                getView().onSuccessGetPopUp(aBoolean);
+                getView().onSuccessGetPopUp(aBoolean, productId);
             }
         };
     }
@@ -285,6 +292,11 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
                 getView().onSearchLoaded(productListManageModelView.getProductManageViewModels(),
                         productListManageModelView.getProductManageViewModels().size(),
                         productListManageModelView.isHasNextPage());
+
+                if (isNeedGetPopup){
+                    isNeedGetPopup = false;
+                    getPopupsInfo(productListSellerModel.getData().getList().get(0).getProductId());
+                }
             }
         };
     }
