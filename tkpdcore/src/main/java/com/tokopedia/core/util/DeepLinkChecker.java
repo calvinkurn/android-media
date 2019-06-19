@@ -305,7 +305,7 @@ public class DeepLinkChecker {
     }
 
     private static boolean isHomeRecoomendation(List<String> linkSegment){
-        return (linkSegment.get(0).equals("recommendation"));
+        return (linkSegment.get(0).equals("rekomendasi"));
     }
 
     private static boolean isKycTerms(List<String> linkSegment) {
