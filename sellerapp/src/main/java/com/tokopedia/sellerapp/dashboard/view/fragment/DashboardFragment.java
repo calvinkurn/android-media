@@ -411,7 +411,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             showcases.add(new ShowCaseObject(
                     headerLabelLayout,
                     getString(R.string.showcase_title_1_power_merchant),
-                    getString(R.string.showcase_desc_1_power_merchant));
+                    getString(R.string.showcase_desc_1_power_merchant)));
             showcases.add(new ShowCaseObject(
                     shopScoreWidget,
                     getString(R.string.showcase_title_2_power_merchant),
