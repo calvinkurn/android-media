@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
+import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.kotlin.model.ImpressHolder
 
 class RecommendationItem(val productId: Int,
@@ -19,4 +20,7 @@ class RecommendationItem(val productId: Int,
                          val stock: Int,
                          val recommendationType: String,
                          val isTopAds: Boolean,
-                         val position: Int) : ImpressHolder()
+                         val position: Int) : ImpressHolder(){
+
+    fun getPriceIntFromString() = CurrencyFormatHelper.convertRupiahToInt(price)
+}
