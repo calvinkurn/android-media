@@ -46,4 +46,9 @@ class OVOP2PThankyouActivity : BaseSimpleActivity()  {
         }
         return Fragment()
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        updateTitle(Constants.Headers.TRANSFER_SUCCESS)
+    }
 }

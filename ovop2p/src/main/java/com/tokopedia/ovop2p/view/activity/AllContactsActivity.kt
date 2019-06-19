@@ -5,17 +5,22 @@ import android.content.Intent
 import android.database.Cursor
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.support.v4.app.Fragment
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.view.adapters.AllContactsListCursorAdapter
 
-class AllContactsActivity : Activity(), View.OnClickListener {
+class AllContactsActivity : BaseSimpleActivity(), View.OnClickListener {
+    override fun getNewFragment(): Fragment {
+        return Fragment()
+    }
 
     lateinit var contactsListView: ListView
     lateinit var scanQRImgvw: ImageView
@@ -33,6 +38,7 @@ class AllContactsActivity : Activity(), View.OnClickListener {
         scanQRImgvw.setOnClickListener(this)
         scanQrHeader = findViewById(R.id.scan_qr_header)
         scanQrHeader.setOnClickListener(this)
+        updateTitle(Constants.Headers.LOOK_FOR_NAME_PHONE)
     }
 
     private fun createAllContactsCursor(): Cursor? {

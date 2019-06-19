@@ -64,16 +64,6 @@ class OvoP2PFormActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComp
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Constants.Keys.RESULT_CODE_CONTACTS_SELECTION) {
-            val userName = data!!.getStringExtra(Constants.Keys.USER_NAME)
-            val userNumber = data.getStringExtra(Constants.Keys.USER_NUMBER)
-            val searchViewStr = "$userNumber-$userName"
-//            searchView.setQuery(searchViewStr, false)
-        }
-    }
-
     override fun showProgressDialog() {
         if (loading == null) loading = ProgressDialog(this)
         loading.setCancelable(false)
@@ -108,6 +98,10 @@ class OvoP2PFormActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComp
                         (permissionsToRequest as ArrayList<String>).toTypedArray(), REQUEST_CONTACTS__CAMERA_PERMISSION)
             }
         }
+    }
+
+    override fun setHeaderTitle(title: String) {
+        updateTitle(title)
     }
 
 }

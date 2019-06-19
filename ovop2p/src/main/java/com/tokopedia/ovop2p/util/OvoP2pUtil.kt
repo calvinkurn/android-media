@@ -15,6 +15,7 @@ import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.model.OvoP2pTransferConfirmBase
 import com.tokopedia.ovop2p.model.OvoP2pTransferRequestBase
 import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
+import com.tokopedia.ovop2p.model.WalletDataBase
 import rx.Subscriber
 import java.util.HashMap
 import java.util.regex.Pattern
@@ -60,6 +61,16 @@ object OvoP2pUtil {
                 OvoP2pTransferThankyouBase::class.java, gqlMutationDataMap)
         ovoP2pTransferThankyouUseCase.addRequest(graphqlRequest)
         ovoP2pTransferThankyouUseCase.execute(subscriber)
+    }
+
+    fun executeOvoGetWalletData(context: Context, subscriber: Subscriber<GraphqlResponse>){
+        var ovoWalletDataUseCase = GraphqlUseCase()
+        val graphqlRequest = GraphqlRequest(
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.oqr_wallet_detail),
+                WalletDataBase::class.java)
+        ovoWalletDataUseCase.addRequest(graphqlRequest)
+        ovoWalletDataUseCase.execute(subscriber)
+
     }
 
     fun extractNumbersFromString(srcStr: String): String{

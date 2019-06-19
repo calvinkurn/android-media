@@ -34,7 +34,9 @@ class ContactsCursorAdapter(context: Context, cursor: Cursor, private val mParti
             phoneNum = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
             phoneNum = phoneNum.replaceFirst(mPartialMatch.toRegex(), "<font color='#06b3ba'>$mPartialMatch</font>")
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-            imageUri = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI))
+            if(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)) != null) {
+                imageUri = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI))
+            }
         }
 
         val nameTv = view.findViewById<TextView>(R.id.tv_name)

@@ -106,6 +106,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
         createAndSusbcribeToWalletBalVM()
         createAndSubscribeTransferRequestVM()
         createAndSubscribeTransferConfirmVM()
+        context?.let { walletBalanceViewModel.fetchWalletDetails(it) }
         return view
     }
 
@@ -155,7 +156,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
                             //show error page
                         }
                         else if(!it.ovoP2pTransferConfirm!!.rcvrLink){
-                            //show now ovo success page
+                            //show non ovo success page
                         }
                         else if(it.ovoP2pTransferConfirm!!.rcvrLink){
                             if(!TextUtils.isEmpty(it.ovoP2pTransferConfirm!!.pinUrl)) {
@@ -216,6 +217,13 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
         return true
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if(activity != null){
+            (activity as LoaderUiListener).setHeaderTitle(Constants.Headers.TRANSFER_FORM_HEADER)
+        }
+    }
+
     private fun getPartialMatchContact(context: Context, partial: String): Cursor? {
         val uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(partial))
         val selection = ContactsContract.CommonDataKinds.Phone.NUMBER + " LIKE ?"
@@ -236,6 +244,16 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     private fun showNonOvoUserConfirmDialog(){
         alertDialog = OvoP2pUtil.getNonOvoUserConfirmationDailog(activity, this).create()
         alertDialog.show()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Constants.Keys.RESULT_CODE_CONTACTS_SELECTION) {
+            val userName = data!!.getStringExtra(Constants.Keys.USER_NAME)
+            val userNumber = data.getStringExtra(Constants.Keys.USER_NUMBER)
+            val searchViewStr = "$userNumber-$userName"
+            searchView.setQuery(searchViewStr, false)
+        }
     }
 
 }

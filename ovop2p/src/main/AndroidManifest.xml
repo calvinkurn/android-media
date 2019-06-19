@@ -9,5 +9,13 @@
             android:name=".view.activity.OVOP2PThankyouActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity
+            android:name=".view.activity.AllContactsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".view.activity.OvoP2pWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 </manifest>
