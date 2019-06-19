@@ -46,8 +46,7 @@ class GridProductItem2019ViewHolder(
         initPriceTextView(productItem)
         initShopBadge(productItem)
         initLocationTextView(productItem)
-        initRatingAndReview(productItem)
-        initCredibilityLabel(productItem)
+        initCredibilitySection(productItem)
         initOffersLabel(productItem)
         initTopAdsIcon(productItem)
     }
@@ -141,9 +140,7 @@ class GridProductItem2019ViewHolder(
         var paddingTopPixel = 0
 
         if(!isShopNameShown(productItem)) {
-            val paddingTopDp = 8
-            val scale = context.resources.displayMetrics.density
-            paddingTopPixel = (paddingTopDp * scale + 0.5f).toInt()
+            paddingTopPixel = convertDpToPixel(8)
         }
 
         itemView.titleTextView?.setPadding(
@@ -152,6 +149,11 @@ class GridProductItem2019ViewHolder(
             itemView.titleTextView.paddingRight,
             itemView.titleTextView.paddingBottom
         )
+    }
+
+    private fun convertDpToPixel(dpValue: Int): Int {
+        val scale = context.resources.displayMetrics.density
+        return (dpValue * scale + 0.5f).toInt()
     }
 
     // TODO:: Dummy method, set Slash Price from productItem instead
@@ -193,7 +195,7 @@ class GridProductItem2019ViewHolder(
 
             ImageHandler.loadImageBitmap2(context, url, object : SimpleTarget<Bitmap>() {
                 override fun onResourceReady(bitmap: Bitmap, glideAnimation: GlideAnimation<in Bitmap>) {
-                    loadShopBadgeReady(view, bitmap)
+                    loadShopBadgeSuccess(view, bitmap)
                 }
 
                 override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
@@ -204,7 +206,7 @@ class GridProductItem2019ViewHolder(
         }
     }
 
-    private fun loadShopBadgeReady(view: View, bitmap: Bitmap) {
+    private fun loadShopBadgeSuccess(view: View, bitmap: Bitmap) {
         val image = view.findViewById<ImageView>(R.id.badge)
 
         if (bitmap.height <= 1 && bitmap.width <= 1) {
@@ -221,6 +223,8 @@ class GridProductItem2019ViewHolder(
     }
 
     private fun initLocationTextView(productItem: ProductItemViewModel) {
+        setLocationTextViewPadding(productItem)
+
         if(!TextUtils.isEmpty(productItem.shopCity)) {
             itemView.locationTextView?.text = MethodChecker.fromHtml(productItem.shopCity)
             itemView.locationTextView?.visibility = View.VISIBLE
@@ -230,6 +234,29 @@ class GridProductItem2019ViewHolder(
         }
     }
 
+    private fun setLocationTextViewPadding(productItem: ProductItemViewModel) {
+        if(itemView.locationTextView != null) {
+            val paddingLeftDp = if (hasAnyBadgesShown(productItem)) 4 else 8
+
+            itemView.locationTextView?.setPadding(
+                paddingLeftDp,
+                itemView.locationTextView.paddingTop,
+                itemView.locationTextView.paddingRight,
+                itemView.locationTextView.paddingBottom
+            )
+        }
+    }
+
+    private fun hasAnyBadgesShown(productItem: ProductItemViewModel): Boolean {
+        return productItem.badgesList.any { badge -> badge.isShown }
+    }
+
+    private fun initCredibilitySection(productItem: ProductItemViewModel) {
+        initRatingAndReview(productItem)
+        initCredibilityLabel(productItem)
+        initCredibilitySectionContainer(productItem)
+    }
+
     private fun initRatingAndReview(productItem: ProductItemViewModel) {
         initRatingView(productItem)
         initReviewCount(productItem)
@@ -237,12 +264,16 @@ class GridProductItem2019ViewHolder(
     }
 
     private fun initRatingView(productItem: ProductItemViewModel) {
-        if (productItem.rating != 0) {
+        if (isRatingViewVisible(productItem)) {
             itemView.ratingImage?.visibility = View.VISIBLE
             itemView.ratingImage?.setImageResource(getRatingDrawable(getStarCount(productItem)))
         } else {
             itemView.ratingImage?.visibility = View.GONE
         }
+    }
+
+    private fun isRatingViewVisible(productItem: ProductItemViewModel): Boolean {
+        return productItem.rating != 0
     }
 
     private fun getRatingDrawable(param: Int): Int {
@@ -265,11 +296,30 @@ class GridProductItem2019ViewHolder(
     }
 
     private fun initReviewCount(productItem: ProductItemViewModel) {
-        if (productItem.countReview != 0) {
+        if (isReviewCountVisible(productItem)) {
+            setReviewCountPadding(productItem)
+
             itemView.reviewCountTextView?.visibility = View.VISIBLE
             itemView.reviewCountTextView?.text = getReviewCountFormattedAsText(productItem.countReview)
         } else {
             itemView.reviewCountTextView?.visibility = View.GONE
+        }
+    }
+
+    private fun isReviewCountVisible(productItem: ProductItemViewModel): Boolean {
+        return productItem.countReview != 0
+    }
+
+    private fun setReviewCountPadding(productItem: ProductItemViewModel) {
+        if(itemView.reviewCountTextView != null) {
+            val paddingLeftDp = if (isRatingViewVisible(productItem)) 4 else 0
+
+            itemView.reviewCountTextView?.setPadding(
+                paddingLeftDp,
+                itemView.reviewCountTextView.paddingTop,
+                itemView.reviewCountTextView.paddingRight,
+                itemView.reviewCountTextView.paddingBottom
+            )
         }
     }
 
@@ -293,13 +343,13 @@ class GridProductItem2019ViewHolder(
     }
 
     private fun isRatingAndReviewContainerVisible(productItem: ProductItemViewModel): Boolean {
-        return productItem.rating != 0 || productItem.countReview != 0
+        return isRatingViewVisible(productItem) || isReviewCountVisible(productItem)
     }
 
     // TODO:: Dummy method, set Label from productItem instead
     private fun initCredibilityLabel(productItem: ProductItemViewModel) {
         if (!isRatingAndReviewContainerVisible(productItem)) {
-            if (true) { // Check product has credibility label
+            if (isCredibilityLabelVisible(productItem)) {
                 itemView.credibilityLabel?.setLabelDesign(context.resources.getString(R.string.product_card_light_blue))
                 itemView.credibilityLabel?.visibility = View.VISIBLE
                 itemView.credibilityLabel?.text = "Terbaroe"
@@ -309,6 +359,24 @@ class GridProductItem2019ViewHolder(
         } else {
             itemView.credibilityLabel?.visibility = View.GONE
         }
+    }
+
+    // TODO:: Dummy method, set Label from productItem instead
+    private fun isCredibilityLabelVisible(productItem: ProductItemViewModel): Boolean {
+        return true
+    }
+
+    private fun initCredibilitySectionContainer(productItem: ProductItemViewModel) {
+        if(isCredibilitySectionContainerVisible(productItem)) {
+            itemView.credibilitySectionContainer?.visibility = View.VISIBLE
+        }
+        else {
+            itemView.credibilitySectionContainer?.visibility = View.GONE
+        }
+    }
+
+    private fun isCredibilitySectionContainerVisible(productItem: ProductItemViewModel): Boolean {
+        return isRatingAndReviewContainerVisible(productItem) || isCredibilityLabelVisible(productItem)
     }
 
     // TODO:: Dummy method, set Label from productItem instead

@@ -158,6 +158,8 @@
             android:layout_height="@dimen/dp_16"
             android:layout_below="@id/priceTextView"
             android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:orientation="horizontal" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -178,49 +180,48 @@
             app:typographyType="body_3"
             tools:text="Town Location" />
 
-        <LinearLayout
-            android:id="@+id/ratingReviewContainer"
+        <RelativeLayout
+            android:id="@+id/credibilitySectionContainer"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_20"
-            android:layout_below="@id/locationTextView"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_below="@id/locationTextView">
 
-            <ImageView
-                android:id="@+id/ratingImage"
-                android:layout_width="@dimen/dp_51"
-                android:layout_height="@dimen/dp_10"
-                android:contentDescription="@string/image_description"
-                tools:src="@drawable/search_ic_star_five"/>
+            <LinearLayout
+                android:id="@+id/ratingReviewContainer"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_20"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/reviewCountTextView"
+                <ImageView
+                    android:id="@+id/ratingImage"
+                    android:layout_width="@dimen/dp_51"
+                    android:layout_height="@dimen/dp_10"
+                    android:contentDescription="@string/image_description"
+                    tools:src="@drawable/search_ic_star_five"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/reviewCountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/product_card_grey"
+                    app:typographyType="body_3"
+                    tools:text="(1000)"/>
+
+            </LinearLayout>
+
+            <com.tokopedia.search.result.presentation.view.widget.Label
+                android:id="@+id/credibilityLabel"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:layout_marginStart="@dimen/dp_4"
-                android:textColor="@color/product_card_grey"
-                app:typographyType="body_3"
-                tools:text="(1000)"/>
+                android:layout_height="@dimen/dp_20"
+                tools:text="Credibility Label" />
 
-        </LinearLayout>
-
-        <com.tokopedia.search.result.presentation.view.widget.Label
-            android:id="@+id/credibilityLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_below="@id/locationTextView"
-            tools:text="Credibility Label" />
+        </RelativeLayout>
 
         <com.tokopedia.search.result.presentation.view.widget.Label
             android:id="@+id/offersLabel"
@@ -231,7 +232,7 @@
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_below="@id/ratingReviewContainer"
+            android:layout_below="@id/credibilitySectionContainer"
             tools:text="Offers Label" />
 
         <RelativeLayout
@@ -246,7 +247,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:background="@drawable/search_ic_top_ads_background"
-            android:layout_below="@id/ratingReviewContainer">
+            android:layout_below="@id/credibilitySectionContainer">
 
             <ImageView
                 android:layout_width="@dimen/dp_13"
