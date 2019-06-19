@@ -120,7 +120,7 @@ class AutoAdsWidgetView : CardView {
         startAdsBtn.visibility = View.GONE
         progressAdsContainer.visibility = View.GONE
         btnArrow.visibility = View.VISIBLE
-        activeListener?.onInActive()
+        activeListener?.onActive()
         statusAdsContainer.setOnClickListener {
             val intent = Intent(context, SettingBudgetAdsActivity::class.java)
             intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)

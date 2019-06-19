@@ -218,9 +218,6 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
             isEnoughDeposit = true;
             return;
         }
-        if (listener != null) {
-            listener.startShowCase();
-        }
     }
 
     @Override
@@ -237,6 +234,9 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
         status.setVisibility(View.VISIBLE);
         promoGroupLabelView.setVisibility(View.VISIBLE);
         priceAndSchedule.setVisibility(View.VISIBLE);
+        if (listener != null) {
+            listener.startShowCase();
+        }
     }
 
     @Override

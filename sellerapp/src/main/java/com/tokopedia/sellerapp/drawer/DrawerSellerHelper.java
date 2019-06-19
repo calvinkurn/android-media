@@ -377,9 +377,6 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                     UnifyTracking.eventDrawerTopads(context);
-//                    intent = new Intent(context, TopAdsDashboardActivity.class);
-//                    context.startActivity(intent);
-
                     if (context.getApplication() instanceof ApplinkRouter) {
                         ApplinkRouter applinkRouter = ((ApplinkRouter) context.getApplication());
                         applinkRouter.goToApplinkActivity(context, AutoAdsLinkConstant.AUTOADS_ROUTE_LINK);
