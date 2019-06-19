@@ -338,13 +338,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         setTextViewLearnMore(tv_ticker_info, getString(R.string.regular_merchant_learn_more), getString(R.string.learn_more)) {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_LEARN_MORE_BENEFIT)
         }
-        if (shopStatusModel.isTransitionPeriod()) {
-            button_activate.visibility = View.GONE
-        } else {
-            button_activate.visibility = View.VISIBLE
-            button_activate.setOnClickListener {
-                navigateToPMSubscribe()
-            }
+        button_activate.visibility = View.VISIBLE
+        button_activate.setOnClickListener {
+            navigateToPMSubscribe()
         }
     }
 
