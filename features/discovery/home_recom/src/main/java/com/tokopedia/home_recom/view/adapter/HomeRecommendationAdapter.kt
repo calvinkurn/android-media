@@ -37,5 +37,4 @@ class HomeRecommendationAdapter(
     override fun getItemCount(): Int = visitables.size
 
     override fun getItemViewType(position: Int): Int = visitables[position].type(adapterTypeFactory)
-
 }

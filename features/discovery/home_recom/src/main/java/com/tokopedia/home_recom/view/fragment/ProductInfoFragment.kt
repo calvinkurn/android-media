@@ -17,11 +17,16 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_recom.R
+import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.util.RecommendationPageErrorHandler
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_product_info.*
@@ -35,6 +40,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
     lateinit var userSessionInterface : UserSessionInterface
 
     @Inject
+    lateinit var trackingQueue: TrackingQueue
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
@@ -44,6 +52,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private lateinit var productDataModel: ProductInfoDataModel
 
     private lateinit var productView: View
+
+    private val recommendationItem: RecommendationItem by lazy { mapToRecommendationItem() }
 
     override fun getScreenName(): String {
         return ""
@@ -84,7 +94,25 @@ class ProductInfoFragment : BaseDaggerFragment() {
         ImageHandler.loadImageRounded2(view.context, product_image, productDataModel.productDetailData.imageUrl)
         setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
 
+        product_image.addOnImpressionListener(recommendationItem, object: ViewHintListener{
+            override fun onViewHint() {
+                RecommendationPageTracking.eventImpressionPrimaryProduct(recommendationItem, "0")
+                if(productDataModel.productDetailData.isTopads){
+                    onImpressionTopAds(recommendationItem)
+                }else {
+                    onImpressionOrganic(recommendationItem)
+                }
+            }
+        })
+
         product_card.setOnClickListener {
+            RecommendationPageTracking.eventClickPrimaryProduct(recommendationItem, "0")
+            if(productDataModel.productDetailData.isTopads){
+                onClickTopAds(recommendationItem)
+            }else{
+                onClickOrganic(recommendationItem)
+            }
+
             RouteManager.route(
                     context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -94,6 +122,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         fab_detail.setOnClickListener {
             if (userSessionInterface.isLoggedIn) {
                 if (it.isActivated) {
+                    RecommendationPageTracking.eventAddWishlistOnProductRecommendationLogin()
                     productDataModel.productDetailData.id.let {
                         primaryProductViewModel.removeWishList(it.toString(),
                                 onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
@@ -101,6 +130,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                     }
 
                 } else {
+                    RecommendationPageTracking.eventRemoveWishlistOnProductRecommendationLogin()
                     productDataModel.productDetailData.id.let {
                         primaryProductViewModel.addWishList(it.toString(),
                                 onSuccessAddWishlist = this::onSuccessAddWishlist,
@@ -108,6 +138,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                     }
                 }
             } else {
+                RecommendationPageTracking.eventAddWishlistOnProductRecommendationNonLogin()
                 RouteManager.route(activity, ApplinkConst.LOGIN)
             }
         }
@@ -201,6 +232,27 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun mapToRecommendationItem() = RecommendationItem(
+            productId = productDataModel.productDetailData.id,
+            position = 0,
+            name = productDataModel.productDetailData.name,
+            appUrl = productDataModel.productDetailData.appUrl,
+            clickUrl = productDataModel.productDetailData.clickUrl,
+            categoryBreadcrumbs = productDataModel.productDetailData.categoryBreadcrumbs,
+            countReview = productDataModel.productDetailData.countReview,
+            departmentId = productDataModel.productDetailData.departmentId,
+            imageUrl = productDataModel.productDetailData.imageUrl,
+            isTopAds = productDataModel.productDetailData.isTopads,
+            price = productDataModel.productDetailData.price,
+            priceInt = productDataModel.productDetailData.priceInt,
+            rating = productDataModel.productDetailData.rating,
+            recommendationType = productDataModel.productDetailData.recommendationType,
+            stock = productDataModel.productDetailData.stock,
+            trackerImageUrl = productDataModel.productDetailData.trackerImageUrl,
+            url = productDataModel.productDetailData.url,
+            wishlistUrl = productDataModel.productDetailData.wishlistUrl
+    )
+
     private fun handleDiscount(){
         if(productDataModel.productDetailData.discountPercentage > 0){
             product_discount.visibility = View.VISIBLE
@@ -210,6 +262,38 @@ class ProductInfoFragment : BaseDaggerFragment() {
         } else {
             product_discount.visibility = View.GONE
             product_slashed_price.visibility = View.GONE
+        }
+    }
+
+    private fun onImpressionOrganic(item: RecommendationItem) {
+        if(userSessionInterface.isLoggedIn){
+            RecommendationPageTracking.eventImpressionOnOrganicProductRecommendationForLoginUser(trackingQueue, item, item.position.toString())
+        } else {
+            RecommendationPageTracking.eventImpressionOnOrganicProductRecommendationForNonLoginUser(trackingQueue, item, item.position.toString())
+        }
+    }
+
+    private fun onImpressionTopAds(item: RecommendationItem) {
+        if(userSessionInterface.isLoggedIn){
+            RecommendationPageTracking.eventImpressionOnTopAdsProductRecommendationForLoginUser(trackingQueue, item, item.position.toString())
+        } else {
+            RecommendationPageTracking.eventImpressionOnTopAdsProductRecommendationForNonLoginUser(trackingQueue, item, item.position.toString())
+        }
+    }
+
+    private fun onClickTopAds(item: RecommendationItem) {
+        if(userSessionInterface.isLoggedIn){
+            RecommendationPageTracking.eventClickOnTopAdsProductRecommendationForLoginUser(item, item.position.toString())
+        }else{
+            RecommendationPageTracking.eventClickOnTopAdsProductRecommendationForNonLoginUser(item, item.position.toString())
+        }
+    }
+
+    private fun onClickOrganic(item: RecommendationItem) {
+        if(userSessionInterface.isLoggedIn){
+            RecommendationPageTracking.eventClickOnOrganicProductRecommendationForLoginUser(item, item.position.toString())
+        }else{
+            RecommendationPageTracking.eventClickOnOrganicProductRecommendationForNonLoginUser(item, item.position.toString())
         }
     }
 

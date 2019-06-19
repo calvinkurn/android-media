@@ -46,7 +46,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
         private fun convertToRecommendationWidget(recomendationData: RecomendationEntity.RecomendationData): RecommendationWidget {
             val recommendationItemList = arrayListOf<RecommendationItem>()
             recommendationItemList.addAll(
-                    recomendationData.recommendation?.map { convertToRecommendationItem(it) } ?: emptyList())
+                    recomendationData.recommendation?.mapIndexed { index, recommendation -> convertToRecommendationItem(recommendation, index + 1) } ?: emptyList())
             return RecommendationWidget(
                     recommendationItemList,
                     recomendationData.title ?: "",
@@ -62,7 +62,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     recomendationData.pageName?:"")
         }
 
-        private fun convertToRecommendationItem(data: RecomendationEntity.Recommendation): RecommendationItem {
+        private fun convertToRecommendationItem(data: RecomendationEntity.Recommendation, position: Int): RecommendationItem {
             return RecommendationItem(
                     data.id,
                     data.name ?: "",
@@ -80,7 +80,8 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.countReview,
                     data.stock,
                     data.recommendationType ?: "",
-                    data.isIsTopads
+                    data.isIsTopads,
+                    position
             )
 
         }
