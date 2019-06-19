@@ -39,6 +39,7 @@ public interface CMConstant {
         String SOURCE = "source";
 
         String FCM_EXTRA_CONFIRMATION_VALUE = "toko-cm";
+        String SOURCE_VALUE = "toko-cm-inapp";
 
         String TRIBE_KEY = "tribe";
         String NOTIFICATION_TYPE = "notificationType";

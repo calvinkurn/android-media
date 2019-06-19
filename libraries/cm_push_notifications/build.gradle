@@ -49,6 +49,17 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.common_promo)
+
+    /*Constraint dep for view creation*/
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    /*Json Parsing*/
+    implementation rootProject.ext.miscDependencies.gson
+
+    /*room lib*/
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 }
 
 apply from: '../../publish_local.gradle'
