@@ -593,10 +593,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
             setFollowBtn(it, false)
-            if (!isOwner) {
-                showFooterOthers()
-            }
-
             if (activity != null && arguments != null) {
                 if (resultIntent == null) {
                     resultIntent = Intent()
@@ -987,6 +983,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 profileHeader?.let { followUnfollowUser(it.userId, !it.isFollowed, FOLLOW_FOOTER) }
             }
             footerOthersShareText.hide()
+        }
+        footerOthersShare.setOnClickListener {
+            profileHeader?.let {
+                val linkerData = constructShareData(
+                        it.name,
+                        it.avatar,
+                        it.link,
+                        String.format(getString(R.string.profile_share_text),
+                                it.link),
+                        String.format(getString(R.string.profile_share_title)))
+                ShareBottomSheets().show(fragmentManager!!, linkerData, isOwner, userId.toString(), true)
+            }
         }
     }
 
