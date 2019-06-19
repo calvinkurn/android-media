@@ -367,6 +367,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         hideSnackBarRetry();
 
         setShopInfoToLabelFragment(shopModel.info);
+        shopPowerMerchantPopup(shopStatusModel);
     }
 
     private ShowCaseDialog createShowCase() {
@@ -873,6 +874,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             bottomSheet.setListener(() -> {
                 bottomSheet.dismiss();
                 onGoToLink(finalUrl);
+
+                if (shopStatusModel.isPowerMerchantActive() && TextUtils.isEmpty(finalUrl)) {
+                    onReadytoShowBoarding();
+                }
             });
             bottomSheet.show(getChildFragmentManager(), "power_merchant_success");
         }
