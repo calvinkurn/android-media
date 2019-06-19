@@ -150,12 +150,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             if (intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT) &&
                     intent.hasExtra(TkpdState.ProductService.STATUS_FLAG) &&
                     intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0) == TkpdState.ProductService.STATUS_DONE) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        productManagePresenter.needGetPopupsInfo();
-                        resetPageAndRefresh();
-                    }
+                getActivity().runOnUiThread(() -> {
+                    String productId = intent.hasExtra(TkpdState.ProductService.PRODUCT_ID) ?
+                            intent.getStringExtra(TkpdState.ProductService.PRODUCT_ID) : null;
+                    productManagePresenter.getPopupsInfo(productId);
+                    resetPageAndRefresh();
                 });
 
             }
@@ -339,9 +338,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onSuccessGetPopUp(boolean isShowPopup, String productId) {
- //       if (isShowPopup) {
+        if (isShowPopup) {
             initPopUpDialog(productId).show();
-//        }
+        }
     }
 
     @Override
@@ -530,7 +529,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
      * For Dynamic Feature Support
      */
     private void goToPDP(String productId) {
-        if (getContext() != null){
+        if (getContext() != null && productId != null){
             RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         }
     }

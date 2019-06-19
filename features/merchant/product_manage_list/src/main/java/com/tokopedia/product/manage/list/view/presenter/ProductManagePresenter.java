@@ -34,7 +34,5 @@ public interface ProductManagePresenter extends CustomerPresenter<ProductManageV
 
     void getFreeClaim(String graphqlQuery, String shopId);
 
-    void needGetPopupsInfo();
-
     void getPopupsInfo(String productId);
 }
