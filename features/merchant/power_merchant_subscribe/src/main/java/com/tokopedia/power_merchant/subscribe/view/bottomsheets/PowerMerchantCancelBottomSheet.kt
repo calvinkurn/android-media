@@ -54,7 +54,7 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
 
     override fun initView(view: View) {
         initVar()
-        txtExpiredDate = view.findViewById(R.id.txt_ticker_yellow_bs)
+//        txtExpiredDate = view.findViewById(R.id.txt_ticker_yellow_bs)
         buttonCancel = view.findViewById(R.id.button_cancel_bs)
 
         if (!isTransitionPeriod) {
