@@ -323,16 +323,23 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         if (isPowerMerchant) {
             var isNotKyc = getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status != KYCConstant.STATUS_VERIFIED
             if (isNotKyc) {
+                if(isAutoExtend()){
+                    ticker_yellow_container.visibility = View.VISIBLE
+                    ticker_blue_container.visibility = View.VISIBLE
+                } else {
+                    ticker_yellow_container.visibility = View.GONE
+                    ticker_blue_container.visibility = View.GONE
+                }
                 button_activate_root.text = getString(R.string.pm_label_button_kyc_upload)
             } else {
                 if (isAutoExtend()) {
+                    ticker_blue_container.visibility = View.VISIBLE
                     hideButtonActivatedPm()
+                } else {
                     ticker_yellow_container.visibility = View.GONE
+                    showButtonActivatePm()
                 }
-                showButtonActivatePm()
-                ticker_blue_container.visibility = View.VISIBLE
                 txt_ticker_yellow.text = getString(R.string.pm_label_cancellation_duration)
-                ticker_yellow_container.visibility = View.VISIBLE
             }
         } else if (isPending) {
             if (isAutoExtend()){
