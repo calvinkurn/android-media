@@ -106,7 +106,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
 
         holder.parent_layout.setOnClickListener {
 
-            CategoryAnalytics.createInstance().eventDropDownPromoClick(list[position], position)
+            CategoryAnalytics.createInstance().eventDropDownPromoClick(holder.itemView.context, list[position], position)
 
             if (expanded_item_pos < 0 || expanded_item_pos == position) {
                 item.isExpanded = !item.isExpanded
@@ -135,12 +135,12 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
 
         holder.item_image_v1.setOnClickListener {
             fireApplink(holder.item_image_v1.context, list[position].applinks)
-            CategoryAnalytics.createInstance().eventPromoClick(list[position], position)
+            CategoryAnalytics.createInstance().eventPromoClick(holder.itemView.context, list[position], position)
         }
 
         holder.item_name_v1.setOnClickListener {
             fireApplink(holder.item_name_v1.context, list[position].applinks)
-            CategoryAnalytics.createInstance().eventPromoClick(list[position], position)
+            CategoryAnalytics.createInstance().eventPromoClick(holder.itemView.context, list[position], position)
         }
 
         holder.product_parent_name.text = item.parentName
@@ -157,14 +157,14 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
             val position = holder.adapterPosition
             if (!viewMap1.containsKey(position)) {
                 viewMap1[position] = true
-                CategoryAnalytics.createInstance().eventPromoView(list[position], position)
+                CategoryAnalytics.createInstance().eventPromoView(holder.itemView.context, list[position], position)
             }
 
         } else if (holder is ViewHolder2) {
             val position = holder.adapterPosition
             if (!viewMap2.containsKey(position)) {
                 viewMap2[position] = true
-                CategoryAnalytics.createInstance().eventPromoView(list[position], position)
+                CategoryAnalytics.createInstance().eventDropDownPromoView(holder.itemView.context, list[position], position)
             }
         }
     }

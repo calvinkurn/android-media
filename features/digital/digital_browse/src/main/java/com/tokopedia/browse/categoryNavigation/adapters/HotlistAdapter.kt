@@ -37,7 +37,7 @@ class HotlistAdapter(private val list: MutableList<ListItem>) : RecyclerView.Ada
 
         holder.hotlist_image.setOnClickListener {
             fireApplink(holder.hotlist_image.context, list[position].applink)
-            CategoryAnalytics.createInstance().eventHotlistBannerClick(list[position], position)
+            CategoryAnalytics.createInstance().eventHotlistBannerClick(holder.itemView.context,list[position], position)
         }
 
     }
@@ -53,7 +53,7 @@ class HotlistAdapter(private val list: MutableList<ListItem>) : RecyclerView.Ada
         val position = holder.adapterPosition
         if (!viewMap.containsKey(position)) {
             viewMap[position] = true
-            CategoryAnalytics.createInstance().eventHotlistBannerView(list[position], position)
+            CategoryAnalytics.createInstance().eventHotlistBannerView(holder.itemView.context,list[position], position)
         }
     }
 

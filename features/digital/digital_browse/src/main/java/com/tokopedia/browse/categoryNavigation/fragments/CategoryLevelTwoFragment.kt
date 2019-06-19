@@ -116,7 +116,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     }
     private fun routeToCategoryLevelTwo(context: Context, categoryApplink: String) {
         RouteManager.route(context, categoryApplink)
-        CategoryAnalytics.createInstance().eventClickLihatSemua(label_lihat_semua.text.toString())
+        CategoryAnalytics.createInstance().eventClickLihatSemua(context,label_lihat_semua.text.toString())
 
     }
 

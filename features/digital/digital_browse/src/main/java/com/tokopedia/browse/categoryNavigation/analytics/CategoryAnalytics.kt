@@ -1,13 +1,18 @@
 package com.tokopedia.browse.categoryNavigation.analytics
 
+import android.content.Context
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.browse.categoryNavigation.data.model.category.CategoriesItem
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
 import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem
+import com.tokopedia.browse.categoryNavigation.view.CategoryBrowseActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
 class CategoryAnalytics {
+
+    val LAUNCH_PAGE_CATEGORY = "belanja/category"
+    val LAUNCH_PAGE_HOME = "belanja/home"
 
 
     companion object {
@@ -23,23 +28,25 @@ class CategoryAnalytics {
 
     //3
 
-    fun eventSearchBarClick() {
+    fun eventSearchBarClick(context: Context) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "clickTopNav",
-                "eventCategory", "top nav - belanja page",
+                "eventCategory", "top nav - " + getLaunchPageName(context),
                 "eventAction", "click search box",
                 "eventLabel", ""
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }
+
+
     // 53
 
-    fun eventPromoClick(product: ChildItem, position: Int) {
+    fun eventPromoClick(context: Context, product: ChildItem, position: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoClick",
-                "eventCategory", "belanja page",
+                "eventCategory", getLaunchPageName(context),
                 "eventAction", "click banner inside kategori pilihan",
                 "eventLabel", product.name,
                 "ecommerce", DataLayer.mapOf(
@@ -58,11 +65,11 @@ class CategoryAnalytics {
     // 54
 
 
-    fun eventPromoView(product: ChildItem, position: Int) {
+    fun eventPromoView(context: Context, product: ChildItem, position: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoView",
-                "eventCategory", "belanja page",
+                "eventCategory", getLaunchPageName(context),
                 "eventAction", "impression banner inside kategori pilihan",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
@@ -81,11 +88,11 @@ class CategoryAnalytics {
     // 55
 
 
-    fun eventCategoryLevelOneClick(product: CategoriesItem, position: Int) {
+    fun eventCategoryLevelOneClick(context: Context, product: CategoriesItem, position: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoClick",
-                "eventCategory", "belanja page",
+                "eventCategory", getLaunchPageName(context),
                 "eventAction", "click category on side bar",
                 "eventLabel", product.name,
                 "ecommerce", DataLayer.mapOf(
@@ -101,11 +108,11 @@ class CategoryAnalytics {
     }
 
 
-    fun eventCategoryLevelOneView(product: CategoriesItem, position: Int) {
+    fun eventCategoryLevelOneView(context: Context, product: CategoriesItem, position: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoView",
-                "eventCategory", "belanja page",
+                "eventCategory", getLaunchPageName(context),
                 "eventAction", "impression category on side bar",
                 "eventLabel", product.name,
                 "ecommerce", DataLayer.mapOf(
@@ -123,12 +130,12 @@ class CategoryAnalytics {
     // 57
 
 
-    fun eventClickLihatSemua(categoryName: String) {
+    fun eventClickLihatSemua(context: Context, categoryName: String) {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "clickCategory",
-                "eventCategory", "belanja page",
+                "eventCategory", getLaunchPageName(context),
                 "eventAction", "click lihat semua on category level 1",
                 "eventLabel", categoryName
         )
@@ -137,12 +144,12 @@ class CategoryAnalytics {
 
     //58
 
-    fun eventDropDownPromoClick(product: ChildItem, position: Int) {
+    fun eventDropDownPromoClick(context: Context, product: ChildItem, position: Int) {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoClick",
-                "eventCategory", "belanja page",
+                "eventCategory", getLaunchPageName(context),
                 "eventAction", "click banner inside category level 1",
                 "eventLabel", product.name,
                 "ecommerce", DataLayer.mapOf(
@@ -158,11 +165,11 @@ class CategoryAnalytics {
     }
 
 
-    fun eventDropDownPromoView(product: ChildItem, position: Int) {
+    fun eventDropDownPromoView(context: Context, product: ChildItem, position: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoView",
-                "eventCategory", "belanja page",
+                "eventCategory", getLaunchPageName(context),
                 "eventAction", "impression inside category level 1",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
@@ -178,12 +185,12 @@ class CategoryAnalytics {
     }
 
 
-    fun eventBannerInsideLevelTwoClick(product: ChildItem, position: Int) {
+    fun eventBannerInsideLevelTwoClick(context: Context, product: ChildItem, position: Int) {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoClick",
-                "eventCategory", "belanja page",
+                "eventCategory", getLaunchPageName(context),
                 "eventAction", "click banner inside category level 2",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
@@ -199,12 +206,12 @@ class CategoryAnalytics {
     }
 
 
-    fun eventBannerInsideLevelTwoView(product: ChildItem, position: Int) {
+    fun eventBannerInsideLevelTwoView(context: Context, product: ChildItem, position: Int) {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoView",
-                "eventCategory", "belanja page",
+                "eventCategory", getLaunchPageName(context),
                 "eventAction", "impression inside category level 2",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
@@ -220,12 +227,12 @@ class CategoryAnalytics {
     }
 
 
-    fun eventHotlistBannerClick(product: ListItem, position: Int) {
+    fun eventHotlistBannerClick(context: Context, product: ListItem, position: Int) {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoClick",
-                "eventCategory", "belanja page",
+                "eventCategory", getLaunchPageName(context),
                 "eventAction", "click on hotlist banner",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
@@ -242,12 +249,12 @@ class CategoryAnalytics {
     }
 
 
-    fun eventHotlistBannerView(product: ListItem, position: Int) {
+    fun eventHotlistBannerView(context: Context, product: ListItem, position: Int) {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoView",
-                "eventCategory", "belanja page",
+                "eventCategory", getLaunchPageName(context),
                 "eventAction", "impression on hotlist banner",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
@@ -263,12 +270,12 @@ class CategoryAnalytics {
 
     }
 
-    fun eventBackButtonClick() {
+    fun eventBackButtonClick(context: Context) {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "clickCategory",
-                "eventCategory", "belanja page",
+                "eventCategory", getLaunchPageName(context),
                 "eventAction", "click back",
                 "eventLabel", ""
         )
@@ -279,5 +286,12 @@ class CategoryAnalytics {
 
     // 65
 
+    private fun getLaunchPageName(context: Context): String {
+        return if (context is CategoryBrowseActivity) {
+            LAUNCH_PAGE_CATEGORY
+        } else {
+            LAUNCH_PAGE_HOME
+        }
+    }
 
 }

@@ -4,8 +4,15 @@
 
     <application>
         <activity
+            android:name=".categoryNavigation.view.BaseCategoryBrowseActivity"
+            android:label="@string/digital_browse_home_title"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".categoryNavigation.view.CategoryBrowseActivity"
             android:label="@string/digital_browse_home_title"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
 

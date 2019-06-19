@@ -24,6 +24,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.browse.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.browse.categoryNavigation.view.BaseCategoryBrowseActivity
 import com.tokopedia.browse.categoryNavigation.view.CategoryBrowseActivity
 import javax.inject.Inject
 
@@ -173,7 +174,7 @@ fun getCallingIntent(context: Context, extras: Bundle): Intent {
     if (!extras.containsKey(DigitalBrowseHomeActivity.EXTRA_TITLE)) {
         if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_BELANJA) {
             extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_BELANJA)
-            intent = Intent(context, CategoryBrowseActivity::class.java)
+            intent = Intent(context, BaseCategoryBrowseActivity::class.java)
         } else if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_LAYANAN) {
             extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_LAYANAN)
         }

@@ -162,7 +162,9 @@
             android:name=".similarsearch.view.SimilarSearchActivity"
             android:label=""
             android:theme="@style/noAnimTheme" />
-        <activity android:name=".newdiscovery.category.presentation.CategoryActivity"></activity>
+        <activity android:name=".newdiscovery.category.presentation.CategoryActivity"
+            android:launchMode="singleTask"
+            />
     </application>
 
 </manifest>

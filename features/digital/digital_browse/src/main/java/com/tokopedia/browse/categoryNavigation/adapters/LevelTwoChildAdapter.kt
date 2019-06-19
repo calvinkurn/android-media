@@ -37,7 +37,7 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?) : RecyclerView.Ad
         }
 
         holder.productImage.setOnClickListener {
-            CategoryAnalytics.createInstance().eventBannerInsideLevelTwoClick(list[position], position)
+            CategoryAnalytics.createInstance().eventBannerInsideLevelTwoClick(holder.itemView.context,list[position], position)
             RouteManager.route(holder.productImage.context, list[position].applinks)
         }
         holder.productName.setOnClickListener {
@@ -50,7 +50,7 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?) : RecyclerView.Ad
         val position = holder.adapterPosition
         if (!viewMap.containsKey(position)) {
             viewMap[position] = true
-            CategoryAnalytics.createInstance().eventBannerInsideLevelTwoView(list?.get(position)!!, position)
+            CategoryAnalytics.createInstance().eventBannerInsideLevelTwoView(holder.itemView.context,list?.get(position)!!, position)
         }
     }
 
