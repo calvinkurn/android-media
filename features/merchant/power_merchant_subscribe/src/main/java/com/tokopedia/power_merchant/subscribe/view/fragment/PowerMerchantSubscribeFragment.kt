@@ -311,7 +311,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             if (isAutoExtend()) {
                 hideButtonActivatedPm()
             } else {
-                showButtonActivatedPm()
+                showButtonActivatePm()
                 showExpiredDateTickerYellow()
             }
         }
@@ -327,7 +327,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             } else {
                 if (isAutoExtend()) {
                     hideButtonActivatedPm()
+                    ticker_yellow_container.visibility = View.GONE
                 }
+                showButtonActivatePm()
                 ticker_blue_container.visibility = View.VISIBLE
                 txt_ticker_yellow.text = getString(R.string.pm_label_cancellation_duration)
                 ticker_yellow_container.visibility = View.VISIBLE
@@ -337,6 +339,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 hideButtonActivatedPm()
                 ticker_yellow_container.visibility = View.VISIBLE
             }
+            showButtonActivatePm()
         } else {
             showButtonActivatePm()
             ticker_yellow_container.visibility = View.GONE
@@ -352,12 +355,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     private fun showButtonActivatePm() {
         ll_footer_submit.visibility = View.VISIBLE
     }
-
-
-    private fun showButtonActivatedPm() {
-        ll_footer_submit.visibility = View.VISIBLE
-    }
-
 
     override fun onDestroy() {
         super.onDestroy()
