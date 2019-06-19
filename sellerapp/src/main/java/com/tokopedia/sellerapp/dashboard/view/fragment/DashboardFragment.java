@@ -360,7 +360,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                                              ShopStatusModel shopStatusModel,
                                              ShopScoreResult shopScoreResult) {
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
-        updateShopInfo(shopModel, shopStatusModel, shopScoreResult.getData().getValue());
+        updateShopInfo(shopModel, shopStatusModel);
         updateReputation(shopModel);
         updateTransaction(shopModel);
         updateViewShopOpen(shopModel);
@@ -411,7 +411,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             showcases.add(new ShowCaseObject(
                     headerLabelLayout,
                     getString(R.string.showcase_title_1_power_merchant),
-                    getString(R.string.showcase_desc_1_power_merchant)));
+                    getString(R.string.showcase_desc_1_power_merchant));
             showcases.add(new ShowCaseObject(
                     shopScoreWidget,
                     getString(R.string.showcase_title_2_power_merchant),
@@ -473,7 +473,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         }
     }
 
-    private void updateShopInfo(ShopModel shopModel, ShopStatusModel shopStatusModel, int shopScore) {
+    private void updateShopInfo(ShopModel shopModel, ShopStatusModel shopStatusModel) {
         userSession.setIsGoldMerchant(!shopStatusModel.isRegularMerchant());
 
         Info shopModelInfo = shopModel.info;
@@ -486,14 +486,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             ivShopMembershipLogo.setVisibility(View.GONE);
             tvShopMembershipTitle.setText(R.string.label_regular_merchant);
             tvShopMembershipStatus.setVisibility(View.GONE);
-            if (shopStatusModel.isTransitionPeriod()) {
-                tickerContainer.setVisibility(View.GONE);
-                buttonActivatePowerMerchant.setVisibility(View.GONE);
-            } else {
-                tickerContainer.setVisibility(View.VISIBLE);
-                buttonActivatePowerMerchant.setVisibility(View.VISIBLE);
-                ((TextView)tickerContainer.findViewById(R.id.tv_ticker)).setText(R.string.regular_merchant_ticker);
-            }
+            buttonActivatePowerMerchant.setVisibility(View.VISIBLE);
+            tickerContainer.setVisibility(View.VISIBLE);
+            ((TextView)tickerContainer.findViewById(R.id.tv_ticker)).setText(
+                    MethodChecker.fromHtml(getString(R.string.regular_merchant_ticker)));
         } else if (shopStatusModel.isOfficialStore()) {
             ivShopMembershipLogo.setVisibility(View.VISIBLE);
             ivShopMembershipLogo.setImageResource(R.drawable.ic_badge_shop_official);
@@ -524,7 +520,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                     }
                 };
                 String tickerString = getString(R.string.power_merchant_ticker_with_tip);
-                tvTicker.setText(tickerString);
+                tvTicker.setText(MethodChecker.fromHtml(tickerString));
                 setTextViewClickSpan(tvTicker, tickerString, getString(R.string.tip_increase_score), onClickListener);
             }
         }
