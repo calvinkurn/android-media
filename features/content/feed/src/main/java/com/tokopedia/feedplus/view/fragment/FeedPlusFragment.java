@@ -1483,11 +1483,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList) {
+    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList, boolean isClick) {
         for (TrackingViewModel track : trackList) {
-            presenter.trackAffiliate(track.getClickURL());
+            if (isClick) {
+                presenter.trackAffiliate(track.getClickURL());
+            } else  {
+                presenter.trackAffiliate(track.getViewURL());
+            }
         }
     }
+
 
     @Override
     public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition,
@@ -1649,12 +1654,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 trackingPostModel);
                     }
                 }
+                onAffiliateTrackClicked(postViewModel.getTracking(), false);
 
             } else if (visitable instanceof BannerViewModel) {
                 BannerViewModel bannerViewModel = (BannerViewModel) visitable;
                 ArrayList<TrackingBannerModel> trackingBannerModels = new ArrayList<>();
                 for (BannerItemViewModel banner : bannerViewModel.getItemViewModels()) {
                     trackingBannerModels.add(banner.getTrackingBannerModel());
+                    onAffiliateTrackClicked(banner.getTracking(), false);
                 }
                 analytics.eventBannerImpression(trackingBannerModels, userId);
             } else if (visitable instanceof FeedRecommendationViewModel) {
@@ -1663,6 +1670,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 ArrayList<TrackingRecommendationModel> trackingList = new ArrayList<>();
                 for (RecommendationCardViewModel card : recommendationViewModel.getCards()) {
                     trackingList.add(card.getTrackingRecommendationModel());
+                    onAffiliateTrackClicked(card.getTracking(), false);
                 }
                 analytics.eventRecommendationImpression(
                         trackingList,
@@ -1674,6 +1682,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         topadsShopViewModel.getTrackingList(),
                         userId
                 );
+                onAffiliateTrackClicked(topadsShopViewModel.getTracking(), false);
             }
         }
     }
