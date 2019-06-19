@@ -94,10 +94,10 @@ public class ShipmentMapper implements IShipmentMapper {
                 egoldAttributeModel.setTooltipText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getTooltipText());
             }
 
-            EgoldTieringModel egoldTieringModel;
-            ArrayList<EgoldTieringModel> egoldTieringModelArrayList = new ArrayList<>();
-
             if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldTieringDataArrayList() != null) {
+                EgoldTieringModel egoldTieringModel;
+                ArrayList<EgoldTieringModel> egoldTieringModelArrayList = new ArrayList<>();
+
                 for (EgoldTieringData data : shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldTieringDataArrayList()) {
                     egoldTieringModel = new EgoldTieringModel();
                     egoldTieringModel.setBasisAmount(data.getBasisAmount());
@@ -106,9 +106,8 @@ public class ShipmentMapper implements IShipmentMapper {
                     egoldTieringModel.setMinTotalAmount(data.getMinToalAmount());
                     egoldTieringModelArrayList.add(egoldTieringModel);
                 }
+                egoldAttributeModel.setEgoldTieringModelArrayList(egoldTieringModelArrayList);
             }
-
-            egoldAttributeModel.setEgoldTieringModelArrayList(egoldTieringModelArrayList);
 
             dataResult.setEgoldAttributes(egoldAttributeModel);
         }

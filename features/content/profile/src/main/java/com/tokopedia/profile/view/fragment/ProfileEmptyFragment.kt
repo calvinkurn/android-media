@@ -103,9 +103,6 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     override fun goToFollowing() {
     }
 
-    override fun followUnfollowUser(userId: Int, follow: Boolean) {
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
