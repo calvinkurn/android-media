@@ -54,7 +54,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public GTMAnalytics(Context context) {
         super(context);
-        iris = IrisAnalytics.Companion.init(context);
+        iris = IrisAnalytics.Companion.getInstance(context);
     }
 
     @Override
