@@ -165,7 +165,6 @@
         style="@style/Button.Submit.Green.Full"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_30"
         android:text="@string/pm_label_bottom_sheet_cancel_button" />
 
 </LinearLayout>
