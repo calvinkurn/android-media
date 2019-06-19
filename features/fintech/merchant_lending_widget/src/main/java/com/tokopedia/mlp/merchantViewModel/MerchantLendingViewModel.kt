@@ -14,7 +14,7 @@ class MerchantLendingViewModel @Inject constructor(var merchantUsecase: Merchant
 
 
     fun bound() {
-        merchantUsecase.execute(object : Subscriber<LeWidgetData>() {
+        merchantUsecase.execute(object : Subscriber<LeWidgetData?>() {
             override fun onCompleted() {
                 Log.d("MerchantLendingFragment", "oncomplete")
             }

@@ -12,5 +12,5 @@ data class WidgetsItem(
 	val header: Header? = null,
 
 	@SerializedName("body")
-	val body: List<BodyItem?>? = null
+	val body: BodyItem? = null
 )

@@ -6,53 +6,59 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <ImageView
-        android:id="@+id/iv_bottomsheet"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/iv_cancel"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@color/green_1000"
-        android:layout_marginTop="@dimen/dp_10"
+        android:src="@drawable/ic_action_x"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginLeft="@dimen/dp_20"
         />
 
     <TextView
-        android:id="@+id/tv_title_bottomsheet"
+        android:id="@+id/tv_title_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:layout_marginTop="@dimen/dp_10"
-        tools:text="Pencairan Dana Tidak Dapat Dilakukan Untuk Sementera"
-        app:layout_constraintTop_toBottomOf="@+id/iv_bottomsheet"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="18sp"
+        android:textColor="#f531353b"
+        android:lineSpacingExtra="6sp"
+        android:layout_marginLeft="4dp"
+        tools:text="Menunggu Proses Verifikasi"
+        app:layout_constraintStart_toEndOf="@id/iv_cancel"
+        app:layout_constraintTop_toTopOf="@id/iv_cancel"
+        app:layout_constraintBottom_toBottomOf="@id/iv_cancel"
         />
-
     <TextView
-        android:id="@+id/tv_details_bottomsheet"
+        android:id="@+id/tv_detail_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/tv_title_bottomsheet"
-        app:layout_constraintTop_toBottomOf="@id/tv_title_bottomsheet"
-        tools:text="Pencairan Dana Tidak Dapat Dilakukan Untuk Sementera Pencairan Dana Tidak Dapat Dilakukan Untuk Sementera Pencairan Dana Tidak Dapat Dilakukan Untuk Sementera "
+        android:textSize="14sp"
+        android:textColor="#ae31353b"
+        android:lineSpacingExtra="6sp"
+        app:layout_constraintTop_toBottomOf="@id/iv_cancel"
+        app:layout_constraintStart_toStartOf="@id/iv_cancel"
+        android:layout_marginTop="21dp"
+        tools:text="Pengajuan sedang kami proses. Lama proses verifikasi maksimum 1x24 jam sejak dokumen dikirim"
         />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:padding="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/bg_button_green_enabled"
-        app:layout_constraintTop_toBottomOf="@+id/tv_details_bottomsheet"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="12sp"
-        android:textColor="@color/white"
-        android:text="Kembali Ke Helama"
-        />
+        <Button
+            android:id="@+id/button_bottomsheet"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_width="288dp"
+            android:layout_height="40dp"
+            tools:text="Saya Yakin"
+            android:layout_weight="1"
+            android:padding="@dimen/dp_11"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_detail_bottom"
+            android:background="@drawable/bg_button_green"
+            android:layout_marginRight="@dimen/dp_16"
+            android:textColor="@color/white"
+
+            />
+
 
 </android.support.constraint.ConstraintLayout>

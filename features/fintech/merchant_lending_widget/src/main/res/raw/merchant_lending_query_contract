@@ -28,6 +28,7 @@ query LeWidget(){
           label
           value
         }
+        url
       }
       bottom_sheet{
         id

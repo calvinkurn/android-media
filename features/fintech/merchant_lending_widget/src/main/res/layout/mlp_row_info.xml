@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black_38"
         android:textSize="12sp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Limit Tersedia" />
@@ -24,6 +25,8 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black_70"
         android:textSize="12sp"
+        android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Rp 50.000.000" />

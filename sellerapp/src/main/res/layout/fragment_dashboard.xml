@@ -37,10 +37,16 @@
                 <include layout="@layout/partial_dashboard_header" />
 
             </com.tokopedia.design.loading.LoadingStateView>
+            
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:background="#3d000000"
+                />
 
             <fragment
                 android:id="@+id/mlp"
-                class="com.tokopedia.mlp.fragment.MerchantLendingFragment"
+                android:name="com.tokopedia.mlp.fragment.MerchantLendingFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

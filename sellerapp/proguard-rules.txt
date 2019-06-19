@@ -126,7 +126,6 @@
 }
 -keep class com.google.android.gms.gcm.**{ *; }
 
--keep public class com.tokopedia.mlp.fragment.MerchantLendingFragment
 -keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
     public static final *** NULL;
 }

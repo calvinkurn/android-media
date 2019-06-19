@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -22,7 +22,7 @@
 
     <TextView
         android:id="@+id/text_body_title"
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp_5"
         android:layout_marginTop="10dp"
@@ -32,12 +32,12 @@
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="2 Pinjaman Terlambat Dibayar" />
 
     <TextView
         android:id="@+id/text_body_content"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_3"
         android:paddingLeft="@dimen/dp_16"
@@ -49,5 +49,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_body_title"
         tools:text="Tarik hasil penjualan hingga Rp10.000.000 tanpa menunggu konfirmasi penerimaan dari pembeli." />
+
 
 </android.support.constraint.ConstraintLayout>

@@ -8,13 +8,16 @@
     android:padding="8dp">
 
 
+
     <ImageView
         android:layout_marginLeft="@dimen/dp_10"
         android:id="@+id/header_logo"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        />
 
     <TextView
         android:id="@+id/text_title"
@@ -28,7 +31,9 @@
         app:layout_constraintStart_toEndOf="@+id/header_logo"
         app:layout_constraintTop_toTopOf="@+id/header_logo"
         app:layout_constraintBottom_toBottomOf="@+id/header_logo"
-        tools:text="Modal Toko" />
+        tools:text="Modal Toko"
+        android:visibility="gone"
+        />
 
     <TextView
         android:id="@+id/text_badge"
@@ -42,7 +47,9 @@
         app:layout_constraintBottom_toBottomOf="@+id/text_title"
         app:layout_constraintStart_toEndOf="@+id/text_title"
         app:layout_constraintTop_toTopOf="@+id/text_title"
-        tools:text="New" />
+        tools:text="New"
+        android:visibility="gone"
+        />
 
     <ViewFlipper
         android:id="@+id/flip_switch"
@@ -50,6 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/dp_10"
         android:measureAllChildren="true"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/text_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/text_title">
@@ -60,18 +68,19 @@
             android:layout_height="wrap_content"
             app:thumbTint="#FFFFFF"
             app:trackTint="#42b549"
+            android:visibility="gone"
 
             />
 
         <TextView
             android:id="@+id/text_side"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/medium_green"
             android:textSize="12sp"
-            android:visibility="gone"
             tools:text="Side Text" />
 
 
@@ -85,14 +94,17 @@
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginBottom="@dimen/dp_5"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_title">
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/box_container"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/info_container"

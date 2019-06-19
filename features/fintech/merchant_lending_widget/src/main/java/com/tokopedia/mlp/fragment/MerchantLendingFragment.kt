@@ -5,11 +5,11 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.example.merchant_lending_widget.R
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.mlp.adapter.MLPWidgetAdapter
@@ -21,7 +21,7 @@ import com.tokopedia.mlp.merchantViewModel.MerchantLendingViewModel
 import kotlinx.android.synthetic.main.mlp_widget_container.*
 import javax.inject.Inject
 
-public class MerchantLendingFragment : BaseDaggerFragment() {
+class MerchantLendingFragment : BaseDaggerFragment() {
 
     lateinit var drawable: Drawable
 
@@ -63,9 +63,13 @@ public class MerchantLendingFragment : BaseDaggerFragment() {
 
     private fun initViewContainer() {
         val linearLayoutmanager = LinearLayoutManager(context)
+
         val boxAdapter = MLPWidgetAdapter(widgetList, this.context!!)
         widget_container.layoutManager = linearLayoutmanager
         widget_container.adapter = boxAdapter
+        val dividerItemDecoration = DividerItemDecoration(widget_container.getContext(),
+                linearLayoutmanager.getOrientation())
+        widget_container.addItemDecoration(dividerItemDecoration)
     }
 
     fun initViewModel() {
@@ -81,7 +85,6 @@ public class MerchantLendingFragment : BaseDaggerFragment() {
             for (widgetNo in 0 until lengthDataLeWidget) {
 
                 it.leWidget.widgets.let {
-
                     widgetList.clear()
                     widgetList.addAll(it as ArrayList<WidgetsItem>)
                     widget_container.adapter.notifyDataSetChanged()
