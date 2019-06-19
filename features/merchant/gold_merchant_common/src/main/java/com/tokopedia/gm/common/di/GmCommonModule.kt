@@ -51,7 +51,8 @@ class GmCommonModule {
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor)
-                    .addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(httpLoggingInterceptor.apply
+                    { level = HttpLoggingInterceptor.Level.BODY })
         }
         return builder.build()
     }
