@@ -51,4 +51,80 @@
             android:textColor="@color/font_black_secondary_54"
             android:textSize="@dimen/fontvs" />
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/layout_grey_popup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_54">
+
+    </FrameLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_feed"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:backgroundTint="@color/tkpd_main_green"
+        app:srcCompat="@drawable/ic_feed_post_plus"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_feed_1"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_above="@id/fab_feed"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:visibility="invisible"
+        app:backgroundTint="@color/white"
+        app:srcCompat="@drawable/ic_feed_post_byme"/>
+
+
+    <TextView
+        android:id="@+id/text_fab_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/feed_create_post_byme"
+        android:layout_toLeftOf="@id/fab_feed_1"
+        android:layout_alignTop="@id/fab_feed_1"
+        android:layout_alignBottom="@id/fab_feed_1"
+        android:textColor="@color/white"
+        android:layout_marginRight="@dimen/dp_12"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_feed_2"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_above="@id/fab_feed_1"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:visibility="invisible"
+        app:backgroundTint="@color/white"
+        app:srcCompat="@drawable/ic_feed_post_shop"/>
+
+    <TextView
+        android:id="@+id/text_fab_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/feed_create_post_shop"
+        android:layout_toLeftOf="@id/fab_feed_2"
+        android:layout_alignTop="@id/fab_feed_2"
+        android:layout_alignBottom="@id/fab_feed_2"
+        android:textColor="@color/white"
+        android:layout_marginRight="@dimen/dp_12"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"/>
+
+
 </RelativeLayout>

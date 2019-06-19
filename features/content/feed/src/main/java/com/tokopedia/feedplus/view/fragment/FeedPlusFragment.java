@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -84,7 +89,6 @@ import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
@@ -98,6 +102,7 @@ import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
+import com.tokopedia.kolcommon.data.pojo.Author;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -169,6 +174,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private View newFeed;
     private FeedModuleRouter feedModuleRouter;
     private BroadcastReceiver newFeedReceiver;
+    private FloatingActionButton fabFeed, fabByme, fabShop;
+    private TextView fabTextByme, fabTextShop;
+    private FrameLayout greyBackground;
 
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
@@ -306,6 +314,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
+        fabFeed = parentView.findViewById(R.id.fab_feed);
+        fabShop = parentView.findViewById(R.id.fab_feed_2);
+        fabByme = parentView.findViewById(R.id.fab_feed_1);
+        fabTextByme = parentView.findViewById(R.id.text_fab_1);
+        fabTextShop = parentView.findViewById(R.id.text_fab_2);
+        greyBackground = parentView.findViewById(R.id.layout_grey_popup);
 
         prepareView();
         presenter.attachView(this);
@@ -313,7 +327,21 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     }
 
+    private void hideAllFAB(boolean isInitial) {
+        if (isInitial) {
+            fabFeed.hide();
+        } else {
+            fabFeed.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward));
+        }
+        fabShop.hide();
+        fabByme.hide();
+        fabTextByme.setVisibility(View.GONE);
+        fabTextShop.setVisibility(View.GONE);
+        greyBackground.setVisibility(View.GONE);
+    }
+
     private void prepareView() {
+        hideAllFAB(true);
         adapter.setItemTreshold(2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -428,12 +456,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
+    public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed, WhitelistViewModel whitelistViewModel) {
         trackFeedImpression(listFeed);
 
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         triggerClearNewFeedNotification();
+        if (whitelistViewModel != null && !whitelistViewModel.getWhitelist().getAuthors().isEmpty()) {
+            showFeedFAB(whitelistViewModel);
+        }
     }
 
     @Override
@@ -715,6 +746,34 @@ public class FeedPlusFragment extends BaseDaggerFragment
             LocalBroadcastManager
                     .getInstance(getActivity().getApplicationContext())
                     .unregisterReceiver(newFeedReceiver);
+        }
+    }
+
+    private void showFeedFAB(WhitelistViewModel whitelistViewModel) {
+        fabFeed.show();
+        if (whitelistViewModel.getWhitelist().getAuthors().size() != 1) {
+            fabFeed.setOnClickListener(v -> {
+                fabFeed.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward));
+                greyBackground.setVisibility(View.VISIBLE);
+                for (Author author : whitelistViewModel.getWhitelist().getAuthors()) {
+                    if (author.getTitle().equalsIgnoreCase("post toko")) {
+                        fabShop.show();
+                        fabTextShop.setVisibility(View.VISIBLE);
+                        fabShop.setOnClickListener(v1 -> onGoToLink(author.getLink()));
+                    } else {
+                        fabByme.show();
+                        fabTextByme.setVisibility(View.VISIBLE);
+                        fabByme.setOnClickListener(v12 -> onGoToLink(author.getLink()));
+                    }
+                }
+                greyBackground.setOnClickListener(v3 -> {
+                    hideAllFAB(false);
+                });
+            });
+
+        } else {
+            Author author = whitelistViewModel.getWhitelist().getAuthors().get(0);
+            fabFeed.setOnClickListener(v -> onGoToLink(author.getLink()));
         }
     }
 
