@@ -1,5 +1,5 @@
 query goalP2PThanks($transfer_id: String!){
-      goalP2PThanks(transfer_id: $transfer) {
+      goalP2PThanks(transfer_id: $transfer_id) {
           transfer_id
           transaction_id
           status

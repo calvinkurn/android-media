@@ -47,19 +47,19 @@ object OvoP2pUtil {
     }
 
     fun executeOvoP2pTransferConfirm(context: Context, subscriber: Subscriber<GraphqlResponse>, gqlMutationDataMap: HashMap<String, Any>) {
-        val ovoP2pTransferRequestUseCase = GraphqlUseCase()
+        val ovoP2pTransferConfirmUseCase = GraphqlUseCase()
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.ovo_p2p_transfer_confirm),
                 OvoP2pTransferConfirmBase::class.java, gqlMutationDataMap)
-        ovoP2pTransferRequestUseCase.addRequest(graphqlRequest)
-        ovoP2pTransferRequestUseCase.execute(subscriber)
+        ovoP2pTransferConfirmUseCase.addRequest(graphqlRequest)
+        ovoP2pTransferConfirmUseCase.execute(subscriber)
     }
 
     fun executeOvoP2pTransferThankyou(context: Context, subscriber: Subscriber<GraphqlResponse>, gqlMutationDataMap: HashMap<String, Any>) {
-        val ovoP2pTransferRequestUseCase = GraphqlUseCase()
+        val ovoP2pTransferThankyouUseCase = GraphqlUseCase()
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.ovo_p2p_thank_you_page),
                 OvoP2pTransferThankyouBase::class.java, gqlMutationDataMap)
-        ovoP2pTransferRequestUseCase.addRequest(graphqlRequest)
-        ovoP2pTransferRequestUseCase.execute(subscriber)
+        ovoP2pTransferThankyouUseCase.addRequest(graphqlRequest)
+        ovoP2pTransferThankyouUseCase.execute(subscriber)
     }
 
     fun extractNumbersFromString(srcStr: String): String{

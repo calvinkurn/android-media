@@ -1,38 +1,76 @@
 package com.tokopedia.ovop2p.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
+import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
+import com.tokopedia.ovop2p.view.activity.OvoP2PFormActivity
 
 class FragmentTransactionSuccessNonOvoUser: BaseDaggerFragment(), View.OnClickListener {
 
     private lateinit var txtvSucs: TextView
     private lateinit var tryAgn: TextView
     private lateinit var bckToApp: TextView
+    private lateinit var sucsMsg: TextView
+    private var phnNo: String = ""
 
     override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        getComponent<OvoP2pTransferComponent>(OvoP2pTransferComponent::class.java).inject(this)
     }
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Constants.ScreenName.FRAGMENT_THANKYOU_NON_OVO_USER
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.transaction_success_non_ovo, container,false)
         txtvSucs = view.findViewById(R.id.sucs_msg)
-        tryAgn = view.findViewById(R.id.try_agn)
+        tryAgn = view.findViewById(R.id.send_agn)
         tryAgn.setOnClickListener(this)
         bckToApp = view.findViewById(R.id.back_to_app)
         bckToApp.setOnClickListener(this)
+        sucsMsg = view.findViewById(R.id.sucs_msg)
+        phnNo = arguments?.getString(Constants.Keys.TO_PHN_NO, "") ?: ""
+        createSucsMsg()
         return view
     }
 
     override fun onClick(v: View?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var id: Int = v?.id ?: -1
+        if(id != -1){
+            when(id){
+                R.id.back_to_app -> {
+                    activity?.finish()
+                }
+                R.id.send_agn -> {
+                    //relaunch the form activity
+                    var intent: Intent = Intent(activity, OvoP2PFormActivity::class.java)
+                    activity?.startActivity(intent)
+                    activity?.finish()
+                }
+            }
+        }
+    }
+
+    private fun createSucsMsg(){
+        sucsMsg.text = Constants.Messages.NONOVO_USR_SUCS_MSG.replace(Constants.PlaceHolders.PHONE_NO_PLCHLDR, phnNo)
+    }
+
+    companion object{
+        fun newInstance(): FragmentTransactionSuccessNonOvoUser {
+            return FragmentTransactionSuccessNonOvoUser()
+        }
+
+        fun newInstance(bundle: Bundle): FragmentTransactionSuccessNonOvoUser {
+            val fragmentSucsNonOvo = newInstance()
+            fragmentSucsNonOvo.setArguments(bundle)
+            return fragmentSucsNonOvo
+        }
     }
 }

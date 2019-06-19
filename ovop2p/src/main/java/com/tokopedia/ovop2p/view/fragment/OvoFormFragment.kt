@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.TextUtils
@@ -22,7 +23,9 @@ import com.tokopedia.ovop2p.model.OvoP2pTransferRequestBase
 import com.tokopedia.ovop2p.model.WalletDataBase
 import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.activity.AllContactsActivity
+import com.tokopedia.ovop2p.view.activity.OvoP2pWebViewActivity
 import com.tokopedia.ovop2p.view.adapters.ContactsCursorAdapter
+import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
 import com.tokopedia.ovop2p.viewmodel.GetWalletBalanceViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTransferRequestViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTrxnConfirmVM
@@ -42,6 +45,9 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     lateinit var ovoP2pTransferRequestViewModel: OvoP2pTransferRequestViewModel
     lateinit var ovoP2pTransferConfirmViewModel: OvoP2pTrxnConfirmVM
     lateinit var trnsfrReqDataMap: HashMap<String, Any>
+    private var rcvrPhnNo: String = ""
+    private var rcvrAmt: Int = 0
+    private var rcvrMsg: String = ""
 
     override fun onClick(v: View?) {
         var id: Int = v?.id ?: -1
@@ -49,6 +55,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
             when(id){
                 R.id.proceed -> {
                     //make request call
+                    (activity as LoaderUiListener).showProgressDialog()
                     context?.let { ovoP2pTransferRequestViewModel.makeTransferRequestCall(it, trnsfrReqDataMap) }
                 }
                 R.id.iv_contact -> {
@@ -85,7 +92,9 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
         var view: View = inflater.inflate(R.layout.ovo_p2p_transfer_form, container,false)
         searchView = view.findViewById(R.id.search_no)
         searchView.onFocusChangeListener = this
-        searchView.setOnQueryTextListener(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            searchView.setOnQueryTextListener(this)
+        }
         saldoTextView = view.findViewById(R.id.saldo)
         trnsfrAmtEdtxtv = view.findViewById(R.id.trnsfr_amt_edtv)
         msgEdtxtv = view.findViewById(R.id.msg)
@@ -106,6 +115,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
                 walletBalanceViewModel = ViewModelProviders.of(this.activity!!).get(GetWalletBalanceViewModel::class.java)
                 walletBalanceViewModel.walletLiveData?.observe(this.activity!!, Observer <WalletDataBase>{
                     if(it != null){
+                        (activity as LoaderUiListener).hideProgressDialog()
                         saldoTextView.text = it.wallet?.balance ?: ""
                     }
                 })
@@ -119,6 +129,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
                 ovoP2pTransferRequestViewModel = ViewModelProviders.of(this.activity!!).get(OvoP2pTransferRequestViewModel::class.java)
                 ovoP2pTransferRequestViewModel.ovoP2pTransferRequestBaseMutableLiveData?.observe(this.activity!!, Observer <OvoP2pTransferRequestBase>{
                     if(it != null){
+                        (activity as LoaderUiListener).hideProgressDialog()
                         if(!TextUtils.isEmpty(it.ovoP2pTransferRequest.dstAccName)){
                             //show non ovo user confirmation dialog
                             showNonOvoUserConfirmDialog()
@@ -139,18 +150,24 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
                 ovoP2pTransferConfirmViewModel = ViewModelProviders.of(this.activity!!).get(OvoP2pTrxnConfirmVM::class.java)
                 ovoP2pTransferConfirmViewModel.txnConfirmMutableLiveData?.observe(this.activity!!, Observer <OvoP2pTransferConfirmBase>{
                     if(it != null){
-                        if(it.ovoP2pTransferConfirm.errors != null){
+                        (activity as LoaderUiListener).hideProgressDialog()
+                        if(it.ovoP2pTransferConfirm!!.errors != null){
                             //show error page
                         }
-                        else if(!it.ovoP2pTransferConfirm.rcvrLink){
+                        else if(!it.ovoP2pTransferConfirm!!.rcvrLink){
                             //show now ovo success page
                         }
-                        else if(it.ovoP2pTransferConfirm.rcvrLink){
-                            if(!TextUtils.isEmpty(it.ovoP2pTransferConfirm.pinUrl)) {
+                        else if(it.ovoP2pTransferConfirm!!.rcvrLink){
+                            if(!TextUtils.isEmpty(it.ovoP2pTransferConfirm!!.pinUrl)) {
                                 //launch web view
+                                if(context != null) {
+                                    var intent: Intent = OvoP2pWebViewActivity.getWebViewIntent(context!!, it.ovoP2pTransferConfirm!!.pinUrl,
+                                            Constants.Headers.TRANSFER_FORM_HEADER)
+                                    activity?.startActivity(intent)
+                                }
                             }
                             else{
-                                it.ovoP2pTransferConfirm.transferId
+                                it.ovoP2pTransferConfirm!!.transferId
                                 // go to thankyou activity
                             }
                         }

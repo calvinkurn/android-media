@@ -90,8 +90,8 @@
         android:id="@+id/cntnr_vw"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_72"
-        android:layout_marginLeft="@dimen/dp_7"
-        android:layout_marginRight="@dimen/dp_7"
+        android:layout_marginLeft="@dimen/dp_26"
+        android:layout_marginRight="@dimen/dp_26"
         android:background="@drawable/border_transparent_inside"
         app:layout_constraintBottom_toBottomOf="@+id/saldo"
         app:layout_constraintTop_toTopOf="@+id/ovo_cash" />

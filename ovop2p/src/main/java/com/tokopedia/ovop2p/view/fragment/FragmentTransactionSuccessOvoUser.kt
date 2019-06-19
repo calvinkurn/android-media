@@ -1,6 +1,9 @@
 package com.tokopedia.ovop2p.view.fragment
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +11,17 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
+import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
+import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
+import com.tokopedia.ovop2p.viewmodel.OvoP2pTxnThankYouOvoUsrVM
 
-class FragmentTransactionSuccessOvoUser: BaseDaggerFragment(), View.OnClickListener {
+class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
-    private lateinit var date:TextView
-    private lateinit var trnsfrAmt:TextView
-    private lateinit var infoDesc:TextView
+    private lateinit var date: TextView
+    private lateinit var trnsfrAmt: TextView
+    private lateinit var infoDesc: TextView
     private lateinit var sndrName: TextView
     private lateinit var sndrNum: TextView
     private lateinit var rcvrName: TextView
@@ -22,17 +29,19 @@ class FragmentTransactionSuccessOvoUser: BaseDaggerFragment(), View.OnClickListe
     private lateinit var seeDtl: TextView
     private lateinit var backToApp: Button
     private lateinit var infoIcon: ImageView
+    private var transferId: String = ""
+    private lateinit var txnThankYouPageVM: OvoP2pTxnThankYouOvoUsrVM
 
     override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        getComponent<OvoP2pTransferComponent>(OvoP2pTransferComponent::class.java).inject(this)
     }
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Constants.ScreenName.FRAGMENT_THANKYOU_OVO_USER
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var view = inflater.inflate(R.layout.transaction_success_page, container,false)
+        var view = inflater.inflate(R.layout.transaction_success_page, container, false)
         date = view.findViewById(R.id.date)
         trnsfrAmt = view.findViewById(R.id.trnsfr_amt)
         trnsfrAmt.setOnClickListener(this)
@@ -48,10 +57,63 @@ class FragmentTransactionSuccessOvoUser: BaseDaggerFragment(), View.OnClickListe
         backToApp.setOnClickListener(this)
         infoIcon = view.findViewById(R.id.info_icon)
         infoIcon.setOnClickListener(this)
+        createAndSubscribeToThankYouVM()
+        getTransferid()
         return view
     }
 
+    private fun getTransferid() {
+        transferId = arguments?.getString(Constants.Keys.TRANSFER_ID) ?: ""
+    }
+
+    private fun createAndSubscribeToThankYouVM() {
+        if (!::txnThankYouPageVM.isInitialized) {
+            if (activity != null) {
+                txnThankYouPageVM = ViewModelProviders.of(this.activity!!).get(OvoP2pTxnThankYouOvoUsrVM::class.java)
+                txnThankYouPageVM.ovoP2pTransferThankyouBaseMutableLiveData?.observe(this.activity!!, Observer<OvoP2pTransferThankyouBase> {
+                    if(it != null){
+                        if(TextUtils.isEmpty(it.ovoP2pTransferThankyou.errors.message)){
+                            assignThankYouData(it)
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+    private fun assignThankYouData(thankYouData: OvoP2pTransferThankyouBase) {
+        date.text = thankYouData.ovoP2pTransferThankyou.trnsfrDate
+        trnsfrAmt.text = thankYouData.ovoP2pTransferThankyou.amt.toString()
+        sndrName.text = thankYouData.ovoP2pTransferThankyou.source.name
+        sndrNum.text = thankYouData.ovoP2pTransferThankyou.source.phone
+        rcvrName.text = thankYouData.ovoP2pTransferThankyou.soure1.name
+        rcvrNum.text = thankYouData.ovoP2pTransferThankyou.soure1.phone
+
+    }
+
     override fun onClick(v: View?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var id: Int = v?.id ?: -1
+        if (id != -1) {
+            when (id) {
+                R.id.see_dtl -> {
+                    //go to see detail fragment
+                }
+                R.id.back_to_app -> {
+                    activity?.finish()
+                }
+            }
+        }
+    }
+
+    companion object {
+        fun newInstance(): FragmentTransactionSuccessOvoUser {
+            return FragmentTransactionSuccessOvoUser()
+        }
+
+        fun newInstance(bundle: Bundle): FragmentTransactionSuccessOvoUser {
+            val fragmentSucsOvoUsr = newInstance()
+            fragmentSucsOvoUsr.setArguments(bundle)
+            return fragmentSucsOvoUsr
+        }
     }
 }

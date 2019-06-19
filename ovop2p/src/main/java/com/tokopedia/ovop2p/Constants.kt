@@ -11,6 +11,7 @@ class Constants {
         val RESULT_CODE_CONTACTS_SELECTION = 100
         val USER_NAME = "userName"
         val USER_NUMBER = "userNum"
+        val NON_OVO_SUCS = "Non ovo sucs"
     }
     object AppLinks {
         const val OVOP2PTRANSFER = "tokopedia://ovop2ptransfer"
@@ -27,9 +28,17 @@ class Constants {
         val ERROR_FRAGMENT = "Error Fragment"
         val TXN_DTL_FRAGMENT = "Transaction Detail Fragment"
         val FORM_FRAGMENT = "Form Fragment"
+        val FRAGMENT_THANKYOU_OVO_USER = "Ovo User Thankyou Fragment"
+        val FRAGMENT_THANKYOU_NON_OVO_USER = "Non Ovo User Thankyou Fragment"
     }
 
     object PlaceHolders{
         val PHONE_NO_PLCHLDR = "{{num_plchldr}}"
+        val TRNSFER_ID_PLCHLDR = "{transfer_id}"
+    }
+
+    object Messages{
+        val NONOVO_USR_SUCS_MSG = "Undangan berhasil dikirim ke {{num_plchldr}}.\n" +
+                "Terima kasih telah menggunakan OVO."
     }
 }
