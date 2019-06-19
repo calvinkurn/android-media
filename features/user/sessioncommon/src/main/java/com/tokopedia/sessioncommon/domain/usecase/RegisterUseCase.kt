@@ -25,7 +25,7 @@ class RegisterUseCase @Inject constructor(val resources: Resources,
         val graphqlRequest = GraphqlRequest(query,
                 RegisterPojo::class.java, requestParams)
 
-        userSession.setToken(TokenGenerator().createBasicToken(), TokenGenerator.TOKEN_TYPE)
+        userSession.setToken(TokenGenerator().createBasicTokenGQL(),"")
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(subscriber)

@@ -52,19 +52,8 @@ data class ProfileInfo(
 data class ShopBasicData(
         @SerializedName("result")
         @Expose
-        var shopData: ShopData = ShopData(),
-        @SerializedName("error")
-        @Expose
-        var error: ArrayList<ErrorShop> = arrayListOf()
+        var shopData: ShopData = ShopData()
 ) {}
-
-
-data class ErrorShop(
-        @SerializedName("message")
-        @Expose
-        var message: String = ""
-) {}
-
 
 data class ShopData(
         @SerializedName("shopID")

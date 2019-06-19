@@ -88,6 +88,7 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
             requestParams[PARAM_USERNAME] = TokenGenerator().encode(email)
             requestParams[PARAM_PASSWORD] = TokenGenerator().encode(password)
             requestParams[PARAM_GRANT_TYPE] = TokenGenerator().encode(TYPE_PASSWORD)
+            requestParams[PARAM_SUPPORTED] = "true"
 
             return requestParams
         }

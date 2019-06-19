@@ -11,4 +11,13 @@ query profile() {
     created_password
     isLoggedIn
   }
+  shopBasicData(){
+    result{
+      shopID
+      name
+      domain
+      level
+      logo
+    }
+  }
 }
