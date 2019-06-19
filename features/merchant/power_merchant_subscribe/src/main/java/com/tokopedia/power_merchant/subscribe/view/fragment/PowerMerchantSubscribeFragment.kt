@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -142,7 +141,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     private fun renderInitialLayout() {
         ImageHandler.LoadImage(img_top_1, IMG_URL_PM_INTRO)
-        renderDefaultTicker()
         initializePartialPart(view)
         partialBenefitPmViewHolder.renderPartialBenefit()
         partialTncViewHolder.renderPartialTnc()
@@ -189,6 +187,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     private fun showToasterCancellationSuccess() {
+        isSuccessCancellationPm = false
         activity?.let {
             ToasterNormal.showClose(it,
                     getString(R.string.pm_cancellation_success))
@@ -264,7 +263,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     fun showBottomSheetCancel() {
-        isSuccessCancellationPm = false
         bottomSheetCancel = PowerMerchantCancelBottomSheet()
         bottomSheetCancel.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
             override fun onclickButton() {
@@ -308,15 +306,13 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     private fun renderViewNonTransitionPeriod() {
         var isPowerMerchant = shopStatusModel.isPowerMerchantIdle() or shopStatusModel.isPowerMerchantActive()
+        ticker_blue_container.visibility = View.GONE
         if (isPowerMerchant) {
             if (isAutoExtend()) {
                 hideButtonActivatedPm()
             } else {
                 showButtonActivatedPm()
-                //todo
-                if (isSuccessCancellationPm) {
-                    showExpiredDateTickerYellow()
-                }
+                showExpiredDateTickerYellow()
             }
         }
     }
@@ -333,6 +329,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                     hideButtonActivatedPm()
                 }
                 ticker_blue_container.visibility = View.VISIBLE
+                ticker_yellow_container.visibility = View.VISIBLE
             }
         } else if (isPending) {
             ticker_yellow_container.visibility = View.VISIBLE
@@ -342,7 +339,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             // default state: button activate is visible
         }
     }
-
 
     private fun hideButtonActivatedPm() {
         ll_footer_submit.visibility = View.GONE
@@ -378,12 +374,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         root_view_pm.showEmptyState(ErrorHandler.getErrorMessage(context, throwable), ::refreshData)
         hideLoading()
     }
-
-    private fun renderDefaultTicker() {
-        txt_ticker_yellow.text = MethodChecker.fromHtml(String.format(getString(R.string.pm_label_cancellation_duration)))
-        txt_blue_ticker.text = MethodChecker.fromHtml(String.format(getString(R.string.pm_label_price_cashback)))
-    }
-
 
     private fun showExpiredDateTickerYellow() {
         ticker_yellow_container.visibility = View.VISIBLE
