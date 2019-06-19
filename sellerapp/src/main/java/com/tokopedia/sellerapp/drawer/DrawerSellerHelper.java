@@ -486,10 +486,8 @@ public class DrawerSellerHelper extends DrawerHelper
         alertDialog.setPositiveButton(R.string.label_subscribe, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (selectedPosition != TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND) {
-                    sendGMAnalyticDialogEvent(true);
-                    RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
-                }
+                sendGMAnalyticDialogEvent(true);
+                RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
             }
         });
         alertDialog.setNegativeButton(R.string.title_cancel, new DialogInterface.OnClickListener() {

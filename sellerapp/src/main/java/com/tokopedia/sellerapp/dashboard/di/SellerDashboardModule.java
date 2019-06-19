@@ -32,6 +32,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.gm.common.data.source.cloud.GetShopScoreCloudSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.di.GmCommonModule;
+import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase;
 import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
@@ -54,6 +55,7 @@ import com.tokopedia.seller.shopscore.data.factory.ShopScoreFactory;
 import com.tokopedia.seller.shopscore.data.mapper.ShopScoreDetailMapper;
 import com.tokopedia.seller.shopscore.data.repository.ShopScoreRepositoryImpl;
 import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
+import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -272,4 +274,10 @@ public class SellerDashboardModule {
         return new GetShopScoreCloudSource(gmCommonApi);
     }
 
+    @SellerDashboardScope
+    @Provides
+    SellerDashboardDrawerPresenter provideSellerDashboardDrawerPresenter(GetShopStatusUseCase getShopStatusUseCase,
+                                                                         UserSessionInterface userSessionInterface) {
+        return new SellerDashboardDrawerPresenter(getShopStatusUseCase, userSessionInterface);
+    }
 }

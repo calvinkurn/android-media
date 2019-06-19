@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
@@ -47,7 +48,6 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.loading.LoadingStateView;
@@ -475,7 +475,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     private void updateShopInfo(ShopModel shopModel, ShopStatusModel shopStatusModel) {
-        userSession.setIsGoldMerchant(!shopStatusModel.isRegularMerchant());
+        userSession.setIsGoldMerchant(!shopStatusModel.isRegularMerchantOrPending());
 
         Info shopModelInfo = shopModel.info;
         String shopName = shopModelInfo.getShopName();
@@ -483,7 +483,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             shopName = MethodChecker.fromHtml(shopName).toString();
         }
         shopNameTextView.setText(shopName);
-        if (shopStatusModel.isRegularMerchant()) {
+        if (shopStatusModel.isRegularMerchantOrPending()) {
             ivShopMembershipLogo.setVisibility(View.GONE);
             tvShopMembershipTitle.setText(R.string.label_regular_merchant);
             tvShopMembershipStatus.setVisibility(View.GONE);
