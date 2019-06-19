@@ -996,7 +996,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }else {
                 listTickerInfo.first().let {
                     tickerAnnouncement.tickerTitle = it.title
-                    tickerAnnouncement.setTextDescription(it.message)
+                    tickerAnnouncement.setHtmlDescription(it.message)
                     tickerAnnouncement.tickerShape = getTickerType(it.color)
                 }
             }

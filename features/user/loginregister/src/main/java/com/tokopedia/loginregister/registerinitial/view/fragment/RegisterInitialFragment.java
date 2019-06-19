@@ -991,7 +991,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 TickerInfoPojo tickerInfo = listTickerInfo.get(0);
                 int type = getTickerType(tickerInfo.getColor());
                 tickerAnnouncement.setTickerTitle(tickerInfo.getTitle());
-                tickerAnnouncement.setTextDescription(tickerInfo.getMessage());
+                tickerAnnouncement.setHtmlDescription(tickerInfo.getMessage());
                 tickerAnnouncement.setTickerType(type);
             }
             tickerAnnouncement.setOnClickListener(v ->
