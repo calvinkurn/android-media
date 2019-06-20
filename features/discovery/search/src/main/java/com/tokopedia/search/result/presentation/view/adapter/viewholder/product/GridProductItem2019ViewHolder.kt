@@ -125,7 +125,7 @@ class GridProductItem2019ViewHolder(
     private fun initShopName(productItem: ProductItemViewModel) {
         if (isShopNameShown(productItem)) {
             itemView.shopNameTextView?.visibility = View.VISIBLE
-            itemView.shopNameTextView?.text = if(!TextUtils.isEmpty(productItem.shopName)) productItem.shopName else "dummy name"
+            itemView.shopNameTextView?.text = productItem.shopName
         }
         else {
             itemView.shopNameTextView?.visibility = View.GONE
@@ -134,7 +134,7 @@ class GridProductItem2019ViewHolder(
 
     // TODO:: Dummy method, set Shop Name from productItem instead
     private fun isShopNameShown(productItem: ProductItemViewModel): Boolean {
-        return adapterPosition % 2 == 0
+        return !TextUtils.isEmpty(productItem.shopName)
     }
 
     private fun initShopImage(productItem: ProductItemViewModel) {
@@ -150,6 +150,7 @@ class GridProductItem2019ViewHolder(
         }
     }
 
+    // TODO:: Dummy method, set Shop Name from productItem instead
     private fun isShopImageShown(productItem: ProductItemViewModel): Boolean {
         return adapterPosition % 2 == 0
     }
