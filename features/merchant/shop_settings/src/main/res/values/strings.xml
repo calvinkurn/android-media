@@ -124,6 +124,6 @@
     <string name="active_label">Aktif</string>
     <string name="inactive_label">Nonaktif</string>
     <string name="regular_merchant_learn_more">Power Merchant sekarang bebas biaya bulanan!</string>
-    <string name="power_merchant_learn_more"><![CDATA[Power Merchant aktif jika skor performa toko minimum <b>75</b> poin. Pelajari Selengkapnya]]></string>
+    <string name="power_merchant_learn_more"><![CDATA[Power Merchant aktif jika skor performa toko minimum <b>75</b> poin.]]></string>
     <string name="learn_more">Pelajari Selengkapnya</string>
 </resources>

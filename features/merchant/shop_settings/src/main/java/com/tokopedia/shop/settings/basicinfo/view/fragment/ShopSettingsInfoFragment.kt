@@ -7,10 +7,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.TextPaint
-import android.text.TextUtils
+import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -361,8 +358,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             ticker_container.visibility = View.GONE
         } else {
             ticker_container.visibility = View.VISIBLE
-            tv_ticker.setText(R.string.power_merchant_learn_more)
-            setTextViewLearnMore(tv_ticker, getString(R.string.power_merchant_learn_more), getString(R.string.learn_more)) {
+            setTextViewClickSpan(tv_ticker, MethodChecker.fromHtml(getString(R.string.power_merchant_learn_more)), getString(R.string.learn_more)) {
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
             }
         }
@@ -380,9 +376,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tv_ticker_info.visibility = View.GONE
     }
 
-    private fun setTextViewLearnMore(textView: TextView, allText: String, learnMoreString: String, onClickLearnMore: (() -> (Unit))) {
-        val spannable = SpannableString(allText)
-        val indexStart = allText.indexOf(learnMoreString)
+    private fun setTextViewClickSpan(textView: TextView, previousText: CharSequence, learnMoreString: String, onClickLearnMore: (() -> (Unit))) {
+        val spannable = SpannableString(learnMoreString)
+        val indexStart = 0
         val indexEnd = indexStart + learnMoreString.length
 
         val color = ContextCompat.getColor(context!!, R.color.tkpd_main_green)
@@ -400,7 +396,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         }
         spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         textView.movementMethod = LinkMovementMethod.getInstance()
-        textView.text = spannable
+        textView.text = SpannableStringBuilder(previousText).append(" ").append(spannable)
     }
 
     private fun navigateToPMSubscribe() {
