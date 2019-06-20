@@ -1,8 +1,9 @@
 package com.tokopedia.ovop2p.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-class OvoP2pTransferThankyou {
+class OvoP2pTransferThankyou : Serializable{
     @SerializedName("transfer_id")
     var trnsfrId: String? = ""
     @SerializedName("transaction_id")

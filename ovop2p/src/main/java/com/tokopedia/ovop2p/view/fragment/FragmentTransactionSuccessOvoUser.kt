@@ -15,6 +15,8 @@ import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
+import com.tokopedia.ovop2p.view.interfaces.ActivityListener
+import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTxnThankYouOvoUsrVM
 
 class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickListener {
@@ -62,6 +64,19 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        updateHeader()
+        if(!TextUtils.isEmpty(transferId)) {
+            var dataMap: HashMap<String, Any> = HashMap()
+            dataMap.put(Constants.Keys.TRANSFER_ID, transferId)
+            context?.let {
+                (activity as LoaderUiListener).showProgressDialog()
+                txnThankYouPageVM.makeThankyouDataCall(it, dataMap)
+            }
+        }
+    }
+
     private fun getTransferid() {
         transferId = arguments?.getString(Constants.Keys.TRANSFER_ID) ?: ""
     }
@@ -72,13 +87,29 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
                 txnThankYouPageVM = ViewModelProviders.of(this.activity!!).get(OvoP2pTxnThankYouOvoUsrVM::class.java)
                 txnThankYouPageVM.ovoP2pTransferThankyouBaseMutableLiveData?.observe(this.activity!!, Observer<OvoP2pTransferThankyouBase> {
                     if(it != null){
+                        (activity as LoaderUiListener).hideProgressDialog()
                         if(TextUtils.isEmpty(it.ovoP2pTransferThankyou.errors.message)){
                             assignThankYouData(it)
+                        }
+                        else{
+                            it.ovoP2pTransferThankyou.errors.message?.let { it1 -> gotoErrorPage(it1) }
                         }
                     }
                 })
             }
         }
+    }
+
+    private fun gotoErrorPage(errMsg: String){
+        var fragment: BaseDaggerFragment = FragmentTransferError.createInstance()
+        var bundle: Bundle = Bundle()
+        bundle.putString(Constants.Keys.ERR_MSG_ARG, errMsg)
+        fragment.arguments = bundle
+        (activity as ActivityListener).addReplaceFragment(fragment, true, FragmentTransferError.TAG)
+    }
+
+    private fun updateHeader(){
+        (activity as LoaderUiListener).setHeaderTitle(Constants.Headers.TRANSFER_SUCCESS)
     }
 
     private fun assignThankYouData(thankYouData: OvoP2pTransferThankyouBase) {
@@ -88,7 +119,6 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
         sndrNum.text = thankYouData.ovoP2pTransferThankyou.source.phone
         rcvrName.text = thankYouData.ovoP2pTransferThankyou.soure1.name
         rcvrNum.text = thankYouData.ovoP2pTransferThankyou.soure1.phone
-
     }
 
     override fun onClick(v: View?) {
@@ -97,6 +127,8 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
             when (id) {
                 R.id.see_dtl -> {
                     //go to see detail fragment
+                    (activity as ActivityListener).addReplaceFragment(FragmentTransactionDetails.createInstance(), true,
+                            FragmentTransactionDetails.TAG)
                 }
                 R.id.back_to_app -> {
                     activity?.finish()

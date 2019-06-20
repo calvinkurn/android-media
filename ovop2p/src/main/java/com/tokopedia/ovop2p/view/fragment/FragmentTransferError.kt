@@ -1,6 +1,7 @@
 package com.tokopedia.ovop2p.view.fragment
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +12,11 @@ import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 
 class FragmentTransferError : BaseDaggerFragment(), View.OnClickListener {
+
     private lateinit var errorMsg: TextView
     private lateinit var tryAgain: TextView
     private lateinit var backToApp: TextView
+    private var errorTxt: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.transfer_error, container, false)
@@ -22,6 +25,10 @@ class FragmentTransferError : BaseDaggerFragment(), View.OnClickListener {
         tryAgain.setOnClickListener(this)
         backToApp = view.findViewById(R.id.back_to_app)
         backToApp.setOnClickListener(this)
+        errorTxt = arguments?.getString(Constants.Keys.ERR_MSG_ARG) ?: ""
+        if(!TextUtils.isEmpty(errorTxt)){
+            errorMsg.text = errorTxt
+        }
         return view
     }
 
@@ -44,6 +51,15 @@ class FragmentTransferError : BaseDaggerFragment(), View.OnClickListener {
                     activity?.finish()
                 }
             }
+        }
+    }
+
+    companion object{
+
+        var TAG = "Error Fragment"
+
+        fun createInstance() : FragmentTransferError{
+            return FragmentTransferError()
         }
     }
 }

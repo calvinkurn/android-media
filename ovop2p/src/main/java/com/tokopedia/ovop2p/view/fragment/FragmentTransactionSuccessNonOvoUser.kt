@@ -50,7 +50,7 @@ class FragmentTransactionSuccessNonOvoUser: BaseDaggerFragment(), View.OnClickLi
                 }
                 R.id.send_agn -> {
                     //relaunch the form activity
-                    var intent: Intent = Intent(activity, OvoP2PFormActivity::class.java)
+                    var intent = Intent(activity, OvoP2PFormActivity::class.java)
                     activity?.startActivity(intent)
                     activity?.finish()
                 }

@@ -1,5 +1,6 @@
 package com.tokopedia.ovop2p.view.activity
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -10,13 +11,17 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.ovop2p.Constants
+import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.view.fragment.FragmentTransactionSuccessNonOvoUser
 import com.tokopedia.ovop2p.view.fragment.FragmentTransactionSuccessOvoUser
+import com.tokopedia.ovop2p.view.interfaces.ActivityListener
+import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
 
-class OVOP2PThankyouActivity : BaseSimpleActivity()  {
+class OVOP2PThankyouActivity : BaseSimpleActivity(),LoaderUiListener, ActivityListener {
 
     private var transferId: String = ""
     private var nonOvoUser: Boolean = false
+    private lateinit var loading: ProgressDialog
 
     object DeeplinkIntents {
         @DeepLink(Constants.AppLinks.OVOP2PTHANKYOUPAGE)
@@ -50,5 +55,34 @@ class OVOP2PThankyouActivity : BaseSimpleActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         updateTitle(Constants.Headers.TRANSFER_SUCCESS)
+    }
+
+    override fun addReplaceFragment(baseDaggerFragment: BaseDaggerFragment, replace: Boolean, tag: String) {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        if (replace) {
+            fragmentTransaction.replace(R.id.parent_view, baseDaggerFragment, tag)
+        } else {
+            fragmentTransaction.add(R.id.parent_view, baseDaggerFragment, tag)
+        }
+        fragmentTransaction.addToBackStack(tag)
+        fragmentTransaction.commitAllowingStateLoss()
+    }
+
+    override fun showProgressDialog() {
+        if (!::loading.isInitialized) loading = ProgressDialog(this)
+        with(loading) {
+            setCancelable(false)
+            setMessage(getString(R.string.title_loading))
+            show()
+        }
+    }
+
+    override fun hideProgressDialog() {
+        if (loading != null)
+            loading.dismiss()
+    }
+
+    override fun setHeaderTitle(title: String) {
+        updateTitle(title)
     }
 }

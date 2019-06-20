@@ -30,7 +30,7 @@ object OvoP2pUtil {
         if(dialogView != null) {
             dialogView.findViewById<TextView>(R.id.rcvr_name).text = dataMap[Constants.Keys.NAME].toString()
             dialogView.findViewById<TextView>(R.id.rcvr_no).text = dataMap[Constants.Keys.TO_PHN_NO].toString()
-            dialogView.findViewById<TextView>(R.id.trnsfr_amt).text = dataMap[Constants.Keys.FORMATTED_AMOUNT].toString()
+            dialogView.findViewById<TextView>(R.id.trnsfr_amt).text = "Rp"+dataMap[Constants.Keys.FORMATTED_AMOUNT].toString()
             dialogView.findViewById<TextView>(R.id.msg).text = dataMap[Constants.Keys.MESSAGE].toString()
         }
         dialogView?.findViewById<View>(R.id.proceed)?.setOnClickListener(onClickListener)

@@ -14,12 +14,15 @@ import android.widget.Toast
 
 import com.tokopedia.ovop2p.R
 
-class ContactsCursorAdapter(context: Context, cursor: Cursor, private val mPartialMatch: String) : CursorAdapter(context, cursor, false) {
+class ContactsCursorAdapter(context: Context, cursor: Cursor, private val mPartialMatch: String,
+                            contactsSelectionCall: (String, String) -> Unit) : CursorAdapter(context, cursor, false) {
 
     private val mLayoutInflater: LayoutInflater
+    private var contactsDataSetFunction: (String, String) -> Unit
 
     init {
         mLayoutInflater = LayoutInflater.from(context)
+        contactsDataSetFunction = contactsSelectionCall
     }
 
     override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
@@ -49,9 +52,7 @@ class ContactsCursorAdapter(context: Context, cursor: Cursor, private val mParti
             phoneNo.text = Html.fromHtml(phoneNum)
         }
         view.setOnClickListener { view ->
-            val pName = view.findViewById<View>(R.id.tv_name) as TextView
-            Toast.makeText(context, "Selected Contact " + pName.text,
-                    Toast.LENGTH_LONG).show()
+            contactsDataSetFunction(name, phoneNum)
         }
     }
 }

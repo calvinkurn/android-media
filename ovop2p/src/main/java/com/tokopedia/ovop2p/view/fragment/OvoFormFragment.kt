@@ -11,7 +11,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,8 +25,11 @@ import com.tokopedia.ovop2p.model.OvoP2pTransferRequestBase
 import com.tokopedia.ovop2p.model.WalletDataBase
 import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.activity.AllContactsActivity
+import com.tokopedia.ovop2p.view.activity.OVOP2PThankyouActivity
 import com.tokopedia.ovop2p.view.activity.OvoP2pWebViewActivity
 import com.tokopedia.ovop2p.view.adapters.ContactsCursorAdapter
+import com.tokopedia.ovop2p.view.fragment.FragmentTransferError
+import com.tokopedia.ovop2p.view.interfaces.ActivityListener
 import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
 import com.tokopedia.ovop2p.viewmodel.GetWalletBalanceViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTransferRequestViewModel
@@ -45,9 +50,14 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     lateinit var ovoP2pTransferRequestViewModel: OvoP2pTransferRequestViewModel
     lateinit var ovoP2pTransferConfirmViewModel: OvoP2pTrxnConfirmVM
     lateinit var trnsfrReqDataMap: HashMap<String, Any>
+    lateinit var amtErrorTxtv: TextView
+    lateinit var msgHeader: TextView
     private var rcvrPhnNo: String = ""
     private var rcvrAmt: Int = 0
+    private var sndrAmt: Int = 0
     private var rcvrMsg: String = ""
+    private var rcvrName: String = ""
+    private var senderName: String = ""
 
     override fun onClick(v: View?) {
         var id: Int = v?.id ?: -1
@@ -55,6 +65,10 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
             when(id){
                 R.id.proceed -> {
                     //make request call
+                    rcvrMsg = msgEdtxtv.text.toString()
+                    createOvoP2pTransferReqMap(Constants.Keys.AMOUNT, rcvrAmt)
+                    createOvoP2pTransferReqMap(Constants.Keys.TO_PHN_NO, rcvrPhnNo)
+                    createOvoP2pTransferReqMap(Constants.Keys.AMOUNT, rcvrMsg)
                     (activity as LoaderUiListener).showProgressDialog()
                     context?.let { ovoP2pTransferRequestViewModel.makeTransferRequestCall(it, trnsfrReqDataMap) }
                 }
@@ -97,20 +111,25 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
         }
         saldoTextView = view.findViewById(R.id.saldo)
         trnsfrAmtEdtxtv = view.findViewById(R.id.trnsfr_amt_edtv)
-        msgEdtxtv = view.findViewById(R.id.msg)
+        msgEdtxtv = view.findViewById(R.id.msg_edtxt)
+        msgEdtxtv.onFocusChangeListener = this
         proceedBtn = view.findViewById(R.id.proceed)
         proceedBtn.setOnClickListener(this)
         contactsImageView = view.findViewById(R.id.iv_contact)
         contactsImageView.setOnClickListener(this)
         searchNoHeader = view.findViewById(R.id.search_no_header)
+        amtErrorTxtv = view.findViewById(R.id.amt_err_txtv)
+        msgHeader = view.findViewById(R.id.msg_header)
         createAndSusbcribeToWalletBalVM()
         createAndSubscribeTransferRequestVM()
         createAndSubscribeTransferConfirmVM()
         context?.let { walletBalanceViewModel.fetchWalletDetails(it) }
+        (activity as LoaderUiListener).showProgressDialog()
+        setTextSenderAmountWatcher()
         return view
     }
 
-    fun createAndSusbcribeToWalletBalVM(){
+    private fun createAndSusbcribeToWalletBalVM(){
         if(!::walletBalanceViewModel.isInitialized){
             if(activity != null) {
                 walletBalanceViewModel = ViewModelProviders.of(this.activity!!).get(GetWalletBalanceViewModel::class.java)
@@ -118,20 +137,26 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
                     if(it != null){
                         (activity as LoaderUiListener).hideProgressDialog()
                         saldoTextView.text = it.wallet?.balance ?: ""
+                        if(!TextUtils.isEmpty(saldoTextView.text)){
+                            sndrAmt = saldoTextView.text.toString().toInt()
+                        }
                     }
                 })
             }
         }
     }
 
-    fun createAndSubscribeTransferRequestVM(){
+    private fun createAndSubscribeTransferRequestVM(){
         if(!::ovoP2pTransferRequestViewModel.isInitialized){
             if(activity != null){
                 ovoP2pTransferRequestViewModel = ViewModelProviders.of(this.activity!!).get(OvoP2pTransferRequestViewModel::class.java)
                 ovoP2pTransferRequestViewModel.ovoP2pTransferRequestBaseMutableLiveData?.observe(this.activity!!, Observer <OvoP2pTransferRequestBase>{
                     if(it != null){
                         (activity as LoaderUiListener).hideProgressDialog()
-                        if(!TextUtils.isEmpty(it.ovoP2pTransferRequest.dstAccName)){
+                        if(it.ovoP2pTransferRequest.errors != null && !TextUtils.isEmpty(it.ovoP2pTransferRequest.errors.message)){
+                            it.ovoP2pTransferRequest.errors.message?.let { it1 -> gotoErrorPage(it1) }
+                        }
+                        else if(!TextUtils.isEmpty(it.ovoP2pTransferRequest.dstAccName)){
                             //show non ovo user confirmation dialog
                             showNonOvoUserConfirmDialog()
                         }
@@ -145,18 +170,21 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
         }
     }
 
-    fun createAndSubscribeTransferConfirmVM(){
+    private fun createAndSubscribeTransferConfirmVM(){
         if(!::ovoP2pTransferConfirmViewModel.isInitialized){
             if(activity != null){
                 ovoP2pTransferConfirmViewModel = ViewModelProviders.of(this.activity!!).get(OvoP2pTrxnConfirmVM::class.java)
                 ovoP2pTransferConfirmViewModel.txnConfirmMutableLiveData?.observe(this.activity!!, Observer <OvoP2pTransferConfirmBase>{
                     if(it != null){
                         (activity as LoaderUiListener).hideProgressDialog()
-                        if(it.ovoP2pTransferConfirm!!.errors != null){
+                        if(it.ovoP2pTransferConfirm!!.errors != null &&
+                                !TextUtils.isEmpty(it.ovoP2pTransferConfirm!!.errors.message)){
                             //show error page
+                            it.ovoP2pTransferConfirm!!.errors.message?.let { it1 -> gotoErrorPage(it1) }
                         }
                         else if(!it.ovoP2pTransferConfirm!!.rcvrLink){
                             //show non ovo success page
+                            gotoThankYouActivity(it.ovoP2pTransferConfirm!!.transferId, true)
                         }
                         else if(it.ovoP2pTransferConfirm!!.rcvrLink){
                             if(!TextUtils.isEmpty(it.ovoP2pTransferConfirm!!.pinUrl)) {
@@ -170,12 +198,59 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
                             else{
                                 it.ovoP2pTransferConfirm!!.transferId
                                 // go to thankyou activity
+                                gotoThankYouActivity(it.ovoP2pTransferConfirm!!.transferId, false)
                             }
                         }
                     }
                 })
             }
         }
+    }
+
+    private fun gotoErrorPage(errMsg: String){
+        var fragment: BaseDaggerFragment = FragmentTransferError.createInstance()
+        var bundle = Bundle()
+        bundle.putString(Constants.Keys.ERR_MSG_ARG, errMsg)
+        fragment.arguments = bundle
+        (activity as ActivityListener).addReplaceFragment(fragment, true, FragmentTransferError.TAG)
+    }
+
+    private fun gotoThankYouActivity(transferId: String, nonOvo: Boolean){
+        var intent = Intent(activity, OVOP2PThankyouActivity::class.java)
+        intent.putExtra(Constants.Keys.TRANSFER_ID, transferId)
+        intent.putExtra(Constants.Keys.NON_OVO_SUCS, nonOvo)
+        activity?.startActivity(intent)
+        activity?.finish()
+    }
+
+    private fun setTextSenderAmountWatcher(){
+        trnsfrAmtEdtxtv.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                if(!TextUtils.isEmpty(s.toString())) {
+                    var enteredAmt = OvoP2pUtil.extractNumbersFromString(s.toString()).toInt()
+                    if(enteredAmt < Constants.Thresholds.MIN_TRANSFER_LIMIT){
+                        amtErrorTxtv.text = Constants.Messages.MINIMAL_TRNSFR_MSG
+                        proceedBtn.isEnabled = false
+                    }
+                    else if(enteredAmt > sndrAmt){
+                        amtErrorTxtv.text = Constants.Messages.AMT_MORE_THN_BAL
+                        proceedBtn.isEnabled = false
+                    }
+                    else{
+                        rcvrAmt = enteredAmt
+                        proceedBtn.isEnabled = true
+                    }
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+        })
     }
 
     companion object{
@@ -202,17 +277,28 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
                         searchNoHeader.visibility = View.GONE
                     }
                 }
+                R.id.msg_edtxt -> {
+                    if(hasFocus){
+                        msgHeader.visibility = View.VISIBLE
+                    }
+                    else{
+                        msgHeader.visibility = View.INVISIBLE
+                    }
+                }
             }
         }
     }
 
+
+
     override fun onQueryTextSubmit(query: String?): Boolean {
-        return true
+        return false
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
         val contacts = context?.let { newText?.let { it1 -> getPartialMatchContact(it, it1) } }
-        val cursorAdapter = context?.let { newText?.let { it1 -> contacts?.let { it2 -> ContactsCursorAdapter(it, it2, it1) } } }
+        val cursorAdapter = context?.let { newText?.let { it1 -> contacts?.let { it2 -> ContactsCursorAdapter(it, it2, it1,
+                {rcvrName: String, rcvrPhone: String -> setContactsData(rcvrName, rcvrPhone)}) } } }
         searchView.suggestionsAdapter = cursorAdapter
         return true
     }
@@ -237,8 +323,16 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     }
 
     private fun showOvoUserConfirmationDialog() {
+        createOvoP2pTransferReqMap(Constants.Keys.RECIEVER_NAME, rcvrName)
+        createOvoP2pTransferReqMap(Constants.Keys.SENDER_NAME, "")
+        createOvoP2pTransferReqMap(Constants.Keys.SENDER_PHONE, "")
         alertDialog = OvoP2pUtil.getOvoUserTransferConfirmSubmitAlertDialog(activity, this, trnsfrReqDataMap).create()
         alertDialog.show()
+    }
+
+    fun setContactsData(rcvrName: String, rcvrPhone: String){
+        this.rcvrName = rcvrName
+        this.rcvrPhnNo = rcvrPhone
     }
 
     private fun showNonOvoUserConfirmDialog(){
@@ -249,9 +343,9 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Constants.Keys.RESULT_CODE_CONTACTS_SELECTION) {
-            val userName = data!!.getStringExtra(Constants.Keys.USER_NAME)
-            val userNumber = data.getStringExtra(Constants.Keys.USER_NUMBER)
-            val searchViewStr = "$userNumber-$userName"
+            rcvrName = data!!.getStringExtra(Constants.Keys.USER_NAME)
+            rcvrPhnNo = data.getStringExtra(Constants.Keys.USER_NUMBER)
+            val searchViewStr = "$rcvrName-$rcvrPhnNo"
             searchView.setQuery(searchViewStr, false)
         }
     }

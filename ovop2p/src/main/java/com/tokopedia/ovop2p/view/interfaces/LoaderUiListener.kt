@@ -4,5 +4,4 @@ interface LoaderUiListener {
     fun showProgressDialog()
     fun hideProgressDialog()
     fun setHeaderTitle(title: String)
-
 }
