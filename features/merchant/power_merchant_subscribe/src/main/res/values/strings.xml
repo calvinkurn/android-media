@@ -56,7 +56,7 @@
     <string name="pm_label_member_cancel_learnmore">Status keanggotaan aktif jika skor performa toko minimum 65 poin. Pelajari Selengkapnya</string>
     <string name="pm_period">Periode baru dimulai pada 1 Juli 2019 pukul 04.00</string>
     <string name="pm_label_cancellation_header">Pengajuan untuk berhenti berhasil.</string>
-    <string name="pm_label_cancellation_duration">Nantikan <b>Power Merchant terbaru</b> pada <b>1 Juli 2019.</b></string>
+    <string name="pm_label_cancellation_duration"><![CDATA[Nantikan <b>Power Merchant terbaru</b> pada <b>1 Juli 2019.</b>]]></string>
     <string name="pm_label_cost_1">Biaya layanan Power Merchant dikenakan 1% (satu persen) dari setiap harga produk terjual. Pelajari Selengkapnya</string>
     <string name="pm_label_kyc_verivication">Verifikasi data diri dengan upload KTP</string>
     <string name="pm_label_score_point">Skor performa toko lebih dari 75 poin</string>
