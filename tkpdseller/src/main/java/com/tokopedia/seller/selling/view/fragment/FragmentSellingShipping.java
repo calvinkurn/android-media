@@ -136,12 +136,14 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
                 new PermissionCheckerHelper.PermissionCheckListener() {
                     @Override
                     public void onPermissionDenied(@NotNull String permissionText) {
-
+                        permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
                     }
+
                     @Override
                     public void onNeverAskAgain(@NotNull String permissionText) {
-
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
                     }
+
                     @Override
                     public void onPermissionGranted() {
                         onScanBarcode();
@@ -164,7 +166,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
             FragmentSellingShipping.this.actionMode = actionMode;
             hideFab();
             actionMode.setTitle("1");
-            if(GlobalConfig.isCustomerApp()) {
+            if (GlobalConfig.isCustomerApp()) {
                 getActivity().getMenuInflater().inflate(com.tokopedia.seller.R.menu.shipping_confirm_multi_dark, menu);
             } else {
                 getActivity().getMenuInflater().inflate(R.menu.shipping_confirm_multi, menu);
@@ -345,13 +347,13 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if(actionMode != null && !isVisibleToUser){
+        if (actionMode != null && !isVisibleToUser) {
             actionMode.finish();
         }
         initPresenter();
         presenter.getShippingList(isVisibleToUser);
         super.setUserVisibleHint(isVisibleToUser);
-        ScreenTracking.screen(MainApplication.getAppContext(),AppScreen.SCREEN_TX_SHOP_CONFIRM_SHIPPING);
+        ScreenTracking.screen(MainApplication.getAppContext(), AppScreen.SCREEN_TX_SHOP_CONFIRM_SHIPPING);
     }
 
     @Override

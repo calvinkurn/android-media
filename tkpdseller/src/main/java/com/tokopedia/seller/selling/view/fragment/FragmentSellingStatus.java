@@ -400,12 +400,12 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
                 permissionCheckerHelper.checkPermissions(getActivity(), getPermissions(), new PermissionCheckerHelper.PermissionCheckListener() {
                     @Override
                     public void onPermissionDenied(@NotNull String permissionText) {
-
+                        permissionCheckerHelper.onPermissionDenied(getActivity(),permissionText);
                     }
 
                     @Override
                     public void onNeverAskAgain(@NotNull String permissionText) {
-
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(),permissionText);\
                     }
 
                     @Override

@@ -24,9 +24,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -35,13 +33,13 @@ import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core2.R;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.seller.OrderHistoryView;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -57,7 +55,6 @@ import com.tokopedia.seller.selling.view.fragment.CustomScannerBarcodeActivity;
 
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
-
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -104,7 +101,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         setAdapter();
         setListener();
         if (getActivity() != null) {
-            ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
         }
         return rootView;
     }
@@ -410,12 +407,12 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
                             new PermissionCheckerHelper.PermissionCheckListener() {
                                 @Override
                                 public void onPermissionDenied(@NotNull String permissionText) {
-
+                                    permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
                                 }
 
                                 @Override
                                 public void onNeverAskAgain(@NotNull String permissionText) {
-
+                                    permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
                                 }
 
                                 @Override
