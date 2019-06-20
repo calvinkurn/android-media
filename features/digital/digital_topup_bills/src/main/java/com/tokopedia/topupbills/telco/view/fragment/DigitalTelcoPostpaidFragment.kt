@@ -18,7 +18,6 @@ import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
 import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoEnquiryViewModel
-import com.tokopedia.topupbills.telco.view.widget.DigitalAddToMyBillsWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPostpaidClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
@@ -30,7 +29,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     private lateinit var postpaidClientNumberWidget: DigitalPostpaidClientNumberWidget
     private lateinit var buyWidget: DigitalTelcoBuyWidget
-    private lateinit var addToMyBillsWidget: DigitalAddToMyBillsWidget
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var layoutProgressBar: RelativeLayout
     private lateinit var operatorSelected: TelcoCustomDataCollection
@@ -73,7 +71,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         promoListView = view.findViewById(R.id.promo_widget)
         buyWidget = view.findViewById(R.id.buy_widget)
         tickerView = view.findViewById(R.id.ticker_view)
-        addToMyBillsWidget = view.findViewById(R.id.addtomybills_widget)
         layoutProgressBar = view.findViewById(R.id.layout_progress_bar)
         return view
     }
@@ -88,8 +85,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     fun renderClientNumber() {
-        addToMyBillsWidget.visibility = View.GONE
-        addToMyBillsWidget.renderContent("25")
         postpaidClientNumberWidget.resetClientNumberPostpaid()
         postpaidClientNumberWidget.setListener(object : DigitalClientNumberWidget.ActionListener {
             override fun onNavigateToContact() {
@@ -111,7 +106,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 postpaidClientNumberWidget.resetClientNumberPostpaid()
                 recentNumbersView.visibility = View.VISIBLE
                 promoListView.visibility = View.VISIBLE
-                addToMyBillsWidget.visibility = View.GONE
                 buyWidget.setVisibilityLayout(false)
             }
 
@@ -125,18 +119,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
             override fun enquiryNumber() {
                 getEnquiryNumber()
-//                val mainInfo = mutableListOf<TelcoEnquiryMainInfo>()
-//                mainInfo.add(TelcoEnquiryMainInfo("Operator", "Telkomsel Simpati"))
-//                mainInfo.add(TelcoEnquiryMainInfo("Nama", "Guru Prasant"))
-//                mainInfo.add(TelcoEnquiryMainInfo("Jumlah Tagihan", "Rp1.234.567"))
-//                val telcoEnquiryData = TelcoEnquiryData(TelcoEnquiry(
-//                        TelcoEnquiryAttribute("","307", "Rp1.234.567", 1234567, mainInfo)))
-//                postpaidClientNumberWidget.showEnquiryResultPostpaid(telcoEnquiryData)
-//                recentNumbersView.visibility = View.GONE
-//                promoListView.visibility = View.GONE
-//                addToMyBillsWidget.visibility = View.VISIBLE
-//                buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes.price)
-//                buyWidget.setVisibilityLayout(true)
             }
         })
     }
@@ -196,7 +178,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.showEnquiryResultPostpaid(telcoEnquiryData)
         recentNumbersView.visibility = View.GONE
         promoListView.visibility = View.GONE
-        addToMyBillsWidget.visibility = View.VISIBLE
         buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes.price)
         buyWidget.setVisibilityLayout(true)
     }
@@ -212,6 +193,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun getMapCatalogMenuDetail(): Map<String, Any> {
         var mapParam = HashMap<String, kotlin.Any>()
         mapParam.put("menuID", TelcoComponentType.TELCO_POSTPAID)
+        return mapParam
+    }
+
+    override fun getMapFavNumbers(): Map<String, Any> {
+        var mapParam = HashMap<String, kotlin.Any>()
+        mapParam.put("categoryID", TelcoComponentType.FAV_NUMBER_POSTPAID)
         return mapParam
     }
 

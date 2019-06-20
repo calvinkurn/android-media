@@ -63,15 +63,6 @@
             android:layout_marginLeft="@dimen/dp_15"
             android:layout_marginRight="@dimen/dp_15" />
 
-        <com.tokopedia.topupbills.telco.view.widget.DigitalAddToMyBillsWidget
-            android:id="@+id/addtomybills_widget"
-            android:layout_below="@+id/telco_input_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_15"
-            android:layout_marginRight="@dimen/dp_15"
-            android:visibility="gone"/>
-
         <com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
             android:id="@+id/buy_widget"
             android:layout_width="match_parent"
