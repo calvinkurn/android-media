@@ -381,7 +381,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     private fun mapToHotelPromoProduct(data: List<HotelRoom>): List<TrackingHotelUtil.HotelPromoProduct> {
         return data.mapIndexed { index, it ->
             TrackingHotelUtil.HotelPromoProduct(
-                    it.roomInfo.name, it.roomId.toInt(), it.roomPrice.priceAmount.toInt(), index)
+                    it.roomInfo.name, it.roomId, it.roomPrice.priceAmount.toInt(), index)
         }
     }
 

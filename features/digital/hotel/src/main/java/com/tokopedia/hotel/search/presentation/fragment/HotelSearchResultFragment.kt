@@ -229,7 +229,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     private fun mapToHotelPromotions(data: List<Property>): TrackingHotelUtil.HotelPromotions {
         val promoProduct = data.mapIndexed { index, it ->
             TrackingHotelUtil.HotelPromoProduct(
-                    it.name, it.id, it.roomPrice.firstOrNull()?.priceAmount?.toInt() ?: 0, index)
+                    it.name, it.id.toString(), it.roomPrice.firstOrNull()?.priceAmount?.toInt() ?: 0, index)
         }
         return TrackingHotelUtil.HotelPromotions(promoProduct)
     }
