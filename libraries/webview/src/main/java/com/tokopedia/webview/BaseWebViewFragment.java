@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -19,6 +20,7 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -188,7 +190,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
-        if (RouteManager.isSupportApplink(getActivity(), url)) {
+        if (!URLUtil.isNetworkUrl(url) && RouteManager.isSupportApplink(getActivity(), url)) {
             RouteManager.route(getActivity(), url);
             return true;
         }

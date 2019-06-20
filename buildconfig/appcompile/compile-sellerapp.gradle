@@ -29,6 +29,7 @@ include "features:fintech:saldo_details"
 include "features:im:common_promo"
 include "features:im:referral"
 
+include "features:logistic:logisticaddaddress"
 include "features:logistic:district_recommendation"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticanalytics"
@@ -49,6 +50,7 @@ include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_resource"
 include "features:merchant:gold_merchant_subscribe"
 //include "features:merchant:gold_merchant_subscribe_no_op"
+include "features:merchant:power_merchant_subscribe"
 include "features:merchant:product_draft_database"
 include "features:merchant:product_detail"
 include "features:merchant:product_detail_common"
@@ -123,6 +125,10 @@ include "features:user:updateinactivephone"
 include "features:user:user_identification"
 //include "features:user:user_identification_no_op"
 include "features:user:user_identification_common"
+include "features:user:vote"
+
+include "features:category:tradein"
+include "features:category:tradein_common"
 
 include 'logisticanalytics'
 include 'tkpdloyalty'

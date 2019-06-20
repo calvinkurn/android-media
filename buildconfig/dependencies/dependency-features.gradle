@@ -21,6 +21,7 @@ ext {
     tkpdFlightVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
+    tkpdPowerMerchantVersion = '2.22'
     tkpdGroupchatVersion = '2.22'
     tkpdHomeVersion = '2.22'
     tkpdInboxVersion = '2.22'
@@ -122,6 +123,7 @@ ext {
             goldMerchantCommon      : "com.tokopedia.gm:gold_merchant-common:${tkpdGoldMerchantVersion}",
             goldMerchant            : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             goldMerchantSubscribe   : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
+            powerMerchantSubscribe  : "com.tokopedia.power_merchant.subscribe:powerMerchantSubscribe:${tkpdPowerMerchantVersion}",
             groupchat               : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
             home                    : "com.tokopedia.home:home:${tkpdHomeVersion}",
             inbox                   : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
@@ -256,6 +258,7 @@ ext {
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             goldMerchantResource            : ":features:merchant:gold_merchant_resource",
             goldMerchantSubscribe           : ":features:merchant:gold_merchant_subscribe",
+            powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
 //            goldMerchantSubscribe           : ":features:merchant:gold_merchant_subscribe_no_op",
             productDraftDatabase            : ":features:merchant:product_draft_database",
             productDetailCommon             : ":features:merchant:product_detail_common",
