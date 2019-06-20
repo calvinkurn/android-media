@@ -61,6 +61,7 @@ public class SolutionListAdapter extends RecyclerView.Adapter<SolutionListAdapte
             cardView = (CardView) itemView.findViewById(R.id.card);
             tvSolution = (TextView) itemView.findViewById(R.id.tv_solution);
             ivCheck = (ImageView) itemView.findViewById(R.id.iv_check);
+            ivCheck.setBackground(MethodChecker.getDrawable(ivCheck.getContext(), R.drawable.ic_check));
         }
     }
 }

@@ -16,6 +16,7 @@ import com.tokopedia.challenges.view.model.User;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author lalit.singh
@@ -57,6 +58,7 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder
         ivVideoIcon = itemView.findViewById(R.id.play_icon);
         tvParticipantUserName = itemView.findViewById(R.id.tv_participantUserName);
         tvWinnerNumber = itemView.findViewById(R.id.tv_winner_number);
+        tvWinnerNumber.setBackground(MethodChecker.getDrawable(tvWinnerNumber.getContext(), R.drawable.ic_winner_badge));
         tvPostDescription = itemView.findViewById(R.id.tv_submission_description);
         itemView.findViewById(R.id.cl_participant).setVisibility(View.VISIBLE);
         analytics = new ChallengesGaAnalyticsTracker();

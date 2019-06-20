@@ -60,9 +60,9 @@
                     android:layout_marginStart="@dimen/dp_16"
                     android:orientation="vertical">
                     <LinearLayout
+                        android:id="parentTvBrowseFile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/ic_balloon_gray"
                         android:paddingLeft="@dimen/dp_16"
                         android:paddingRight="@dimen/dp_16"
                         android:paddingTop="@dimen/dp_8"

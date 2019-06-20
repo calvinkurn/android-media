@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SubmissionAdapterContract.View {
 
@@ -74,6 +75,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         switch (viewType) {
             case ITEM:
                 v = inflater.inflate(R.layout.submission_item, parent, false);
+                v.findViewById(R.id.tv_winner_number).setBackground(MethodChecker.getDrawable(v.getContext(), R.drawable.ic_winner_badge));
                 holder = new ItemViewHolder(v);
                 break;
             case FOOTER:

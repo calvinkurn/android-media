@@ -246,11 +246,11 @@
                             </LinearLayout>
                         </LinearLayout>
 
-                        <View
+                        <ImageView
                             android:layout_gravity="bottom"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_10"
-                            android:background="@drawable/ic_rectangle"/>
+                            app:srcCompat="@drawable/ic_rectangle"/>
 
                     </FrameLayout>
 

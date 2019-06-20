@@ -44,6 +44,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+
 /**
  * Created by ashwanityagi on 06/08/18.
  */
@@ -135,6 +136,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         btnSubmit = view.findViewById(R.id.btn_submit);
         llShare = view.findViewById(R.id.ll_share);
         tvWinnerNumber = view.findViewById(R.id.tv_winner_number);
+        tvWinnerNumber.setBackground(MethodChecker.getDrawable(tvWinnerNumber.getContext(), R.drawable.ic_winner_badge));
 
         scrollView = view.findViewById(R.id.submit_detail_scrollview);
 

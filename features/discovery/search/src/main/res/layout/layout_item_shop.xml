@@ -109,8 +109,7 @@
                 <ImageView
                     android:id="@+id/shop_list_favorite_button_icon"
                     android:layout_width="7dp"
-                    android:layout_height="7dp"
-                    android:background="@drawable/ic_add"/>
+                    android:layout_height="7dp"/>
 
                 <TextView
                     android:id="@+id/shop_list_favorite_button_text"
