@@ -44,9 +44,9 @@
     <!--Power Merchant-->
     <string name="score_of_total_score" translatable="false"><![CDATA[<b>%1$d</b>/%2$d]]></string>
     <string name="bracket_format">(%1$s)</string>
-    <string name="regular_merchant_ticker"><![CDATA[Siap upgrade menja di <b>Power Merchant</b> dengan poin minimum <b>75</b>.]]></string>
+    <string name="regular_merchant_ticker"><![CDATA[Siap upgrade menjadi <b>Power Merchant</b> dengan poin minimum <b>75</b>.]]></string>
     <string name="tip_increase_score">Tip Meningkatkan Poin</string>
-    <string name="power_merchant_ticker_with_tip"><![CDATA[Pertahankan poin minimum <b>75</b> untuk tetap menjadi <b>Power Merchant</b>. Tip Meningkatkan Poin]]></string>
+    <string name="power_merchant_ticker_with_tip"><![CDATA[Pertahankan poin minimum <b>75</b> untuk tetap menjadi <b>Power Merchant</b>.]]></string>
 
     <string name="pm_popup_active_title">Selamat! Kamu sudah menjadi Power Merchant</string>
     <string name="pm_popup_active_desc"><![CDATA[Tingkatkan penjualan tokomu dengan menggunakan fitur eksklusif <b>Power Merchant.</b>]]></string>

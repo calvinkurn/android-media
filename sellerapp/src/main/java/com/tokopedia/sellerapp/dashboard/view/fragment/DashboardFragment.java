@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -509,21 +510,16 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 tvShopMembershipStatus.setText(getString(R.string.bracket_format, getString(R.string.inactive_label)));
             }
             buttonActivatePowerMerchant.setVisibility(View.GONE);
-            if (shopStatusModel.isTransitionPeriod()) {
-                tickerContainer.setVisibility(View.GONE);
-            } else {
-                tickerContainer.setVisibility(View.VISIBLE);
-                TextView tvTicker = tickerContainer.findViewById(R.id.tv_ticker);
-                View.OnClickListener onClickListener = new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT);
-                    }
-                };
-                String tickerString = getString(R.string.power_merchant_ticker_with_tip);
-                tvTicker.setText(MethodChecker.fromHtml(tickerString));
-                setTextViewClickSpan(tvTicker, tickerString, getString(R.string.tip_increase_score), onClickListener);
-            }
+            tickerContainer.setVisibility(View.VISIBLE);
+            TextView tvTicker = tickerContainer.findViewById(R.id.tv_ticker);
+            View.OnClickListener onClickListener = new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT);
+                }
+            };
+            setTextViewClickSpan(tvTicker, MethodChecker.fromHtml(getString(R.string.power_merchant_ticker_with_tip)),
+                    getString(R.string.tip_increase_score), onClickListener);
         }
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
             ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
@@ -532,9 +528,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         }
     }
 
-    private void setTextViewClickSpan(TextView textView, String allText, String learnMoreString, View.OnClickListener onClickListener) {
-        SpannableString spannable = new SpannableString(allText);
-        int indexStart = allText.indexOf(learnMoreString);
+    private void setTextViewClickSpan(TextView textView, CharSequence previousText, String learnMoreString, View.OnClickListener onClickListener) {
+        SpannableString spannable = new SpannableString(learnMoreString);
+        int indexStart = 0;
         int indexEnd = indexStart + learnMoreString.length();
 
         int color = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
@@ -554,7 +550,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         };
         spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
-        textView.setText(spannable);
+        textView.setText(new SpannableStringBuilder(previousText).append(" ").append(spannable));
     }
 
     private void updateViewShopOpen(ShopModel shopModel) {
