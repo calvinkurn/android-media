@@ -23,6 +23,7 @@ import com.tokopedia.topads.auto.view.activity.SettingBudgetAdsActivity
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
 import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
 import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
+import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
 import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -87,7 +88,7 @@ class AutoAdsWidgetView : CardView {
         widgetViewModel.autoAdsData.observe(context as BaseSimpleActivity, Observer {
             if (it!!.status != 0) {
                 visibility = View.VISIBLE
-                setStatusAds(it!!.status)
+                setStatusAds(it!!.status, it!!.dailyBudget)
                 dailyBudgetStatus.text = String.format(context.getString(R.string.anggaran_harian_status), it!!.dailyBudget.toDouble())
                 dailyUsageStatus.text = String.format(context.getString(R.string.terpakai), it!!.dailyUsage.toDouble())
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -99,19 +100,19 @@ class AutoAdsWidgetView : CardView {
         })
     }
 
-    fun setStatusAds(status: Int) {
+    fun setStatusAds(status: Int, budget: Int) {
         when (status) {
-            TopAdsWidgetStatus.STATUS_ACTIVE -> setActive()
-            TopAdsWidgetStatus.STATUS_INACTIVE -> setInActive()
+            TopAdsWidgetStatus.STATUS_ACTIVE -> setActive(budget)
+            TopAdsWidgetStatus.STATUS_INACTIVE -> setInActive(budget)
             TopAdsWidgetStatus.STATUS_IN_PROGRESS_ACTIVE -> setInProgress()
             TopAdsWidgetStatus.STATUS_IN_PROGRESS_AUTOMANAGE -> setInProgress()
             TopAdsWidgetStatus.STATUS_IN_PROGRESS_INACTIVE -> setInProgress()
-            TopAdsWidgetStatus.STATUS_NOT_DELIVERED -> setNotDelivered()
-            else -> setInActive()
+            TopAdsWidgetStatus.STATUS_NOT_DELIVERED -> setNotDelivered(budget)
+            else -> setInActive(budget)
         }
     }
 
-    private fun setNotDelivered() {
+    private fun setNotDelivered(budget: Int) {
         activeStatus.setBackgroundResource(R.drawable.bg_autoads_deactive)
         activeStatus.setTextColor(ContextCompat.getColor(context, R.color.grey))
         activeStatus.setText(R.string.ads_not_delivered)
@@ -119,9 +120,11 @@ class AutoAdsWidgetView : CardView {
         startAdsBtn.visibility = View.GONE
         progressAdsContainer.visibility = View.GONE
         btnArrow.visibility = View.VISIBLE
-        activeListener?.onInActive()
+        activeListener?.onActive()
         statusAdsContainer.setOnClickListener {
-            context.startActivity(Intent(context, SettingBudgetAdsActivity::class.java))
+            val intent = Intent(context, SettingBudgetAdsActivity::class.java)
+            intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
+            context.startActivity(intent)
         }
     }
 
@@ -136,7 +139,7 @@ class AutoAdsWidgetView : CardView {
         activeListener?.onInActive()
     }
 
-    private fun setInActive() {
+    private fun setInActive(budget: Int) {
         activeStatus.setBackgroundResource(R.drawable.bg_autoads_deactive)
         activeStatus.setTextColor(ContextCompat.getColor(context, R.color.grey))
         activeStatus.setText(R.string.ads_deactive)
@@ -145,12 +148,15 @@ class AutoAdsWidgetView : CardView {
         progressAdsContainer.visibility = View.GONE
         btnArrow.visibility = View.GONE
         activeListener?.onInActive()
+        statusAdsContainer.setOnClickListener(null)
         startAdsBtn.setOnClickListener {
-            context.startActivity(Intent(context, DailyBudgetActivity::class.java))
+            val intent = Intent(context, DailyBudgetActivity::class.java)
+            intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
+            context.startActivity(intent)
         }
     }
 
-    private fun setActive() {
+    private fun setActive(budget: Int) {
         activeStatus.setBackgroundResource(R.drawable.bg_autoads_active)
         activeStatus.setTextColor(ContextCompat.getColor(context, R.color.true_green))
         activeStatus.setText(R.string.ads_active)
@@ -160,7 +166,9 @@ class AutoAdsWidgetView : CardView {
         btnArrow.visibility = View.VISIBLE
         activeListener?.onActive()
         statusAdsContainer.setOnClickListener {
-            context.startActivity(Intent(context, SettingBudgetAdsActivity::class.java))
+            val intent = Intent(context, SettingBudgetAdsActivity::class.java)
+            intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
+            context.startActivity(intent)
         }
     }
 

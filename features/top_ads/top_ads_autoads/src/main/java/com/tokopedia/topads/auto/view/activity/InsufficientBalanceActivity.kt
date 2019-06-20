@@ -12,7 +12,7 @@ import com.tokopedia.topads.auto.view.fragment.InsufficientBalanceFragment
 class InsufficientBalanceActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
-        return InsufficientBalanceFragment.newInstance()
+        return InsufficientBalanceFragment.newInstance(intent.extras.getString(KEY_URL))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,6 +20,10 @@ class InsufficientBalanceActivity : BaseSimpleActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 0f
         }
+    }
+
+    companion object {
+        const val KEY_URL = "URL"
     }
 
 }

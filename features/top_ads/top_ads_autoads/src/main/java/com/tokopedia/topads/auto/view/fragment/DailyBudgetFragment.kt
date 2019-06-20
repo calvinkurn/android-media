@@ -25,6 +25,9 @@ import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
 import com.tokopedia.topads.auto.data.entity.BidInfoData
 import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.di.AutoAdsComponent
+import com.tokopedia.topads.auto.internal.Preferences
+import com.tokopedia.topads.auto.view.activity.AutoAdsActivatedActivity
+import com.tokopedia.topads.auto.view.activity.InsufficientBalanceActivity
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.auto.view.widget.Range
@@ -80,9 +83,10 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
         budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source)
         budgetViewModel.budgetInfoData.observe(this@DailyBudgetFragment, Observer {
             val data = it!!.get(0)
-            estimateImpression(data, data.minDailyBudget)
+            val budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
+            estimateImpression(data, budget)
             seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
-            seekBar.value = data.minDailyBudget
+            seekBar.value = budget
             seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                     estimateImpression(data, progress)
@@ -154,28 +158,46 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
         }
     }
 
-    fun activatedAds(){
+    fun activatedAds() {
+        val budget = priceEditText.textWithoutPrefix.replace(",", "").toInt()
         budgetViewModel.postAutoAdsStatus(AutoAdsParam(AutoAdsParam.Input(
                 "toggle_on",
                 "topchat",
-                priceEditText.textWithoutPrefix.replace(",", "").toInt(),
+                budget,
                 userSession.shopId.toInt(),
                 "one-click-promo"
         )))
     }
 
-    fun deactivedAds(){
+    fun deactivedAds() {
+        val budget = priceEditText.textWithoutPrefix.replace(",", "").toInt()
         budgetViewModel.postAutoAdsStatus(AutoAdsParam(AutoAdsParam.Input(
                 "toggle_off",
                 "topchat",
-                priceEditText.textWithoutPrefix.replace(",", "").toInt(),
+                budget,
                 userSession.shopId.toInt(),
                 "one-click-promo"
         )))
     }
 
-    companion object {
+    fun eligible() {
+        activity!!.finish()
+        startActivity(Intent(activity, AutoAdsActivatedActivity::class.java))
+    }
 
+    fun notEligible() {
+        activity!!.finish()
+    }
+
+    fun insufficientCredit(url: String) {
+        activity!!.finish()
+        val intent = Intent(activity, InsufficientBalanceActivity::class.java)
+        intent.putExtra(InsufficientBalanceActivity.KEY_URL, url)
+        startActivity(intent)
+    }
+
+    companion object {
+        val KEY_DAILY_BUDGET = "BUDGET"
         val REQUEST_CODE_AD_OPTION = 3
         val SELECTED_OPTION = "selected_option"
     }

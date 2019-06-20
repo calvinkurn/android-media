@@ -28,7 +28,7 @@ class TopAdsInfoViewModel @Inject constructor(
 
     val shopInfoData = MutableLiveData<TopAdsShopInfoData>()
 
-    fun getShopAdsInfo(shopId: Int) {
+    fun getShopAdsInfo(shopId: Int, onError: (Throwable) -> Unit) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_SHOP_INFO],
@@ -41,6 +41,7 @@ class TopAdsInfoViewModel @Inject constructor(
                 shopInfoData.postValue(it)
             }
         }) {
+            onError(it)
             it.printStackTrace()
         }
     }

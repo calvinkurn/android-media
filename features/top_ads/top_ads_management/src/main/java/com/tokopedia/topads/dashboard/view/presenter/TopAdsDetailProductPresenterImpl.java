@@ -30,6 +30,7 @@ import rx.Subscription;
 public class TopAdsDetailProductPresenterImpl<T extends Ad> extends TopAdsDetailPresenterImpl<T> implements TopAdsDetailPresenter {
     protected TopAdsProductAdInteractor topAdsProductAdInteractor;
     protected AutoAdsUseCase autoAdsUseCase;
+    private Subscription subscriptionLoadDetail;
 
     public TopAdsDetailProductPresenterImpl(Context context, TopAdsDetailListener<T> topAdsDetailListener, TopAdsProductAdInteractor topAdsProductAdInteractor) {
         super(context, topAdsDetailListener);

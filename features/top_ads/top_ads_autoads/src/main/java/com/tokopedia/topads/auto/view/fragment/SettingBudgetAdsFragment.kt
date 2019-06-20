@@ -12,6 +12,7 @@ import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsInfoSheet
+import com.tokopedia.topads.common.constant.TopAdsReasonOption
 
 /**
  * Author errysuprayogi on 09,May,2019
@@ -50,14 +51,19 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
                     }
 
                     override fun activeAutoAds() {
-                        startActivity(Intent(activity, DailyBudgetActivity::class.java))
-                        activity!!.finish()
+                        settingConfirmationSheet.dismissDialog()
+                        switchBudget.isChecked = true
                     }
                 })
                 settingConfirmationSheet.show()
             }
             budgetViewModel.autoAdsData.observe(this, Observer {
-                activity!!.finish()
+                when(it!!.adsInfo.reason){
+                    TopAdsReasonOption.INSUFFICIENT_CREDIT -> insufficientCredit(it!!.adsInfo.message)
+                    TopAdsReasonOption.ELIGIBLE -> eligible()
+                    TopAdsReasonOption.NOT_ELIGIBLE -> notEligible()
+                    else -> activity!!.finish()
+                }
             })
         }
         switchBudget.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -97,10 +103,10 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
 
     companion object {
 
-        fun newInstance(): SettingBudgetAdsFragment {
+        fun newInstance(budget: Int): SettingBudgetAdsFragment {
 
             val args = Bundle()
-
+            args.putInt(KEY_DAILY_BUDGET, budget)
             val fragment = SettingBudgetAdsFragment()
             fragment.arguments = args
             return fragment

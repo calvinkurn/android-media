@@ -6,6 +6,7 @@ import android.content.Intent
 
 interface TopAdsAutoRouter {
     fun getTopAdsDashboardIntent(context: Context): Intent
+    fun getSellerWebViewIntent(context: Context, url: String): Intent
     fun getTopAdsAddingPromoOptionIntent(context: Context): Intent
     fun getTopAdsGroupNewPromoIntent(context: Context): Intent
     fun goToAddProduct(activity: Activity)
