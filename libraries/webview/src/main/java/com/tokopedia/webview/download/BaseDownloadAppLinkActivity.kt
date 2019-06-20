@@ -18,13 +18,13 @@ open class BaseDownloadAppLinkActivity : BaseSimpleWebViewActivity() {
         const val KEY_APP_LINK_QUERY_URL = "url"
         const val KEY_APP_LINK_QUERY_EXTENSIONS = "ext"
         const val KEY_APP_LINK_QUERY_TITLEBAR = "titlebar"
-        val ARGS_URL = "KEY_URL_ARG"
+        val ARGS_URL = "KEY_URL"
         const val KEY_SHOW_TOOLBAR = "KEY_SHOW_TOOLBAR"
         const val KEY_EXT = "EXT"
 
-
+        @JvmStatic
         fun newIntent(context: Context, url: String, showToolbar: Boolean,
-                               extensions: String): Intent {
+                      extensions: String): Intent {
             return Intent(context, BaseDownloadAppLinkActivity::class.java)
                     .putExtra(ARGS_URL, url)
                     .putExtra(KEY_SHOW_TOOLBAR, showToolbar)

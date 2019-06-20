@@ -29,11 +29,11 @@ class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
         val ARGS_EXT = "KEY_EXT"
 
         fun newInstance(url: String, extensions: String): BaseDownloadWebViewFragment {
-            val fragment = BaseSessionWebViewFragment.newInstance(url);
-            val args = fragment.arguments;
-            args?.putString(ARGS_EXT, extensions)
-            val thisFragment = BaseDownloadWebViewFragment();
-            thisFragment.arguments = args
+            val bundle = Bundle()
+            bundle.putString(ARGS_URL,url)
+            bundle.putString(ARGS_EXT, extensions)
+            val thisFragment = BaseDownloadWebViewFragment()
+            thisFragment.arguments = bundle
             return thisFragment
         }
     }
