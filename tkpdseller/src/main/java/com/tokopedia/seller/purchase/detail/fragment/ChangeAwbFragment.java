@@ -16,17 +16,16 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TkpdFragment;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.purchase.detail.activity.CustomScannerBarcodeActivity;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by kris on 1/9/18. Tokopedia
  */
 
-@RuntimePermissions
 public class ChangeAwbFragment extends TkpdFragment {
 
     private static final String ORDER_ID_ARGUMENT = "ORDER_ID_ARGUMENT";
@@ -35,6 +34,8 @@ public class ChangeAwbFragment extends TkpdFragment {
     private ChangeAwbListener listener;
 
     private EditText refNumberField;
+
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     @Override
     protected String getScreenName() {
@@ -103,18 +104,36 @@ public class ChangeAwbFragment extends TkpdFragment {
     }
 
     private View.OnClickListener onBarcodeScannerClickedListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ChangeAwbFragmentPermissionsDispatcher
-                        .onScanBarcodeWithCheck(ChangeAwbFragment.this);
+        return view -> {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                permissionCheckerHelper.checkPermissions(getActivity(), getPermissions(), new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        onScanBarcode();
+                    }
+                }, "");
+            } else {
+                onScanBarcode();
             }
         };
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void onScanBarcode() {
+    private void onScanBarcode() {
         CommonUtils.requestBarcodeScanner(this, CustomScannerBarcodeActivity.class);
+    }
+
+    private String[] getPermissions() {
+        return new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
     }
 
     @Override

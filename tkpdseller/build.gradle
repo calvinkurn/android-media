@@ -125,6 +125,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.permissionchecker)
 }
 
 apply from: '../publish_local.gradle'
