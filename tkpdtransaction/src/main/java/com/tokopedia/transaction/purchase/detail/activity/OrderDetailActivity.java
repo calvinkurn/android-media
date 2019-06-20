@@ -658,6 +658,7 @@ public class OrderDetailActivity extends TActivity
                         ).toString(),
                         TkpdInboxRouter.TX_ASK_BUYER, logoUrl);
         startActivity(intent);
+        orderDetailAnalytics.sendAnalyticsClickAskBuyer(OrderDetailConstant.VALUE_CLICK_BUTTON_ASK_BUYER,"");
     }
 
     @Override
