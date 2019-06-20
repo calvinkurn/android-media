@@ -27,7 +27,6 @@ import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.affiliatecommon.data.network.TopAdsConstantKt;
@@ -73,7 +72,6 @@ import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.SessionUrl;
-import com.tokopedia.notifications.data.source.CMNotificationUrls;
 import com.tokopedia.oms.data.source.OmsUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
@@ -82,7 +80,6 @@ import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.product.detail.data.util.ProductDetailConstant;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
-import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.recentview.data.api.RecentViewUrl;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sessioncommon.data.SessionCommonUrl;
@@ -353,7 +350,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SessionCommonUrl.BASE_WS_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         RecentViewUrl.MOJITO_DOMAIN = ConsumerAppBaseUrl.BASE_MOJITO_DOMAIN;
         com.tokopedia.network.constant.TkpdBaseURL.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
-        com.tokopedia.common_digital.common.constant.DigitalUrl.INSTANCE.setDIGITAL_API_DOMAIN(ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN);
+        com.tokopedia.common_digital.common.constant.DigitalUrl.DIGITAL_API_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
         DigitalDealsUrl.BASE_URL = ConsumerAppBaseUrl.DEALS_DOMAIN;
         LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
         TransactionDataApiUrl.Cart.BASE_URL = ConsumerAppBaseUrl.CART_BASE_DOMAIN;
@@ -361,14 +358,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.network.constant.TkpdBaseURL.BASE_API_DOMAIN = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         KycCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
         DiscoveryBaseURL.Ace.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
-        CMNotificationUrls.CAMPAIGN_MANAGEMENT_DOMAIN = ConsumerAppBaseUrl.CAMPAIGN_MANAGEMENT_DOMAIN;
         Config.TOPADS_BASE_URL = ConsumerAppBaseUrl.BASE_TOPADS_DOMAIN;
         BerandaUrl.GRAPHQL_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         BerandaUrl.DOMAIN_URL = ConsumerAppBaseUrl.BASE_TOKOPEDIA_WEBSITE;
         ChatUrl.Companion.setTOPCHAT(ConsumerAppBaseUrl.CHAT_DOMAIN);
         com.tokopedia.network.constant.TkpdBaseURL.ACCOUNTS_DOMAIN =
                 ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
-        CMNotificationUrls.CM_TOKEN_UPDATE = ConsumerAppBaseUrl.CM_TOKEN_UPDATE;
         tradein_common.Constants.LAKU6_BASEURL = ConsumerAppBaseUrl.LAKU6_BASE_URL;
         com.tokopedia.inbox.common.ResolutionUrl.HOSTNAME=ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
         com.tokopedia.network.constant.TkpdBaseURL.JS_DOMAIN=ConsumerAppBaseUrl.BASE_JS_DOMAIN;
@@ -386,9 +381,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public void initializeDatabase() {
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(ProductDraftGeneratedDatabaseHolder.class)
-                .build());
-        FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
         CategoryDbFlow.initDatabase(getApplicationContext());
     }
@@ -455,7 +447,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     private void initCacheApi() {
         CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
-        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
+        new CacheApiWhiteListUseCase(this).executeSync(CacheApiWhiteListUseCase.createParams(
                 CacheApiWhiteList.getWhiteList(),
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }

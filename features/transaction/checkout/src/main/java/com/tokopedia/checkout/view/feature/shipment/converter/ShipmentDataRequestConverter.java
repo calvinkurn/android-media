@@ -120,6 +120,7 @@ public class ShipmentDataRequestConverter {
                             .build())
                     .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0)
                     .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)
+                    .isOrderPriority((shipmentDetailData.isOrderPriority() != null && shipmentDetailData.isOrderPriority() ? 1 :0))
                     .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
                     .shopId(shipmentCartItemModel.getShopId())
                     .warehouseId(shipmentCartItemModel.getFulfillmentId())

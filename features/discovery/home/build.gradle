@@ -105,8 +105,7 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    kapt  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    implementation project(rootProject.ext.libraries.permissionchecker)
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
