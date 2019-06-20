@@ -43,7 +43,7 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat2"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
@@ -52,7 +52,6 @@
             android:textStyle="bold"
             app:fontSize="title"
             app:layout_constraintBottom_toBottomOf="@+id/imageView6"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView6"
             app:layout_constraintTop_toTopOf="@+id/imageView6"
             app:layout_constraintVertical_chainStyle="packed" />
@@ -70,7 +69,7 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat4"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
@@ -79,7 +78,6 @@
             android:textStyle="bold"
             app:fontSize="title"
             app:layout_constraintBottom_toBottomOf="@+id/imageView7"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView7"
             app:layout_constraintTop_toTopOf="@+id/imageView7"
             app:layout_constraintVertical_chainStyle="packed" />
@@ -97,7 +95,7 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat6"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
@@ -107,7 +105,6 @@
             android:textStyle="bold"
             app:fontSize="title"
             app:layout_constraintBottom_toBottomOf="@+id/imageView8"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView8"
             app:layout_constraintTop_toTopOf="@+id/imageView8"
             app:layout_constraintVertical_chainStyle="packed" />
@@ -125,7 +122,7 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/textViewCompat7"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
@@ -135,7 +132,6 @@
             android:textStyle="bold"
             app:fontSize="title"
             app:layout_constraintBottom_toBottomOf="@+id/imageView9"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView9"
             app:layout_constraintTop_toTopOf="@+id/imageView9"
             app:layout_constraintVertical_chainStyle="packed" />
@@ -146,7 +142,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/pm_label_bs_cancel_desc_2"
         app:fontSize="small" />
 
@@ -154,7 +150,7 @@
         android:id="@+id/ticker_yellow_cancellation_bs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginBottom="@dimen/dp_8"
         android:background="@color/transparent"
         android:visibility="visible">
@@ -178,7 +174,7 @@
                     android:id="@+id/txt_ticker_yellow_bs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/pm_label_cancellation_duration"
+                    tools:text="@string/pm_label_cancellation_duration"
                     app:fontSize="small" />
             </LinearLayout>
 

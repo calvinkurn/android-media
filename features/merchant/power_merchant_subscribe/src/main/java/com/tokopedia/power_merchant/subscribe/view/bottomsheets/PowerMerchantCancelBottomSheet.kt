@@ -74,6 +74,7 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
     }
 
     private fun showExpiredDateTickerYellow() {
+        tickerContainer.visibility = View.VISIBLE
         txtExpiredDate.text = MethodChecker.fromHtml(getString(R.string.expired_label_bs, expiredDate))
     }
 
